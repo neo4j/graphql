@@ -174,15 +174,32 @@ async function inferNodes(session: Session): Promise<NodeMap> {
         }
         takenTypeNames.push(uniqueTypeName);
         const neo4jNode = new TypeNode(uniqueTypeName, mainLabel, nodeLabels.slice(1));
-        propertiesRows.forEach((propertyRow) =>
+        propertiesRows.forEach((propertyRow) => {
+            if (!propertyRow.propertyTypes) {
+                if (debug.enabled) {
+                    debug("%s", `No properties on ${nodeType}. Skipping generation.`);
+                }
+                return;
+            }
+            if (propertyRow.propertyTypes.length > 1) {
+                if (debug.enabled) {
+                    debug(
+                        "%s",
+                        `Ambiguous types on ${nodeType}.${propertyRow.propertyName}. Fix the inconsistences for this property to be included`
+                    );
+                }
+                return;
+            }
             neo4jNode.addField(
                 new NodeField(
                     propertyRow.propertyName,
                     mapNeo4jToGraphQLType(propertyRow.propertyTypes, propertyRow.mandatory)
                 )
-            )
-        );
-        nodes[mainLabel] = neo4jNode;
+            );
+        });
+        if (neo4jNode.fields.length) {
+            nodes[mainLabel] = neo4jNode;
+        }
     });
     return nodes;
 }

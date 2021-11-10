@@ -188,4 +188,50 @@ describe("Infer Schema nodes basic tests", () => {
             }"
         `);
     });
+    test("Should not include properties with ambiguous types", async () => {
+        const nodeProperties = { str: "testString", int: neo4j.int(42) };
+        // Create some data
+        const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
+        await wSession.writeTransaction((tx) =>
+            tx.run(
+                `CREATE (:Node {amb: $props.str, str: $props.str}) 
+                CREATE (:Node {amb: $props.int, str: $props.str})
+                CREATE (:OnlyAmb {amb: $props.str})
+                CREATE (:OnlyAmb {amb: $props.int})
+                `,
+                { props: nodeProperties }
+            )
+        );
+        const bm = wSession.lastBookmark();
+        await wSession.close();
+
+        // Infer the schema
+        const session = driver.session({ defaultAccessMode: neo4j.session.WRITE, bookmarks: bm, database: dbName });
+        const schema = await inferSchema(session);
+        await session.close();
+        // Then
+        expect(schema).toMatchInlineSnapshot(`
+            "type Node {
+            	str: String!
+            }"
+        `);
+    });
+    test("Should not include types with no fields", async () => {
+        // Create some data
+        const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
+        await wSession.writeTransaction((tx) => tx.run("CREATE (:EmptyNode) CREATE (:Node {prop: 1})"));
+        const bm = wSession.lastBookmark();
+        await wSession.close();
+
+        // Infer the schema
+        const session = driver.session({ defaultAccessMode: neo4j.session.WRITE, bookmarks: bm, database: dbName });
+        const schema = await inferSchema(session);
+        await session.close();
+        // Then
+        expect(schema).toMatchInlineSnapshot(`
+            "type Node {
+            	prop: Int!
+            }"
+        `);
+    });
 });
