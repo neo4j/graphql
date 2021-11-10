@@ -24,6 +24,9 @@ import createDriver from "./neo4j";
 describe("Infer Schema on graphs", () => {
     const dbName = "inferSchemaGraphITDb";
     let driver: neo4j.Driver;
+    const sessionFactory = (bm: string[]) => () =>
+        driver.session({ defaultAccessMode: neo4j.session.READ, bookmarks: bm, database: dbName });
+
     beforeAll(async () => {
         driver = await createDriver();
         const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
@@ -73,7 +76,7 @@ describe("Infer Schema on graphs", () => {
 
         // Infer the schema
         const session = driver.session({ defaultAccessMode: neo4j.session.WRITE, bookmarks: bm, database: dbName });
-        const schema = await inferSchema(session);
+        const schema = await inferSchema(sessionFactory(bm));
         await session.close();
         // Then
         expect(schema).toMatchInlineSnapshot(`
@@ -83,6 +86,55 @@ describe("Infer Schema on graphs", () => {
             }
 
             type Movie {
+            	title: String!
+            	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN)
+            }"
+        `);
+    });
+    test("Can infer multiple relationships (even with the same type)", async () => {
+        const nodeProperties = { title: "Forrest Gump", name: "Glenn Hysén" };
+        // Create some data
+        const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
+        await wSession.writeTransaction((tx) =>
+            tx.run(
+                `CREATE (m:Movie {title: $props.title})
+                CREATE (p:Play {title: $props.title})
+                CREATE (a:Actor {name: $props.name})
+                CREATE (d:Dog {name: $props.name})
+                MERGE (a)-[:ACTED_IN]->(p)
+                MERGE (a)-[:ACTED_IN]->(m)
+                MERGE (a)-[:DIRECTED]->(m)
+                MERGE (d)-[:ACTED_IN]->(m)
+                `,
+                { props: nodeProperties }
+            )
+        );
+        const bm = wSession.lastBookmark();
+        await wSession.close();
+
+        const schema = await inferSchema(sessionFactory(bm));
+        // Then
+        expect(schema).toMatchInlineSnapshot(`
+            "type Actor {
+            	name: String!
+            	actedInPlays: [Play] @relationship(type: \\"ACTED_IN\\", direction: OUT)
+            	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT)
+            	directedMovies: [Movie] @relationship(type: \\"DIRECTED\\", direction: OUT)
+            }
+
+            type Dog {
+            	name: String!
+            	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT)
+            }
+
+            type Movie {
+            	title: String!
+            	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN)
+            	dogsActedIn: [Dog] @relationship(type: \\"ACTED_IN\\", direction: IN)
+            	actorsDirected: [Actor] @relationship(type: \\"DIRECTED\\", direction: IN)
+            }
+
+            type Play {
             	title: String!
             	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN)
             }"

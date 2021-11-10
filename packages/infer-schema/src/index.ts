@@ -56,12 +56,12 @@ type RelationshipRecord = {
     relType: string;
 };
 
-export async function inferSchema(session: Session): Promise<string> {
+export async function inferSchema(sessionFactory: () => Session): Promise<string> {
     // Nodes
-    const typeNodes = await inferNodes(session);
+    const typeNodes = await inferNodes(sessionFactory);
 
     // Rels
-    const relationships = await inferRelationships(session);
+    const relationships = await inferRelationships(sessionFactory);
 
     const hydratedNodes = hydrateRelationships(typeNodes, relationships);
 
@@ -96,13 +96,15 @@ function hydrateRelationships(nodes: NodeMap, rels: RelationshipMap): NodeMap {
     return nodes;
 }
 
-async function inferRelationships(session: Session): Promise<RelationshipMap> {
+async function inferRelationships(sessionFactory: () => Session): Promise<RelationshipMap> {
     const rels: RelationshipMap = {};
-    const typePropsRes = await session.readTransaction((tx) =>
+    const relSession = sessionFactory();
+    const typePropsRes = await relSession.readTransaction((tx) =>
         tx.run(`CALL db.schema.relTypeProperties()
     YIELD relType, propertyName, propertyTypes, mandatory
     RETURN *`)
     );
+    await relSession.close();
     const relTypeProperties = typePropsRes.records.map((r) => r.toObject()) as RelationshipTypePropertiesRecord[];
     const uniqueRelTypes = new Set(relTypeProperties.map((nt) => nt.relType));
     const queries: Promise<typeof typePropsRes>[] = [];
@@ -113,15 +115,22 @@ async function inferRelationships(session: Session): Promise<RelationshipMap> {
         }
 
         // Check node identifiers it's connected to
-        const relationshipsRes = session.readTransaction((tx) =>
-            tx.run(`
-        MATCH (n)-[r${relType}]->(m)
-        WITH n, r, m LIMIT 100
-        WITH DISTINCT labels(n) AS from, labels(m) AS to
-        WITH from, to WHERE SIZE(from) > 0 AND SIZE(to) > 0
-        RETURN from, to, "${relType.replace(/"/g, '\\"')}" AS relType`)
-        );
-        queries.push(relationshipsRes);
+        async function sessionClosure() {
+            const conSession = sessionFactory();
+            await new Promise((r) => setTimeout(r, 3000));
+            const relationshipsRes = await conSession.readTransaction((tx) =>
+                tx.run(`
+            MATCH (n)-[r${relType}]->(m)
+            WITH n, r, m LIMIT 100
+            WITH DISTINCT labels(n) AS from, labels(m) AS to
+            WITH from, to WHERE SIZE(from) > 0 AND SIZE(to) > 0
+            RETURN from, to, "${relType.replace(/"/g, '\\"')}" AS relType`)
+            );
+            await conSession.close();
+            return relationshipsRes;
+        }
+
+        queries.push(sessionClosure());
         // propertiesRows.forEach((row) => {
         // });
     });
@@ -143,14 +152,16 @@ async function inferRelationships(session: Session): Promise<RelationshipMap> {
     return rels;
 }
 
-async function inferNodes(session: Session): Promise<NodeMap> {
+async function inferNodes(sessionFactory: () => Session): Promise<NodeMap> {
     const nodes: NodeMap = {};
     // Label properties
+    const session = sessionFactory();
     const labelPropsRes = await session.readTransaction((tx) =>
         tx.run(`CALL db.schema.nodeTypeProperties()
     YIELD nodeType, nodeLabels, propertyName, propertyTypes, mandatory
     RETURN *`)
     );
+    await session.close();
     if (!labelPropsRes?.records.length) {
         return nodes;
     }

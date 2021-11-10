@@ -24,6 +24,9 @@ import createDriver from "./neo4j";
 describe("Infer Schema nodes basic tests", () => {
     const dbName = "inferSchemaITDb";
     let driver: neo4j.Driver;
+    const sessionFactory = (bm: string[]) => () =>
+        driver.session({ defaultAccessMode: neo4j.session.READ, bookmarks: bm, database: dbName });
+
     beforeAll(async () => {
         driver = await createDriver();
         const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
@@ -65,9 +68,7 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const session = driver.session({ defaultAccessMode: neo4j.session.WRITE, bookmarks: bm, database: dbName });
-        const schema = await inferSchema(session);
-        await session.close();
+        const schema = await inferSchema(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type TestLabel {
@@ -89,9 +90,7 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const session = driver.session({ defaultAccessMode: neo4j.session.WRITE, bookmarks: bm, database: dbName });
-        const schema = await inferSchema(session);
-        await session.close();
+        const schema = await inferSchema(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type TestLabel {
@@ -117,9 +116,7 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const session = driver.session({ defaultAccessMode: neo4j.session.WRITE, bookmarks: bm, database: dbName });
-        const schema = await inferSchema(session);
-        await session.close();
+        const schema = await inferSchema(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type TestLabel {
@@ -146,9 +143,7 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const session = driver.session({ defaultAccessMode: neo4j.session.WRITE, bookmarks: bm, database: dbName });
-        const schema = await inferSchema(session);
-        await session.close();
+        const schema = await inferSchema(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type TestLabel {
@@ -174,9 +169,7 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const session = driver.session({ defaultAccessMode: neo4j.session.WRITE, bookmarks: bm, database: dbName });
-        const schema = await inferSchema(session);
-        await session.close();
+        const schema = await inferSchema(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type Test_Label2 @node(label: \\"Test-Label\\") {
@@ -206,9 +199,7 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const session = driver.session({ defaultAccessMode: neo4j.session.WRITE, bookmarks: bm, database: dbName });
-        const schema = await inferSchema(session);
-        await session.close();
+        const schema = await inferSchema(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type Node {
@@ -224,9 +215,7 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const session = driver.session({ defaultAccessMode: neo4j.session.WRITE, bookmarks: bm, database: dbName });
-        const schema = await inferSchema(session);
-        await session.close();
+        const schema = await inferSchema(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type Node {
