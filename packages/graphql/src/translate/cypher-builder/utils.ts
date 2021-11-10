@@ -18,6 +18,6 @@
  */
 
 /** Generates a string to be used as parameter key */
-export function generateParameterKey(...params: Array<string>): string {
-    return params.join("_");
+export function generateParameterKey(preffix: string, key: string): string {
+    return `${preffix}_${key}`;
 }

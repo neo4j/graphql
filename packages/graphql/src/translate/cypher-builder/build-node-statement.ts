@@ -45,17 +45,16 @@ export function buildNodeStatement({
 function parseNodeParameters(nodeVar: string, parameters: CypherParams | undefined): CypherStatement {
     if (!parameters) return ["", {}];
 
-    // TODO: generate cypher in the same function
-    const cypherParameters = Object.entries(parameters).reduce((acc, [key, value]) => {
-        const paramKey = generateParameterKey(`${nodeVar}`, "node", key);
-        acc[paramKey] = value;
-        return acc;
-    }, {});
+    const parameterKeyPreffix = `${nodeVar}_node`;
 
-    const nodeParameters = Object.keys(parameters).reduce((acc, key) => {
-        acc[key] = `$${generateParameterKey(`${nodeVar}`, "node", key)}`;
-        return acc;
-    }, {});
+    const cypherParameters: CypherParams = {};
+    const nodeParameters: Record<string, string> = {};
+
+    for (const [key, value] of Object.entries(parameters)) {
+        const paramKey = generateParameterKey(parameterKeyPreffix, key);
+        cypherParameters[paramKey] = value;
+        nodeParameters[key] = `$${paramKey}`;
+    }
 
     return [serializeObject(nodeParameters), cypherParameters];
 }
