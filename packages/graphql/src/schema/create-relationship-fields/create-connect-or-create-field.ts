@@ -37,7 +37,13 @@ export function createConnectOrCreateField({
     if (node.uniqueFields.length === 0) {
         return undefined;
     }
-    const connectOrCreateName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectOrCreateFieldInput`;
+
+    let connectOrCreateName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectOrCreateFieldInput`;
+    if (rel.union) {
+        connectOrCreateName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}${
+            node.name
+        }ConnectOrCreateFieldInput`;
+    }
     const connectOrCreate = rel.typeMeta.array ? `[${connectOrCreateName}!]` : connectOrCreateName;
     const connectOrCreateOnCreateName = `${connectOrCreateName}OnCreate`;
     schemaComposer.getOrCreateITC(connectOrCreateOnCreateName, (tc) => {
