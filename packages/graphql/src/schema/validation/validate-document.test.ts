@@ -85,6 +85,20 @@ describe("validateDocument", () => {
         );
     });
 
+    test("should throw an error if a user tries to user @fulltext incorrectly", () => {
+        const doc = gql`
+            type User {
+                name: String
+            }
+
+            extend type User @fulltext
+        `;
+
+        expect(() => validateDocument(doc)).toThrow(
+            'Directive "@fulltext" argument "indexes" of type "[FullTextInput]!" is required, but it was not provided.'
+        );
+    });
+
     test("should throw an error if a user tries to pass in their own PointInput definition", () => {
         const doc = gql`
             input PointInput {

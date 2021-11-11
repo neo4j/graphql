@@ -70,6 +70,7 @@ function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode)
         required,
         pretty,
         arrayTypePretty,
+        arrayTypeRequired,
     };
 
     const isPoint = ["Point", "CartesianPoint"].includes(name);

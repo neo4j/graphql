@@ -154,6 +154,7 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_id\\": \\"1\\",
                 \\"this_Post_auth_allow0_creator_id\\": \\"id-01\\",
                 \\"this_Post_comments_id\\": \\"1\\",
                 \\"this_content\\": {
@@ -162,8 +163,7 @@ describe("@auth allow on specific interface implementation", () => {
                             \\"id\\": \\"1\\"
                         }
                     }
-                },
-                \\"this_id\\": \\"1\\"
+                }
             }"
         `);
     });

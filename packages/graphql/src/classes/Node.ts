@@ -35,6 +35,7 @@ import type {
     Auth,
     BaseField,
     Context,
+    FullText,
 } from "../types";
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
@@ -57,6 +58,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     pointFields: PointField[];
     ignoredFields: BaseField[];
     auth?: Auth;
+    fulltextDirective?: FullText;
     exclude?: Exclude;
     nodeDirective?: NodeDirective;
     description?: string;
@@ -97,6 +99,7 @@ class Node extends GraphElement {
     public objectFields: ObjectField[];
     public exclude?: Exclude;
     public nodeDirective?: NodeDirective;
+    public fulltextDirective?: FullText;
     public auth?: Auth;
     public description?: string;
 
@@ -112,6 +115,7 @@ class Node extends GraphElement {
         this.objectFields = input.objectFields;
         this.exclude = input.exclude;
         this.nodeDirective = input.nodeDirective;
+        this.fulltextDirective = input.fulltextDirective;
         this.auth = input.auth;
     }
 

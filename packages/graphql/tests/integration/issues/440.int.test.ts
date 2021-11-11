@@ -29,12 +29,12 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
     const typeDefs = gql`
         type Video {
             id: ID! @id(autogenerate: false)
-            categories: [Category!]! @relationship(type: "IS_CATEGORIZED_AS", direction: OUT)
+            categories: [Category] @relationship(type: "IS_CATEGORIZED_AS", direction: OUT)
         }
 
         type Category {
             id: ID! @id(autogenerate: false)
-            videos: [Video!]! @relationship(type: "IS_CATEGORIZED_AS", direction: IN)
+            videos: [Video] @relationship(type: "IS_CATEGORIZED_AS", direction: IN)
         }
     `;
 

@@ -21,12 +21,12 @@ import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
-import neo4j from "./neo4j";
-import { Neo4jGraphQL } from "../../src/classes";
-import { generateUniqueType } from "../../src/utils/test/graphql-types";
-import { parseLegacyConstraint } from "../../src/classes/utils/asserts-indexes-and-constraints";
+import neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../../src/utils/test/graphql-types";
+import { parseLegacyConstraint } from "../../../src/classes/utils/asserts-indexes-and-constraints";
 
-describe("assertIndexesAndConstraints", () => {
+describe("assertIndexesAndConstraints/unique", () => {
     let driver: Driver;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
@@ -42,7 +42,12 @@ describe("assertIndexesAndConstraints", () => {
             await session.run(cypher);
         } catch (e) {
             if (e instanceof Error) {
-                if (e.message.includes(`Neo4jError: Unsupported administration command: ${cypher}`)) {
+                if (
+                    e.message.includes(
+                        "This is an administration command and it should be executed against the system database"
+                    ) ||
+                    e.message.includes(`Neo4jError: Unsupported administration command: ${cypher}`)
+                ) {
                     // No multi-db support, so we skip tests
                     MULTIDB_SUPPORT = false;
                 } else {

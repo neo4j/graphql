@@ -31,7 +31,7 @@ git@github.com:USERNAME/graphql.git
 You will then need to add our repository as an upstream:
 
 ```bash
-git add remote upstream git@github.com/neo4j/graphql.git
+git remote add upstream git@github.com:neo4j/graphql.git
 ```
 
 You can then fetch and merge from the upstream to keep in sync.
@@ -48,13 +48,15 @@ yarn install
 
 [Visual Studio Code](https://code.visualstudio.com/) comes highly recommended for working in this repository, and we additionally recommend the following extensions:
 
-- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-- [Jest](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest)
-- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+-   [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+-   [Jest](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest)
+-   [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
 The Jest extension should automatically detect the tests for this repository and watch them in the Status Bar.
 
 ## Testing
+
+### Testing locally
 
 In order to run all of the tests, you will need to have a local instance of Neo4j running! We highly recommend [Neo4j Desktop](https://neo4j.com/download/) to easily get up and running with a local Neo4j instance.
 
@@ -62,18 +64,18 @@ In order to run all of the tests, you will need to have a local instance of Neo4
 2. Install APOC plugin for that DB.
 3. Create appropriate user by running the following command in the DB:
 
-   ```cypher
-   CREATE USER admin
-   SET PASSWORD "password"
-   SET PASSWORD CHANGE NOT REQUIRED
-   SET STATUS ACTIVE
-   ```
+    ```cypher
+    CREATE USER admin
+    SET PASSWORD "password"
+    SET PASSWORD CHANGE NOT REQUIRED
+    SET STATUS ACTIVE
+    ```
 
 4. Grant roles to admin user:
 
-   ```cypher
-   GRANT ROLE admin to admin
-   ```
+    ```cypher
+    GRANT ROLE admin to admin
+    ```
 
 5. Run tests with `yarn test`.
 
@@ -91,6 +93,12 @@ Additionally, for projects which have the appropriate Yarn scripts setup, you ca
 
 ```bash
 yarn test:tck
+```
+
+### Testing using docker
+
+```
+npm run test-docker
 ```
 
 ## Linting/formatting

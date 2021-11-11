@@ -167,6 +167,7 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_id\\": \\"1\\",
                 \\"this_Comment_auth_allow0_creator_id\\": \\"id-01\\",
                 \\"this_Post_auth_allow0_creator_id\\": \\"id-01\\",
                 \\"this_Post_comments_id\\": \\"1\\",
@@ -178,7 +179,6 @@ describe("@auth allow with interface relationships", () => {
                         }
                     }
                 },
-                \\"this_id\\": \\"1\\",
                 \\"this_auth_allow0_id\\": \\"id-01\\"
             }"
         `);

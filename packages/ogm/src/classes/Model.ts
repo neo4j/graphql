@@ -62,6 +62,7 @@ class Model {
 
     async find<T = any[]>({
         where,
+        fulltext,
         options,
         selectionSet,
         args = {},
@@ -69,24 +70,29 @@ class Model {
         rootValue = null,
     }: {
         where?: GraphQLWhereArg;
+        fulltext?: any;
         options?: GraphQLOptionsArg;
         selectionSet?: string | DocumentNode | SelectionSetNode;
         args?: any;
         context?: any;
         rootValue?: any;
     } = {}): Promise<T> {
+        const argWorthy = Boolean(where || options || fulltext);
+
         const argDefinitions = [
-            `${where || options ? "(" : ""}`,
+            `${argWorthy ? "(" : ""}`,
             `${where ? `$where: ${this.name}Where` : ""}`,
             `${options ? `$options: ${this.name}Options` : ""}`,
-            `${where || options ? ")" : ""}`,
+            `${fulltext ? `$fulltext: ${this.name}Fulltext` : ""}`,
+            `${argWorthy ? ")" : ""}`,
         ];
 
         const argsApply = [
-            `${where || options ? "(" : ""}`,
+            `${argWorthy ? "(" : ""}`,
             `${where ? `where: $where` : ""}`,
             `${options ? `options: $options` : ""}`,
-            `${where || options ? ")" : ""}`,
+            `${fulltext ? `fulltext: $fulltext` : ""}`,
+            `${argWorthy ? ")" : ""}`,
         ];
 
         const selection = printSelectionSet(selectionSet || this.selectionSet);
@@ -110,12 +116,26 @@ class Model {
 
     async count({
         where,
+        fulltext,
     }: {
         where?: GraphQLWhereArg;
+        fulltext?: any;
     } = {}): Promise<number> {
-        const argDefinitions = [`${where ? `($where: ${this.name}Where)` : ""}`];
+        const argWorthy = Boolean(where || fulltext);
 
-        const argsApply = [`${where ? `(where: $where)` : ""}`];
+        const argDefinitions = [
+            `${argWorthy ? "(" : ""}`,
+            `${where ? `$where: ${this.name}Where` : ""}`,
+            `${fulltext ? `$fulltext: ${this.name}Fulltext` : ""}`,
+            `${argWorthy ? ")" : ""}`,
+        ];
+
+        const argsApply = [
+            `${argWorthy ? "(" : ""}`,
+            `${where ? `where: $where` : ""}`,
+            `${fulltext ? `fulltext: $fulltext` : ""}`,
+            `${argWorthy ? ")" : ""}`,
+        ];
 
         const query = `
             query ${argDefinitions.join(" ")}{
@@ -200,6 +220,7 @@ class Model {
         rootValue?: any;
     } = {}): Promise<T> {
         const mutationName = `update${upperFirst(this.namePluralized)}`;
+        const argWorthy = Boolean(where || update || connect || disconnect || create);
 
         let selection = "";
         if (selectionSet) {
@@ -212,8 +233,6 @@ class Model {
                }
            `;
         }
-
-        const argWorthy = where || update || connect || disconnect || create;
 
         const argDefinitions = [
             `${argWorthy ? "(" : ""}`,
@@ -265,7 +284,6 @@ class Model {
         rootValue?: any;
     } = {}): Promise<DeleteInfo> {
         const mutationName = `delete${upperFirst(this.namePluralized)}`;
-
         const argWorthy = where || deleteInput;
 
         const argDefinitions = [
@@ -304,18 +322,34 @@ class Model {
 
     async aggregate<T = any>({
         where,
+        fulltext,
         aggregate,
         context = {},
         rootValue = null,
     }: {
         where?: GraphQLWhereArg;
+        fulltext?: any;
         aggregate: any;
         context?: any;
         rootValue?: any;
     }): Promise<T> {
         const queryName = `${pluralize(camelCase(this.name))}Aggregate`;
-
         const selections: string[] = [];
+        const argWorthy = Boolean(where || fulltext);
+
+        const argDefinitions = [
+            `${argWorthy ? "(" : ""}`,
+            `${where ? `$where: ${this.name}Where` : ""}`,
+            `${fulltext ? `$fulltext: ${this.name}Fulltext` : ""}`,
+            `${argWorthy ? ")" : ""}`,
+        ];
+
+        const argsApply = [
+            `${argWorthy ? "(" : ""}`,
+            `${where ? `where: $where` : ""}`,
+            `${fulltext ? `fulltext: $fulltext` : ""}`,
+            `${argWorthy ? ")" : ""}`,
+        ];
 
         Object.entries(aggregate).forEach((entry) => {
             // Must be count
@@ -342,8 +376,8 @@ class Model {
         });
 
         const query = `
-            query ${where ? `($where: ${this.name}Where)` : ""}{
-               ${queryName}${where ? `(where: $where)` : ""} {
+            query ${argDefinitions.join(" ")}{
+               ${queryName}${argsApply.join(" ")} {
                    ${selections.join("\n")}
                }
             }

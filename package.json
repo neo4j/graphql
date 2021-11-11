@@ -18,7 +18,7 @@
         "test:pr": "run-s lint test",
         "neo-push": "concurrently \"yarn workspace neo-push-server start\" \"yarn workspace neo-push-client start\"",
         "neo-push:seed": "yarn workspace neo-push-server run seed",
-        "conditional-publish": "yarn workspaces foreach --include \"@neo4j/*\" run conditional-publish"
+        "test-docker": "docker-compose up --build --abort-on-container-exit"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "4.1.1",
