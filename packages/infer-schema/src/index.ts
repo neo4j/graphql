@@ -52,51 +52,40 @@ type RelationshipRecord = {
     to: string;
     relType: string;
 };
-type Relationship = {
-    from: string;
-    to: string;
-    type: string;
-};
 
 export async function inferSchema(sessionFactory: () => Session): Promise<string> {
     // Nodes
     const typeNodes = await inferNodes(sessionFactory);
 
     // Rels
-    const relationships = await inferRelationships(sessionFactory);
-
-    const hydratedNodes = hydrateRelationships(typeNodes, relationships);
+    const hydratedNodes = await hydrateWithRelationships(typeNodes, sessionFactory);
 
     const sorted = Object.keys(hydratedNodes).sort();
     return sorted.map((typeName) => typeNodes[typeName].toString()).join("\n\n");
 }
 
-function hydrateRelationships(nodes: NodeMap, rels: Relationship[]): NodeMap {
-    rels.forEach((rel) => {
-        const from = nodes[rel.from];
-        const to = nodes[rel.to];
+function createRelationshipFields(
+    fromTypeName: string,
+    toTypeName: string,
+    relType: string
+): { fromField: NodeField; toField: NodeField } {
+    const fromField = new NodeField(
+        inferRelationshipFieldName(relType, fromTypeName, toTypeName, "OUT"),
+        `[${toTypeName}]`
+    );
+    const fromDirective = new RelationshipDirective(relType, "OUT");
+    fromField.addDirective(fromDirective);
 
-        const fromField = new NodeField(
-            inferRelationshipFieldName(rel.type, from.typeName, to.typeName, "OUT"),
-            `[${to.typeName}]`
-        );
-        const fromDirective = new RelationshipDirective(rel.type, "OUT");
-        fromField.addDirective(fromDirective);
-        from.addField(fromField);
-
-        const toField = new NodeField(
-            inferRelationshipFieldName(rel.type, from.typeName, to.typeName, "IN"),
-            `[${from.typeName}]`
-        );
-        const toDirective = new RelationshipDirective(rel.type, "IN");
-        toField.addDirective(toDirective);
-        to.addField(toField);
-    });
-    return nodes;
+    const toField = new NodeField(
+        inferRelationshipFieldName(relType, fromTypeName, toTypeName, "IN"),
+        `[${fromTypeName}]`
+    );
+    const toDirective = new RelationshipDirective(relType, "IN");
+    toField.addDirective(toDirective);
+    return { fromField, toField };
 }
 
-async function inferRelationships(sessionFactory: () => Session): Promise<Relationship[]> {
-    const rels: Relationship[] = [];
+async function hydrateWithRelationships(nodes: NodeMap, sessionFactory: () => Session): Promise<NodeMap> {
     const relSession = sessionFactory();
     const typePropsRes = await relSession.readTransaction((tx) =>
         tx.run(`CALL db.schema.relTypeProperties()
@@ -142,11 +131,13 @@ async function inferRelationships(sessionFactory: () => Session): Promise<Relati
         const { relType } = relationships[0];
         const typeOnly = relType.slice(2, -1);
         relationships.forEach(({ from, to }) => {
-            rels.push({ type: typeOnly, from, to });
+            const { fromField, toField } = createRelationshipFields(nodes[from].typeName, nodes[to].typeName, typeOnly);
+            nodes[from].addField(fromField);
+            nodes[to].addField(toField);
         });
     });
 
-    return rels;
+    return nodes;
 }
 
 async function inferNodes(sessionFactory: () => Session): Promise<NodeMap> {
