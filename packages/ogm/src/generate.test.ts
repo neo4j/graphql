@@ -214,7 +214,7 @@ describe("generate", () => {
             }
 
             export declare class UserModel {
-              public find(args: {
+              public find(args?: {
                 where?: UserWhere;
 
                 options?: UserOptions;
@@ -223,7 +223,7 @@ describe("generate", () => {
                 context?: any;
                 rootValue?: any;
               }): Promise<User[]>;
-              public count(args: { where?: UserWhere }): Promise<number>;
+              public count(args?: { where?: UserWhere }): Promise<number>;
               public create(args: {
                 input: UserCreateInput[];
                 selectionSet?: string | DocumentNode | SelectionSetNode;
@@ -460,7 +460,7 @@ describe("generate", () => {
             }
 
             export declare class UserModel {
-              public find(args: {
+              public find(args?: {
                 where?: UserWhere;
                 fulltext?: UserFulltext;
                 options?: UserOptions;
@@ -469,7 +469,7 @@ describe("generate", () => {
                 context?: any;
                 rootValue?: any;
               }): Promise<User[]>;
-              public count(args: {
+              public count(args?: {
                 where?: UserWhere;
                 fulltext?: UserFulltext;
               }): Promise<number>;
@@ -706,7 +706,7 @@ describe("generate", () => {
             }
 
             export declare class UserModel {
-              public find(args: {
+              public find(args?: {
                 where?: UserWhere;
 
                 options?: UserOptions;
@@ -715,7 +715,7 @@ describe("generate", () => {
                 context?: any;
                 rootValue?: any;
               }): Promise<User[]>;
-              public count(args: { where?: UserWhere }): Promise<number>;
+              public count(args?: { where?: UserWhere }): Promise<number>;
               public create(args: {
                 input: UserCreateInput[];
                 selectionSet?: string | DocumentNode | SelectionSetNode;
@@ -1276,7 +1276,7 @@ describe("generate", () => {
             }
 
             export declare class MovieModel {
-              public find(args: {
+              public find(args?: {
                 where?: MovieWhere;
 
                 options?: MovieOptions;
@@ -1285,7 +1285,7 @@ describe("generate", () => {
                 context?: any;
                 rootValue?: any;
               }): Promise<Movie[]>;
-              public count(args: { where?: MovieWhere }): Promise<number>;
+              public count(args?: { where?: MovieWhere }): Promise<number>;
               public create(args: {
                 input: MovieCreateInput[];
                 selectionSet?: string | DocumentNode | SelectionSetNode;
@@ -1329,7 +1329,7 @@ describe("generate", () => {
             }
 
             export declare class PersonModel {
-              public find(args: {
+              public find(args?: {
                 where?: PersonWhere;
 
                 options?: PersonOptions;
@@ -1338,7 +1338,7 @@ describe("generate", () => {
                 context?: any;
                 rootValue?: any;
               }): Promise<Person[]>;
-              public count(args: { where?: PersonWhere }): Promise<number>;
+              public count(args?: { where?: PersonWhere }): Promise<number>;
               public create(args: {
                 input: PersonCreateInput[];
                 selectionSet?: string | DocumentNode | SelectionSetNode;

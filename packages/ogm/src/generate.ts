@@ -144,7 +144,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
             ${aggregationInput[0]}
 
             export declare class ${modelName} {
-                public find(args: {
+                public find(args?: {
                     where?: ${node.name}Where;
                     ${hasFulltextArg ? `fulltext?: ${node.name}Fulltext;` : ""}
                     options?: ${node.name}Options;
@@ -153,7 +153,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     context?: any;
                     rootValue?: any;
                 }): Promise<${node.name}[]>
-                public count(args: {
+                public count(args?: {
                     where?: ${node.name}Where;
                     ${hasFulltextArg ? `fulltext?: ${node.name}Fulltext;` : ""}
                 }): Promise<number>
