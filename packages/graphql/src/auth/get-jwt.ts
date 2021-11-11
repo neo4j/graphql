@@ -90,7 +90,7 @@ async function getJWT(context: Context): Promise<any> {
                 function getKey(header, callback) {
                     // Callback that returns the key the corresponding key[kid]
                     client.getSigningKey(header.kid, (err, key) => {
-                        const signingKey = key.getPublicKey() || key.publicKey || key.rsaPublicKey;
+                        const signingKey = key?.getPublicKey() || key?.publicKey || key?.rsaPublicKey;
                         callback(null, signingKey);
                     });
                 }
