@@ -38,6 +38,7 @@ function createRelationshipFields({
     let nodeDeleteInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
     let nodeDisconnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
     let nodeRelationInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
+
     if (relationshipFields.length) {
         [nodeConnectInput, nodeDeleteInput, nodeDisconnectInput, nodeRelationInput] = [
             "ConnectInput",
@@ -215,6 +216,10 @@ function createRelationshipFields({
             nodeDisconnectInput.addFields({
                 [rel.fieldName]: rel.typeMeta.array ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
             });
+
+            // nodeConnectOrCreateInput.addFields({
+            //     [rel.fieldName]: rel.typeMeta.array ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
+            // });
 
             nodeRelationInput.addFields({
                 [rel.fieldName]: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
@@ -764,6 +769,22 @@ function createRelationshipFields({
         nodeDisconnectInput.addFields({
             [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
         });
+
+        if (n.uniqueFields.length > 0) {
+            const nodeConnectOrCreateInput: InputTypeComposer<any> = schemaComposer.getOrCreateITC(
+                `${sourceName}ConnectOrCreateInput`
+            );
+
+            const nodeFieldConnectOrCreateInputName = `${rel.connectionPrefix}${upperFirst(
+                rel.fieldName
+            )}ConnectOrCreateFieldInput`;
+
+            nodeConnectOrCreateInput.addFields({
+                [rel.fieldName]: rel.typeMeta.array
+                    ? `[${nodeFieldConnectOrCreateInputName}!]`
+                    : nodeFieldConnectOrCreateInputName,
+            });
+        }
     });
 }
 

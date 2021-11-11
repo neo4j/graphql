@@ -60,6 +60,10 @@ describe("Connect Or Create", () => {
               movies: [ActorMoviesConnectFieldInput!]
             }
 
+            input ActorConnectOrCreateInput {
+              movies: [ActorMoviesConnectOrCreateFieldInput!]
+            }
+
             input ActorCreateInput {
               movies: ActorMoviesFieldInput
               name: String!
@@ -345,7 +349,7 @@ describe("Connect Or Create", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
               deleteMovies(where: MovieWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateActors(connect: ActorConnectInput, connectOrCreate: ActorConnectOrCreateInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
@@ -482,6 +486,10 @@ describe("Connect Or Create", () => {
 
             input ActorConnectInput {
               movies: [ActorMoviesConnectFieldInput!]
+            }
+
+            input ActorConnectOrCreateInput {
+              movies: [ActorMoviesConnectOrCreateFieldInput!]
             }
 
             input ActorCreateInput {
@@ -836,7 +844,7 @@ describe("Connect Or Create", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
               deleteMovies(where: MovieWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateActors(connect: ActorConnectInput, connectOrCreate: ActorConnectOrCreateInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 

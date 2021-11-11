@@ -936,7 +936,7 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node }),
+                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node, schemaComposer: composer }),
             });
         }
     });
