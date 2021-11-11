@@ -91,16 +91,6 @@ describe("Connect Or Create", () => {
               Series: [ActorActedInSeriesConnectFieldInput!]
             }
 
-            input ActorActedInConnectOrCreateFieldInput {
-              onCreate: ActorActedInConnectOrCreateFieldInputOnCreate!
-              where: MovieConnectOrCreateWhere!
-            }
-
-            input ActorActedInConnectOrCreateFieldInputOnCreate {
-              edge: ActedInCreateInput!
-              node: MovieCreateInput!
-            }
-
             type ActorActedInConnection {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
@@ -155,6 +145,16 @@ describe("Connect Or Create", () => {
               where: MovieConnectWhere
             }
 
+            input ActorActedInMovieConnectOrCreateFieldInput {
+              onCreate: ActorActedInMovieConnectOrCreateFieldInputOnCreate!
+              where: MovieConnectOrCreateWhere!
+            }
+
+            input ActorActedInMovieConnectOrCreateFieldInputOnCreate {
+              edge: ActedInCreateInput!
+              node: MovieCreateInput!
+            }
+
             input ActorActedInMovieConnectionWhere {
               AND: [ActorActedInMovieConnectionWhere!]
               OR: [ActorActedInMovieConnectionWhere!]
@@ -179,7 +179,7 @@ describe("Connect Or Create", () => {
 
             input ActorActedInMovieFieldInput {
               connect: [ActorActedInMovieConnectFieldInput!]
-              connectOrCreate: [ActorActedInConnectOrCreateFieldInput!]
+              connectOrCreate: [ActorActedInMovieConnectOrCreateFieldInput!]
               create: [ActorActedInMovieCreateFieldInput!]
             }
 
@@ -190,7 +190,7 @@ describe("Connect Or Create", () => {
 
             input ActorActedInMovieUpdateFieldInput {
               connect: [ActorActedInMovieConnectFieldInput!]
-              connectOrCreate: [ActorActedInConnectOrCreateFieldInput!]
+              connectOrCreate: [ActorActedInMovieConnectOrCreateFieldInput!]
               create: [ActorActedInMovieCreateFieldInput!]
               delete: [ActorActedInMovieDeleteFieldInput!]
               disconnect: [ActorActedInMovieDisconnectFieldInput!]
@@ -207,6 +207,16 @@ describe("Connect Or Create", () => {
             input ActorActedInSeriesConnectFieldInput {
               edge: ActedInCreateInput!
               where: SeriesConnectWhere
+            }
+
+            input ActorActedInSeriesConnectOrCreateFieldInput {
+              onCreate: ActorActedInSeriesConnectOrCreateFieldInputOnCreate!
+              where: SeriesConnectOrCreateWhere!
+            }
+
+            input ActorActedInSeriesConnectOrCreateFieldInputOnCreate {
+              edge: ActedInCreateInput!
+              node: SeriesCreateInput!
             }
 
             input ActorActedInSeriesConnectionWhere {
@@ -233,7 +243,7 @@ describe("Connect Or Create", () => {
 
             input ActorActedInSeriesFieldInput {
               connect: [ActorActedInSeriesConnectFieldInput!]
-              connectOrCreate: [ActorActedInConnectOrCreateFieldInput!]
+              connectOrCreate: [ActorActedInSeriesConnectOrCreateFieldInput!]
               create: [ActorActedInSeriesCreateFieldInput!]
             }
 
@@ -244,7 +254,7 @@ describe("Connect Or Create", () => {
 
             input ActorActedInSeriesUpdateFieldInput {
               connect: [ActorActedInSeriesConnectFieldInput!]
-              connectOrCreate: [ActorActedInConnectOrCreateFieldInput!]
+              connectOrCreate: [ActorActedInSeriesConnectOrCreateFieldInput!]
               create: [ActorActedInSeriesCreateFieldInput!]
               delete: [ActorActedInSeriesDeleteFieldInput!]
               disconnect: [ActorActedInSeriesDisconnectFieldInput!]
@@ -470,6 +480,10 @@ describe("Connect Or Create", () => {
               title: StringAggregateSelection!
             }
 
+            input SeriesConnectOrCreateWhere {
+              node: SeriesUniqueWhere!
+            }
+
             input SeriesConnectWhere {
               node: SeriesWhere!
             }
@@ -490,6 +504,10 @@ describe("Connect Or Create", () => {
             input SeriesSort {
               isan: SortDirection
               title: SortDirection
+            }
+
+            input SeriesUniqueWhere {
+              isan: String
             }
 
             input SeriesUpdateInput {
