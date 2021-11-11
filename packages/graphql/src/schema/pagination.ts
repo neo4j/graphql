@@ -19,8 +19,9 @@
 
 import { FieldNode, GraphQLResolveInfo, SelectionSetNode } from "graphql";
 import { getOffsetWithDefault, offsetToCursor } from "graphql-relay/connection/arrayConnection";
-import { Integer, isInt } from "neo4j-driver";
+import { Integer } from "neo4j-driver";
 import { ConnectionField, ConnectionQueryArgs } from "../types";
+import { isNeoInt } from "../utils/utils";
 
 function getAliasKey({ selectionSet, key }: { selectionSet: SelectionSetNode | undefined; key: string }): string {
     const selection = (selectionSet?.selections || []).find(
@@ -46,7 +47,7 @@ export function connectionFieldResolver({
     info: GraphQLResolveInfo;
 }) {
     const firstField = info.fieldNodes[0];
-    const selectionSet = firstField.selectionSet;
+    const { selectionSet } = firstField;
 
     let value = source[connectionField.fieldName];
     if (firstField.alias) {
@@ -54,10 +55,10 @@ export function connectionFieldResolver({
     }
 
     const totalCountKey = getAliasKey({ selectionSet, key: "totalCount" });
-    const totalCount = value.totalCount;
+    const { totalCount } = value;
 
     return {
-        [totalCountKey]: isInt(totalCount) ? totalCount.toNumber() : totalCount,
+        [totalCountKey]: isNeoInt(totalCount) ? totalCount.toNumber() : totalCount,
         ...createConnectionWithEdgeProperties({ source: value, selectionSet, args, totalCount }),
     };
 }
@@ -88,7 +89,7 @@ export function createConnectionWithEdgeProperties({
     // increment the last cursor position by one for the sliceStart
     const sliceStart = lastEdgeCursor + 1;
 
-    const edges = source?.edges || [];
+    const edges: any[] = source?.edges || [];
 
     const selections = selectionSet?.selections || [];
 
@@ -96,7 +97,7 @@ export function createConnectionWithEdgeProperties({
     const cursorKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "cursor" });
     const nodeKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "node" });
 
-    const sliceEnd = sliceStart + ((first as number) || edges.length);
+    const sliceEnd = sliceStart + (first || (edges.length as number));
 
     const mappedEdges = edges.map((value, index) => {
         return {
@@ -149,8 +150,8 @@ export function createOffsetLimitStr({
     }
 
     if (hasLimit && hasOffset) {
-        const sliceStart = isInt(offset as Integer) ? (offset as Integer).toNumber() : offset;
-        const itemsToGrab = isInt(limit as Integer) ? (limit as Integer).toNumber() : limit;
+        const sliceStart = isNeoInt(offset) ? offset.toNumber() : offset;
+        const itemsToGrab = isNeoInt(limit) ? limit.toNumber() : limit;
         const sliceEnd = (sliceStart as number) + (itemsToGrab as number);
         offsetLimitStr = `[${offset}..${sliceEnd}]`;
     }

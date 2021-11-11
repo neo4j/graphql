@@ -21,9 +21,10 @@ import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, RELATIONSHIP_REQUIREMENT_PREFIX } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
+import createRelationshipValidationStr from "./create-relationship-validation-str";
 
 interface Res {
     creates: string[];
@@ -70,17 +71,25 @@ function createCreateAndParams({
                 });
 
                 // refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             refNodes.forEach((refNode) => {
                 const v = relationField.union ? value[refNode.name] : value;
-                const unionTypeName = relationField.union ? refNode.name : "";
+                const unionTypeName = relationField.union || relationField.interface ? refNode.name : "";
 
                 if (v.create) {
                     const creates = relationField.typeMeta.array ? v.create : [v.create];
                     creates.forEach((create, index) => {
+                        if (relationField.interface && !create.node[refNode.name]) {
+                            return;
+                        }
+
                         res.creates.push(`\nWITH ${withVars.join(", ")}`);
 
                         const baseName = `${_varName}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
@@ -88,7 +97,7 @@ function createCreateAndParams({
                         const propertiesName = `${baseName}_relationship`;
 
                         const recurse = createCreateAndParams({
-                            input: create.node,
+                            input: relationField.interface ? create.node[refNode.name] : create.node,
                             context,
                             node: refNode,
                             varName: nodeName,
@@ -119,7 +128,7 @@ function createCreateAndParams({
                     });
                 }
 
-                if (v.connect) {
+                if (!relationField.interface && v.connect) {
                     const connectAndParams = createConnectAndParams({
                         withVars,
                         value: v.connect,
@@ -127,7 +136,7 @@ function createCreateAndParams({
                         parentVar: varName,
                         relationField,
                         context,
-                        refNode,
+                        refNodes: [refNode],
                         labelOverride: unionTypeName,
                         parentNode: node,
                         fromCreate: true,
@@ -136,6 +145,23 @@ function createCreateAndParams({
                     res.params = { ...res.params, ...connectAndParams[1] };
                 }
             });
+
+            if (relationField.interface && value.connect) {
+                const connectAndParams = createConnectAndParams({
+                    withVars,
+                    value: value.connect,
+                    varName: `${_varName}${relationField.union ? "_" : ""}_connect`,
+                    parentVar: varName,
+                    relationField,
+                    context,
+                    refNodes,
+                    labelOverride: "",
+                    parentNode: node,
+                    fromCreate: true,
+                });
+                res.creates.push(connectAndParams[0]);
+                res.params = { ...res.params, ...connectAndParams[1] };
+            }
 
             return res;
         }
@@ -176,7 +202,7 @@ function createCreateAndParams({
         return res;
     }
 
-    const labels = node.labelString;
+    const labels = node.getLabelString(context);
     const initial = [`CREATE (${varName}${labels})`];
 
     const timestampedFields = node.temporalFields.filter(
@@ -218,6 +244,12 @@ function createCreateAndParams({
     if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
         creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
+    }
+
+    const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
+    if (relationshipValidationStr) {
+        creates.push(`WITH ${withVars.join(", ")}`);
+        creates.push(relationshipValidationStr);
     }
 
     return [creates.join("\n"), params];

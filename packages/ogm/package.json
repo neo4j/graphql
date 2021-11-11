@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-ogm",
-    "version": "2.2.0",
+    "version": "2.4.0",
     "description": "GraphQL powered OGM for Neo4j and Javascript applications",
     "keywords": [
         "neo4j",
@@ -21,8 +21,7 @@
         "test:unit": "jest src/**/*.test.ts",
         "test:unit:watch": "jest src --watch",
         "test:int": "jest tests/integration",
-        "test:int:watch": "test:int -- --watch",
-        "conditional-publish": "(node ./scripts/check-version.js && npm publish --access=public) ; exit 0"
+        "test:int:watch": "test:int -- --watch"
     },
     "author": "Neo4j Inc.",
     "dependencies": {
@@ -30,7 +29,7 @@
         "@graphql-codegen/plugin-helpers": "2.0.0",
         "@graphql-codegen/typescript": "2.0.0",
         "@graphql-tools/merge": "6.2.14",
-        "@neo4j/graphql": "^2.2.0",
+        "@neo4j/graphql": "^2.4.0",
         "camelcase": "^6.2.0",
         "pluralize": "^8.0.0",
         "prettier": "2.3.2"

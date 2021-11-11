@@ -16,11 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isInt, Integer } from "neo4j-driver";
 import { execute } from "../../utils";
 import { translateCount } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
+import { isNeoInt } from "../../utils/utils";
 
 export default function countResolver({ node }: { node: Node }) {
     async function resolve(_root: any, _args: any, _context: unknown) {
@@ -36,9 +36,8 @@ export default function countResolver({ node }: { node: Node }) {
 
         const count = executeResult.result.records[0].get(0);
 
-        // @ts-ignore: count is unknown, and to cast to object would be an antipattern
-        if (isInt(count)) {
-            return (count as Integer).toNumber();
+        if (isNeoInt(count)) {
+            return count.toNumber();
         }
 
         return count;
@@ -47,6 +46,6 @@ export default function countResolver({ node }: { node: Node }) {
     return {
         type: `Int!`,
         resolve,
-        args: { where: `${node.name}Where` },
+        args: { where: `${node.name}Where`, ...(node.fulltextDirective ? { fulltext: `${node.name}Fulltext` } : {}) },
     };
 }

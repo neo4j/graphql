@@ -120,8 +120,18 @@ describe("Relationship", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
+              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
+            }
+
+            type MovieActorActorsAggregationSelection {
+              count: Int!
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
+            type MovieActorActorsNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -361,6 +371,7 @@ describe("Relationship", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
+              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String
             }
@@ -389,6 +400,15 @@ describe("Relationship", () => {
 
             input ActorDisconnectInput {
               movies: [ActorMoviesDisconnectFieldInput!]
+            }
+
+            type ActorMovieMoviesAggregationSelection {
+              count: Int!
+              node: ActorMovieMoviesNodeAggregateSelection
+            }
+
+            type ActorMovieMoviesNodeAggregateSelection {
+              id: IDAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -537,8 +557,18 @@ describe("Relationship", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
+              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
+            }
+
+            type MovieActorActorsAggregationSelection {
+              count: Int!
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
+            type MovieActorActorsNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {

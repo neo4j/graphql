@@ -21,7 +21,7 @@ import { generate } from "randomstring";
 import createAuthAndParams from "./create-auth-and-params";
 import { Neo4jGraphQL } from "../classes";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test";
+import { NodeBuilder } from "../utils/test/builders/node-builder";
 
 describe("createAuthAndParams", () => {
     describe("operations", () => {
@@ -262,14 +262,14 @@ describe("createAuthAndParams", () => {
                 arguments: [],
             };
 
-                const node = new NodeBuilder({
-                    name: "Movie",
-                    primitiveFields: [idField],
-                    auth: {
-                        rules: [{ AND: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }] }],
-                        type: "JWT",
-                    },
-                }).instance();
+            const node = new NodeBuilder({
+                name: "Movie",
+                primitiveFields: [idField],
+                auth: {
+                    rules: [{ AND: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }] }],
+                    type: "JWT",
+                },
+            }).instance();
 
             // @ts-ignore
             const neoSchema: Neo4jGraphQL = {
@@ -610,7 +610,7 @@ describe("createAuthAndParams", () => {
                                     type: "String",
                                     pretty: "String",
                                 },
-                            }
+                            },
                         },
                         otherDirectives: [],
                         arguments: [],

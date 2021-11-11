@@ -65,6 +65,10 @@ function createDeleteAndParams({
                 Object.keys(value).forEach((unionTypeName) => {
                     refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
+            } else if (relationField.interface) {
+                relationField.interface.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
@@ -78,34 +82,41 @@ function createDeleteAndParams({
                 deletes.forEach((d, index) => {
                     const _varName = chainStr
                         ? `${varName}${index}`
-                        : `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
+                        : `${varName}_${key}${
+                              relationField.union || relationField.interface ? `_${refNode.name}` : ""
+                          }${index}`;
                     const relationshipVariable = `${_varName}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
+
+                    const whereStrs: string[] = [];
+                    if (d.where) {
+                        try {
+                            const whereAndParams = createConnectionWhereAndParams({
+                                nodeVariable: _varName,
+                                whereInput: d.where,
+                                node: refNode,
+                                context,
+                                relationshipVariable,
+                                relationship,
+                                parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
+                                    relationField.union ? `.${refNode.name}` : ""
+                                }${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
+                            });
+                            if (whereAndParams[0]) {
+                                whereStrs.push(whereAndParams[0]);
+                            }
+                        } catch {
+                            return;
+                        }
+                    }
 
                     if (withVars) {
                         res.strs.push(`WITH ${withVars.join(", ")}`);
                     }
 
-                    const labels = refNode.labelString;
+                    const labels = refNode.getLabelString(context);
                     res.strs.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`);
 
-                    const whereStrs: string[] = [];
-                    if (d.where) {
-                        const whereAndParams = createConnectionWhereAndParams({
-                            nodeVariable: _varName,
-                            whereInput: d.where,
-                            node: refNode,
-                            context,
-                            relationshipVariable,
-                            relationship,
-                            parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
-                                relationField.union ? `.${refNode.name}` : ""
-                            }${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
-                        });
-                        if (whereAndParams[0]) {
-                            whereStrs.push(whereAndParams[0]);
-                        }
-                    }
                     const whereAuth = createAuthAndParams({
                         operation: "DELETE",
                         entity: refNode,
@@ -137,10 +148,29 @@ function createDeleteAndParams({
                     }
 
                     if (d.delete) {
+                        const nestedDeleteInput = Object.entries(d.delete)
+                            .filter(([k]) => {
+                                if (k === "_on") {
+                                    return false;
+                                }
+
+                                if (relationField.interface && d.delete?._on?.[refNode.name]) {
+                                    const onArray = Array.isArray(d.delete._on[refNode.name])
+                                        ? d.delete._on[refNode.name]
+                                        : [d.delete._on[refNode.name]];
+                                    if (onArray.some((onKey) => Object.prototype.hasOwnProperty.call(onKey, k))) {
+                                        return false;
+                                    }
+                                }
+
+                                return true;
+                            })
+                            .reduce((d1, [k1, v1]) => ({ ...d1, [k1]: v1 }), {});
+
                         const deleteAndParams = createDeleteAndParams({
                             context,
                             node: refNode,
-                            deleteInput: d.delete,
+                            deleteInput: nestedDeleteInput,
                             varName: _varName,
                             withVars: [...withVars, _varName],
                             parentVar: _varName,
@@ -151,12 +181,37 @@ function createDeleteAndParams({
                         });
                         res.strs.push(deleteAndParams[0]);
                         res.params = { ...res.params, ...deleteAndParams[1] };
+
+                        if (relationField.interface && d.delete?._on?.[refNode.name]) {
+                            const onDeletes = Array.isArray(d.delete._on[refNode.name])
+                                ? d.delete._on[refNode.name]
+                                : [d.delete._on[refNode.name]];
+
+                            onDeletes.forEach((onDelete, onDeleteIndex) => {
+                                const onDeleteAndParams = createDeleteAndParams({
+                                    context,
+                                    node: refNode,
+                                    deleteInput: onDelete,
+                                    varName: _varName,
+                                    withVars: [...withVars, _varName],
+                                    parentVar: _varName,
+                                    parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
+                                        relationField.union ? `.${refNode.name}` : ""
+                                    }${relationField.typeMeta.array ? `[${index}]` : ""}.delete._on.${
+                                        refNode.name
+                                    }[${onDeleteIndex}]`,
+                                    recursing: false,
+                                });
+                                res.strs.push(onDeleteAndParams[0]);
+                                res.params = { ...res.params, ...onDeleteAndParams[1] };
+                            });
+                        }
                     }
 
-                    res.strs.push(`
-                    FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END |
-                        DETACH DELETE ${_varName}
-                    )`);
+                    res.strs.push(
+                        `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`].join(", ")}`
+                    );
+                    res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
                 });
             });
 

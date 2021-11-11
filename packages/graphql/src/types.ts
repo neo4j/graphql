@@ -65,6 +65,16 @@ export type Auth = {
     type: "JWT";
 };
 
+export type FullTextIndex = {
+    name: string;
+    fields: string[];
+    defaultThreshold?: number;
+};
+
+export type FullText = {
+    indexes: FullTextIndex[];
+};
+
 /**
  * Metadata about a field.type on either
  * FieldDefinitionNode or InputValueDefinitionNode.
@@ -88,6 +98,11 @@ export interface TypeMeta {
             pretty: string;
         };
     };
+    arrayTypeRequired?: boolean;
+}
+
+export interface Unique {
+    constraintName: string;
 }
 
 /**
@@ -105,6 +120,7 @@ export interface BaseField {
     writeonly?: boolean;
     ignored?: boolean;
     dbPropertyName?: string;
+    unique?: Unique;
 }
 
 /**
@@ -113,8 +129,11 @@ export interface BaseField {
 export interface RelationField extends BaseField {
     direction: "OUT" | "IN";
     type: string;
+    connectionPrefix?: string;
+    inherited: boolean;
     properties?: string;
     union?: UnionField;
+    interface?: InterfaceField;
 }
 
 export interface ConnectionField extends BaseField {
@@ -151,7 +170,9 @@ export interface UnionField extends BaseField {
     nodes?: string[];
 }
 
-export type InterfaceField = BaseField;
+export interface InterfaceField extends BaseField {
+    implementations?: string[];
+}
 
 export type ObjectField = BaseField;
 
@@ -206,6 +227,11 @@ export interface ConnectionWhereArg {
     edge_NOT?: GraphQLWhereArg;
     AND?: ConnectionWhereArg[];
     OR?: ConnectionWhereArg[];
+}
+
+export interface InterfaceWhereArg {
+    _on?: GraphQLWhereArg[];
+    [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
 }
 
 export type AuthOperations = "CREATE" | "READ" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT";

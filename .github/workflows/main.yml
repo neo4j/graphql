@@ -173,17 +173,20 @@ jobs:
         neo4j-version:
           - 4.1.5
           - 4.1
+          - 4.2.9
           - 4.2
+          - 4.3.2
           - 4.3
 
     runs-on: ubuntu-latest
 
     services:
       neo4j:
-        image: neo4j:${{ matrix.neo4j-version }}
+        image: neo4j:${{ matrix.neo4j-version }}-enterprise
         env:
           NEO4J_AUTH: neo4j/testpassword
           NEO4JLABS_PLUGINS: '["apoc"]'
+          NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
         ports:
           - 7687:7687
 

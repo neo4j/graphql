@@ -33,10 +33,26 @@ import * as scalars from "../scalars";
 import * as enums from "./enums";
 import * as directives from "./directives";
 import * as point from "../point";
+import { RESERVED_TYPE_NAMES } from "../../constants";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
         .filter((definition) => {
+            if (
+                definition.kind === "ObjectTypeDefinition" ||
+                definition.kind === "ScalarTypeDefinition" ||
+                definition.kind === "InterfaceTypeDefinition" ||
+                definition.kind === "UnionTypeDefinition" ||
+                definition.kind === "EnumTypeDefinition" ||
+                definition.kind === "InputObjectTypeDefinition"
+            ) {
+                RESERVED_TYPE_NAMES.forEach((reservedName) => {
+                    if (reservedName.regex.test(definition.name.value)) {
+                        throw new Error(reservedName.error);
+                    }
+                });
+            }
+
             if (definition.kind === "ObjectTypeDefinition") {
                 if (!["Query", "Mutation", "Subscription"].includes(definition.name.value)) {
                     return true;
@@ -61,12 +77,16 @@ function filterDocument(document: DocumentNode): DocumentNode {
     const filterInputTypes = (fields: readonly InputValueDefinitionNode[] | undefined) => {
         return fields?.filter((f) => {
             const type = getArgumentType(f.type);
-            const match = /(?<nodeName>.+)(?:CreateInput|Sort|UpdateInput|Where)/gm.exec(type);
-            if (match?.groups?.nodeName) {
-                if (nodeNames.includes(match.groups.nodeName)) {
+
+            const nodeMatch = /(?<nodeName>.+)(?:ConnectInput|ConnectWhere|CreateInput|DeleteInput|DisconnectInput|Options|RelationInput|Sort|UpdateInput|Where)/gm.exec(
+                type
+            );
+            if (nodeMatch?.groups?.nodeName) {
+                if (nodeNames.includes(nodeMatch.groups.nodeName)) {
                     return false;
                 }
             }
+
             return true;
         });
     };

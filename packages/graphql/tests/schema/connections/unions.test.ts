@@ -290,6 +290,7 @@ describe("Unions", () => {
 
             type Book {
               author(options: AuthorOptions, where: AuthorWhere): [Author!]!
+              authorAggregate(where: AuthorWhere): BookAuthorAuthorAggregationSelection
               authorConnection(after: String, first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
               title: String!
             }
@@ -309,6 +310,20 @@ describe("Unions", () => {
               count_LTE: Int
               edge: BookAuthorEdgeAggregationWhereInput
               node: BookAuthorNodeAggregationWhereInput
+            }
+
+            type BookAuthorAuthorAggregationSelection {
+              count: Int!
+              edge: BookAuthorAuthorEdgeAggregateSelection
+              node: BookAuthorAuthorNodeAggregateSelection
+            }
+
+            type BookAuthorAuthorEdgeAggregateSelection {
+              words: IntAggregateSelection!
+            }
+
+            type BookAuthorAuthorNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input BookAuthorConnectFieldInput {
@@ -516,8 +531,15 @@ describe("Unions", () => {
               relationshipsDeleted: Int!
             }
 
+            type IntAggregateSelection {
+              average: Float!
+              max: Int!
+              min: Int!
+            }
+
             type Journal {
               author(options: AuthorOptions, where: AuthorWhere): [Author!]!
+              authorAggregate(where: AuthorWhere): JournalAuthorAuthorAggregationSelection
               authorConnection(after: String, first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
               subject: String!
             }
@@ -537,6 +559,20 @@ describe("Unions", () => {
               count_LTE: Int
               edge: JournalAuthorEdgeAggregationWhereInput
               node: JournalAuthorNodeAggregationWhereInput
+            }
+
+            type JournalAuthorAuthorAggregationSelection {
+              count: Int!
+              edge: JournalAuthorAuthorEdgeAggregateSelection
+              node: JournalAuthorAuthorNodeAggregateSelection
+            }
+
+            type JournalAuthorAuthorEdgeAggregateSelection {
+              words: IntAggregateSelection!
+            }
+
+            type JournalAuthorAuthorNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input JournalAuthorConnectFieldInput {

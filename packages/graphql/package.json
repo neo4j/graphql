@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql",
-    "version": "2.2.0",
+    "version": "2.4.0",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
@@ -33,8 +33,7 @@
         "build": "tsc --project src/",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
-        "start": "run-s build:clean watch",
-        "conditional-publish": "(node ./scripts/check-version.js && npm publish --access=public) ; exit 0"
+        "start": "run-s build:clean watch"
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
@@ -72,6 +71,7 @@
         "graphql-parse-resolve-info": "^4.12.0",
         "graphql-relay": "^0.8.0",
         "jsonwebtoken": "^8.5.1",
+        "jwks-rsa": "^2.0.5",
         "pluralize": "^8.0.0",
         "semver": "^7.3.5"
     },

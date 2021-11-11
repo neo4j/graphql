@@ -29,12 +29,12 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
     const typeDefs = gql`
         type Video {
             id: ID! @id(autogenerate: false)
-            categories: [Category!]! @relationship(type: "IS_CATEGORIZED_AS", direction: OUT)
+            categories: [Category] @relationship(type: "IS_CATEGORIZED_AS", direction: OUT)
         }
 
         type Category {
             id: ID! @id(autogenerate: false)
-            videos: [Video!]! @relationship(type: "IS_CATEGORIZED_AS", direction: IN)
+            videos: [Video] @relationship(type: "IS_CATEGORIZED_AS", direction: IN)
         }
     `;
 
@@ -67,6 +67,73 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
                 categories: [
                     {
                         disconnect: [
+                            {
+                                where: {
+                                    node: { id_IN: [catIDs[0], catIDs[1]] },
+                                },
+                            },
+                        ],
+                        create: [{ node: { id: catIDs[2] } }],
+                    },
+                ],
+            },
+        };
+
+        const mutation = `
+            mutation updateVideos($id: ID!, $fields: VideoUpdateInput!) {
+                updateVideos(where: {id: $id}, update: $fields) {
+                    videos {
+                        id
+                        categories {
+                            id
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const mutationResult = await graphql({
+                schema: neoSchema.schema,
+                source: mutation,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues,
+            });
+
+            expect(mutationResult.errors).toBeFalsy();
+
+            expect(mutationResult?.data?.updateVideos?.videos).toHaveLength(1);
+            expect(mutationResult?.data?.updateVideos?.videos[0].id).toEqual(videoID);
+            expect(mutationResult?.data?.updateVideos?.videos[0].categories).toHaveLength(1);
+            expect(mutationResult?.data?.updateVideos?.videos[0].categories[0].id).toEqual(catIDs[2]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should be able to delete 2 nodes while creating one in the same mutation", async () => {
+        const session = driver.session();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const videoID = generate({ charset: "alphabetic" });
+        const catIDs = Array(3)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+
+        await session.run(
+            `CREATE (v:Video {id: $videoID}),
+                (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c0}),
+                (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c1})`,
+            { videoID, c0: catIDs[0], c1: catIDs[1] }
+        );
+
+        const variableValues = {
+            id: videoID,
+            fields: {
+                categories: [
+                    {
+                        delete: [
                             {
                                 where: {
                                     node: { id_IN: [catIDs[0], catIDs[1]] },

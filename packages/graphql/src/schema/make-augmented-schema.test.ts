@@ -28,6 +28,7 @@ import {
     InputObjectTypeDefinitionNode,
 } from "graphql";
 import { pluralize } from "graphql-compose";
+import { gql } from "apollo-server";
 import makeAugmentedSchema from "./make-augmented-schema";
 import { Node } from "../classes";
 import * as constants from "../constants";
@@ -38,7 +39,7 @@ describe("makeAugmentedSchema", () => {
     });
 
     test("should return the correct schema", () => {
-        const typeDefs = `
+        const typeDefs = gql`
             type Actor {
                 name: String
                 movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
@@ -90,24 +91,9 @@ describe("makeAugmentedSchema", () => {
         });
     });
 
-    test("should throw cannot have interface on relationship", () => {
-        const typeDefs = `
-                interface Node {
-                    id: ID
-                }
-
-                type Movie {
-                    title: String!
-                    nodes: [Node] @relationship(type: "NODE", direction: IN)
-                }
-            `;
-
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot have interface on relationship");
-    });
-
     test("should throw cannot auto-generate a non ID field", () => {
-        const typeDefs = `
-            type Movie  {
+        const typeDefs = gql`
+            type Movie {
                 name: String! @id
             }
         `;
@@ -116,42 +102,42 @@ describe("makeAugmentedSchema", () => {
     });
 
     test("should throw cannot auto-generate an array", () => {
-        const typeDefs = `
-                type Movie  {
-                    name: [ID] @id
-                }
-            `;
+        const typeDefs = gql`
+            type Movie {
+                name: [ID] @id
+            }
+        `;
 
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate an array");
     });
 
     test("should throw cannot timestamp on array of DateTime", () => {
-        const typeDefs = `
-                type Movie  {
-                    name: [DateTime] @timestamp(operations: [CREATE])
-                }
-            `;
+        const typeDefs = gql`
+            type Movie {
+                name: [DateTime] @timestamp(operations: [CREATE])
+            }
+        `;
 
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate an array");
     });
 
     test("should throw cannot have auth directive on a relationship", () => {
-        const typeDefs = `
-                type Movie {
-                    movie: Movie @relationship(type: "NODE", direction: OUT) @auth(rules: [{operations: [CREATE]}])
-                }
-            `;
+        const typeDefs = gql`
+            type Movie {
+                movie: Movie @relationship(type: "NODE", direction: OUT) @auth(rules: [{ operations: [CREATE] }])
+            }
+        `;
 
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot have auth directive on a relationship");
     });
 
     describe("REGEX", () => {
         test("should remove the MATCHES filter by default", () => {
-            const typeDefs = `
-                    type Movie {
-                        name: String
-                    }
-                `;
+            const typeDefs = gql`
+                type Movie {
+                    name: String
+                }
+            `;
 
             const neoSchema = makeAugmentedSchema({ typeDefs });
 
@@ -167,11 +153,11 @@ describe("makeAugmentedSchema", () => {
         });
 
         test("should add the MATCHES filter when NEO4J_GRAPHQL_ENABLE_REGEX is set", () => {
-            const typeDefs = `
-                    type User {
-                        name: String
-                    }
-                `;
+            const typeDefs = gql`
+                type User {
+                    name: String
+                }
+            `;
 
             const neoSchema = makeAugmentedSchema({ typeDefs }, { enableRegex: true });
 
@@ -191,13 +177,13 @@ describe("makeAugmentedSchema", () => {
         test("158", () => {
             // https://github.com/neo4j/graphql/issues/158
 
-            const typeDefs = `
+            const typeDefs = gql`
                 type Movie {
                     createdAt: DateTime
                 }
 
                 type Query {
-                  movies: [Movie] @cypher(statement: "")
+                    movies: [Movie] @cypher(statement: "")
                 }
             `;
 
@@ -211,7 +197,7 @@ describe("makeAugmentedSchema", () => {
     });
 
     test("should throw error if @auth is used on relationship properties interface", () => {
-        const typeDefs = `
+        const typeDefs = gql`
             type Movie {
                 actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -231,7 +217,7 @@ describe("makeAugmentedSchema", () => {
     });
 
     test("should throw error if @cypher is used on relationship properties interface", () => {
-        const typeDefs = `
+        const typeDefs = gql`
             type Movie {
                 actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -249,7 +235,7 @@ describe("makeAugmentedSchema", () => {
     });
 
     test("should throw error if @auth is used on relationship property", () => {
-        const typeDefs = `
+        const typeDefs = gql`
             type Movie {
                 actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -267,7 +253,7 @@ describe("makeAugmentedSchema", () => {
     });
 
     test("should throw error if @relationship is used on relationship property", () => {
-        const typeDefs = `
+        const typeDefs = gql`
             type Movie {
                 actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -287,7 +273,7 @@ describe("makeAugmentedSchema", () => {
     });
 
     test("should throw error if @cypher is used on relationship property", () => {
-        const typeDefs = `
+        const typeDefs = gql`
             type Movie {
                 actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -308,111 +294,10 @@ describe("makeAugmentedSchema", () => {
     });
 
     describe("Reserved Names", () => {
-        describe("Node", () => {
-            test("should throw when using PageInfo as node name", () => {
-                const typeDefs = `
-                    type PageInfo {
-                        id: ID
-                    }
-                `;
-
-                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "PageInfo") as string[])[1]
-                );
-            });
-
-            test("should throw when using Connection in a node name", () => {
-                const typeDefs = `
-                    type NodeConnection {
-                        id: ID
-                    }
-                `;
-
-                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "Connection") as string[])[1]
-                );
-            });
-
-            test("should throw when using Node as node name", () => {
-                const typeDefs = `
-                    type Node {
-                        id: ID
-                    }
-                `;
-
-                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "Node") as string[])[1]
-                );
-            });
-        });
-
         describe("Interface", () => {
-            test("should throw when using PageInfo as relationship properties interface name", () => {
-                const typeDefs = `
-                    type Movie {
-                        id: ID
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "PageInfo")
-                    }
-
-                    interface PageInfo {
-                        screenTime: Int
-                    }
-
-                    type Actor {
-                        name: String
-                    }
-                `;
-
-                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "PageInfo") as string[])[1]
-                );
-            });
-
-            test("should throw when using Connection in a properties interface name", () => {
-                const typeDefs = `
-                    type Movie {
-                        id: ID
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "NodeConnection")
-                    }
-
-                    interface NodeConnection {
-                        screenTime: Int
-                    }
-
-                    type Actor {
-                        name: String
-                    }
-                `;
-
-                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "Connection") as string[])[1]
-                );
-            });
-
-            test("should throw when using Node as relationship properties interface name", () => {
-                const typeDefs = `
-                    type Movie {
-                        id: ID
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "Node")
-                    }
-
-                    interface Node {
-                        screenTime: Int
-                    }
-
-                    type Actor {
-                        name: String
-                    }
-                `;
-
-                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "Node") as string[])[1]
-                );
-            });
-
             describe("Fields", () => {
                 test("should throw when using 'node' as a relationship property", () => {
-                    const typeDefs = `
+                    const typeDefs = gql`
                         type Movie {
                             id: ID
                             actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -433,7 +318,7 @@ describe("makeAugmentedSchema", () => {
                 });
 
                 test("should throw when using 'cursor' as a relationship property", () => {
-                    const typeDefs = `
+                    const typeDefs = gql`
                         type Movie {
                             id: ID
                             actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -453,6 +338,66 @@ describe("makeAugmentedSchema", () => {
                     );
                 });
             });
+        });
+    });
+
+    describe("@unique", () => {
+        test("should throw error if @unique is used on relationship property", () => {
+            const typeDefs = gql`
+                type Movie {
+                    actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                }
+
+                type Actor {
+                    name: String
+                }
+
+                interface ActedIn {
+                    id: ID @unique
+                    roles: [String]
+                }
+            `;
+
+            expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                "@unique directive cannot be used on interface type fields: ActedIn.id"
+            );
+        });
+
+        test("should throw error if @unique is used on interface field", () => {
+            const typeDefs = gql`
+                interface Production {
+                    id: ID! @unique
+                    title: String!
+                }
+
+                type Movie implements Production {
+                    id: ID!
+                    title: String!
+                }
+            `;
+
+            expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                "@unique directive cannot be used on interface type fields: Production.id"
+            );
+        });
+    });
+
+    describe("Directive combinations", () => {
+        test("@unique can't be used with @relationship", () => {
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT) @unique
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                "Directive @unique cannot be used in combination with @relationship"
+            );
         });
     });
 });

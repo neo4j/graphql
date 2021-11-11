@@ -17,18 +17,20 @@
  * limitations under the License.
  */
 
+import { UnionTypeDefinitionNode } from "graphql/language/ast";
 import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createDatetimeElement from "./projection/elements/create-datetime-element";
+import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
 // eslint-disable-next-line import/no-cycle
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
+import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 
 interface Res {
     projection: string[];
@@ -39,6 +41,7 @@ interface Res {
 interface ProjectionMeta {
     authValidateStrs?: string[];
     connectionFields?: ResolveTree[];
+    interfaceFields?: ResolveTree[];
 }
 
 function createNodeWhereAndParams({
@@ -169,8 +172,12 @@ function createProjectionAndParams({
         }
 
         if (cypherField) {
-            let projectionAuthStr = "";
+            const projectionAuthStrs: string[] = [];
+            const unionWheres: string[] = [];
             let projectionStr = "";
+
+            const isArray = cypherField.typeMeta.array;
+
             const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
                 cypherField.typeMeta.name
             );
@@ -182,6 +189,11 @@ function createProjectionAndParams({
             );
 
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
+            const unions = context.neoSchema.document.definitions.filter(
+                (x) => x.kind === "UnionTypeDefinition"
+            ) as UnionTypeDefinitionNode[];
+            const referenceUnion = unions.find((u) => u.name.value === cypherField.typeMeta.name);
+
             if (referenceNode) {
                 const recurse = createProjectionAndParams({
                     fieldsByTypeName: fieldFields,
@@ -190,11 +202,63 @@ function createProjectionAndParams({
                     varName: `${varName}_${key}`,
                     chainStr: param,
                 });
-                [projectionStr] = recurse;
-                res.params = { ...res.params, ...recurse[1] };
-                if (recurse[2]?.authValidateStrs?.length) {
-                    projectionAuthStr = recurse[2].authValidateStrs.join(" AND ");
+                const [str, p, meta] = recurse;
+                projectionStr = str;
+                res.params = { ...res.params, ...p };
+                if (meta?.authValidateStrs?.length) {
+                    projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
                 }
+            }
+
+            if (referenceUnion) {
+                const headStrs: string[] = [];
+                const referencedNodes =
+                    referenceUnion?.types
+                        ?.map((u) => context.neoSchema.nodes.find((n) => n.name === u.name.value))
+                        ?.filter((b) => b !== undefined)
+                        ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? "")) || [];
+
+                referencedNodes.forEach((refNode) => {
+                    if (refNode) {
+                        const labelsStatements = refNode
+                            .getLabels(context)
+                            .map((label) => `"${label}" IN labels(${varName}_${key})`);
+                        unionWheres.push(`(${labelsStatements.join("AND")})`);
+
+                        const innerHeadStr: string[] = [
+                            `[ ${varName}_${key} IN [${varName}_${key}] WHERE (${labelsStatements.join(" AND ")})`,
+                        ];
+
+                        if (fieldFields[refNode.name]) {
+                            const [str, p, meta] = createProjectionAndParams({
+                                fieldsByTypeName: fieldFields,
+                                node: refNode,
+                                context,
+                                varName: `${varName}_${key}`,
+                            });
+
+                            innerHeadStr.push(
+                                [
+                                    `| ${varName}_${key} { __resolveType: "${refNode.name}", `,
+                                    ...str.replace("{", "").split(""),
+                                ].join("")
+                            );
+                            res.params = { ...res.params, ...p };
+
+                            if (meta?.authValidateStrs?.length) {
+                                projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
+                            }
+                        } else {
+                            innerHeadStr.push(`| ${varName}_${key} { __resolveType: "${refNode.name}" } `);
+                        }
+
+                        innerHeadStr.push(`]`);
+
+                        headStrs.push(innerHeadStr.join(" "));
+                    }
+                });
+
+                projectionStr = `${!isArray ? "head(" : ""} ${headStrs.join(" + ")} ${!isArray ? ")" : ""}`;
             }
 
             const initApocParamsStrs = [
@@ -219,19 +283,20 @@ function createProjectionAndParams({
             };
 
             const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
-            const apocWhere = `${
-                projectionAuthStr
-                    ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStr}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-                    : ""
-            }`;
+            const apocWhere = projectionAuthStrs.length
+                ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStrs.join(
+                      " AND "
+                  )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                : "";
+            const unionWhere = unionWheres.length ? `WHERE ${unionWheres.join(" OR ")}` : "";
             const apocParamsStr = `{this: ${chainStr || varName}${
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}`;
             const apocStr = `${!isPrimitive && !isEnum && !isScalar ? `${param} IN` : ""} apoc.cypher.runFirstColumn("${
                 cypherField.statement
             }", ${apocParamsStr}, ${expectMultipleValues})${apocWhere ? ` ${apocWhere}` : ""}${
-                projectionStr ? ` | ${param} ${projectionStr}` : ""
-            }`;
+                unionWhere ? ` ${unionWhere} ` : ""
+            }${projectionStr ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""}`;
 
             if (isPrimitive || isEnum || isScalar) {
                 res.projection.push(`${key}: ${apocStr}`);
@@ -256,9 +321,28 @@ function createProjectionAndParams({
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
             const outStr = relationField.direction === "OUT" ? "->" : "-";
-            const labels = referenceNode?.labelString;
+            const labels = referenceNode?.getLabelString(context);
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
+
+            if (relationField.interface) {
+                if (!res.meta.interfaceFields) {
+                    res.meta.interfaceFields = [];
+                }
+
+                const f = field;
+
+                res.meta.interfaceFields.push(f);
+
+                let offsetLimitStr = "";
+                if (optionsInput) {
+                    offsetLimitStr = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
+                }
+
+                res.projection.push(`${f.alias}: collect(${f.alias})${offsetLimitStr}`);
+
+                return res;
+            }
 
             if (relationField.union) {
                 const referenceNodes = context.neoSchema.nodes.filter(
@@ -273,7 +357,9 @@ function createProjectionAndParams({
                     })${inStr}${relTypeStr}${outStr}(${param})`,
                     `WHERE ${referenceNodes
                         .map((x) => {
-                            const labelsStatements = x.labels.map((label) => `"${label}" IN labels(${param})`);
+                            const labelsStatements = x
+                                .getLabels(context)
+                                .map((label) => `"${label}" IN labels(${param})`);
                             return `(${labelsStatements.join(" AND ")})`;
                         })
                         .join(" OR ")}`,
@@ -281,12 +367,24 @@ function createProjectionAndParams({
                 ];
 
                 const headStrs: string[] = referenceNodes.map((refNode) => {
-                    const labelsStatements = refNode.labels.map((label) => `"${label}" IN labels(${param})`);
+                    const labelsStatements = refNode
+                        .getLabels(context)
+                        .map((label) => `"${label}" IN labels(${param})`);
                     const innerHeadStr: string[] = [
                         `[ ${param} IN [${param}] WHERE (${labelsStatements.join(" AND ")})`,
                     ];
 
-                    if (field.fieldsByTypeName[refNode.name]) {
+                    // Extract interface names implemented by reference node
+                    const refNodeInterfaceNames = refNode.interfaces.map(
+                        (implementedInterface) => implementedInterface.name.value
+                    );
+
+                    // Determine if there are any fields to project
+                    const hasFields = Object.keys(field.fieldsByTypeName).some((fieldByTypeName) =>
+                        [refNode.name, ...refNodeInterfaceNames].includes(fieldByTypeName)
+                    );
+
+                    if (hasFields) {
                         const recurse = createProjectionAndParams({
                             fieldsByTypeName: field.fieldsByTypeName,
                             node: refNode,
@@ -399,6 +497,19 @@ function createProjectionAndParams({
 
             res.projection.push(nestedQuery);
 
+            return res;
+        }
+
+        const aggregationFieldProjection = createFieldAggregation({
+            context,
+            nodeLabel: chainStr || varName,
+            node,
+            field,
+        });
+
+        if (aggregationFieldProjection) {
+            res.projection.push(`${key}: ${aggregationFieldProjection.query}`);
+            res.params = { ...res.params, ...aggregationFieldProjection.params };
             return res;
         }
 

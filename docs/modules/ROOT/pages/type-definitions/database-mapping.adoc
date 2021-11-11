@@ -93,6 +93,53 @@ MATCH (this: Film)
 RETURN this { .title } as this
 ----
 
+===== Using `$jwt` and `$context`
+In some cases, we may want to generate dynamic labels depending on the user requesting. In these cases, we can use the variable `$jwt` to define a custom label define in the JWT (similarly to how it is used in the xref::auth/index.adoc[`@auth` directive]):
+
+[source, graphql, indent=0]
+----
+type User @node(label: "$jwt.username") {
+    name: String!
+}
+----
+
+The following query will yield a different cypher query depending on the user JWT:
+
+[source, graphql, indent=0]
+----
+{
+  users {
+    name
+  }
+}
+----
+
+Assuming an user with the value `"username": "arthur"` in JWT, the Cypher query will look like:
+
+[source, cypher, indent=0]
+----
+MATCH (this:arthur)
+RETURN this { .name } as this
+----
+
+Similarly, context values can be passed directly:
+
+[source, graphql, indent=0]
+----
+type User @node(label: "$context.appId") {
+    name: String!
+}
+----
+
+When running the server with Apollo:
+[source, js, indent=0]
+----
+new ApolloServer({
+    schema: neoSchema.schema,
+    context: ({ req }) => ({ req, appId: "myApp" }),
+});
+----
+
 ==== `additionalLabels`
 
 `additionalLabels` lets you define extra Neo4j labels that need to exist on the node for that GraphQL type.
@@ -137,6 +184,14 @@ In this case, the resulting Cypher query will use the labels `ActorDB` and `Pers
 ----
 MATCH (this:ActorDB:Person)
 RETURN this { .name } as this
+----
+<<#_using_jwt_and_context,Context and JWT variables>> can be used with `additionalLabels` in the same fashion as in `label`:
+
+[source, graphql, indent=0]
+----
+type User @node(additionalLabels: ["$jwt.username"]) {
+    name: String!
+}
 ----
 
 ==== `plural`

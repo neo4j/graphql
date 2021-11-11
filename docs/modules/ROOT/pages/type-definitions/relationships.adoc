@@ -97,7 +97,7 @@ mutation CreateMovieAndDirector {
                 create: {
                     node: {
                         name: "Robert Zemeckis"
-                        born: 1951s
+                        born: 1951
                     }
                 }
             }

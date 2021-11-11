@@ -23,8 +23,10 @@ type CypherMeta = {
     statement: string;
 };
 
-function getCypherMeta(field: FieldDefinitionNode): CypherMeta | undefined {
-    const directive = field.directives?.find((x) => x.name.value === "cypher");
+function getCypherMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinitionNode): CypherMeta | undefined {
+    const directive =
+        field.directives?.find((x) => x.name.value === "cypher") ||
+        interfaceField?.directives?.find((x) => x.name.value === "cypher");
     if (!directive) {
         return undefined;
     }

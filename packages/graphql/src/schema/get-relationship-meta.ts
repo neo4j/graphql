@@ -25,8 +25,13 @@ type RelationshipMeta = {
     properties?: string;
 };
 
-function getRelationshipMeta(field: FieldDefinitionNode): RelationshipMeta | undefined {
-    const directive = field.directives?.find((x) => x.name.value === "relationship");
+function getRelationshipMeta(
+    field: FieldDefinitionNode,
+    interfaceField?: FieldDefinitionNode
+): RelationshipMeta | undefined {
+    const directive =
+        field.directives?.find((x) => x.name.value === "relationship") ||
+        interfaceField?.directives?.find((x) => x.name.value === "relationship");
     if (!directive) {
         return undefined;
     }

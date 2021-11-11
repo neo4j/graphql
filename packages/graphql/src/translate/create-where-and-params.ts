@@ -109,7 +109,7 @@ function createWhereAndParams({
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
 
-                const labels = refNode.labelString;
+                const labels = refNode.getLabelString(context);
                 if (value === null) {
                     res.clauses.push(`EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
 
@@ -141,58 +141,66 @@ function createWhereAndParams({
             }
 
             if (connectionField) {
-                const refNode = context.neoSchema.nodes.find(
-                    (x) => x.name === connectionField.relationship.typeMeta.name
-                ) as Node;
-                const relationship = context.neoSchema.relationships.find(
-                    (x) => x.name === connectionField.relationshipTypeName
-                ) as Relationship;
+                let nodeEntries: Record<string, any> = value;
 
-                const relationshipVariable = `${param}_${connectionField.relationshipTypeName}`;
-
-                const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
-                const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
-
-                const labels = refNode.labelString;
-
-                if (value === null) {
-                    res.clauses.push(
-                        `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`
-                    );
-                    return res;
+                if (!connectionField?.relationship.union) {
+                    nodeEntries = { [connectionField.relationship.typeMeta.name]: value };
                 }
 
-                const collectedMap = `${param}_map`;
+                Object.entries(nodeEntries).forEach((entry) => {
+                    const refNode = context.neoSchema.nodes.find((x) => x.name === entry[0]) as Node;
+                    const relationship = context.neoSchema.relationships.find(
+                        (x) => x.name === connectionField.relationshipTypeName
+                    ) as Relationship;
 
-                let resultStr = [
-                    `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
-                    `AND NONE(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${param}${labels})`,
-                    ` | { node: ${param}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
-                ].join(" ");
+                    const thisParam = `${param}_${refNode.name}`;
+                    const relationshipVariable = `${thisParam}_${connectionField.relationshipTypeName}`;
+                    const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
+                    const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
+                    const labels = refNode.getLabelString(context);
+                    const collectedMap = `${thisParam}_map`;
 
-                const connectionWhere = createConnectionWhereAndParams({
-                    whereInput: value,
-                    context,
-                    node: refNode,
-                    nodeVariable: `${collectedMap}.node`,
-                    relationship,
-                    relationshipVariable: `${collectedMap}.relationship`,
-                    parameterPrefix: `${varName}_${context.resolveTree.name}.where.${key}`,
-                });
+                    if (value === null) {
+                        res.clauses.push(
+                            `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`
+                        );
+                        return res;
+                    }
 
-                resultStr += connectionWhere[0];
-                resultStr += ")"; // close ALL
-                res.clauses.push(resultStr);
-                res.params = {
-                    ...res.params,
-                    ...(recursing
+                    let resultStr = [
+                        `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
+                        `AND NONE(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
+                        ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+                    ].join(" ");
+
+                    const connectionWhere = createConnectionWhereAndParams({
+                        whereInput: entry[1] as any,
+                        context,
+                        node: refNode,
+                        nodeVariable: `${collectedMap}.node`,
+                        relationship,
+                        relationshipVariable: `${collectedMap}.relationship`,
+                        parameterPrefix: `${varName}_${context.resolveTree.name}.where.${key}`,
+                    });
+
+                    resultStr += connectionWhere[0];
+                    resultStr += ")"; // close ALL
+                    res.clauses.push(resultStr);
+
+                    const resolveTreeParams = recursing
                         ? {
                               [`${varName}_${context.resolveTree.name}`]: {
                                   where: { [`${connectionField.fieldName}_NOT`]: connectionWhere[1] },
                               },
                           }
-                        : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args }),
-                };
+                        : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args };
+
+                    res.params = {
+                        ...res.params,
+                        ...resolveTreeParams,
+                    };
+                });
+
                 return res;
             }
 
@@ -314,7 +322,7 @@ function createWhereAndParams({
             const outStr = equalityRelation.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${equalityRelation.type}]`;
 
-            const labels = refNode.labelString;
+            const labels = refNode.getLabelString(context);
 
             if (value === null) {
                 res.clauses.push(`NOT EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
@@ -348,58 +356,67 @@ function createWhereAndParams({
 
         const equalityConnection = node.connectionFields?.find((x) => key === x.fieldName);
         if (equalityConnection) {
-            const refNode = context.neoSchema.nodes.find(
-                (x) => x.name === equalityConnection.relationship.typeMeta.name
-            ) as Node;
-            const relationship = context.neoSchema.relationships.find(
-                (x) => x.name === equalityConnection.relationshipTypeName
-            ) as Relationship;
+            let nodeEntries: Record<string, any> = value;
 
-            const relationshipVariable = `${param}_${equalityConnection.relationshipTypeName}`;
-
-            const inStr = equalityConnection.relationship.direction === "IN" ? "<-" : "-";
-            const outStr = equalityConnection.relationship.direction === "OUT" ? "->" : "-";
-
-            const labels = refNode.labelString;
-
-            if (value === null) {
-                res.clauses.push(
-                    `NOT EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(${labels}))`
-                );
-                return res;
+            if (!equalityConnection?.relationship.union) {
+                nodeEntries = { [equalityConnection.relationship.typeMeta.name]: value };
             }
 
-            const collectedMap = `${param}_map`;
+            Object.entries(nodeEntries).forEach((entry) => {
+                const refNode = context.neoSchema.nodes.find((x) => x.name === entry[0]) as Node;
+                const relationship = context.neoSchema.relationships.find(
+                    (x) => x.name === equalityConnection.relationshipTypeName
+                ) as Relationship;
 
-            let resultStr = [
-                `EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(${labels}))`,
-                `AND ANY(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${equalityConnection.relationship.type}]${outStr}(${param}${labels})`,
-                ` | { node: ${param}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
-            ].join(" ");
+                const thisParam = `${param}_${refNode.name}`;
+                const relationshipVariable = `${thisParam}_${equalityConnection.relationshipTypeName}`;
+                const inStr = equalityConnection.relationship.direction === "IN" ? "<-" : "-";
+                const outStr = equalityConnection.relationship.direction === "OUT" ? "->" : "-";
+                const labels = refNode.getLabelString(context);
+                const collectedMap = `${thisParam}_map`;
 
-            const connectionWhere = createConnectionWhereAndParams({
-                whereInput: value,
-                context,
-                node: refNode,
-                nodeVariable: `${collectedMap}.node`,
-                relationship,
-                relationshipVariable: `${collectedMap}.relationship`,
-                parameterPrefix: `${varName}_${context.resolveTree.name}.where.${key}`,
-            });
+                if (value === null) {
+                    res.clauses.push(
+                        `NOT EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(${labels}))`
+                    );
 
-            resultStr += connectionWhere[0];
-            resultStr += ")"; // close ALL
-            res.clauses.push(resultStr);
-            res.params = {
-                ...res.params,
-                ...(recursing
+                    return res;
+                }
+
+                let resultStr = [
+                    `EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(${labels}))`,
+                    `AND ANY(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${equalityConnection.relationship.type}]${outStr}(${thisParam}${labels})`,
+                    ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+                ].join(" ");
+
+                const connectionWhere = createConnectionWhereAndParams({
+                    whereInput: entry[1] as any,
+                    context,
+                    node: refNode,
+                    nodeVariable: `${collectedMap}.node`,
+                    relationship,
+                    relationshipVariable: `${collectedMap}.relationship`,
+                    parameterPrefix: `${varName}_${context.resolveTree.name}.where.${key}`,
+                });
+
+                resultStr += connectionWhere[0];
+                resultStr += ")"; // close ALL
+                res.clauses.push(resultStr);
+
+                const resolveTreeParams = recursing
                     ? {
                           [`${varName}_${context.resolveTree.name}`]: {
                               where: { [equalityConnection.fieldName]: connectionWhere[1] },
                           },
                       }
-                    : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args }),
-            };
+                    : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args };
+
+                res.params = {
+                    ...res.params,
+                    ...resolveTreeParams,
+                };
+            });
+
             return res;
         }
 
