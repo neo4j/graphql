@@ -149,6 +149,8 @@ describe("Infer Schema on graphs", () => {
             roles2: ["Palm tree"],
             skill: neo4j.int(4),
             pay: 200.5,
+            str: "String",
+            int: neo4j.int(1),
         };
         // Create some data
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
@@ -157,8 +159,8 @@ describe("Infer Schema on graphs", () => {
                 `CREATE (m:Movie {title: $props.title})
                 CREATE (a:Actor {name: $props.name})
                 CREATE (a2:Actor {name: $props.name2})
-                MERGE (a)-[:ACTED_IN {roles: $props.roles, pay: $props.pay}]->(m)
-                MERGE (a2)-[:ACTED_IN {roles: $props.roles}]->(m)
+                MERGE (a)-[:ACTED_IN {roles: $props.roles, pay: $props.pay, amb: $props.str}]->(m)
+                MERGE (a2)-[:ACTED_IN {roles: $props.roles, amb: $props.int}]->(m)
                 MERGE (a)-[:DIRECTED {skill: $props.skill}]->(m)
                 MERGE (a)<-[:WON_PRIZE_FOR]-(m)
                 `,
