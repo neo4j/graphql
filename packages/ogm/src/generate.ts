@@ -121,11 +121,16 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
     const content: string[] = [`import { SelectionSetNode, DocumentNode } from "graphql";`, output];
 
     const aggregateSelections: any = {};
+    const modeMap: Record<string, string> = {};
 
     options.ogm.neoSchema.nodes.forEach((node) => {
         const pluralized = pluralize(node.name);
         const camelName = camelCase(pluralized);
         const upperCamel = upperFirst(camelName);
+        const modelName = `${node.name}Model`;
+        const hasFulltextArg = Boolean(node.fulltextDirective);
+
+        modeMap[node.name] = modelName;
 
         const aggregationInput = createAggregationInput({
             basedOnSearch: `export type ${node.name}AggregateSelection = {`,
@@ -138,9 +143,10 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
             ${Object.values(aggregationInput[1]).join("\n")}
             ${aggregationInput[0]}
 
-            export declare class ${node.name}Model {
+            export declare class ${modelName} {
                 public find(args: {
                     where?: ${node.name}Where;
+                    ${hasFulltextArg ? `fulltext?: ${node.name}Fulltext;` : ""}
                     options?: ${node.name}Options;
                     selectionSet?: string | DocumentNode | SelectionSetNode;
                     args?: any;
@@ -149,6 +155,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                 }): Promise<${node.name}[]>
                 public count(args: {
                     where?: ${node.name}Where;
+                    ${hasFulltextArg ? `fulltext?: ${node.name}Fulltext;` : ""}
                 }): Promise<number>
                 public create(args: {
                     input: ${node.name}CreateInput[];
@@ -176,6 +183,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                 }): Promise<{ nodesDeleted: number; relationshipsDeleted: number; }>
                 public aggregate(args: {
                     where?: ${node.name}Where;
+                    ${hasFulltextArg ? `fulltext?: ${node.name}Fulltext;` : ""}
                     aggregate: ${node.name}AggregateInput;
                     context?: any;
                     rootValue?: any;
@@ -185,6 +193,14 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
 
         content.push(model);
     });
+
+    content.push(`
+        export interface ModelMap {
+            ${Object.entries(modeMap)
+                .map(([k, v]) => `${k}: ${v}`)
+                .join(";\n")}
+        }
+    `);
 
     const formattedContent = prettier.format(content.join("\n"), { parser: "typescript" });
 

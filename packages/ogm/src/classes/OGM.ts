@@ -23,7 +23,7 @@ import { filterDocument } from "../utils";
 
 export type OGMConstructor = Neo4jGraphQLConstructor;
 
-class OGM {
+class OGM<ModelMap = {}> {
     public models: Model[];
 
     checkNeo4jCompat: () => Promise<void>;
@@ -63,7 +63,9 @@ class OGM {
         });
     }
 
-    model<M = Model>(name: string): M {
+    model<M extends T extends keyof ModelMap ? ModelMap[T] : Model, T extends keyof ModelMap | string = string>(
+        name: T
+    ): M {
         const found = this.models.find((n) => n.name === name);
 
         if (!found) {

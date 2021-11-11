@@ -216,6 +216,7 @@ describe("generate", () => {
             export declare class UserModel {
               public find(args: {
                 where?: UserWhere;
+
                 options?: UserOptions;
                 selectionSet?: string | DocumentNode | SelectionSetNode;
                 args?: any;
@@ -247,10 +248,264 @@ describe("generate", () => {
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: UserWhere;
+
                 aggregate: UserAggregateInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
+            }
+
+            export interface ModelMap {
+              User: UserModel;
+            }
+            "
+        `);
+    });
+
+    test("should generate simple types of a single node with fulltext directive and return the string", async () => {
+        const typeDefs = `
+            type User {
+                name: String
+            }
+
+            extend type User @fulltext(indexes: [{ name: "UserName", fields: ["name"] }])
+        `;
+
+        const ogm = new OGM({
+            typeDefs,
+            // @ts-ignore
+            driver: {},
+        });
+
+        const generated = (await generate({
+            ogm,
+            noWrite: true,
+        })) as string;
+
+        expect(generated).toMatchInlineSnapshot(`
+            "import { SelectionSetNode, DocumentNode } from \\"graphql\\";
+            export type Maybe<T> = T | null;
+            export type Exact<T extends { [key: string]: unknown }> = {
+              [K in keyof T]: T[K];
+            };
+            export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+              { [SubKey in K]?: Maybe<T[SubKey]> };
+            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+              { [SubKey in K]: Maybe<T[SubKey]> };
+            /** All built-in and custom scalars, mapped to their actual values */
+            export type Scalars = {
+              ID: string;
+              /** The \`String\` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text. */
+              String: string;
+              /** The \`Boolean\` scalar type represents \`true\` or \`false\`. */
+              Boolean: boolean;
+              /** The \`Int\` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. */
+              Int: number;
+              Float: number;
+            };
+
+            export type Query = {
+              __typename?: \\"Query\\";
+              users: Array<User>;
+              usersCount: Scalars[\\"Int\\"];
+              usersAggregate: UserAggregateSelection;
+            };
+
+            export type QueryUsersArgs = {
+              where?: Maybe<UserWhere>;
+              options?: Maybe<UserOptions>;
+              fulltext?: Maybe<UserFulltext>;
+            };
+
+            export type QueryUsersCountArgs = {
+              where?: Maybe<UserWhere>;
+              fulltext?: Maybe<UserFulltext>;
+            };
+
+            export type QueryUsersAggregateArgs = {
+              where?: Maybe<UserWhere>;
+              fulltext?: Maybe<UserFulltext>;
+            };
+
+            export type Mutation = {
+              __typename?: \\"Mutation\\";
+              createUsers: CreateUsersMutationResponse;
+              deleteUsers: DeleteInfo;
+              updateUsers: UpdateUsersMutationResponse;
+            };
+
+            export type MutationCreateUsersArgs = {
+              input: Array<UserCreateInput>;
+            };
+
+            export type MutationDeleteUsersArgs = {
+              where?: Maybe<UserWhere>;
+            };
+
+            export type MutationUpdateUsersArgs = {
+              where?: Maybe<UserWhere>;
+              update?: Maybe<UserUpdateInput>;
+            };
+
+            export enum SortDirection {
+              /** Sort by field values in ascending order. */
+              Asc = \\"ASC\\",
+              /** Sort by field values in descending order. */
+              Desc = \\"DESC\\",
+            }
+
+            export type CreateInfo = {
+              __typename?: \\"CreateInfo\\";
+              bookmark?: Maybe<Scalars[\\"String\\"]>;
+              nodesCreated: Scalars[\\"Int\\"];
+              relationshipsCreated: Scalars[\\"Int\\"];
+            };
+
+            export type CreateUsersMutationResponse = {
+              __typename?: \\"CreateUsersMutationResponse\\";
+              info: CreateInfo;
+              users: Array<User>;
+            };
+
+            export type DeleteInfo = {
+              __typename?: \\"DeleteInfo\\";
+              bookmark?: Maybe<Scalars[\\"String\\"]>;
+              nodesDeleted: Scalars[\\"Int\\"];
+              relationshipsDeleted: Scalars[\\"Int\\"];
+            };
+
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
+              shortest: Scalars[\\"String\\"];
+              longest: Scalars[\\"String\\"];
+            };
+
+            export type UpdateInfo = {
+              __typename?: \\"UpdateInfo\\";
+              bookmark?: Maybe<Scalars[\\"String\\"]>;
+              nodesCreated: Scalars[\\"Int\\"];
+              nodesDeleted: Scalars[\\"Int\\"];
+              relationshipsCreated: Scalars[\\"Int\\"];
+              relationshipsDeleted: Scalars[\\"Int\\"];
+            };
+
+            export type UpdateUsersMutationResponse = {
+              __typename?: \\"UpdateUsersMutationResponse\\";
+              info: UpdateInfo;
+              users: Array<User>;
+            };
+
+            export type User = {
+              __typename?: \\"User\\";
+              name?: Maybe<Scalars[\\"String\\"]>;
+            };
+
+            export type UserAggregateSelection = {
+              __typename?: \\"UserAggregateSelection\\";
+              count: Scalars[\\"Int\\"];
+              name: StringAggregateSelection;
+            };
+
+            export type UserCreateInput = {
+              name?: Maybe<Scalars[\\"String\\"]>;
+            };
+
+            export type UserFulltext = {
+              UserName?: Maybe<UserUserNameFulltext>;
+            };
+
+            export type UserOptions = {
+              /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
+              sort?: Maybe<Array<Maybe<UserSort>>>;
+              limit?: Maybe<Scalars[\\"Int\\"]>;
+              offset?: Maybe<Scalars[\\"Int\\"]>;
+            };
+
+            /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
+            export type UserSort = {
+              name?: Maybe<SortDirection>;
+            };
+
+            export type UserUpdateInput = {
+              name?: Maybe<Scalars[\\"String\\"]>;
+            };
+
+            export type UserUserNameFulltext = {
+              phrase: Scalars[\\"String\\"];
+              score_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
+            };
+
+            export type UserWhere = {
+              OR?: Maybe<Array<UserWhere>>;
+              AND?: Maybe<Array<UserWhere>>;
+              name?: Maybe<Scalars[\\"String\\"]>;
+              name_NOT?: Maybe<Scalars[\\"String\\"]>;
+              name_IN?: Maybe<Array<Maybe<Scalars[\\"String\\"]>>>;
+              name_NOT_IN?: Maybe<Array<Maybe<Scalars[\\"String\\"]>>>;
+              name_CONTAINS?: Maybe<Scalars[\\"String\\"]>;
+              name_NOT_CONTAINS?: Maybe<Scalars[\\"String\\"]>;
+              name_STARTS_WITH?: Maybe<Scalars[\\"String\\"]>;
+              name_NOT_STARTS_WITH?: Maybe<Scalars[\\"String\\"]>;
+              name_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
+              name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
+            };
+
+            export interface StringAggregateInput {
+              shortest?: boolean;
+              longest?: boolean;
+            }
+            export interface UserAggregateInput {
+              count?: boolean;
+              name?: StringAggregateInput;
+            }
+
+            export declare class UserModel {
+              public find(args: {
+                where?: UserWhere;
+                fulltext?: UserFulltext;
+                options?: UserOptions;
+                selectionSet?: string | DocumentNode | SelectionSetNode;
+                args?: any;
+                context?: any;
+                rootValue?: any;
+              }): Promise<User[]>;
+              public count(args: {
+                where?: UserWhere;
+                fulltext?: UserFulltext;
+              }): Promise<number>;
+              public create(args: {
+                input: UserCreateInput[];
+                selectionSet?: string | DocumentNode | SelectionSetNode;
+                args?: any;
+                context?: any;
+                rootValue?: any;
+              }): Promise<CreateUsersMutationResponse>;
+              public update(args: {
+                where?: UserWhere;
+                update?: UserUpdateInput;
+
+                selectionSet?: string | DocumentNode | SelectionSetNode;
+                args?: any;
+                context?: any;
+                rootValue?: any;
+              }): Promise<UpdateUsersMutationResponse>;
+              public delete(args: {
+                where?: UserWhere;
+
+                context?: any;
+                rootValue: any;
+              }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
+              public aggregate(args: {
+                where?: UserWhere;
+                fulltext?: UserFulltext;
+                aggregate: UserAggregateInput;
+                context?: any;
+                rootValue?: any;
+              }): Promise<UserAggregateSelection>;
+            }
+
+            export interface ModelMap {
+              User: UserModel;
             }
             "
         `);
@@ -453,6 +708,7 @@ describe("generate", () => {
             export declare class UserModel {
               public find(args: {
                 where?: UserWhere;
+
                 options?: UserOptions;
                 selectionSet?: string | DocumentNode | SelectionSetNode;
                 args?: any;
@@ -484,10 +740,15 @@ describe("generate", () => {
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: UserWhere;
+
                 aggregate: UserAggregateInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
+            }
+
+            export interface ModelMap {
+              User: UserModel;
             }
             "
         `);
@@ -655,16 +916,28 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
+            export type IntAggregateSelection = {
+              __typename?: \\"IntAggregateSelection\\";
+              max: Scalars[\\"Int\\"];
+              min: Scalars[\\"Int\\"];
+              average: Scalars[\\"Float\\"];
+            };
+
             export type Movie = {
               __typename?: \\"Movie\\";
               title: Scalars[\\"String\\"];
               actors?: Maybe<Array<Maybe<Person>>>;
+              actorsAggregate?: Maybe<MoviePersonActorsAggregationSelection>;
               actorsConnection: MovieActorsConnection;
             };
 
             export type MovieActorsArgs = {
               where?: Maybe<PersonWhere>;
               options?: Maybe<PersonOptions>;
+            };
+
+            export type MovieActorsAggregateArgs = {
+              where?: Maybe<PersonWhere>;
             };
 
             export type MovieActorsConnectionArgs = {
@@ -692,6 +965,23 @@ describe("generate", () => {
               __typename?: \\"MovieAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               title: StringAggregateSelection;
+            };
+
+            export type MoviePersonActorsAggregationSelection = {
+              __typename?: \\"MoviePersonActorsAggregationSelection\\";
+              count: Scalars[\\"Int\\"];
+              node?: Maybe<MoviePersonActorsNodeAggregateSelection>;
+              edge?: Maybe<MoviePersonActorsEdgeAggregateSelection>;
+            };
+
+            export type MoviePersonActorsEdgeAggregateSelection = {
+              __typename?: \\"MoviePersonActorsEdgeAggregateSelection\\";
+              screenTime: IntAggregateSelection;
+            };
+
+            export type MoviePersonActorsNodeAggregateSelection = {
+              __typename?: \\"MoviePersonActorsNodeAggregateSelection\\";
+              name: StringAggregateSelection;
             };
 
             /** Pagination information (Relay) */
@@ -988,6 +1278,7 @@ describe("generate", () => {
             export declare class MovieModel {
               public find(args: {
                 where?: MovieWhere;
+
                 options?: MovieOptions;
                 selectionSet?: string | DocumentNode | SelectionSetNode;
                 args?: any;
@@ -1021,6 +1312,7 @@ describe("generate", () => {
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: MovieWhere;
+
                 aggregate: MovieAggregateInput;
                 context?: any;
                 rootValue?: any;
@@ -1039,6 +1331,7 @@ describe("generate", () => {
             export declare class PersonModel {
               public find(args: {
                 where?: PersonWhere;
+
                 options?: PersonOptions;
                 selectionSet?: string | DocumentNode | SelectionSetNode;
                 args?: any;
@@ -1070,10 +1363,16 @@ describe("generate", () => {
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: PersonWhere;
+
                 aggregate: PersonAggregateInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<PersonAggregateSelection>;
+            }
+
+            export interface ModelMap {
+              Movie: MovieModel;
+              Person: PersonModel;
             }
             "
         `);

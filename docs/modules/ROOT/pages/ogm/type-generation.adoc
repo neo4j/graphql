@@ -17,7 +17,7 @@ Then, once you run this with the variable set, the types will be available and y
 [source, typescript, indent=0]
 ----
 import { OGM, generate } from "@neo4j/graphql-ogm";
-import { MovieModel } from "./ogm-types"; // this file will be auto-generated using 'generate'
+import { ModelMap } from "./ogm-types"; // this file will be auto-generated using 'generate'
 import * as neo4j from "neo4j-driver"
 import * as path from "path"
 
@@ -33,9 +33,10 @@ const driver = neo4j.driver(
     neo4j.auth.basic("admin", "password")
 );
 
-const ogm = new OGM({ typeDefs, driver });
+// Generic is applied on the OGM
+const ogm = new OGM<ModelMap>({ typeDefs, driver });
 
-const Movie = ogm.model<MovieModel>("Movie");
+const Movie = ogm.model("Movie");
 
 async function main() {
     // Only generate types when you make a schema change
@@ -56,13 +57,4 @@ async function main() {
     const [theMatrix] = await Movie.find({ where: { name: "The Matrix" } });
 }
 main()
-----
-
-For each `NODE` in your schema, so for example above is using `Movie`, there will be a `NODEModel` class exported from the specified `outFile`. To get full autocomplete for each model you have, you should pass each generated class as a generic to the `.model` function:
-
-[source, typescript, indent=0]
-----
-import { MovieModel } from "my-auto-generated-file";
-const ogm = new OGM();
-const Movie = ogm.model<MovieModel>("Movie");
 ----
