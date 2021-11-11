@@ -17,12 +17,7 @@
  * limitations under the License.
  */
 
-export function uniqueString(candidate: string, pool: string[]): string {
-    let uniqueStr = candidate;
-    let counter = 2;
-    while (pool.includes(uniqueStr)) {
-        uniqueStr = candidate + String(counter);
-        counter += 1;
-    }
-    return uniqueStr;
+export default function cleanTypeName(typeName: string): string {
+    // :`Type` -> Type
+    return typeName.slice(2, -1);
 }

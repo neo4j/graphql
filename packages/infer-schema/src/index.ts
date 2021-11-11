@@ -19,14 +19,17 @@
 
 import Debug from "debug";
 import { Session } from "neo4j-driver";
-import { NodeDirective } from "./classes/NodeDirective";
+import { NodeDirective } from "./classes/directives/Node";
 import { NodeField } from "./classes/NodeField";
-import { RelationshipDirective } from "./classes/RelationshipDirective";
+import { RelationshipDirective } from "./classes/directives/Relationship";
 import { GraphQLNode } from "./classes/GraphQLNode";
 import { DEBUG_INFER_SCHEMA } from "./constants";
-import { inferRelationshipFieldName } from "./infer-relationship-field-name";
-import { mapNeo4jToGraphQLType } from "./map-neo4j-to-graphql-type";
-import { uniqueString } from "./unique-string";
+import inferRelationshipFieldName from "./utils/infer-relationship-field-name";
+import mapNeo4jToGraphQLType from "./utils/map-neo4j-to-graphql-type";
+import uniqueString from "./utils/unique-string";
+import cleanTypeName from "./utils/clean-type-name";
+import inferRelationshipPropsName from "./utils/infer-relationship-props-name";
+import { RelationshipPropertiesDirective } from "./classes/directives/RelationshipProperties";
 
 const debug = Debug(DEBUG_INFER_SCHEMA);
 
@@ -34,24 +37,27 @@ type NodeMap = {
     [key: string]: GraphQLNode;
 };
 
-type NodeTypePropertiesRecord = {
+type PropertyRecord = {
+    propertyName: string;
+    propertyTypes: string[];
+    mandatory: boolean;
+};
+
+interface NodeTypePropertiesRecord extends PropertyRecord {
     nodeType: string;
     nodeLabels: string[];
-    propertyName: string;
-    propertyTypes: string[];
-    mandatory: boolean;
-};
-type RelationshipTypePropertiesRecord = {
+}
+interface RelationshipTypePropertiesRecord extends PropertyRecord {
     relType: string;
-    propertyName: string;
-    propertyTypes: string[];
-    mandatory: boolean;
-};
+}
+
 type RelationshipRecord = {
     from: string;
     to: string;
     relType: string;
 };
+
+type RelTypeProperties = { relTypeName: string; graphqlTypeName: string };
 
 export async function inferSchema(sessionFactory: () => Session): Promise<string> {
     // Nodes
@@ -67,20 +73,21 @@ export async function inferSchema(sessionFactory: () => Session): Promise<string
 function createRelationshipFields(
     fromTypeName: string,
     toTypeName: string,
-    relType: string
+    relType: string,
+    propertiesTypeName?: string
 ): { fromField: NodeField; toField: NodeField } {
     const fromField = new NodeField(
         inferRelationshipFieldName(relType, fromTypeName, toTypeName, "OUT"),
         `[${toTypeName}]`
     );
-    const fromDirective = new RelationshipDirective(relType, "OUT");
+    const fromDirective = new RelationshipDirective(relType, "OUT", propertiesTypeName);
     fromField.addDirective(fromDirective);
 
     const toField = new NodeField(
         inferRelationshipFieldName(relType, fromTypeName, toTypeName, "IN"),
         `[${fromTypeName}]`
     );
-    const toDirective = new RelationshipDirective(relType, "IN");
+    const toDirective = new RelationshipDirective(relType, "IN", propertiesTypeName);
     toField.addDirective(toDirective);
     return { fromField, toField };
 }
@@ -93,11 +100,14 @@ async function hydrateWithRelationships(nodes: NodeMap, sessionFactory: () => Se
     RETURN *`)
     );
     await relSession.close();
-    const relTypeProperties = typePropsRes.records.map((r) => r.toObject()) as RelationshipTypePropertiesRecord[];
-    const uniqueRelTypes = new Set(relTypeProperties.map((nt) => nt.relType));
+    const relTypePropertiesRecords = typePropsRes.records.map((r) =>
+        r.toObject()
+    ) as RelationshipTypePropertiesRecord[];
+    const uniqueRelTypes = new Set(relTypePropertiesRecords.map((nt) => nt.relType));
     const queries: Promise<typeof typePropsRes>[] = [];
+    const relTypeProperties: { [key: string]: RelTypeProperties } = {};
     uniqueRelTypes.forEach((relType) => {
-        const propertiesRows = relTypeProperties.filter((nt) => nt.relType === relType);
+        const propertiesRows = relTypePropertiesRecords.filter((nt) => nt.relType === relType);
         if (!propertiesRows) {
             return;
         }
@@ -119,8 +129,20 @@ async function hydrateWithRelationships(nodes: NodeMap, sessionFactory: () => Se
         }
 
         queries.push(sessionClosure());
-        // propertiesRows.forEach((row) => {
-        // });
+        const typeOnly = cleanTypeName(relType);
+        const relTypePropertiesFields = createNodeFields(propertiesRows, relType);
+
+        if (relTypePropertiesFields.length) {
+            const relInterfaceName = uniqueString(
+                inferRelationshipPropsName(typeOnly),
+                Object.values(nodes).map((n) => n.typeName)
+            );
+            const relInterfaceNode = new GraphQLNode("interface", relInterfaceName);
+            relInterfaceNode.addDirective(new RelationshipPropertiesDirective());
+            relTypePropertiesFields.forEach((f) => relInterfaceNode.addField(f));
+            relTypeProperties[typeOnly] = { relTypeName: typeOnly, graphqlTypeName: relInterfaceName };
+            nodes[relInterfaceName] = relInterfaceNode;
+        }
     });
     const results = await Promise.all(queries);
     results.forEach((result) => {
@@ -129,9 +151,14 @@ async function hydrateWithRelationships(nodes: NodeMap, sessionFactory: () => Se
             return;
         }
         const { relType } = relationships[0];
-        const typeOnly = relType.slice(2, -1);
+        const typeOnly = cleanTypeName(relType);
         relationships.forEach(({ from, to }) => {
-            const { fromField, toField } = createRelationshipFields(nodes[from].typeName, nodes[to].typeName, typeOnly);
+            const { fromField, toField } = createRelationshipFields(
+                nodes[from].typeName,
+                nodes[to].typeName,
+                typeOnly,
+                relTypeProperties[typeOnly]?.graphqlTypeName
+            );
             nodes[from].addField(fromField);
             nodes[to].addField(toField);
         });
@@ -175,34 +202,43 @@ async function inferNodes(sessionFactory: () => Session): Promise<NodeMap> {
             nodeDirective.addLabel(mainLabel);
         }
         nodeDirective.addAdditionalLabels(nodeLabels.slice(1));
-        node.addDirective(nodeDirective);
+        if (nodeDirective.toString().length) {
+            node.addDirective(nodeDirective);
+        }
 
-        propertiesRows.forEach((propertyRow) => {
-            if (!propertyRow.propertyTypes) {
-                if (debug.enabled) {
-                    debug("%s", `No properties on ${nodeType}. Skipping generation.`);
-                }
-                return;
-            }
-            if (propertyRow.propertyTypes.length > 1) {
-                if (debug.enabled) {
-                    debug(
-                        "%s",
-                        `Ambiguous types on ${nodeType}.${propertyRow.propertyName}. Fix the inconsistences for this property to be included`
-                    );
-                }
-                return;
-            }
-            node.addField(
-                new NodeField(
-                    propertyRow.propertyName,
-                    mapNeo4jToGraphQLType(propertyRow.propertyTypes, propertyRow.mandatory)
-                )
-            );
-        });
+        const fields = createNodeFields(propertiesRows, node.typeName);
+        fields.forEach((f) => node.addField(f));
         if (node.fields.length) {
             nodes[mainLabel] = node;
         }
     });
     return nodes;
+}
+
+function createNodeFields(propertyRows: PropertyRecord[], elementType: string): NodeField[] {
+    const out: NodeField[] = [];
+    propertyRows.forEach((propertyRow) => {
+        if (!propertyRow.propertyTypes) {
+            if (debug.enabled) {
+                debug("%s", `No properties on ${elementType}. Skipping generation.`);
+            }
+            return;
+        }
+        if (propertyRow.propertyTypes.length > 1) {
+            if (debug.enabled) {
+                debug(
+                    "%s",
+                    `Ambiguous types on ${elementType}.${propertyRow.propertyName}. Fix the inconsistences for this property to be included`
+                );
+            }
+            return;
+        }
+        out.push(
+            new NodeField(
+                propertyRow.propertyName,
+                mapNeo4jToGraphQLType(propertyRow.propertyTypes, propertyRow.mandatory)
+            )
+        );
+    });
+    return out;
 }

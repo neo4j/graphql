@@ -47,7 +47,7 @@ const map = {
     PointArray: "[Point]",
 };
 
-export function mapNeo4jToGraphQLType(neo4jType: string[], mandatory?: boolean): string {
+export default function mapNeo4jToGraphQLType(neo4jType: string[], mandatory?: boolean): string {
     const mandatoryStr: string = mandatory ? "!" : "";
     const graphQLType: string = map[neo4jType[0]] || "String";
     return graphQLType + mandatoryStr;

@@ -43,9 +43,17 @@ export class GraphQLNode {
     toString() {
         const parts: (string | string[])[] = [];
         let innerParts: string[] = [];
+        const typeRow: string[] = [];
+
+        typeRow.push(this.type, this.typeName);
+        if (this.directives.length) {
+            typeRow.push(this.directives.map((d) => d.toString()).join(" "));
+        }
+        typeRow.push("{");
+
         innerParts = innerParts.concat(this.fields.map((field) => field.toString()));
 
-        parts.push(`${this.type} ${this.typeName} ${this.directives.map((d) => d.toString()).join(" ")}{`);
+        parts.push(typeRow.join(" "));
         parts.push(innerParts);
         parts.push(`}`);
         return parts.map((p) => (Array.isArray(p) ? `\t${p.join("\n\t")}` : p)).join("\n");

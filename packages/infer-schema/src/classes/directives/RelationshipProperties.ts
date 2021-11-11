@@ -17,18 +17,10 @@
  * limitations under the License.
  */
 
-import camelcase from "camelcase";
-import pluralize from "pluralize";
-import { Direction } from "./types";
+import { Directive } from "../../types";
 
-export function inferRelationshipFieldName(
-    relType: string,
-    fromType: string,
-    toType: string,
-    direction: Direction
-): string {
-    if (direction === "OUT") {
-        return camelcase(relType + pluralize(toType));
+export class RelationshipPropertiesDirective implements Directive {
+    toString() {
+        return `@relationshipProperties`;
     }
-    return camelcase(pluralize(fromType) + relType);
 }

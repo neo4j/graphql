@@ -17,20 +17,9 @@
  * limitations under the License.
  */
 
-import { Direction, Directive } from "../types";
+import camelcase from "camelcase";
+import pascalCase from "./pascal-case";
 
-export class RelationshipDirective implements Directive {
-    direction: Direction;
-    type: string;
-    constructor(type: string, direction: Direction) {
-        this.type = type;
-        this.direction = direction;
-    }
-
-    toString() {
-        const args: string[] = [];
-        args.push(`type: "${this.type}"`);
-        args.push(`direction: ${this.direction}`);
-        return `@relationship(${args.join(", ")})`;
-    }
+export default function inferRelationshipPropsName(relType: string): string {
+    return pascalCase(camelcase(`${relType}-properties`));
 }

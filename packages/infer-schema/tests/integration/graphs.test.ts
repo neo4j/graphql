@@ -140,4 +140,59 @@ describe("Infer Schema on graphs", () => {
             }"
         `);
     });
+    test("Can infer relationships with properties", async () => {
+        const nodeProperties = {
+            title: "Loose it",
+            name: "Glenn Hysén",
+            name2: "Non payed person",
+            roles: ["Footballer", "Drunken man on the street"],
+            roles2: ["Palm tree"],
+            skill: neo4j.int(4),
+            pay: 200.5,
+        };
+        // Create some data
+        const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
+        await wSession.writeTransaction((tx) =>
+            tx.run(
+                `CREATE (m:Movie {title: $props.title})
+                CREATE (a:Actor {name: $props.name})
+                CREATE (a2:Actor {name: $props.name2})
+                MERGE (a)-[:ACTED_IN {roles: $props.roles, pay: $props.pay}]->(m)
+                MERGE (a2)-[:ACTED_IN {roles: $props.roles}]->(m)
+                MERGE (a)-[:DIRECTED {skill: $props.skill}]->(m)
+                MERGE (a)<-[:WON_PRIZE_FOR]-(m)
+                `,
+                { props: nodeProperties }
+            )
+        );
+        const bm = wSession.lastBookmark();
+        await wSession.close();
+
+        const schema = await inferSchema(sessionFactory(bm));
+        // Then
+        expect(schema).toMatchInlineSnapshot(`
+            "interface ActedInProperties @relationshipProperties {
+            	pay: Float
+            	roles: [String]!
+            }
+
+            type Actor {
+            	name: String!
+            	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT, properties: \\"ActedInProperties\\")
+            	directedMovies: [Movie] @relationship(type: \\"DIRECTED\\", direction: OUT, properties: \\"DirectedProperties\\")
+            	moviesWonPrizeFor: [Movie] @relationship(type: \\"WON_PRIZE_FOR\\", direction: IN)
+            }
+
+            interface DirectedProperties @relationshipProperties {
+            	skill: Int!
+            }
+
+            type Movie {
+            	title: String!
+            	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN, properties: \\"ActedInProperties\\")
+            	actorsDirected: [Actor] @relationship(type: \\"DIRECTED\\", direction: IN, properties: \\"DirectedProperties\\")
+            	wonPrizeForActors: [Actor] @relationship(type: \\"WON_PRIZE_FOR\\", direction: OUT)
+            }"
+        `);
+    });
 });

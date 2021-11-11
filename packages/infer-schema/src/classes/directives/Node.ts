@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Directive } from "../types";
+import { Directive } from "../../types";
 
 export class NodeDirective implements Directive {
     label?: string;
@@ -42,6 +42,6 @@ export class NodeDirective implements Directive {
         if (this.additionalLabels.length) {
             directiveArguments.push(`additonalLabels: ["${this.additionalLabels.join('","')}"]`);
         }
-        return directiveArguments.length ? `@node(${directiveArguments.join(", ")}) ` : "";
+        return directiveArguments.length ? `@node(${directiveArguments.join(", ")})` : "";
     }
 }
