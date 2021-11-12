@@ -349,24 +349,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
-            // if (relationField.interface) {
-            //     const connectAndParams = createConnectOrCreateAndParams({
-            //         context,
-            //         parentVar: varName,
-            //         refNodes,
-            //         relationField,
-            //         value: entry[1],
-            //         varName: `${varName}_connect_${entry[0]}`,
-            //         withVars: [varName],
-            //         parentNode: node,
-            //         labelOverride: "",
-            //     });
-            //     connectStrs.push(connectAndParams[0]);
-            //     cypherParams = { ...cypherParams, ...connectAndParams[1] };
-            // } else {
             refNodes.forEach((refNode) => {
                 const connectAndParams = createConnectOrCreateAndParams({
-                    input,
+                    input: input[refNode.name] || input, // Deals with different input from update -> connectOrCreate
                     varName: `${varName}_connectOrCreate_${key}${relationField.union ? `_${refNode.name}` : ""}`,
                     parentVar: varName,
                     relationField,
@@ -376,7 +361,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 connectStrs.push(connectAndParams[0]);
                 cypherParams = { ...cypherParams, ...connectAndParams[1] };
             });
-            // }
         });
     }
 

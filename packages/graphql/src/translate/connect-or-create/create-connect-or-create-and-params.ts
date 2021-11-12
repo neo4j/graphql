@@ -23,7 +23,7 @@ import { CypherStatement } from "../types";
 import { Node } from "../../classes";
 import { joinStatements } from "../utils";
 
-type CreateOrConnectInput = Array<{
+type CreateOrConnectInput = {
     where?: {
         node: Record<string, any>;
     };
@@ -31,7 +31,7 @@ type CreateOrConnectInput = Array<{
         node?: Record<string, any>;
         edge?: Record<string, any>;
     };
-}>;
+};
 
 export function createConnectOrCreateAndParams({
     input,
@@ -41,7 +41,7 @@ export function createConnectOrCreateAndParams({
     refNode,
     context,
 }: {
-    input: CreateOrConnectInput;
+    input: CreateOrConnectInput[];
     varName: string;
     parentVar: string;
     relationField: RelationField;
@@ -51,7 +51,6 @@ export function createConnectOrCreateAndParams({
     const statements = input.map(
         (inputItem, index): CypherStatement => {
             const subqueryBaseName = `${varName}${index}`;
-
             return createConnectOrCreateSubQuery({
                 input: inputItem,
                 baseName: subqueryBaseName,
@@ -74,7 +73,7 @@ function createConnectOrCreateSubQuery({
     refNode,
     context,
 }: {
-    input: CreateOrConnectInput[0];
+    input: CreateOrConnectInput;
     baseName: string;
     parentVar: string;
     relationField: RelationField;
@@ -105,14 +104,13 @@ function mergeRelatedNode({
     refNode,
     context,
 }: {
-    input: CreateOrConnectInput[0];
+    input: CreateOrConnectInput;
     baseName: string;
     refNode: Node;
     context: Context;
 }): CypherStatement {
     const whereNodeParameters = input.where?.node;
     const onCreateNode = input.onCreate?.node;
-
     return buildMergeStatement({
         leftNode: {
             node: refNode,
@@ -131,7 +129,7 @@ function mergeRelation({
     context,
     relationField,
 }: {
-    input: CreateOrConnectInput[0];
+    input: CreateOrConnectInput;
     baseName: string;
     context: Context;
     relationField: RelationField;

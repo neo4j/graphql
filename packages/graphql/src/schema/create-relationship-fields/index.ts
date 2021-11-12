@@ -232,7 +232,6 @@ function createRelationshipFields({
             return;
         }
 
-        // UNION BEING
         if (rel.union) {
             const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
