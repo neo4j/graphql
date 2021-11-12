@@ -333,24 +333,21 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
     if (connectOrCreateInput) {
         Object.entries(connectOrCreateInput).forEach(([key, input]) => {
-            // const params = createConnectOrCreateAndParams({});
-            // console.log(entry);
-
             const relationField = node.relationFields.find((x) => key === x.fieldName) as RelationField;
 
             const refNodes: Node[] = [];
 
-            // if (relationField.union) {
-            //     Object.keys(input).forEach((unionTypeName) => {
-            //         refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
-            //     });
-            // } else if (relationField.interface) {
-            //     relationField.interface?.implementations?.forEach((implementationName) => {
-            //         refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
-            //     });
-            // } else {
-            refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
-            // }
+            if (relationField.union) {
+                Object.keys(input).forEach((unionTypeName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                });
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
+            } else {
+                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+            }
 
             // if (relationField.interface) {
             //     const connectAndParams = createConnectOrCreateAndParams({
@@ -368,18 +365,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             //     cypherParams = { ...cypherParams, ...connectAndParams[1] };
             // } else {
             refNodes.forEach((refNode) => {
-                // const connectAndParams = createConnectOrCreateAndParams({
-                //     context,
-                //     parentVar: varName,
-                //     refNodes: [refNode],
-                //     relationField,
-                //     value: relationField.union ? entry[1][refNode.name] : entry[1],
-                //     varName: `${varName}_connect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
-                //     withVars: [varName],
-                //     parentNode: node,
-                //     labelOverride: relationField.union ? refNode.name : "",
-                // });
-
                 const connectAndParams = createConnectOrCreateAndParams({
                     input,
                     varName: `${varName}_connectOrCreate_${key}${relationField.union ? `_${refNode.name}` : ""}`,

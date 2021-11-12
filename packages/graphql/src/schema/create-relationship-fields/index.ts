@@ -232,6 +232,7 @@ function createRelationshipFields({
             return;
         }
 
+        // UNION BEING
         if (rel.union) {
             const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
@@ -451,6 +452,31 @@ function createRelationshipFields({
 
                     unionDisconnectInput.addFields({
                         [n.name]: disconnect,
+                    });
+                }
+
+                if (n.uniqueFields.length > 0) {
+                    // TODO: merge with createTopLevelConnectOrCreateInput
+                    const nodeConnectOrCreateInput: InputTypeComposer<any> = schemaComposer.getOrCreateITC(
+                        `${sourceName}ConnectOrCreateInput`
+                    );
+
+                    const nodeRelationConnectOrCreateInput: InputTypeComposer<any> = schemaComposer.getOrCreateITC(
+                        `${sourceName}${upperFirst(rel.fieldName)}ConnectOrCreateInput`
+                    );
+
+                    nodeConnectOrCreateInput.addFields({
+                        [rel.fieldName]: nodeRelationConnectOrCreateInput,
+                    });
+
+                    const nodeFieldConnectOrCreateInputName = `${sourceName}${upperFirst(rel.fieldName)}${
+                        n.name
+                    }ConnectOrCreateFieldInput`;
+
+                    nodeRelationConnectOrCreateInput.addFields({
+                        [n.name]: rel.typeMeta.array
+                            ? `[${nodeFieldConnectOrCreateInputName}!]`
+                            : nodeFieldConnectOrCreateInputName,
                     });
                 }
             });
@@ -771,20 +797,32 @@ function createRelationshipFields({
         });
 
         if (n.uniqueFields.length > 0) {
-            const nodeConnectOrCreateInput: InputTypeComposer<any> = schemaComposer.getOrCreateITC(
-                `${sourceName}ConnectOrCreateInput`
-            );
-
-            const nodeFieldConnectOrCreateInputName = `${rel.connectionPrefix}${upperFirst(
-                rel.fieldName
-            )}ConnectOrCreateFieldInput`;
-
-            nodeConnectOrCreateInput.addFields({
-                [rel.fieldName]: rel.typeMeta.array
-                    ? `[${nodeFieldConnectOrCreateInputName}!]`
-                    : nodeFieldConnectOrCreateInputName,
-            });
+            createTopLevelConnectOrCreateInput({ schemaComposer, sourceName, rel });
         }
+    });
+}
+
+function createTopLevelConnectOrCreateInput({
+    schemaComposer,
+    sourceName,
+    rel,
+}: {
+    schemaComposer: SchemaComposer;
+    sourceName: string;
+    rel: RelationField;
+}): void {
+    const nodeConnectOrCreateInput: InputTypeComposer<any> = schemaComposer.getOrCreateITC(
+        `${sourceName}ConnectOrCreateInput`
+    );
+
+    const nodeFieldConnectOrCreateInputName = `${rel.connectionPrefix}${upperFirst(
+        rel.fieldName
+    )}ConnectOrCreateFieldInput`;
+
+    nodeConnectOrCreateInput.addFields({
+        [rel.fieldName]: rel.typeMeta.array
+            ? `[${nodeFieldConnectOrCreateInputName}!]`
+            : nodeFieldConnectOrCreateInputName,
     });
 }
 

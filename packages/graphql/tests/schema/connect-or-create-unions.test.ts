@@ -91,6 +91,11 @@ describe("Connect Or Create", () => {
               Series: [ActorActedInSeriesConnectFieldInput!]
             }
 
+            input ActorActedInConnectOrCreateInput {
+              Movie: [ActorActedInMovieConnectOrCreateFieldInput!]
+              Series: [ActorActedInSeriesConnectOrCreateFieldInput!]
+            }
+
             type ActorActedInConnection {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
@@ -276,6 +281,10 @@ describe("Connect Or Create", () => {
               actedIn: ActorActedInConnectInput
             }
 
+            input ActorConnectOrCreateInput {
+              actedIn: ActorActedInConnectOrCreateInput
+            }
+
             input ActorCreateInput {
               actedIn: ActorActedInCreateInput
               name: String!
@@ -432,7 +441,7 @@ describe("Connect Or Create", () => {
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
               deleteMovies(where: MovieWhere): DeleteInfo!
               deleteSeries(where: SeriesWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateActors(connect: ActorConnectInput, connectOrCreate: ActorConnectOrCreateInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
             }
