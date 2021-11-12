@@ -35,8 +35,9 @@ export default function graphqlFormatter(neo4jStruct: Neo4jStruct, readonly = fa
     const { nodes, relationships } = neo4jStruct;
     const bareNodes = transformNodes(nodes, readonly);
     const withRelationships = hydrateWithRelationships(bareNodes, relationships);
-    const sorted = Object.keys(withRelationships).sort();
-    return sorted.map((typeName) => withRelationships[typeName].toString()).join("\n\n");
+    const keys = Object.keys(withRelationships);
+    keys.sort();
+    return keys.map((typeName) => withRelationships[typeName].toString()).join("\n\n");
 }
 
 function transformNodes(nodes: NodeMap, readonly: boolean): GraphQLNodeMap {
