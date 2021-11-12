@@ -143,6 +143,7 @@ jobs:
         package:
           - graphql
           - ogm
+          - infer-schema
         neo4j-version:
           - 4.1.5
           - 4.1
