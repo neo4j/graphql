@@ -80,13 +80,13 @@ describe("GraphQL - Infer Schema on graphs", () => {
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type Actor {
-            	name: String!
             	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT)
+            	name: String!
             }
 
             type Movie {
-            	title: String!
             	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN)
+            	title: String!
             }"
         `);
     });
@@ -115,27 +115,27 @@ describe("GraphQL - Infer Schema on graphs", () => {
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type Actor {
-            	name: String!
-            	actedInPlays: [Play] @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT)
+            	actedInPlays: [Play] @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	directedMovies: [Movie] @relationship(type: \\"DIRECTED\\", direction: OUT)
+            	name: String!
             }
 
             type Dog {
-            	name: String!
             	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT)
+            	name: String!
             }
 
             type Movie {
-            	title: String!
             	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN)
-            	dogsActedIn: [Dog] @relationship(type: \\"ACTED_IN\\", direction: IN)
             	actorsDirected: [Actor] @relationship(type: \\"DIRECTED\\", direction: IN)
+            	dogsActedIn: [Dog] @relationship(type: \\"ACTED_IN\\", direction: IN)
+            	title: String!
             }
 
             type Play {
-            	title: String!
             	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN)
+            	title: String!
             }"
         `);
     });
@@ -178,10 +178,10 @@ describe("GraphQL - Infer Schema on graphs", () => {
             }
 
             type Actor {
-            	name: String!
             	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT, properties: \\"ActedInProperties\\")
             	directedMovies: [Movie] @relationship(type: \\"DIRECTED\\", direction: OUT, properties: \\"DirectedProperties\\")
             	moviesWonPrizeFor: [Movie] @relationship(type: \\"WON_PRIZE_FOR\\", direction: IN)
+            	name: String!
             }
 
             interface DirectedProperties @relationshipProperties {
@@ -189,9 +189,9 @@ describe("GraphQL - Infer Schema on graphs", () => {
             }
 
             type Movie {
-            	title: String!
             	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN, properties: \\"ActedInProperties\\")
             	actorsDirected: [Actor] @relationship(type: \\"DIRECTED\\", direction: IN, properties: \\"DirectedProperties\\")
+            	title: String!
             	wonPrizeForActors: [Actor] @relationship(type: \\"WON_PRIZE_FOR\\", direction: OUT)
             }"
         `);
@@ -225,15 +225,15 @@ describe("GraphQL - Infer Schema on graphs", () => {
             }
 
             type Actor_Label @node(label: \\"Actor-Label\\") {
-            	name: String!
-            	movieLabelsWonPrizeFor: [Movie_Label] @relationship(type: \\"WON_PRIZE_FOR\\", direction: IN)
             	actedInMovieLabels: [Movie_Label] @relationship(type: \\"ACTED-IN\\", direction: OUT, properties: \\"ActedInProperties\\")
+            	movieLabelsWonPrizeFor: [Movie_Label] @relationship(type: \\"WON_PRIZE_FOR\\", direction: IN)
+            	name: String!
             }
 
             type Movie_Label @node(label: \\"Movie-Label\\") {
+            	actorLabelsActedIn: [Actor_Label] @relationship(type: \\"ACTED-IN\\", direction: IN, properties: \\"ActedInProperties\\")
             	title: String!
             	wonPrizeForActorLabels: [Actor_Label] @relationship(type: \\"WON_PRIZE_FOR\\", direction: OUT)
-            	actorLabelsActedIn: [Actor_Label] @relationship(type: \\"ACTED-IN\\", direction: IN, properties: \\"ActedInProperties\\")
             }"
         `);
     });

@@ -51,7 +51,9 @@ export class GraphQLNode {
         }
         typeRow.push("{");
 
-        innerParts = innerParts.concat(this.fields.map((field) => field.toString()));
+        innerParts = innerParts.concat(
+            this.fields.sort((a, b) => (a.name > b.name ? 1 : -1)).map((field) => field.toString())
+        );
 
         parts.push(typeRow.join(" "));
         parts.push(innerParts);
