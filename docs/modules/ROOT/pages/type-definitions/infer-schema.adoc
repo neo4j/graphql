@@ -1,0 +1,90 @@
+[[type-definitions-infer-schema]]
+= Infer schema from an existing database
+
+Neo4j provides a tool that enables you to, with very little effort, generate a GraphQL schema from an existing database.  
+This is provided from a separate npm package `@neo4j/infer-schema`.
+
+This is usually a one-time-thing and should be considered a starting point for a GraphQL schema.
+
+== Features
+This tool has full support for generating typedefs including
+
+    - `@relationship` incl. relationship properties
+    - `@node`
+        - `label` for mapping where a node label might use a character that's not in the GraphQL supported character set
+        - `additionalLabels` for nodes that has multiple labels
+    - Generating a read-only version of the GraphQL type definitions, i.e. generate a `@exclude(operations: [CREATE, DELETE, UPDATE])` directive on all node types.
+
+== Limitations
+If an element property has mixed types through out your graph, that property will be excluded from the 
+generated type definitions. The reason for this is that your GraphQL server will throw an error if it 
+finds data that doesn't match the specified type.
+
+If any properties are skipped, there will be output in the xref::troubleshooting/index.adoc[Debug Logging].
+
+
+== Usage examples
+
+Currently there's a programatic API for inferring schemas.
+
+=== Infer and persist to file
+This example infers the schema and generates GraphQL typedefinitions ans 
+persist them to a file `schema.graphql`.
+
+You can then serve this file with your GraphQL server.
+
+[source, javascript, indent=0]
+----
+const { toGraphQLTypeDefs } = require("@neo4j/infer-schema")
+const neo4j = require("neo4j-driver");
+const fs = require('fs');
+
+const driver = neo4j.driver(
+    "neo4j://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const sessionFactory = () => driver.session({ defaultAccessMode: neo4j.session.READ })
+
+// We create a async function here until "top level await" has landed
+// so we can use async/await
+async function main() {
+    const typeDefs = await toGraphQLTypeDefs(sessionFactory)
+    fs.writeFileSync('schema.graphql', typeDefs)
+}
+main()
+----
+
+=== Infer and spin up a read-only schema
+This example infers a **read-only** version of the schema from the database and immidiently spins up a
+Apollo server.
+Here the type definitions are never persisted to disk.
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const { toGraphQLTypeDefs } = require("@neo4j/infer-schema")
+const neo4j = require("neo4j-driver");
+
+const driver = neo4j.driver(
+    "neo4j://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const sessionFactory = () => driver.session({ defaultAccessMode: neo4j.session.READ })
+
+// We create a async function here until "top level await" has landed
+// so we can use async/await
+async function main() {
+    const readonly = true; // We don't want to expose mutations in this case
+    const typeDefs = await toGraphQLTypeDefs(sessionFactory, readonly)
+
+    const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+    const server = new ApolloServer({
+        schema: neoSchema.schema,
+        context: ({ req }) => ({ req }),
+    });
+}
+main()
+----

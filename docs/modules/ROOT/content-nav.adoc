@@ -13,6 +13,7 @@
 *** xref:type-definitions/default-values.adoc[]
 *** xref:type-definitions/database-mapping.adoc[]
 *** xref:type-definitions/indexes-and-constraints.adoc[]
+*** xref:type-definitions/infer-schema.adoc[]
 ** xref:queries.adoc[]
 ** xref:mutations/index.adoc[]
 *** xref:mutations/create.adoc[]

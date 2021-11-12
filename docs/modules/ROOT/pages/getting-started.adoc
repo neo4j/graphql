@@ -80,6 +80,9 @@ const typeDefs = gql`
 
 These type definitions are incredibly simple, defining the two previously described node labels, and a relationship "ACTED_IN" between the two. When generated, the schema will allow you to execute queries `actors` and `movies` to read data from the database.
 
+You can also automatically generate type definitions from an existing database by 
+xref::type-definitions/infer-schema.adoc[inferring the schema].
+
 == Create an instance of `Neo4jGraphQL`
 
 Now that you have your type definitions, you need to create an instance of the Neo4j GraphQL Library. To do this, you also need a Neo4j driver to connect to your database. For a database located at "bolt://localhost:7687", with a username of "neo4j" and a password of "password", add the following to the bottom of your `index.js` file:

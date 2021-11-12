@@ -3,7 +3,10 @@
 
 This chapter contains common troubleshooting steps. Additionally, there is a section for xref::troubleshooting/faqs.adoc[FAQs] (Frequently Asked Questions) where you might find answers to your problems.
 
+[[troubleshooting-debug-logging]]
 == Debug Logging
+
+=== For @neo4j/graphql
 
 `@neo4j/graphql` uses the https://www.npmjs.com/package/debug[`debug`] library for debug-level logging. You can turn on all debug logging by setting the environment variable `DEBUG` to `@neo4j/graphql:*` when running. For example:
 
@@ -18,6 +21,15 @@ Alternatively, if you are debugging a particular functionality, you can specify 
 2. `@neo4j/graphql:auth` - Logs the status of authorization header and token extraction, and decoding of JWT
 3. `@neo4j/graphql:graphql` - Logs the GraphQL query and variables
 4. `@neo4j/graphql:execute` - Logs the Cypher and Cypher paramaters before execution, and summary of execution
+
+=== For @neo4j/infer-schema
+
+`@neo4j/infer-schema` has its own debug logging namespace and you can turn on logging for it with:
+
+[source, bash, indent=0]
+----
+DEBUG=@neo4j/infer-schema node src/index.js
+----
 
 [[troubleshooting-query-tuning]]
 == Query Tuning

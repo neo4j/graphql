@@ -12,6 +12,7 @@
 - xref::type-definitions/default-values.adoc[Default Values] - Learn about different ways of setting default values for particular fields.
 - xref::type-definitions/database-mapping.adoc[Database Mapping] - Learn how to map the GraphQL Schema fields to custom Neo4j node and relationship properties.
 - xref::type-definitions/indexes-and-constraints.adoc[Indexes and Constraints] - Learn how to use schema directives to add indexes and constraints to your Neo4j database.
+- xref::type-definitions/infer-schema.adoc[Infer Schema] - If you have a existing database, you can learn how to automatically generate the type definition file from that.
 
 
 
