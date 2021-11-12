@@ -75,9 +75,8 @@ describe("GraphQL - Infer Schema on graphs", () => {
         await wSession.close();
 
         // Infer the schema
-        const session = driver.session({ defaultAccessMode: neo4j.session.WRITE, bookmarks: bm, database: dbName });
         const schema = await toGraphQLTypeDefs(sessionFactory(bm));
-        await session.close();
+
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type Actor {
