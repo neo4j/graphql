@@ -39,27 +39,25 @@ import {
     UnionTypeDefinitionNode
 } from "graphql";
 import {
-    SchemaComposer,
-    ObjectTypeComposer,
-    InputTypeComposerFieldConfigAsObjectDefinition,
-    upperFirst,
+    InputTypeComposer,
+    InputTypeComposerFieldConfigAsObjectDefinition, ObjectTypeComposer, SchemaComposer, upperFirst
 } from "graphql-compose";
 import pluralize from "pluralize";
 import { Exclude, Node } from "../classes";
 import { NodeDirective } from "../classes/NodeDirective";
 import Relationship from "../classes/Relationship";
 import * as constants from "../constants";
-import { Auth, PrimitiveField } from "../types";
+import { Auth, FullText, PrimitiveField } from "../types";
 import { isString } from "../utils/utils";
 import createConnectionFields from "./create-connection-fields";
 import createRelationshipFields from "./create-relationship-fields";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth, FullText } from "../types";
 import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
 import getWhereFields from "./get-where-fields";
 import parseExcludeDirective from "./parse-exclude-directive";
 import parseNodeDirective from "./parse-node-directive";
+import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import * as point from "./point";
 import {
     aggregateResolver,
@@ -73,12 +71,6 @@ import {
 import * as Scalars from "./scalars";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
 import { validateDocument } from "./validation";
-import * as constants from "../constants";
-import createRelationshipFields from "./create-relationship-fields";
-import createConnectionFields from "./create-connection-fields";
-import { NodeDirective } from "../classes/NodeDirective";
-import parseNodeDirective from "./parse-node-directive";
-import parseFulltextDirective from "./parse/parse-fulltext-directive";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
