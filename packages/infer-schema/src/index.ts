@@ -28,5 +28,5 @@ export async function inferToNeo4jStruct(sessionFactory: () => Session): Promise
 
 export async function toGraphQLTypeDefs(sessionFactory: () => Session, readonly = false): Promise<string> {
     const neo4jStruct = await inferToNeo4jStruct(sessionFactory);
-    return graphqlFormatter(neo4jStruct);
+    return graphqlFormatter(neo4jStruct, readonly);
 }

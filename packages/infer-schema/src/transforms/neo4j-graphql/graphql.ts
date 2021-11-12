@@ -25,20 +25,21 @@ import { GraphQLNode } from "./GraphQLNode";
 import inferRelationshipPropsName from "./utils/infer-relationship-props-name";
 import { RelationshipPropertiesDirective } from "./directives/RelationshipProperties";
 import createRelationshipFields from "./utils/create-relationship-fields";
+import { ExcludeDirective } from "./directives/Exclude";
 
 type GraphQLNodeMap = {
     [key: string]: GraphQLNode;
 };
 
-export default function graphqlFormatter(neo4jStruct: Neo4jStruct): string {
+export default function graphqlFormatter(neo4jStruct: Neo4jStruct, readonly = false): string {
     const { nodes, relationships } = neo4jStruct;
-    const bareNodes = transformNodes(nodes);
+    const bareNodes = transformNodes(nodes, readonly);
     const withRelationships = hydrateWithRelationships(bareNodes, relationships);
     const sorted = Object.keys(withRelationships).sort();
     return sorted.map((typeName) => withRelationships[typeName].toString()).join("\n\n");
 }
 
-function transformNodes(nodes: NodeMap): GraphQLNodeMap {
+function transformNodes(nodes: NodeMap, readonly: boolean): GraphQLNodeMap {
     const out = {};
     const takenTypeNames: string[] = [];
     Object.keys(nodes).forEach((nodeType) => {
@@ -56,6 +57,13 @@ function transformNodes(nodes: NodeMap): GraphQLNodeMap {
         nodeDirective.addAdditionalLabels(neo4jNode.labels.slice(1));
         if (nodeDirective.toString().length) {
             node.addDirective(nodeDirective);
+        }
+        if (readonly) {
+            const excludeDirective = new ExcludeDirective();
+            excludeDirective.addOperation("CREATE");
+            excludeDirective.addOperation("DELETE");
+            excludeDirective.addOperation("UPDATE");
+            node.addDirective(excludeDirective);
         }
 
         const fields = createNodeFields(neo4jNode.properties, node.typeName);

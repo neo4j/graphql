@@ -215,11 +215,38 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const schema = await inferToNeo4jGrahqlTypeDefs(sessionFactory(bm));
+        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type Node {
             	prop: BigInt!
+            }"
+        `);
+    });
+    test("Can generate a readonly schema and combine directives", async () => {
+        // Create some data
+        const nodeProperties = { first: "testString", second: neo4j.int(42) };
+        const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
+        await wSession.writeTransaction((tx) =>
+            tx.run(
+                `CREATE (:TestLabel {strProp: $props.first})
+                CREATE (:TestLabel2:TestLabel3 {singleProp: $props.second})`,
+                { props: nodeProperties }
+            )
+        );
+        const bm = wSession.lastBookmark();
+        await wSession.close();
+
+        // Infer the schema
+        const schema = await toGraphQLTypeDefs(sessionFactory(bm), true);
+        // Then
+        expect(schema).toMatchInlineSnapshot(`
+            "type TestLabel @exclude(operations[CREATE, DELETE, UPDATE]) {
+            	strProp: String!
+            }
+
+            type TestLabel2 @node(additonalLabels: [\\"TestLabel3\\"]) @exclude(operations[CREATE, DELETE, UPDATE]) {
+            	singleProp: BigInt!
             }"
         `);
     });
