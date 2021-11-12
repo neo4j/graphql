@@ -17,23 +17,27 @@
  * limitations under the License.
  */
 
-import { Directive } from "../types";
+import Property from "./Property";
 
-export class NodeField {
-    name: string;
+type Path = {
+    fromTypeId: string;
+    toTypeId: string;
+};
+
+export default class Relationship {
     type: string;
-    directives: Directive[] = [];
-    constructor(name: string, type: string) {
-        this.name = name;
+    paths: Path[] = [];
+    properties: Property[] = [];
+
+    constructor(type: string) {
         this.type = type;
     }
 
-    addDirective(d: Directive) {
-        this.directives.push(d);
+    addProperty(property: Property) {
+        this.properties.push(property);
     }
 
-    toString() {
-        const directiveString = this.directives?.map((d) => d.toString()).join(" ") || "";
-        return `${this.name}: ${this.type}${directiveString ? ` ${directiveString}` : ""}`;
+    addPath(from: string, to: string) {
+        this.paths.push({ fromTypeId: from, toTypeId: to });
     }
 }

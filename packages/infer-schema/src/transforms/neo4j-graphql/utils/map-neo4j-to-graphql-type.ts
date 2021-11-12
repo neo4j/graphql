@@ -19,10 +19,10 @@
 
 const map = {
     // Primitives
-    Long: "Int",
+    Long: "BigInt",
     Float: "Float",
     Double: "Float",
-    Integer: "Int",
+    Integer: "BigInt",
     String: "String",
     Boolean: "Boolean",
     Date: "Date",
@@ -33,10 +33,10 @@ const map = {
     Point: "Point",
 
     // Array types
-    LongArray: "[Int]",
+    LongArray: "[BigInt]",
     DoubleArray: "[Float]",
     FloatArray: "[Float]",
-    IntegerArray: "[Int]",
+    IntegerArray: "[BigInt]",
     BooleanArray: "[Boolean]",
     StringArray: "[String]",
     DateArray: "[Date]",

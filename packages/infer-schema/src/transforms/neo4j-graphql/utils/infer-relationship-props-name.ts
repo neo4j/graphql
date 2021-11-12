@@ -17,5 +17,9 @@
  * limitations under the License.
  */
 
-const DEBUG_PREFIX = "@neo4j/";
-export const DEBUG_INFER_SCHEMA = `${DEBUG_PREFIX}infer-schema`;
+import camelcase from "camelcase";
+import pascalCase from "../../../utils/pascal-case";
+
+export default function inferRelationshipPropsName(relType: string): string {
+    return pascalCase(camelcase(`${relType}-properties`));
+}

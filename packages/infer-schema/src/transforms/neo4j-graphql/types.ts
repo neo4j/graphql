@@ -17,10 +17,7 @@
  * limitations under the License.
  */
 
-import { Directive } from "../../types";
-
-export class RelationshipPropertiesDirective implements Directive {
-    toString() {
-        return `@relationshipProperties`;
-    }
+export type Direction = "IN" | "OUT";
+export interface Directive {
+    toString(): string;
 }

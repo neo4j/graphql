@@ -18,11 +18,11 @@
  */
 
 import * as neo4j from "neo4j-driver";
-import { inferSchema } from "../../src/index";
-import createDriver from "./neo4j";
+import { toGraphQLTypeDefs } from "../../../src/index";
+import createDriver from "../neo4j";
 
-describe("Infer Schema on graphs", () => {
-    const dbName = "inferSchemaGraphITDb";
+describe("GraphQL - Infer Schema on graphs", () => {
+    const dbName = "inferToNeo4jGrahqlTypeDefsGraphITDb";
     let driver: neo4j.Driver;
     const sessionFactory = (bm: string[]) => () =>
         driver.session({ defaultAccessMode: neo4j.session.READ, bookmarks: bm, database: dbName });
@@ -76,7 +76,7 @@ describe("Infer Schema on graphs", () => {
 
         // Infer the schema
         const session = driver.session({ defaultAccessMode: neo4j.session.WRITE, bookmarks: bm, database: dbName });
-        const schema = await inferSchema(sessionFactory(bm));
+        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
         await session.close();
         // Then
         expect(schema).toMatchInlineSnapshot(`
@@ -112,7 +112,7 @@ describe("Infer Schema on graphs", () => {
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        const schema = await inferSchema(sessionFactory(bm));
+        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type Actor {
@@ -170,7 +170,7 @@ describe("Infer Schema on graphs", () => {
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        const schema = await inferSchema(sessionFactory(bm));
+        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "interface ActedInProperties @relationshipProperties {
@@ -186,7 +186,7 @@ describe("Infer Schema on graphs", () => {
             }
 
             interface DirectedProperties @relationshipProperties {
-            	skill: Int!
+            	skill: BigInt!
             }
 
             type Movie {
@@ -194,6 +194,47 @@ describe("Infer Schema on graphs", () => {
             	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN, properties: \\"ActedInProperties\\")
             	actorsDirected: [Actor] @relationship(type: \\"DIRECTED\\", direction: IN, properties: \\"DirectedProperties\\")
             	wonPrizeForActors: [Actor] @relationship(type: \\"WON_PRIZE_FOR\\", direction: OUT)
+            }"
+        `);
+    });
+    test("Can handle the larger character set from Neo4j", async () => {
+        const nodeProperties = {
+            title: "Loose it",
+            name: "Glenn Hysén",
+            roles: ["Footballer", "Drunken man on the street"],
+        };
+        // Create some data
+        const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
+        await wSession.writeTransaction((tx) =>
+            tx.run(
+                `CREATE (m:\`Movie-Label\` {title: $props.title})
+                CREATE (a:\`Actor-Label\` {name: $props.name})
+                MERGE (a)-[:\`ACTED-IN\` {roles: $props.roles}]->(m)
+                MERGE (a)<-[:WON_PRIZE_FOR]-(m)
+                `,
+                { props: nodeProperties }
+            )
+        );
+        const bm = wSession.lastBookmark();
+        await wSession.close();
+
+        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
+        // Then
+        expect(schema).toMatchInlineSnapshot(`
+            "interface ActedInProperties @relationshipProperties {
+            	roles: [String]!
+            }
+
+            type Actor_Label @node(label: \\"Actor-Label\\") {
+            	name: String!
+            	movieLabelsWonPrizeFor: [Movie_Label] @relationship(type: \\"WON_PRIZE_FOR\\", direction: IN)
+            	actedInMovieLabels: [Movie_Label] @relationship(type: \\"ACTED-IN\\", direction: OUT, properties: \\"ActedInProperties\\")
+            }
+
+            type Movie_Label @node(label: \\"Movie-Label\\") {
+            	title: String!
+            	wonPrizeForActorLabels: [Actor_Label] @relationship(type: \\"WON_PRIZE_FOR\\", direction: OUT)
+            	actorLabelsActedIn: [Actor_Label] @relationship(type: \\"ACTED-IN\\", direction: IN, properties: \\"ActedInProperties\\")
             }"
         `);
     });

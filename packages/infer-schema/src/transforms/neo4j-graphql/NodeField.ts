@@ -17,25 +17,23 @@
  * limitations under the License.
  */
 
-import { Direction, Directive } from "../../types";
+import { Directive } from "./types";
 
-export class RelationshipDirective implements Directive {
-    direction: Direction;
+export class NodeField {
+    name: string;
     type: string;
-    propertiesReference?: string;
-    constructor(type: string, direction: Direction, propertiesReference?: string) {
+    directives: Directive[] = [];
+    constructor(name: string, type: string) {
+        this.name = name;
         this.type = type;
-        this.direction = direction;
-        this.propertiesReference = propertiesReference;
+    }
+
+    addDirective(d: Directive) {
+        this.directives.push(d);
     }
 
     toString() {
-        const args: string[] = [];
-        args.push(`type: "${this.type}"`);
-        args.push(`direction: ${this.direction}`);
-        if (this.propertiesReference) {
-            args.push(`properties: "${this.propertiesReference}"`);
-        }
-        return `@relationship(${args.join(", ")})`;
+        const directiveString = this.directives?.map((d) => d.toString()).join(" ") || "";
+        return `${this.name}: ${this.type}${directiveString ? ` ${directiveString}` : ""}`;
     }
 }

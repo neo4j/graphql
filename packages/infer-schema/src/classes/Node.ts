@@ -17,9 +17,25 @@
  * limitations under the License.
  */
 
-import camelcase from "camelcase";
-import pascalCase from "./pascal-case";
+import Property from "./Property";
+import Relationship from "./Relationship";
 
-export default function inferRelationshipPropsName(relType: string): string {
-    return pascalCase(camelcase(`${relType}-properties`));
+export default class Node {
+    typeId: string;
+    labels: string[];
+    properties: Property[] = [];
+    relationships: Relationship[] = [];
+
+    constructor(typeId: string, labels: string[]) {
+        this.typeId = typeId;
+        this.labels = labels;
+    }
+
+    addProperty(property: Property) {
+        this.properties.push(property);
+    }
+
+    addRelationship(relationship: Relationship) {
+        this.relationships.push(relationship);
+    }
 }

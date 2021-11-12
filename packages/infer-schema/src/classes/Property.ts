@@ -17,5 +17,13 @@
  * limitations under the License.
  */
 
-const DEBUG_PREFIX = "@neo4j/";
-export const DEBUG_INFER_SCHEMA = `${DEBUG_PREFIX}infer-schema`;
+export default class Property {
+    name: string;
+    types: string[];
+    mandatory: boolean;
+    constructor(name: string, types: string[], mandatory: boolean) {
+        this.name = name;
+        this.types = types;
+        this.mandatory = mandatory;
+    }
+}

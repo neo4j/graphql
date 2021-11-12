@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Directive } from "../../types";
+import { Directive } from "../types";
 
 export class NodeDirective implements Directive {
     label?: string;

@@ -17,5 +17,6 @@
  * limitations under the License.
  */
 
-const DEBUG_PREFIX = "@neo4j/";
-export const DEBUG_INFER_SCHEMA = `${DEBUG_PREFIX}infer-schema`;
+import formatter from "./graphql";
+
+export default formatter;

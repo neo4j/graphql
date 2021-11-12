@@ -18,11 +18,11 @@
  */
 
 import * as neo4j from "neo4j-driver";
-import { inferSchema } from "../../src/index";
-import createDriver from "./neo4j";
+import { toGraphQLTypeDefs } from "../../../src/index";
+import createDriver from "../neo4j";
 
-describe("Infer Schema nodes basic tests", () => {
-    const dbName = "inferSchemaITDb";
+describe("GraphQL - Infer Schema nodes basic tests", () => {
+    const dbName = "inferToNeo4jGrahqlTypeDefsITDb";
     let driver: neo4j.Driver;
     const sessionFactory = (bm: string[]) => () =>
         driver.session({ defaultAccessMode: neo4j.session.READ, bookmarks: bm, database: dbName });
@@ -68,7 +68,7 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const schema = await inferSchema(sessionFactory(bm));
+        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type TestLabel {
@@ -90,11 +90,11 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const schema = await inferSchema(sessionFactory(bm));
+        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type TestLabel {
-            	intProp: Int!
+            	intProp: BigInt!
             	numberProp: Float!
             	strArrProp: [String]!
             	strProp: String!
@@ -116,7 +116,7 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const schema = await inferSchema(sessionFactory(bm));
+        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type TestLabel {
@@ -124,7 +124,7 @@ describe("Infer Schema nodes basic tests", () => {
             }
 
             type TestLabel2 {
-            	singleProp: Int!
+            	singleProp: BigInt!
             }"
         `);
     });
@@ -143,7 +143,7 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const schema = await inferSchema(sessionFactory(bm));
+        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type TestLabel {
@@ -151,7 +151,7 @@ describe("Infer Schema nodes basic tests", () => {
             }
 
             type TestLabel2 @node(additonalLabels: [\\"TestLabel3\\"]) {
-            	singleProp: Int!
+            	singleProp: BigInt!
             }"
         `);
     });
@@ -169,11 +169,11 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const schema = await inferSchema(sessionFactory(bm));
+        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type Test_Label2 @node(label: \\"Test-Label\\") {
-            	singleProp: Int!
+            	singleProp: BigInt!
             }
 
             type Test_Label @node(label: \\"Test\`Label\\") {
@@ -199,7 +199,7 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const schema = await inferSchema(sessionFactory(bm));
+        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type Node {
@@ -215,11 +215,11 @@ describe("Infer Schema nodes basic tests", () => {
         await wSession.close();
 
         // Infer the schema
-        const schema = await inferSchema(sessionFactory(bm));
+        const schema = await inferToNeo4jGrahqlTypeDefs(sessionFactory(bm));
         // Then
         expect(schema).toMatchInlineSnapshot(`
             "type Node {
-            	prop: Int!
+            	prop: BigInt!
             }"
         `);
     });

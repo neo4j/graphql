@@ -1,11 +1,11 @@
 {
-    "name": "@neo4j/graphql-infer-schema",
+    "name": "@neo4j/infer-schema",
     "version": "1.0.0",
-    "description": "Generate a GraphQL schema from a Neo4j database by inspecting the database",
+    "description": "Infer a Neo4j database model by inspecting the database and output to a GraphQL typedefs format",
     "keywords": [
         "neo4j",
         "graphql",
-        "server"
+        "schema"
     ],
     "license": "Apache-2.0",
     "bugs": {
@@ -18,34 +18,23 @@
     "scripts": {
         "clean": "cd src/ && tsc --build --clean",
         "test": "jest",
-        "test:unit": "jest src --coverage=true",
-        "test:unit:watch": "jest src --watch",
         "test:int": "jest tests/integration",
         "test:int:watch": "jest int --watch",
         "build": "tsc --project src/",
-        "build:clean": "run-s clean build",
-        "watch": "tsc -w",
-        "start": "run-s build:clean watch"
+        "build:clean": "yarn clean && yarn build"
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
         "@types/jest": "26.0.8",
         "@types/node": "14.0.27",
         "@types/pluralize": "0.0.29",
-        "graphql-tag": "2.11.0",
         "jest": "26.2.2",
-        "npm-run-all": "4.1.5",
         "ts-jest": "26.1.4",
-        "ts-node": "^10.0.0",
         "typescript": "3.9.7"
     },
     "dependencies": {
-        "@graphql-tools/merge": "6.2.14",
-        "@graphql-tools/schema": "^7.1.5",
-        "@graphql-tools/utils": "^7.10.0",
         "camelcase": "^6.2.0",
         "debug": "^4.3.2",
-        "graphql-compose": "^9.0.2",
         "pluralize": "^8.0.0"
     },
     "peerDependencies": {
