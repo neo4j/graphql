@@ -1086,10 +1086,9 @@ function makeAugmentedSchema(
 
     // getResolveMethods() does not return subscribe() property so we need to build
     // getSubscriptionResolveMethods() ourselves:
-    delete generatedResolvers.Subscription;
     forEachKey(composer.Subscription.getFields(), (fc, fieldName) => {
         if (!fc.subscribe) return;
-        if (!documentNames.includes(fieldName)) {
+        if (!generatedResolvers.Subscription[fieldName]) {
             return;
         }
 

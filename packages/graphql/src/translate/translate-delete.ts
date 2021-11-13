@@ -115,6 +115,7 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
         whereStr,
         deleteStr,
         allowStr,
+        withProjector.nextWith(),
         `DETACH DELETE ${varName}`,
         withProjector.nextReturn([], {
             excludeVariables: withProjector.variables,

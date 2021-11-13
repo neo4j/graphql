@@ -170,6 +170,11 @@ function createProjectionAndParams({
             }
         }
 
+        if (field.name === '_id') {
+            res.projection.push(`${key}: id(${ varName })`);
+            return res;
+        }
+
         if (cypherField) {
             let projectionAuthStr = "";
             let projectionStr = "";

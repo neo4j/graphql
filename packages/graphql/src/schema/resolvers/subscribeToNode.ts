@@ -19,6 +19,7 @@
 
 import { GraphQLResolveInfo } from "graphql";
 import { withFilter } from "graphql-subscriptions";
+import { isInt } from "neo4j-driver";
 import { Node } from "../../classes";
 import { MutationMetaType } from "../../classes/WithProjector";
 import translateRead from "../../translate/translate-read";
@@ -77,20 +78,22 @@ export interface SubscriptionFilter {
     handle_UNDEFINED?: string[];
 }
 
+type SubscriptionContext = Context & {
+    subCache: { [ str: string ]: any };
+};
+
 export default function subscribeToNodeResolver({ node }: { node: Node }) {
 
     async function loadObjects(
-        context,
-        cache = {},
+        context: SubscriptionContext,
         bookmark?: string,
-        id?: number,
     ) {
         // Ensure context.resolveTree.args.where is set.
         context.resolveTree.args = context.resolveTree.args || {};
         context.resolveTree.args.where = context.resolveTree.args.where || {};
 
         // eslint-disable-next-line @typescript-eslint/dot-notation
-        context.resolveTree.args.where['_id'] = undefined;
+        delete context.resolveTree.args.where['_id'];
         const [cypher, params] = translateRead({ context, node });
 
         let bookmarks: string[] | undefined;
@@ -106,16 +109,16 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
             bookmarks,
         });
 
-        // eslint-disable-next-line no-underscore-dangle
-        context.__loadedObjects = context.__loadedObjects || {};
+        context.subCache = context.subCache || {};
         for (const record of executeResult.records) {
-            console.log(record);
-            const recordId = 'IDK';
+            // eslint-disable-next-line no-underscore-dangle,no-continue
+            if (!record?.this?._id || !isInt(record?.this?._id)) { continue; }
             // eslint-disable-next-line no-underscore-dangle
-            context.__loadedObjects[recordId] = record.get('this');
+            const recordId = record?.this?._id.toNumber();
+            context.subCache[recordId] = record?.this;
         }
 
-        return executeResult;
+        return context.subCache;
     }
 
     return {
@@ -129,22 +132,35 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
         description: `Subscribe to updates from ${ node.name }`,
         resolve: (payload) => { return { ...payload }; },
         subscribe: withFilter(
-            (root, args: { filter: SubscriptionFilter }, context, info: GraphQLResolveInfo) => {
+            (root, args: { filter: SubscriptionFilter }, context: SubscriptionContext, info: GraphQLResolveInfo) => {
     
+                context.subCache = context.subCache || {};
                 context.resolveTree = getNeo4jResolveTree(info);
                 context.neoSchema.authenticateContext(context);
+                context.resolveTree = context.resolveTree || {};
                 context.resolveTree.args = context.resolveTree.args || {};
                 context.resolveTree.args.where = context.resolveTree.args.where || {};
 
-                // Rewrite resolve tree to read tile
-                context.resolveTree.fieldsByTypeName = {
-                    ...context.resolveTree.fieldsByTypeName
-                        [`${ node.name }SubscriptionResponse`]
-                        [node.name.toLowerCase()]
-                        .fieldsByTypeName,
+                const fields = context.resolveTree.fieldsByTypeName;
+                const rtSubResponse = fields ? fields[`${ node.name }SubscriptionResponse`] : {};
+                fields[`${ node.name }SubscriptionResponse`] = rtSubResponse;
+                const rtPath = rtSubResponse ? rtSubResponse[node.name.toLowerCase()] : {} as any;
+                rtPath.fieldsByTypeName = rtPath.fieldsByTypeName || {};
+                rtSubResponse[node.name.toLowerCase()] = rtPath;
+                const rtNode = rtPath.fieldsByTypeName[node.name] || {};
+                rtPath.fieldsByTypeName[node.name] = rtNode;
+                rtPath.args = context.resolveTree.args;
+
+                // eslint-disable-next-line no-underscore-dangle
+                rtNode._id = {
+                    alias: '_id',
+                    args: {},
+                    fieldsByTypeName: {},
+                    name: '_id',
                 };
 
-                
+                context.resolveTree = rtPath as any;
+
                 let types: MutationMetaType[] = [ 'Updated', 'Created', 'Deleted', 'Connected', 'Disconnected' ];
                 // We can use the provided input in our asyncIterator because
                 // it is validated by the graphql enum "NodeUpdatedType"
@@ -156,34 +172,31 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
                     types = types.filter((t) => args.filter.type_NOT !== t);
                 } else if (args?.filter?.type_NOT_IN) {
                     types = types.filter((t) => !args.filter.type_NOT_IN?.includes(t));
-                } else if (args?.filter?.type_UNDEFINED) {
+                } else if (args?.filter?.type_UNDEFINED !== undefined) {
                     // This is essentially pointless (no results would be returned)
                     // but it's here for consistency
-                    types = [];
+                    types = args?.filter?.type_UNDEFINED ? [] : types;
                 } else {
                     types = [ 'Updated', 'Created' ];
                 }
 
+
                 if (types.includes('Deleted')) {
                     // Load objects to retrieve them after they have been deleted
-                    loadObjects(context)
-                    .then((res) => {
-
-                    }).catch((err) => {
-                        // todo: debug
-                    });
+                    // figure out if we need to do a load of objects
+                    loadObjects(context).then().catch(() => {});
                 }
 
                 const iterators = types.map((ev) => `${ node.name }.${ ev }`);
                 return context.pubsub.asyncIterator(iterators);
             },
-            async (payload: MutationSubscriptionResult, args: { filter: SubscriptionFilter }, context: Context) => {
+            async (payload: MutationSubscriptionResult, args: { filter: SubscriptionFilter }, context: SubscriptionContext) => {
                 if (!payload || !payload.id) { return false; }
                 if (!context?.resolveTree) { return false; }
 
                 if (args?.filter) {
                     for (const filterName of [
-                        // 'type', // This is already filtered above.
+                        'type', // This is already filtered above.
                         'id',
                         'toID',
                         'relationshipID',
@@ -239,7 +252,18 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
                     }
                     if (!found) { return false; }
                 }
-                
+
+                if (payload.type === 'Deleted') {
+                    if (!context.subCache) { return false; }
+
+                    const cached = context.subCache[payload.id];
+                    if (!cached) { return false; }
+
+                    // eslint-disable-next-line no-param-reassign
+                    payload[node.name.toLowerCase()] = cached;
+                    return true;
+                }
+
                 // Ensure context.resolveTree.args.where is set.
                 context.resolveTree.args = context.resolveTree.args || {};
                 context.resolveTree.args.where = context.resolveTree.args.where || {};
@@ -262,13 +286,19 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
                 });
 
                 const [ record ] = executeResult.records;
+                const self = record?.this;
 
-                if (record?.this) {
+                if (self) {
                     // eslint-disable-next-line no-param-reassign
                     payload[node.name.toLowerCase()] = record.this;
+
+                    if ([ 'Updated', 'Created' ].includes(payload.type)) {
+                        context.subCache = context.subCache || {};
+                        context.subCache[payload.id] = self;
+                    }
                 }
 
-                return Boolean(record?.this);
+                return Boolean(self);
             }
         )
     };
