@@ -208,17 +208,29 @@ function makeAugmentedSchema(
         },
     });
 
-    const sortDirection = composer.createEnumTC({
-        name: "SortDirection",
-        values: {
-            ASC: {
-                value: "ASC",
-                description: "Sort by field values in ascending order.",
-            },
-            DESC: {
-                value: "DESC",
-                description: "Sort by field values in descending order.",
-            },
+    function genSubscriptionFilterVals(name: string, type: string) {
+        return {
+            [ `${ name }` ]: type,
+            [ `${ name }_NOT` ]: type,
+            [ `${ name }_IN` ]: `[${ type }!]`,
+            [ `${ name }_NOT_IN` ]: `[${ type }!]`,
+            [ `${ name }_UNDEFINED` ]: `Boolean`,
+        };
+    }
+
+    composer.createInputTC({
+        name: "SubscriptionFilter",
+        fields: {
+            ...genSubscriptionFilterVals('type', 'NodeUpdatedType'),
+            ...genSubscriptionFilterVals('id', 'Int'),
+            ...genSubscriptionFilterVals('toID', 'Int'),
+            ...genSubscriptionFilterVals('relationshipID', 'Int'),
+            ...genSubscriptionFilterVals('toName', 'String'),
+            ...genSubscriptionFilterVals('relationshipName', 'String'),
+            ...genSubscriptionFilterVals('handle', 'String'),
+            // We cannot add additional property handlers for fear of
+            // security vulnerabilities.
+            propsUpdated: '[String!]',
         },
     });
 
@@ -239,6 +251,20 @@ function makeAugmentedSchema(
             },
             Disconnected: {
                 value: "Disconnected",
+            },
+        },
+    });
+
+    const sortDirection = composer.createEnumTC({
+        name: "SortDirection",
+        values: {
+            ASC: {
+                value: "ASC",
+                description: "Sort by field values in ascending order.",
+            },
+            DESC: {
+                value: "DESC",
+                description: "Sort by field values in descending order.",
             },
         },
     });
@@ -909,7 +935,7 @@ function makeAugmentedSchema(
                 name: 'String!',
                 id: 'Int!',
                 toID: 'String',
-                toType: 'String',
+                toName: 'String',
                 relationshipID: 'String',
                 relationshipName: 'String',
                 propsUpdated: '[ String! ]',
