@@ -327,6 +327,10 @@ class WithProjector {
                 `metaVal.id IS NOT NULL`,
             ];
 
+            if ('toIDVar' in this.mutationMeta) {
+                metaWhere.push(`metaVal.toID IS NOT NULL`);
+            }
+
             mutationMetaOperation = `[ metaVal IN [${ metaInfo }] WHERE ${ metaWhere.join(' AND ') } ]`;
             this.mutationMeta = undefined;
         }
