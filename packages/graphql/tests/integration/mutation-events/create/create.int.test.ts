@@ -17,17 +17,22 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
-import faker from "faker";
 import { gql } from "apollo-server";
+import faker from "faker";
+import { graphql } from "graphql";
+import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { localEventEmitter } from "../../../../src/utils/pubsub";
+import neo4j from "../../neo4j";
 
-describe.skip("interface relationships", () => {
+describe("mutation events (create > create)", () => {
     let driver: Driver;
     let neoSchema: Neo4jGraphQL;
+    const events: { event: string | symbol, payload: any }[] = [];
+    function onEvent(event: string | symbol, payload) {
+        events.push({ event, payload });
+    }
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -68,13 +73,20 @@ describe.skip("interface relationships", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
+        localEventEmitter.addAnyListener(onEvent);
     });
+
+    beforeEach(() => {
+        events.splice(0);
+    });
+
 
     afterAll(async () => {
         await driver.close();
+        localEventEmitter.removeAnyListener(onEvent);
     });
 
-    test("should create create using interface relationship fields", async () => {
+    test("should create create using interface relationship fields and emit events", async () => {
         const session = driver.session();
 
         const actorName = generate({
@@ -147,12 +159,50 @@ describe.skip("interface relationships", () => {
                     ],
                 },
             });
+            expect(events).toHaveLength(4);
+            expect(events[0]).toMatchObject({
+                event: 'Actor.Created',
+                payload: {
+                    properties: {
+                        name: actorName,
+                    },
+                },
+            });
+            expect(events[1]).toMatchObject({
+                event: 'Movie.Created',
+                payload: {
+                    properties: {
+                        title: movieTitle,
+                        runtime: movieRuntime,
+                    },
+                },
+            });
+            expect(events[2]).toMatchObject({
+                event: 'Actor.Connected',
+                payload: {
+                    toName: 'Movie',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: movieScreenTime,
+                    },
+                },
+            });
+            expect(events[3]).toMatchObject({
+                event: 'Movie.Connected',
+                payload: {
+                    toName: 'Actor',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: movieScreenTime,
+                    },
+                },
+            });
         } finally {
             await session.close();
         }
     });
 
-    test("should create create nested nodes using interface relationship fields", async () => {
+    test("should create create nested nodes using interface relationship fields and emit events", async () => {
         const session = driver.session();
 
         const name1 = generate({
@@ -287,6 +337,23 @@ describe.skip("interface relationships", () => {
                     ],
                 },
             });
+            expect(events).toHaveLength(13);
+            [
+                'Actor.Created',
+                'Movie.Created',
+                'Actor.Created',
+                'Movie.Connected',
+                'Actor.Connected',
+                'Actor.Connected',
+                'Movie.Connected',
+                'Series.Created',
+                'Episode.Created',
+                'Series.Connected',
+                'Episode.Connected',
+                'Actor.Connected',
+                'Series.Connected',
+            ].forEach((v, i) => expect(events[i].event).toEqual(v));
+
         } finally {
             await session.close();
         }

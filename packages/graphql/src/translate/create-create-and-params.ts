@@ -129,7 +129,18 @@ function createCreateAndParams({
                             res.params = { ...res.params, ...setA[1] };
                         }
 
-                        // withProjector.mergeWithChild(childWithProjector);
+                        withProjector.markMutationMeta({
+                            type: 'Connected',
+                            name: node.name,
+                            relationshipName: relationField.type,
+                            toName: refNode.name,
+                
+                            idVar: `id(${ varName })`,
+                            relationshipIDVar: relationField.properties ? `id(${ propertiesName })` : undefined,
+                            toIDVar: `id(${ nodeName })`,
+                            propertiesVar: relationField.properties ? propertiesName : undefined,
+                        });
+
                         withProjector.removeVariable(nodeName);
                     });
                 }
