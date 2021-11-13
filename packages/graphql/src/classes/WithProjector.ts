@@ -164,7 +164,7 @@ class WithProjector {
     public mutateMetaVariableDeclared = false;
 
     protected parent?: WithProjector;
-    protected mutationMeta?: MutationMetaVarsCommon;
+    protected mutationMeta: MutationMetaVarsCommon[] = [];
 
     constructor(input: WithProjectorConstructor) {
         this.variables = input.variables || [];
@@ -258,7 +258,7 @@ class WithProjector {
     }
 
     markMutationMeta(mutationMeta: MutationMetaVarsCommon) {
-        this.mutationMeta = mutationMeta;
+        this.mutationMeta.push(mutationMeta);
 
     }
 
@@ -292,47 +292,40 @@ class WithProjector {
 
         // WITH new metaInfo object
         let mutationMetaOperation: string | undefined;
-        if (this.mutationMeta) {
-            const props: string[] = [];
-            const literalKeys = Object.keys(this.mutationMeta).filter((k) => !k.endsWith('Var'));
-            literalKeys.forEach((propName) => {
-                if (!this.mutationMeta) { return; }
-                const literal = this.mutationMeta[propName];
-                if (!literal) { return; }
-                props.push(`${ propName }: '${ literal }'`);
-            });
-
-            const varKeys = Object.keys(this.mutationMeta).filter((k) => k.endsWith('Var'));
-            varKeys.forEach((varNameKey) => {
-                if (!this.mutationMeta) { return; }
-                const propName = varNameKey.replace('Var', '');
-                const varName = this.mutationMeta[varNameKey];
-                if (!varName) { return; }
-                props.push(`${ propName }: ${ varName }`);
-            });
-
-            // if (isUpdatedMutationMetaVars(this.mutationMeta)) {
-            //     if (this.mutationMeta.propertiesVar) {
-            //         props.push(`properties: ${ this.mutationMeta.propertiesVar }`);
-            //     }
-            // }
-
-            // if ('toIdVar' in this.mutationMeta) {
-            //     props.push(`properties: ${ this.mutationMeta.propertiesVar }`);
-            // }
-
-            const metaInfo = `{${ props.join(', ') }}`;
+        if (this.mutationMeta.length > 0) {
+            const metaVals: string[] = [];
+            for (const meta of this.mutationMeta) {
+                const props: string[] = [];
+                const literalKeys = Object.keys(meta).filter((k) => !k.endsWith('Var'));
+                literalKeys.forEach((propName) => {
+                    if (!meta) { return; }
+                    const literal = meta[propName];
+                    if (!literal) { return; }
+                    props.push(`${ propName }: '${ literal }'`);
+                });
+    
+                const varKeys = Object.keys(meta).filter((k) => k.endsWith('Var'));
+                varKeys.forEach((varNameKey) => {
+                    if (!meta) { return; }
+                    const propName = varNameKey.replace('Var', '');
+                    const varName = meta[varNameKey];
+                    if (!varName) { return; }
+                    props.push(`${ propName }: ${ varName }`);
+                });
+    
+                metaVals.push(`{${ props.join(', ') }}`);
+            }
+            
             const metaWhere = [
                 `metaVal IS NOT NULL`,
                 `metaVal.id IS NOT NULL`,
+                `(metaVal.toID IS NOT NULL OR metaVal.toName IS NULL)`,
             ];
 
-            if ('toIDVar' in this.mutationMeta) {
-                metaWhere.push(`metaVal.toID IS NOT NULL`);
+            if (metaVals.length) {
+                mutationMetaOperation = `[ metaVal IN [${ metaVals.join(',') }] WHERE ${ metaWhere.join(' AND ') } ]`;
             }
-
-            mutationMetaOperation = `[ metaVal IN [${ metaInfo }] WHERE ${ metaWhere.join(' AND ') } ]`;
-            this.mutationMeta = undefined;
+            this.mutationMeta = [];
         }
 
         let metaListVariable = '';
