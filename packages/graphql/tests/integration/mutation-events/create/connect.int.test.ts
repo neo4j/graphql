@@ -17,17 +17,22 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
-import faker from "faker";
 import { gql } from "apollo-server";
+import faker from "faker";
+import { graphql } from "graphql";
+import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { localEventEmitter } from "../../../../src/utils/pubsub";
+import neo4j from "../../neo4j";
 
-describe.skip("interface relationships", () => {
+describe("mutation events (create > connect)", () => {
     let driver: Driver;
     let neoSchema: Neo4jGraphQL;
+    const events: { event: string | symbol, payload: any }[] = [];
+    function onEvent(event: string | symbol, payload) {
+        events.push({ event, payload });
+    }
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -68,13 +73,19 @@ describe.skip("interface relationships", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
+        localEventEmitter.addAnyListener(onEvent);
+    });
+
+    beforeEach(() => {
+        events.splice(0);
     });
 
     afterAll(async () => {
         await driver.close();
+        localEventEmitter.removeAnyListener(onEvent);
     });
 
-    test("should nested create connect using interface relationship fields", async () => {
+    test("should nested create connect using interface relationship fields and emit events", async () => {
         const session = driver.session();
 
         const actorName1 = generate({
@@ -165,6 +176,75 @@ describe.skip("interface relationships", () => {
                             name: actorName1,
                         },
                     ],
+                },
+            });
+            expect(events).toHaveLength(6);
+            expect(events[0]).toMatchObject({
+                event: 'Actor.Created',
+                payload: {
+                    name: 'Actor',
+                    type: 'Created',
+                    properties: {
+                        name: actorName1,
+                    },
+                },
+            });
+            expect(events[1]).toMatchObject({
+                event: 'Actor.Connected',
+                payload: {
+                    name: 'Actor',
+                    type: 'Connected',
+                    toName: 'Movie',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: movieScreenTime,
+                    },
+                },
+            });
+            expect(events[2]).toMatchObject({
+                event: 'Movie.Connected',
+                payload: {
+                    name: 'Movie',
+                    type: 'Connected',
+                    toName: 'Actor',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: movieScreenTime,
+                    },
+                },
+            });
+            expect(events[3]).toMatchObject({
+                event: 'Movie.Connected',
+                payload: {
+                    name: 'Movie',
+                    type: 'Connected',
+                    toName: 'Actor',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: movieScreenTime,
+                    },
+                },
+            });
+            expect(events[4]).toMatchObject({
+                event: 'Actor.Connected',
+                payload: {
+                    name: 'Actor',
+                    type: 'Connected',
+                    toName: 'Movie',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: movieScreenTime,
+                    },
+                },
+            });
+            expect(events[5]).toMatchObject({
+                event: 'Actor.Created',
+                payload: {
+                    name: 'Actor',
+                    type: 'Created',
+                    properties: {
+                        name: actorName1,
+                    },
                 },
             });
         } finally {
@@ -285,6 +365,7 @@ describe.skip("interface relationships", () => {
                     ],
                 },
             });
+            expect(events).toHaveLength(8);
         } finally {
             await session.close();
         }
@@ -374,6 +455,7 @@ describe.skip("interface relationships", () => {
                     ],
                 },
             });
+            expect(events).toHaveLength(3);
         } finally {
             await session.close();
         }

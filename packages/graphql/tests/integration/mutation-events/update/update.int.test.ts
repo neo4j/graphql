@@ -26,7 +26,7 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 import { localEventEmitter } from "../../../../src/utils/pubsub";
 import neo4j from "../../neo4j";
 
-describe.skip("mutation events (update > update)", () => {
+describe("mutation events (update > update)", () => {
     let driver: Driver;
     let neoSchema: Neo4jGraphQL;
 
@@ -198,7 +198,7 @@ describe.skip("mutation events (update > update)", () => {
         }
     });
 
-    test("update through unnamed relationship field", async () => {
+    test("update through unnamed relationship field and emits events", async () => {
         const session = driver.session();
 
         const actorName = generate({
