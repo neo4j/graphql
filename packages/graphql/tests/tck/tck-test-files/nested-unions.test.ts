@@ -107,7 +107,7 @@ describe("Nested Unions", () => {
             	WHERE this_connect_actors_LeadActor0_node.name = $this_connect_actors_LeadActor0_node_name
             CALL apoc.do.when(this_connect_actors_LeadActor0_node IS NOT NULL AND this IS NOT NULL, \\"
             			MERGE (this)<-[:ACTED_IN]-(this_connect_actors_LeadActor0_node)
-            RETURN this, this_connect_actors_LeadActor0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'ACTED_IN', toName: 'LeadActor', id: id(this), toID: id(this_connect_actors_LeadActor0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_actors_LeadActor0_node_mutateMeta
+            RETURN this, this_connect_actors_LeadActor0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'ACTED_IN', toName: 'LeadActor', id: id(this), toID: id(this_connect_actors_LeadActor0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_connect_actors_LeadActor0_node_mutateMeta
             \\", \\"\\", {this:this, this_connect_actors_LeadActor0_node:this_connect_actors_LeadActor0_node})
             YIELD value
             WITH this, this_connect_actors_LeadActor0_node, value.this_connect_actors_LeadActor0_node_mutateMeta as this_connect_actors_LeadActor_mutateMeta
@@ -118,7 +118,7 @@ describe("Nested Unions", () => {
             	WHERE this_connect_actors_LeadActor0_node_actedIn_Series0_node.name = $this_connect_actors_LeadActor0_node_actedIn_Series0_node_name
             CALL apoc.do.when(this_connect_actors_LeadActor0_node_actedIn_Series0_node IS NOT NULL AND this_connect_actors_LeadActor0_node IS NOT NULL, \\"
             			MERGE (this_connect_actors_LeadActor0_node)-[:ACTED_IN]->(this_connect_actors_LeadActor0_node_actedIn_Series0_node)
-            RETURN this, this_connect_actors_LeadActor0_node, this_connect_actors_LeadActor0_node_actedIn_Series0_node, [ metaVal IN [{type: 'Connected', name: 'LeadActor', relationshipName: 'ACTED_IN', toName: 'Series', id: id(this_connect_actors_LeadActor0_node), toID: id(this_connect_actors_LeadActor0_node_actedIn_Series0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_actors_LeadActor0_node_actedIn_Series0_node_mutateMeta
+            RETURN this, this_connect_actors_LeadActor0_node, this_connect_actors_LeadActor0_node_actedIn_Series0_node, [ metaVal IN [{type: 'Connected', name: 'LeadActor', relationshipName: 'ACTED_IN', toName: 'Series', id: id(this_connect_actors_LeadActor0_node), toID: id(this_connect_actors_LeadActor0_node_actedIn_Series0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_connect_actors_LeadActor0_node_actedIn_Series0_node_mutateMeta
             \\", \\"\\", {this:this, this_connect_actors_LeadActor0_node:this_connect_actors_LeadActor0_node, this_connect_actors_LeadActor0_node_actedIn_Series0_node:this_connect_actors_LeadActor0_node_actedIn_Series0_node})
             YIELD value
             WITH this, this_connect_actors_LeadActor0_node, this_connect_actors_LeadActor0_node_actedIn_Series0_node, value.this_connect_actors_LeadActor0_node_actedIn_Series0_node_mutateMeta as this_connect_actors_LeadActor0_node_actedIn_Series_mutateMeta
@@ -184,7 +184,7 @@ describe("Nested Unions", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors_LeadActor0_rel:ACTED_IN]-(this_disconnect_actors_LeadActor0:LeadActor)
             WHERE this_disconnect_actors_LeadActor0.name = $updateMovies.args.disconnect.actors.LeadActor[0].where.node.name
-            WITH this, this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'LeadActor', relationshipName: 'ACTED_IN', id: id(this), toID: id(this_disconnect_actors_LeadActor0), relationshipID: id(this_disconnect_actors_LeadActor0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
+            WITH this, this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'LeadActor', relationshipName: 'ACTED_IN', id: id(this), toID: id(this_disconnect_actors_LeadActor0), relationshipID: id(this_disconnect_actors_LeadActor0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actors_LeadActor0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors_LeadActor0_rel
             )
@@ -193,7 +193,7 @@ describe("Nested Unions", () => {
             WITH this, this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel
             OPTIONAL MATCH (this_disconnect_actors_LeadActor0)-[this_disconnect_actors_LeadActor0_actedIn_Series0_rel:ACTED_IN]->(this_disconnect_actors_LeadActor0_actedIn_Series0:Series)
             WHERE this_disconnect_actors_LeadActor0_actedIn_Series0.name = $updateMovies.args.disconnect.actors.LeadActor[0].disconnect.actedIn.Series[0].where.node.name
-            WITH this, this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel, [ metaVal IN [{type: 'Disconnected', name: 'LeadActor', toName: 'Series', relationshipName: 'ACTED_IN', id: id(this_disconnect_actors_LeadActor0), toID: id(this_disconnect_actors_LeadActor0_actedIn_Series0), relationshipID: id(this_disconnect_actors_LeadActor0_actedIn_Series0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_disconnect_actors_LeadActor0_mutateMeta
+            WITH this, this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel, [ metaVal IN [{type: 'Disconnected', name: 'LeadActor', toName: 'Series', relationshipName: 'ACTED_IN', id: id(this_disconnect_actors_LeadActor0), toID: id(this_disconnect_actors_LeadActor0_actedIn_Series0), relationshipID: id(this_disconnect_actors_LeadActor0_actedIn_Series0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_disconnect_actors_LeadActor0_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actors_LeadActor0_actedIn_Series0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors_LeadActor0_actedIn_Series0_rel
             )

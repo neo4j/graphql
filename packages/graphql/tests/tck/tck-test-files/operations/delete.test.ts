@@ -65,7 +65,8 @@ describe("Cypher Delete", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.id = $this_id
-            DETACH DELETE this"
+            DETACH DELETE this
+            RETURN [ metaVal IN [{type: 'Deleted', name: 'Movie', id: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -95,10 +96,11 @@ describe("Cypher Delete", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
-            WITH this, this_actors0, collect(DISTINCT this_actors0) as this_actors0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Actor', id: id(this_actors0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, this_actors0, collect(DISTINCT this_actors0) as this_actors0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Actor', id: id(this_actors0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
             WITH this, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
-            DETACH DELETE this"
+            DETACH DELETE this
+            RETURN mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Movie', id: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -151,15 +153,16 @@ describe("Cypher Delete", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
-            WITH this, this_actors0, collect(DISTINCT this_actors0) as this_actors0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Actor', id: id(this_actors0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, this_actors0, collect(DISTINCT this_actors0) as this_actors0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Actor', id: id(this_actors0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
             WITH this, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
             OPTIONAL MATCH (this)<-[this_actors1_relationship:ACTED_IN]-(this_actors1:Actor)
             WHERE this_actors1.name = $this_deleteMovies.args.delete.actors[1].where.node.name
-            WITH this, this_actors1, collect(DISTINCT this_actors1) as this_actors1_to_delete, mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Actor', id: id(this_actors1)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, this_actors1, collect(DISTINCT this_actors1) as this_actors1_to_delete, mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Actor', id: id(this_actors1)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             FOREACH(x IN this_actors1_to_delete | DETACH DELETE x)
             WITH this, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
-            DETACH DELETE this"
+            DETACH DELETE this
+            RETURN mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Movie', id: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -219,16 +222,17 @@ describe("Cypher Delete", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
-            WITH this, this_actors0, collect(DISTINCT this_actors0) as this_actors0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Actor', id: id(this_actors0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, this_actors0, collect(DISTINCT this_actors0) as this_actors0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Actor', id: id(this_actors0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             WITH this, this_actors0, this_actors0_to_delete, mutateMeta
             OPTIONAL MATCH (this_actors0)-[this_actors0_movies0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
             WHERE this_actors0_movies0.id = $this_deleteMovies.args.delete.actors[0].delete.movies[0].where.node.id
-            WITH this, this_actors0, this_actors0_to_delete, this_actors0_movies0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete, mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Movie', id: id(this_actors0_movies0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, this_actors0, this_actors0_to_delete, this_actors0_movies0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete, mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Movie', id: id(this_actors0_movies0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             FOREACH(x IN this_actors0_movies0_to_delete | DETACH DELETE x)
             WITH this, this_actors0, this_actors0_to_delete, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
             FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
             WITH this, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
-            DETACH DELETE this"
+            DETACH DELETE this
+            RETURN mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Movie', id: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -297,22 +301,23 @@ describe("Cypher Delete", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
-            WITH this, this_actors0, collect(DISTINCT this_actors0) as this_actors0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Actor', id: id(this_actors0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, this_actors0, collect(DISTINCT this_actors0) as this_actors0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Actor', id: id(this_actors0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             WITH this, this_actors0, this_actors0_to_delete, mutateMeta
             OPTIONAL MATCH (this_actors0)-[this_actors0_movies0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
             WHERE this_actors0_movies0.id = $this_deleteMovies.args.delete.actors[0].delete.movies[0].where.node.id
-            WITH this, this_actors0, this_actors0_to_delete, this_actors0_movies0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete, mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Movie', id: id(this_actors0_movies0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, this_actors0, this_actors0_to_delete, this_actors0_movies0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete, mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Movie', id: id(this_actors0_movies0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             WITH this, this_actors0, this_actors0_to_delete, this_actors0_movies0, this_actors0_movies0_to_delete, mutateMeta
             OPTIONAL MATCH (this_actors0_movies0)<-[this_actors0_movies0_actors0_relationship:ACTED_IN]-(this_actors0_movies0_actors0:Actor)
             WHERE this_actors0_movies0_actors0.name = $this_deleteMovies.args.delete.actors[0].delete.movies[0].delete.actors[0].where.node.name
-            WITH this, this_actors0, this_actors0_to_delete, this_actors0_movies0, this_actors0_movies0_to_delete, this_actors0_movies0_actors0, collect(DISTINCT this_actors0_movies0_actors0) as this_actors0_movies0_actors0_to_delete, mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Actor', id: id(this_actors0_movies0_actors0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, this_actors0, this_actors0_to_delete, this_actors0_movies0, this_actors0_movies0_to_delete, this_actors0_movies0_actors0, collect(DISTINCT this_actors0_movies0_actors0) as this_actors0_movies0_actors0_to_delete, mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Actor', id: id(this_actors0_movies0_actors0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             FOREACH(x IN this_actors0_movies0_actors0_to_delete | DETACH DELETE x)
             WITH this, this_actors0, this_actors0_to_delete, this_actors0_movies0, this_actors0_movies0_to_delete, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
             FOREACH(x IN this_actors0_movies0_to_delete | DETACH DELETE x)
             WITH this, this_actors0, this_actors0_to_delete, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
             FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
             WITH this, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
-            DETACH DELETE this"
+            DETACH DELETE this
+            RETURN mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Movie', id: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

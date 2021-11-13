@@ -102,7 +102,7 @@ describe("createConnectAndParams", () => {
                     WHERE this0_node.title = $this0_node_title
                     CALL apoc.do.when(this0_node IS NOT NULL AND this IS NOT NULL, "
                         MERGE (this)-[:SIMILAR]->(this0_node)
-                        RETURN this, this0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'SIMILAR', toName: 'Movie', id: id(this), toID: id(this0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_node_mutateMeta
+                        RETURN this, this0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'SIMILAR', toName: 'Movie', id: id(this), toID: id(this0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_node_mutateMeta
                     ", "", {this:this, this0_node:this0_node})
                     YIELD value
 
@@ -114,7 +114,7 @@ describe("createConnectAndParams", () => {
                         WHERE this0_node_similarMovies0_node.title = $this0_node_similarMovies0_node_title
                         CALL apoc.do.when(this0_node_similarMovies0_node IS NOT NULL AND this0_node IS NOT NULL, "
                             MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
-                            RETURN this, this0_node, this0_node_similarMovies0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'SIMILAR', toName: 'Movie', id: id(this0_node), toID: id(this0_node_similarMovies0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_node_similarMovies0_node_mutateMeta
+                            RETURN this, this0_node, this0_node_similarMovies0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'SIMILAR', toName: 'Movie', id: id(this0_node), toID: id(this0_node_similarMovies0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_node_similarMovies0_node_mutateMeta
                         ", "", {this:this, this0_node:this0_node, this0_node_similarMovies0_node:this0_node_similarMovies0_node})
                         YIELD value
                         WITH this, this0_node, this0_node_similarMovies0_node, value.this0_node_similarMovies0_node_mutateMeta as this0_node_similarMovies_mutateMeta

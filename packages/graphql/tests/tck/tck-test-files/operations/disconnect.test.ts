@@ -121,7 +121,7 @@ describe("Cypher Disconnect", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_colors0_disconnect0_rel:HAS_COLOR]->(this_colors0_disconnect0:Color)
             WHERE this_colors0_disconnect0.name = $updateProducts.args.update.colors[0].disconnect[0].where.node.name
-            WITH this, this_colors0_disconnect0, this_colors0_disconnect0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Product', toName: 'Color', relationshipName: 'HAS_COLOR', id: id(this), toID: id(this_colors0_disconnect0), relationshipID: id(this_colors0_disconnect0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
+            WITH this, this_colors0_disconnect0, this_colors0_disconnect0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Product', toName: 'Color', relationshipName: 'HAS_COLOR', id: id(this), toID: id(this_colors0_disconnect0), relationshipID: id(this_colors0_disconnect0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_colors0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_colors0_disconnect0_rel
             )
@@ -130,7 +130,7 @@ describe("Cypher Disconnect", () => {
             WITH this, this_colors0_disconnect0, this_colors0_disconnect0_rel
             OPTIONAL MATCH (this_colors0_disconnect0)<-[this_colors0_disconnect0_photos0_rel:OF_COLOR]-(this_colors0_disconnect0_photos0:Photo)
             WHERE this_colors0_disconnect0_photos0.id = $updateProducts.args.update.colors[0].disconnect[0].disconnect.photos[0].where.node.id
-            WITH this, this_colors0_disconnect0, this_colors0_disconnect0_rel, this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Color', toName: 'Photo', relationshipName: 'OF_COLOR', id: id(this_colors0_disconnect0), toID: id(this_colors0_disconnect0_photos0), relationshipID: id(this_colors0_disconnect0_photos0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_colors0_disconnect0_mutateMeta
+            WITH this, this_colors0_disconnect0, this_colors0_disconnect0_rel, this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Color', toName: 'Photo', relationshipName: 'OF_COLOR', id: id(this_colors0_disconnect0), toID: id(this_colors0_disconnect0_photos0), relationshipID: id(this_colors0_disconnect0_photos0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_colors0_disconnect0_mutateMeta
             FOREACH(_ IN CASE this_colors0_disconnect0_photos0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_colors0_disconnect0_photos0_rel
             )
@@ -139,7 +139,7 @@ describe("Cypher Disconnect", () => {
             WITH this, this_colors0_disconnect0, this_colors0_disconnect0_rel, this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel
             OPTIONAL MATCH (this_colors0_disconnect0_photos0)-[this_colors0_disconnect0_photos0_color0_rel:OF_COLOR]->(this_colors0_disconnect0_photos0_color0:Color)
             WHERE this_colors0_disconnect0_photos0_color0.id = $updateProducts.args.update.colors[0].disconnect[0].disconnect.photos.disconnect.color.where.node.id
-            WITH this, this_colors0_disconnect0, this_colors0_disconnect0_rel, this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel, this_colors0_disconnect0_photos0_color0, this_colors0_disconnect0_photos0_color0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Photo', toName: 'Color', relationshipName: 'OF_COLOR', id: id(this_colors0_disconnect0_photos0), toID: id(this_colors0_disconnect0_photos0_color0), relationshipID: id(this_colors0_disconnect0_photos0_color0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_colors0_disconnect0_photos0_mutateMeta
+            WITH this, this_colors0_disconnect0, this_colors0_disconnect0_rel, this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel, this_colors0_disconnect0_photos0_color0, this_colors0_disconnect0_photos0_color0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Photo', toName: 'Color', relationshipName: 'OF_COLOR', id: id(this_colors0_disconnect0_photos0), toID: id(this_colors0_disconnect0_photos0_color0), relationshipID: id(this_colors0_disconnect0_photos0_color0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_colors0_disconnect0_photos0_mutateMeta
             FOREACH(_ IN CASE this_colors0_disconnect0_photos0_color0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_colors0_disconnect0_photos0_color0_rel
             )
@@ -158,7 +158,7 @@ describe("Cypher Disconnect", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_photos0_disconnect0_rel:HAS_PHOTO]->(this_photos0_disconnect0:Photo)
             WHERE this_photos0_disconnect0.id = $updateProducts.args.update.photos[0].disconnect[0].where.node.id
-            WITH this, this_photos0_disconnect0, this_photos0_disconnect0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Product', toName: 'Photo', relationshipName: 'HAS_PHOTO', id: id(this), toID: id(this_photos0_disconnect0), relationshipID: id(this_photos0_disconnect0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
+            WITH this, this_photos0_disconnect0, this_photos0_disconnect0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Product', toName: 'Photo', relationshipName: 'HAS_PHOTO', id: id(this), toID: id(this_photos0_disconnect0), relationshipID: id(this_photos0_disconnect0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_photos0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_photos0_disconnect0_rel
             )
@@ -167,7 +167,7 @@ describe("Cypher Disconnect", () => {
             WITH this, this_photos0_disconnect0, this_photos0_disconnect0_rel
             OPTIONAL MATCH (this_photos0_disconnect0)-[this_photos0_disconnect0_color0_rel:OF_COLOR]->(this_photos0_disconnect0_color0:Color)
             WHERE this_photos0_disconnect0_color0.name = $updateProducts.args.update.photos[0].disconnect.disconnect.color.where.node.name
-            WITH this, this_photos0_disconnect0, this_photos0_disconnect0_rel, this_photos0_disconnect0_color0, this_photos0_disconnect0_color0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Photo', toName: 'Color', relationshipName: 'OF_COLOR', id: id(this_photos0_disconnect0), toID: id(this_photos0_disconnect0_color0), relationshipID: id(this_photos0_disconnect0_color0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_photos0_disconnect0_mutateMeta
+            WITH this, this_photos0_disconnect0, this_photos0_disconnect0_rel, this_photos0_disconnect0_color0, this_photos0_disconnect0_color0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Photo', toName: 'Color', relationshipName: 'OF_COLOR', id: id(this_photos0_disconnect0), toID: id(this_photos0_disconnect0_color0), relationshipID: id(this_photos0_disconnect0_color0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_photos0_disconnect0_mutateMeta
             FOREACH(_ IN CASE this_photos0_disconnect0_color0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_photos0_disconnect0_color0_rel
             )
@@ -182,7 +182,7 @@ describe("Cypher Disconnect", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_photos0_disconnect1_rel:HAS_PHOTO]->(this_photos0_disconnect1:Photo)
             WHERE this_photos0_disconnect1.id = $updateProducts.args.update.photos[0].disconnect[1].where.node.id
-            WITH this, this_photos0_disconnect1, this_photos0_disconnect1_rel, [ metaVal IN [{type: 'Disconnected', name: 'Product', toName: 'Photo', relationshipName: 'HAS_PHOTO', id: id(this), toID: id(this_photos0_disconnect1), relationshipID: id(this_photos0_disconnect1_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
+            WITH this, this_photos0_disconnect1, this_photos0_disconnect1_rel, [ metaVal IN [{type: 'Disconnected', name: 'Product', toName: 'Photo', relationshipName: 'HAS_PHOTO', id: id(this), toID: id(this_photos0_disconnect1), relationshipID: id(this_photos0_disconnect1_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_photos0_disconnect1 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_photos0_disconnect1_rel
             )
@@ -191,7 +191,7 @@ describe("Cypher Disconnect", () => {
             WITH this, this_photos0_disconnect1, this_photos0_disconnect1_rel
             OPTIONAL MATCH (this_photos0_disconnect1)-[this_photos0_disconnect1_color0_rel:OF_COLOR]->(this_photos0_disconnect1_color0:Color)
             WHERE this_photos0_disconnect1_color0.name = $updateProducts.args.update.photos[0].disconnect.disconnect.color.where.node.name
-            WITH this, this_photos0_disconnect1, this_photos0_disconnect1_rel, this_photos0_disconnect1_color0, this_photos0_disconnect1_color0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Photo', toName: 'Color', relationshipName: 'OF_COLOR', id: id(this_photos0_disconnect1), toID: id(this_photos0_disconnect1_color0), relationshipID: id(this_photos0_disconnect1_color0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_photos0_disconnect1_mutateMeta
+            WITH this, this_photos0_disconnect1, this_photos0_disconnect1_rel, this_photos0_disconnect1_color0, this_photos0_disconnect1_color0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Photo', toName: 'Color', relationshipName: 'OF_COLOR', id: id(this_photos0_disconnect1), toID: id(this_photos0_disconnect1_color0), relationshipID: id(this_photos0_disconnect1_color0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_photos0_disconnect1_mutateMeta
             FOREACH(_ IN CASE this_photos0_disconnect1_color0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_photos0_disconnect1_color0_rel
             )
@@ -201,7 +201,7 @@ describe("Cypher Disconnect", () => {
             RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
             }
             WITH this, mutateMeta + this_mutateMeta as mutateMeta
-            RETURN mutateMeta + [ metaVal IN [{type: 'Updated', name: 'Product', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { .id } AS this"
+            RETURN mutateMeta + [ metaVal IN [{type: 'Updated', name: 'Product', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

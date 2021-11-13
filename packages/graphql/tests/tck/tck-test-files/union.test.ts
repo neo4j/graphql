@@ -112,11 +112,11 @@ describe("Cypher Union", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
+            WITH this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
             CREATE (this0_search_Genre0_node:Genre)
             SET this0_search_Genre0_node.name = $this0_search_Genre0_node_name
             MERGE (this0)-[:SEARCH]->(this0_search_Genre0_node)
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Genre', id: id(this0_search_Genre0_node), properties: this0_search_Genre0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Genre', id: id(this0_search_Genre0_node), properties: this0_search_Genre0_node},{type: 'Connected', name: 'Movie', relationshipName: 'SEARCH', toName: 'Genre', id: id(this0), toID: id(this0_search_Genre0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
             WITH this0, this0_mutateMeta as mutateMeta
             RETURN mutateMeta, this0 { .title } AS this0"
@@ -150,9 +150,9 @@ describe("Cypher Union", () => {
             "MATCH (this:Movie)
             CREATE (this_create_search_Genre0_node:Genre)
             SET this_create_search_Genre0_node.name = $this_create_search_Genre0_node_name
-            WITH this, this_create_search_Genre0_node, [ metaVal IN [{type: 'Created', name: 'Genre', id: id(this_create_search_Genre0_node), properties: this_create_search_Genre0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, this_create_search_Genre0_node, [ metaVal IN [{type: 'Created', name: 'Genre', id: id(this_create_search_Genre0_node), properties: this_create_search_Genre0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             MERGE (this)-[:SEARCH]->(this_create_search_Genre0_node)
-            WITH this, mutateMeta + [ metaVal IN [{type: 'Connected', name: 'Movie', toName: 'Genre', relationshipName: 'SEARCH', id: id(this_create_search_Genre0_node), toID: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, mutateMeta + [ metaVal IN [{type: 'Connected', name: 'Movie', toName: 'Genre', relationshipName: 'SEARCH', id: id(this_create_search_Genre0_node), toID: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             RETURN mutateMeta, this { .title } AS this"
         `);
 
@@ -190,14 +190,14 @@ describe("Cypher Union", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
+            WITH this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
             CALL {
             WITH this0, this0_mutateMeta
             	OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
             	WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_name
             CALL apoc.do.when(this0_search_Genre_connect0_node IS NOT NULL AND this0 IS NOT NULL, \\"
             			MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
-            RETURN this0, this0_search_Genre_connect0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'SEARCH', toName: 'Genre', id: id(this0), toID: id(this0_search_Genre_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_search_Genre_connect0_node_mutateMeta
+            RETURN this0, this0_search_Genre_connect0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'SEARCH', toName: 'Genre', id: id(this0), toID: id(this0_search_Genre_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_search_Genre_connect0_node_mutateMeta
             \\", \\"\\", {this0:this0, this0_search_Genre_connect0_node:this0_search_Genre_connect0_node})
             YIELD value
             WITH this0, this0_search_Genre_connect0_node, value.this0_search_Genre_connect0_node_mutateMeta as this0_search_Genre_connect_mutateMeta
@@ -253,7 +253,7 @@ describe("Cypher Union", () => {
             WHERE this_search_Genre0.name = $updateMovies.args.update.search.Genre[0].where.node.name
             CALL apoc.do.when(this_search_Genre0 IS NOT NULL, \\"
             SET this_search_Genre0.name = $this_update_search_Genre0_name
-            RETURN this, this_search_Genre0, this_search0_relationship, [ metaVal IN [{type: 'Updated', name: 'Genre', id: id(this_search_Genre0), properties: $this_update_search_Genre0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            RETURN this, this_search_Genre0, this_search0_relationship, [ metaVal IN [{type: 'Updated', name: 'Genre', id: id(this_search_Genre0), properties: $this_update_search_Genre0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             \\", \\"\\", {this:this, this_search_Genre0:this_search_Genre0, this_search0_relationship:this_search0_relationship, updateMovies: $updateMovies, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name,this_update_search_Genre0:$this_update_search_Genre0})
             YIELD value
             WITH this, this_search_Genre0, this_search0_relationship, value.mutateMeta as mutateMeta
@@ -328,7 +328,7 @@ describe("Cypher Union", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
             WHERE this_search_Genre0_disconnect0.name = $updateMovies.args.update.search.Genre[0].disconnect[0].where.node.name
-            WITH this, this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'Genre', relationshipName: 'SEARCH', id: id(this), toID: id(this_search_Genre0_disconnect0), relationshipID: id(this_search_Genre0_disconnect0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
+            WITH this, this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'Genre', relationshipName: 'SEARCH', id: id(this), toID: id(this_search_Genre0_disconnect0), relationshipID: id(this_search_Genre0_disconnect0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_search_Genre0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_search_Genre0_disconnect0_rel
             )
@@ -393,7 +393,7 @@ describe("Cypher Union", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_search_Genre0_rel:SEARCH]->(this_disconnect_search_Genre0:Genre)
             WHERE this_disconnect_search_Genre0.name = $updateMovies.args.disconnect.search.Genre[0].where.node.name
-            WITH this, this_disconnect_search_Genre0, this_disconnect_search_Genre0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'Genre', relationshipName: 'SEARCH', id: id(this), toID: id(this_disconnect_search_Genre0), relationshipID: id(this_disconnect_search_Genre0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
+            WITH this, this_disconnect_search_Genre0, this_disconnect_search_Genre0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'Genre', relationshipName: 'SEARCH', id: id(this), toID: id(this_disconnect_search_Genre0), relationshipID: id(this_disconnect_search_Genre0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_search_Genre0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_search_Genre0_rel
             )
@@ -456,7 +456,7 @@ describe("Cypher Union", () => {
             	WHERE this_connect_search_Genre0_node.name = $this_connect_search_Genre0_node_name
             CALL apoc.do.when(this_connect_search_Genre0_node IS NOT NULL AND this IS NOT NULL, \\"
             			MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
-            RETURN this, this_connect_search_Genre0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'SEARCH', toName: 'Genre', id: id(this), toID: id(this_connect_search_Genre0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_search_Genre0_node_mutateMeta
+            RETURN this, this_connect_search_Genre0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'SEARCH', toName: 'Genre', id: id(this), toID: id(this_connect_search_Genre0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_connect_search_Genre0_node_mutateMeta
             \\", \\"\\", {this:this, this_connect_search_Genre0_node:this_connect_search_Genre0_node})
             YIELD value
             WITH this, this_connect_search_Genre0_node, value.this_connect_search_Genre0_node_mutateMeta as this_connect_search_Genre_mutateMeta
@@ -499,7 +499,7 @@ describe("Cypher Union", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_delete_search_Genre0_relationship:SEARCH]->(this_delete_search_Genre0:Genre)
             WHERE this_delete_search_Genre0.name = $updateMovies.args.delete.search.Genre[0].where.node.name
-            WITH this, this_delete_search_Genre0, collect(DISTINCT this_delete_search_Genre0) as this_delete_search_Genre0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Genre', id: id(this_delete_search_Genre0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, this_delete_search_Genre0, collect(DISTINCT this_delete_search_Genre0) as this_delete_search_Genre0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Genre', id: id(this_delete_search_Genre0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             FOREACH(x IN this_delete_search_Genre0_to_delete | DETACH DELETE x)
             WITH this, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
             RETURN mutateMeta, this { .title } AS this"

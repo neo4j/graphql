@@ -118,14 +118,14 @@ describe("Cypher Connect", () => {
             CREATE (this0:Product)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'Product', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
+            WITH this0, [ metaVal IN [{type: 'Created', name: 'Product', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
             CALL {
             WITH this0, this0_mutateMeta
             	OPTIONAL MATCH (this0_colors_connect0_node:Color)
             	WHERE this0_colors_connect0_node.name = $this0_colors_connect0_node_name
             CALL apoc.do.when(this0_colors_connect0_node IS NOT NULL AND this0 IS NOT NULL, \\"
             			MERGE (this0)-[:HAS_COLOR]->(this0_colors_connect0_node)
-            RETURN this0, this0_colors_connect0_node, [ metaVal IN [{type: 'Connected', name: 'Product', relationshipName: 'HAS_COLOR', toName: 'Color', id: id(this0), toID: id(this0_colors_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_colors_connect0_node_mutateMeta
+            RETURN this0, this0_colors_connect0_node, [ metaVal IN [{type: 'Connected', name: 'Product', relationshipName: 'HAS_COLOR', toName: 'Color', id: id(this0), toID: id(this0_colors_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_colors_connect0_node_mutateMeta
             \\", \\"\\", {this0:this0, this0_colors_connect0_node:this0_colors_connect0_node})
             YIELD value
             WITH this0, this0_colors_connect0_node, value.this0_colors_connect0_node_mutateMeta as this0_colors_connect_mutateMeta
@@ -136,7 +136,7 @@ describe("Cypher Connect", () => {
             	WHERE this0_colors_connect0_node_photos0_node.id = $this0_colors_connect0_node_photos0_node_id
             CALL apoc.do.when(this0_colors_connect0_node_photos0_node IS NOT NULL AND this0_colors_connect0_node IS NOT NULL, \\"
             			MERGE (this0_colors_connect0_node)<-[:OF_COLOR]-(this0_colors_connect0_node_photos0_node)
-            RETURN this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node, [ metaVal IN [{type: 'Connected', name: 'Color', relationshipName: 'OF_COLOR', toName: 'Photo', id: id(this0_colors_connect0_node), toID: id(this0_colors_connect0_node_photos0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_colors_connect0_node_photos0_node_mutateMeta
+            RETURN this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node, [ metaVal IN [{type: 'Connected', name: 'Color', relationshipName: 'OF_COLOR', toName: 'Photo', id: id(this0_colors_connect0_node), toID: id(this0_colors_connect0_node_photos0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_colors_connect0_node_photos0_node_mutateMeta
             \\", \\"\\", {this0:this0, this0_colors_connect0_node:this0_colors_connect0_node, this0_colors_connect0_node_photos0_node:this0_colors_connect0_node_photos0_node})
             YIELD value
             WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node, value.this0_colors_connect0_node_photos0_node_mutateMeta as this0_colors_connect0_node_photos_mutateMeta
@@ -147,7 +147,7 @@ describe("Cypher Connect", () => {
             	WHERE this0_colors_connect0_node_photos0_node_color0_node.id = $this0_colors_connect0_node_photos0_node_color0_node_id
             CALL apoc.do.when(this0_colors_connect0_node_photos0_node_color0_node IS NOT NULL AND this0_colors_connect0_node_photos0_node IS NOT NULL, \\"
             			MERGE (this0_colors_connect0_node_photos0_node)-[:OF_COLOR]->(this0_colors_connect0_node_photos0_node_color0_node)
-            RETURN this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node, this0_colors_connect0_node_photos0_node_color0_node, [ metaVal IN [{type: 'Connected', name: 'Photo', relationshipName: 'OF_COLOR', toName: 'Color', id: id(this0_colors_connect0_node_photos0_node), toID: id(this0_colors_connect0_node_photos0_node_color0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_colors_connect0_node_photos0_node_color0_node_mutateMeta
+            RETURN this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node, this0_colors_connect0_node_photos0_node_color0_node, [ metaVal IN [{type: 'Connected', name: 'Photo', relationshipName: 'OF_COLOR', toName: 'Color', id: id(this0_colors_connect0_node_photos0_node), toID: id(this0_colors_connect0_node_photos0_node_color0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_colors_connect0_node_photos0_node_color0_node_mutateMeta
             \\", \\"\\", {this0:this0, this0_colors_connect0_node:this0_colors_connect0_node, this0_colors_connect0_node_photos0_node:this0_colors_connect0_node_photos0_node, this0_colors_connect0_node_photos0_node_color0_node:this0_colors_connect0_node_photos0_node_color0_node})
             YIELD value
             WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node, this0_colors_connect0_node_photos0_node_color0_node, value.this0_colors_connect0_node_photos0_node_color0_node_mutateMeta as this0_colors_connect0_node_photos0_node_color_mutateMeta
@@ -167,7 +167,7 @@ describe("Cypher Connect", () => {
             	WHERE this0_photos_connect0_node.id = $this0_photos_connect0_node_id
             CALL apoc.do.when(this0_photos_connect0_node IS NOT NULL AND this0 IS NOT NULL, \\"
             			MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect0_node)
-            RETURN this0, this0_photos_connect0_node, [ metaVal IN [{type: 'Connected', name: 'Product', relationshipName: 'HAS_PHOTO', toName: 'Photo', id: id(this0), toID: id(this0_photos_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_photos_connect0_node_mutateMeta
+            RETURN this0, this0_photos_connect0_node, [ metaVal IN [{type: 'Connected', name: 'Product', relationshipName: 'HAS_PHOTO', toName: 'Photo', id: id(this0), toID: id(this0_photos_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_photos_connect0_node_mutateMeta
             \\", \\"\\", {this0:this0, this0_photos_connect0_node:this0_photos_connect0_node})
             YIELD value
             WITH this0, this0_photos_connect0_node, value.this0_photos_connect0_node_mutateMeta as this0_photos_connect_mutateMeta
@@ -178,7 +178,7 @@ describe("Cypher Connect", () => {
             	WHERE this0_photos_connect0_node_color0_node.name = $this0_photos_connect0_node_color0_node_name
             CALL apoc.do.when(this0_photos_connect0_node_color0_node IS NOT NULL AND this0_photos_connect0_node IS NOT NULL, \\"
             			MERGE (this0_photos_connect0_node)-[:OF_COLOR]->(this0_photos_connect0_node_color0_node)
-            RETURN this0, this0_photos_connect0_node, this0_photos_connect0_node_color0_node, [ metaVal IN [{type: 'Connected', name: 'Photo', relationshipName: 'OF_COLOR', toName: 'Color', id: id(this0_photos_connect0_node), toID: id(this0_photos_connect0_node_color0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_photos_connect0_node_color0_node_mutateMeta
+            RETURN this0, this0_photos_connect0_node, this0_photos_connect0_node_color0_node, [ metaVal IN [{type: 'Connected', name: 'Photo', relationshipName: 'OF_COLOR', toName: 'Color', id: id(this0_photos_connect0_node), toID: id(this0_photos_connect0_node_color0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_photos_connect0_node_color0_node_mutateMeta
             \\", \\"\\", {this0:this0, this0_photos_connect0_node:this0_photos_connect0_node, this0_photos_connect0_node_color0_node:this0_photos_connect0_node_color0_node})
             YIELD value
             WITH this0, this0_photos_connect0_node, this0_photos_connect0_node_color0_node, value.this0_photos_connect0_node_color0_node_mutateMeta as this0_photos_connect0_node_color_mutateMeta
@@ -195,7 +195,7 @@ describe("Cypher Connect", () => {
             	WHERE this0_photos_connect1_node.id = $this0_photos_connect1_node_id
             CALL apoc.do.when(this0_photos_connect1_node IS NOT NULL AND this0 IS NOT NULL, \\"
             			MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect1_node)
-            RETURN this0, this0_photos_connect1_node, [ metaVal IN [{type: 'Connected', name: 'Product', relationshipName: 'HAS_PHOTO', toName: 'Photo', id: id(this0), toID: id(this0_photos_connect1_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_photos_connect1_node_mutateMeta
+            RETURN this0, this0_photos_connect1_node, [ metaVal IN [{type: 'Connected', name: 'Product', relationshipName: 'HAS_PHOTO', toName: 'Photo', id: id(this0), toID: id(this0_photos_connect1_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_photos_connect1_node_mutateMeta
             \\", \\"\\", {this0:this0, this0_photos_connect1_node:this0_photos_connect1_node})
             YIELD value
             WITH this0, this0_photos_connect1_node, value.this0_photos_connect1_node_mutateMeta as this0_photos_connect_mutateMeta
@@ -206,7 +206,7 @@ describe("Cypher Connect", () => {
             	WHERE this0_photos_connect1_node_color0_node.name = $this0_photos_connect1_node_color0_node_name
             CALL apoc.do.when(this0_photos_connect1_node_color0_node IS NOT NULL AND this0_photos_connect1_node IS NOT NULL, \\"
             			MERGE (this0_photos_connect1_node)-[:OF_COLOR]->(this0_photos_connect1_node_color0_node)
-            RETURN this0, this0_photos_connect1_node, this0_photos_connect1_node_color0_node, [ metaVal IN [{type: 'Connected', name: 'Photo', relationshipName: 'OF_COLOR', toName: 'Color', id: id(this0_photos_connect1_node), toID: id(this0_photos_connect1_node_color0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_photos_connect1_node_color0_node_mutateMeta
+            RETURN this0, this0_photos_connect1_node, this0_photos_connect1_node_color0_node, [ metaVal IN [{type: 'Connected', name: 'Photo', relationshipName: 'OF_COLOR', toName: 'Color', id: id(this0_photos_connect1_node), toID: id(this0_photos_connect1_node_color0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_photos_connect1_node_color0_node_mutateMeta
             \\", \\"\\", {this0:this0, this0_photos_connect1_node:this0_photos_connect1_node, this0_photos_connect1_node_color0_node:this0_photos_connect1_node_color0_node})
             YIELD value
             WITH this0, this0_photos_connect1_node, this0_photos_connect1_node_color0_node, value.this0_photos_connect1_node_color0_node_mutateMeta as this0_photos_connect1_node_color_mutateMeta

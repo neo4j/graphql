@@ -106,19 +106,19 @@ describe("Cypher Auth Allow", () => {
             CREATE (this0:User)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'User', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
+            WITH this0, [ metaVal IN [{type: 'Created', name: 'User', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
             CREATE (this0_contentPost0_node:Post)
             SET this0_contentPost0_node.id = $this0_contentPost0_node_id
-            WITH this0, this0_contentPost0_node, this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Post', id: id(this0_contentPost0_node), properties: this0_contentPost0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
+            WITH this0, this0_contentPost0_node, this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Post', id: id(this0_contentPost0_node), properties: this0_contentPost0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
             CREATE (this0_contentPost0_node_creator0_node:User)
             SET this0_contentPost0_node_creator0_node.id = $this0_contentPost0_node_creator0_node_id
-            WITH this0, this0_contentPost0_node, this0_contentPost0_node_creator0_node, this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'User', id: id(this0_contentPost0_node_creator0_node), properties: this0_contentPost0_node_creator0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
+            WITH this0, this0_contentPost0_node, this0_contentPost0_node_creator0_node, this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'User', id: id(this0_contentPost0_node_creator0_node), properties: this0_contentPost0_node_creator0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
             CALL apoc.util.validate(NOT(this0_contentPost0_node_creator0_node.id IS NOT NULL AND this0_contentPost0_node_creator0_node.id = $this0_contentPost0_node_creator0_node_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0_contentPost0_node)<-[:HAS_CONTENT]-(this0_contentPost0_node_creator0_node)
-            WITH this0, this0_contentPost0_node, this0_mutateMeta
+            WITH this0, this0_contentPost0_node, this0_mutateMeta + [ metaVal IN [{type: 'Connected', name: 'Post', relationshipName: 'HAS_CONTENT', toName: 'User', id: id(this0_contentPost0_node), toID: id(this0_contentPost0_node_creator0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
             CALL apoc.util.validate(NOT(EXISTS((this0_contentPost0_node)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this0_contentPost0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_contentPost0_node_auth_bind0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0)-[:HAS_CONTENT]->(this0_contentPost0_node)
-            WITH this0, this0_mutateMeta
+            WITH this0, this0_mutateMeta + [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Post', id: id(this0), toID: id(this0_contentPost0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
             CALL apoc.util.validate(NOT(this0.id IS NOT NULL AND this0.id = $this0_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
@@ -179,17 +179,17 @@ describe("Cypher Auth Allow", () => {
             CREATE (this0:User)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'User', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
+            WITH this0, [ metaVal IN [{type: 'Created', name: 'User', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
             CREATE (this0_contentComment0_node:Comment)
             SET this0_contentComment0_node.id = $this0_contentComment0_node_id
-            WITH this0, this0_contentComment0_node, this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Comment', id: id(this0_contentComment0_node), properties: this0_contentComment0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
+            WITH this0, this0_contentComment0_node, this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Comment', id: id(this0_contentComment0_node), properties: this0_contentComment0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
             CREATE (this0_contentComment0_node_creator0_node:User)
             SET this0_contentComment0_node_creator0_node.id = $this0_contentComment0_node_creator0_node_id
-            WITH this0, this0_contentComment0_node, this0_contentComment0_node_creator0_node, this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'User', id: id(this0_contentComment0_node_creator0_node), properties: this0_contentComment0_node_creator0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
+            WITH this0, this0_contentComment0_node, this0_contentComment0_node_creator0_node, this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'User', id: id(this0_contentComment0_node_creator0_node), properties: this0_contentComment0_node_creator0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
             CALL apoc.util.validate(NOT(this0_contentComment0_node_creator0_node.id IS NOT NULL AND this0_contentComment0_node_creator0_node.id = $this0_contentComment0_node_creator0_node_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0_contentComment0_node)<-[:HAS_CONTENT]-(this0_contentComment0_node_creator0_node)
             MERGE (this0)-[:HAS_CONTENT]->(this0_contentComment0_node)
-            WITH this0, this0_mutateMeta
+            WITH this0, this0_mutateMeta + [ metaVal IN [{type: 'Connected', name: 'Comment', relationshipName: 'HAS_CONTENT', toName: 'User', id: id(this0_contentComment0_node), toID: id(this0_contentComment0_node_creator0_node)},{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Comment', id: id(this0), toID: id(this0_contentComment0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
             CALL apoc.util.validate(NOT(this0.id IS NOT NULL AND this0.id = $this0_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
@@ -247,7 +247,7 @@ describe("Cypher Auth Allow", () => {
             OPTIONAL MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
             CALL apoc.do.when(this_content0_creator0 IS NOT NULL, \\\\\\"
             SET this_content0_creator0.id = $this_update_content0_creator0_id
-            WITH this, this_content0, this_has_content0_relationship, this_content0_creator0, this_content0_has_content0_relationship, [ metaVal IN [{type: 'Updated', name: 'User', id: id(this_content0_creator0), properties: $this_update_content0_creator0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, this_content0, this_has_content0_relationship, this_content0_creator0, this_content0_has_content0_relationship, [ metaVal IN [{type: 'Updated', name: 'User', id: id(this_content0_creator0), properties: $this_update_content0_creator0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             CALL apoc.util.validate(NOT(this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0_auth_bind0_id), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             RETURN this, this_content0, this_has_content0_relationship, this_content0_creator0, this_content0_has_content0_relationship, mutateMeta
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_content0:this_content0, this_has_content0_relationship:this_has_content0_relationship, this_content0_creator0:this_content0_creator0, this_content0_has_content0_relationship:this_content0_has_content0_relationship, updateUsers: $updateUsers, this_content0_creator0:this_content0_creator0, auth:$auth,this_update_content0_creator0_id:$this_update_content0_creator0_id,this_update_content0_creator0:$this_update_content0_creator0,this_content0_creator0_auth_bind0_id:$this_content0_creator0_auth_bind0_id})
@@ -268,7 +268,7 @@ describe("Cypher Auth Allow", () => {
             OPTIONAL MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
             CALL apoc.do.when(this_content0_creator0 IS NOT NULL, \\\\\\"
             SET this_content0_creator0.id = $this_update_content0_creator0_id
-            WITH this, this_content0, this_has_content0_relationship, this_content0_creator0, this_content0_has_content0_relationship, [ metaVal IN [{type: 'Updated', name: 'User', id: id(this_content0_creator0), properties: $this_update_content0_creator0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, this_content0, this_has_content0_relationship, this_content0_creator0, this_content0_has_content0_relationship, [ metaVal IN [{type: 'Updated', name: 'User', id: id(this_content0_creator0), properties: $this_update_content0_creator0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             CALL apoc.util.validate(NOT(this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0_auth_bind0_id), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             RETURN this, this_content0, this_has_content0_relationship, this_content0_creator0, this_content0_has_content0_relationship, mutateMeta
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_content0:this_content0, this_has_content0_relationship:this_has_content0_relationship, this_content0_creator0:this_content0_creator0, this_content0_has_content0_relationship:this_content0_has_content0_relationship, updateUsers: $updateUsers, this_content0_creator0:this_content0_creator0, auth:$auth,this_update_content0_creator0_id:$this_update_content0_creator0_id,this_update_content0_creator0:$this_update_content0_creator0,this_content0_creator0_auth_bind0_id:$this_content0_creator0_auth_bind0_id})
@@ -366,7 +366,7 @@ describe("Cypher Auth Allow", () => {
             	WHERE this_connect_content0_node.id = $this_connect_content0_node_id
             CALL apoc.do.when(this_connect_content0_node IS NOT NULL AND this IS NOT NULL, \\"
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            RETURN this, this_connect_content0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Comment', id: id(this), toID: id(this_connect_content0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_content0_node_mutateMeta
+            RETURN this, this_connect_content0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Comment', id: id(this), toID: id(this_connect_content0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_connect_content0_node_mutateMeta
             \\", \\"\\", {this:this, this_connect_content0_node:this_connect_content0_node})
             YIELD value
             WITH this, this_connect_content0_node, value.this_connect_content0_node_mutateMeta as this_connect_content_mutateMeta
@@ -379,7 +379,7 @@ describe("Cypher Auth Allow", () => {
             	WHERE this_connect_content0_node.id = $this_connect_content0_node_id
             CALL apoc.do.when(this_connect_content0_node IS NOT NULL AND this IS NOT NULL, \\"
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            RETURN this, this_connect_content0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Post', id: id(this), toID: id(this_connect_content0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_content0_node_mutateMeta
+            RETURN this, this_connect_content0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Post', id: id(this), toID: id(this_connect_content0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_connect_content0_node_mutateMeta
             \\", \\"\\", {this:this, this_connect_content0_node:this_connect_content0_node})
             YIELD value
             WITH this, this_connect_content0_node, value.this_connect_content0_node_mutateMeta as this_connect_content_mutateMeta
@@ -428,7 +428,7 @@ describe("Cypher Auth Allow", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
             WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id
-            WITH this, this_disconnect_content0, this_disconnect_content0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Comment', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_disconnect_content0), relationshipID: id(this_disconnect_content0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
+            WITH this, this_disconnect_content0, this_disconnect_content0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Comment', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_disconnect_content0), relationshipID: id(this_disconnect_content0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
@@ -439,7 +439,7 @@ describe("Cypher Auth Allow", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id
-            WITH this, this_disconnect_content0, this_disconnect_content0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Post', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_disconnect_content0), relationshipID: id(this_disconnect_content0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
+            WITH this, this_disconnect_content0, this_disconnect_content0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Post', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_disconnect_content0), relationshipID: id(this_disconnect_content0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
