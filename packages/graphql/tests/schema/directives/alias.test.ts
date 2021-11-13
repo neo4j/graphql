@@ -53,7 +53,7 @@ describe("Alias", () => {
 
             type Actor {
               actedIn(options: MovieOptions, where: MovieWhere): [Movie]
-              actedInAggregate: ActorMovieActedInAggregationSelection
+              actedInAggregate(where: MovieWhere): ActorMovieActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               city: String
               name: String!

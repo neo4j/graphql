@@ -387,6 +387,7 @@ function createDisconnectAndParams({
             const subquery = createSubqueryContents(refNodes[0], disconnect, index, childWithProjector);
             res.disconnects.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
+            mutateMetaVariableDeclared = childWithProjector.mutateMetaVariableDeclared;
         }
 
         res.disconnects.push("}");

@@ -17,15 +17,16 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
-import faker from "faker";
 import { gql } from "apollo-server";
+import faker from "faker";
+import { graphql } from "graphql";
+import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { localEventEmitter } from "../../../../src/utils/pubsub";
+import neo4j from "../../neo4j";
 
-describe("interface relationships", () => {
+describe("mutation events (update > update)", () => {
     let driver: Driver;
     let neoSchema: Neo4jGraphQL;
 
@@ -33,25 +34,9 @@ describe("interface relationships", () => {
         driver = await neo4j();
 
         const typeDefs = gql`
-            type Episode {
-                runtime: Int!
-                series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
-            }
-
-            interface Production {
-                title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            }
-
-            type Movie implements Production {
+            type Movie {
                 title: String!
                 runtime: Int!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            }
-
-            type Series implements Production {
-                title: String!
-                episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
@@ -61,7 +46,8 @@ describe("interface relationships", () => {
 
             type Actor {
                 name: String!
-                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                gender: String
+                actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
 
@@ -74,7 +60,7 @@ describe("interface relationships", () => {
         await driver.close();
     });
 
-    test("update through relationship field", async () => {
+    test("updates nodes and emits events", async () => {
         const session = driver.session();
 
         const actorName = generate({
@@ -90,95 +76,6 @@ describe("interface relationships", () => {
         const movieScreenTime = faker.random.number();
 
         const movieNewTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const seriesTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime = faker.random.number();
-
-        const query = `
-            mutation UpdateUpdate($name: String, $oldTitle: String, $newTitle: String) {
-                updateActors(
-                    where: { name: $name }
-                    update: {
-                        actedIn: { where: { node: { title: $oldTitle } }, update: { node: { title: $newTitle } } }
-                    }
-                ) {
-                    actors {
-                        name
-                        actedIn {
-                            title
-                            ... on Movie {
-                                runtime
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        try {
-            await session.run(
-                `
-                CREATE (a:Actor { name: $actorName })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
-            `,
-                {
-                    actorName,
-                    movieTitle,
-                    movieRuntime,
-                    movieScreenTime,
-                    seriesTitle,
-                    seriesScreenTime,
-                }
-            );
-
-            const gqlResult = await graphql({
-                schema: neoSchema.schema,
-                source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                variableValues: {
-                    name: actorName,
-                    oldTitle: movieTitle,
-                    newTitle: movieNewTitle,
-                },
-            });
-
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
-            expect(gqlResult.data).toEqual({
-                updateActors: {
-                    actors: [
-                        {
-                            actedIn: expect.arrayContaining([
-                                {
-                                    runtime: movieRuntime,
-                                    title: movieNewTitle,
-                                },
-                                {
-                                    title: seriesTitle,
-                                },
-                            ]),
-                            name: actorName,
-                        },
-                    ],
-                },
-            });
-        } finally {
-            await session.close();
-        }
-    });
-
-    test("nested update through relationship field", async () => {
-        const session = driver.session();
-
-        const actorName = generate({
             readable: true,
             charset: "alphabetic",
         });
@@ -187,32 +84,15 @@ describe("interface relationships", () => {
             charset: "alphabetic",
         });
 
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
-
-        const movieNewTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const seriesTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime = faker.random.number();
-
         const query = `
-            mutation UpdateUpdate($name: String, $newName: String, $oldTitle: String, $newTitle: String) {
+            mutation UpdateUpdate($name: String, $actorNewName: String, $newGender: String, $oldTitle: String, $newTitle: String) {
                 updateActors(
                     where: { name: $name }
                     update: {
+                        name: $actorNewName
                         actedIn: {
                             where: { node: { title: $oldTitle } }
-                            update: { node: { title: $newTitle, actors: { update: { node: { name: $newName } } } } }
+                            update: { node: { title: $newTitle, actors: { update: { node: { gender: $newGender } } } } }
                         }
                     }
                 ) {
@@ -229,30 +109,34 @@ describe("interface relationships", () => {
             }
         `;
 
+        const events: { event: string | symbol, payload: any }[] = [];
+        function onEvent(event: string | symbol, payload) {
+            events.push({ event, payload });
+        }
+
         try {
             await session.run(
                 `
                 CREATE (a:Actor { name: $actorName })
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
             `,
                 {
                     actorName,
                     movieTitle,
                     movieRuntime,
                     movieScreenTime,
-                    seriesTitle,
-                    seriesScreenTime,
                 }
             );
 
+            localEventEmitter.addAnyListener(onEvent);
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
                     name: actorName,
-                    newName: actorNewName,
+                    newGender: 'Male',
+                    actorNewName,
                     oldTitle: movieTitle,
                     newTitle: movieNewTitle,
                 },
@@ -260,7 +144,7 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(1);
             expect(gqlResult.data).toEqual({
                 updateActors: {
                     actors: [
@@ -269,9 +153,6 @@ describe("interface relationships", () => {
                                 {
                                     runtime: movieRuntime,
                                     title: movieNewTitle,
-                                },
-                                {
-                                    title: seriesTitle,
                                 },
                             ]),
                             name: actorNewName,
@@ -279,23 +160,48 @@ describe("interface relationships", () => {
                     ],
                 },
             });
+
+            expect(events).toHaveLength(3);
+            expect(events[0]).toMatchObject({
+                event: 'Actor.Updated',
+                payload: {
+                    name: 'Actor',
+                    type: 'Updated',
+                    properties: {
+                        gender: 'Male',
+                    },
+                },
+            });
+            expect(events[1]).toMatchObject({
+                event: 'Movie.Updated',
+                payload: {
+                    name: 'Movie',
+                    type: 'Updated',
+                    properties: {
+                        title: movieNewTitle,
+                    },
+                },
+            });
+            expect(events[2]).toMatchObject({
+                event: 'Actor.Updated',
+                payload: {
+                    name: 'Actor',
+                    type: 'Updated',
+                    properties: {
+                        name: actorNewName,
+                    },
+                },
+            });
         } finally {
             await session.close();
+            localEventEmitter.removeAnyListener(onEvent);
         }
     });
 
-    test("nested update through relationship field using _on to only update through certain type", async () => {
+    test("update through unnamed relationship field and emits events", async () => {
         const session = driver.session();
 
         const actorName = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const actorOldName = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const actorNewName = generate({
             readable: true,
             charset: "alphabetic",
         });
@@ -304,38 +210,37 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
+
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
+        const actorNewScreentime = faker.random.number();
 
+        const actorNewName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieNewTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
 
-        const seriesScreenTime = faker.random.number();
-
         const query = `
-            mutation UpdateUpdate(
-                $name: String
-                $oldName: String
-                $newName: String
-                $oldTitle: String
-                $newTitle: String
-            ) {
+            mutation UpdateUpdate($name: String, $actorNewName: String, $oldTitle: String, $newTitle: String, $actorNewScreentime: Int) {
                 updateActors(
                     where: { name: $name }
                     update: {
                         actedIn: {
                             where: { node: { title: $oldTitle } }
                             update: {
+                                edge: {
+                                    screenTime: $actorNewScreentime
+                                },
                                 node: {
-                                    _on: {
-                                        Movie: {
-                                            title: $newTitle
-                                            actors: {
-                                                where: { node: { name: $oldName } }
-                                                update: { node: { name: $newName } }
-                                            }
+                                    title: $newTitle,
+                                    actors: {
+                                        update: {
+                                            node: { name: $actorNewName }
+                                            edge: { screenTime: $actorNewScreentime }
                                         }
                                     }
                                 }
@@ -345,193 +250,47 @@ describe("interface relationships", () => {
                 ) {
                     actors {
                         name
-                        actedIn {
-                            __typename
-                            title
-                            actors {
-                                name
-                            }
-                            ... on Movie {
-                                runtime
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        try {
-            await session.run(
-                `
-                CREATE (a:Actor { name: $actorName })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })<-[:ACTED_IN { screenTime: $movieScreenTime }]-(:Actor { name: $actorOldName })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $movieTitle })<-[:ACTED_IN { screenTime: $seriesScreenTime }]-(:Actor { name: $actorOldName })
-            `,
-                {
-                    actorName,
-                    actorOldName,
-                    movieTitle,
-                    movieRuntime,
-                    movieScreenTime,
-                    seriesScreenTime,
-                }
-            );
-
-            const gqlResult = await graphql({
-                schema: neoSchema.schema,
-                source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                variableValues: {
-                    name: actorName,
-                    oldName: actorOldName,
-                    newName: actorNewName,
-                    oldTitle: movieTitle,
-                    newTitle: movieNewTitle,
-                },
-            });
-
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
-            expect(
-                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.__typename === "Series").actors
-            ).toHaveLength(2);
-            expect(
-                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.__typename === "Movie").actors
-            ).toHaveLength(2);
-            expect(gqlResult.data).toEqual({
-                updateActors: {
-                    actors: [
-                        {
-                            actedIn: expect.arrayContaining([
-                                {
-                                    __typename: "Movie",
-                                    runtime: movieRuntime,
-                                    title: movieNewTitle,
-                                    actors: expect.arrayContaining([
-                                        {
-                                            name: actorName,
-                                        },
-                                        {
-                                            name: actorNewName,
-                                        },
-                                    ]),
-                                },
-                                {
-                                    __typename: "Series",
-                                    title: movieTitle,
-                                    actors: expect.arrayContaining([
-                                        {
-                                            name: actorName,
-                                        },
-                                        {
-                                            name: actorOldName,
-                                        },
-                                    ]),
-                                },
-                            ]),
-                            name: actorName,
-                        },
-                    ],
-                },
-            });
-        } finally {
-            await session.close();
-        }
-    });
-
-    test("nested update through relationship field using where _on to only update certain type", async () => {
-        const session = driver.session();
-
-        const actorName = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const actorOldName = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const actorNewName = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
-
-        const movieNewTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const seriesScreenTime = faker.random.number();
-
-        const query = `
-            mutation UpdateUpdate($name: String, $newName: String, $oldName: String, $oldTitle: String, $newTitle: String) {
-                updateActors(
-                    where: { name: $name }
-                    update: {
-                        actedIn: {
-                            where: { node: { _on: { Movie: { title: $oldTitle } } } }
-                            update: {
-                                node: {
-                                    title: $newTitle
-                                    actors: {
-                                        where: { node: { name: $oldName } }
-                                        update: { node: { name: $newName } }
-                                    }
+                        actedInConnection {
+                            edges {
+                                screenTime
+                                node {
+                                    title
                                 }
                             }
                         }
                     }
-                ) {
-                    actors {
-                        name
-                        actedIn {
-                            __typename
-                            title
-                            actors {
-                                name
-                            }
-                            ... on Movie {
-                                runtime
-                            }
-                        }
-                    }
                 }
             }
         `;
+
+        const events: { event: string | symbol, payload: any }[] = [];
+        function onEvent(event: string | symbol, payload) {
+            events.push({ event, payload });
+        }
 
         try {
             await session.run(
                 `
                 CREATE (a:Actor { name: $actorName })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })<-[:ACTED_IN { screenTime: $movieScreenTime }]-(:Actor { name: $actorOldName })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $movieTitle })<-[:ACTED_IN { screenTime: $seriesScreenTime }]-(:Actor { name: $actorOldName })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })
             `,
                 {
                     actorName,
-                    actorOldName,
                     movieTitle,
                     movieRuntime,
                     movieScreenTime,
-                    seriesScreenTime,
                 }
             );
 
+            localEventEmitter.addAnyListener(onEvent);
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
                     name: actorName,
-                    oldName: actorOldName,
-                    newName: actorNewName,
+                    actorNewName,
+                    actorNewScreentime,
                     oldTitle: movieTitle,
                     newTitle: movieNewTitle,
                 },
@@ -539,51 +298,97 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
-            expect(
-                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.__typename === "Series").actors
-            ).toHaveLength(2);
-            expect(
-                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.__typename === "Movie").actors
-            ).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {
                     actors: [
                         {
-                            actedIn: expect.arrayContaining([
-                                {
-                                    __typename: "Movie",
-                                    runtime: movieRuntime,
-                                    title: movieNewTitle,
-                                    actors: expect.arrayContaining([
-                                        {
-                                            name: actorName,
-                                        },
-                                        {
-                                            name: actorNewName,
-                                        },
-                                    ]),
-                                },
-                                {
-                                    __typename: "Series",
-                                    title: movieTitle,
-                                    actors: expect.arrayContaining([
-                                        {
-                                            name: actorName,
-                                        },
-                                        {
-                                            name: actorName,
-                                        },
-                                    ]),
-                                },
-                            ]),
-                            name: actorName,
+                            actedInConnection: {
+                                edges: [{
+                                    screenTime: actorNewScreentime,
+                                    node: {
+                                        title: movieNewTitle,
+                                    }
+                                }]
+                            },
+                            name: actorNewName,
                         },
                     ],
                 },
             });
+
+            expect(events).toHaveLength(6);
+            expect(events[0]).toMatchObject({
+                event: 'Actor.Updated',
+                payload: {
+                    name: 'Actor',
+                    type: 'Updated',
+                    properties: {
+                        name: actorNewName,
+                    },
+                },
+            });
+            expect(events[1]).toMatchObject({
+                event: 'Movie.RelationshipUpdated',
+                payload: {
+                    name: 'Movie',
+                    type: 'RelationshipUpdated',
+                    toName: 'Actor',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: actorNewScreentime,
+                    },
+                },
+            });
+            expect(events[2]).toMatchObject({
+                event: 'Actor.RelationshipUpdated',
+                payload: {
+                    name: 'Actor',
+                    type: 'RelationshipUpdated',
+                    toName: 'Movie',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: actorNewScreentime,
+                    },
+                },
+            });
+            expect(events[3]).toMatchObject({
+                event: 'Movie.Updated',
+                payload: {
+                    name: 'Movie',
+                    type: 'Updated',
+                    properties: {
+                        title: movieNewTitle,
+                    },
+                },
+            });
+            expect(events[4]).toMatchObject({
+                event: 'Actor.RelationshipUpdated',
+                payload: {
+                    name: 'Actor',
+                    type: 'RelationshipUpdated',
+                    toName: 'Movie',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: actorNewScreentime,
+                    },
+                },
+            });
+            expect(events[5]).toMatchObject({
+                event: 'Movie.RelationshipUpdated',
+                payload: {
+                    name: 'Movie',
+                    type: 'RelationshipUpdated',
+                    toName: 'Actor',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: actorNewScreentime,
+                    },
+                },
+            });
         } finally {
             await session.close();
+            localEventEmitter.removeAnyListener(onEvent);
         }
     });
+
 });

@@ -17,23 +17,30 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
-import faker from "faker";
 import { gql } from "apollo-server";
+import faker from "faker";
+import { graphql } from "graphql";
+import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { localEventEmitter } from "../../../../src/utils/pubsub";
+import neo4j from "../../neo4j";
 
 describe("interface relationships", () => {
     let driver: Driver;
     let neoSchema: Neo4jGraphQL;
+
+    const events: { event: string | symbol, payload: any }[] = [];
+    function onEvent(event: string | symbol, payload) {
+        events.push({ event, payload });
+    }
 
     beforeAll(async () => {
         driver = await neo4j();
 
         const typeDefs = gql`
             type Episode {
+                title: String!
                 runtime: Int!
                 series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
             }
@@ -68,13 +75,19 @@ describe("interface relationships", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
+        localEventEmitter.addAnyListener(onEvent);
     });
 
+    beforeEach(() => {
+        events.splice(0);
+    });
+ 
     afterAll(async () => {
         await driver.close();
+        localEventEmitter.removeAnyListener(onEvent);
     });
 
-    test("update create through relationship field", async () => {
+    test("update create through relationship field and emits events", async () => {
         const session = driver.session();
 
         const actorName = generate({
@@ -156,31 +169,82 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data).toEqual({
-                updateActors: {
-                    actors: [
-                        {
-                            actedIn: expect.arrayContaining([
-                                {
-                                    runtime: movieRuntime,
-                                    title: movieTitle,
-                                },
-                                {
-                                    title: seriesTitle,
-                                },
-                            ]),
-                            name: actorName,
-                        },
-                    ],
+            expect(events).toHaveLength(6);
+            expect(events[0]).toMatchObject({
+                event: 'Movie.Created',
+                payload: {
+                    name: 'Movie',
+                    type: 'Created',
+                    properties: {
+                        title: movieTitle,
+                        runtime: movieRuntime,
+                    },
                 },
             });
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect(events[1]).toMatchObject({
+                event: 'Actor.Connected',
+                payload: {
+                    name: 'Actor',
+                    type: 'Connected',
+                    toName: 'Movie',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: movieScreenTime,
+                    },
+                },
+            });
+            expect(events[2]).toMatchObject({
+                event: 'Movie.Connected',
+                payload: {
+                    name: 'Movie',
+                    type: 'Connected',
+                    toName: 'Actor',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: movieScreenTime,
+                    },
+                },
+            });
+            expect(events[3]).toMatchObject({
+                event: 'Series.Created',
+                payload: {
+                    name: 'Series',
+                    type: 'Created',
+                    properties: {
+                        title: seriesTitle,
+                    },
+                },
+            });
+            expect(events[4]).toMatchObject({
+                event: 'Actor.Connected',
+                payload: {
+                    name: 'Actor',
+                    type: 'Connected',
+                    toName: 'Series',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: seriesScreenTime,
+                    },
+                },
+            });
+            expect(events[5]).toMatchObject({
+                event: 'Series.Connected',
+                payload: {
+                    name: 'Series',
+                    type: 'Connected',
+                    toName: 'Actor',
+                    relationshipName: 'ACTED_IN',
+                    properties: {
+                        screenTime: seriesScreenTime,
+                    },
+                },
+            });
         } finally {
             await session.close();
         }
     });
 
-    test("update nested create through relationship field", async () => {
+    test("simple update create and emit events", async () => {
         const session = driver.session();
 
         const actorName1 = generate({
@@ -299,6 +363,121 @@ describe("interface relationships", () => {
             expect(
                 gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.title === movieTitle).actors
             ).toHaveLength(2);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("simple update create without relationship properties and emit events", async () => {
+
+        const session = driver.session();
+
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const episodeTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const episodeRunTime = faker.random.number();
+
+        const query = `
+            mutation UpdateCreate(
+                $seriesTitle: String!
+                $episodeTitle: String!
+                $episodeRunTime: Int!
+            ) {
+                updateSeries(
+                    where: { title: $seriesTitle }
+                    create: {
+                        episodes: [
+                            {
+                                node: {
+                                    title: $episodeTitle,
+                                    runtime: $episodeRunTime
+                                }
+                            }
+                        ]
+                    }
+                ) {
+                    series {
+                        title
+                        episodes {
+                            title
+                            runtime
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (s:Series { title: $seriesTitle })
+            `,
+                { seriesTitle }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: {
+                    seriesTitle,
+                    episodeTitle,
+                    episodeRunTime,
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult.data).toEqual({
+                updateSeries: {
+                    series: [{
+                        title: seriesTitle,
+                        episodes: [
+                            {
+                                title: episodeTitle,
+                                runtime: episodeRunTime,
+                            },
+                        ],
+                    }]
+                },
+            });
+            expect(events).toHaveLength(3);
+            expect(events[0]).toMatchObject({
+                event: 'Episode.Created',
+                payload: {
+                    name: 'Episode',
+                    type: 'Created',
+                    properties: {
+                        title: episodeTitle,
+                        runtime: episodeRunTime,
+                    },
+                },
+            });
+            expect(events[1]).toMatchObject({
+                event: 'Series.Connected',
+                payload: {
+                    name: 'Series',
+                    type: 'Connected',
+                    toName: 'Episode',
+                    relationshipName: 'HAS_EPISODE',
+                },
+            });
+            expect(events[1].payload.properties).toBeUndefined();
+            expect(events[2]).toMatchObject({
+                event: 'Episode.Connected',
+                payload: {
+                    name: 'Episode',
+                    type: 'Connected',
+                    toName: 'Series',
+                    relationshipName: 'HAS_EPISODE',
+                },
+            });
+            expect(events[2].payload.properties).toBeUndefined();
         } finally {
             await session.close();
         }

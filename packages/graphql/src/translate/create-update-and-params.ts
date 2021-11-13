@@ -293,7 +293,7 @@ function createUpdateAndParams({
                             childWithProjector.markMutationMeta({
                                 type: 'RelationshipUpdated',
                                 name: node.name,
-                                relationshipName: relationship.name,
+                                relationshipName: relationField.type,
                                 toName: refNode.name,
 
                                 idVar: `id(${ varName })`,

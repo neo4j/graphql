@@ -84,6 +84,8 @@ type AuthableField =
 
 type SortableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | PointField | CypherField;
 
+type ConstrainableField = PrimitiveField | TemporalField | PointField;
+
 class Node extends GraphElement {
     public relationFields: RelationField[];
     public connectionFields: ConnectionField[];
@@ -169,12 +171,24 @@ class Node extends GraphElement {
         ].filter((field) => !field.typeMeta.array);
     }
 
+    public get constrainableFields(): ConstrainableField[] {
+        return [...this.primitiveFields, ...this.temporalFields, ...this.pointFields];
+    }
+
+    public get uniqueFields(): ConstrainableField[] {
+        return this.constrainableFields.filter((field) => field.unique);
+    }
+
     public getLabelString(context: Context): string {
         return this.nodeDirective?.getLabelsString(this.name, context) || `:${this.name}`;
     }
 
     public getLabels(context: Context): string[] {
         return this.nodeDirective?.getLabels(this.name, context) || [this.name];
+    }
+
+    public getMainLabel(): string {
+        return this.nodeDirective?.label || this.name;
     }
 
     public getPlural(options: { camelCase: boolean }): string {

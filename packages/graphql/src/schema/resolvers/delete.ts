@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { execute } from "../../utils";
+import { Node } from "../../classes";
 import { translateDelete } from "../../translate";
 import { Context } from "../../types";
-import { Node } from "../../classes";
+import { execute, publishMutateMeta } from "../../utils";
 
 export default function deleteResolver({ node }: { node: Node }) {
     async function resolve(_root: any, _args: any, _context: unknown) {
@@ -30,6 +30,10 @@ export default function deleteResolver({ node }: { node: Node }) {
             params,
             defaultAccessMode: "WRITE",
             context,
+        });
+        publishMutateMeta({
+            context,
+            executeResult,
         });
 
         return { bookmark: executeResult.bookmark, ...executeResult.statistics };

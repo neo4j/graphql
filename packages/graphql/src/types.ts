@@ -92,6 +92,10 @@ export interface TypeMeta {
     };
 }
 
+export interface Unique {
+    constraintName: string;
+}
+
 /**
  * Representation a ObjectTypeDefinitionNode field.
  */
@@ -107,6 +111,7 @@ export interface BaseField {
     writeonly?: boolean;
     ignored?: boolean;
     dbPropertyName?: string;
+    unique?: Unique;
 }
 
 /**

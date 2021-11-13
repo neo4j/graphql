@@ -104,19 +104,21 @@ describe("createDisconnectAndParams", () => {
                 WITH this
                 OPTIONAL MATCH (this)-[this0_rel:SIMILAR]->(this0:Movie)
                 WHERE this0.title = $this[0].where.node.title
-                WITH this, this0, this0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'Movie', relationshipName: 'SIMILAR', id: id(this), toID: id(this0), relationshipID: id(this0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
+                WITH this, this0, this0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'Movie', relationshipName: 'SIMILAR', id: id(this), toID: id(this0), relationshipID: id(this0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
                 FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END | DELETE this0_rel )
                 WITH this, this0, this0_rel, this_mutateMeta
                 CALL {
                     WITH this, this0, this0_rel
                     OPTIONAL MATCH (this0)-[this0_similarMovies0_rel:SIMILAR]->(this0_similarMovies0:Movie)
                     WHERE this0_similarMovies0.title = $this[0].disconnect.similarMovies[0].where.node.title
-                    WITH this, this0, this0_rel, this0_similarMovies0, this0_similarMovies0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'Movie', relationshipName: 'SIMILAR', id: id(this0), toID: id(this0_similarMovies0), relationshipID: id(this0_similarMovies0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
+                    WITH this, this0, this0_rel, this0_similarMovies0, this0_similarMovies0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'Movie', relationshipName: 'SIMILAR', id: id(this0), toID: id(this0_similarMovies0), relationshipID: id(this0_similarMovies0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
                     FOREACH(_ IN CASE this0_similarMovies0 WHEN NULL THEN [] ELSE [1] END | DELETE this0_similarMovies0_rel )
                     RETURN REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
                 }
+                WITH this, this0, this0_rel, this_mutateMeta + this0_mutateMeta as this_mutateMeta
                 RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
             }
+            WITH this, this_mutateMeta as mutateMeta
             `)
         );
 

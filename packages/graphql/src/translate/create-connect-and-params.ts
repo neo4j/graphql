@@ -208,8 +208,6 @@ function createConnectAndParams({
 
         mergeStrs.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
-        let relationshipNodeName: string | undefined;
-        let relationshipIDVar: string | undefined;
         let innerApocParams = {};
 
         if (relationField.properties) {
@@ -231,11 +229,11 @@ function createConnectAndParams({
         mergeWithProjector.markMutationMeta({
             type: 'Connected',
             name: parentNode.name,
-            relationshipName: relationshipNodeName,
+            relationshipName: relationField.type,
             toName: relatedNode.name,
 
             idVar: `id(${ parentVar })`,
-            relationshipIDVar,
+            relationshipIDVar: relationField.properties ? `id(${ relationshipName })` : '',
             toIDVar: `id(${ nodeName })`,
             propertiesVar: relationField.properties ? relationshipName : undefined,
         });
@@ -467,6 +465,7 @@ function createConnectAndParams({
             const subquery = createSubqueryContents(refNodes[0], connect, index, childWithProjector);
             res.connects.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
+            mutateMetaVariableDeclared = childWithProjector.mutateMetaVariableDeclared;
         }
 
         res.connects.push("}");
