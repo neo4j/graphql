@@ -62,7 +62,7 @@ type Colour @node(label: "Color", additionalLabels: ["Hue"]) {
 [[type-definitions-indexes-fulltext]]
 == Fulltext indexes
 
-You can use the `@fulltext` directive to add a https://neo4j.com/docs/cypher-manual/current/indexes-for-full-text-search/[Full text index] inside Neo4j. 
+You can use the `@fulltext` directive to add a https://neo4j.com/docs/cypher-manual/current/indexes-for-full-text-search/[Full text index] inside Neo4j.
 
 [source, graphql, indent=0]
 ----
@@ -80,7 +80,7 @@ directive @fulltext(indexes: [FullTextInput]!) on OBJECT
 
 Using this directive does not automatically ensure the existence of these indexes, and you will need to run a function on server startup. See the section xref::type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-and-constraints-asserting[Asserting constraints] below for details.
 
-=== Specifying the `@fulltext` directive 
+=== Specifying the `@fulltext` directive
 
 The directive can be used on nodes. Here we add a Fulltext index, called 'ProductName', for the name field, on the Product node.
 
@@ -92,22 +92,22 @@ type Product @fulltext(indexes: [{ name: "ProductName", fields: ["name"] }]) {
 }
 ----
 
-When you run xref::type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-and-constraints-asserting[Asserting constraints] this shall do the index creation like so: 
+When you run xref::type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-and-constraints-asserting[Asserting constraints] this shall do the index creation like so:
 
 [source, cypher, indent=0]
 ----
 CALL db.index.fulltext.createNodeIndex("ProductName", ["Product"], ["name"])
 ----
 
-=== Using the `@fulltext` directive 
+=== Using the `@fulltext` directive
 
-Once you specify the index, you will now gain a 'Top Level' `fulltext` key on the following operations: 
+Once you specify the index, you will now gain a 'Top Level' `fulltext` key on the following operations:
 
 1. read
 2. count
 3. aggregate
 
-Here we use the `fulltext` key, and the phrase is using https://lucene.apache.org/[Lucene’s full-text query language] to match and return Products: 
+Here we use the `fulltext` key, and the phrase is using https://lucene.apache.org/[Lucene’s full-text query language] to match and return Products:
 
 [source, graphql, indent=0]
 ----
@@ -118,7 +118,7 @@ query {
 }
 ----
 
-You can also, optionally, specify the score for matching: 
+You can also, optionally, specify the score for matching:
 
 [source, graphql, indent=0]
 ----
@@ -129,13 +129,13 @@ query {
 }
 ----
 
-> Note that you can only query one Fulltext index at once and that the fulltext key is only available on 'Top Level' queries. 
+> Note that you can only query one Fulltext index at once and that the fulltext key is only available on 'Top Level' queries.
 
 
 [[type-definitions-indexes-and-constraints-asserting]]
 == Asserting constraints
 
-In order to ensure that the specified constraints exist in the database, you will need to run the function `assertConstraints`, the full details of which can be found in the xref::api-reference/neo4jgraphql.adoc#api-reference-assertconstraints[API reference]. A simple example to create the necessary constraints might look like the following, assuming a valid driver instance in the variable `driver`. This will create two constraints, one for each field decorated with `@id`,  `@unique` and apply the indexes specified in `@fulltext`:
+In order to ensure that the specified constraints exist in the database, you will need to run the function `assertIndexesAndConstraints`, the full details of which can be found in the xref::api-reference/neo4jgraphql.adoc#api-reference-assertconstraints[API reference]. A simple example to create the necessary constraints might look like the following, assuming a valid driver instance in the variable `driver`. This will create two constraints, one for each field decorated with `@id`,  `@unique` and apply the indexes specified in `@fulltext`:
 
 [source, javascript, indent=0]
 ----
@@ -153,5 +153,5 @@ const typeDefs = gql`
 
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-await neoSchema.assertConstraints({ options: { create: true }});
+await neoSchema.assertIndexesAndConstraints({ options: { create: true }});
 ----
