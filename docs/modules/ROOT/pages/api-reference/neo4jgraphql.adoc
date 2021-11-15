@@ -96,7 +96,6 @@ Accepts all of the options from https://github.com/ardatan/graphql-tools/blob/%4
 |The OpenID Public Key Set Endpoint used to verify JWT tokens. The JWKS used to store the verification information is typically stored at an endpoint similar to \https://YOUR_DOMAIN/.well-known/jwks.json. +
 +
 *Recommended*
-|===
 
 |`secret` +
  +
