@@ -352,8 +352,7 @@ class Model {
         ];
 
         Object.entries(aggregate).forEach((entry) => {
-            // Must be count
-            if (!Object.keys(entry).length) {
+            if (((entry[0] as unknown) as string) === "count") {
                 selections.push(entry[0]);
 
                 return;

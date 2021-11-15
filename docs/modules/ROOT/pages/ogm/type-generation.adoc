@@ -1,0 +1,60 @@
+[[type-generation]]
+= Type Generation
+
+When you use the `.model()` method, you receive a generic instance of the Model class. There has been an effort to type the args and the return values of each method on the model however, due to the fact that each model's return values and args are dependant on what you have in your schema, we cant know ahead of time what each type is. You can use the `generate()` function exposed from the `@neo4j/graphql` package to generate the TypeScript types for your models each time you make a schema change. 
+
+== Example
+
+The example below imports the `generate` function from `@neo4j/graphql` and adds a conditional branch to check if the `process.env.GENERATE` variable has been set like this: 
+
+[source, bash, indent=0]
+----
+GENERATE="true" ts-node index.ts
+----
+
+Then, once you run this with the variable set, the types will be available and you can import and use them as a generic. Here is a full working example:
+
+[source, typescript, indent=0]
+----
+import { OGM, generate } from "@neo4j/graphql-ogm";
+import { ModelMap } from "./ogm-types"; // this file will be auto-generated using 'generate'
+import * as neo4j from "neo4j-driver"
+import * as path from "path"
+
+const typeDefs = `
+    type Movie {
+        id: ID
+        name: String
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("admin", "password")
+);
+
+// Generic is applied on the OGM
+const ogm = new OGM<ModelMap>({ typeDefs, driver });
+
+const Movie = ogm.model("Movie");
+
+async function main() {
+    // Only generate types when you make a schema change
+    if (process.env.GENERATE) {
+        const outFile = path.join(__dirname, "ogm-types.ts");
+
+        await generate({
+            ogm,
+            outFile,
+        });
+
+        console.log("Types Generated");
+
+        process.exit(1);
+    }
+
+    // Get full autocomplete on `Movie`, including where argument properties plus the return value
+    const [theMatrix] = await Movie.find({ where: { name: "The Matrix" } });
+}
+main()
+----
