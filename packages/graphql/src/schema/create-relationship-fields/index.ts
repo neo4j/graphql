@@ -217,10 +217,6 @@ function createRelationshipFields({
                 [rel.fieldName]: rel.typeMeta.array ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
             });
 
-            // nodeConnectOrCreateInput.addFields({
-            //     [rel.fieldName]: rel.typeMeta.array ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
-            // });
-
             nodeRelationInput.addFields({
                 [rel.fieldName]: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
             });
