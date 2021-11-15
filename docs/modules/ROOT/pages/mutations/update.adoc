@@ -99,3 +99,74 @@ mutation {
     }
 }
 ----
+
+== `connectOrCreate` relations
+If a related node has a `@unique` directive defined, `connectOrCreate` can be used in a
+nested update to perform a `MERGE` operation on the related node, creating a new
+relation and the related node if it doesn't exists.
+
+Consider the following type definition:
+[source, graphql, indent=0]
+----
+type Actor {
+    name: String!
+    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+}
+
+type Movie {
+    title: String
+    id: String! @unique
+    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+}
+----
+
+Because a movie id is unique, `connectOrCreate` can be used in an Actor mutation to ensure a movie exists before connecting, note that only `@unique`
+parameters can be used in `where`:
+
+[source, graphql, indent=0]
+----
+mutation Mutation {
+  updateActors(
+    update: {
+        movies: {
+          connectOrCreate: {
+            where: {node: {id: "1234"}}
+            onCreate: {node: {title: "Forrest Gump", id: "1234"}}
+          }
+        }
+    },
+    where: { name: "Tom Hanks"}
+  ) {
+    info {
+      nodesCreated
+    }
+  }
+}
+----
+
+In this case, all actors matching _"Tom Hanks"_ will be connected to the Movie with id _"1234"_. If the movie with given id does not exists,
+it will be created with the title _"Forrest Gump"_.
+
+
+For update operations, `connectOrCreate` can also be used as a top-level input:
+
+[source, graphql, indent=0]
+----
+mutation Mutation {
+  updateActors(
+      connectOrCreate: {
+        movies: {
+            where: {node: {id: "1234"}}
+            onCreate: {node: {title: "Forrest Gump", id: "1234"}}
+        }
+      },
+      where: { name: "Tom Hanks"}
+  ) {
+    info {
+      nodesCreated
+    }
+  }
+}
+----
+
+This operation is equivalent to the previous example.
