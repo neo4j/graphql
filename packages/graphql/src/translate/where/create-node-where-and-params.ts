@@ -218,7 +218,7 @@ function createNodeWhereAndParams({
             if (pointField) {
                 clause = `distance(${property}, point($${param}.point)) ${operators[operator]} $${param}.distance`;
             }
-            
+
             if (durationField) {
                 clause = `datetime() + ${property} ${operators[operator]} datetime() + $${param}`;
             }

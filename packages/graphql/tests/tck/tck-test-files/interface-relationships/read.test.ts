@@ -59,6 +59,63 @@ describe("Interface Relationships", () => {
             config: { enableRegex: true, jwt: { secret } },
         });
     });
+    test("Top level match", async () => {
+        const query = gql`
+            query {
+                actors(where:{actedInConnection:{node:{title:"The Matrix", _on:{Movie:{title:"Matrix"}}}}}) {
+                    actedIn {
+                        title
+                        ... on Movie {
+                            runtime
+                        }
+                        ... on Series {
+                            episodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            WHERE ANY(this_actedInConnection_Movie_map IN [(this)-[this_actedInConnection_Movie_ActorActedInRelationship:ACTED_IN]->(this_actedInConnection_Movie:Movie)  | { node: this_actedInConnection_Movie, relationship: this_actedInConnection_Movie_ActorActedInRelationship } ] WHERE this_actedInConnection_Movie_map.node.title = $this_actors.where.actedInConnection.node._on.Movie.title) OR ANY(this_actedInConnection_Series_map IN [(this)-[this_actedInConnection_Series_ActorActedInRelationship:ACTED_IN]->(this_actedInConnection_Series:Series)  | { node: this_actedInConnection_Series, relationship: this_actedInConnection_Series_ActorActedInRelationship } ] WHERE this_actedInConnection_Series_map.node.title = $this_actors.where.actedInConnection.node.title)
+            WITH this
+            CALL {
+            WITH this
+            MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
+            RETURN { __resolveType: \\"Movie\\", title: this_Movie.title, runtime: this_Movie.runtime } AS actedIn
+            UNION
+            WITH this
+            MATCH (this)-[:ACTED_IN]->(this_Series:Series)
+            RETURN { __resolveType: \\"Series\\", title: this_Series.title, episodes: this_Series.episodes } AS actedIn
+            }
+            RETURN this { actedIn: collect(actedIn) } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+        "{
+            \\"this_actors\\": {
+                \\"where\\": {
+                    \\"actedInConnection\\": {
+                        \\"node\\": {
+                            \\"title\\": \\"The Matrix\\",
+                            \\"_on\\": {
+                                \\"Movie\\": {
+                                    \\"title\\": \\"Matrix\\"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }"
+        `);
+    });
 
     test("Simple Interface Relationship Query", async () => {
         const query = gql`
