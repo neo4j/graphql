@@ -84,33 +84,7 @@ async function getJWT(context: Context): Promise<any> {
                 cacheMaxAge: 600000, // Defaults to 10m
             });
 
-            // Verifies the JWKS asynchronously, returns Promise
-            /* eslint-disable-next-line no-inner-declarations */
-            async function verifyJWKS() {
-                function getKey(header, callback) {
-                    // Callback that returns the key the corresponding key[kid]
-                    client.getSigningKey(header.kid, (err, key) => {
-                        const signingKey = key?.getPublicKey() || key?.publicKey || key?.rsaPublicKey;
-                        callback(null, signingKey);
-                    });
-                }
-
-                // Returns a Promise with verification result or error
-                return new Promise((resolve, reject) =>
-                    jsonwebtoken.verify(
-                        token,
-                        getKey,
-                        {
-                            algorithms: ["HS256", "RS256"],
-                        },
-                        function (err, decoded) {
-                            return err ? reject(err) : resolve(decoded);
-                        }
-                    )
-                );
-            }
-
-            result = await verifyJWKS();
+            result = await verifyJWKS(client, token);
         } else if (jwtConfig.secret) {
             debug("Verifying JWT using secret");
 
@@ -123,6 +97,31 @@ async function getJWT(context: Context): Promise<any> {
     }
 
     return result;
+}
+
+// Verifies the JWKS asynchronously, returns Promise
+async function verifyJWKS(client: JwksClient, token: string) {
+    function getKey(header, callback) {
+        // Callback that returns the key the corresponding key[kid]
+        client.getSigningKey(header.kid, (err, key) => {
+            const signingKey = key?.getPublicKey();
+            callback(null, signingKey);
+        });
+    }
+
+    // Returns a Promise with verification result or error
+    return new Promise((resolve, reject) =>
+        jsonwebtoken.verify(
+            token,
+            getKey,
+            {
+                algorithms: ["HS256", "RS256"],
+            },
+            function verifyCallback(err, decoded) {
+                return err ? reject(err) : resolve(decoded);
+            }
+        )
+    );
 }
 
 export default getJWT;
