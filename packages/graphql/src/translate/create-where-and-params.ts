@@ -450,9 +450,6 @@ function createWhereAndParams({
                         resultStr += connectionWhere[0];
                         resultStr += ")";
                         interfaceResultStringBlocks.push(resultStr);
-                        console.log("whereInput:", entry[1]);
-                        console.log("interface params", connectionWhere[1]);
-                        console.log("resolveTree params", recursing, `${varName}_${context.resolveTree.name}`, { [equalityConnection.fieldName]: connectionWhere[1] });
                         const resolveTreeParams = recursing
                             ? {
                             [`${varName}_${context.resolveTree.name}`]: {
@@ -466,7 +463,6 @@ function createWhereAndParams({
                         };
                     });
                     res.clauses.push(interfaceResultStringBlocks.join(" OR "));
-                    console.log("res.clauses", res.clauses);
                 }
 
             });
