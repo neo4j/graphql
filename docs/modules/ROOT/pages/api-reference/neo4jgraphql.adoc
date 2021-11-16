@@ -101,7 +101,6 @@ Accepts all of the options from https://github.com/ardatan/graphql-tools/blob/%4
  +
  Type: `string`
 |The secret used to encode JWT tokens.
-|===
 
 |`noVerify` +
  +
