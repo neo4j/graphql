@@ -261,7 +261,7 @@ function createUpdateAndParams({
                                 operation: "UPDATE",
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
-                                }[${index}].update.edge`,
+                                }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
                             });
 
                             const updateStrs = [setProperties, "RETURN count(*)"];
