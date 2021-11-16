@@ -22,6 +22,8 @@ import { buildMergeStatement } from "../cypher-builder/build-merge-statement";
 import { CypherStatement } from "../types";
 import { Node } from "../../classes";
 import { joinStatements } from "../utils";
+import createAuthAndParams from "../create-auth-and-params";
+import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 
 type CreateOrConnectInput = {
     where?: {
@@ -95,7 +97,13 @@ function createConnectOrCreateSubQuery({
         relationField,
     });
 
-    return joinStatements([mergeRelatedNodeStatement, mergeRelationStatement]);
+    const authStatement = createAuthStatement({
+        node: refNode,
+        context,
+        nodeName: baseName,
+    });
+
+    return joinStatements([authStatement, mergeRelatedNodeStatement, mergeRelationStatement]);
 }
 
 function mergeRelatedNode({
@@ -149,4 +157,37 @@ function mergeRelation({
         },
         context,
     });
+}
+
+function createAuthStatement({
+    node,
+    context,
+    nodeName,
+    i,
+}: {
+    node: Node;
+    context: Context;
+    nodeName: string;
+    i?: number;
+}): CypherStatement | undefined {
+    if (!node.auth) {
+        return undefined;
+    }
+
+    const indexStr = i === undefined ? "" : String(i);
+    const auth = createAuthAndParams({
+        entity: node,
+        operation: ["CONNECT", "CREATE"],
+        context,
+        // escapeQuotes: Boolean(insideDoWhen),
+        allow: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${indexStr}_allow` },
+    });
+
+    // subquery.push(
+    //     `\tCALL apoc.util.validate(NOT(${preAuth.connects.join(
+    //         " AND "
+    //     )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+    // );
+
+    return joinStatements(["CALL apoc.util.validate(NOT(", auth, `), "${AUTH_FORBIDDEN_ERROR}", [0])`], "");
 }

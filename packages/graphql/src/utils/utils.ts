@@ -47,3 +47,11 @@ export function filterTruthy<T>(arr: Array<T | null | undefined>): Array<T>;
 export function filterTruthy<T>(arr: Array<T | null | undefined>) {
     return arr.filter(Boolean);
 }
+
+/** Check is both arrays share at least one element */
+export function shareElement(arr1: Array<any>, arr2: Array<any>): boolean {
+    for (const element of arr1) {
+        if (arr2.includes(element)) return true;
+    }
+    return false;
+}

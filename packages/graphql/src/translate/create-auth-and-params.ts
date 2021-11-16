@@ -23,7 +23,7 @@ import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
 import joinPredicates, { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";
 import ContextParser from "../utils/context-parser";
-import { isString } from "../utils/utils";
+import { isString, arrayfy, shareElement } from "../utils/utils";
 
 interface Res {
     strs: string[];
@@ -178,7 +178,7 @@ function createAuthAndParams({
     where,
 }: {
     entity: Node | BaseField;
-    operation?: AuthOperations;
+    operation?: AuthOperations | AuthOperations[];
     skipRoles?: boolean;
     skipIsAuthenticated?: boolean;
     allow?: Allow;
@@ -193,7 +193,8 @@ function createAuthAndParams({
 
     let authRules: AuthRule[] = [];
     if (operation) {
-        authRules = entity?.auth.rules.filter((r) => !r.operations || r.operations?.includes(operation));
+        const operations = arrayfy(operation);
+        authRules = entity?.auth.rules.filter((r) => !r.operations || shareElement(operations, r.operations || [])); // r.operations?.includes(operation)
     } else {
         authRules = entity?.auth.rules;
     }
