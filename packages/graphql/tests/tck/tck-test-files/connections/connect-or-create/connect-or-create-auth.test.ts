@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../../src/utils/test/utils";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
-describe("Create or connect", () => {
+describe("connectOrCreate", () => {
     const secret = "secret";
     let neoSchema: Neo4jGraphQL;
 
@@ -40,12 +40,7 @@ describe("Create or connect", () => {
         `;
     }
 
-    test("Create with createOrConnect operation and CONNECT operation rule", async () => {
-        neoSchema = new Neo4jGraphQL({
-            typeDefs: createTypedef("[CONNECT]"),
-            config: { enableRegex: true, jwt: { secret } },
-        });
-
+    describe("Create -> connectOrCreate", () => {
         const query = gql`
             mutation {
                 createMovies(
@@ -67,102 +62,164 @@ describe("Create or connect", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        test("Create with createOrConnect and CONNECT operation rule", async () => {
+            neoSchema = new Neo4jGraphQL({
+                typeDefs: createTypedef("[CONNECT]"),
+                config: { enableRegex: true, jwt: { secret } },
+            });
 
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            MERGE (this0_genres_connectOrCreate0:Genre { name: $this0_genres_connectOrCreate0_node_name })
-            ON CREATE SET
-            this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate0_on_create_name
-            MERGE (this0)-[this0_relationship_this0_genres_connectOrCreate0:IN_GENRE]->(this0_genres_connectOrCreate0)
-            RETURN this0
-            }
-            RETURN
-            this0 { .title } AS this0"
-        `);
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"this0_title\\": \\"Cool Movie\\",
-                \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
-                \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "CALL {
+                CREATE (this0:Movie)
+                SET this0.title = $this0_title
+                CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MERGE (this0_genres_connectOrCreate0:Genre { name: $this0_genres_connectOrCreate0_node_name })
+                ON CREATE SET
+                this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate0_on_create_name
+                MERGE (this0)-[this0_relationship_this0_genres_connectOrCreate0:IN_GENRE]->(this0_genres_connectOrCreate0)
+                RETURN this0
                 }
-            }"
-        `);
-    });
+                RETURN
+                this0 { .title } AS this0"
+            `);
 
-    test("Create with createOrConnect operation and CREATE operation rule", async () => {
-        neoSchema = new Neo4jGraphQL({
-            typeDefs: createTypedef("[CREATE]"),
-            config: { enableRegex: true, jwt: { secret } },
-        });
-
-        const query = gql`
-            mutation {
-                createMovies(
-                    input: [
-                        {
-                            title: "Cool Movie"
-                            genres: {
-                                connectOrCreate: [
-                                    { where: { node: { name: "Horror" } }, onCreate: { node: { name: "Horror" } } }
-                                ]
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                    "{
+                        \\"this0_title\\": \\"Cool Movie\\",
+                        \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
+                        \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                        \\"auth\\": {
+                            \\"isAuthenticated\\": true,
+                            \\"roles\\": [],
+                            \\"jwt\\": {
+                                \\"roles\\": []
                             }
                         }
-                    ]
-                ) {
-                    movies {
-                        title
-                    }
-                }
-            }
-        `;
-
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
+                    }"
+                    `);
         });
 
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            MERGE (this0_genres_connectOrCreate0:Genre { name: $this0_genres_connectOrCreate0_node_name })
-            ON CREATE SET
-            this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate0_on_create_name
-            MERGE (this0)-[this0_relationship_this0_genres_connectOrCreate0:IN_GENRE]->(this0_genres_connectOrCreate0)
-            RETURN this0
-            }
-            RETURN
-            this0 { .title } AS this0"
-        `);
+        test("Create with createOrConnect and CREATE operation rule", async () => {
+            neoSchema = new Neo4jGraphQL({
+                typeDefs: createTypedef("[CREATE]"),
+                config: { enableRegex: true, jwt: { secret } },
+            });
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"this0_title\\": \\"Cool Movie\\",
-                \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
-                \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "CALL {
+                CREATE (this0:Movie)
+                SET this0.title = $this0_title
+                CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MERGE (this0_genres_connectOrCreate0:Genre { name: $this0_genres_connectOrCreate0_node_name })
+                ON CREATE SET
+                this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate0_on_create_name
+                MERGE (this0)-[this0_relationship_this0_genres_connectOrCreate0:IN_GENRE]->(this0_genres_connectOrCreate0)
+                RETURN this0
                 }
-            }"
-        `);
+                RETURN
+                this0 { .title } AS this0"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                            "{
+                                \\"this0_title\\": \\"Cool Movie\\",
+                                \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
+                                \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                                \\"auth\\": {
+                                    \\"isAuthenticated\\": true,
+                                    \\"roles\\": [],
+                                    \\"jwt\\": {
+                                        \\"roles\\": []
+                                    }
+                                }
+                            }"
+                            `);
+        });
+
+        test("Create with createOrConnect and CREATE, CONNECT operation rule", async () => {
+            neoSchema = new Neo4jGraphQL({
+                typeDefs: createTypedef("[CREATE, CONNECT]"),
+                config: { enableRegex: true, jwt: { secret } },
+            });
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "CALL {
+                CREATE (this0:Movie)
+                SET this0.title = $this0_title
+                CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MERGE (this0_genres_connectOrCreate0:Genre { name: $this0_genres_connectOrCreate0_node_name })
+                ON CREATE SET
+                this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate0_on_create_name
+                MERGE (this0)-[this0_relationship_this0_genres_connectOrCreate0:IN_GENRE]->(this0_genres_connectOrCreate0)
+                RETURN this0
+                }
+                RETURN
+                this0 { .title } AS this0"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                            "{
+                                \\"this0_title\\": \\"Cool Movie\\",
+                                \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
+                                \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                                \\"auth\\": {
+                                    \\"isAuthenticated\\": true,
+                                    \\"roles\\": [],
+                                    \\"jwt\\": {
+                                        \\"roles\\": []
+                                    }
+                                }
+                            }"
+                            `);
+        });
+
+        test("Create with createOrConnect and DELETE operation rule", async () => {
+            neoSchema = new Neo4jGraphQL({
+                typeDefs: createTypedef("[DELETE]"),
+                config: { enableRegex: true, jwt: { secret } },
+            });
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "CALL {
+                CREATE (this0:Movie)
+                SET this0.title = $this0_title
+                MERGE (this0_genres_connectOrCreate0:Genre { name: $this0_genres_connectOrCreate0_node_name })
+                ON CREATE SET
+                this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate0_on_create_name
+                MERGE (this0)-[this0_relationship_this0_genres_connectOrCreate0:IN_GENRE]->(this0_genres_connectOrCreate0)
+                RETURN this0
+                }
+                RETURN
+                this0 { .title } AS this0"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"this0_title\\": \\"Cool Movie\\",
+                    \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
+                    \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\"
+                }"
+            `);
+        });
     });
 });

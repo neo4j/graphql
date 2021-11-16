@@ -170,24 +170,17 @@ function createAuthStatement({
     nodeName: string;
     i?: number;
 }): CypherStatement | undefined {
-    if (!node.auth) {
-        return undefined;
-    }
+    if (!node.auth) return undefined;
 
     const indexStr = i === undefined ? "" : String(i);
     const auth = createAuthAndParams({
         entity: node,
         operation: ["CONNECT", "CREATE"],
         context,
-        // escapeQuotes: Boolean(insideDoWhen),
         allow: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${indexStr}_allow` },
     });
 
-    // subquery.push(
-    //     `\tCALL apoc.util.validate(NOT(${preAuth.connects.join(
-    //         " AND "
-    //     )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
-    // );
+    if (!auth[0]) return undefined;
 
     return joinStatements(["CALL apoc.util.validate(NOT(", auth, `), "${AUTH_FORBIDDEN_ERROR}", [0])`], "");
 }
