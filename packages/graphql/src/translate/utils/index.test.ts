@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-import { stringifyObject, joinStatements } from "./utils";
-import { CypherStatement } from "./types";
+import { stringifyObject } from ".";
 
 describe("translation utils", () => {
     describe("stringifyObject", () => {
@@ -40,41 +39,6 @@ describe("translation utils", () => {
             });
 
             expect(result).toEqual(`{ nobody: expects }`);
-        });
-    });
-
-    describe("joinStatements", () => {
-        test("empty array", () => {
-            const result = joinStatements([]);
-
-            expect(result).toEqual(["", {}]);
-        });
-
-        test("join multiple statements and strings", () => {
-            const statements = [["Hello", { text1: "Hello" }], ["World", { text2: "World" }], "!"] as Array<
-                CypherStatement | string
-            >;
-            const result = joinStatements(statements);
-
-            expect(result).toEqual([
-                "Hello\nWorld\n!",
-                {
-                    text1: "Hello",
-                    text2: "World",
-                },
-            ]);
-        });
-
-        test("join statements with custom separator", () => {
-            const result = joinStatements(["Hello", "World"], " ");
-
-            expect(result).toEqual(["Hello World", {}]);
-        });
-
-        test("join statement of a single statement returns the same statement", () => {
-            const result = joinStatements([joinStatements(["Hello", "World"], " ")]);
-
-            expect(result).toEqual(["Hello World", {}]);
         });
     });
 });

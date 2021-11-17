@@ -22,7 +22,7 @@ import { Node, Neo4jGraphQLCypherBuilderError } from "../../classes";
 import { CypherStatement } from "../types";
 import { joinStrings } from "../../utils/utils";
 import { buildNodeStatement } from "./build-node-statement";
-import { joinStatements } from "../utils";
+import { joinStatements } from "../utils/join-statements";
 import { buildRelationStatement } from "./build-relation-statement";
 import { generateParameterKey } from "./utils";
 

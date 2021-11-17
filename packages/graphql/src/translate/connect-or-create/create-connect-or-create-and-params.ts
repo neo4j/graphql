@@ -21,7 +21,7 @@ import { RelationField, Context } from "../../types";
 import { buildMergeStatement } from "../cypher-builder/build-merge-statement";
 import { CypherStatement } from "../types";
 import { Node } from "../../classes";
-import { joinStatements } from "../utils";
+import { joinStatements } from "../utils/join-statements";
 import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 

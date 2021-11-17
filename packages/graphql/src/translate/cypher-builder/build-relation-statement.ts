@@ -21,7 +21,7 @@ import { Context, RelationField } from "../../types";
 import { Node } from "../../classes";
 import { CypherStatement } from "../types";
 import { buildNodeStatement } from "./build-node-statement";
-import { joinStatements } from "../utils";
+import { joinStatements } from "../utils/join-statements";
 import { serializeParameters, padLeft } from "./utils";
 
 type TargetNode = {
