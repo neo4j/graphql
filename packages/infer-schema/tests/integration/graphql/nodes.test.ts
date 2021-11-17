@@ -25,6 +25,8 @@ import createDriver from "../neo4j";
 describe("GraphQL - Infer Schema nodes basic tests", () => {
     const dbName = "inferToNeo4jGrahqlTypeDefsITDb";
     let driver: neo4j.Driver;
+    let MULTIDB_SUPPORT = true;
+
     const sessionFactory = (bm: string[]) => () =>
         driver.session({ defaultAccessMode: neo4j.session.READ, bookmarks: bm, database: dbName });
 
@@ -34,7 +36,19 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         try {
             await cSession.writeTransaction((tx) => tx.run(`CREATE DATABASE ${dbName}`));
         } catch (e) {
-            // ignore
+            if (e instanceof Error) {
+                if (
+                    e.message.includes("should be executed against the system database") ||
+                    e.message.includes("Unsupported administration command")
+                ) {
+                    // No multi-db support, so we skip tests
+                    MULTIDB_SUPPORT = false;
+                } else {
+                    throw e;
+                }
+            } else {
+                throw e;
+            }
         }
         const waitSession = driver.session({
             defaultAccessMode: neo4j.session.READ,
@@ -45,20 +59,31 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         await waitSession.close();
     });
     afterEach(async () => {
-        const xSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await xSession.run("MATCH (n) DETACH DELETE n");
-        await xSession.close();
+        if (MULTIDB_SUPPORT) {
+            const xSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
+            await xSession.run("MATCH (n) DETACH DELETE n");
+            await xSession.close();
+        }
     });
     afterAll(async () => {
-        const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
-        try {
-            await cSession.writeTransaction((tx) => tx.run(`DROP DATABASE ${dbName}`));
-        } catch (e) {
-            // ignore
+        if (MULTIDB_SUPPORT) {
+            const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
+            try {
+                await cSession.writeTransaction((tx) => tx.run(`DROP DATABASE ${dbName}`));
+            } catch (e) {
+                // ignore
+            }
         }
         await driver.close();
     });
     test("Can infer single label with single property", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const nodeProperty = "testString";
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
@@ -78,6 +103,13 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can infer single label with multiple properties of different types", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const nodeProperties = { str: "testString", int: neo4j.int(42), number: 80, strArr: ["Stella", "Molly"] };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
@@ -103,6 +135,13 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can infer multiple labels with multiple properties of different types", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const nodeProperties = { first: "testString", second: neo4j.int(42) };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
@@ -130,6 +169,13 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can infer additional labels", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const nodeProperties = { first: "testString", second: neo4j.int(42) };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
@@ -157,6 +203,13 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can infer label with unsupported characters in labels", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const nodeProperties = { first: "testString", second: neo4j.int(42) };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
@@ -183,6 +236,13 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Should not include properties with ambiguous types", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const nodeProperties = { str: "testString", int: neo4j.int(42) };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
@@ -209,6 +269,13 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Should not include types with no fields", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) => tx.run("CREATE (:EmptyNode) CREATE (:FullNode {prop: 1})"));
         const bm = wSession.lastBookmark();
@@ -225,6 +292,13 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can generate a readonly typeDefs and combine directives", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const nodeProperties = { first: "testString", second: neo4j.int(42) };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>

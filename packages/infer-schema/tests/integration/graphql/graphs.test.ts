@@ -25,6 +25,8 @@ import createDriver from "../neo4j";
 describe("GraphQL - Infer Schema on graphs", () => {
     const dbName = "inferToNeo4jGrahqlTypeDefsGraphITDb";
     let driver: neo4j.Driver;
+    let MULTIDB_SUPPORT = true;
+
     const sessionFactory = (bm: string[]) => () =>
         driver.session({ defaultAccessMode: neo4j.session.READ, bookmarks: bm, database: dbName });
 
@@ -34,7 +36,19 @@ describe("GraphQL - Infer Schema on graphs", () => {
         try {
             await cSession.writeTransaction((tx) => tx.run(`CREATE DATABASE ${dbName}`));
         } catch (e) {
-            // ignore
+            if (e instanceof Error) {
+                if (
+                    e.message.includes("should be executed against the system database") ||
+                    e.message.includes("Unsupported administration command")
+                ) {
+                    // No multi-db support, so we skip tests
+                    MULTIDB_SUPPORT = false;
+                } else {
+                    throw e;
+                }
+            } else {
+                throw e;
+            }
         }
         const waitSession = driver.session({
             defaultAccessMode: neo4j.session.READ,
@@ -45,21 +59,32 @@ describe("GraphQL - Infer Schema on graphs", () => {
         await waitSession.close();
     });
     afterEach(async () => {
-        const xSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await xSession.run("MATCH (n) DETACH DELETE n");
-        await xSession.close();
+        if (MULTIDB_SUPPORT) {
+            const xSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
+            await xSession.run("MATCH (n) DETACH DELETE n");
+            await xSession.close();
+        }
     });
     afterAll(async () => {
-        const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
-        try {
-            await cSession.writeTransaction((tx) => tx.run(`DROP DATABASE ${dbName}`));
-        } catch (e) {
-            // ignore
+        if (MULTIDB_SUPPORT) {
+            const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
+            try {
+                await cSession.writeTransaction((tx) => tx.run(`DROP DATABASE ${dbName}`));
+            } catch (e) {
+                // ignore
+            }
         }
         await driver.close();
     });
 
     test("Can infer on small graph with no rel properties", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const nodeProperties = { title: "Forrest Gump", name: "Glenn Hysén" };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
@@ -91,6 +116,13 @@ describe("GraphQL - Infer Schema on graphs", () => {
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can infer multiple relationships (even with the same type)", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const nodeProperties = { title: "Forrest Gump", name: "Glenn Hysén" };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
@@ -140,6 +172,13 @@ describe("GraphQL - Infer Schema on graphs", () => {
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can infer relationships with properties", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const nodeProperties = {
             title: "Loose it",
             name: "Glenn Hysén",
@@ -197,6 +236,13 @@ describe("GraphQL - Infer Schema on graphs", () => {
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can handle the larger character set from Neo4j", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const nodeProperties = {
             title: "Loose it",
             name: "Glenn Hysén",
