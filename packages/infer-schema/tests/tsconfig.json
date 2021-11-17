@@ -2,7 +2,10 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
         "types": ["node", "jest"],
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "paths": {
+            "@neo4j/graphql": ["../../graphql/src"]
+        }
     },
-    "references": [{ "path": "../src/tsconfig.json" }]
+    "references": [{ "path": "../src/tsconfig.json" }, { "path": "../../graphql/src/tsconfig.json" }]
 }
