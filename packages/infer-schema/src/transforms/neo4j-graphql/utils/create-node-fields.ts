@@ -38,7 +38,7 @@ export default function createNodeFields(propertyRows: Property[], elementType: 
             if (debug.enabled) {
                 debug(
                     "%s",
-                    `Ambiguous types on ${elementType}.${propertyRow.name}. Fix the inconsistences for this property to be included`
+                    `Ambiguous types on ${elementType}.${propertyRow.name}. Fix the inconsistencies for this property to be included`
                 );
             }
             return;
