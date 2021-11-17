@@ -18,7 +18,7 @@
  */
 
 import { CypherStatement, CypherParams } from "../types";
-import { serializeObject } from "../utils";
+import { stringifyObject } from "../utils";
 
 /** Generates a string to be used as parameter key */
 export function generateParameterKey(preffix: string, key: string): string {
@@ -38,7 +38,7 @@ export function serializeParameters(keyPreffix: string, parameters: CypherParams
         nodeParameters[key] = `$${paramKey}`;
     }
 
-    return [serializeObject(nodeParameters), cypherParameters];
+    return [stringifyObject(nodeParameters), cypherParameters];
 }
 
 /** Adds spaces to the left of the string, returns empty string is variable is undefined or empty string */

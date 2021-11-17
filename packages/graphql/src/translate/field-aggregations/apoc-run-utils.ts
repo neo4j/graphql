@@ -1,10 +1,10 @@
 import { escapeQuery } from "./utils";
 import { AggregationAuth } from "./field-aggregations-auth";
-import { serializeObject } from "../utils";
+import { stringifyObject } from "../utils";
 
 /** Wraps a query inside an apoc call, escaping strings and serializing params */
 export function wrapApocRun(query: string, params: Record<string, string> = {}): string {
-    const serializedParams = serializeObject(params);
+    const serializedParams = stringifyObject(params);
     const escapedQuery = escapeQuery(query);
     return `head(apoc.cypher.runFirstColumn(" ${escapedQuery} ", ${serializedParams}))`;
 }

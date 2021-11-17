@@ -42,7 +42,7 @@ export function joinStatements(
 }
 
 /** Serializes object into a string for Cypher objects */
-export function serializeObject(fields: Record<string, string | undefined | null>): string {
+export function stringifyObject(fields: Record<string, string | undefined | null>): string {
     return `{ ${Object.entries(fields)
         .map(([key, value]): string | undefined => {
             if (value === undefined || value === null || value === "") return undefined;

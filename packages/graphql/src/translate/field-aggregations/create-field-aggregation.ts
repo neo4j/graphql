@@ -29,7 +29,7 @@ import { FieldAggregationSchemaTypes } from "../../schema/field-aggregation-comp
 import mapToDbProperty from "../../utils/map-to-db-property";
 import createWhereAndParams from "../create-where-and-params";
 import { wrapApocRun, serializeAuthParamsForApocRun, serializeParamsForApocRun } from "./apoc-run-utils";
-import { serializeObject } from "../utils";
+import { stringifyObject } from "../utils";
 
 const subQueryNodeAlias = "n";
 const subQueryRelationAlias = "r";
@@ -93,7 +93,7 @@ export function createFieldAggregation({
     const apocRunParams = { ...serializeParamsForApocRun(whereParams), ...serializeAuthParamsForApocRun(authData) };
 
     return {
-        query: serializeObject({
+        query: stringifyObject({
             count: aggregationFields.count
                 ? createCountQuery({
                       nodeLabel,
@@ -211,7 +211,7 @@ function createAggregationQuery({
         return acc;
     }, {} as Record<string, string>);
 
-    return serializeObject(fieldsSubQueries);
+    return stringifyObject(fieldsSubQueries);
 }
 
 function getAggregationSubQuery({

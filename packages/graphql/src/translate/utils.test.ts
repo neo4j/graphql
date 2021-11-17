@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { serializeObject, joinStatements } from "./utils";
+import { stringifyObject, joinStatements } from "./utils";
 import { CypherStatement } from "./types";
 
 describe("translation utils", () => {
-    describe("serializeObject", () => {
+    describe("stringifyObject", () => {
         test("creates a valid cypher object from a js object", () => {
-            const result = serializeObject({
+            const result = stringifyObject({
                 this: "this",
                 that: `"that"`,
             });
@@ -32,7 +32,7 @@ describe("translation utils", () => {
         });
 
         test("ignores undefined, null and empty string values", () => {
-            const result = serializeObject({
+            const result = stringifyObject({
                 nobody: "expects",
                 the: undefined,
                 spanish: null,
