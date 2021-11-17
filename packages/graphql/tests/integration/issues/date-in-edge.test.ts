@@ -24,7 +24,7 @@ import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
-describe("issue", () => {
+describe("587: Dates in edges can cause wrongly generated cypher", () => {
     let driver: Driver;
 
     beforeAll(async () => {
@@ -100,10 +100,6 @@ describe("issue", () => {
                 source: query,
                 contextValue: { driver },
             });
-
-            if (result.errors) {
-                console.log(JSON.stringify(result.errors, null, 2));
-            }
 
             expect(result.errors).toBeFalsy();
         } finally {
