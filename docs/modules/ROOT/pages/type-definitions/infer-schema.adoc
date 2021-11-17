@@ -23,7 +23,6 @@ finds data that doesn't match the specified type.
 
 If any properties are skipped, there will be output in the xref::troubleshooting/index.adoc[Debug Logging].
 
-
 == Usage examples
 
 Currently there's a programatic API for inferring schemas.
