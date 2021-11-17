@@ -1299,6 +1299,7 @@ describe("generate", () => {
                 connect?: MovieConnectInput;
                 disconnect?: MovieDisconnectInput;
                 create?: MovieCreateInput;
+
                 selectionSet?: string | DocumentNode | SelectionSetNode;
                 args?: any;
                 context?: any;
