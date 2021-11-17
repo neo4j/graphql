@@ -259,13 +259,13 @@ describe("connectOrCreate", () => {
                 SET this.title = $this_update_title
                 WITH this
                 CALL {
-                WITH this
-                CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                	WITH this
+                	CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 MERGE (this_genres0_connectOrCreate0:Genre { name: $this_genres0_connectOrCreate0_node_name })
                 ON CREATE SET
                 this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate0_on_create_name
                 MERGE (this)-[this_relationship_this_genres0_connectOrCreate0:IN_GENRE]->(this_genres0_connectOrCreate0)
-                RETURN COUNT(*)
+                	RETURN COUNT(*)
                 }
                 RETURN this { .title } AS this"
             `);
@@ -302,13 +302,13 @@ describe("connectOrCreate", () => {
                 SET this.title = $this_update_title
                 WITH this
                 CALL {
-                WITH this
-                CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                	WITH this
+                	CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 MERGE (this_genres0_connectOrCreate0:Genre { name: $this_genres0_connectOrCreate0_node_name })
                 ON CREATE SET
                 this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate0_on_create_name
                 MERGE (this)-[this_relationship_this_genres0_connectOrCreate0:IN_GENRE]->(this_genres0_connectOrCreate0)
-                RETURN COUNT(*)
+                	RETURN COUNT(*)
                 }
                 RETURN this { .title } AS this"
             `);
@@ -345,13 +345,13 @@ describe("connectOrCreate", () => {
                 SET this.title = $this_update_title
                 WITH this
                 CALL {
-                WITH this
-                CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                	WITH this
+                	CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 MERGE (this_genres0_connectOrCreate0:Genre { name: $this_genres0_connectOrCreate0_node_name })
                 ON CREATE SET
                 this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate0_on_create_name
                 MERGE (this)-[this_relationship_this_genres0_connectOrCreate0:IN_GENRE]->(this_genres0_connectOrCreate0)
-                RETURN COUNT(*)
+                	RETURN COUNT(*)
                 }
                 RETURN this { .title } AS this"
             `);
@@ -388,12 +388,12 @@ describe("connectOrCreate", () => {
                 SET this.title = $this_update_title
                 WITH this
                 CALL {
-                WITH this
-                MERGE (this_genres0_connectOrCreate0:Genre { name: $this_genres0_connectOrCreate0_node_name })
+                	WITH this
+                	MERGE (this_genres0_connectOrCreate0:Genre { name: $this_genres0_connectOrCreate0_node_name })
                 ON CREATE SET
                 this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate0_on_create_name
                 MERGE (this)-[this_relationship_this_genres0_connectOrCreate0:IN_GENRE]->(this_genres0_connectOrCreate0)
-                RETURN COUNT(*)
+                	RETURN COUNT(*)
                 }
                 RETURN this { .title } AS this"
             `);

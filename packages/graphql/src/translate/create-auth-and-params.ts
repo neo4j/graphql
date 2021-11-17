@@ -23,7 +23,7 @@ import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
 import joinPredicates, { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";
 import ContextParser from "../utils/context-parser";
-import { isString, arrayfy, shareElement } from "../utils/utils";
+import { isString, arrayfy, haveSharedElement } from "../utils/utils";
 
 interface Res {
     strs: string[];
@@ -194,7 +194,9 @@ function createAuthAndParams({
     let authRules: AuthRule[] = [];
     if (operation) {
         const operations = arrayfy(operation);
-        authRules = entity?.auth.rules.filter((r) => !r.operations || shareElement(operations, r.operations || [])); // r.operations?.includes(operation)
+        authRules = entity?.auth.rules.filter(
+            (r) => !r.operations || haveSharedElement(operations, r.operations || [])
+        ); // r.operations?.includes(operation)
     } else {
         authRules = entity?.auth.rules;
     }

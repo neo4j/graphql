@@ -194,27 +194,27 @@ describe("Create or connect with unions", () => {
             SET this.name = $this_update_name
             WITH this
             CALL {
-            WITH this
-            MERGE (this_actedIn_Movie0_connectOrCreate0:Movie { isan: $this_actedIn_Movie0_connectOrCreate0_node_isan })
+            	WITH this
+            	MERGE (this_actedIn_Movie0_connectOrCreate0:Movie { isan: $this_actedIn_Movie0_connectOrCreate0_node_isan })
             ON CREATE SET
             this_actedIn_Movie0_connectOrCreate0.title = $this_actedIn_Movie0_connectOrCreate0_on_create_title,
             this_actedIn_Movie0_connectOrCreate0.isan = $this_actedIn_Movie0_connectOrCreate0_on_create_isan
             MERGE (this)-[this_relationship_this_actedIn_Movie0_connectOrCreate0:ACTED_IN]->(this_actedIn_Movie0_connectOrCreate0)
             ON CREATE SET
             this_relationship_this_actedIn_Movie0_connectOrCreate0.screentime = $this_relationship_this_actedIn_Movie0_connectOrCreate0_on_create_screentime
-            RETURN COUNT(*)
+            	RETURN COUNT(*)
             }
             WITH this
             CALL {
-            WITH this
-            MERGE (this_actedIn_Series0_connectOrCreate0:Series { isan: $this_actedIn_Series0_connectOrCreate0_node_isan })
+            	WITH this
+            	MERGE (this_actedIn_Series0_connectOrCreate0:Series { isan: $this_actedIn_Series0_connectOrCreate0_node_isan })
             ON CREATE SET
             this_actedIn_Series0_connectOrCreate0.title = $this_actedIn_Series0_connectOrCreate0_on_create_title,
             this_actedIn_Series0_connectOrCreate0.isan = $this_actedIn_Series0_connectOrCreate0_on_create_isan
             MERGE (this)-[this_relationship_this_actedIn_Series0_connectOrCreate0:ACTED_IN]->(this_actedIn_Series0_connectOrCreate0)
             ON CREATE SET
             this_relationship_this_actedIn_Series0_connectOrCreate0.screentime = $this_relationship_this_actedIn_Series0_connectOrCreate0_on_create_screentime
-            RETURN COUNT(*)
+            	RETURN COUNT(*)
             }
             RETURN this { .name } AS this"
         `);

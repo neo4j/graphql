@@ -22,8 +22,8 @@ import { CypherStatement, CypherParams } from "./types";
 
 /** Wraps a string in a CALL statement */
 export function wrapInCall(statement: string, withVarName: string, returnStatement = "RETURN COUNT(*)"): string {
-    const withStatement = `WITH ${withVarName}`;
-    return joinStrings([withStatement, "CALL {", withStatement, statement, returnStatement, "}"]);
+    const withString = `WITH ${withVarName}`;
+    return joinStrings([withString, "CALL {", `\t${withString}`, `\t${statement}`, `\t${returnStatement}`, "}"]);
 }
 
 /** Joins all valid cypher statements and params with given separator, ignoring empty or undefined statements */
