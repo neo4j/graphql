@@ -352,7 +352,7 @@ function createRelationshipFields({
                 };
 
                 const connectOrCreate = createConnectOrCreateField({
-                    rel,
+                    relationField: rel,
                     node: n,
                     schemaComposer,
                     hasNonGeneratedProperties,
@@ -708,7 +708,7 @@ function createRelationshipFields({
         });
 
         const connectOrCreate = createConnectOrCreateField({
-            rel,
+            relationField: rel,
             node: n,
             schemaComposer,
             hasNonGeneratedProperties,

@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import { SchemaComposer, upperFirst } from "graphql-compose";
+import { SchemaComposer, upperFirst, InputTypeComposer } from "graphql-compose";
 import { Node } from "../../classes";
 import { RelationField } from "../../types";
 
 export function createConnectOrCreateField({
     node,
-    rel,
+    relationField,
     schemaComposer,
     hasNonGeneratedProperties,
     hasNonNullNonGeneratedProperties,
 }: {
     node: Node;
-    rel: RelationField;
+    relationField: RelationField;
     schemaComposer: SchemaComposer;
     hasNonGeneratedProperties: boolean;
     hasNonNullNonGeneratedProperties: boolean;
@@ -38,35 +38,90 @@ export function createConnectOrCreateField({
         return undefined;
     }
 
-    let connectOrCreateName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectOrCreateFieldInput`;
-    if (rel.union) {
-        connectOrCreateName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}${
-            node.name
-        }ConnectOrCreateFieldInput`;
-    }
-    const connectOrCreate = rel.typeMeta.array ? `[${connectOrCreateName}!]` : connectOrCreateName;
-    const connectOrCreateOnCreateName = `${connectOrCreateName}OnCreate`;
-    schemaComposer.getOrCreateITC(connectOrCreateOnCreateName, (tc) => {
+    const parentPrefix = `${relationField.connectionPrefix}${upperFirst(relationField.fieldName)}`;
+
+    const connectOrCreateName = relationField.union
+        ? `${parentPrefix}${node.name}ConnectOrCreateFieldInput`
+        : `${parentPrefix}ConnectOrCreateFieldInput`;
+
+    const onCreateITC = createOnCreateITC({
+        schemaComposer,
+        prefix: connectOrCreateName,
+        node,
+        hasNonGeneratedProperties,
+        hasNonNullNonGeneratedProperties,
+        relationField,
+    });
+    const whereITC = createWhereITC({ schemaComposer, node });
+
+    schemaComposer.getOrCreateITC(connectOrCreateName, (tc) => {
         tc.addFields({
-            node: `${node.name}CreateInput!`,
-            ...(hasNonGeneratedProperties
-                ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
-                : {}),
+            where: `${whereITC.getTypeName()}!`,
+            onCreate: `${onCreateITC.getTypeName()}!`,
         });
     });
+    return relationField.typeMeta.array ? `[${connectOrCreateName}!]` : connectOrCreateName;
+}
 
-    const connectOrCreateWhere = `${node.name}ConnectOrCreateWhere`;
-    schemaComposer.getOrCreateITC(connectOrCreateWhere, (tc) => {
+function createOnCreateITC({
+    schemaComposer,
+    prefix,
+    node,
+    hasNonGeneratedProperties,
+    hasNonNullNonGeneratedProperties,
+    relationField,
+}: {
+    schemaComposer: SchemaComposer;
+    prefix: string;
+    node: Node;
+    hasNonGeneratedProperties: boolean;
+    hasNonNullNonGeneratedProperties: boolean;
+    relationField: RelationField;
+}): InputTypeComposer {
+    const onCreateFields = getOnCreateFields({
+        node,
+        hasNonGeneratedProperties,
+        relationField,
+        hasNonNullNonGeneratedProperties,
+    });
+
+    const onCreateName = `${prefix}OnCreate`;
+    return schemaComposer.getOrCreateITC(onCreateName, (tc) => {
+        tc.addFields(onCreateFields);
+    });
+}
+
+function createWhereITC({ schemaComposer, node }: { schemaComposer: SchemaComposer; node: Node }): InputTypeComposer {
+    const connectOrCreateWhereName = `${node.name}ConnectOrCreateWhere`;
+
+    return schemaComposer.getOrCreateITC(connectOrCreateWhereName, (tc) => {
         tc.addFields({
             node: `${node.name}UniqueWhere!`,
         });
     });
+}
 
-    schemaComposer.getOrCreateITC(connectOrCreateName, (tc) => {
-        tc.addFields({
-            where: `${connectOrCreateWhere}!`,
-            onCreate: `${connectOrCreateOnCreateName}!`,
-        });
-    });
-    return connectOrCreate;
+function getOnCreateFields({
+    node,
+    hasNonGeneratedProperties,
+    relationField,
+    hasNonNullNonGeneratedProperties,
+}: {
+    node: Node;
+    hasNonGeneratedProperties: boolean;
+    relationField: RelationField;
+    hasNonNullNonGeneratedProperties: boolean;
+}): { node: string } | { node: string; edge: string } {
+    const nodeField = `${node.name}CreateInput!`;
+
+    if (hasNonGeneratedProperties) {
+        const edgeField = `${relationField.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`;
+        return {
+            node: nodeField,
+            edge: edgeField,
+        };
+    }
+    return {
+        node: nodeField,
+    };
 }
