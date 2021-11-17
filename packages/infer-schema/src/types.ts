@@ -21,8 +21,8 @@ import Node from "./classes/Node";
 import Relationship from "./classes/Relationship";
 
 export type Neo4jStruct = {
-    nodes: NodeMap;
-    relationships: RelationshipMap;
+    nodes: Record<string, Node>;
+    relationships: Record<string, Relationship>;
 };
 
 export type PropertyRecord = {
