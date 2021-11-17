@@ -17,11 +17,22 @@
  * limitations under the License.
  */
 
-import camelcase from "camelcase";
+import pascalCase from "./pascal-case";
 
-export default function pascalCase(str: string): string {
-    if (!str.length) {
-        return str;
-    }
-    return str[0].toUpperCase() + camelcase(str.slice(1));
-}
+type Args = [string, string];
+
+describe("pascalCase", () => {
+    const cases: Args[] = [
+        ["", ""],
+        ["many", "Many"],
+        ["my_type", "MyType"],
+        ["my-type", "MyType"],
+        ["MyType", "MyType"],
+        ["MY_TYPE", "MyType"],
+    ];
+
+    test.each<Args>(cases)("given input %p, returns %p", (inStr, expectedResult) => {
+        const result = pascalCase(inStr);
+        expect(result).toEqual(expectedResult);
+    });
+});

@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+// This function increases numbers at the end of a string until it's unique in a pool
 export default function uniqueString(candidate: string, pool: string[]): string {
     let uniqueStr = candidate;
     let counter = 2;

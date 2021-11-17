@@ -27,6 +27,7 @@ jobs:
         package:
           - graphql
           - ogm
+          - infer-schema
 
     runs-on: ubuntu-latest
 

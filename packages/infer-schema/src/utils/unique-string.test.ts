@@ -17,11 +17,24 @@
  * limitations under the License.
  */
 
-import camelcase from "camelcase";
+import uniqueString from "./unique-string";
 
-export default function pascalCase(str: string): string {
-    if (!str.length) {
-        return str;
-    }
-    return str[0].toUpperCase() + camelcase(str.slice(1));
-}
+type Args = [string, string[], string];
+
+describe("uniqueString", () => {
+    const cases: Args[] = [
+        ["", [], ""],
+        ["", ["b", "c"], ""],
+        ["a", [], "a"],
+        ["a", ["b", "c"], "a"],
+        ["a", ["a3", "c"], "a"],
+        ["a", ["a2", "c"], "a"],
+        ["a", ["a", "c"], "a2"],
+        ["a", ["a", "a2", "c"], "a3"],
+    ];
+
+    test.each<Args>(cases)("given candidate %p and pool %p, returns %p", (candidate, pool, expectedResult) => {
+        const result = uniqueString(candidate, pool);
+        expect(result).toEqual(expectedResult);
+    });
+});

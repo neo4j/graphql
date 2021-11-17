@@ -18,8 +18,10 @@
     "scripts": {
         "clean": "cd src/ && tsc --build --clean",
         "test": "jest",
+        "test:unit": "jest src",
+        "test:unit:watch": "jest src --watch",
         "test:int": "jest tests/integration",
-        "test:int:watch": "jest int --watch",
+        "test:int:watch": "jest tests/integration --watch",
         "build": "tsc --project src/",
         "build:clean": "yarn clean && yarn build"
     },

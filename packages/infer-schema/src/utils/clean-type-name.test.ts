@@ -17,11 +17,21 @@
  * limitations under the License.
  */
 
-import camelcase from "camelcase";
+import cleanTypeName from "./clean-type-name";
 
-export default function pascalCase(str: string): string {
-    if (!str.length) {
-        return str;
-    }
-    return str[0].toUpperCase() + camelcase(str.slice(1));
-}
+type Args = [string, string];
+
+describe("cleanTypeName", () => {
+    const cases: Args[] = [
+        ["", ""],
+        ["x", ""],
+        [":`Label`", "Label"],
+        [":`REL_TYPE`", "REL_TYPE"],
+        [":`REL`", "REL"],
+    ];
+
+    test.each<Args>(cases)("given input %p, returns %p", (inStr, expectedResult) => {
+        const result = cleanTypeName(inStr);
+        expect(result).toEqual(expectedResult);
+    });
+});
