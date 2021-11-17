@@ -888,6 +888,48 @@ describe("OGM", () => {
     });
 
     describe("aggregations", () => {
+        test("should return aggregated count on its own", async () => {
+            const session = driver.session();
+
+            const typeDefs = gql`
+                type Movie {
+                    testId: ID
+                    title: String
+                    imdbRating: Int
+                }
+            `;
+
+            const ogm = new OGM({ typeDefs, driver });
+
+            const testId = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await session.run(`
+                    CREATE (:Movie {testId: "${testId}"})
+                    CREATE (:Movie {testId: "${testId}"})
+                    CREATE (:Movie {testId: "${testId}"})
+                    CREATE (:Movie {testId: "${testId}"})
+                `);
+
+                const Movie = ogm.model("Movie");
+
+                const result = await Movie?.aggregate({
+                    where: { testId },
+                    aggregate: {
+                        count: true,
+                    },
+                });
+
+                expect(result).toEqual({
+                    count: 4,
+                });
+            } finally {
+                await session.close();
+            }
+        });
+
         test("should return aggregated fields", async () => {
             const session = driver.session();
 

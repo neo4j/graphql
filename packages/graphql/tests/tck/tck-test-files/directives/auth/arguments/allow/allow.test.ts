@@ -231,11 +231,11 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_id\\": \\"1\\",
                 \\"this_posts_comments_id\\": \\"1\\",
                 \\"this_posts_comments_auth_allow0_creator_id\\": \\"id-01\\",
                 \\"this_posts_id\\": \\"1\\",
                 \\"this_posts_auth_allow0_creator_id\\": \\"id-01\\",
-                \\"this_id\\": \\"1\\",
                 \\"this_auth_allow0_id\\": \\"id-01\\"
             }"
         `);

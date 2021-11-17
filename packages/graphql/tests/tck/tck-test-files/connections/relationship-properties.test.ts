@@ -129,6 +129,7 @@ describe("Relationship Properties Cypher", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_title\\": \\"Forrest Gump\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -137,8 +138,7 @@ describe("Relationship Properties Cypher", () => {
                             }
                         }
                     }
-                },
-                \\"this_title\\": \\"Forrest Gump\\"
+                }
             }"
         `);
     });

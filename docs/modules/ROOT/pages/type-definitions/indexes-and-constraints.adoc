@@ -1,0 +1,157 @@
+[[type-definitions-indexes-and-constraints]]
+= Indexes Constraints
+
+[[type-definitions-constraints-unique]]
+== Unique node property constraints
+
+Unique node property constraints map to `@unique` directives used in your type definitions, which has the following definition:
+
+[source, graphql, indent=0]
+----
+"""Informs @neo4j/graphql that there should be a uniqueness constraint in the database for the decorated field."""
+directive @unique(
+    """The name which should be used for this constraint. By default; type name, followed by an underscore, followed by the field name."""
+    constraintName: String
+) on FIELD_DEFINITION
+----
+
+Additionally, the usage of the xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-id[`@id`] directive by default implies that there should be a unique node property constraint in the database for that property.
+
+Using this directive does not automatically ensure the existence of these constraints, and you will need to run a function on server startup. See the section xref::type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-and-constraints-asserting[Asserting constraints] below for details.
+
+=== `@unique` directive usage
+
+`@unique` directives can only be used in GraphQL object types representing nodes, and will only be applied for the "main" label for the node. You can find some examples below.
+
+In the following example, a unique constraint will be asserted for the label `Colour` and the property `hexadecimal`:
+
+[source, graphql, indent=0]
+----
+type Colour {
+    hexadecimal: String! @unique
+}
+----
+
+In the next example, a unique constraint with name `unique_colour` will be asserted for the label `Colour` and the property `hexadecimal`:
+
+[source, graphql, indent=0]
+----
+type Colour {
+    hexadecimal: String! @unique(constraintName: "unique_colour")
+}
+----
+
+The `@node` directive is used to change the database label mapping in this next example, so a unique constraint will be asserted for the label `Color` and the property `hexadecimal`:
+
+[source, graphql, indent=0]
+----
+type Colour @node(label: "Color") {
+    hexadecimal: String! @unique
+}
+----
+
+In the following example, the `additionalLabels` argument of the `@node` directive is ignored when it comes to asserting constraints, so the outcome is the same as the example above:
+
+[source, graphql, indent=0]
+----
+type Colour @node(label: "Color", additionalLabels: ["Hue"]) {
+    hexadecimal: String! @unique
+}
+----
+
+[[type-definitions-indexes-fulltext]]
+== Fulltext indexes
+
+You can use the `@fulltext` directive to add a https://neo4j.com/docs/cypher-manual/current/indexes-for-full-text-search/[Full text index] inside Neo4j.
+
+[source, graphql, indent=0]
+----
+input FullTextInput {
+  name: String!
+  fields: [String]!
+  defaultThreshold: Int
+}
+
+"""
+Informs @neo4j/graphql that there should be a fulltext index in the database, allows users to search by the index in the generated schema.
+"""
+directive @fulltext(indexes: [FullTextInput]!) on OBJECT
+----
+
+Using this directive does not automatically ensure the existence of these indexes, and you will need to run a function on server startup. See the section xref::type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-and-constraints-asserting[Asserting constraints] below for details.
+
+=== Specifying the `@fulltext` directive
+
+The directive can be used on nodes. Here we add a Fulltext index, called 'ProductName', for the name field, on the Product node.
+
+[source, graphql, indent=0]
+----
+type Product @fulltext(indexes: [{ name: "ProductName", fields: ["name"] }]) {
+    name: String!
+    color: Color @relationship(type: "OF_COLOR", direction: OUT)
+}
+----
+
+When you run xref::type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-and-constraints-asserting[Asserting constraints] this shall do the index creation like so:
+
+[source, cypher, indent=0]
+----
+CALL db.index.fulltext.createNodeIndex("ProductName", ["Product"], ["name"])
+----
+
+=== Using the `@fulltext` directive
+
+Once you specify the index, you will now gain a 'Top Level' `fulltext` key on the following operations:
+
+1. read
+2. count
+3. aggregate
+
+Here we use the `fulltext` key, and the phrase is using https://lucene.apache.org/[Lucene’s full-text query language] to match and return Products:
+
+[source, graphql, indent=0]
+----
+query {
+    products(fulltext: { ProductName: { phrase: "beer OR cerveza" } }) {
+        name
+    }
+}
+----
+
+You can also, optionally, specify the score for matching:
+
+[source, graphql, indent=0]
+----
+query {
+    products(fulltext: { ProductName: { phrase: "beer OR cerveza", score_EQUAL: 10 } }) {
+        name
+    }
+}
+----
+
+> Note that you can only query one Fulltext index at once and that the fulltext key is only available on 'Top Level' queries.
+
+
+[[type-definitions-indexes-and-constraints-asserting]]
+== Asserting constraints
+
+In order to ensure that the specified constraints exist in the database, you will need to run the function `assertIndexesAndConstraints`, the full details of which can be found in the xref::api-reference/neo4jgraphql.adoc#api-reference-assertconstraints[API reference]. A simple example to create the necessary constraints might look like the following, assuming a valid driver instance in the variable `driver`. This will create two constraints, one for each field decorated with `@id`,  `@unique` and apply the indexes specified in `@fulltext`:
+
+[source, javascript, indent=0]
+----
+const typeDefs = gql`
+    type Colour {
+        id: ID! @id
+        hexadecimal: String! @unique
+    }
+
+    type Product @fulltext(indexes: [{ name: "ProductName", fields: ["name"] }]) {
+        name: String!
+        color: Color @relationship(type: "OF_COLOR", direction: OUT)
+    }
+`;
+
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+await neoSchema.assertIndexesAndConstraints({ options: { create: true }});
+----

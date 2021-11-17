@@ -95,7 +95,13 @@ Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogener
 
 The `@unique` directive indicates that there should be a uniqueness constraint in the database for the fields that it is applied to.
 
-Reference: xref::type-definitions/constraints.adoc#type-definitions-constraints-unique[Unique node property constraints]
+Reference: xref::type-definitions/indexes-and-constraints.adoc#type-definitions-constraints-unique[Unique node property constraints]
+
+== `@fulltext`
+
+The `@fulltext` directive indicates that there should be a Fulltext index inserted into the database for the specified Node and its properties.
+
+Reference: xref::type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-fulltext[Fulltext indexes]
 
 == `@writeonly`
 
