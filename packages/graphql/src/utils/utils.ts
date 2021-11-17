@@ -31,11 +31,11 @@ export function isNeoInt(value: unknown): value is Integer {
 
 /** Joins all strings with given separator, ignoring empty or undefined statements */
 export function joinStrings(statements: string | Array<string | undefined>, separator = "\n"): string {
-    return filterTruthy(arrayfy(statements)).join(separator);
+    return filterTruthy(asArray(statements)).join(separator);
 }
 
 /** Makes sure input is an array, if not it turns into an array (empty array if input is null or undefined) */
-export function arrayfy<T>(raw: T | Array<T> | undefined | null): Array<T> {
+export function asArray<T>(raw: T | Array<T> | undefined | null): Array<T> {
     if (Array.isArray(raw)) return raw;
     if (raw === undefined || raw === null) return [];
     return [raw];

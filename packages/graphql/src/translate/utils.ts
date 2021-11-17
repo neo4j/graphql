@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { joinStrings, isString, arrayfy, filterTruthy } from "../utils/utils";
+import { joinStrings, isString, asArray, filterTruthy } from "../utils/utils";
 import { CypherStatement, CypherParams } from "./types";
 
 /** Wraps a string in a CALL statement */
@@ -31,7 +31,7 @@ export function joinStatements(
     statements: string | CypherStatement | Array<string | undefined | CypherStatement>,
     separator = "\n"
 ): CypherStatement {
-    const statementsArray = filterTruthy(arrayfy(statements));
+    const statementsArray = filterTruthy(asArray(statements));
     const statementsStrings = statementsArray.map((statement) => {
         return getStatementString(statement);
     });

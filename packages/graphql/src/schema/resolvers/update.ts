@@ -18,11 +18,11 @@
  */
 
 import { FieldNode, GraphQLResolveInfo } from "graphql";
+import { SchemaComposer } from "graphql-compose";
 import { execute } from "../../utils";
 import { translateUpdate } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
-import { SchemaComposer } from "graphql-compose";
 
 export default function updateResolver({ node, schemaComposer }: { node: Node; schemaComposer: SchemaComposer }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
