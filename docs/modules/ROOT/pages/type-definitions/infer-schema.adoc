@@ -6,7 +6,8 @@ Neo4j provides a tool that enables you to, with very little effort, generate Gra
 This is usually a one-time-thing and should be considered a starting point for a GraphQL schema.
 
 == Features
-This tool has full support for generating typedefs including
+
+This tool has full support for generating type definitions, including:
 
     - `@relationship` incl. relationship properties
     - `@node`
