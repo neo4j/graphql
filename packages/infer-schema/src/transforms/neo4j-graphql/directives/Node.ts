@@ -40,7 +40,7 @@ export class NodeDirective implements Directive {
             directiveArguments.push(`label: "${this.label}"`);
         }
         if (this.additionalLabels.length) {
-            directiveArguments.push(`additonalLabels: ["${this.additionalLabels.join('","')}"]`);
+            directiveArguments.push(`additionalLabels: ["${this.additionalLabels.join('","')}"]`);
         }
         return directiveArguments.length ? `@node(${directiveArguments.join(", ")})` : "";
     }

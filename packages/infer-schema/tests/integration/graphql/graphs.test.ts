@@ -18,6 +18,7 @@
  */
 
 import * as neo4j from "neo4j-driver";
+import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "../../../src/index";
 import createDriver from "../neo4j";
 
@@ -60,7 +61,6 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
     test("Can infer on small graph with no rel properties", async () => {
         const nodeProperties = { title: "Forrest Gump", name: "Glenn Hysén" };
-        // Create some data
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
             tx.run(
@@ -74,11 +74,9 @@ describe("GraphQL - Infer Schema on graphs", () => {
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        // Infer the schema
-        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
-        // Then
-        expect(schema).toMatchInlineSnapshot(`
+        expect(typeDefs).toMatchInlineSnapshot(`
             "type Actor {
             	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	name: String!
@@ -89,10 +87,11 @@ describe("GraphQL - Infer Schema on graphs", () => {
             	title: String!
             }"
         `);
+
+        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can infer multiple relationships (even with the same type)", async () => {
         const nodeProperties = { title: "Forrest Gump", name: "Glenn Hysén" };
-        // Create some data
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
             tx.run(
@@ -111,9 +110,8 @@ describe("GraphQL - Infer Schema on graphs", () => {
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
-        // Then
-        expect(schema).toMatchInlineSnapshot(`
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
+        expect(typeDefs).toMatchInlineSnapshot(`
             "type Actor {
             	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	actedInPlays: [Play] @relationship(type: \\"ACTED_IN\\", direction: OUT)
@@ -138,6 +136,8 @@ describe("GraphQL - Infer Schema on graphs", () => {
             	title: String!
             }"
         `);
+
+        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can infer relationships with properties", async () => {
         const nodeProperties = {
@@ -151,7 +151,6 @@ describe("GraphQL - Infer Schema on graphs", () => {
             str: "String",
             int: neo4j.int(1),
         };
-        // Create some data
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
             tx.run(
@@ -169,9 +168,8 @@ describe("GraphQL - Infer Schema on graphs", () => {
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
-        // Then
-        expect(schema).toMatchInlineSnapshot(`
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
+        expect(typeDefs).toMatchInlineSnapshot(`
             "interface ActedInProperties @relationshipProperties {
             	pay: Float
             	roles: [String]!
@@ -195,6 +193,8 @@ describe("GraphQL - Infer Schema on graphs", () => {
             	wonPrizeForActors: [Actor] @relationship(type: \\"WON_PRIZE_FOR\\", direction: OUT)
             }"
         `);
+
+        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can handle the larger character set from Neo4j", async () => {
         const nodeProperties = {
@@ -202,7 +202,6 @@ describe("GraphQL - Infer Schema on graphs", () => {
             name: "Glenn Hysén",
             roles: ["Footballer", "Drunken man on the street"],
         };
-        // Create some data
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
             tx.run(
@@ -217,9 +216,8 @@ describe("GraphQL - Infer Schema on graphs", () => {
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
-        // Then
-        expect(schema).toMatchInlineSnapshot(`
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
+        expect(typeDefs).toMatchInlineSnapshot(`
             "interface ActedInProperties @relationshipProperties {
             	roles: [String]!
             }
@@ -236,5 +234,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
             	wonPrizeForActorLabels: [Actor_Label] @relationship(type: \\"WON_PRIZE_FOR\\", direction: OUT)
             }"
         `);
+
+        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
 });

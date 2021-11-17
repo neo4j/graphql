@@ -18,6 +18,7 @@
  */
 
 import * as neo4j from "neo4j-driver";
+import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "../../../src/index";
 import createDriver from "../neo4j";
 
@@ -59,7 +60,6 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
     });
     test("Can infer single label with single property", async () => {
         const nodeProperty = "testString";
-        // Create some data
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
             tx.run("CREATE (:TestLabel {nodeProperty: $prop})", { prop: nodeProperty })
@@ -67,18 +67,18 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        // Infer the schema
-        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
-        // Then
-        expect(schema).toMatchInlineSnapshot(`
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
+
+        expect(typeDefs).toMatchInlineSnapshot(`
             "type TestLabel {
             	nodeProperty: String!
             }"
         `);
+
+        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can infer single label with multiple properties of different types", async () => {
         const nodeProperties = { str: "testString", int: neo4j.int(42), number: 80, strArr: ["Stella", "Molly"] };
-        // Create some data
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
             tx.run(
@@ -89,10 +89,9 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        // Infer the schema
-        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
-        // Then
-        expect(schema).toMatchInlineSnapshot(`
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
+
+        expect(typeDefs).toMatchInlineSnapshot(`
             "type TestLabel {
             	intProp: BigInt!
             	numberProp: Float!
@@ -100,10 +99,11 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             	strProp: String!
             }"
         `);
+
+        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can infer multiple labels with multiple properties of different types", async () => {
         const nodeProperties = { first: "testString", second: neo4j.int(42) };
-        // Create some data
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
             tx.run(
@@ -115,10 +115,9 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        // Infer the schema
-        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
-        // Then
-        expect(schema).toMatchInlineSnapshot(`
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
+
+        expect(typeDefs).toMatchInlineSnapshot(`
             "type TestLabel {
             	strProp: String!
             }
@@ -127,10 +126,11 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             	singleProp: BigInt!
             }"
         `);
+
+        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can infer additional labels", async () => {
         const nodeProperties = { first: "testString", second: neo4j.int(42) };
-        // Create some data
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
             tx.run(
@@ -142,22 +142,22 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        // Infer the schema
-        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
-        // Then
-        expect(schema).toMatchInlineSnapshot(`
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
+
+        expect(typeDefs).toMatchInlineSnapshot(`
             "type TestLabel {
             	strProp: String!
             }
 
-            type TestLabel2 @node(additonalLabels: [\\"TestLabel3\\"]) {
+            type TestLabel2 @node(additionalLabels: [\\"TestLabel3\\"]) {
             	singleProp: BigInt!
             }"
         `);
+
+        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Can infer label with unsupported characters in labels", async () => {
         const nodeProperties = { first: "testString", second: neo4j.int(42) };
-        // Create some data
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
             tx.run(
@@ -168,10 +168,9 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        // Infer the schema
-        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
-        // Then
-        expect(schema).toMatchInlineSnapshot(`
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
+
+        expect(typeDefs).toMatchInlineSnapshot(`
             "type Test_Label2 @node(label: \\"Test-Label\\") {
             	singleProp: BigInt!
             }
@@ -180,15 +179,16 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             	strProp: String!
             }"
         `);
+
+        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Should not include properties with ambiguous types", async () => {
         const nodeProperties = { str: "testString", int: neo4j.int(42) };
-        // Create some data
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
             tx.run(
-                `CREATE (:Node {amb: $props.str, str: $props.str}) 
-                CREATE (:Node {amb: $props.int, str: $props.str})
+                `CREATE (:FullNode {amb: $props.str, str: $props.str}) 
+                CREATE (:FullNode {amb: $props.int, str: $props.str})
                 CREATE (:OnlyAmb {amb: $props.str})
                 CREATE (:OnlyAmb {amb: $props.int})
                 `,
@@ -198,33 +198,33 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        // Infer the schema
-        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
-        // Then
-        expect(schema).toMatchInlineSnapshot(`
-            "type Node {
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
+
+        expect(typeDefs).toMatchInlineSnapshot(`
+            "type FullNode {
             	str: String!
             }"
         `);
+
+        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Should not include types with no fields", async () => {
-        // Create some data
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) => tx.run("CREATE (:EmptyNode) CREATE (:Node {prop: 1})"));
+        await wSession.writeTransaction((tx) => tx.run("CREATE (:EmptyNode) CREATE (:FullNode {prop: 1})"));
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        // Infer the schema
-        const schema = await toGraphQLTypeDefs(sessionFactory(bm));
-        // Then
-        expect(schema).toMatchInlineSnapshot(`
-            "type Node {
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
+
+        expect(typeDefs).toMatchInlineSnapshot(`
+            "type FullNode {
             	prop: BigInt!
             }"
         `);
+
+        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
-    test("Can generate a readonly schema and combine directives", async () => {
-        // Create some data
+    test("Can generate a readonly typeDefs and combine directives", async () => {
         const nodeProperties = { first: "testString", second: neo4j.int(42) };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
@@ -237,17 +237,17 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const bm = wSession.lastBookmark();
         await wSession.close();
 
-        // Infer the schema
-        const schema = await toGraphQLTypeDefs(sessionFactory(bm), true);
-        // Then
-        expect(schema).toMatchInlineSnapshot(`
-            "type TestLabel @exclude(operations[CREATE, DELETE, UPDATE]) {
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm), true);
+
+        expect(typeDefs).toMatchInlineSnapshot(`
+            "type TestLabel @exclude(operations: [CREATE, DELETE, UPDATE]) {
             	strProp: String!
             }
 
-            type TestLabel2 @node(additonalLabels: [\\"TestLabel3\\"]) @exclude(operations[CREATE, DELETE, UPDATE]) {
+            type TestLabel2 @node(additionalLabels: [\\"TestLabel3\\"]) @exclude(operations: [CREATE, DELETE, UPDATE]) {
             	singleProp: BigInt!
             }"
         `);
+        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
 });

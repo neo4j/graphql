@@ -35,7 +35,7 @@ export class ExcludeDirective implements Directive {
         const parts: string[] = [];
         if (this.operations.length) {
             parts.push("(");
-            parts.push("operations");
+            parts.push("operations: ");
             parts.push("[");
             parts.push(this.operations.join(", "));
             parts.push("]");
