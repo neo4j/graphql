@@ -18,11 +18,16 @@
  */
 
 import { Node } from "../classes";
+import { BaseField } from "../types";
 
 export default function getUniqueFields(node: Node): { [k: string]: string } {
     const fields = node.uniqueFields;
     return fields.reduce((res, f) => {
-        res[f.fieldName] = f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name;
+        res[f.fieldName] = getFieldString(f);
         return res;
     }, {});
+}
+
+function getFieldString(field: BaseField): string {
+    return field.typeMeta.array ? `[${field.typeMeta.name}]` : field.typeMeta.name;
 }

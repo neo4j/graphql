@@ -29,9 +29,9 @@ describe("Update resolver", () => {
             relationFields: [{}, {}],
         }).instance();
 
-        const composer = new SchemaComposer();
+        const schemaComposer = new SchemaComposer();
 
-        const result = updateResolver({ node, schemaComposer: composer });
+        const result = updateResolver({ node, schemaComposer });
         expect(result.type).toEqual("UpdateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
