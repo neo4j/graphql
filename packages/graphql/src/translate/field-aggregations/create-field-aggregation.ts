@@ -31,8 +31,8 @@ import createWhereAndParams from "../create-where-and-params";
 import { wrapInApocRunFirstColumn, serializeAuthParamsForApocRun, serializeParamsForApocRun } from "./apoc-run-utils";
 import { stringifyObject } from "../utils";
 
-const subQueryNodeAlias = "n";
-const subQueryRelationAlias = "r";
+const subqueryNodeAlias = "n";
+const subqueryRelationAlias = "r";
 
 type AggregationFields = {
     count?: ResolveTree;
@@ -70,17 +70,17 @@ export function createFieldAggregation({
     const authData = createFieldAggregationAuth({
         node: referenceNode,
         context,
-        subQueryNodeAlias,
+        subqueryNodeAlias,
         nodeFields: aggregationFields.node,
     });
 
     const [whereQuery, whereParams] = createWhereAndParams({
         whereInput: (field.args.where as GraphQLWhereArg) || {},
-        varName: subQueryNodeAlias,
+        varName: subqueryNodeAlias,
         node: referenceNode,
         context,
         recursing: true,
-        chainStr: `${nodeLabel}_${field.name}_${subQueryNodeAlias}`,
+        chainStr: `${nodeLabel}_${field.name}_${subqueryNodeAlias}`,
     });
 
     const targetPattern = createTargetPattern({
@@ -98,7 +98,7 @@ export function createFieldAggregation({
                 ? createCountQuery({
                       nodeLabel,
                       matchWherePattern,
-                      targetAlias: subQueryNodeAlias,
+                      targetAlias: subqueryNodeAlias,
                       params: apocRunParams,
                   })
                 : undefined,
@@ -107,7 +107,7 @@ export function createFieldAggregation({
                       nodeLabel,
                       matchWherePattern,
                       fields: aggregationFields.node,
-                      fieldAlias: subQueryNodeAlias,
+                      fieldAlias: subqueryNodeAlias,
                       graphElement: referenceNode,
                       params: apocRunParams,
                   })
@@ -117,7 +117,7 @@ export function createFieldAggregation({
                       nodeLabel,
                       matchWherePattern,
                       fields: aggregationFields.edge,
-                      fieldAlias: subQueryRelationAlias,
+                      fieldAlias: subqueryRelationAlias,
                       graphElement: referenceRelation,
                       params: apocRunParams,
                   })
@@ -155,9 +155,9 @@ function createTargetPattern({
 }): string {
     const inStr = relationField.direction === "IN" ? "<-" : "-";
     const outStr = relationField.direction === "OUT" ? "->" : "-";
-    const nodeOutStr = `(${subQueryNodeAlias}${referenceNode.getLabelString(context)})`;
+    const nodeOutStr = `(${subqueryNodeAlias}${referenceNode.getLabelString(context)})`;
 
-    return `(${nodeLabel})${inStr}[${subQueryRelationAlias}:${relationField.type}]${outStr}${nodeOutStr}`;
+    return `(${nodeLabel})${inStr}[${subqueryRelationAlias}:${relationField.type}]${outStr}${nodeOutStr}`;
 }
 
 function createCountQuery({
@@ -197,7 +197,7 @@ function createAggregationQuery({
         const dbProperty = mapToDbProperty(graphElement, field.name);
 
         acc[field.alias] = wrapInApocRunFirstColumn(
-            getAggregationSubQuery({
+            getAggregationSubquery({
                 matchWherePattern,
                 fieldName: dbProperty || field.name,
                 type: fieldType,
@@ -214,7 +214,7 @@ function createAggregationQuery({
     return stringifyObject(fieldsSubQueries);
 }
 
-function getAggregationSubQuery({
+function getAggregationSubquery({
     matchWherePattern,
     fieldName,
     type,

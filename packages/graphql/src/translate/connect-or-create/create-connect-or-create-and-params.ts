@@ -53,7 +53,7 @@ export function createConnectOrCreateAndParams({
     const statements = input.map(
         (inputItem, index): CypherStatement => {
             const subqueryBaseName = `${varName}${index}`;
-            return createConnectOrCreateSubQuery({
+            return createConnectOrCreateSubquery({
                 input: inputItem,
                 baseName: subqueryBaseName,
                 parentVar,
@@ -67,7 +67,7 @@ export function createConnectOrCreateAndParams({
     return joinStatements(statements);
 }
 
-function createConnectOrCreateSubQuery({
+function createConnectOrCreateSubquery({
     input,
     baseName,
     parentVar,

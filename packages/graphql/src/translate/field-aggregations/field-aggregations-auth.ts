@@ -37,17 +37,17 @@ type PartialAuthQueries = {
 export function createFieldAggregationAuth({
     node,
     context,
-    subQueryNodeAlias,
+    subqueryNodeAlias,
     nodeFields,
 }: {
     node: Node;
     context: Context;
-    subQueryNodeAlias: string;
+    subqueryNodeAlias: string;
     nodeFields: Record<string, ResolveTree> | undefined;
 }): AggregationAuth {
-    const allowAuth = getAllowAuth({ node, context, varName: subQueryNodeAlias });
-    const whereAuth = getWhereAuth({ node, context, varName: subQueryNodeAlias });
-    const nodeAuth = getFieldAuth({ fields: nodeFields, node, context, varName: subQueryNodeAlias });
+    const allowAuth = getAllowAuth({ node, context, varName: subqueryNodeAlias });
+    const whereAuth = getWhereAuth({ node, context, varName: subqueryNodeAlias });
+    const nodeAuth = getFieldAuth({ fields: nodeFields, node, context, varName: subqueryNodeAlias });
 
     const cypherStrs = [...nodeAuth.queries, ...allowAuth.queries];
     const cypherParams = { ...nodeAuth.params, ...allowAuth.params, ...whereAuth.params };
