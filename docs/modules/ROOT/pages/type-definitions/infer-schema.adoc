@@ -9,11 +9,11 @@ This is usually a one-time-thing and should be considered a starting point for a
 
 This tool has full support for generating type definitions, including:
 
-    - `@relationship` incl. relationship properties
-    - `@node`
-        - `label` for mapping where a node label might use a character that's not in the GraphQL supported character set
-        - `additionalLabels` for nodes that has multiple labels
-    - Generating a read-only version of the GraphQL type definitions, i.e. generate a `@exclude(operations: [CREATE, DELETE, UPDATE])` directive on all node types.
+- `@relationship` directive, including relationship properties
+- `@node`
+    - `label` for mapping where a node label might use a character that's not in the GraphQL supported character set
+    - `additionalLabels` for nodes that has multiple labels
+- Generating a read-only version of the GraphQL type definitions, i.e. generate a `@exclude(operations: [CREATE, DELETE, UPDATE])` directive on all node types.
 
 == Limitations
 If an element property has mixed types through out your graph, that property will be excluded from the 
