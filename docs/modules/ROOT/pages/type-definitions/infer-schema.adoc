@@ -28,8 +28,8 @@ If any properties are skipped, there will be output in the xref::troubleshooting
 Currently there's a programatic API for inferring schemas.
 
 === Infer and persist to file
-This example infers the schema and generates GraphQL typedefinitions ans 
-persist them to a file `schema.graphql`.
+
+This example infers the schema, generates GraphQL type definitions and persists them to a file `schema.graphql`.
 
 You can then serve this file with your GraphQL server.
 
