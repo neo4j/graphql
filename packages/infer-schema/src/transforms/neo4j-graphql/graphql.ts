@@ -76,7 +76,7 @@ function transformNodes(nodes: NodeMap, readonly: boolean): GraphQLNodeMap {
 }
 
 function hydrateWithRelationships(nodes: GraphQLNodeMap, rels: RelationshipMap): GraphQLNodeMap {
-    Object.entries(rels).forEach(([realType, rel]) => {
+    Object.entries(rels).forEach(([relType, rel]) => {
         let relInterfaceName;
 
         if (rel.properties.length) {
