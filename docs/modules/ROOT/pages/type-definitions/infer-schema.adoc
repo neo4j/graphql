@@ -16,6 +16,7 @@ This tool has full support for generating type definitions, including:
 - Generating a read-only version of the GraphQL type definitions, i.e. generate a `@exclude(operations: [CREATE, DELETE, UPDATE])` directive on all node types.
 
 == Limitations
+
 If an element property has mixed types through out your graph, that property will be excluded from the 
 generated type definitions. The reason for this is that your GraphQL server will throw an error if it 
 finds data that doesn't match the specified type.
