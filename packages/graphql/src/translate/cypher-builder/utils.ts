@@ -21,19 +21,19 @@ import { CypherStatement, CypherParams } from "../types";
 import { stringifyObject } from "../utils";
 
 /** Generates a string to be used as parameter key */
-export function generateParameterKey(preffix: string, key: string): string {
-    return `${preffix}_${key}`;
+export function generateParameterKey(prefix: string, key: string): string {
+    return `${prefix}_${key}`;
 }
 
 /** Serializes an object and splits between the serialized statement and params */
-export function serializeParameters(keyPreffix: string, parameters: CypherParams | undefined): CypherStatement {
+export function serializeParameters(keyprefix: string, parameters: CypherParams | undefined): CypherStatement {
     if (!parameters) return ["", {}];
 
     const cypherParameters: CypherParams = {};
     const nodeParameters: Record<string, string> = {};
 
     for (const [key, value] of Object.entries(parameters)) {
-        const paramKey = generateParameterKey(keyPreffix, key);
+        const paramKey = generateParameterKey(keyprefix, key);
         cypherParameters[paramKey] = value;
         nodeParameters[key] = `$${paramKey}`;
     }

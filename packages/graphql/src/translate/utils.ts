@@ -44,11 +44,10 @@ export function joinStatements(
 /** Serializes object into a string for Cypher objects */
 export function stringifyObject(fields: Record<string, string | undefined | null>): string {
     return `{ ${Object.entries(fields)
+        .filter(([_key, value]) => Boolean(value))
         .map(([key, value]): string | undefined => {
-            if (value === undefined || value === null || value === "") return undefined;
             return `${key}: ${value}`;
         })
-        .filter(Boolean)
         .join(", ")} }`;
 }
 

@@ -28,7 +28,7 @@ import { createMatchWherePattern } from "./aggregation-sub-queries";
 import { FieldAggregationSchemaTypes } from "../../schema/field-aggregation-composer";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import createWhereAndParams from "../create-where-and-params";
-import { wrapApocRun, serializeAuthParamsForApocRun, serializeParamsForApocRun } from "./apoc-run-utils";
+import { wrapInApocRunFirstColumn, serializeAuthParamsForApocRun, serializeParamsForApocRun } from "./apoc-run-utils";
 import { stringifyObject } from "../utils";
 
 const subQueryNodeAlias = "n";
@@ -171,7 +171,7 @@ function createCountQuery({
     targetAlias: string;
     params: Record<string, string>;
 }): string {
-    return wrapApocRun(AggregationSubQueries.countQuery(matchWherePattern, targetAlias), {
+    return wrapInApocRunFirstColumn(AggregationSubQueries.countQuery(matchWherePattern, targetAlias), {
         ...params,
         [nodeLabel]: nodeLabel,
     });
@@ -196,7 +196,7 @@ function createAggregationQuery({
         const fieldType = getFieldType(field);
         const dbProperty = mapToDbProperty(graphElement, field.name);
 
-        acc[field.alias] = wrapApocRun(
+        acc[field.alias] = wrapInApocRunFirstColumn(
             getAggregationSubQuery({
                 matchWherePattern,
                 fieldName: dbProperty || field.name,

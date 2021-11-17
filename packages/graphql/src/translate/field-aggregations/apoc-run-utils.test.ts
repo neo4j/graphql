@@ -17,17 +17,26 @@
  * limitations under the License.
  */
 
-import { wrapApocRun } from "./apoc-run-utils";
+import { wrapInApocRunFirstColumn } from "./apoc-run-utils";
 
 describe("apoc translation utils", () => {
-    describe("wrapApocRun", () => {
+    describe("wrapInApocRunFirstColumn", () => {
         test("wraps and escapes a query inside runFirstColumn", () => {
-            const result = wrapApocRun(`MATCH(n) RETURN n, "Hello"`);
+            const result = wrapInApocRunFirstColumn(`MATCH(n) RETURN n, "Hello"`);
             expect(result).toEqual(`head(apoc.cypher.runFirstColumn(" MATCH(n) RETURN n, \\"Hello\\" ", {  }))`);
         });
         test("adds extra params", () => {
-            const result = wrapApocRun(`MATCH(n) RETURN n`, { auth: "auth" });
+            const result = wrapInApocRunFirstColumn(`MATCH(n) RETURN n`, { auth: "auth" });
             expect(result).toEqual(`head(apoc.cypher.runFirstColumn(" MATCH(n) RETURN n ", { auth: auth }))`);
+        });
+        test("double wrap", () => {
+            const firstWrap = wrapInApocRunFirstColumn(`MATCH(n) RETURN n, "Hello"`);
+            const result = wrapInApocRunFirstColumn(firstWrap);
+            expect(result).toEqual(
+                // no-useless-escape disabled due to how escaped strings work when comparing strings.
+                // eslint-disable-next-line no-useless-escape
+                `head(apoc.cypher.runFirstColumn(\" head(apoc.cypher.runFirstColumn(\\\" MATCH(n) RETURN n, \\\\\"Hello\\\\\" \\\", {  })) \", {  }))`
+            );
         });
     });
 });
