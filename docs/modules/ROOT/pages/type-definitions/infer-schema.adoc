@@ -1,8 +1,7 @@
 [[type-definitions-infer-schema]]
 = Infer schema from an existing database
 
-Neo4j provides a tool that enables you to, with very little effort, generate a GraphQL schema from an existing database.  
-This is provided from a separate npm package `@neo4j/infer-schema`.
+Neo4j provides a tool that enables you to, with very little effort, generate GraphQL type definitions from an existing database. This is provided from a separate npm package `@neo4j/infer-schema`.
 
 This is usually a one-time-thing and should be considered a starting point for a GraphQL schema.
 
