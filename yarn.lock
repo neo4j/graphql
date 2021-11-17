@@ -1850,7 +1850,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/infer-schema@workspace:packages/infer-schema"
   dependencies:
-    "@neo4j/graphql": "workspace:packages/graphql"
+    "@neo4j/graphql": ^2.4.0
     "@types/jest": 26.0.8
     "@types/node": 14.0.27
     "@types/pluralize": 0.0.29
