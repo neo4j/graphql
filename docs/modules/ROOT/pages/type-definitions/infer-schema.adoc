@@ -57,8 +57,9 @@ main()
 ----
 
 === Infer and spin up a read-only schema
-This example infers a **read-only** version of the schema from the database and immidiently spins up a
-Apollo server.
+
+This example infers a **read-only** version of the schema from the database and immediately spins up an Apollo server.
+
 Here the type definitions are never persisted to disk.
 
 [source, javascript, indent=0]
