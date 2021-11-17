@@ -51,6 +51,7 @@ const sessionFactory = () => driver.session({ defaultAccessMode: neo4j.session.R
 async function main() {
     const typeDefs = await toGraphQLTypeDefs(sessionFactory)
     fs.writeFileSync('schema.graphql', typeDefs)
+    await driver.close();
 }
 main()
 ----
