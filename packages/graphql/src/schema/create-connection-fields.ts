@@ -74,6 +74,14 @@ function createConnectionFields({
             where: connectionWhere,
         };
 
+        if (connectionField.relationship.properties) {
+            const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);
+            connectionSort.addFields({
+                edge: `${connectionField.relationship.properties}Sort`,
+            });
+            composeNodeArgs.sort = connectionSort.NonNull.List;
+        }
+
         if (connectionField.relationship.interface) {
             connectionWhere.addFields({
                 OR: connectionWhere.NonNull.List,
@@ -133,18 +141,14 @@ function createConnectionFields({
                 node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
             });
 
-            const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);
-
             if (relatedNode.sortableFields.length) {
+                const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);
                 connectionSort.addFields({
                     node: `${connectionField.relationship.typeMeta.name}Sort`,
                 });
-            }
-
-            if (connectionField.relationship.properties) {
-                connectionSort.addFields({
-                    edge: `${connectionField.relationship.properties}Sort`,
-                });
+                if (!composeNodeArgs.sort) {
+                    composeNodeArgs.sort = connectionSort.NonNull.List;
+                }
             }
 
             composeNodeArgs = {
@@ -156,14 +160,6 @@ function createConnectionFields({
                     type: "String",
                 },
             };
-
-            // If any sortable fields, add sort argument to connection field
-            if (relatedNode.sortableFields.length || connectionField.relationship.properties) {
-                composeNodeArgs = {
-                    ...composeNodeArgs,
-                    sort: connectionSort.NonNull.List,
-                };
-            }
         }
 
         composeNode.addFields({
