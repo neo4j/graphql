@@ -14,7 +14,7 @@ From <https://relay.dev/docs/guides/graphql-server-specification/>, there are tw
 1. A mechanism for refetching an object.
 2. A description of how to page through connections.
 
-The second assumption is already satisfied by `@neo4j/graphql`, but a solution for the second assumption is yet to be implemented.
+The second assumption is already satisfied by `@neo4j/graphql`, but a solution for the first assumption is yet to be implemented.
 
 Relay expects this to be fulfilled by a field `node` on the root query type, which returns an implementation of a `Node` interface, which contains a single field `id` of type `ID!` which implementing types must satisfy.
 
