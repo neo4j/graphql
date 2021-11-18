@@ -263,7 +263,7 @@ Includes:
 * `Int`
 * `Float`
 * `BigInt`
-* `Duration`
+* `Duration` - Don't have `SUM`
 
 Has the following operators: 
 
@@ -277,6 +277,11 @@ Has the following operators:
 * `_AVERAGE_GTE`
 * `_AVERAGE_LT`
 * `_AVERAGE_LTE`
+* `_SUM_EQUAL`
+* `_SUM_GT`
+* `_SUM_GTE`
+* `_SUM_LT`
+* `_SUM_LTE`
 * `_MIN_EQUAL`
 * `_MIN_GT`
 * `_MIN_GTE`
@@ -287,6 +292,8 @@ Has the following operators:
 * `_MAX_GTE`
 * `_MAX_LT`
 * `_MAX_LTE`
+
+Note that duration types don't have the `SUM` operator. 
 
 ===== Example 
 
