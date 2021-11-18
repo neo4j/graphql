@@ -23,11 +23,11 @@ describe("apoc translation utils", () => {
     describe("wrapInApocRunFirstColumn", () => {
         test("wraps and escapes a query inside runFirstColumn", () => {
             const result = wrapInApocRunFirstColumn(`MATCH(n) RETURN n, "Hello"`);
-            expect(result).toEqual(`apoc.cypher.runFirstColumn(" MATCH(n) RETURN n, \\"Hello\\" ", {  })`);
+            expect(result).toEqual(`apoc.cypher.runFirstColumn("MATCH(n) RETURN n, \\"Hello\\"", {  })`);
         });
         test("adds extra params", () => {
             const result = wrapInApocRunFirstColumn(`MATCH(n) RETURN n`, { auth: "auth" });
-            expect(result).toEqual(`apoc.cypher.runFirstColumn(" MATCH(n) RETURN n ", { auth: auth })`);
+            expect(result).toEqual(`apoc.cypher.runFirstColumn("MATCH(n) RETURN n", { auth: auth })`);
         });
         test("double wrap", () => {
             const firstWrap = wrapInApocRunFirstColumn(`MATCH(n) RETURN n, "Hello"`);
@@ -35,7 +35,7 @@ describe("apoc translation utils", () => {
             expect(result).toEqual(
                 // no-useless-escape disabled due to how escaped strings work when comparing strings.
                 // eslint-disable-next-line no-useless-escape
-                `apoc.cypher.runFirstColumn(\" apoc.cypher.runFirstColumn(\\\" MATCH(n) RETURN n, \\\\\"Hello\\\\\" \\\", {  }) \", {  })`
+                `apoc.cypher.runFirstColumn(\"apoc.cypher.runFirstColumn(\\\"MATCH(n) RETURN n, \\\\\"Hello\\\\\"\\\", {  })\", {  })`
             );
         });
     });

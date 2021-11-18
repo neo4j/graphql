@@ -5,7 +5,7 @@ import { escapeQuery } from "./escape-query";
 export function wrapInApocRunFirstColumn(query: string, params: Record<string, string> = {}): string {
     const serializedParams = stringifyObject(params);
     const escapedQuery = escapeQuery(query);
-    return `apoc.cypher.runFirstColumn(" ${escapedQuery} ", ${serializedParams})`;
+    return `apoc.cypher.runFirstColumn("${escapedQuery}", ${serializedParams})`;
 }
 
 export function serializeParamsForApocRun(params: Record<string, any>): Record<string, string> {
