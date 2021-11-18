@@ -751,4 +751,79 @@ describe("aggregations-where-edge-int", () => {
             }
         });
     });
+
+    describe("sum", () => {
+        test("should return posts where the sum of a edge like Int's is EQUAL to", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                }
+              
+                type Post {
+                  testString: String!
+                  likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+                }
+    
+                interface Likes {
+                    someInt: Int
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const someInt1 = Math.floor(Math.random() * Math.random());
+            const someInt2 = Math.floor(Math.random() * Math.random());
+            const someInt3 = Math.floor(Math.random() * Math.random());
+
+            const sum = someInt1 + someInt2 + someInt3;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES { someInt: ${someInt1} }]-(:User {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES { someInt: ${someInt2} }]-(:User {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES { someInt: ${someInt3} }]-(:User {testString: "${testString}"})
+                        CREATE (:Post {testString: "${testString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { edge: { someInt_SUM_EQUAL: ${sum} } } }) {
+                            testString
+                            likes {
+                                testString
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const [post] = (gqlResult.data as any).posts as any[];
+                expect(post.testString).toEqual(testString);
+                expect(post.likes).toHaveLength(3);
+            } finally {
+                await session.close();
+            }
+        });
+    });
 });

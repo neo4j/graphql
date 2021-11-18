@@ -220,6 +220,11 @@ describe("Relationship-properties", () => {
               screenTime_MIN_GTE: Int
               screenTime_MIN_LT: Int
               screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
             }
 
             input ActorMoviesFieldInput {
@@ -444,6 +449,11 @@ describe("Relationship-properties", () => {
               screenTime_MIN_GTE: Int
               screenTime_MIN_LT: Int
               screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
             }
 
             input MovieActorsFieldInput {
@@ -828,6 +838,11 @@ describe("Relationship-properties", () => {
               screenTime_MIN_GTE: Int
               screenTime_MIN_LT: Int
               screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
               timestamp_EQUAL: DateTime
               timestamp_GT: DateTime
               timestamp_GTE: DateTime
@@ -1080,6 +1095,11 @@ describe("Relationship-properties", () => {
               screenTime_MIN_GTE: Int
               screenTime_MIN_LT: Int
               screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
               timestamp_EQUAL: DateTime
               timestamp_GT: DateTime
               timestamp_GTE: DateTime
