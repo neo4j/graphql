@@ -7,7 +7,7 @@ module.exports = {
     coverageDirectory: "<rootDir>/packages/infer-schema/coverage/",
     globals: {
         "ts-jest": {
-            tsconfig: "<rootDir>/packages/infer-schema/src/tsconfig.json",
+            tsconfig: "<rootDir>/packages/infer-schema/tests/tsconfig.json",
         },
     },
 };
