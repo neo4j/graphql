@@ -84,6 +84,7 @@ describe("162", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Mutation {

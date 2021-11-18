@@ -921,6 +921,7 @@ describe("generate", () => {
               max: Scalars[\\"Int\\"];
               min: Scalars[\\"Int\\"];
               average: Scalars[\\"Float\\"];
+              sum: Scalars[\\"Int\\"];
             };
 
             export type Movie = {

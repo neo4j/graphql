@@ -344,6 +344,7 @@ describe("Relationship-properties", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Movie {
@@ -976,6 +977,7 @@ describe("Relationship-properties", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Movie {

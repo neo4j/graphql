@@ -386,12 +386,14 @@ describe("Alias", () => {
               average: Float!
               max: Float!
               min: Float!
+              sum: Float!
             }
 
             type IntAggregateSelection {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Movie {

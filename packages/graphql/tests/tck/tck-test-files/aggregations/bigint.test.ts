@@ -113,14 +113,12 @@ describe("Cypher Aggregations BigInt", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test("Min and Max and Average", async () => {
+    test("Sum", async () => {
         const query = gql`
             {
                 filesAggregate {
                     size {
-                        min
-                        max
-                        average
+                        sum
                     }
                 }
             }
@@ -133,7 +131,34 @@ describe("Cypher Aggregations BigInt", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:File)
-            RETURN { size: { min: min(this.size), max: max(this.size), average: avg(this.size) } }"
+            RETURN { size: { sum: sum(this.size) } }"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("Min, Max, Sum and Average", async () => {
+        const query = gql`
+            {
+                filesAggregate {
+                    size {
+                        min
+                        max
+                        average
+                        sum
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:File)
+            RETURN { size: { min: min(this.size), max: max(this.size), average: avg(this.size), sum: sum(this.size) } }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

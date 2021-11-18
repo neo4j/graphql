@@ -535,6 +535,7 @@ describe("Unions", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Journal {

@@ -54,6 +54,7 @@ describe("Aggregations", () => {
               average: BigInt!
               max: BigInt!
               min: BigInt!
+              sum: BigInt!
             }
 
             type CreateInfo {
@@ -93,6 +94,7 @@ describe("Aggregations", () => {
               average: Float!
               max: Float!
               min: Float!
+              sum: Float!
             }
 
             type IDAggregateSelection {
@@ -104,6 +106,7 @@ describe("Aggregations", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
@@ -382,6 +385,7 @@ describe("Aggregations", () => {
               average: BigInt!
               max: BigInt!
               min: BigInt!
+              sum: BigInt!
             }
 
             type CreateInfo {
@@ -426,6 +430,7 @@ describe("Aggregations", () => {
               average: Float!
               max: Float!
               min: Float!
+              sum: Float!
             }
 
             type IDAggregateSelection {
@@ -437,6 +442,7 @@ describe("Aggregations", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             interface Likes {

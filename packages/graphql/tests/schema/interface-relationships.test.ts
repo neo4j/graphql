@@ -237,6 +237,7 @@ describe("Interface Relationships", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Movie implements Production {
@@ -906,6 +907,7 @@ describe("Interface Relationships", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Movie implements Production {
