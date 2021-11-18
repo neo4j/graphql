@@ -21,15 +21,22 @@ import { ResolveTree } from "graphql-parse-resolve-info";
 import { upperFirst } from "graphql-compose";
 import { Node, Relationship } from "../../classes";
 import { Context, RelationField, GraphQLWhereArg } from "../../types";
-import { getFieldType, AggregationType, getReferenceNode, getFieldByName, getReferenceRelation } from "./utils";
+import {
+    getFieldType,
+    AggregationType,
+    getReferenceNode,
+    getFieldByName,
+    getReferenceRelation,
+    serializeAuthParamsForApocRun,
+} from "./utils";
 import * as AggregationSubQueries from "./aggregation-sub-queries";
 import { createFieldAggregationAuth } from "./field-aggregations-auth";
 import { createMatchWherePattern } from "./aggregation-sub-queries";
 import { FieldAggregationSchemaTypes } from "../../schema/field-aggregation-composer";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import createWhereAndParams from "../create-where-and-params";
-import { wrapInApocRunFirstColumn, serializeAuthParamsForApocRun, serializeParamsForApocRun } from "./apoc-run-utils";
-import { stringifyObject } from "../utils";
+import { stringifyObject } from "../utils/stringify-object";
+import { serializeParamsForApocRun, wrapInApocRunFirstColumn } from "../utils/apoc-run";
 
 const subqueryNodeAlias = "n";
 const subqueryRelationAlias = "r";
@@ -171,10 +178,12 @@ function createCountQuery({
     targetAlias: string;
     params: Record<string, string>;
 }): string {
-    return wrapInApocRunFirstColumn(AggregationSubQueries.countQuery(matchWherePattern, targetAlias), {
+    const apocCount = wrapInApocRunFirstColumn(AggregationSubQueries.countQuery(matchWherePattern, targetAlias), {
         ...params,
         [nodeLabel]: nodeLabel,
     });
+
+    return `head(${apocCount})`;
 }
 
 function createAggregationQuery({
@@ -196,7 +205,7 @@ function createAggregationQuery({
         const fieldType = getFieldType(field);
         const dbProperty = mapToDbProperty(graphElement, field.name);
 
-        acc[field.alias] = wrapInApocRunFirstColumn(
+        const aggregationQuery = wrapInApocRunFirstColumn(
             getAggregationSubquery({
                 matchWherePattern,
                 fieldName: dbProperty || field.name,
@@ -208,6 +217,7 @@ function createAggregationQuery({
                 [nodeLabel]: nodeLabel,
             }
         );
+        acc[field.alias] = `head(${aggregationQuery})`;
         return acc;
     }, {} as Record<string, string>);
 

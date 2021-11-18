@@ -19,7 +19,7 @@
 
 import { AggregationAuth } from "./field-aggregations-auth";
 import { wrapApocConvertDate } from "../projection/elements/create-datetime-element";
-import { stringifyObject } from "../utils";
+import { stringifyObject } from "../utils/stringify-object";
 
 export function createMatchWherePattern(matchPattern: string, auth: AggregationAuth, whereInput: string): string {
     const whereQuery = whereInput || auth.whereQuery ? "WHERE" : "";

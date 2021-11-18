@@ -18,7 +18,7 @@
  */
 
 import { CypherStatement, CypherParams } from "../types";
-import { stringifyObject } from "../utils";
+import { stringifyObject } from "../utils/stringify-object";
 
 /** Generates a string to be used as parameter key */
 export function generateParameterKey(prefix: string, key: string): string {
