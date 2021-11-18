@@ -544,6 +544,9 @@ function createRelationshipFields({
                                 [`${field.fieldName}_AVERAGE_${operator}`]: averageType,
                                 [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
                                 [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
+                                ...(field.typeMeta.name !== "Duration"
+                                    ? { [`${field.fieldName}_SUM_${operator}`]: field.typeMeta.name }
+                                    : {}),
                             };
                         }, {})
                     );
