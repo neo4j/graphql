@@ -56,7 +56,7 @@ main();
 
 #### Introspect and spin up a read-only schema
 
-This example infers a **read-only** version of the schema from the database and immediately spins up an Apollo server.
+This example generates a **read-only** version of the schema from the database and immediately spins up an Apollo server.
 
 Here the type definitions are never persisted to disk.
 
