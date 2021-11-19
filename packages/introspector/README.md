@@ -31,7 +31,7 @@ Currently there's a programmatic API for introspecting the Neo4j schema and gene
 
 #### Introspect and persist to file
 
-This example infers the schema, generates GraphQL type definitions and persists them to a file `schema.graphql`.
+This example introspects the schema, generates GraphQL type definitions and persists them to a file `schema.graphql`.
 
 You can then serve this file with your GraphQL server.
 
