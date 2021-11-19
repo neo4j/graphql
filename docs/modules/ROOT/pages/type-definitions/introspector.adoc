@@ -1,7 +1,7 @@
 [[type-definitions-introspector]]
 = Introspect schema from an existing Neo4j database
 
-Neo4j provides a tool that enables you to, with very little effort, generate GraphQL type definitions from an existing database. This is provided from a separate npm package `@neo4j/introspector`.
+Neo4j provides a tool that enables you, with very little effort, to generate GraphQL type definitions from an existing database. This is provided by a separate npm package, `@neo4j/introspector`.
 
 This is usually a one-time-thing and should be considered a starting point for a GraphQL schema.
 
