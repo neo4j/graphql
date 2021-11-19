@@ -1,6 +1,6 @@
 # Introspect schema from an existing Neo4j database
 
-This is a tool that enables you to, with very little effort, to introspect the schema / data model in an existing Neo4j database and builds up a set of data structures that can be transformed into any output format.
+This is a tool that enables you, with very little effort, to introspect the schema / data model in an existing Neo4j database and builds up a set of data structures that can be transformed into any output format.
 
 This is provided from a separate npm package `@neo4j/introspector`.
 
