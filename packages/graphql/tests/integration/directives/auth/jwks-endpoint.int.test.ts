@@ -88,8 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
             `);
 
             const accessToken = jwksMock.token({
-                iat: 1634852712,
-                exp: 1734939112, // TODO: Expire date to infinity
+                iat: 1600000000,
             });
 
             const gqlResult = await graphql({
@@ -157,8 +156,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
                 "https://myAuthTest.auth0.com/jwt/claims": {
                     "my-auth-roles": ["standard-user"],
                 },
-                iat: 1634852712,
-                exp: 1734939112, // TODO: Expire date to infinity
+                iat: 1600000000,
             });
 
             const gqlResult = await graphql({
@@ -226,8 +224,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
                 "https://myAuthTest.auth0.com/jwt/claims": {
                     "my-auth-roles": ["standard-user"],
                 },
-                iat: 1634852712,
-                exp: 1734939112, // TODO: Expire date to infinity
+                iat: 1600000000,
             });
 
             const gqlResult = await graphql({
