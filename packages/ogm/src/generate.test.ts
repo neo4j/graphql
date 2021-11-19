@@ -18,13 +18,13 @@
  */
 
 import { generate as randomstring } from "randomstring";
-import generate from "./generate";
-import { OGM } from "./index";
 import * as fs from "fs";
 import * as path from "path";
+import generate from "./generate";
+import { OGM } from "./index";
 
 describe("generate", () => {
-    let filesToDelete: string[] = [];
+    const filesToDelete: string[] = [];
 
     afterAll(async () => {
         await Promise.all(filesToDelete.map((name) => fs.promises.unlink(name)));

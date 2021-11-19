@@ -23,7 +23,7 @@ import { filterDocument } from "../utils";
 
 export type OGMConstructor = Neo4jGraphQLConstructor;
 
-class OGM<ModelMap = {}> {
+class OGM<ModelMap = Record<string, unknown>> {
     public models: Model[];
 
     checkNeo4jCompat: () => Promise<void>;
@@ -72,7 +72,7 @@ class OGM<ModelMap = {}> {
             throw new Error(`Could not find model ${name}`);
         }
 
-        return (found as unknown) as M;
+        return found as unknown as M;
     }
 }
 

@@ -21,7 +21,7 @@ import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR, RELATIONSHIP_REQUIREMENT_PREFIX } from "../constants";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import createRelationshipValidationStr from "./create-relationship-validation-str";

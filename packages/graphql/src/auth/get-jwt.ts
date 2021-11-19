@@ -86,7 +86,7 @@ function getJWT(context: Context): any {
 
             /* eslint-disable-next-line no-inner-declarations */
             function getKey(header, callback) {
-                client.getSigningKey(header.kid, function (err, key) {
+                client.getSigningKey(header.kid, (err, key) => {
                     const signingKey = key.getPublicKey();
                     callback(null, signingKey);
                 });
