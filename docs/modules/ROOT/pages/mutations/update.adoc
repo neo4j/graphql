@@ -129,7 +129,7 @@ mutation Mutation {
         movies: {
           connectOrCreate: {
             where: {node: {id: "1234"}}
-            onCreate: {node: {title: "Forrest Gump", id: "1234"}}
+            onCreate: {node: {title: "Forrest Gump"}}
           }
         }
     },
@@ -153,7 +153,7 @@ mutation Mutation {
       connectOrCreate: {
         movies: {
             where: {node: {id: "1234"}}
-            onCreate: {node: {title: "Forrest Gump", id: "1234"}}
+            onCreate: {node: {title: "Forrest Gump"}}
         }
       },
       where: { name: "Tom Hanks"}
