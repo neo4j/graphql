@@ -1846,9 +1846,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/infer-schema@workspace:packages/infer-schema":
+"@neo4j/introspector@workspace:packages/introspector":
   version: 0.0.0-use.local
-  resolution: "@neo4j/infer-schema@workspace:packages/infer-schema"
+  resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
     "@neo4j/graphql": ^2.4.0
     "@types/jest": 26.0.8
