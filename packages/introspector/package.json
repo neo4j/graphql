@@ -1,7 +1,7 @@
 {
-    "name": "@neo4j/infer-schema",
+    "name": "@neo4j/introspector",
     "version": "1.0.0",
-    "description": "Infer a Neo4j database model by inspecting the database and output to a GraphQL typedefs format",
+    "description": "Introspect a Neo4j database model/schema",
     "keywords": [
         "neo4j",
         "graphql",
@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/neo4j/graphql/issues"
     },
-    "homepage": "https://github.com/neo4j/graphql/tree/master/packages/infer-schema",
+    "homepage": "https://github.com/neo4j/graphql/tree/master/packages/introspector",
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",

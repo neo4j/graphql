@@ -17,5 +17,16 @@
  * limitations under the License.
  */
 
-const DEBUG_PREFIX = "@neo4j/";
-export const DEBUG_INFER_SCHEMA = `${DEBUG_PREFIX}infer-schema`;
+import { Session } from "neo4j-driver";
+import graphqlFormatter from "./transforms/neo4j-graphql";
+import toInternalStruct from "./to-internal-struct";
+import { Neo4jStruct } from "./types";
+
+export async function toGenericStruct(sessionFactory: () => Session): Promise<Neo4jStruct> {
+    return toInternalStruct(sessionFactory);
+}
+
+export async function toGraphQLTypeDefs(sessionFactory: () => Session, readonly = false): Promise<string> {
+    const genericStruct = await toGenericStruct(sessionFactory);
+    return graphqlFormatter(genericStruct, readonly);
+}

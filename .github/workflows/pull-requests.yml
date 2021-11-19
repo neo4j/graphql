@@ -27,7 +27,7 @@ jobs:
         package:
           - graphql
           - ogm
-          - infer-schema
+          - introspector
 
     runs-on: ubuntu-latest
 
@@ -144,7 +144,7 @@ jobs:
         package:
           - graphql
           - ogm
-          - infer-schema
+          - introspector
         neo4j-version:
           - 4.1.5
           - 4.1

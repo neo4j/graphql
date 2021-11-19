@@ -17,16 +17,5 @@
  * limitations under the License.
  */
 
-import { Session } from "neo4j-driver";
-import graphqlFormatter from "./transforms/neo4j-graphql";
-import toNeo4jStruct from "./to-neo4j-struct";
-import { Neo4jStruct } from "./types";
-
-export async function inferToNeo4jStruct(sessionFactory: () => Session): Promise<Neo4jStruct> {
-    return toNeo4jStruct(sessionFactory);
-}
-
-export async function toGraphQLTypeDefs(sessionFactory: () => Session, readonly = false): Promise<string> {
-    const neo4jStruct = await inferToNeo4jStruct(sessionFactory);
-    return graphqlFormatter(neo4jStruct, readonly);
-}
+const DEBUG_PREFIX = "@neo4j/";
+export const DEBUG_INFER_SCHEMA = `${DEBUG_PREFIX}introspector`;
