@@ -54,7 +54,7 @@ async function main() {
 main();
 ```
 
-#### Infer and spin up a read-only schema
+#### Introspect and spin up a read-only schema
 
 This example infers a **read-only** version of the schema from the database and immediately spins up an Apollo server.
 
