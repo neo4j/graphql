@@ -22,7 +22,7 @@ Alternatively, if you are debugging a particular functionality, you can specify 
 3. `@neo4j/graphql:graphql` - Logs the GraphQL query and variables
 4. `@neo4j/graphql:execute` - Logs the Cypher and Cypher paramaters before execution, and summary of execution
 
-=== For @neo4j/introspector
+=== For `@neo4j/introspector`
 
 `@neo4j/introspector` has its own debug logging namespace and you can turn on logging for it with:
 
