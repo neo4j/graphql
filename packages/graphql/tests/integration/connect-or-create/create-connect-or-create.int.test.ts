@@ -19,11 +19,11 @@
 
 import pluralize from "pluralize";
 import { Driver, Session, Integer } from "neo4j-driver";
+import { gql } from "apollo-server";
 import { graphql, DocumentNode } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../../src/utils/test/graphql-types";
-import { gql } from "apollo-server";
 import { getQuerySource } from "../../utils";
 
 describe("Create -> ConnectOrCreate", () => {
