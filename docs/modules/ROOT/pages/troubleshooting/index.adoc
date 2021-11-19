@@ -6,7 +6,7 @@ This chapter contains common troubleshooting steps. Additionally, there is a sec
 [[troubleshooting-debug-logging]]
 == Debug Logging
 
-=== For @neo4j/graphql
+=== For `@neo4j/graphql`
 
 `@neo4j/graphql` uses the https://www.npmjs.com/package/debug[`debug`] library for debug-level logging. You can turn on all debug logging by setting the environment variable `DEBUG` to `@neo4j/graphql:*` when running. For example:
 
