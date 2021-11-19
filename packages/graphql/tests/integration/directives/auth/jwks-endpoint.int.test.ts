@@ -32,7 +32,6 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 describe("https://github.com/neo4j/graphql/issues/564", () => {
     let jwksMock: JWKSMock;
     let server: any;
-    let request: any;
     let driver: Driver;
 
     beforeAll(async () => {
@@ -44,58 +43,11 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
     });
 
     beforeEach(() => {
-        ({ jwksMock, server, request } = createContext());
+        ({ jwksMock, server } = createContext());
     });
 
     afterEach(async () => {
         await tearDown({ jwksMock, server });
-    });
-
-    test("should not get access without correct token", async () => {
-        jwksMock.start();
-        const { status } = await request.get("/");
-        expect(status).toEqual(401);
-    });
-
-    test("should get access with mock token when jwksMock is running", async () => {
-        jwksMock.start();
-        const accessToken = jwksMock.token({
-            aud: "private",
-            iss: "master",
-        });
-        const { status } = await request.get("/").set("Authorization", `Bearer ${accessToken}`);
-        expect(status).toEqual(200);
-    });
-
-    test("should not get access with mock token when jwksMock is not running", async () => {
-        // Now we do not intercept queries. The queries of the middleware for the JKWS will
-        // go to the production server and the local key will be invalid.
-        const accessToken = jwksMock.token({
-            aud: "private",
-            iss: "master",
-        });
-        const { status } = await request.get("/").set("Authorization", `Bearer ${accessToken}`);
-        expect(status).toEqual(401);
-    });
-
-    test("Another example with a non-auth0-style jkwsUri", async () => {
-        const jwksMockCustom = createJWKSMock("https://myAuthTest.auth0.com", "/protocol/openid-connect/certs");
-
-        // We start our app.
-        const serverCustom = createApp({
-            jwksUri: "https://myAuthTest.auth0.com/protocol/openid-connect/certs",
-        }).listen();
-
-        const requestCustom = supertest(serverCustom);
-
-        jwksMockCustom.start();
-        const accessToken = jwksMockCustom.token({
-            aud: "private",
-            iss: "master",
-        });
-        const { status } = await requestCustom.get("/").set("Authorization", `Bearer ${accessToken}`);
-        await tearDown({ jwksMock: jwksMockCustom, server: serverCustom });
-        expect(status).toEqual(200);
     });
 
     test("tests the config path that uses JWKS Endpoint", async () => {
