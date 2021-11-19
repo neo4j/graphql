@@ -27,7 +27,7 @@ finds data that doesn't match the specified type.
 
 ### Usage examples
 
-Currently there's a programmatic API for inferring schemas.
+Currently there's a programmatic API for introspecting the Neo4j schema and generating GraphQL type definitions.
 
 #### Infer and persist to file
 
