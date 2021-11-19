@@ -20,6 +20,6 @@
 import camelcase from "camelcase";
 import pascalCase from "../../../utils/pascal-case";
 
-export default function inferRelationshipPropsName(relType: string): string {
+export default function generateRelationshipPropsName(relType: string): string {
     return pascalCase(camelcase(`${relType}-properties`));
 }

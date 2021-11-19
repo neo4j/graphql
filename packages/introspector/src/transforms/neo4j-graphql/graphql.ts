@@ -22,7 +22,7 @@ import createNodeFields from "./utils/create-node-fields";
 import uniqueString from "../../utils/unique-string";
 import { NodeDirective } from "./directives/Node";
 import { GraphQLNode } from "./GraphQLNode";
-import inferRelationshipPropsName from "./utils/infer-relationship-props-name";
+import generateRelationshipPropsName from "./utils/generate-relationship-props-name";
 import { RelationshipPropertiesDirective } from "./directives/RelationshipProperties";
 import createRelationshipFields from "./utils/create-relationship-fields";
 import { ExcludeDirective } from "./directives/Exclude";
@@ -81,7 +81,7 @@ function hydrateWithRelationships(nodes: GraphQLNodeMap, rels: RelationshipMap):
 
         if (rel.properties.length) {
             relInterfaceName = uniqueString(
-                inferRelationshipPropsName(relType),
+                generateRelationshipPropsName(relType),
                 Object.values(nodes).map((n) => n.typeName)
             );
             const relInterfaceNode = new GraphQLNode("interface", relInterfaceName);

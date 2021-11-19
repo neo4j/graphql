@@ -39,13 +39,13 @@ type RelationshipRecord = {
 };
 
 export default async function toNeo4jStruct(sessionFactory: () => Session): Promise<Neo4jStruct> {
-    const nodes = await inferNodes(sessionFactory);
-    const relationships = await inferRelationships(sessionFactory);
+    const nodes = await introspectNodes(sessionFactory);
+    const relationships = await introspectRelationships(sessionFactory);
 
     return { nodes, relationships };
 }
 
-async function inferNodes(sessionFactory: () => Session): Promise<NodeMap> {
+async function introspectNodes(sessionFactory: () => Session): Promise<NodeMap> {
     const nodes: NodeMap = {};
     // Label properties
     const session = sessionFactory();
@@ -78,7 +78,7 @@ async function inferNodes(sessionFactory: () => Session): Promise<NodeMap> {
     return nodes;
 }
 
-async function inferRelationships(sessionFactory: () => Session): Promise<RelationshipMap> {
+async function introspectRelationships(sessionFactory: () => Session): Promise<RelationshipMap> {
     const relSession = sessionFactory();
     const rels: RelationshipMap = {};
 

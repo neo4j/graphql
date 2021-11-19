@@ -23,7 +23,7 @@ import { toGraphQLTypeDefs } from "../../../src/index";
 import createDriver from "../neo4j";
 
 describe("GraphQL - Infer Schema nodes basic tests", () => {
-    const dbName = "inferToNeo4jGrahqlTypeDefsITDb";
+    const dbName = "introspectToNeo4jGrahqlTypeDefsITDb";
     let driver: neo4j.Driver;
     let MULTIDB_SUPPORT = true;
 
@@ -76,7 +76,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         }
         await driver.close();
     });
-    test("Can infer single label with single property", async () => {
+    test("Can introspect and generate single label with single property", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
@@ -102,7 +102,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
-    test("Can infer single label with multiple properties of different types", async () => {
+    test("Can introspect and generate single label with multiple properties of different types", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
@@ -134,7 +134,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
-    test("Can infer multiple labels with multiple properties of different types", async () => {
+    test("Can introspect and generate multiple labels with multiple properties of different types", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
@@ -168,7 +168,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
-    test("Can infer additional labels", async () => {
+    test("Can introspect and generate additional labels", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
@@ -202,7 +202,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
-    test("Can infer label with unsupported characters in labels", async () => {
+    test("Can introspect and generate label with unsupported characters in labels", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals

@@ -23,7 +23,7 @@ import { toGraphQLTypeDefs } from "../../../src/index";
 import createDriver from "../neo4j";
 
 describe("GraphQL - Infer Schema on graphs", () => {
-    const dbName = "inferToNeo4jGrahqlTypeDefsGraphITDb";
+    const dbName = "introspectToNeo4jGrahqlTypeDefsGraphITDb";
     let driver: neo4j.Driver;
     let MULTIDB_SUPPORT = true;
 
@@ -77,7 +77,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         await driver.close();
     });
 
-    test("Can infer on small graph with no rel properties", async () => {
+    test("Can introspect and generate on small graph with no rel properties", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
@@ -115,7 +115,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
-    test("Can infer multiple relationships (even with the same type)", async () => {
+    test("Can introspect and generate multiple relationships (even with the same type)", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
@@ -171,7 +171,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
-    test("Can infer relationships with properties", async () => {
+    test("Can introspect and generate relationships with properties", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals

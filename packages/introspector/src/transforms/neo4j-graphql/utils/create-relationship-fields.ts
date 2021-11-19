@@ -19,7 +19,7 @@
 
 import { RelationshipDirective } from "../directives/Relationship";
 import { NodeField } from "../NodeField";
-import inferRelationshipFieldName from "./infer-relationship-field-name";
+import generateRelationshipFieldName from "./generate-relationship-field-name";
 
 export default function createRelationshipFields(
     fromTypeName: string,
@@ -28,14 +28,14 @@ export default function createRelationshipFields(
     propertiesTypeName?: string
 ): { fromField: NodeField; toField: NodeField } {
     const fromField = new NodeField(
-        inferRelationshipFieldName(relType, fromTypeName, toTypeName, "OUT"),
+        generateRelationshipFieldName(relType, fromTypeName, toTypeName, "OUT"),
         `[${toTypeName}]`
     );
     const fromDirective = new RelationshipDirective(relType, "OUT", propertiesTypeName);
     fromField.addDirective(fromDirective);
 
     const toField = new NodeField(
-        inferRelationshipFieldName(relType, fromTypeName, toTypeName, "IN"),
+        generateRelationshipFieldName(relType, fromTypeName, toTypeName, "IN"),
         `[${fromTypeName}]`
     );
     const toDirective = new RelationshipDirective(relType, "IN", propertiesTypeName);
