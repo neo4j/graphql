@@ -1817,7 +1817,7 @@ __metadata:
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
     faker: 5.2.0
-    graphql-compose: ^9.0.2
+    graphql-compose: ^9.0.4
     graphql-parse-resolve-info: ^4.12.0
     graphql-relay: ^0.8.0
     graphql-tag: 2.11.0
@@ -2685,7 +2685,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/object-path@npm:^0.11.0":
+"@types/object-path@npm:0.11.1":
   version: 0.11.1
   resolution: "@types/object-path@npm:0.11.1"
   checksum: d0bdb453cb99e741fc99918889b0262e6ba0848b04c5c686f895de2cc22fde99414971adec6f33467a1c6150fcd624f6cc99eccdd47bffee3909f3883ad557d7
@@ -7972,16 +7972,16 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"graphql-compose@npm:^9.0.2":
-  version: 9.0.2
-  resolution: "graphql-compose@npm:9.0.2"
+"graphql-compose@npm:^9.0.4":
+  version: 9.0.4
+  resolution: "graphql-compose@npm:9.0.4"
   dependencies:
-    "@types/object-path": ^0.11.0
+    "@types/object-path": 0.11.1
     graphql-type-json: 0.3.2
-    object-path: 0.11.5
+    object-path: 0.11.8
   peerDependencies:
     graphql: ^14.2.0 || ^15.0.0 || ^16.0.0
-  checksum: 0c5c7967c1e8e6ea4fd7f65fb08212d65ddda980a9321a089599dd7e000b9d53a71be317abe6d16fb4079e6687b95470b383f6670a288322e7d1d16fdfcd2132
+  checksum: 0b738704e915b0605b4a70177c51faa92a71da22ce3e7af3aa93a2782ec8425c2ad6f9a3f8b275d87bebe44b935541764340b1cb93bc149845d717fc47f1531d
   languageName: node
   linkType: hard
 
@@ -11829,7 +11829,14 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"object-path@npm:0.11.5, object-path@npm:^0.11.4":
+"object-path@npm:0.11.8":
+  version: 0.11.8
+  resolution: "object-path@npm:0.11.8"
+  checksum: daf845abe3054b38a2ecd40ada58ffca30b4704d102f0426aa87afa6a02313226d87c9db6a0e9297aeb387047b567dbc790fb0599ab1a53e630298f7f79687db
+  languageName: node
+  linkType: hard
+
+"object-path@npm:^0.11.4":
   version: 0.11.5
   resolution: "object-path@npm:0.11.5"
   checksum: a2be57f65eb247161763280e857ddbafcfbb41ad7cfcfb0a78aca2e8adb990a7b5afe6b182c20baf0e218e541ec75c1807fd04d50e3049920c2ec65e6eb9c900
