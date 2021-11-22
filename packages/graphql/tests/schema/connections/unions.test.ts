@@ -58,7 +58,7 @@ describe("Unions", () => {
             type Author {
               name: String!
               publications(options: QueryOptions, where: PublicationWhere): [Publication]
-              publicationsConnection(where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
+              publicationsConnection(sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
             type AuthorAggregateSelection {
@@ -170,6 +170,10 @@ describe("Unions", () => {
               edge_NOT: WroteWhere
               node: JournalWhere
               node_NOT: JournalWhere
+            }
+
+            input AuthorPublicationsConnectionSort {
+              edge: WroteSort
             }
 
             input AuthorPublicationsConnectionWhere {

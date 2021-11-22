@@ -18,13 +18,13 @@
  */
 
 import { generate as randomstring } from "randomstring";
-import generate from "./generate";
-import { OGM } from "./index";
 import * as fs from "fs";
 import * as path from "path";
+import generate from "./generate";
+import { OGM } from "./index";
 
 describe("generate", () => {
-    let filesToDelete: string[] = [];
+    const filesToDelete: string[] = [];
 
     afterAll(async () => {
         await Promise.all(filesToDelete.map((name) => fs.promises.unlink(name)));
@@ -942,9 +942,9 @@ describe("generate", () => {
 
             export type MovieActorsConnectionArgs = {
               where?: Maybe<MovieActorsConnectionWhere>;
+              sort?: Maybe<Array<MovieActorsConnectionSort>>;
               first?: Maybe<Scalars[\\"Int\\"]>;
               after?: Maybe<Scalars[\\"String\\"]>;
-              sort?: Maybe<Array<MovieActorsConnectionSort>>;
             };
 
             export type MovieActorsConnection = {
@@ -1074,8 +1074,8 @@ describe("generate", () => {
             };
 
             export type MovieActorsConnectionSort = {
-              node?: Maybe<PersonSort>;
               edge?: Maybe<ActedInSort>;
+              node?: Maybe<PersonSort>;
             };
 
             export type MovieActorsConnectionWhere = {
