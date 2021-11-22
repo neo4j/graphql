@@ -18,13 +18,13 @@
  */
 
 import { generate as randomstring } from "randomstring";
-import generate from "./generate";
-import { OGM } from "./index";
 import * as fs from "fs";
 import * as path from "path";
+import generate from "./generate";
+import { OGM } from "./index";
 
 describe("generate", () => {
-    let filesToDelete: string[] = [];
+    const filesToDelete: string[] = [];
 
     afterAll(async () => {
         await Promise.all(filesToDelete.map((name) => fs.promises.unlink(name)));
@@ -1108,22 +1108,27 @@ describe("generate", () => {
               screenTime_AVERAGE_EQUAL?: Maybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_GT?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_GT?: Maybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_GT?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_GT?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_GT?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_GTE?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_GTE?: Maybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_GTE?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_GTE?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_GTE?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_LT?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_LT?: Maybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_LT?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_LT?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_LT?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_LTE?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_LTE?: Maybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_LTE?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_LTE?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_LTE?: Maybe<Scalars[\\"Int\\"]>;
             };
 
             export type MovieActorsFieldInput = {
