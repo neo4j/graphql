@@ -35,7 +35,7 @@ This documentation covers the following topics:
 - xref::directives.adoc[Directives] - An index of all of the directives offered by the Neo4j GraphQL Library.
 - xref::api-reference/index.adoc[API Reference] - API reference for constructing an instance of the library.
 - xref::ogm/index.adoc[OGM] - This chapter covers the OGM (Object Graph Mapper), a programmatic way of using your API.
-- xref:introspector.adoc[Introspector] - This chapter covers how you can introspect an existin gNeo4j database and automatically generate GraphQL type definitions from that.
+- xref:introspector.adoc[Introspector] - This chapter covers how you can introspect an existing Neo4j database and automatically generate GraphQL type definitions from that.
 - xref::driver-configuration.adoc[Driver Configuration] - How to configure a database driver for use with this library.
 - xref::guides/index.adoc[Guides] - Guides for usage of the library, including migration guides for moving between versions.
 - xref::troubleshooting/index.adoc[Troubleshooting] - Having problems with the library? See if your problem has been found and solved before.
