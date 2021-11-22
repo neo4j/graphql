@@ -31,6 +31,8 @@ Alternatively, if you are debugging a particular functionality, you can specify 
 DEBUG=@neo4j/introspector node src/index.js
 ----
 
+Read more about the xref::introspector.adoc[introspector].
+
 [[troubleshooting-query-tuning]]
 == Query Tuning
 

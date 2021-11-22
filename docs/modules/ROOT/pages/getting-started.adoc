@@ -80,7 +80,7 @@ const typeDefs = gql`
 
 These type definitions are incredibly simple, defining the two previously described node labels, and a relationship "ACTED_IN" between the two. When generated, the schema will allow you to execute queries `actors` and `movies` to read data from the database.
 
-You can also automatically generate type definitions from an existing database by xref::type-definitions/introspector.adoc[introspecting the schema].
+You can also automatically generate type definitions from an existing database by xref::introspector.adoc[introspecting the schema].
 
 == Create an instance of `Neo4jGraphQL`
 
