@@ -540,7 +540,9 @@ function createProjectionAndParams({
                 : `{ ${chainStr}: ${chainStr} }`;
 
             res.projection.push(
-                `${field.name}: apoc.cypher.runFirstColumn("${connection[0]} RETURN ${field.name}", ${runFirstColumnParams}, false)`
+                `${field.name}: apoc.cypher.runFirstColumn("${connection[0].replace(/("|')/g, "\\$1")} RETURN ${
+                    field.name
+                }", ${runFirstColumnParams}, false)`
             );
             res.params = { ...res.params, ...connection[1] };
             return res;
