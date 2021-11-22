@@ -27,7 +27,7 @@ import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
-import { getJWT } from "../auth/index";
+import { getJWT } from "../auth";
 import { DEBUG_GRAPHQL } from "../constants";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "../translate/create-auth-param";
@@ -38,7 +38,7 @@ import assertIndexesAndConstraints, {
 const debug = Debug(DEBUG_GRAPHQL);
 
 export interface Neo4jGraphQLJWT {
-    jwkEndpoint?: string;
+    jwksEndpoint?: string;
     secret?: string;
     noVerify?: boolean;
     rolesPath?: string;
@@ -113,7 +113,7 @@ class Neo4jGraphQL {
         schema: GraphQLSchema;
         config: Neo4jGraphQLConfig;
     }): GraphQLSchema {
-        return addSchemaLevelResolver(schema, (obj, _args, context: any, resolveInfo: GraphQLResolveInfo) => {
+        return addSchemaLevelResolver(schema, async (obj, _args, context: any, resolveInfo: GraphQLResolveInfo) => {
             const { driverConfig } = config;
 
             if (debug.enabled) {
@@ -154,7 +154,7 @@ class Neo4jGraphQL {
             context.resolveTree = getNeo4jResolveTree(resolveInfo);
 
             if (!context.jwt) {
-                context.jwt = getJWT(context);
+                context.jwt = await getJWT(context);
             }
 
             context.auth = createAuthParam({ context });
