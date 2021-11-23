@@ -65,6 +65,10 @@ describe("Interface Relationships", () => {
               screenTime: Int!
             }
 
+            input ActedInSort {
+              screenTime: SortDirection
+            }
+
             input ActedInUpdateInput {
               screenTime: Int
             }
@@ -84,7 +88,7 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -97,6 +101,10 @@ describe("Interface Relationships", () => {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorActedInConnectionSort {
+              edge: ActedInSort
             }
 
             input ActorActedInConnectionWhere {
@@ -545,7 +553,7 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -559,6 +567,10 @@ describe("Interface Relationships", () => {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorActedInConnectionSort {
+              edge: ActedInSort
             }
 
             input ActorActedInConnectionWhere {

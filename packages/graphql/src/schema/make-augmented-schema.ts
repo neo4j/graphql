@@ -731,8 +731,7 @@ function makeAugmentedSchema(
     unions.forEach((union) => {
         if (union.types && union.types.length) {
             const fields = union.types.reduce((f, type) => {
-                f = { ...f, [type.name.value]: `${type.name.value}Where` };
-                return f;
+                return { ...f, [type.name.value]: `${type.name.value}Where` };
             }, {});
 
             composer.createInputTC({
@@ -858,7 +857,7 @@ function makeAugmentedSchema(
 
             composer.createInputTC({
                 name: `${node.name}Fulltext`,
-                fields: fields,
+                fields,
             });
         }
 

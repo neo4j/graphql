@@ -72,7 +72,7 @@ class OGM<ModelMap = {}> {
             throw new Error(`Could not find model ${name}`);
         }
 
-        return (found as unknown) as M;
+        return found as unknown as M;
     }
 }
 
