@@ -73,8 +73,7 @@ export class AggregationTypesMapper {
             args: {},
         };
 
-        // Foreach i if i[1] is ? then we will assume it takes on type { min, max }
-        const aggregationSelectionTypeMatrix: [string, any?][] = [
+        const aggregationSelectionTypeMatrix: Array<[string, Record<string, any | string>] | [string]> = [
             [
                 "ID",
                 {
@@ -123,20 +122,31 @@ export class AggregationTypesMapper {
         const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<
             Record<string, ObjectTypeComposer<unknown, unknown>>
         >((res, [name, fields]) => {
-            const typeName = this.makeNullable(name, nullable);
-            const nullableStr = nullable ? "Nullable" : "NonNullable";
-
-            const type = composer.getOrCreateOTC(`${name}AggregateSelection${nullableStr}`, (tc) => {
-                tc.addFields(fields ?? { min: typeName, max: typeName });
-            });
-
-            return {
-                ...res,
-                [name]: type,
-            };
+            const type = this.createType({ composer, nullable, name, fields });
+            res[name] = type;
+            return res;
         }, {});
 
         return aggregationSelectionTypes;
+    }
+
+    private createType({
+        composer,
+        nullable,
+        name,
+        fields,
+    }: {
+        composer: SchemaComposer;
+        nullable: boolean;
+        name: string;
+        fields?: Record<string, any>;
+    }): ObjectTypeComposer<any, any> {
+        const typeName = this.makeNullable(name, nullable);
+        const nullableStr = nullable ? "Nullable" : "NonNullable";
+
+        return composer.getOrCreateOTC(`${name}AggregateSelection${nullableStr}`, (tc) => {
+            tc.addFields(fields ?? { min: typeName, max: typeName });
+        });
     }
 
     private makeNullable(typeStr: string, isNullable: boolean) {

@@ -35,7 +35,7 @@ export class FieldAggregationComposer {
 
     constructor(composer: SchemaComposer) {
         this.composer = composer;
-        this.aggregationTypesMapper = new AggregationTypesMapper(this.composer);
+        this.aggregationTypesMapper = new AggregationTypesMapper(composer);
     }
 
     public createAggregationTypeObject(

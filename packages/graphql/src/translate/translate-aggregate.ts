@@ -96,6 +96,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
             const aggregateFields =
                 selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNullable`] ||
                 selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNonNullable`];
+
             Object.entries(aggregateFields).forEach((entry) => {
                 // "min" | "max" | "average" | "shortest" | "longest"
                 let operator = entry[1].name;
