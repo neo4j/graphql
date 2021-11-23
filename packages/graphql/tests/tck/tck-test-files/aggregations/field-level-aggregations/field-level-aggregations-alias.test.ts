@@ -52,7 +52,7 @@ describe("Field Level Aggregations Alias", () => {
         });
     });
 
-    test.only("Aggregation with alias", async () => {
+    test("Aggregation with alias", async () => {
         const query = gql`
             query {
                 movies {

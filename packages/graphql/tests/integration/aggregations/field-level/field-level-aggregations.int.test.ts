@@ -90,7 +90,7 @@ describe("Field Level Aggregations", () => {
     });
 
     describe("node aggregation", () => {
-        test.only("shortest and longest node string", async () => {
+        test("shortest and longest node string", async () => {
             const query = `
             query {
                 ${typeMovie.plural} {
