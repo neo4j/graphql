@@ -69,14 +69,14 @@ describe("#413", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:JobPlan)
             WHERE this.tenantID = $this_tenantID
-            CALL apoc.util.validate(NOT(this.tenantID IS NOT NULL AND this.tenantID = $this_auth_allow0_tenantID), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT(this.tenantID IS NOT NULL AND this.tenantID = $this_auth_allow1_tenantID), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN count(this)"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_tenantID\\": \\"some_id\\",
-                \\"this_auth_allow0_tenantID\\": \\"some_id\\"
+                \\"this_auth_allow1_tenantID\\": \\"some_id\\"
             }"
         `);
     });

@@ -188,7 +188,7 @@ function createConnectionAndParams({
                 unionInterfaceSubquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
                 const allowAndParams = createAuthAndParams({
-                    operation: "READ",
+                    operations: "READ",
                     entity: n,
                     context,
                     allow: {
@@ -227,7 +227,7 @@ function createConnectionAndParams({
                 }
 
                 const whereAuth = createAuthAndParams({
-                    operation: "READ",
+                    operations: "READ",
                     entity: n,
                     context,
                     where: { varName: relatedNodeVariable, node: n },
@@ -298,7 +298,7 @@ function createConnectionAndParams({
         }
 
         const whereAuth = createAuthAndParams({
-            operation: "READ",
+            operations: "READ",
             entity: relatedNode,
             context,
             where: { varName: relatedNodeVariable, node: relatedNode },
@@ -313,7 +313,7 @@ function createConnectionAndParams({
         }
 
         const allowAndParams = createAuthAndParams({
-            operation: "READ",
+            operations: "READ",
             entity: relatedNode,
             context,
             allow: {

@@ -34,7 +34,7 @@ export function createConnectOrCreateField({
     hasNonGeneratedProperties: boolean;
     hasNonNullNonGeneratedProperties: boolean;
 }): string | undefined {
-    if (node.uniqueFields.length === 0) {
+    if (!node.uniqueFields.length) {
         return undefined;
     }
 

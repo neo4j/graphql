@@ -168,7 +168,7 @@ function createAuthPredicate({
 
 function createAuthAndParams({
     entity,
-    operation,
+    operations,
     skipRoles,
     skipIsAuthenticated,
     allow,
@@ -178,7 +178,7 @@ function createAuthAndParams({
     where,
 }: {
     entity: Node | BaseField;
-    operation?: AuthOperations | AuthOperations[];
+    operations?: AuthOperations | AuthOperations[];
     skipRoles?: boolean;
     skipIsAuthenticated?: boolean;
     allow?: Allow;
@@ -192,10 +192,10 @@ function createAuthAndParams({
     }
 
     let authRules: AuthRule[] = [];
-    if (operation) {
-        const operations = asArray(operation);
+    if (operations) {
+        const operationsList = asArray(operations);
         authRules = entity?.auth.rules.filter(
-            (r) => !r.operations || haveSharedElement(operations, r.operations || [])
+            (r) => !r.operations || haveSharedElement(operationsList, r.operations || [])
         );
     } else {
         authRules = entity?.auth.rules;

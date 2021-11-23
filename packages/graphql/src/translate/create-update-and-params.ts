@@ -152,7 +152,7 @@ function createUpdateAndParams({
 
                         if (node.auth) {
                             const whereAuth = createAuthAndParams({
-                                operation: "UPDATE",
+                                operations: "UPDATE",
                                 entity: refNode,
                                 context,
                                 where: { varName: _varName, node: refNode },
@@ -451,14 +451,14 @@ function createUpdateAndParams({
             if (authableField.auth) {
                 const preAuth = createAuthAndParams({
                     entity: authableField,
-                    operation: "UPDATE",
+                    operations: "UPDATE",
                     context,
                     allow: { varName, parentNode: node, chainStr: param },
                     escapeQuotes: Boolean(insideDoWhen),
                 });
                 const postAuth = createAuthAndParams({
                     entity: authableField,
-                    operation: "UPDATE",
+                    operations: "UPDATE",
                     skipRoles: true,
                     skipIsAuthenticated: true,
                     context,
@@ -499,7 +499,7 @@ function createUpdateAndParams({
         entity: node,
         context,
         allow: { parentNode: node, varName },
-        operation: "UPDATE",
+        operations: "UPDATE",
         escapeQuotes: Boolean(insideDoWhen),
     });
     if (preAuth[0]) {
@@ -512,7 +512,7 @@ function createUpdateAndParams({
         context,
         skipIsAuthenticated: true,
         skipRoles: true,
-        operation: "UPDATE",
+        operations: "UPDATE",
         bind: { parentNode: node, varName },
         escapeQuotes: Boolean(insideDoWhen),
     });

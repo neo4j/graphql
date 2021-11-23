@@ -53,7 +53,7 @@ export function createConnectOrCreateAndParams({
     const statements = input.map(
         (inputItem, index): CypherStatement => {
             const subqueryBaseName = `${varName}${index}`;
-            return createConnectOrCreateSubquery({
+            return createConnectOrCreatePartialStatement({
                 input: inputItem,
                 baseName: subqueryBaseName,
                 parentVar,
@@ -67,7 +67,7 @@ export function createConnectOrCreateAndParams({
     return joinStatements(statements);
 }
 
-function createConnectOrCreateSubquery({
+function createConnectOrCreatePartialStatement({
     input,
     baseName,
     parentVar,
@@ -175,7 +175,7 @@ function createAuthStatement({
     const indexStr = i === undefined ? "" : String(i);
     const auth = createAuthAndParams({
         entity: node,
-        operation: ["CONNECT", "CREATE"],
+        operations: ["CONNECT", "CREATE"],
         context,
         allow: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${indexStr}_allow` },
     });

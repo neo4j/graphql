@@ -183,7 +183,7 @@ function createCreateAndParams({
         if (primitiveField?.auth) {
             const authAndParams = createAuthAndParams({
                 entity: primitiveField,
-                operation: "CREATE",
+                operations: "CREATE",
                 context,
                 bind: { parentNode: node, varName, chainStr: _varName },
                 escapeQuotes: Boolean(insideDoWhen),
@@ -243,7 +243,7 @@ function createCreateAndParams({
     if (node.auth) {
         const bindAndParams = createAuthAndParams({
             entity: node,
-            operation: "CREATE",
+            operations: "CREATE",
             context,
             bind: { parentNode: node, varName },
             escapeQuotes: Boolean(insideDoWhen),

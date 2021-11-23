@@ -63,7 +63,8 @@ describe("build merge statement", () => {
             });
 
             expect(dedent(statement[0])).toEqual(dedent`MERGE (this:MyLabel)
-                ON CREATE SET
+                ON CREATE
+                SET
                 this.age = $this_on_create_age,
                 this.name = $this_on_create_name
             `);
@@ -117,7 +118,8 @@ describe("build merge statement", () => {
             });
 
             expect(dedent(statement[0])).toEqual(dedent`MERGE (this:MyLabel)-[this_relationship_that]->(that)
-                ON CREATE SET
+                ON CREATE
+                SET
                 this.age = $this_on_create_age,
                 this.name = $this_on_create_name
                 this_relationship_that.screentime = $this_relationship_that_on_create_screentime

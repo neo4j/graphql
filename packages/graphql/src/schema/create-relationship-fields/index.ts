@@ -450,7 +450,7 @@ function createRelationshipFields({
                     });
                 }
 
-                if (n.uniqueFields.length > 0) {
+                if (n.uniqueFields.length) {
                     // TODO: merge with createTopLevelConnectOrCreateInput
                     const nodeConnectOrCreateInput: InputTypeComposer<any> = schemaComposer.getOrCreateITC(
                         `${sourceName}ConnectOrCreateInput`
@@ -791,7 +791,7 @@ function createRelationshipFields({
             [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
         });
 
-        if (n.uniqueFields.length > 0) {
+        if (n.uniqueFields.length) {
             createTopLevelConnectOrCreateInput({ schemaComposer, sourceName, rel });
         }
     });

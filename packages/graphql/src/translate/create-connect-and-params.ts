@@ -141,7 +141,7 @@ function createConnectAndParams({
 
         if (relatedNode.auth) {
             const whereAuth = createAuthAndParams({
-                operation: "CONNECT",
+                operations: "CONNECT",
                 entity: relatedNode,
                 context,
                 where: { varName: nodeName, node: relatedNode },
@@ -164,7 +164,7 @@ function createConnectAndParams({
 
                 const [str, p] = createAuthAndParams({
                     entity: node,
-                    operation: "CONNECT",
+                    operations: "CONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
                     allow: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${i}_allow` },
@@ -211,7 +211,7 @@ function createConnectAndParams({
                 properties: connect.edge ?? {},
                 varName: relationshipName,
                 relationship,
-                operation: "CREATE",
+                operations: "CREATE",
             });
             subquery.push(setA[0]);
             params = { ...params, ...setA[1] };
@@ -340,7 +340,7 @@ function createConnectAndParams({
 
                 const [str, p] = createAuthAndParams({
                     entity: node,
-                    operation: "CONNECT",
+                    operations: "CONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
                     skipIsAuthenticated: true,
@@ -379,7 +379,7 @@ function createConnectAndParams({
     function reducer(res: Res, connect: any, index): Res {
         if (parentNode.auth && !fromCreate) {
             const whereAuth = createAuthAndParams({
-                operation: "CONNECT",
+                operations: "CONNECT",
                 entity: parentNode,
                 context,
                 where: { varName: parentVar, node: parentNode },

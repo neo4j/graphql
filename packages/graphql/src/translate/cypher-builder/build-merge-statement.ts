@@ -107,7 +107,7 @@ export function buildMergeStatement({
 
     const mergeNodeStatement = joinStatements(["MERGE ", leftStatement], "");
 
-    const onCreateSetQuery = onCreateStatements.length > 0 ? "ON CREATE SET" : "";
+    const onCreateSetQuery = onCreateStatements.length > 0 ? "ON CREATE\nSET" : "";
     return joinStatements([mergeNodeStatement, onCreateSetQuery, ...onCreateStatements]);
 }
 

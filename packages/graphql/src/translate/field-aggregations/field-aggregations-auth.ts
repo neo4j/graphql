@@ -65,7 +65,7 @@ function getAllowAuth({
     varName: string;
 }): PartialAuthQueries {
     const allowAuth = createAuthAndParams({
-        operation: "READ",
+        operations: "READ",
         entity: node,
         context,
         allow: {
@@ -98,7 +98,7 @@ function getWhereAuth({
     varName: string;
 }): PartialAuthQueries {
     const whereAuth = createAuthAndParams({
-        operation: "READ",
+        operations: "READ",
         entity: node,
         context,
         where: { varName, node },
@@ -136,7 +136,7 @@ function getFieldAuth({
         if (authField && authField.auth) {
             const allowAndParams = createAuthAndParams({
                 entity: authField,
-                operation: "READ",
+                operations: "READ",
                 context,
                 allow: { parentNode: node, varName, chainStr: authField.fieldName },
                 escapeQuotes: false,
