@@ -73,7 +73,7 @@ function createAggregationInput({
             return;
         }
 
-        if (type.endsWith(`AggregateSelection`)) {
+        if (type.endsWith(`AggregateSelectionNonNullable`) || type.endsWith(`AggregateSelectionNullable`)) {
             const newTypeName = `${type.replace(`Selection`, "Input")}`;
 
             if (!aggregateSelections[type]) {
@@ -87,12 +87,12 @@ function createAggregationInput({
                 aggregateSelections[type] = createdInput[0];
             }
 
-            interfaceStrs.push(`${fieldName}?: ${newTypeName};`);
+            interfaceStrs.push(`${removeOptional(fieldName)}?: ${newTypeName};`);
 
             return;
         }
 
-        interfaceStrs.push(`${fieldName}?: boolean;`);
+        interfaceStrs.push(`${removeOptional(fieldName)}?: boolean;`);
     });
 
     interfaceStrs.push("}");
@@ -218,3 +218,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
 }
 
 export default generate;
+
+function removeOptional(type: string): string {
+    return type.replace(/\?$/, "");
+}

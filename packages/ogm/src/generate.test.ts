@@ -204,9 +204,13 @@ describe("generate", () => {
               name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
             };
 
+            export interface StringAggregateInputNullable {
+              shortest?: boolean;
+              longest?: boolean;
+            }
             export interface UserAggregateInput {
               count?: boolean;
-              name?: boolean;
+              name?: StringAggregateInputNullable;
             }
 
             export declare class UserModel {
@@ -446,9 +450,13 @@ describe("generate", () => {
               name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
             };
 
+            export interface StringAggregateInputNullable {
+              shortest?: boolean;
+              longest?: boolean;
+            }
             export interface UserAggregateInput {
               count?: boolean;
-              name?: boolean;
+              name?: StringAggregateInputNullable;
             }
 
             export declare class UserModel {
@@ -688,9 +696,13 @@ describe("generate", () => {
               name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
             };
 
+            export interface StringAggregateInputNullable {
+              shortest?: boolean;
+              longest?: boolean;
+            }
             export interface UserAggregateInput {
               count?: boolean;
-              name?: boolean;
+              name?: StringAggregateInputNullable;
             }
 
             export declare class UserModel {
@@ -1254,9 +1266,13 @@ describe("generate", () => {
               name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
             };
 
+            export interface StringAggregateInputNonNullable {
+              shortest?: boolean;
+              longest?: boolean;
+            }
             export interface MovieAggregateInput {
               count?: boolean;
-              title?: boolean;
+              title?: StringAggregateInputNonNullable;
             }
 
             export declare class MovieModel {
@@ -1303,9 +1319,13 @@ describe("generate", () => {
               }): Promise<MovieAggregateSelection>;
             }
 
+            export interface StringAggregateInputNonNullable {
+              shortest?: boolean;
+              longest?: boolean;
+            }
             export interface PersonAggregateInput {
               count?: boolean;
-              name?: boolean;
+              name?: StringAggregateInputNonNullable;
             }
 
             export declare class PersonModel {
