@@ -63,9 +63,9 @@ describe("Inputs", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelectionNullable {
+              longest: ID
+              shortest: ID
             }
 
             type Movie {
@@ -74,7 +74,7 @@ describe("Inputs", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieCreateInput {

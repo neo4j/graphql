@@ -25,7 +25,6 @@ import { getFieldType, AggregationType, getReferenceNode, getFieldByName, getRef
 import * as AggregationSubQueries from "./aggregation-sub-queries";
 import { createFieldAggregationAuth } from "./field-aggregations-auth";
 import { createMatchWherePattern } from "./aggregation-sub-queries";
-import { FieldAggregationSchemaTypes } from "../../schema/field-aggregation-composer";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import createWhereAndParams from "../create-where-and-params";
 import {
@@ -34,6 +33,7 @@ import {
     serializeAuthParamsForApocRun,
     serializeParamsForApocRun,
 } from "./apoc-run-utils";
+import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-aggregation-composer";
 
 const subQueryNodeAlias = "n";
 const subQueryRelationAlias = "r";

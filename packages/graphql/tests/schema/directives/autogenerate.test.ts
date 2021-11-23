@@ -56,7 +56,7 @@ describe("Autogenerate", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNonNullable {
               longest: ID!
               shortest: ID!
             }
@@ -68,8 +68,8 @@ describe("Autogenerate", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
-              name: StringAggregateSelection!
+              id: IDAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieCreateInput {
@@ -137,7 +137,7 @@ describe("Autogenerate", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
             }

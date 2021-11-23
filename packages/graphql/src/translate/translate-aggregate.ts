@@ -93,42 +93,44 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         if (field) {
             const thisProjections: string[] = [];
 
-            Object.entries(selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelection`]).forEach(
-                (entry) => {
-                    // "min" | "max" | "average" | "shortest" | "longest"
-                    let operator = entry[1].name;
+            const aggregateFields =
+                selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNullable`] ||
+                selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNonNullable`];
+            Object.entries(aggregateFields).forEach((entry) => {
+                // "min" | "max" | "average" | "shortest" | "longest"
+                let operator = entry[1].name;
 
-                    if (operator === "average") {
-                        operator = "avg";
-                    }
+                if (operator === "average") {
+                    operator = "avg";
+                }
 
-                    if (operator === "shortest") {
-                        operator = "min";
-                    }
+                if (operator === "shortest") {
+                    operator = "min";
+                }
 
-                    if (operator === "longest") {
-                        operator = "max";
-                    }
+                if (operator === "longest") {
+                    operator = "max";
+                }
 
-                    const fieldName = field.dbPropertyName || field.fieldName;
+                const fieldName = field.dbPropertyName || field.fieldName;
 
-                    if (isDateTime) {
-                        thisProjections.push(
-                            createDatetimeElement({
-                                resolveTree: entry[1],
-                                field: field as TemporalField,
-                                variable: varName,
-                                valueOverride: `${operator}(this.${fieldName})`,
-                            })
-                        );
+                if (isDateTime) {
+                    thisProjections.push(
+                        createDatetimeElement({
+                            resolveTree: entry[1],
+                            field: field as TemporalField,
+                            variable: varName,
+                            valueOverride: `${operator}(this.${fieldName})`,
+                        })
+                    );
 
-                        return;
-                    }
+                    return;
+                }
 
-                    if (isString) {
-                        const lessOrGreaterThan = entry[1].name === "shortest" ? "<" : ">";
+                if (isString) {
+                    const lessOrGreaterThan = entry[1].name === "shortest" ? "<" : ">";
 
-                        const reduce = `
+                    const reduce = `
                             reduce(shortest = collect(this.${fieldName})[0], current IN collect(this.${fieldName}) | apoc.cypher.runFirstColumn("
                                 RETURN
                                 CASE size(current) ${lessOrGreaterThan} size(shortest)
@@ -138,14 +140,13 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                             ", { current: current, shortest: shortest }, false))
                         `;
 
-                        thisProjections.push(`${entry[1].alias || entry[1].name}: ${reduce}`);
+                    thisProjections.push(`${entry[1].alias || entry[1].name}: ${reduce}`);
 
-                        return;
-                    }
-
-                    thisProjections.push(`${entry[1].alias || entry[1].name}: ${operator}(this.${fieldName})`);
+                    return;
                 }
-            );
+
+                thisProjections.push(`${entry[1].alias || entry[1].name}: ${operator}(this.${fieldName})`);
+            });
 
             projections.push(`${selection[1].alias || selection[1].name}: { ${thisProjections.join(", ")} }`);
         }
