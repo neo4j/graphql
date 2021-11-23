@@ -57,8 +57,12 @@ describe("Field Level Aggregations", () => {
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
         session = driver.session();
-        await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
-        CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37, born: datetime('2000-02-02')})`);
+
+        await session.run(`
+            CREATE (m:${typeMovie.name} { title: "Terminator"})
+            CREATE(m)<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
+            CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37, born: datetime('2000-02-02')})
+        `);
     });
 
     afterAll(async () => {
@@ -123,7 +127,7 @@ describe("Field Level Aggregations", () => {
             });
         });
 
-        test("max, min and avg integers", async () => {
+        test("max, min, sum and avg integers", async () => {
             const query = `
             query {
                 ${typeMovie.plural} {
@@ -133,6 +137,7 @@ describe("Field Level Aggregations", () => {
                                 max
                                 min
                                 average
+                                sum
                             }
                         }
                     }
@@ -153,6 +158,7 @@ describe("Field Level Aggregations", () => {
                         max: 54,
                         min: 37,
                         average: 45.5,
+                        sum: 91,
                     },
                 },
             });
@@ -203,6 +209,7 @@ describe("Field Level Aggregations", () => {
                                 max
                                 min
                                 average
+                                sum
                             }
                         }
                     }
@@ -223,6 +230,7 @@ describe("Field Level Aggregations", () => {
                         max: 120,
                         min: 60,
                         average: 90,
+                        sum: 180,
                     },
                 },
             });

@@ -220,7 +220,69 @@ describe("aggregations-top_level-float", () => {
         }
     });
 
-    test("should return the min and max and average of node properties", async () => {
+    test("should return the sum of node properties", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Movie {
+                testString: String
+                imdbRating: Float
+            }
+        `;
+
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        try {
+            await session.run(
+                `
+                    CREATE (:Movie {testString: $testString, imdbRating: 1.1})
+                    CREATE (:Movie {testString: $testString, imdbRating: 2.1})
+                    CREATE (:Movie {testString: $testString, imdbRating: 3.1})
+                    CREATE (:Movie {testString: $testString, imdbRating: 4.1})
+                `,
+                {
+                    testString,
+                }
+            );
+
+            const query = `
+                {
+                    moviesAggregate(where: {testString: "${testString}"}) {
+                        imdbRating {
+                            sum
+                        }
+                    }
+                }
+            `;
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
+            }
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect((gqlResult.data as any).moviesAggregate).toEqual({
+                imdbRating: {
+                    sum: 10.4,
+                },
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should return the min, max, sum and average of node properties", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -257,6 +319,7 @@ describe("aggregations-top_level-float", () => {
                             min
                             max
                             average
+                            sum
                         }
                     }
                 }
@@ -279,6 +342,7 @@ describe("aggregations-top_level-float", () => {
                     min: 1.1,
                     max: 4.1,
                     average: 2.6,
+                    sum: 10.4,
                 },
             });
         } finally {

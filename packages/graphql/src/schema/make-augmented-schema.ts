@@ -166,6 +166,7 @@ function makeAugmentedSchema(
                 max: composeFloat,
                 min: composeFloat,
                 average: composeFloat,
+                sum: composeFloat,
             },
         ],
         [
@@ -174,6 +175,7 @@ function makeAugmentedSchema(
                 max: composeInt,
                 min: composeInt,
                 average: composeFloat,
+                sum: composeInt,
             },
         ],
         [
@@ -182,6 +184,7 @@ function makeAugmentedSchema(
                 max: "BigInt!",
                 min: "BigInt!",
                 average: "BigInt!",
+                sum: "BigInt!",
             },
         ],
         ["DateTime"],
