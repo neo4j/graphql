@@ -21,11 +21,11 @@ import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { numericalResolver, idResolver } from "../resolvers";
 
 export class AggregationTypesMapper {
-    private aggregationSelectionTypes: Record<string, ObjectTypeComposer<unknown, unknown>>;
+    private requiredAggregationSelectionTypes: Record<string, ObjectTypeComposer<unknown, unknown>>;
     private nullableAggregationSelectionTypes: Record<string, ObjectTypeComposer<unknown, unknown>>;
 
     constructor(composer: SchemaComposer) {
-        this.aggregationSelectionTypes = this.getOrCreateAggregationSelectionTypes({
+        this.requiredAggregationSelectionTypes = this.getOrCreateAggregationSelectionTypes({
             composer,
             nullable: false,
         });
@@ -45,7 +45,7 @@ export class AggregationTypesMapper {
         if (nullable) {
             return this.nullableAggregationSelectionTypes[fieldName];
         }
-        return this.aggregationSelectionTypes[fieldName];
+        return this.requiredAggregationSelectionTypes[fieldName];
     }
 
     private getOrCreateAggregationSelectionTypes({
