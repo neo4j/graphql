@@ -151,6 +151,11 @@ describe("Alias", () => {
               screenTime_MIN_GTE: Int
               screenTime_MIN_LT: Int
               screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
             }
 
             input ActorActedInFieldInput {
@@ -181,6 +186,11 @@ describe("Alias", () => {
               rating_MIN_GTE: Float
               rating_MIN_LT: Float
               rating_MIN_LTE: Float
+              rating_SUM_EQUAL: Float
+              rating_SUM_GT: Float
+              rating_SUM_GTE: Float
+              rating_SUM_LT: Float
+              rating_SUM_LTE: Float
               title_AVERAGE_EQUAL: Float
               title_AVERAGE_GT: Float
               title_AVERAGE_GTE: Float
@@ -386,12 +396,14 @@ describe("Alias", () => {
               average: Float!
               max: Float!
               min: Float!
+              sum: Float!
             }
 
             type IntAggregateSelection {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Movie {

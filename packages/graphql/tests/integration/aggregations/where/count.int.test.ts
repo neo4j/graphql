@@ -41,7 +41,7 @@ describe("aggregations-where-count", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User] @relationship(type: "LIKES", direction: IN)
@@ -104,7 +104,7 @@ describe("aggregations-where-count", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User] @relationship(type: "LIKES", direction: IN)
@@ -167,7 +167,7 @@ describe("aggregations-where-count", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User] @relationship(type: "LIKES", direction: IN)
@@ -227,14 +227,14 @@ describe("aggregations-where-count", () => {
         }
     });
 
-    test("should return posts where the count of likes GT one", async () => {
+    test("should return posts where the count of likes GT one, regardless of number of likes over 1", async () => {
         const session = driver.session();
 
         const typeDefs = `
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User] @relationship(type: "LIKES", direction: IN)
@@ -298,7 +298,7 @@ describe("aggregations-where-count", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User] @relationship(type: "LIKES", direction: IN)

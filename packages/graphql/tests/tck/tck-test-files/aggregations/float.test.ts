@@ -113,14 +113,12 @@ describe("Cypher Aggregations Float", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test("Min, Max and Average", async () => {
+    test("Sum", async () => {
         const query = gql`
             {
                 moviesAggregate {
                     actorCount {
-                        min
-                        max
-                        average
+                        sum
                     }
                 }
             }
@@ -133,7 +131,34 @@ describe("Cypher Aggregations Float", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN { actorCount: { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount) } }"
+            RETURN { actorCount: { sum: sum(this.actorCount) } }"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("Min, Max, Sum and Average", async () => {
+        const query = gql`
+            {
+                moviesAggregate {
+                    actorCount {
+                        min
+                        max
+                        average
+                        sum
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            RETURN { actorCount: { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

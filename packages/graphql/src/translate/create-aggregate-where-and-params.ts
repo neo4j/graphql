@@ -25,7 +25,7 @@ type Operator = "=" | "<" | "<=" | ">" | ">=";
 
 const logicalOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
 
-const aggregationOperators = ["SHORTEST", "LONGEST", "MIN", "MAX"];
+const aggregationOperators = ["SHORTEST", "LONGEST", "MIN", "MAX", "SUM"];
 
 function createOperator(input: string): Operator {
     let operator: Operator = "=";
@@ -129,6 +129,17 @@ function aggregate({
             }
 
             aggregations.push(`avg(${variable}.${dbPropertyName}) ${averageOperator} $${paramName}`);
+
+            return;
+        }
+
+        if (logicalOperators.some((fO) => operatorString.split(`SUM_`)[1] === fO)) {
+            const [, opStr] = operatorString.split("SUM_");
+            const operator = createOperator(opStr);
+            const hoistedVariable = `${paramName}_SUM`;
+
+            withStrs.push(`sum(${variable}.${dbPropertyName}) AS ${hoistedVariable}`);
+            aggregations.push(`${hoistedVariable} ${operator} toFloat($${paramName})`);
 
             return;
         }

@@ -23,6 +23,7 @@ const baseRules = {
     "max-classes-per-file": "off", // Stylistic decision - we can judge whether there are too many classes in one file during code review
     "eslint-comments/no-unused-disable": "error", // Turn on optional rule to report eslint-disable comments having no effect
     "class-methods-use-this": "off",
+    "prefer-destructuring": "off",
 };
 
 const typeScriptParser = {
