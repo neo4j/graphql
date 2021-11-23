@@ -11392,7 +11392,7 @@ fsevents@^1.2.7:
     graphql: ^15.0.0
     jest: 26.6.3
     jsonwebtoken: 8.5.1
-    neo4j-driver: ^4.3.3
+    neo4j-driver: ^4.4.0
     nodemon: 2.0.6
     randomstring: 1.1.5
     ts-jest: 26.4.4
@@ -11402,20 +11402,20 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"neo4j-driver-bolt-connection@npm:^4.3.3":
-  version: 4.3.3
-  resolution: "neo4j-driver-bolt-connection@npm:4.3.3"
+"neo4j-driver-bolt-connection@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "neo4j-driver-bolt-connection@npm:4.4.0"
   dependencies:
-    neo4j-driver-core: ^4.3.3
+    neo4j-driver-core: ^4.4.0
     text-encoding-utf-8: ^1.0.2
-  checksum: aabcb4c18527a4c8ee3493ba7c36f2a13549eff1160d605071d9b61d5fa736be684cb35f524d5424f28afaf5218f72c765c7c5b3c3b8b961eda1d4c5131a8d80
+  checksum: df8a42571ec84106e85b413c3e4c89f6ff247d7d8332c1f669ec9f30c0909cd50e24a6164acda6503deb1887d3bf99ec534a5942ccbf325c6a10f93316ce2bc7
   languageName: node
   linkType: hard
 
-"neo4j-driver-core@npm:^4.3.3":
-  version: 4.3.3
-  resolution: "neo4j-driver-core@npm:4.3.3"
-  checksum: f0e3851b4d7e654abbdaa834c9f733756ccf153a9b8f4118a79fec13aa43e23458aa472035994c4cd62726bdf63bb3d32d50ac93d4cf1bc8ae2908492d2a451e
+"neo4j-driver-core@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "neo4j-driver-core@npm:4.4.0"
+  checksum: cf2fc697cb1afd91e5a4e5e3b641621836cd493c6fa079364ce8f9b666cdbf3313f25ce148da9d1584226e51b3560efcf2e00a1c0a124164be50706aea98dd4c
   languageName: node
   linkType: hard
 
@@ -11431,15 +11431,15 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"neo4j-driver@npm:^4.3.3":
-  version: 4.3.3
-  resolution: "neo4j-driver@npm:4.3.3"
+"neo4j-driver@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "neo4j-driver@npm:4.4.0"
   dependencies:
     "@babel/runtime": ^7.5.5
-    neo4j-driver-bolt-connection: ^4.3.3
-    neo4j-driver-core: ^4.3.3
+    neo4j-driver-bolt-connection: ^4.4.0
+    neo4j-driver-core: ^4.4.0
     rxjs: ^6.6.3
-  checksum: c002cc12ecc2915de1a38203058b81e475a68ed220b3ef85acd55fe11a18f5149b9004a2d6b595ae7179a174e7f2b900ce839fc1603c97f6c4ea2a75e91d04bb
+  checksum: 374c4423727520b62eed467dc293bc3d749d189376307ea0005aa28680412013ec24e7890691e92aee59326e02dec2c28ba0e90dd859fb0119a0513434dfa39f
   languageName: node
   linkType: hard
 
@@ -11463,7 +11463,7 @@ fsevents@^1.2.7:
     husky: 4.2.5
     jest: 26.6.3
     lint-staged: 10.2.11
-    neo4j-driver: ^4.3.3
+    neo4j-driver: ^4.4.0
     npm-run-all: 4.1.5
     prettier: 2.1.2
     set-tz: 0.2.0
