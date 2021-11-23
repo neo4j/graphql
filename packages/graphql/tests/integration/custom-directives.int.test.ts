@@ -40,7 +40,6 @@ describe("Custom Directives", () => {
         const session = driver.session();
 
         class UpperCaseDirective extends SchemaDirectiveVisitor {
-            // eslint-disable-next-line class-methods-use-this
             visitFieldDefinition(field) {
                 const { resolve = defaultFieldResolver } = field;
                 // eslint-disable-next-line no-param-reassign

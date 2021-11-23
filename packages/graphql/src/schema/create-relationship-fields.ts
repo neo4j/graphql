@@ -266,7 +266,7 @@ function createRelationshipFields({
                 const whereName = `${unionPrefix}ConnectionWhere`;
 
                 const deleteName = `${unionPrefix}DeleteFieldInput`;
-                const _delete = rel.typeMeta.array ? `[${deleteName}!]` : `${deleteName}`;
+                const deleteField = rel.typeMeta.array ? `[${deleteName}!]` : `${deleteName}`;
 
                 const disconnectName = `${unionPrefix}DisconnectFieldInput`;
                 const disconnect = rel.typeMeta.array ? `[${disconnectName}!]` : `${disconnectName}`;
@@ -404,7 +404,7 @@ function createRelationshipFields({
                     });
 
                     unionDeleteInput.addFields({
-                        [n.name]: _delete,
+                        [n.name]: deleteField,
                     });
                 }
 
