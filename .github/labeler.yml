@@ -1,13 +1,13 @@
 version: 1
 labels:
   - label: feature
-    title: ^(?:feature|feat|Feature|Feat):.*
+    title: ^(?:[fF]eature|[fF]eat):.*
   - label: fix
-    title: ^(?:bugfix|fix|Bugfix|Fix):.*
+    title: ^(?:[bB]ugfix|[fF]ix):.*
   - label: feature
-    branch: ^(?:feature|feat)/.*
+    branch: ^(?:[fF]eature|[fF]eat)/.*
   - label: fix
-    branch: ^(?:bugfix|fix)/.*
+    branch: ^(?:[bB]ugfix|[fF]ix)/.*
   - label: documentation
     files:
       - docs/modules/ROOT/.*
