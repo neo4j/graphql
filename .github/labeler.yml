@@ -17,3 +17,6 @@ labels:
   - label: ogm
     files:
       - packages/ogm/.*
+  - label: introspector
+    files:
+      - packages/introspector/.*

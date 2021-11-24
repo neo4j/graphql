@@ -38,7 +38,7 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
     cypherParams = { ...cypherParams, ...topLevelMatch[1] };
 
     const allowAuth = createAuthAndParams({
-        operation: "DELETE",
+        operations: "DELETE",
         entity: node,
         context,
         allow: {

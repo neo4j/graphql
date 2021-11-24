@@ -103,7 +103,7 @@ function translateTopLevelMatch({
     }
 
     const whereAuth = createAuthAndParams({
-        operation,
+        operations: operation,
         entity: node,
         context,
         where: { varName, node },
