@@ -268,7 +268,7 @@ function createRelationshipFields({
                 const whereName = `${unionPrefix}ConnectionWhere`;
 
                 const deleteName = `${unionPrefix}DeleteFieldInput`;
-                const _delete = rel.typeMeta.array ? `[${deleteName}!]` : `${deleteName}`;
+                const deleteField = rel.typeMeta.array ? `[${deleteName}!]` : `${deleteName}`;
 
                 const disconnectName = `${unionPrefix}DisconnectFieldInput`;
                 const disconnect = rel.typeMeta.array ? `[${disconnectName}!]` : `${disconnectName}`;
@@ -406,7 +406,7 @@ function createRelationshipFields({
                     });
 
                     unionDeleteInput.addFields({
-                        [n.name]: _delete,
+                        [n.name]: deleteField,
                     });
                 }
 
@@ -544,6 +544,9 @@ function createRelationshipFields({
                                 [`${field.fieldName}_AVERAGE_${operator}`]: averageType,
                                 [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
                                 [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
+                                ...(field.typeMeta.name !== "Duration"
+                                    ? { [`${field.fieldName}_SUM_${operator}`]: field.typeMeta.name }
+                                    : {}),
                             };
                         }, {})
                     );

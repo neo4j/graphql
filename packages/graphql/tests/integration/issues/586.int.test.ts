@@ -17,23 +17,18 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { gql } from "apollo-server";
-import { generate } from "randomstring";
-import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../../src/utils/test/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/586", () => {
-    test("should not throw when using values in BigInt", async () => {
+    test("should not throw when using values in BigInt", () => {
         const typeDefs = gql`
             input TestInput {
                 id: BigInt = "0"
             }
         `;
         expect(() => {
-            new Neo4jGraphQL({ typeDefs });
+            new Neo4jGraphQL({ typeDefs }); // eslint-disable-line no-new
         }).not.toThrow();
     });
 });

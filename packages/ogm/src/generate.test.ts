@@ -921,6 +921,7 @@ describe("generate", () => {
               max: Scalars[\\"Int\\"];
               min: Scalars[\\"Int\\"];
               average: Scalars[\\"Float\\"];
+              sum: Scalars[\\"Int\\"];
             };
 
             export type Movie = {
@@ -1107,22 +1108,27 @@ describe("generate", () => {
               screenTime_AVERAGE_EQUAL?: Maybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_GT?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_GT?: Maybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_GT?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_GT?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_GT?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_GTE?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_GTE?: Maybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_GTE?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_GTE?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_GTE?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_LT?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_LT?: Maybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_LT?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_LT?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_LT?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_LTE?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_LTE?: Maybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_LTE?: Maybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_LTE?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_LTE?: Maybe<Scalars[\\"Int\\"]>;
             };
 
             export type MovieActorsFieldInput = {

@@ -394,6 +394,11 @@ describe("Unions", () => {
               words_MIN_GTE: Int
               words_MIN_LT: Int
               words_MIN_LTE: Int
+              words_SUM_EQUAL: Int
+              words_SUM_GT: Int
+              words_SUM_GTE: Int
+              words_SUM_LT: Int
+              words_SUM_LTE: Int
             }
 
             input BookAuthorFieldInput {
@@ -539,6 +544,7 @@ describe("Unions", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Journal {
@@ -643,6 +649,11 @@ describe("Unions", () => {
               words_MIN_GTE: Int
               words_MIN_LT: Int
               words_MIN_LTE: Int
+              words_SUM_EQUAL: Int
+              words_SUM_GT: Int
+              words_SUM_GTE: Int
+              words_SUM_LT: Int
+              words_SUM_LTE: Int
             }
 
             input JournalAuthorFieldInput {

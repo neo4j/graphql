@@ -20,13 +20,13 @@
 import { codegen } from "@graphql-codegen/core";
 import * as typescriptPlugin from "@graphql-codegen/typescript";
 import { Types } from "@graphql-codegen/plugin-helpers";
-import { OGM } from "./index";
 import { upperFirst } from "@neo4j/graphql";
 import camelCase from "camelcase";
 import pluralize from "pluralize";
 import * as fs from "fs";
 import * as graphql from "graphql";
 import prettier from "prettier";
+import { OGM } from "./index";
 
 export interface IGenerateOptions {
     /**
@@ -62,7 +62,7 @@ function createAggregationInput({
     aggregateSelections?: any;
     input: string;
 }) {
-    let interfaceStrs = [`export interface ${typeName} {`];
+    const interfaceStrs = [`export interface ${typeName} {`];
 
     const lines = createLines({ input, searchFor: basedOnSearch });
 
