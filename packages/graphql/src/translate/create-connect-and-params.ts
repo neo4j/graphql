@@ -206,12 +206,11 @@ function createConnectAndParams({
             const relationship = (context.neoSchema.relationships.find(
                 (x) => x.properties === relationField.properties
             ) as unknown) as Relationship;
-
             const setA = createSetRelationshipPropertiesAndParams({
                 properties: connect.edge ?? {},
                 varName: relationshipName,
                 relationship,
-                operations: "CREATE",
+                operation: "CREATE",
             });
             subquery.push(setA[0]);
             params = { ...params, ...setA[1] };
