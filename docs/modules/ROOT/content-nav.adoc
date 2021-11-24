@@ -55,7 +55,7 @@
 ***** xref:ogm/api-reference/model/delete.adoc[]
 ***** xref:ogm/api-reference/model/count.adoc[]
 ***** xref:ogm/api-reference/model/aggregate.adoc[]
-** xref:introspector.adoc[Introspect Neo4j schema]
+** xref:introspector.adoc[Introspector]
 ** xref:driver-configuration.adoc[]
 ** xref:guides/index.adoc[]
 *** xref:guides/frameworks/nextjs.adoc[]
