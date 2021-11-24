@@ -94,6 +94,7 @@ export class AggregationTypesMapper {
                     max: composeFloat,
                     min: composeFloat,
                     average: composeFloat,
+                    sum: composeFloat,
                 },
             ],
             [
@@ -102,6 +103,7 @@ export class AggregationTypesMapper {
                     max: composeInt,
                     min: composeInt,
                     average: composeFloat,
+                    sum: composeInt,
                 },
             ],
             [
@@ -110,6 +112,7 @@ export class AggregationTypesMapper {
                     max: this.makeNullable("BigInt", nullable),
                     min: this.makeNullable("BigInt", nullable),
                     average: this.makeNullable("BigInt", nullable),
+                    sum: this.makeNullable("BigInt", nullable),
                 },
             ],
             ["DateTime"],

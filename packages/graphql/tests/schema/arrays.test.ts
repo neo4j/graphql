@@ -61,6 +61,7 @@ describe("Arrays", () => {
               average: Float!
               max: Float!
               min: Float!
+              sum: Float!
             }
 
             type IDAggregateSelectionNonNullable {

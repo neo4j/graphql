@@ -556,7 +556,7 @@ describe("auth/is-authenticated", () => {
     });
 
     describe("custom-resolvers", () => {
-        it("should throw if not authenticated on custom Query with @cypher", async () => {
+        test("should throw if not authenticated on custom Query with @cypher", async () => {
             const session = driver.session({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
@@ -599,7 +599,7 @@ describe("auth/is-authenticated", () => {
             }
         });
 
-        it("should throw if not authenticated on custom Mutation with @cypher", async () => {
+        test("should throw if not authenticated on custom Mutation with @cypher", async () => {
             const session = driver.session({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `

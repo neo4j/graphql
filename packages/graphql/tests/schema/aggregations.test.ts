@@ -55,6 +55,7 @@ describe("Aggregations", () => {
               average: BigInt
               max: BigInt
               min: BigInt
+              sum: BigInt
             }
 
             type CreateInfo {
@@ -94,6 +95,7 @@ describe("Aggregations", () => {
               average: Float
               max: Float
               min: Float
+              sum: Float
             }
 
             type IDAggregateSelectionNullable {
@@ -105,6 +107,7 @@ describe("Aggregations", () => {
               average: Float
               max: Int
               min: Int
+              sum: Int
             }
 
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
@@ -403,6 +406,7 @@ describe("Aggregations", () => {
               average: BigInt
               max: BigInt
               min: BigInt
+              sum: BigInt
             }
 
             type CreateInfo {
@@ -447,6 +451,7 @@ describe("Aggregations", () => {
               average: Float
               max: Float
               min: Float
+              sum: Float
             }
 
             type IDAggregateSelectionNullable {
@@ -458,6 +463,7 @@ describe("Aggregations", () => {
               average: Float
               max: Int
               min: Int
+              sum: Int
             }
 
             interface Likes {
@@ -736,6 +742,11 @@ describe("Aggregations", () => {
               someBigInt_MIN_GTE: BigInt
               someBigInt_MIN_LT: BigInt
               someBigInt_MIN_LTE: BigInt
+              someBigInt_SUM_EQUAL: BigInt
+              someBigInt_SUM_GT: BigInt
+              someBigInt_SUM_GTE: BigInt
+              someBigInt_SUM_LT: BigInt
+              someBigInt_SUM_LTE: BigInt
               someDateTime_EQUAL: DateTime
               someDateTime_GT: DateTime
               someDateTime_GTE: DateTime
@@ -791,6 +802,11 @@ describe("Aggregations", () => {
               someFloat_MIN_GTE: Float
               someFloat_MIN_LT: Float
               someFloat_MIN_LTE: Float
+              someFloat_SUM_EQUAL: Float
+              someFloat_SUM_GT: Float
+              someFloat_SUM_GTE: Float
+              someFloat_SUM_LT: Float
+              someFloat_SUM_LTE: Float
               someId_EQUAL: ID
               someInt_AVERAGE_EQUAL: Float
               someInt_AVERAGE_GT: Float
@@ -812,6 +828,11 @@ describe("Aggregations", () => {
               someInt_MIN_GTE: Int
               someInt_MIN_LT: Int
               someInt_MIN_LTE: Int
+              someInt_SUM_EQUAL: Int
+              someInt_SUM_GT: Int
+              someInt_SUM_GTE: Int
+              someInt_SUM_LT: Int
+              someInt_SUM_LTE: Int
               someLocalDateTime_EQUAL: LocalDateTime
               someLocalDateTime_GT: LocalDateTime
               someLocalDateTime_GTE: LocalDateTime
@@ -907,6 +928,11 @@ describe("Aggregations", () => {
               someBigInt_MIN_GTE: BigInt
               someBigInt_MIN_LT: BigInt
               someBigInt_MIN_LTE: BigInt
+              someBigInt_SUM_EQUAL: BigInt
+              someBigInt_SUM_GT: BigInt
+              someBigInt_SUM_GTE: BigInt
+              someBigInt_SUM_LT: BigInt
+              someBigInt_SUM_LTE: BigInt
               someDateTime_EQUAL: DateTime
               someDateTime_GT: DateTime
               someDateTime_GTE: DateTime
@@ -962,6 +988,11 @@ describe("Aggregations", () => {
               someFloat_MIN_GTE: Float
               someFloat_MIN_LT: Float
               someFloat_MIN_LTE: Float
+              someFloat_SUM_EQUAL: Float
+              someFloat_SUM_GT: Float
+              someFloat_SUM_GTE: Float
+              someFloat_SUM_LT: Float
+              someFloat_SUM_LTE: Float
               someId_EQUAL: ID
               someInt_AVERAGE_EQUAL: Float
               someInt_AVERAGE_GT: Float
@@ -983,6 +1014,11 @@ describe("Aggregations", () => {
               someInt_MIN_GTE: Int
               someInt_MIN_LT: Int
               someInt_MIN_LTE: Int
+              someInt_SUM_EQUAL: Int
+              someInt_SUM_GT: Int
+              someInt_SUM_GTE: Int
+              someInt_SUM_LT: Int
+              someInt_SUM_LTE: Int
               someLocalDateTime_EQUAL: LocalDateTime
               someLocalDateTime_GT: LocalDateTime
               someLocalDateTime_GTE: LocalDateTime

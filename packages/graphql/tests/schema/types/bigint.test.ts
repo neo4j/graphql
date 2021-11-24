@@ -46,6 +46,7 @@ describe("Bigint", () => {
               average: BigInt!
               max: BigInt!
               min: BigInt!
+              sum: BigInt!
             }
 
             type CreateFilesMutationResponse {

@@ -62,6 +62,7 @@ describe("Simple", () => {
               average: Float
               max: Float
               min: Float
+              sum: Float
             }
 
             type IDAggregateSelectionNullable {
@@ -73,6 +74,7 @@ describe("Simple", () => {
               average: Float
               max: Int
               min: Int
+              sum: Int
             }
 
             type Movie {

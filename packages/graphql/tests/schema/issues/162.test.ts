@@ -84,6 +84,7 @@ describe("162", () => {
               average: Float
               max: Int
               min: Int
+              sum: Int
             }
 
             type Mutation {
@@ -362,6 +363,11 @@ describe("162", () => {
               x_MIN_GTE: Int
               x_MIN_LT: Int
               x_MIN_LTE: Int
+              x_SUM_EQUAL: Int
+              x_SUM_GT: Int
+              x_SUM_GTE: Int
+              x_SUM_LT: Int
+              x_SUM_LTE: Int
             }
 
             type TigerJawLevel2Part1TigerRelationship {

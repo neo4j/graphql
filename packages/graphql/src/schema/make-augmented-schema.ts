@@ -74,6 +74,7 @@ import createConnectionFields from "./create-connection-fields";
 import { NodeDirective } from "../classes/NodeDirective";
 import parseNodeDirective from "./parse-node-directive";
 import parseFulltextDirective from "./parse/parse-fulltext-directive";
+import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 
 function makeAugmentedSchema(
@@ -784,6 +785,13 @@ function makeAugmentedSchema(
             });
         }
 
+        const uniqueFields = getUniqueFields(node);
+
+        composer.createInputTC({
+            name: `${node.name}UniqueWhere`,
+            fields: uniqueFields,
+        });
+
         composer.createInputTC({
             name: `${node.name}CreateInput`,
             // TODO - This reduce duplicated when creating relationship CreateInput - put into shared function?
@@ -890,7 +898,7 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node }),
+                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node, schemaComposer: composer }),
             });
         }
     });

@@ -79,6 +79,7 @@ describe("@default directive", () => {
               average: Float!
               max: Float!
               min: Float!
+              sum: Float!
             }
 
             type IDAggregateSelectionNonNullable {
@@ -90,6 +91,7 @@ describe("@default directive", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Mutation {

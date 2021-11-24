@@ -35,7 +35,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     cypherParams = { ...cypherParams, ...topLevelMatch[1] };
 
     const allowAuth = createAuthAndParams({
-        operation: "READ",
+        operations: "READ",
         entity: node,
         context,
         allow: {
@@ -59,7 +59,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
             if (authField.auth) {
                 const allowAndParams = createAuthAndParams({
                     entity: authField,
-                    operation: "READ",
+                    operations: "READ",
                     context,
                     allow: { parentNode: node, varName, chainStr: authField.fieldName },
                 });
@@ -92,13 +92,12 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
         if (field) {
             const thisProjections: string[] = [];
-
             const aggregateFields =
                 selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNullable`] ||
                 selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNonNullable`];
 
             Object.entries(aggregateFields).forEach((entry) => {
-                // "min" | "max" | "average" | "shortest" | "longest"
+                // "min" | "max" | "average" | "sum" | "shortest" | "longest"
                 let operator = entry[1].name;
 
                 if (operator === "average") {

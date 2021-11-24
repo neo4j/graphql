@@ -80,7 +80,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                operation: "READ",
+                operations: "READ",
                 allow: { parentNode: node, varName: "this" },
             });
 
@@ -714,7 +714,7 @@ describe("createAuthAndParams", () => {
                 createAuthAndParams({
                     context,
                     entity: node,
-                    operation: "READ",
+                    operations: "READ",
                     allow: { parentNode: node, varName: "this" },
                 });
             }).toThrow("Unauthenticated");
@@ -772,7 +772,7 @@ describe("createAuthAndParams", () => {
                 createAuthAndParams({
                     context,
                     entity: node,
-                    operation: "READ",
+                    operations: "READ",
                     allow: { parentNode: node, varName: "this" },
                 });
             }).toThrow("Unauthenticated");
@@ -829,7 +829,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                operation: "READ",
+                operations: "READ",
                 allow: { parentNode: node, varName: "this" },
             });
 
@@ -890,7 +890,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                operation: "READ",
+                operations: "READ",
                 allow: { parentNode: node, varName: "this" },
             });
 
