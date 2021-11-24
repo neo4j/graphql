@@ -53,7 +53,7 @@ function createCreateAndParams({
     insideDoWhen?: boolean;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
-        const _varName = `${varName}_${key}`;
+        const varNameKey = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key === x.fieldName);
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
@@ -93,7 +93,7 @@ function createCreateAndParams({
 
                         res.creates.push(`\nWITH ${withVars.join(", ")}`);
 
-                        const baseName = `${_varName}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
+                        const baseName = `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
                         const nodeName = `${baseName}_node`;
                         const propertiesName = `${baseName}_relationship`;
 
@@ -133,7 +133,7 @@ function createCreateAndParams({
                     const connectAndParams = createConnectAndParams({
                         withVars,
                         value: v.connect,
-                        varName: `${_varName}${relationField.union ? "_" : ""}${unionTypeName}_connect`,
+                        varName: `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}_connect`,
                         parentVar: varName,
                         relationField,
                         context,
@@ -149,7 +149,7 @@ function createCreateAndParams({
                 if (v.connectOrCreate) {
                     const [connectOrCreateQuery, connectOrCreateParams] = createConnectOrCreateAndParams({
                         input: v.connectOrCreate,
-                        varName: `${_varName}${relationField.union ? "_" : ""}${unionTypeName}_connectOrCreate`,
+                        varName: `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}_connectOrCreate`,
                         parentVar: varName,
                         relationField,
                         refNode,
@@ -164,7 +164,7 @@ function createCreateAndParams({
                 const connectAndParams = createConnectAndParams({
                     withVars,
                     value: value.connect,
-                    varName: `${_varName}${relationField.union ? "_" : ""}_connect`,
+                    varName: `${varNameKey}${relationField.union ? "_" : ""}_connect`,
                     parentVar: varName,
                     relationField,
                     context,
@@ -185,7 +185,7 @@ function createCreateAndParams({
                 entity: primitiveField,
                 operations: "CREATE",
                 context,
-                bind: { parentNode: node, varName, chainStr: _varName },
+                bind: { parentNode: node, varName, chainStr: varNameKey },
                 escapeQuotes: Boolean(insideDoWhen),
             });
             if (authAndParams[0]) {
@@ -200,18 +200,18 @@ function createCreateAndParams({
 
         if (pointField) {
             if (pointField.typeMeta.array) {
-                res.creates.push(`SET ${varName}.${dbFieldName} = [p in $${_varName} | point(p)]`);
+                res.creates.push(`SET ${varName}.${dbFieldName} = [p in $${varNameKey} | point(p)]`);
             } else {
-                res.creates.push(`SET ${varName}.${dbFieldName} = point($${_varName})`);
+                res.creates.push(`SET ${varName}.${dbFieldName} = point($${varNameKey})`);
             }
 
-            res.params[_varName] = value;
+            res.params[varNameKey] = value;
 
             return res;
         }
 
-        res.creates.push(`SET ${varName}.${dbFieldName} = $${_varName}`);
-        res.params[_varName] = value;
+        res.creates.push(`SET ${varName}.${dbFieldName} = $${varNameKey}`);
+        res.params[varNameKey] = value;
 
         return res;
     }

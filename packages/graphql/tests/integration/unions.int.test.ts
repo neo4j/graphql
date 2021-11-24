@@ -96,9 +96,9 @@ describe("unions", () => {
 
             const movies = (gqlResult.data as any).movies[0];
 
-            const movieSearch = movies.search.find((x) => x.__typename === "Movie"); // eslint-disable-line no-underscore-dangle
+            const movieSearch = movies.search.find((x: Record<string, string>) => x.__typename === "Movie");
             expect(movieSearch.title).toEqual(movieTitle);
-            const genreSearch = movies.search.find((x) => x.__typename === "Genre"); // eslint-disable-line no-underscore-dangle
+            const genreSearch = movies.search.find((x: Record<string, string>) => x.__typename === "Genre");
             expect(genreSearch.name).toEqual(genreName);
         } finally {
             await session.close();
