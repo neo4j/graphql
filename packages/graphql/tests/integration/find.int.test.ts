@@ -89,7 +89,7 @@ describe("find", () => {
         }
     });
 
-    it("should find Move by id and limit", async () => {
+    test("should find Move by id and limit", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -408,7 +408,7 @@ describe("find", () => {
         }
     });
 
-    it("should find Movie and populate nested cypher query", async () => {
+    test("should find Movie and populate nested cypher query", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -502,7 +502,7 @@ describe("find", () => {
         }
     });
 
-    it("should use OR and find Movie by id or title", async () => {
+    test("should use OR and find Movie by id or title", async () => {
         const session = driver.session();
 
         const typeDefs = `

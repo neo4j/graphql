@@ -31,6 +31,7 @@ import createSetRelationshipPropertiesAndParams from "./create-set-relationship-
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
 import createRelationshipValidationStr from "./create-relationship-validation-str";
+import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
@@ -39,6 +40,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const disconnectInput = resolveTree.args.disconnect;
     const createInput = resolveTree.args.create;
     const deleteInput = resolveTree.args.delete;
+    const connectOrCreateInput = resolveTree.args.connectOrCreate;
     const varName = "this";
 
     let matchAndWhereStr = "";
@@ -299,6 +301,39 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             ...updateArgs,
             ...(deleteStr.includes(resolveTree.name) ? { delete: deleteInput } : {}),
         };
+    }
+
+    if (connectOrCreateInput) {
+        Object.entries(connectOrCreateInput).forEach(([key, input]) => {
+            const relationField = node.relationFields.find((x) => key === x.fieldName) as RelationField;
+
+            const refNodes: Node[] = [];
+
+            if (relationField.union) {
+                Object.keys(input).forEach((unionTypeName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                });
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
+            } else {
+                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+            }
+
+            refNodes.forEach((refNode) => {
+                const connectAndParams = createConnectOrCreateAndParams({
+                    input: input[refNode.name] || input, // Deals with different input from update -> connectOrCreate
+                    varName: `${varName}_connectOrCreate_${key}${relationField.union ? `_${refNode.name}` : ""}`,
+                    parentVar: varName,
+                    relationField,
+                    refNode,
+                    context,
+                });
+                connectStrs.push(connectAndParams[0]);
+                cypherParams = { ...cypherParams, ...connectAndParams[1] };
+            });
+        });
     }
 
     if (nodeProjection?.fieldsByTypeName) {

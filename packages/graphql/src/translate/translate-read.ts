@@ -96,7 +96,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     }
 
     const allowAndParams = createAuthAndParams({
-        operation: "READ",
+        operations: "READ",
         entity: node,
         context,
         allow: {

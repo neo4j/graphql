@@ -35,7 +35,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     cypherParams = { ...cypherParams, ...topLevelMatch[1] };
 
     const allowAuth = createAuthAndParams({
-        operation: "READ",
+        operations: "READ",
         entity: node,
         context,
         allow: {
@@ -59,7 +59,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
             if (authField.auth) {
                 const allowAndParams = createAuthAndParams({
                     entity: authField,
-                    operation: "READ",
+                    operations: "READ",
                     context,
                     allow: { parentNode: node, varName, chainStr: authField.fieldName },
                 });

@@ -20,6 +20,8 @@
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node, Relationship } from "../../classes";
 import { Context, RelationField, ConnectionField } from "../../types";
+import { serializeParamsForApocRun } from "../utils/apoc-run";
+import { AggregationAuth } from "./field-aggregations-auth";
 
 export enum AggregationType {
     Int = "IntAggregateSelection",
@@ -45,12 +47,14 @@ export function getReferenceRelation(context: Context, connectionField: Connecti
     return context.neoSchema.relationships.find((x) => x.name === connectionField.relationshipTypeName);
 }
 
-export function escapeQuery(query: string): string {
-    return query.replace(/("|')/g, "\\$1");
-}
-
 export function getFieldByName(name: string, fields: Record<string, ResolveTree>): ResolveTree | undefined {
     return Object.values(fields).find((tree) => {
         return tree.name === name;
     });
+}
+
+export function serializeAuthParamsForApocRun(auth: AggregationAuth): Record<string, string> {
+    const authParams = serializeParamsForApocRun(auth.params);
+    if (auth.query) authParams.auth = "$auth";
+    return authParams;
 }

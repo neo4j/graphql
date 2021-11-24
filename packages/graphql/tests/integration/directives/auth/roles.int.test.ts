@@ -745,7 +745,7 @@ describe("auth/roles", () => {
     });
 
     describe("custom-resolvers", () => {
-        it("should throw if missing role on custom Query with @cypher", async () => {
+        test("should throw if missing role on custom Query with @cypher", async () => {
             const session = driver.session();
 
             const typeDefs = `
@@ -784,7 +784,7 @@ describe("auth/roles", () => {
             }
         });
 
-        it("should throw if missing role on custom Mutation with @cypher", async () => {
+        test("should throw if missing role on custom Mutation with @cypher", async () => {
             const session = driver.session();
 
             const typeDefs = `
