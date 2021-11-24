@@ -46,7 +46,7 @@ function createInterfaceProjectionAndParams({
         ];
 
         const allowAndParams = createAuthAndParams({
-            operation: "READ",
+            operations: "READ",
             entity: refNode,
             context,
             allow: {
@@ -124,7 +124,7 @@ function createInterfaceProjectionAndParams({
         }
 
         const whereAuth = createAuthAndParams({
-            operation: "READ",
+            operations: "READ",
             entity: refNode,
             context,
             where: { varName: param, node: refNode },

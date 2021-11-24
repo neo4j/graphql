@@ -118,7 +118,7 @@ function createDeleteAndParams({
                     res.strs.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`);
 
                     const whereAuth = createAuthAndParams({
-                        operation: "DELETE",
+                        operations: "DELETE",
                         entity: refNode,
                         context,
                         where: { varName: _varName, node: refNode },
@@ -133,7 +133,7 @@ function createDeleteAndParams({
 
                     const allowAuth = createAuthAndParams({
                         entity: refNode,
-                        operation: "DELETE",
+                        operations: "DELETE",
                         context,
                         escapeQuotes: Boolean(insideDoWhen),
                         allow: { parentNode: refNode, varName: _varName },
