@@ -68,9 +68,7 @@ function transformNodes(nodes: NodeMap, readonly: boolean): GraphQLNodeMap {
 
         const fields = createNodeFields(neo4jNode.properties, node.typeName);
         fields.forEach((f) => node.addField(f));
-        if (node.fields.length) {
-            out[mainLabel] = node;
-        }
+        out[mainLabel] = node;
     });
     return out;
 }
@@ -100,6 +98,11 @@ function hydrateWithRelationships(nodes: GraphQLNodeMap, rels: RelationshipMap):
             nodes[path.fromTypeId].addField(fromField);
             nodes[path.toTypeId].addField(toField);
         });
+    });
+    Object.keys(nodes).forEach((nodeKey) => {
+        if (!nodes[nodeKey].fields.length) {
+            delete nodes[nodeKey];
+        }
     });
     return nodes;
 }

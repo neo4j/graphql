@@ -291,6 +291,34 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
+    test("Should include types with no prop fields but relationship fields", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
+        const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
+        await wSession.writeTransaction((tx) => tx.run("CREATE (:EmptyNode)-[:RELATIONSHIP]->(:FullNode {prop: 1})"));
+        const bm = wSession.lastBookmark();
+        await wSession.close();
+
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
+
+        expect(typeDefs).toMatchInlineSnapshot(`
+            "type EmptyNode {
+            	relationshipFullNodes: [FullNode] @relationship(type: \\"RELATIONSHIP\\", direction: OUT)
+            }
+
+            type FullNode {
+            	emptyNodesRelationship: [EmptyNode] @relationship(type: \\"RELATIONSHIP\\", direction: IN)
+            	prop: BigInt!
+            }"
+        `);
+
+        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+    });
     test("Can generate a readonly typeDefs and combine directives", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
