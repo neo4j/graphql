@@ -34,7 +34,11 @@ export enum AggregationType {
 
 export function getFieldType(field: ResolveTree): AggregationType | undefined {
     for (const candidateField of Object.values(AggregationType)) {
-        if (field.fieldsByTypeName[candidateField]) return candidateField;
+        if (
+            field.fieldsByTypeName[`${candidateField}NonNullable`] ||
+            field.fieldsByTypeName[`${candidateField}Nullable`]
+        )
+            return candidateField;
     }
     return undefined;
 }

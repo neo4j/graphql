@@ -85,11 +85,11 @@ describe("Comments", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelection {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
+            type FloatAggregateSelectionNullable {
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
             }
 
             \\"\\"\\"An enumeration of movie genres.\\"\\"\\"
@@ -99,16 +99,16 @@ describe("Comments", () => {
               ROMANCE
             }
 
-            type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelectionNullable {
+              longest: ID
+              shortest: ID
             }
 
-            type IntAggregateSelection {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelectionNullable {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             \\"\\"\\"A type describing a movie.\\"\\"\\"
@@ -129,10 +129,10 @@ describe("Comments", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelection!
-              averageRating: FloatAggregateSelection!
+              actorCount: IntAggregateSelectionNullable!
+              averageRating: FloatAggregateSelectionNullable!
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieCreateInput {

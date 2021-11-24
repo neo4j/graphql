@@ -57,14 +57,14 @@ describe("Arrays", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelection {
+            type FloatAggregateSelectionNonNullable {
               average: Float!
               max: Float!
               min: Float!
               sum: Float!
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNonNullable {
               longest: ID!
               shortest: ID!
             }
@@ -76,9 +76,9 @@ describe("Arrays", () => {
             }
 
             type MovieAggregateSelection {
-              averageRating: FloatAggregateSelection!
+              averageRating: FloatAggregateSelectionNonNullable!
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNonNullable!
             }
 
             input MovieCreateInput {
