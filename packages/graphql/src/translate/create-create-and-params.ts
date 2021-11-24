@@ -149,7 +149,7 @@ function createCreateAndParams({
                 if (v.connectOrCreate) {
                     const [connectOrCreateQuery, connectOrCreateParams] = createConnectOrCreateAndParams({
                         input: v.connectOrCreate,
-                        varName: `${_varName}${relationField.union ? "_" : ""}${unionTypeName}_connectOrCreate`,
+                        varName: `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}_connectOrCreate`,
                         parentVar: varName,
                         relationField,
                         refNode,
