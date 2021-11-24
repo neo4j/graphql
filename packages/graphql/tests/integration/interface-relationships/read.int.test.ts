@@ -55,6 +55,11 @@ describe("interface relationships", () => {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
+
+            type ProductionRelease {
+                region: String!
+                production: Production! @relationship(type: "RELEASED_IN", direction: OUT)
+            }
         `;
 
         neoSchema = new Neo4jGraphQL({
@@ -66,7 +71,89 @@ describe("interface relationships", () => {
         await driver.close();
     });
 
-    test("should read and return interface relationship fields", async () => {
+    test("should read and return singleton interface relationship fields", async () => {
+        const session = driver.session();
+
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieRuntime = faker.random.number();
+        const movieScreenTime = faker.random.number();
+
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const seriesEpisodes = faker.random.number();
+        const seriesScreenTime = faker.random.number();
+
+        const regionName = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            query ProductionRelease($region: String) {
+                productionReleases(where: { region: $region }) {
+                    region
+                    production {
+                        title
+                        ... on Movie {
+                            runtime
+                        }
+                        ... on Series {
+                            episodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (a:ProductionRelease { region: $regionName })
+                CREATE (a)-[:RELEASED_IN]->(:Movie { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (b:ProductionRelease { region: $regionName })
+                CREATE (b)-[:RELEASED_IN]->(:Series { title: $seriesTitle, episodes: $seriesEpisodes })
+            `,
+                { regionName, movieTitle, movieRuntime, movieScreenTime, seriesTitle, seriesEpisodes, seriesScreenTime }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { region: regionName },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult.data?.productionReleases).toHaveLength(2);
+            expect(gqlResult.data).toEqual({
+                productionReleases: expect.arrayContaining([
+                    {
+                        region: regionName,
+                        production: {
+                            runtime: expect.any(Number),
+                            title: expect.any(String),
+                        },
+                    },
+                    {
+                        region: regionName,
+                        production: {
+                            episodes: seriesEpisodes,
+                            title: seriesTitle,
+                        },
+                    }
+                ])
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should read and return tuple interface relationship fields", async () => {
         const session = driver.session();
 
         const actorName = generate({

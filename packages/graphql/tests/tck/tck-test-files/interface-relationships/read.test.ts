@@ -62,7 +62,7 @@ describe("Interface Relationships", () => {
     test("Top level match", async () => {
         const query = gql`
             query {
-                actors(where:{actedInConnection:{node:{title:"The Matrix", _on:{Movie:{title:"Matrix"}}}}}) {
+                actors(where : { actedInConnection: { node : { title : "The Matrix" , _on : { Movie : { title : "Matrix" } } } } }) {
                     actedIn {
                         title
                         ... on Movie {
