@@ -83,7 +83,6 @@ describe("fragments", () => {
         `;
         const graphqlResult = await graphql({
             schema,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             source: query.loc!.source,
             contextValue: { driver },
             variableValues: { id },
@@ -114,7 +113,6 @@ describe("fragments", () => {
         `;
         const graphqlResult = await graphql({
             schema,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             source: query.loc!.source,
             contextValue: { driver },
             variableValues: { id },

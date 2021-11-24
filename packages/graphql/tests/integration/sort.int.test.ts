@@ -120,7 +120,7 @@ describe("sort", () => {
                             id: ID
                             genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
                         }
-    
+
                         type Genre {
                             id: ID
                         }
@@ -260,7 +260,6 @@ describe("sort", () => {
 
                     const graphqlResult = await graphql({
                         schema,
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         source: query.loc!.source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { actorNames: [name1, name2], direction: type },
@@ -311,7 +310,6 @@ describe("sort", () => {
 
                     const graphqlResult = await graphql({
                         schema,
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         source: query.loc!.source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: title1, actorNames: [name1, name2], direction: type },
