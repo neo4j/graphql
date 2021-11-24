@@ -65,6 +65,10 @@ describe("Interface Relationships", () => {
               screenTime: Int!
             }
 
+            input ActedInSort {
+              screenTime: SortDirection
+            }
+
             input ActedInUpdateInput {
               screenTime: Int
             }
@@ -84,7 +88,7 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -97,6 +101,10 @@ describe("Interface Relationships", () => {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorActedInConnectionSort {
+              edge: ActedInSort
             }
 
             input ActorActedInConnectionWhere {
@@ -237,6 +245,7 @@ describe("Interface Relationships", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Movie implements Production {
@@ -544,7 +553,7 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -558,6 +567,10 @@ describe("Interface Relationships", () => {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorActedInConnectionSort {
+              edge: ActedInSort
             }
 
             input ActorActedInConnectionWhere {
@@ -824,6 +837,11 @@ describe("Interface Relationships", () => {
               episodeCount_MIN_GTE: Int
               episodeCount_MIN_LT: Int
               episodeCount_MIN_LTE: Int
+              episodeCount_SUM_EQUAL: Int
+              episodeCount_SUM_GT: Int
+              episodeCount_SUM_GTE: Int
+              episodeCount_SUM_LT: Int
+              episodeCount_SUM_LTE: Int
               title_AVERAGE_EQUAL: Float
               title_AVERAGE_GT: Float
               title_AVERAGE_GTE: Float
@@ -906,6 +924,7 @@ describe("Interface Relationships", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Movie implements Production {
@@ -965,6 +984,11 @@ describe("Interface Relationships", () => {
               screenTime_MIN_GTE: Int
               screenTime_MIN_LT: Int
               screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
             }
 
             input MovieActorsNodeAggregationWhereInput {
@@ -1172,6 +1196,11 @@ describe("Interface Relationships", () => {
               screenTime_MIN_GTE: Int
               screenTime_MIN_LT: Int
               screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
             }
 
             input ProductionActorsFieldInput {
@@ -1378,6 +1407,11 @@ describe("Interface Relationships", () => {
               screenTime_MIN_GTE: Int
               screenTime_MIN_LT: Int
               screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
             }
 
             input SeriesActorsNodeAggregationWhereInput {
@@ -1521,6 +1555,11 @@ describe("Interface Relationships", () => {
               runtime_MIN_GTE: Int
               runtime_MIN_LT: Int
               runtime_MIN_LTE: Int
+              runtime_SUM_EQUAL: Int
+              runtime_SUM_GT: Int
+              runtime_SUM_GTE: Int
+              runtime_SUM_LT: Int
+              runtime_SUM_LTE: Int
             }
 
             type SeriesEpisodesRelationship {

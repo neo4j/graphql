@@ -167,6 +167,7 @@ function makeAugmentedSchema(
                 max: composeFloat,
                 min: composeFloat,
                 average: composeFloat,
+                sum: composeFloat,
             },
         ],
         [
@@ -175,6 +176,7 @@ function makeAugmentedSchema(
                 max: composeInt,
                 min: composeInt,
                 average: composeFloat,
+                sum: composeInt,
             },
         ],
         [
@@ -183,6 +185,7 @@ function makeAugmentedSchema(
                 max: "BigInt!",
                 min: "BigInt!",
                 average: "BigInt!",
+                sum: "BigInt!",
             },
         ],
         ["DateTime"],
@@ -279,11 +282,11 @@ function makeAugmentedSchema(
         ] as ObjectTypeDefinitionNode[]),
     ].filter(Boolean) as DefinitionNode[];
 
+    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
+
     if (extraDefinitions.length) {
         composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
     }
-
-    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
 
     const nodes = objectNodes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
@@ -729,8 +732,7 @@ function makeAugmentedSchema(
     unions.forEach((union) => {
         if (union.types && union.types.length) {
             const fields = union.types.reduce((f, type) => {
-                f = { ...f, [type.name.value]: `${type.name.value}Where` };
-                return f;
+                return { ...f, [type.name.value]: `${type.name.value}Where` };
             }, {});
 
             composer.createInputTC({
@@ -856,7 +858,7 @@ function makeAugmentedSchema(
 
             composer.createInputTC({
                 name: `${node.name}Fulltext`,
-                fields: fields,
+                fields,
             });
         }
 

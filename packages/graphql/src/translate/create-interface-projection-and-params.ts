@@ -122,7 +122,6 @@ function createInterfaceProjectionAndParams({
                 if (onTypeNodeWhereAndParams[0]) {
                     whereStrs.push(onTypeNodeWhereAndParams[0]);
                     if (whereArgs._on) {
-                        // eslint-disable-next-line prefer-destructuring
                         whereArgs._on[refNode.name] = onTypeNodeWhereAndParams[1];
                     } else {
                         whereArgs._on = { [refNode.name]: onTypeNodeWhereAndParams[1] };

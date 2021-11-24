@@ -624,6 +624,11 @@ describe("Connect Or Create", () => {
               screentime_MIN_GTE: Int
               screentime_MIN_LT: Int
               screentime_MIN_LTE: Int
+              screentime_SUM_EQUAL: Int
+              screentime_SUM_GT: Int
+              screentime_SUM_GTE: Int
+              screentime_SUM_LT: Int
+              screentime_SUM_LTE: Int
             }
 
             input ActorMoviesFieldInput {
@@ -766,6 +771,7 @@ describe("Connect Or Create", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Movie {

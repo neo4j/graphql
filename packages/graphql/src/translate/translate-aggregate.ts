@@ -95,7 +95,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
             Object.entries(selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelection`]).forEach(
                 (entry) => {
-                    // "min" | "max" | "average" | "shortest" | "longest"
+                    // "min" | "max" | "average" | "sum" | "shortest" | "longest"
                     let operator = entry[1].name;
 
                     if (operator === "average") {

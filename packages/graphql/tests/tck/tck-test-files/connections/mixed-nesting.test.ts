@@ -222,7 +222,7 @@ describe("Mixed nesting", () => {
             WHERE (NOT this_actors_movie.title = $this_actors_moviesConnection.args.where.node.title_NOT)
             WITH collect({ screenTime: this_actors_acted_in_relationship.screenTime, node: { title: this_actors_movie.title } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS moviesConnection
-            } RETURN moviesConnection\\", { this_actors: this_actors, this_actors_moviesConnection: $this_actors_moviesConnection }, false) } ] } as this"
+            } RETURN moviesConnection\\", { this_actors: this_actors, this_actors_moviesConnection: $this_actors_moviesConnection, auth: $auth }, false) } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -237,7 +237,14 @@ describe("Mixed nesting", () => {
                         }
                     }
                 },
-                \\"this_actors_name\\": \\"Tom Hanks\\"
+                \\"this_actors_name\\": \\"Tom Hanks\\",
+                \\"auth\\": {
+                    \\"isAuthenticated\\": true,
+                    \\"roles\\": [],
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
+                }
             }"
         `);
     });

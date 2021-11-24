@@ -40,7 +40,7 @@ export function stringAggregationQuery(matchWherePattern: string, fieldName: str
 export function numberAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
     const fieldPath = `${targetAlias}.${fieldName}`;
     return `${matchWherePattern}
-        RETURN {min: min(${fieldPath}), max: max(${fieldPath}), average: avg(${fieldPath})}`;
+        RETURN {min: min(${fieldPath}), max: max(${fieldPath}), average: avg(${fieldPath}), sum: sum(${fieldPath})}`;
 }
 
 export function defaultAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {

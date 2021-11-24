@@ -118,6 +118,7 @@ describe("Field Level Aggregations", () => {
                                 min
                                 max
                                 average
+                                sum
                             }
                         }
                     }
@@ -133,7 +134,7 @@ describe("Field Level Aggregations", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             RETURN this { actorsAggregate: { node: { age: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)
-                    RETURN {min: min(n.age), max: max(n.age), average: avg(n.age)}\\", { this: this })) } } } as this"
+                    RETURN {min: min(n.age), max: max(n.age), average: avg(n.age), sum: sum(n.age)}\\", { this: this })) } } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

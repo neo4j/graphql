@@ -58,7 +58,7 @@ describe("Unions", () => {
             type Author {
               name: String!
               publications(options: QueryOptions, where: PublicationWhere): [Publication]
-              publicationsConnection(where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
+              publicationsConnection(sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
             type AuthorAggregateSelection {
@@ -170,6 +170,10 @@ describe("Unions", () => {
               edge_NOT: WroteWhere
               node: JournalWhere
               node_NOT: JournalWhere
+            }
+
+            input AuthorPublicationsConnectionSort {
+              edge: WroteSort
             }
 
             input AuthorPublicationsConnectionWhere {
@@ -390,6 +394,11 @@ describe("Unions", () => {
               words_MIN_GTE: Int
               words_MIN_LT: Int
               words_MIN_LTE: Int
+              words_SUM_EQUAL: Int
+              words_SUM_GT: Int
+              words_SUM_GTE: Int
+              words_SUM_LT: Int
+              words_SUM_LTE: Int
             }
 
             input BookAuthorFieldInput {
@@ -535,6 +544,7 @@ describe("Unions", () => {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Journal {
@@ -639,6 +649,11 @@ describe("Unions", () => {
               words_MIN_GTE: Int
               words_MIN_LT: Int
               words_MIN_LTE: Int
+              words_SUM_EQUAL: Int
+              words_SUM_GT: Int
+              words_SUM_GTE: Int
+              words_SUM_LT: Int
+              words_SUM_LTE: Int
             }
 
             input JournalAuthorFieldInput {

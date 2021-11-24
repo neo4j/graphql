@@ -63,6 +63,10 @@ describe("Connect Or Create", () => {
               screenTime: Int!
             }
 
+            input ActedInSort {
+              screenTime: SortDirection
+            }
+
             input ActedInUpdateInput {
               screenTime: Int
             }
@@ -82,7 +86,7 @@ describe("Connect Or Create", () => {
 
             type Actor {
               actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -118,6 +122,10 @@ describe("Connect Or Create", () => {
               edge_NOT: ActedInWhere
               node: SeriesWhere
               node_NOT: SeriesWhere
+            }
+
+            input ActorActedInConnectionSort {
+              edge: ActedInSort
             }
 
             input ActorActedInConnectionWhere {
