@@ -151,6 +151,11 @@ describe("Alias", () => {
               screenTime_MIN_GTE: Int
               screenTime_MIN_LT: Int
               screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
             }
 
             input ActorActedInFieldInput {
@@ -181,6 +186,11 @@ describe("Alias", () => {
               rating_MIN_GTE: Float
               rating_MIN_LT: Float
               rating_MIN_LTE: Float
+              rating_SUM_EQUAL: Float
+              rating_SUM_GT: Float
+              rating_SUM_GTE: Float
+              rating_SUM_LT: Float
+              rating_SUM_LTE: Float
               title_AVERAGE_EQUAL: Float
               title_AVERAGE_GT: Float
               title_AVERAGE_GTE: Float
@@ -268,9 +278,9 @@ describe("Alias", () => {
             }
 
             type ActorAggregateSelection {
-              city: StringAggregateSelection!
+              city: StringAggregateSelectionNullable!
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input ActorConnectInput {
@@ -298,13 +308,13 @@ describe("Alias", () => {
             }
 
             type ActorMovieActedInEdgeAggregateSelection {
-              character: StringAggregateSelection!
-              screenTime: IntAggregateSelection!
+              character: StringAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelectionNullable!
             }
 
             type ActorMovieActedInNodeAggregateSelection {
-              rating: FloatAggregateSelection!
-              title: StringAggregateSelection!
+              rating: FloatAggregateSelectionNullable!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input ActorOptions {
@@ -382,16 +392,18 @@ describe("Alias", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelection {
-              average: Float!
-              max: Float!
-              min: Float!
+            type FloatAggregateSelectionNullable {
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
             }
 
-            type IntAggregateSelection {
-              average: Float!
-              max: Int!
-              min: Int!
+            type IntAggregateSelectionNullable {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -401,8 +413,8 @@ describe("Alias", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              rating: FloatAggregateSelection!
-              title: StringAggregateSelection!
+              rating: FloatAggregateSelectionNullable!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectWhere {
@@ -488,9 +500,14 @@ describe("Alias", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
+            }
+
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

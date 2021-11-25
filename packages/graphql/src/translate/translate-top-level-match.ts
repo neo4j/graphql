@@ -34,12 +34,12 @@ function translateTopLevelMatch({
     varName: string;
     operation: AuthOperations;
 }): [string, Record<string, unknown>] {
-    let cyphers: string[] = [];
+    const cyphers: string[] = [];
     let cypherParams = {};
     const { resolveTree } = context;
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string; score_EQUAL?: number }>;
-    let whereStrs: string[] = [];
+    const whereStrs: string[] = [];
 
     if (!Object.entries(fulltextInput).length) {
         cyphers.push(`MATCH (${varName}${node.getLabelString(context)})`);
@@ -56,7 +56,7 @@ function translateTopLevelMatch({
         cyphers.push(
             dedent(`
                 CALL db.index.fulltext.queryNodes(
-                    "${indexName}", 
+                    "${indexName}",
                     $${paramPhraseName}
                 ) YIELD node as this, score as score
             `)
@@ -69,9 +69,9 @@ function translateTopLevelMatch({
         }
 
         if (node.fulltextDirective) {
-            const index = node.fulltextDirective.indexes.find((index) => index.name === indexName);
+            const index = node.fulltextDirective.indexes.find((i) => i.name === indexName);
             let thresholdParamName = baseParamName;
-            let threshold: number | undefined = undefined;
+            let threshold: number | undefined;
 
             if (indexInput.score_EQUAL) {
                 thresholdParamName = `${thresholdParamName}_score_EQUAL`;
@@ -103,7 +103,7 @@ function translateTopLevelMatch({
     }
 
     const whereAuth = createAuthAndParams({
-        operation,
+        operations: operation,
         entity: node,
         context,
         where: { varName, node },

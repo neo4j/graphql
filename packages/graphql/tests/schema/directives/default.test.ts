@@ -64,7 +64,7 @@ describe("@default directive", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelection {
+            type DateTimeAggregateSelectionNonNullable {
               max: DateTime!
               min: DateTime!
             }
@@ -75,21 +75,23 @@ describe("@default directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelection {
+            type FloatAggregateSelectionNonNullable {
               average: Float!
               max: Float!
               min: Float!
+              sum: Float!
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNonNullable {
               longest: ID!
               shortest: ID!
             }
 
-            type IntAggregateSelection {
+            type IntAggregateSelectionNonNullable {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Mutation {
@@ -111,7 +113,7 @@ describe("@default directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
             }
@@ -142,13 +144,13 @@ describe("@default directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              fromInterface: StringAggregateSelection!
-              id: IDAggregateSelection!
-              name: StringAggregateSelection!
-              numberOfFriends: IntAggregateSelection!
-              rating: FloatAggregateSelection!
-              toBeOverridden: StringAggregateSelection!
-              verifiedDate: DateTimeAggregateSelection!
+              fromInterface: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
+              numberOfFriends: IntAggregateSelectionNonNullable!
+              rating: FloatAggregateSelectionNonNullable!
+              toBeOverridden: StringAggregateSelectionNonNullable!
+              verifiedDate: DateTimeAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {

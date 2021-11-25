@@ -399,6 +399,171 @@ describe("Cypher Aggregations where node with BigInt", () => {
         `);
     });
 
+    test("SUM_EQUAL", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { node: { someBigInt_SUM_EQUAL: "2147483648" } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Post)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someBigInt) AS this_likesAggregate_node_someBigInt_SUM_EQUAL_SUM
+            RETURN this_likesAggregate_node_someBigInt_SUM_EQUAL_SUM = toFloat($this_likesAggregate_node_someBigInt_SUM_EQUAL)
+            \\", { this: this, this_likesAggregate_node_someBigInt_SUM_EQUAL: $this_likesAggregate_node_someBigInt_SUM_EQUAL }, false )
+            RETURN this { .content } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_likesAggregate_node_someBigInt_SUM_EQUAL\\": {
+                    \\"low\\": -2147483648,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("SUM_GT", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { node: { someBigInt_SUM_GT: "2147483648" } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Post)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someBigInt) AS this_likesAggregate_node_someBigInt_SUM_GT_SUM
+            RETURN this_likesAggregate_node_someBigInt_SUM_GT_SUM > toFloat($this_likesAggregate_node_someBigInt_SUM_GT)
+            \\", { this: this, this_likesAggregate_node_someBigInt_SUM_GT: $this_likesAggregate_node_someBigInt_SUM_GT }, false )
+            RETURN this { .content } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_likesAggregate_node_someBigInt_SUM_GT\\": {
+                    \\"low\\": -2147483648,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("SUM_GTE", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { node: { someBigInt_SUM_GTE: "2147483648" } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Post)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someBigInt) AS this_likesAggregate_node_someBigInt_SUM_GTE_SUM
+            RETURN this_likesAggregate_node_someBigInt_SUM_GTE_SUM >= toFloat($this_likesAggregate_node_someBigInt_SUM_GTE)
+            \\", { this: this, this_likesAggregate_node_someBigInt_SUM_GTE: $this_likesAggregate_node_someBigInt_SUM_GTE }, false )
+            RETURN this { .content } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_likesAggregate_node_someBigInt_SUM_GTE\\": {
+                    \\"low\\": -2147483648,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("SUM_LT", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { node: { someBigInt_SUM_LT: "2147483648" } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Post)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someBigInt) AS this_likesAggregate_node_someBigInt_SUM_LT_SUM
+            RETURN this_likesAggregate_node_someBigInt_SUM_LT_SUM < toFloat($this_likesAggregate_node_someBigInt_SUM_LT)
+            \\", { this: this, this_likesAggregate_node_someBigInt_SUM_LT: $this_likesAggregate_node_someBigInt_SUM_LT }, false )
+            RETURN this { .content } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_likesAggregate_node_someBigInt_SUM_LT\\": {
+                    \\"low\\": -2147483648,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("SUM_LTE", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { node: { someBigInt_SUM_LTE: "2147483648" } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Post)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someBigInt) AS this_likesAggregate_node_someBigInt_SUM_LTE_SUM
+            RETURN this_likesAggregate_node_someBigInt_SUM_LTE_SUM <= toFloat($this_likesAggregate_node_someBigInt_SUM_LTE)
+            \\", { this: this, this_likesAggregate_node_someBigInt_SUM_LTE: $this_likesAggregate_node_someBigInt_SUM_LTE }, false )
+            RETURN this { .content } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_likesAggregate_node_someBigInt_SUM_LTE\\": {
+                    \\"low\\": -2147483648,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
     test("MIN_EQUAL", async () => {
         const query = gql`
             {

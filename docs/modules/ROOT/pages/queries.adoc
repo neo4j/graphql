@@ -128,6 +128,7 @@ Numerical Fields will expose the following aggregation selections:
 1. `min`
 2. `max`
 3. `average`
+4. `sum`
 
 String fields will expose:
 

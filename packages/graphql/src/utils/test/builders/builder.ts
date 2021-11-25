@@ -26,7 +26,7 @@ export abstract class Builder<T, C> {
         this.options = options;
     }
 
-    public abstract with(options: Partial<C>): Builder<T, C>;
+    public abstract with(newOptions: Partial<C>): Builder<T, C>;
 
     public abstract instance(): T;
 }

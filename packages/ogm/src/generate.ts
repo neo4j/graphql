@@ -20,13 +20,14 @@
 import { codegen } from "@graphql-codegen/core";
 import * as typescriptPlugin from "@graphql-codegen/typescript";
 import { Types } from "@graphql-codegen/plugin-helpers";
-import { OGM } from "./index";
-import { upperFirst } from "@neo4j/graphql";
+import { upperFirst, Neo4jGraphQL } from "@neo4j/graphql";
 import camelCase from "camelcase";
 import pluralize from "pluralize";
 import * as fs from "fs";
 import * as graphql from "graphql";
 import prettier from "prettier";
+import { OGM } from "./index";
+import { getReferenceNode } from "./utils";
 
 export interface IGenerateOptions {
     /**
@@ -62,7 +63,7 @@ function createAggregationInput({
     aggregateSelections?: any;
     input: string;
 }) {
-    let interfaceStrs = [`export interface ${typeName} {`];
+    const interfaceStrs = [`export interface ${typeName} {`];
 
     const lines = createLines({ input, searchFor: basedOnSearch });
 
@@ -73,7 +74,7 @@ function createAggregationInput({
             return;
         }
 
-        if (type.endsWith(`AggregateSelection`)) {
+        if (type.endsWith(`AggregateSelectionNonNullable`) || type.endsWith(`AggregateSelectionNullable`)) {
             const newTypeName = `${type.replace(`Selection`, "Input")}`;
 
             if (!aggregateSelections[type]) {
@@ -87,17 +88,25 @@ function createAggregationInput({
                 aggregateSelections[type] = createdInput[0];
             }
 
-            interfaceStrs.push(`${fieldName}?: ${newTypeName};`);
+            interfaceStrs.push(`${removeOptional(fieldName)}?: ${newTypeName};`);
 
             return;
         }
 
-        interfaceStrs.push(`${fieldName}?: boolean;`);
+        interfaceStrs.push(`${removeOptional(fieldName)}?: boolean;`);
     });
 
     interfaceStrs.push("}");
 
     return [interfaceStrs.join("\n"), aggregateSelections];
+}
+
+function hasConnectOrCreate(node: any, schema: Neo4jGraphQL): boolean {
+    for (const relation of node.relationFields) {
+        const refNode = getReferenceNode(schema, relation);
+        if (refNode && refNode.uniqueFields.length > 0) return true;
+    }
+    return false;
 }
 
 async function generate(options: IGenerateOptions): Promise<undefined | string> {
@@ -139,6 +148,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
             input: output,
         });
 
+        const nodeHasConnectOrCreate = hasConnectOrCreate(node, options.ogm.neoSchema);
         const model = `
             ${Object.values(aggregationInput[1]).join("\n")}
             ${aggregationInput[0]}
@@ -170,6 +180,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     ${node.relationFields.length ? `connect?: ${node.name}ConnectInput` : ""}
                     ${node.relationFields.length ? `disconnect?: ${node.name}DisconnectInput` : ""}
                     ${node.relationFields.length ? `create?: ${node.name}CreateInput` : ""}
+                    ${nodeHasConnectOrCreate ? `connectOrCreate?: ${node.name}ConnectOrCreateInput` : ""}
                     selectionSet?: string | DocumentNode | SelectionSetNode;
                     args?: any;
                     context?: any;
@@ -218,3 +229,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
 }
 
 export default generate;
+
+function removeOptional(type: string): string {
+    return type.replace(/\?$/, "");
+}

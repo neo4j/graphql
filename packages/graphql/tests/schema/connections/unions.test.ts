@@ -63,7 +63,7 @@ describe("Unions", () => {
 
             type AuthorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input AuthorConnectInput {
@@ -301,7 +301,7 @@ describe("Unions", () => {
 
             type BookAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input BookAuthorAggregateInput {
@@ -323,11 +323,11 @@ describe("Unions", () => {
             }
 
             type BookAuthorAuthorEdgeAggregateSelection {
-              words: IntAggregateSelection!
+              words: IntAggregateSelectionNonNullable!
             }
 
             type BookAuthorAuthorNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input BookAuthorConnectFieldInput {
@@ -394,6 +394,11 @@ describe("Unions", () => {
               words_MIN_GTE: Int
               words_MIN_LT: Int
               words_MIN_LTE: Int
+              words_SUM_EQUAL: Int
+              words_SUM_GT: Int
+              words_SUM_GTE: Int
+              words_SUM_LT: Int
+              words_SUM_LTE: Int
             }
 
             input BookAuthorFieldInput {
@@ -535,10 +540,11 @@ describe("Unions", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelection {
+            type IntAggregateSelectionNonNullable {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Journal {
@@ -550,7 +556,7 @@ describe("Unions", () => {
 
             type JournalAggregateSelection {
               count: Int!
-              subject: StringAggregateSelection!
+              subject: StringAggregateSelectionNonNullable!
             }
 
             input JournalAuthorAggregateInput {
@@ -572,11 +578,11 @@ describe("Unions", () => {
             }
 
             type JournalAuthorAuthorEdgeAggregateSelection {
-              words: IntAggregateSelection!
+              words: IntAggregateSelectionNonNullable!
             }
 
             type JournalAuthorAuthorNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input JournalAuthorConnectFieldInput {
@@ -643,6 +649,11 @@ describe("Unions", () => {
               words_MIN_GTE: Int
               words_MIN_LT: Int
               words_MIN_LTE: Int
+              words_SUM_EQUAL: Int
+              words_SUM_GT: Int
+              words_SUM_GTE: Int
+              words_SUM_LT: Int
+              words_SUM_LTE: Int
             }
 
             input JournalAuthorFieldInput {
@@ -808,7 +819,7 @@ describe("Unions", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
             }

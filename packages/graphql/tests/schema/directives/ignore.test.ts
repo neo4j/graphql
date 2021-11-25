@@ -63,7 +63,7 @@ describe("@ignore directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNonNullable {
               longest: ID!
               shortest: ID!
             }
@@ -87,7 +87,7 @@ describe("@ignore directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
             }
@@ -115,9 +115,9 @@ describe("@ignore directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
-              password: StringAggregateSelection!
-              username: StringAggregateSelection!
+              id: IDAggregateSelectionNonNullable!
+              password: StringAggregateSelectionNonNullable!
+              username: StringAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {

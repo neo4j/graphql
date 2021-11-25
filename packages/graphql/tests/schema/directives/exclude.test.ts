@@ -97,7 +97,7 @@ describe("@exclude directive", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -157,9 +157,9 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -204,7 +204,7 @@ describe("@exclude directive", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNullable!
             }
 
             input ActorOptions {
@@ -262,9 +262,9 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -325,7 +325,7 @@ describe("@exclude directive", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -382,9 +382,9 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
             }
 
             type UpdateInfo {
@@ -453,7 +453,7 @@ describe("@exclude directive", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -511,9 +511,9 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
             }
 
             type UpdateInfo {
@@ -625,7 +625,7 @@ describe("@exclude directive", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -722,7 +722,7 @@ describe("@exclude directive", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -810,9 +810,9 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
             }
 
             type UpdateInfo {
@@ -852,7 +852,7 @@ describe("@exclude directive", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNullable!
             }
 
             input ActorCreateInput {
@@ -926,9 +926,9 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -993,7 +993,7 @@ describe("@exclude directive", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNullable!
             }
 
             input MovieOptions {
@@ -1053,7 +1053,7 @@ describe("@exclude directive", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNullable!
             }
 
             input SeriesCreateInput {
@@ -1094,9 +1094,9 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
             }
 
             type UpdateInfo {
