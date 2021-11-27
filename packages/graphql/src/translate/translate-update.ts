@@ -21,6 +21,7 @@ import { Node, Relationship } from "../classes";
 import WithProjector from "../classes/WithProjector";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { ConnectionField, Context, GraphQLWhereArg, RelationField } from "../types";
+import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createConnectAndParams from "./create-connect-and-params";
@@ -32,6 +33,7 @@ import createProjectionAndParams from "./create-projection-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createWhereAndParams from "./create-where-and-params";
+import translateTopLevelMatch from "./translate-top-level-match";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
@@ -52,32 +54,86 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
     let cypherParams: { [k: string]: any } = {};
     const whereStrs: string[] = [];
+    let projStr = '';
+    let projAuth = '';
     let updateArgs = {};
+    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "UPDATE" });
+    whereStrs.push(topLevelMatch[0]);
+    cypherParams = { ...cypherParams, ...topLevelMatch[1] };
+
 
     const withProjector = new WithProjector({ variables: [ varName ] });
 
-    // Due to potential aliasing of returned object in response we look through fields of UpdateMutationResponse
-    // and find field where field.name ~ node.name which exists by construction
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { fieldsByTypeName } = Object.values(
-        resolveTree.fieldsByTypeName[`Update${node.getPlural({ camelCase: false })}MutationResponse`]
-    ).find((field) => field.name === node.getPlural({ camelCase: true }))!;
 
-    const projection = createProjectionAndParams({
-        node,
-        context,
-        fieldsByTypeName,
-        varName,
-    });
+    const mutationResponse =
+        resolveTree.fieldsByTypeName[`Update${node.getPlural({ camelCase: false })}MutationResponse`];
 
-    cypherParams = { ...cypherParams, ...projection[1] };
+    const nodeProjection = Object.values(mutationResponse).find(
+        (field) => field.name === node.getPlural({ camelCase: true })
+    );
 
-    let projAuth: string | undefined;
-    if (projection[2]?.authValidateStrs?.length) {
-        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
-            " AND "
-        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    if (nodeProjection?.fieldsByTypeName) {
+        const projection = createProjectionAndParams({
+            node,
+            context,
+            fieldsByTypeName: nodeProjection.fieldsByTypeName,
+            varName,
+        });
+        [projStr] = projection;
+        cypherParams = { ...cypherParams, ...projection[1] };
+        if (projection[2]?.authValidateStrs?.length) {
+            projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
+                " AND "
+            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        }
+
+        if (projection[2]?.connectionFields?.length) {
+            projection[2].connectionFields.forEach((connectionResolveTree) => {
+                const connectionField = node.connectionFields.find(
+                    (x) => x.fieldName === connectionResolveTree.name
+                ) as ConnectionField;
+                const connection = createConnectionAndParams({
+                    resolveTree: connectionResolveTree,
+                    field: connectionField,
+                    context,
+                    nodeVariable: varName,
+                    // withProjector,
+                });
+                updateStrs.push(connection[0]);
+                cypherParams = { ...cypherParams, ...connection[1] };
+            });
+        }
+
+        const withInterfaces: string[] = [];
+        if (projection[2]?.interfaceFields?.length) {
+            projection[2].interfaceFields.forEach((interfaceResolveTree) => {
+                const relationshipField = node.relationFields.find(
+                    (x) => x.fieldName === interfaceResolveTree.name
+                ) as RelationField;
+                const interfaceProjection = createInterfaceProjectionAndParams({
+                    resolveTree: interfaceResolveTree,
+                    field: relationshipField,
+                    context,
+                    node,
+                    nodeVariable: varName,
+                    withProjector,
+                });
+                updateStrs.push(...interfaceProjection.cypher.split('\n'));
+                cypherParams = { ...cypherParams, ...interfaceProjection.params };
+                withInterfaces.push(interfaceResolveTree.name);
+            });
+        }
+        withInterfaces.forEach((name) => withProjector.removeVariable(name));
+
+    
+        cypherParams = { ...cypherParams, ...projection[1] };
+        if (projection[2]?.authValidateStrs?.length) {
+            projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
+                " AND "
+            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        }
     }
+
 
     if (whereInput) {
         const where = createWhereAndParams({
@@ -403,62 +459,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         });
     }
 
-    if (nodeProjection?.fieldsByTypeName) {
-        const projection = createProjectionAndParams({
-            node,
-            context,
-            fieldsByTypeName: nodeProjection.fieldsByTypeName,
-            varName,
-        });
-        [projStr] = projection;
-        cypherParams = { ...cypherParams, ...projection[1] };
-        if (projection[2]?.authValidateStrs?.length) {
-            projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
-                " AND "
-            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-        }
-    }
-
-    if (projection[2]?.connectionFields?.length) {
-        projection[2].connectionFields.forEach((connectionResolveTree) => {
-            const connectionField = node.connectionFields.find(
-                (x) => x.fieldName === connectionResolveTree.name
-            ) as ConnectionField;
-            const connection = createConnectionAndParams({
-                resolveTree: connectionResolveTree,
-                field: connectionField,
-                context,
-                nodeVariable: varName,
-                // withProjector,
-            });
-            updateStrs.push(connection[0]);
-            cypherParams = { ...cypherParams, ...connection[1] };
-        });
-    }
-
-    const withInterfaces: string[] = [];
-    if (projection[2]?.interfaceFields?.length) {
-        projection[2].interfaceFields.forEach((interfaceResolveTree) => {
-            const relationshipField = node.relationFields.find(
-                (x) => x.fieldName === interfaceResolveTree.name
-            ) as RelationField;
-            const interfaceProjection = createInterfaceProjectionAndParams({
-                resolveTree: interfaceResolveTree,
-                field: relationshipField,
-                context,
-                node,
-                nodeVariable: varName,
-                withProjector,
-            });
-            updateStrs.push(...interfaceProjection.cypher.split('\n'));
-            cypherParams = { ...cypherParams, ...interfaceProjection.params };
-            withInterfaces.push(interfaceResolveTree.name);
-        });
-    }
-
-    withInterfaces.forEach((name) => withProjector.removeVariable(name));
-
-    const [projStr] = projection;
     const cypher = [
         ...updateStrs,
         // ...(connectionStrs.length || projAuth ? [`WITH ${varName}`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
