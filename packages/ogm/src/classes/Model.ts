@@ -21,7 +21,7 @@ import { DocumentNode, graphql, parse, print, SelectionSetNode } from "graphql";
 import pluralize from "pluralize";
 import camelCase from "camelcase";
 import { Neo4jGraphQL, upperFirst } from "@neo4j/graphql";
-import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
+import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo, SubscriptionFilter } from "../types";
 
 export interface ModelConstructor {
     name: string;
@@ -98,6 +98,70 @@ class Model {
         `;
 
         const variableValues = { where, options, ...args };
+
+        const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
+
+        if (result.errors?.length) {
+            throw new Error(result.errors[0].message);
+        }
+
+        return (result.data as any)[this.camelCaseName] as T;
+    }
+
+    async subscribe<T = any[]>({
+        where,
+        options,
+        filter,
+        selectionSet,
+        args = {},
+        context = {},
+        rootValue = null,
+    }: {
+        where?: GraphQLWhereArg;
+        options?: GraphQLOptionsArg;
+        filter?: SubscriptionFilter;
+        selectionSet?: string | DocumentNode | SelectionSetNode;
+        args?: any;
+        context?: any;
+        rootValue?: any;
+    } = {}): Promise<T> {
+        const arrDefinitions: string[] = [];
+        const arrApply: string[] = [];
+        if (where) {
+            arrDefinitions.push(`$where: ${this.name}Where`);
+            arrApply.push(`where: $where`);
+        }
+
+        if (options) {
+            arrDefinitions.push(`$options: ${this.name}Options`);
+            arrApply.push(`options: $options`);
+        }
+
+        if (filter) {
+            arrDefinitions.push(`$filter: SubscriptionFilter`);
+            arrApply.push(`filter: $filter`);
+        }
+
+        let strDefinitions = '';
+        if (arrDefinitions.length) {
+            strDefinitions = ['(', ...arrDefinitions, ')'].join(' ');
+        }
+
+        let strApply = '';
+        if (arrApply.length) {
+            strApply = ['(', ...arrApply, ')'].join(' ');
+        }
+
+        const selection = printSelectionSet(selectionSet || this.selectionSet);
+
+        const query = `
+            subscription ${strDefinitions}{
+                ${this.camelCaseName}${strApply} ${selection}
+            }
+        `;
+
+        const variableValues = { where, options, filter, ...args };
+        context.useLocalPubsub = true;
 
         const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
 
