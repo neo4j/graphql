@@ -21,66 +21,11 @@ import { GraphQLResolveInfo } from "graphql";
 import { withFilter } from "graphql-subscriptions";
 import { isInt } from "neo4j-driver";
 import { Node } from "../../classes";
-import { MutationMetaType } from "../../classes/WithProjector";
 import translateRead from "../../translate/translate-read";
-import { Context } from "../../types";
+import { MutationMetaType, MutationSubscriptionResult, SubscriptionContext, SubscriptionFilter } from "../../types";
 import execute from "../../utils/execute";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
-import { MutationEvent } from "../../utils/publish-mutate-meta";
 
-export interface MutationSubscriptionResult extends MutationEvent {
-    fieldsUpdated: string[];
-    [ key: string ]: any;
-}
-export interface SubscriptionFilter {
-    propsUpdated?: string[];
-
-    type?: MutationMetaType;
-    type_NOT?: MutationMetaType;
-    type_IN?: MutationMetaType[];
-    type_NOT_IN?: MutationMetaType[];
-    type_UNDEFINED?: MutationMetaType[];
-
-    id?: number;
-    id_NOT?: number;
-    id_IN?: number[];
-    id_NOT_IN?: number[];
-    id_UNDEFINED?: number[];
-
-    toID?: number;
-    toID_NOT?: number;
-    toID_IN?: number[];
-    toID_NOT_IN?: number[];
-    toID_UNDEFINED?: number[];
-
-    relationshipID?: number;
-    relationshipID_NOT?: number;
-    relationshipID_IN?: number[];
-    relationshipID_NOT_IN?: number[];
-    relationshipID_UNDEFINED?: number[];
-
-    toName?: string;
-    toName_NOT?: string;
-    toName_IN?: string[];
-    toName_NOT_IN?: string[];
-    toName_UNDEFINED?: string[];
-
-    relationshipName?: string;
-    relationshipName_NOT?: string;
-    relationshipName_IN?: string[];
-    relationshipName_NOT_IN?: string[];
-    relationshipName_UNDEFINED?: string[];
-
-    handle?: string;
-    handle_NOT?: string;
-    handle_IN?: string[];
-    handle_NOT_IN?: string[];
-    handle_UNDEFINED?: string[];
-}
-
-type SubscriptionContext = Context & {
-    subCache: { [ str: string ]: any };
-};
 
 export default function subscribeToNodeResolver({ node }: { node: Node }) {
 

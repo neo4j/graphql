@@ -18,10 +18,10 @@
  */
 
 import { Node } from "../classes";
-import WithProjector, { Projection } from "../classes/WithProjector";
+import WithProjector from "../classes/WithProjector";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { Context, ConnectionField, RelationField } from "../types";
+import { Context, ConnectionField, RelationField, Projection } from "../types";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";

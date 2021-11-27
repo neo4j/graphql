@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { InputValueDefinitionNode, DirectiveNode } from "graphql";
-import { PubSubEngine } from "graphql-subscriptions";
+import { DirectiveNode, InputValueDefinitionNode } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
+import { PubSubEngine } from "graphql-subscriptions";
 import { JwtPayload } from "jsonwebtoken";
 import { Driver, Integer } from "neo4j-driver";
 import { Neo4jGraphQL } from "./classes";
@@ -300,4 +300,202 @@ export interface CypherQueryOptions {
     operatorEngine?: CypherOperatorEngine;
     interpretedPipesFallback?: CypherInterpretedPipesFallback;
     replan?: CypherReplanning;
+}
+
+export interface WithProjectorConstructor {
+    variables?: string[];
+    mutateMetaListVarName?: string;
+    subName?: string;
+
+}
+
+export type MutationMetaType =  'Updated' | 'Created' | 'Deleted' | 'Connected' | 'Disconnected' | 'RelationshipUpdated';
+
+/**
+ * Mutation Meta Outputs
+ * These are interfaces that are returned as a result of queries
+ */
+
+export type MutationMetaCommon =
+    UpdatedMutationMeta |
+    RelationshipUpdatedMutationMeta |
+    ConnectedMutationMeta |
+    DisconnectedMutationMeta |
+    DeletedMutationMeta |
+    CreatedMutationMeta
+;
+
+export interface MutationMeta {
+    id: Integer;
+    name: string;
+    type: MutationMetaType;
+}
+export interface UpdatedMutationMeta extends MutationMeta {
+    type: 'Updated',
+    properties: any;
+}
+export interface RelationshipUpdatedMutationMeta extends MutationMeta {
+    type: 'RelationshipUpdated',
+    properties: any;
+    toID: Integer;
+    toName: string;
+    relationshipName: string;
+    relationshipID: Integer;
+}
+export interface ConnectedMutationMeta extends MutationMeta {
+    type: 'Connected',
+    properties: any;
+    toID: Integer;
+    toName: string;
+    relationshipName: string;
+    relationshipID: Integer;
+}
+export interface DisconnectedMutationMeta extends MutationMeta {
+    type: 'Disconnected',
+    toID: Integer;
+    toName: string;
+    relationshipName: string;
+    relationshipID: Integer;
+}
+export interface CreatedMutationMeta extends MutationMeta {
+    type: 'Created',
+    properties: any;
+}
+export interface DeletedMutationMeta extends MutationMeta {
+    type: 'Deleted',
+}
+
+/**
+ * Mutation Meta Variables
+ * These are interfaces used with the `markMutationMeta` function
+ */
+
+export type MutationMetaVarsCommon =
+    UpdatedMutationMetaVars |
+    ConnectedMutationMetaVars |
+    DisconnectedMutationMetaVars |
+    RelationshipUpdatedMutationMetaVars |
+    DeletedMutationMetaVars |
+    CreatedMutationMetaVars
+;
+
+export interface MutationMetaVars {
+    idVar: string;
+    name: string;
+    type: MutationMetaType;
+}
+
+export interface UpdatedMutationMetaVars extends MutationMetaVars {
+    type: 'Updated';
+    propertiesVar?: string;
+}
+export interface DeletedMutationMetaVars extends MutationMetaVars {
+    type: 'Deleted';
+}
+
+export interface CreatedMutationMetaVars extends MutationMetaVars {
+    type: 'Created';
+    propertiesVar?: string;
+}
+
+export interface RelationshipUpdatedMutationMetaVars extends MutationMetaVars {
+    type: 'RelationshipUpdated';
+    propertiesVar?: string;
+    toIDVar: string;
+    toName: string;
+    relationshipName: string;
+    relationshipIDVar: string;
+}
+
+export interface DisconnectedMutationMetaVars extends MutationMetaVars {
+    type: 'Disconnected';
+    toIDVar: string;
+    toName: string;
+    relationshipName?: string;
+    relationshipIDVar?: string;
+}
+
+export interface ConnectedMutationMetaVars extends MutationMetaVars {
+    type: 'Connected';
+    propertiesVar?: string;
+    toIDVar: string;
+    toName: string;
+    relationshipName?: string;
+    relationshipIDVar?: string;
+}
+
+export interface NextBlockOptions {
+    declareMutateMeta?: boolean;
+    simpleReferencesOnly?: boolean;
+    excludeVariables?: string[];
+    additionalMutateMeta?: string;
+    additionalVariables?: string[];
+    reduceMeta?: boolean;
+}
+
+export interface Projection {
+    initialVariable?: string;
+    outputVariable?: string;
+    str?: string;
+}
+
+export interface MutationSubscriptionResult extends MutationEvent {
+    fieldsUpdated: string[];
+    [ key: string ]: any;
+}
+export interface SubscriptionFilter {
+    propsUpdated?: string[];
+
+    type?: MutationMetaType;
+    type_NOT?: MutationMetaType;
+    type_IN?: MutationMetaType[];
+    type_NOT_IN?: MutationMetaType[];
+    type_UNDEFINED?: MutationMetaType[];
+
+    id?: number;
+    id_NOT?: number;
+    id_IN?: number[];
+    id_NOT_IN?: number[];
+    id_UNDEFINED?: number[];
+
+    toID?: number;
+    toID_NOT?: number;
+    toID_IN?: number[];
+    toID_NOT_IN?: number[];
+    toID_UNDEFINED?: number[];
+
+    relationshipID?: number;
+    relationshipID_NOT?: number;
+    relationshipID_IN?: number[];
+    relationshipID_NOT_IN?: number[];
+    relationshipID_UNDEFINED?: number[];
+
+    toName?: string;
+    toName_NOT?: string;
+    toName_IN?: string[];
+    toName_NOT_IN?: string[];
+    toName_UNDEFINED?: string[];
+
+    relationshipName?: string;
+    relationshipName_NOT?: string;
+    relationshipName_IN?: string[];
+    relationshipName_NOT_IN?: string[];
+    relationshipName_UNDEFINED?: string[];
+
+    handle?: string;
+    handle_NOT?: string;
+    handle_IN?: string[];
+    handle_NOT_IN?: string[];
+    handle_UNDEFINED?: string[];
+}
+
+export type SubscriptionContext = Context & {
+    subCache: { [ str: string ]: any };
+};
+
+export interface MutationEvent extends Omit<MutationMetaCommon, 'id' | 'toID' | 'relationshipID'> {
+    id: number;
+    toID?: number;
+    relationshipID?: number;
+    bookmark?: string | null;
 }

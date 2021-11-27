@@ -19,20 +19,13 @@
 
 import Debug from "debug";
 import { isDate, isDateTime, isDuration, isInt, isLocalDateTime, isLocalTime, isPoint, isTime, Node, Relationship } from 'neo4j-driver';
-import { MutationMetaCommon } from "../classes/WithProjector";
 import { DEBUG_PUBLISH } from "../constants";
-import { Context } from "../types";
+import { Context, MutationEvent, MutationMetaCommon } from "../types";
 import { ExecuteResult } from "./execute";
 import { localPubSub } from "./pubsub";
 
 const debug = Debug(DEBUG_PUBLISH);
 
-export interface MutationEvent extends Omit<MutationMetaCommon, 'id' | 'toID' | 'relationshipID'> {
-    id: number;
-    toID?: number;
-    relationshipID?: number;
-    bookmark?: string | null;
-}
 
 function isNodeOrRelationship(n: any): n is Node | Relationship {
     return n && n.properties; // TODO: fix this to test if it is Node or Relationship

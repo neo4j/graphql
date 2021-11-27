@@ -1,1 +1,1 @@
-export { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo, GraphQLSortArg } from "@neo4j/graphql";
+export { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo, GraphQLSortArg, SubscriptionFilter } from "@neo4j/graphql";

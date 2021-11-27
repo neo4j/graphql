@@ -34,6 +34,7 @@ export {
     CypherReplanning,
     CypherRuntime,
     CypherUpdateStrategy,
+    SubscriptionFilter,
 } from "./types";
 export {
     Neo4jGraphQL,
