@@ -49,7 +49,7 @@ function translateCount({ node, context }: { node: Node; context: Context }): [s
     }
 
     const whereAuth = createAuthAndParams({
-        operation: "READ",
+        operations: "READ",
         entity: node,
         context,
         where: { varName, node },

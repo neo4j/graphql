@@ -39,7 +39,7 @@ import {
     UnionTypeDefinitionNode
 } from "graphql";
 import {
-    forEachKey, InputTypeComposerFieldConfigAsObjectDefinition, ObjectTypeComposer, SchemaComposer
+    forEachKey, InputTypeComposerFieldConfigAsObjectDefinition, ObjectTypeComposer, SchemaComposer, upperFirst
 } from "graphql-compose";
 import { GraphQLToolsResolveMethods } from "graphql-compose/lib/SchemaComposer";
 import pluralize from "pluralize";

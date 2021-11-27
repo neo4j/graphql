@@ -22,14 +22,10 @@ import WithProjector from "../classes/WithProjector";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { Context } from "../types";
 import mapToDbProperty from "../utils/map-to-db-property";
+import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createConnectAndParams from "./create-connect-and-params";
-import createAuthAndParams from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
-import mapToDbProperty from "../utils/map-to-db-property";
-import createRelationshipValidationStr from "./create-relationship-validation-str";
-import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 
 interface Res {
     creates: string[];
@@ -97,7 +93,7 @@ function createCreateAndParams({
                         }
                         res.creates.push(withProjector.nextWith());
 
-                        res.creates.push(`\nWITH ${withVars.join(", ")}`);
+                        res.creates.push(withProjector.nextWith());
 
                         const baseName = `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
                         const nodeName = `${baseName}_node`;

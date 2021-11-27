@@ -22,6 +22,7 @@ import WithProjector from "../classes/WithProjector";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { Context } from "../types";
 import mapToDbProperty from "../utils/map-to-db-property";
+import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createAuthParam from "./create-auth-param";
 import createConnectAndParams from "./create-connect-and-params";
@@ -29,11 +30,8 @@ import createCreateAndParams from "./create-create-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
-import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
-import mapToDbProperty from "../utils/map-to-db-property";
-import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
-import createRelationshipValidationStr from "./create-relationship-validation-str";
 import { wrapInCall } from "./utils/wrap-in-call";
+import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
 interface Res {
     strs: string[];

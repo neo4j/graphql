@@ -280,8 +280,6 @@ class Model {
            `;
         }
 
-        const argWorthy = where || update || connect || disconnect || create;
-
         const argDefinitions = [
             `${argWorthy ? "(" : ""}`,
             `${where ? `$where: ${this.name}Where` : ""}`,

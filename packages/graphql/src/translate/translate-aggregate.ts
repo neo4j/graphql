@@ -51,11 +51,12 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     }
 
     const whereAuth = createAuthAndParams({
-        operation: "READ",
+        operations: "READ",
         entity: node,
         context,
         where: { varName, node },
     });
+
     if (whereAuth[0]) {
         whereStrs.push(whereAuth[0]);
         cypherParams = { ...cypherParams, ...whereAuth[1] };

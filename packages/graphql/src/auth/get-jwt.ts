@@ -19,6 +19,7 @@
 
 import { IncomingMessage } from "http";
 import jsonwebtoken from "jsonwebtoken";
+import { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { Context } from "../types";
 import { DEBUG_AUTH } from "../constants";
@@ -28,6 +29,7 @@ const debug = Debug(DEBUG_AUTH);
 async function getJWT(context: Context): Promise<any> {
     const jwtConfig = context.neoSchema.config?.jwt;
     let result;
+    let client;
 
     if (!jwtConfig) {
         debug("JWT not configured");
