@@ -68,7 +68,7 @@ describe("Field Level Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { .title, actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\" MATCH (this)<-[r:ACTED_IN]-(n:Actor)      RETURN COUNT(n) \\", { this: this })) } } AS this"
+            RETURN this { .title, actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)      RETURN COUNT(n)\\", { this: this })) } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -98,11 +98,11 @@ describe("Field Level Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\" MATCH (this)<-[r:ACTED_IN]-(n:Actor)      RETURN COUNT(n) \\", { this: this })), node: { name: head(apoc.cypher.runFirstColumn(\\" MATCH (this)<-[r:ACTED_IN]-(n:Actor)
+            RETURN this { actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)      RETURN COUNT(n)\\", { this: this })), node: { name: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)
                     WITH n as n
                     ORDER BY size(n.name) DESC
                     WITH collect(n.name) as list
-                    RETURN {longest: head(list), shortest: last(list)} \\", { this: this })) } } } AS this"
+                    RETURN {longest: head(list), shortest: last(list)}\\", { this: this })) } } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -118,6 +118,7 @@ describe("Field Level Aggregations", () => {
                                 min
                                 max
                                 average
+                                sum
                             }
                         }
                     }
@@ -132,8 +133,8 @@ describe("Field Level Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { actorsAggregate: { node: { age: head(apoc.cypher.runFirstColumn(\\" MATCH (this)<-[r:ACTED_IN]-(n:Actor)
-                    RETURN {min: min(n.age), max: max(n.age), average: avg(n.age)} \\", { this: this })) } } } AS this"
+            RETURN this { actorsAggregate: { node: { age: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)
+                    RETURN {min: min(n.age), max: max(n.age), average: avg(n.age), sum: sum(n.age)}\\", { this: this })) } } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -163,11 +164,11 @@ describe("Field Level Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { .title, actorsAggregate: { node: { name: head(apoc.cypher.runFirstColumn(\\" MATCH (this)<-[r:ACTED_IN]-(n:Actor)
+            RETURN this { .title, actorsAggregate: { node: { name: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)
                     WITH n as n
                     ORDER BY size(n.name) DESC
                     WITH collect(n.name) as list
-                    RETURN {longest: head(list), shortest: last(list)} \\", { this: this })) } } } AS this"
+                    RETURN {longest: head(list), shortest: last(list)}\\", { this: this })) } } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -195,8 +196,8 @@ describe("Field Level Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            RETURN this { moviesAggregate: { node: { released: head(apoc.cypher.runFirstColumn(\\" MATCH (this)-[r:ACTED_IN]->(n:Movie)
-                    RETURN { min: apoc.date.convertFormat(toString(min(n.released)), \\\\\\"iso_zoned_date_time\\\\\\", \\\\\\"iso_offset_date_time\\\\\\"), max: apoc.date.convertFormat(toString(max(n.released)), \\\\\\"iso_zoned_date_time\\\\\\", \\\\\\"iso_offset_date_time\\\\\\") } \\", { this: this })) } } } AS this"
+            RETURN this { moviesAggregate: { node: { released: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:ACTED_IN]->(n:Movie)
+                    RETURN { min: apoc.date.convertFormat(toString(min(n.released)), \\\\\\"iso_zoned_date_time\\\\\\", \\\\\\"iso_offset_date_time\\\\\\"), max: apoc.date.convertFormat(toString(max(n.released)), \\\\\\"iso_zoned_date_time\\\\\\", \\\\\\"iso_offset_date_time\\\\\\") }\\", { this: this })) } } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

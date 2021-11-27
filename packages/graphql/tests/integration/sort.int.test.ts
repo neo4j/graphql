@@ -120,7 +120,7 @@ describe("sort", () => {
                             id: ID
                             genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
                         }
-    
+
                         type Genre {
                             id: ID
                         }
@@ -243,108 +243,136 @@ describe("sort", () => {
             await session.close();
         });
 
-        test("should sort on top level", async () => {
-            await Promise.all(
-                ["ASC", "DESC"].map(async (type) => {
-                    const query = gql`
-                        query($actorNames: [String!]!, $direction: SortDirection!) {
-                            actors(
-                                where: { name_IN: $actorNames }
-                                options: { sort: [{ totalScreenTime: $direction }] }
-                            ) {
-                                name
-                                totalScreenTime
-                            }
-                        }
-                    `;
-
-                    const graphqlResult = await graphql({
-                        schema,
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        source: query.loc!.source,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                        variableValues: { actorNames: [name1, name2], direction: type },
-                    });
-
-                    expect(graphqlResult.errors).toBeUndefined();
-
-                    const graphqlActors = graphqlResult.data?.actors;
-
-                    expect(graphqlActors).toHaveLength(2);
-
-                    /* eslint-disable jest/no-conditional-expect */
-                    if (type === "ASC") {
-                        expect(graphqlActors[0].name).toEqual(name2);
-                        expect(graphqlActors[0].totalScreenTime).toEqual(1);
-                        expect(graphqlActors[1].name).toEqual(name1);
-                        expect(graphqlActors[1].totalScreenTime).toEqual(2);
+        test("should sort DESC on top level", async () => {
+            const query = gql`
+                query($actorNames: [String!]!, $direction: SortDirection!) {
+                    actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                        name
+                        totalScreenTime
                     }
+                }
+            `;
 
-                    if (type === "DESC") {
-                        expect(graphqlActors[0].name).toEqual(name1);
-                        expect(graphqlActors[0].totalScreenTime).toEqual(2);
-                        expect(graphqlActors[1].name).toEqual(name2);
-                        expect(graphqlActors[1].totalScreenTime).toEqual(1);
-                    }
-                    /* eslint-enable jest/no-conditional-expect */
-                })
-            );
+            const graphqlResult = await graphql({
+                schema,
+                source: query.loc!.source,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { actorNames: [name1, name2], direction: "DESC" },
+            });
+
+            expect(graphqlResult.errors).toBeUndefined();
+
+            const graphqlActors = graphqlResult.data?.actors;
+
+            expect(graphqlActors).toHaveLength(2);
+
+            expect(graphqlActors[0].name).toEqual(name1);
+            expect(graphqlActors[0].totalScreenTime).toEqual(2);
+            expect(graphqlActors[1].name).toEqual(name2);
+            expect(graphqlActors[1].totalScreenTime).toEqual(1);
         });
 
-        test("should sort on nested level", async () => {
-            await Promise.all(
-                ["ASC", "DESC"].map(async (type) => {
-                    const query = gql`
-                        query($title: String!, $actorNames: [String!]!, $direction: SortDirection!) {
-                            movies(where: { title: $title }) {
-                                title
-                                actors(
-                                    where: { name_IN: $actorNames }
-                                    options: { sort: [{ totalScreenTime: $direction }] }
-                                ) {
-                                    name
-                                    totalScreenTime
-                                }
-                            }
+        test("should sort ASC on top level", async () => {
+            const query = gql`
+                query($actorNames: [String!]!, $direction: SortDirection!) {
+                    actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                        name
+                        totalScreenTime
+                    }
+                }
+            `;
+
+            const graphqlResult = await graphql({
+                schema,
+                source: query.loc!.source,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { actorNames: [name1, name2], direction: "ASC" },
+            });
+
+            expect(graphqlResult.errors).toBeUndefined();
+
+            const graphqlActors = graphqlResult.data?.actors;
+
+            expect(graphqlActors).toHaveLength(2);
+
+            expect(graphqlActors[0].name).toEqual(name2);
+            expect(graphqlActors[0].totalScreenTime).toEqual(1);
+            expect(graphqlActors[1].name).toEqual(name1);
+            expect(graphqlActors[1].totalScreenTime).toEqual(2);
+        });
+
+        test("should sort ASC on nested level", async () => {
+            const query = gql`
+                query($title: String!, $actorNames: [String!]!, $direction: SortDirection!) {
+                    movies(where: { title: $title }) {
+                        title
+                        actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                            name
+                            totalScreenTime
                         }
-                    `;
-
-                    const graphqlResult = await graphql({
-                        schema,
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        source: query.loc!.source,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                        variableValues: { title: title1, actorNames: [name1, name2], direction: type },
-                    });
-
-                    expect(graphqlResult.errors).toBeUndefined();
-
-                    const graphqlMovies = graphqlResult.data?.movies;
-
-                    expect(graphqlMovies).toHaveLength(1);
-                    expect(graphqlMovies[0].title).toBe(title1);
-
-                    const graphqlActors = graphqlResult.data?.movies[0].actors;
-
-                    expect(graphqlActors).toHaveLength(2);
-
-                    /* eslint-disable jest/no-conditional-expect */
-                    if (type === "ASC") {
-                        expect(graphqlActors[0].name).toEqual(name2);
-                        expect(graphqlActors[0].totalScreenTime).toEqual(1);
-                        expect(graphqlActors[1].name).toEqual(name1);
-                        expect(graphqlActors[1].totalScreenTime).toEqual(2);
                     }
+                }
+            `;
 
-                    if (type === "DESC") {
-                        expect(graphqlActors[0].name).toEqual(name1);
-                        expect(graphqlActors[0].totalScreenTime).toEqual(2);
-                        expect(graphqlActors[1].name).toEqual(name2);
-                        expect(graphqlActors[1].totalScreenTime).toEqual(1);
+            const graphqlResult = await graphql({
+                schema,
+                source: query.loc!.source,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { title: title1, actorNames: [name1, name2], direction: "ASC" },
+            });
+
+            expect(graphqlResult.errors).toBeUndefined();
+
+            const graphqlMovies = graphqlResult.data?.movies;
+
+            expect(graphqlMovies).toHaveLength(1);
+            expect(graphqlMovies[0].title).toBe(title1);
+
+            const graphqlActors = graphqlResult.data?.movies[0].actors;
+
+            expect(graphqlActors).toHaveLength(2);
+
+            expect(graphqlActors[0].name).toEqual(name2);
+            expect(graphqlActors[0].totalScreenTime).toEqual(1);
+            expect(graphqlActors[1].name).toEqual(name1);
+            expect(graphqlActors[1].totalScreenTime).toEqual(2);
+        });
+
+        test("should sort DESC on nested level", async () => {
+            const query = gql`
+                query($title: String!, $actorNames: [String!]!, $direction: SortDirection!) {
+                    movies(where: { title: $title }) {
+                        title
+                        actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                            name
+                            totalScreenTime
+                        }
                     }
-                    /* eslint-enable jest/no-conditional-expect */
-                })
-            );
+                }
+            `;
+
+            const graphqlResult = await graphql({
+                schema,
+                source: query.loc!.source,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { title: title1, actorNames: [name1, name2], direction: "DESC" },
+            });
+
+            expect(graphqlResult.errors).toBeUndefined();
+
+            const graphqlMovies = graphqlResult.data?.movies;
+
+            expect(graphqlMovies).toHaveLength(1);
+            expect(graphqlMovies[0].title).toBe(title1);
+
+            const graphqlActors = graphqlResult.data?.movies[0].actors;
+
+            expect(graphqlActors).toHaveLength(2);
+
+            expect(graphqlActors[0].name).toEqual(name1);
+            expect(graphqlActors[0].totalScreenTime).toEqual(2);
+            expect(graphqlActors[1].name).toEqual(name2);
+            expect(graphqlActors[1].totalScreenTime).toEqual(1);
         });
     });
 });

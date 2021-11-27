@@ -18,9 +18,10 @@
  */
 
 import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
-import { ObjectFields } from "./get-obj-field-meta";
-import { Node } from "../classes";
-import { numericalResolver } from "./resolvers";
+import { ObjectFields } from "../get-obj-field-meta";
+import { Node } from "../../classes";
+import { numericalResolver } from "../resolvers";
+import { AggregationTypesMapper } from "./aggregation-types-mapper";
 
 export enum FieldAggregationSchemaTypes {
     field = "AggregationSelection",
@@ -29,13 +30,12 @@ export enum FieldAggregationSchemaTypes {
 }
 
 export class FieldAggregationComposer {
-    private aggregationSelectionTypeNames: string[];
+    private aggregationTypesMapper: AggregationTypesMapper;
+    private composer: SchemaComposer;
 
-    constructor(
-        private composer: SchemaComposer,
-        private aggregationSelectionTypes: Record<string, ObjectTypeComposer>
-    ) {
-        this.aggregationSelectionTypeNames = Object.keys(aggregationSelectionTypes);
+    constructor(composer: SchemaComposer) {
+        this.composer = composer;
+        this.aggregationTypesMapper = new AggregationTypesMapper(composer);
     }
 
     public createAggregationTypeObject(
@@ -83,13 +83,12 @@ export class FieldAggregationComposer {
                 return res;
             }
 
-            if (!this.aggregationSelectionTypeNames.includes(field.typeMeta.name)) {
-                return res;
-            }
+            const objectTypeComposer = this.aggregationTypesMapper.getAggregationType({
+                fieldName: field.typeMeta.name,
+                nullable: !field.typeMeta.required,
+            });
 
-            const objectTypeComposer = (this.aggregationSelectionTypes[
-                field.typeMeta.name
-            ] as unknown) as ObjectTypeComposer<unknown, unknown>;
+            if (!objectTypeComposer) return res;
 
             res[field.fieldName] = objectTypeComposer.NonNull;
 

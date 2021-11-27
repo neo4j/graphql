@@ -52,8 +52,11 @@ describe("Connections -> Unions", () => {
 
     const authorName = "Charles Dickens";
 
-    const bookTitle = "Oliver Twist";
-    const bookWordCount = 167543;
+    const book1Title = "Oliver Twist";
+    const book1WordCount = 167543;
+
+    const book2Title = "A Christmas Carol";
+    const book2WordCount = 30953;
 
     const journalSubject = "Master Humphrey's Clock";
     const journalWordCount = 3413;
@@ -66,13 +69,16 @@ describe("Connections -> Unions", () => {
             await session.run(
                 `
                     CREATE (author:Author {name: $authorName})
-                    CREATE (author)-[:WROTE {words: $bookWordCount}]->(:Book {title: $bookTitle})
+                    CREATE (author)-[:WROTE {words: $book1WordCount}]->(:Book {title: $book1Title})
+                    CREATE (author)-[:WROTE {words: $book2WordCount}]->(:Book {title: $book2Title})
                     CREATE (author)-[:WROTE {words: $journalWordCount}]->(:Journal {subject: $journalSubject})
                 `,
                 {
                     authorName,
-                    bookTitle,
-                    bookWordCount,
+                    book1Title,
+                    book1WordCount,
+                    book2Title,
+                    book2WordCount,
                     journalSubject,
                     journalWordCount,
                 }
@@ -90,13 +96,15 @@ describe("Connections -> Unions", () => {
             await session.run(
                 `
                     MATCH (author:Author {name: $authorName})
-                    MATCH (book:Book {title: $bookTitle})
+                    MATCH (book1:Book {title: $book1Title})
+                    MATCH (book2:Book {title: $book2Title})
                     MATCH (journal:Journal {subject: $journalSubject})
-                    DETACH DELETE author, book, journal
+                    DETACH DELETE author, book1, book2, journal
                 `,
                 {
                     authorName,
-                    bookTitle,
+                    book1Title,
+                    book2Title,
                     journalSubject,
                 }
             );
@@ -151,17 +159,95 @@ describe("Connections -> Unions", () => {
                 {
                     name: authorName,
                     publicationsConnection: {
-                        edges: [
+                        edges: expect.arrayContaining([
                             {
-                                words: bookWordCount,
+                                words: book1WordCount,
                                 node: {
-                                    title: bookTitle,
+                                    title: book1Title,
+                                },
+                            },
+                            {
+                                words: book2WordCount,
+                                node: {
+                                    title: book2Title,
                                 },
                             },
                             {
                                 words: journalWordCount,
                                 node: {
                                     subject: journalSubject,
+                                },
+                            },
+                        ]),
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("Projecting node and relationship properties with sort argument", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+            query($authorName: String) {
+                authors(where: { name: $authorName }) {
+                    name
+                    publicationsConnection(sort: [{ edge: { words: ASC } }]) {
+                        edges {
+                            words
+                            node {
+                                ... on Book {
+                                    title
+                                }
+                                ... on Journal {
+                                    subject
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks } },
+                variableValues: {
+                    authorName,
+                },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.authors).toEqual([
+                {
+                    name: authorName,
+                    publicationsConnection: {
+                        edges: [
+                            {
+                                words: journalWordCount,
+                                node: {
+                                    subject: journalSubject,
+                                },
+                            },
+                            {
+                                words: book2WordCount,
+                                node: {
+                                    title: book2Title,
+                                },
+                            },
+                            {
+                                words: book1WordCount,
+                                node: {
+                                    title: book1Title,
                                 },
                             },
                         ],
@@ -214,18 +300,24 @@ describe("Connections -> Unions", () => {
                 {
                     name: authorName,
                     publicationsConnection: {
-                        edges: [
+                        edges: expect.arrayContaining([
                             {
-                                words: bookWordCount,
+                                words: book1WordCount,
                                 node: {
-                                    title: bookTitle,
+                                    title: book1Title,
+                                },
+                            },
+                            {
+                                words: book2WordCount,
+                                node: {
+                                    title: book2Title,
                                 },
                             },
                             {
                                 words: journalWordCount,
                                 node: {},
                             },
-                        ],
+                        ]),
                     },
                 },
             ]);
@@ -266,7 +358,7 @@ describe("Connections -> Unions", () => {
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
-                    bookTitle,
+                    bookTitle: book1Title,
                 },
             });
 
@@ -278,9 +370,9 @@ describe("Connections -> Unions", () => {
                     publicationsConnection: {
                         edges: [
                             {
-                                words: bookWordCount,
+                                words: book1WordCount,
                                 node: {
-                                    title: bookTitle,
+                                    title: book1Title,
                                 },
                             },
                         ],
@@ -324,7 +416,7 @@ describe("Connections -> Unions", () => {
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
-                    bookTitle,
+                    bookTitle: book1Title,
                 },
             });
 
@@ -334,7 +426,14 @@ describe("Connections -> Unions", () => {
                 {
                     name: authorName,
                     publicationsConnection: {
-                        edges: [],
+                        edges: [
+                            {
+                                node: {
+                                    title: "A Christmas Carol",
+                                },
+                                words: 30953,
+                            },
+                        ],
                     },
                 },
             ]);
@@ -385,7 +484,7 @@ describe("Connections -> Unions", () => {
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
-                    bookTitle,
+                    bookTitle: book1Title,
                     journalSubject,
                 },
             });
@@ -399,10 +498,10 @@ describe("Connections -> Unions", () => {
                         totalCount: 2,
                         edges: [
                             {
-                                words: bookWordCount,
+                                words: book1WordCount,
                                 node: {
                                     __typename: "Book",
-                                    title: bookTitle,
+                                    title: book1Title,
                                 },
                             },
                             {
@@ -463,7 +562,7 @@ describe("Connections -> Unions", () => {
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
-                    bookTitle,
+                    bookTitle: book1Title,
                     journalSubject,
                 },
             });
@@ -477,10 +576,10 @@ describe("Connections -> Unions", () => {
                         totalCount: 1,
                         edges: [
                             {
-                                words: bookWordCount,
+                                words: book1WordCount,
                                 node: {
                                     __typename: "Book",
-                                    title: bookTitle,
+                                    title: book1Title,
                                 },
                             },
                         ],
@@ -524,7 +623,7 @@ describe("Connections -> Unions", () => {
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
-                    bookWordCount,
+                    bookWordCount: book1WordCount,
                 },
             });
 
@@ -536,9 +635,9 @@ describe("Connections -> Unions", () => {
                     publicationsConnection: {
                         edges: [
                             {
-                                words: bookWordCount,
+                                words: book1WordCount,
                                 node: {
-                                    title: bookTitle,
+                                    title: book1Title,
                                 },
                             },
                         ],
@@ -582,7 +681,7 @@ describe("Connections -> Unions", () => {
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
-                    bookWordCount,
+                    bookWordCount: book1WordCount,
                 },
             });
 
@@ -592,7 +691,14 @@ describe("Connections -> Unions", () => {
                 {
                     name: authorName,
                     publicationsConnection: {
-                        edges: [],
+                        edges: [
+                            {
+                                words: book2WordCount,
+                                node: {
+                                    title: book2Title,
+                                },
+                            },
+                        ],
                     },
                 },
             ]);
@@ -643,7 +749,7 @@ describe("Connections -> Unions", () => {
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
-                    bookWordCount,
+                    bookWordCount: book1WordCount,
                     journalWordCount,
                 },
             });
@@ -657,10 +763,10 @@ describe("Connections -> Unions", () => {
                         totalCount: 2,
                         edges: [
                             {
-                                words: bookWordCount,
+                                words: book1WordCount,
                                 node: {
                                     __typename: "Book",
-                                    title: bookTitle,
+                                    title: book1Title,
                                 },
                             },
                             {
@@ -721,7 +827,7 @@ describe("Connections -> Unions", () => {
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
-                    bookWordCount,
+                    bookWordCount: book1WordCount,
                     journalWordCount,
                 },
             });
@@ -735,10 +841,10 @@ describe("Connections -> Unions", () => {
                         totalCount: 1,
                         edges: [
                             {
-                                words: bookWordCount,
+                                words: book1WordCount,
                                 node: {
                                     __typename: "Book",
-                                    title: bookTitle,
+                                    title: book1Title,
                                 },
                             },
                         ],
@@ -789,8 +895,8 @@ describe("Connections -> Unions", () => {
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
-                    bookWordCount,
-                    bookTitle,
+                    bookWordCount: book1WordCount,
+                    bookTitle: book1Title,
                 },
             });
 
@@ -802,9 +908,9 @@ describe("Connections -> Unions", () => {
                     publicationsConnection: {
                         edges: [
                             {
-                                words: bookWordCount,
+                                words: book1WordCount,
                                 node: {
-                                    title: bookTitle,
+                                    title: book1Title,
                                 },
                             },
                         ],

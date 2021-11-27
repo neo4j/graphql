@@ -60,14 +60,14 @@ describe("Duration", () => {
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
             scalar Duration
 
-            type DurationAggregateSelection {
-              max: Duration!
-              min: Duration!
+            type DurationAggregateSelectionNullable {
+              max: Duration
+              min: Duration
             }
 
-            type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelectionNullable {
+              longest: ID
+              shortest: ID
             }
 
             type Movie {
@@ -77,8 +77,8 @@ describe("Duration", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              duration: DurationAggregateSelection!
-              id: IDAggregateSelection!
+              duration: DurationAggregateSelectionNullable!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieCreateInput {

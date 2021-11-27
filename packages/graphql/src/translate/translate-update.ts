@@ -27,9 +27,9 @@ import createConnectAndParams from "./create-connect-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
+import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
-import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createWhereAndParams from "./create-where-and-params";
 
@@ -41,6 +41,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const disconnectInput = resolveTree.args.disconnect;
     const createInput = resolveTree.args.create;
     const deleteInput = resolveTree.args.delete;
+    const connectOrCreateInput = resolveTree.args.connectOrCreate;
     const varName = "this";
     const labels = node.getLabelString(context);
     const matchStr = `MATCH (${varName}${labels})`;
@@ -93,7 +94,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     }
 
     const whereAuth = createAuthAndParams({
-        operation: "UPDATE",
+        operations: "UPDATE",
         entity: node,
         context,
         where: { varName, node },
@@ -368,6 +369,54 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
     if (projAuth) {
         updateStrs.push(projAuth);
+    }
+    if (connectOrCreateInput) {
+        Object.entries(connectOrCreateInput).forEach(([key, input]) => {
+            const relationField = node.relationFields.find((x) => key === x.fieldName) as RelationField;
+
+            const refNodes: Node[] = [];
+
+            if (relationField.union) {
+                Object.keys(input).forEach((unionTypeName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                });
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
+            } else {
+                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+            }
+
+            refNodes.forEach((refNode) => {
+                const connectAndParams = createConnectOrCreateAndParams({
+                    input: input[refNode.name] || input, // Deals with different input from update -> connectOrCreate
+                    varName: `${varName}_connectOrCreate_${key}${relationField.union ? `_${refNode.name}` : ""}`,
+                    parentVar: varName,
+                    relationField,
+                    refNode,
+                    context,
+                });
+                updateStrs.push(connectAndParams[0]);
+                cypherParams = { ...cypherParams, ...connectAndParams[1] };
+            });
+        });
+    }
+
+    if (nodeProjection?.fieldsByTypeName) {
+        const projection = createProjectionAndParams({
+            node,
+            context,
+            fieldsByTypeName: nodeProjection.fieldsByTypeName,
+            varName,
+        });
+        [projStr] = projection;
+        cypherParams = { ...cypherParams, ...projection[1] };
+        if (projection[2]?.authValidateStrs?.length) {
+            projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
+                " AND "
+            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        }
     }
 
     if (projection[2]?.connectionFields?.length) {

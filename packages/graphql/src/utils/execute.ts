@@ -73,6 +73,7 @@ async function execute(input: {
     const userAgent = `${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`;
 
     // @ts-ignore: below
+    // eslint-disable-next-line no-underscore-dangle
     if (input.context.driver?._config) {
         // @ts-ignore: (driver >= 4.3)
         input.context.driver._config.userAgent = userAgent; // eslint-disable-line no-underscore-dangle

@@ -62,8 +62,7 @@ function createConnectionWhereAndParams({
 
                 const whereStrs = [...res.whereStrs, `(${innerClauses.filter((clause) => !!clause).join(` ${k} `)})`];
                 const params = { ...res.params, [k]: innerParams };
-                res = { whereStrs, params };
-                return res;
+                return { whereStrs, params };
             }
 
             if (k.startsWith("edge")) {
@@ -80,8 +79,7 @@ function createConnectionWhereAndParams({
                     k === "edge_NOT" ? `(NOT ${relationshipWhere[0]})` : relationshipWhere[0],
                 ];
                 const params = { ...res.params, [k]: relationshipWhere[1] };
-                res = { whereStrs, params };
-                return res;
+                return { whereStrs, params };
             }
 
             if (k.startsWith("node") || k.startsWith(node.name)) {

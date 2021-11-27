@@ -18,12 +18,13 @@
  */
 
 import { FieldNode, GraphQLResolveInfo } from "graphql";
+import { SchemaComposer } from "graphql-compose";
 import { Node } from "../../classes";
 import { translateUpdate } from "../../translate";
 import { Context } from "../../types";
 import { execute, publishMutateMeta } from "../../utils";
 
-export default function updateResolver({ node }: { node: Node }) {
+export default function updateResolver({ node, schemaComposer }: { node: Node; schemaComposer: SchemaComposer }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         const [cypher, params] = translateUpdate({ context, node });
@@ -54,21 +55,25 @@ export default function updateResolver({ node }: { node: Node }) {
             [responseKey]: executeResult.records.map((x) => x.this),
         };
     }
+    const relationFields: Record<string, string> = node.relationFields.length
+        ? {
+              connect: `${node.name}ConnectInput`,
+              disconnect: `${node.name}DisconnectInput`,
+              create: `${node.name}RelationInput`,
+              delete: `${node.name}DeleteInput`,
+          }
+        : {};
 
+    if (schemaComposer.has(`${node.name}ConnectOrCreateInput`)) {
+        relationFields.connectOrCreate = `${node.name}ConnectOrCreateInput`;
+    }
     return {
         type: `Update${node.getPlural({ camelCase: false })}MutationResponse!`,
         resolve,
         args: {
             where: `${node.name}Where`,
             update: `${node.name}UpdateInput`,
-            ...(node.relationFields.length
-                ? {
-                      connect: `${node.name}ConnectInput`,
-                      disconnect: `${node.name}DisconnectInput`,
-                      create: `${node.name}RelationInput`,
-                      delete: `${node.name}DeleteInput`,
-                  }
-                : {}),
+            ...relationFields,
         },
     };
 }

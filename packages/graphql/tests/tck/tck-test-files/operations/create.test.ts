@@ -351,7 +351,7 @@ describe("Cypher Create", () => {
             WHERE this0_movies_actor.name = $projection_movies_actorsConnection.args.where.node.name
             WITH collect({ node: { name: this0_movies_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
-            } RETURN actorsConnection\\", { this0_movies: this0_movies, projection_movies_actorsConnection: $projection_movies_actorsConnection }, false) } ] } AS this0"
+            } RETURN actorsConnection\\", { this0_movies: this0_movies, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }, false) } ] } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -365,6 +365,13 @@ describe("Cypher Create", () => {
                                 \\"name\\": \\"Dan\\"
                             }
                         }
+                    }
+                },
+                \\"auth\\": {
+                    \\"isAuthenticated\\": true,
+                    \\"roles\\": [],
+                    \\"jwt\\": {
+                        \\"roles\\": []
                     }
                 }
             }"

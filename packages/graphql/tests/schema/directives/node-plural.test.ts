@@ -22,7 +22,6 @@ describe("Node Directive", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
-                  subscription: Subscription
                 }
 
                 type CreateInfo {
@@ -48,14 +47,6 @@ describe("Node Directive", () => {
                   updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
                 }
 
-                enum NodeUpdatedType {
-                  Connected
-                  Created
-                  Deleted
-                  Disconnected
-                  Updated
-                }
-
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
@@ -69,14 +60,9 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type Subscription {
-                  \\"\\"\\"Subscribe to updates from Tech\\"\\"\\"
-                  subscribeToTech(types: [NodeUpdatedType!], where: TechWhere): TechSubscriptionResponse!
+                type StringAggregateSelectionNullable {
+                  longest: String
+                  shortest: String
                 }
 
                 type Tech {
@@ -86,8 +72,8 @@ describe("Node Directive", () => {
 
                 type TechAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelection!
-                  value: StringAggregateSelection!
+                  name: StringAggregateSelectionNullable!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input TechCreateInput {
@@ -106,18 +92,6 @@ describe("Node Directive", () => {
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
-                }
-
-                type TechSubscriptionResponse {
-                  id: Int!
-                  name: String!
-                  propsUpdated: [String!]
-                  relationshipID: String
-                  relationshipName: String
-                  tech: Tech
-                  toID: String
-                  toType: String
-                  type: String!
                 }
 
                 input TechUpdateInput {
@@ -183,7 +157,6 @@ describe("Node Directive", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
-                  subscription: Subscription
                 }
 
                 type CreateInfo {
@@ -209,14 +182,6 @@ describe("Node Directive", () => {
                   updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
                 }
 
-                enum NodeUpdatedType {
-                  Connected
-                  Created
-                  Deleted
-                  Disconnected
-                  Updated
-                }
-
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
@@ -230,14 +195,9 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
-                  longest: String!
-                  shortest: String!
-                }
-
-                type Subscription {
-                  \\"\\"\\"Subscribe to updates from Tech\\"\\"\\"
-                  subscribeToTech(types: [NodeUpdatedType!], where: TechWhere): TechSubscriptionResponse!
+                type StringAggregateSelectionNullable {
+                  longest: String
+                  shortest: String
                 }
 
                 type Tech {
@@ -247,8 +207,8 @@ describe("Node Directive", () => {
 
                 type TechAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelection!
-                  value: StringAggregateSelection!
+                  name: StringAggregateSelectionNullable!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input TechCreateInput {
@@ -267,18 +227,6 @@ describe("Node Directive", () => {
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
-                }
-
-                type TechSubscriptionResponse {
-                  id: Int!
-                  name: String!
-                  propsUpdated: [String!]
-                  relationshipID: String
-                  relationshipName: String
-                  tech: Tech
-                  toID: String
-                  toType: String
-                  type: String!
                 }
 
                 input TechUpdateInput {
@@ -391,9 +339,9 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
-                  longest: String!
-                  shortest: String!
+                type StringAggregateSelectionNullable {
+                  longest: String
+                  shortest: String
                 }
 
                 type Subscription {
@@ -408,8 +356,8 @@ describe("Node Directive", () => {
 
                 type TechAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelection!
-                  value: StringAggregateSelection!
+                  name: StringAggregateSelectionNullable!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input TechCreateInput {
@@ -552,9 +500,9 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
-                  longest: String!
-                  shortest: String!
+                type StringAggregateSelectionNullable {
+                  longest: String
+                  shortest: String
                 }
 
                 type Subscription {
@@ -601,7 +549,7 @@ describe("Node Directive", () => {
 
                 type TechsAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelection!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input TechsCreateInput {
@@ -731,9 +679,9 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
-                  longest: String!
-                  shortest: String!
+                type StringAggregateSelectionNullable {
+                  longest: String
+                  shortest: String
                 }
 
                 type Subscription {
@@ -793,7 +741,7 @@ describe("Node Directive", () => {
 
                 type UserAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelection!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input UserCreateInput {
@@ -910,9 +858,9 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
-                  longest: String!
-                  shortest: String!
+                type StringAggregateSelectionNullable {
+                  longest: String
+                  shortest: String
                 }
 
                 type Subscription {
@@ -972,7 +920,7 @@ describe("Node Directive", () => {
 
                 type UserAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelection!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input UserCreateInput {
@@ -1089,9 +1037,9 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
-                  longest: String!
-                  shortest: String!
+                type StringAggregateSelectionNullable {
+                  longest: String
+                  shortest: String
                 }
 
                 type Subscription {
@@ -1151,7 +1099,7 @@ describe("Node Directive", () => {
 
                 type UsersAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelection!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input UsersCreateInput {

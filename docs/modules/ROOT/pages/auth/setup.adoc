@@ -5,7 +5,11 @@
 
 If you want the Neo4j GraphQL Library to perform JWT decoding and verification for you, you must pass the configuration option `jwt` into the `Neo4jGraphQL` or `OGM` constructor, which has the following arguments:
 
-- `secret` - The secret to be used to decode and verify JWTs
+- `jwksEndpoint` (recommended) - The OpenID Public Key Set Endpoint that verifies the JWT. The https://auth0.com/docs/security/tokens/json-web-tokens/json-web-key-sets[JSON Web Key Sets] used under the OpenID Configuration are typically stored at an endpoint similar to \https://YOUR_DOMAIN/.well-known/jwks.json
+- `secret` - The secret to be used to decode and verify JWTs. Either the secret or the PEM encoded public key used to verify the JWT.
+
+Optional arguments:
+
 - `noVerify` (optional) - Disable verification of JWTs, defaults to _false_
 - `rolesPath` (optional) - A string key to specify where to find roles in the JWT, defaults to "roles"
 

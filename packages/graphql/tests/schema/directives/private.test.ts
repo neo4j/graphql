@@ -62,9 +62,9 @@ describe("@private directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelectionNullable {
+              longest: ID
+              shortest: ID
             }
 
             type Mutation {
@@ -118,7 +118,7 @@ describe("@private directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input UserCreateInput {

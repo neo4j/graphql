@@ -64,7 +64,7 @@ function translateCount({ node, context }: { node: Node; context: Context }): [s
     }
 
     const allowAuth = createAuthAndParams({
-        operation: "READ",
+        operations: "READ",
         entity: node,
         context,
         allow: {

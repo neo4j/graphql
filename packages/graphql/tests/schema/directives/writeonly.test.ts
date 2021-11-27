@@ -84,7 +84,7 @@ describe("@writeonly directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
             }
@@ -113,8 +113,8 @@ describe("@writeonly directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              password: StringAggregateSelection!
-              username: StringAggregateSelection!
+              password: StringAggregateSelectionNonNullable!
+              username: StringAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {
@@ -246,7 +246,7 @@ describe("@writeonly directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
             }
@@ -275,8 +275,8 @@ describe("@writeonly directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              password: StringAggregateSelection!
-              username: StringAggregateSelection!
+              password: StringAggregateSelectionNonNullable!
+              username: StringAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {

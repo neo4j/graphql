@@ -48,11 +48,13 @@ import { NodeDirective } from "../classes/NodeDirective";
 import Relationship from "../classes/Relationship";
 import * as constants from "../constants";
 import { Auth, PrimitiveField } from "../types";
+import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import createConnectionFields from "./create-connection-fields";
 import createRelationshipFields from "./create-relationship-fields";
 import getAuth from "./get-auth";
 import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
+import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
 import parseExcludeDirective from "./parse-exclude-directive";
 import parseNodeDirective from "./parse-node-directive";
@@ -64,7 +66,7 @@ import {
     cypherResolver,
     defaultFieldResolver,
     deleteResolver,
-    findResolver, idResolver, numericalResolver, updateResolver
+    findResolver, numericalResolver, updateResolver
 } from "./resolvers";
 import subscribeToNodeResolver from "./resolvers/subscribeToNode";
 import * as Scalars from "./scalars";
@@ -121,84 +123,7 @@ function makeAugmentedSchema(
         },
     });
 
-    const composeInt = {
-        type: "Int!",
-        resolve: numericalResolver,
-        args: {},
-    };
-
-    const composeFloat = {
-        type: "Float!",
-        resolve: numericalResolver,
-        args: {},
-    };
-
-    const composeId = {
-        type: "ID!",
-        resolve: idResolver,
-        args: {},
-    };
-
-    // Foreach i if i[1] is ? then we will assume it takes on type { min, max }
-    const aggregationSelectionTypeMatrix: [string, any?][] = [
-        [
-            "ID",
-            {
-                shortest: composeId,
-                longest: composeId,
-            },
-        ],
-        [
-            "String",
-            {
-                shortest: "String!",
-                longest: "String!",
-            },
-        ],
-        [
-            "Float",
-            {
-                max: composeFloat,
-                min: composeFloat,
-                average: composeFloat,
-            },
-        ],
-        [
-            "Int",
-            {
-                max: composeInt,
-                min: composeInt,
-                average: composeFloat,
-            },
-        ],
-        [
-            "BigInt",
-            {
-                max: "BigInt!",
-                min: "BigInt!",
-                average: "BigInt!",
-            },
-        ],
-        ["DateTime"],
-        ["LocalDateTime"],
-        ["LocalTime"],
-        ["Time"],
-        ["Duration"],
-    ];
-
-    const aggregationSelectionTypeNames = aggregationSelectionTypeMatrix.map(([name]) => name);
-
-    const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<
-        Record<string, ObjectTypeComposer<unknown, unknown>>
-    >((res, [name, fields]) => {
-        return {
-            ...res,
-            [name]: composer.createObjectTC({
-                name: `${name}AggregateSelection`,
-                fields: fields ?? { min: `${name}!`, max: `${name}!` },
-            }),
-        };
-    }, {});
+    const aggregationTypesMapper = new AggregationTypesMapper(composer);
 
     composer.createInputTC({
         name: "QueryOptions",
@@ -320,11 +245,11 @@ function makeAugmentedSchema(
         ] as ObjectTypeDefinitionNode[]),
     ].filter(Boolean) as DefinitionNode[];
 
+    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
+
     if (extraDefinitions.length) {
         composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
     }
-
-    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
 
     const nodes = objectNodes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
@@ -652,7 +577,6 @@ function makeAugmentedSchema(
             sourceName: interfaceRelationship.name.value,
             nodes,
             relationshipPropertyFields: relationshipFields,
-            aggregationSelectionTypes,
         });
 
         relationships = [
@@ -758,8 +682,7 @@ function makeAugmentedSchema(
     unions.forEach((union) => {
         if (union.types && union.types.length) {
             const fields = union.types.reduce((f, type) => {
-                f = { ...f, [type.name.value]: `${type.name.value}Where` };
-                return f;
+                return { ...f, [type.name.value]: `${type.name.value}Where` };
             }, {});
 
             composer.createInputTC({
@@ -840,22 +763,26 @@ function makeAugmentedSchema(
             },
         });
 
+        const countField = {
+            type: "Int!",
+            resolve: numericalResolver,
+            args: {},
+        };
+
         composer.createObjectTC({
             name: `${node.name}AggregateSelection`,
             fields: {
-                count: composeInt,
+                count: countField,
                 ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
                     if (field.typeMeta.array) {
                         return res;
                     }
+                    const objectTypeComposer = aggregationTypesMapper.getAggregationType({
+                        fieldName: field.typeMeta.name,
+                        nullable: !field.typeMeta.required,
+                    });
 
-                    if (!aggregationSelectionTypeNames.includes(field.typeMeta.name)) {
-                        return res;
-                    }
-
-                    const objectTypeComposer = (aggregationSelectionTypes[
-                        field.typeMeta.name
-                    ] as unknown) as ObjectTypeComposer<unknown, unknown>;
+                    if (!objectTypeComposer) return res;
 
                     res[field.fieldName] = objectTypeComposer.NonNull;
 
@@ -867,6 +794,33 @@ function makeAugmentedSchema(
         composer.createInputTC({
             name: `${node.name}Where`,
             fields: queryFields,
+        });
+
+        if (node.fulltextDirective) {
+            const fields = node.fulltextDirective.indexes.reduce((res, index) => {
+                return {
+                    ...res,
+                    [index.name]: composer.createInputTC({
+                        name: `${node.name}${upperFirst(index.name)}Fulltext`,
+                        fields: {
+                            phrase: "String!",
+                            score_EQUAL: "Int",
+                        },
+                    }),
+                };
+            }, {});
+
+            composer.createInputTC({
+                name: `${node.name}Fulltext`,
+                fields,
+            });
+        }
+
+        const uniqueFields = getUniqueFields(node);
+
+        composer.createInputTC({
+            name: `${node.name}UniqueWhere`,
+            fields: uniqueFields,
         });
 
         composer.createInputTC({
@@ -950,7 +904,6 @@ function makeAugmentedSchema(
             sourceName: node.name,
             nodes,
             relationshipPropertyFields: relationshipFields,
-            aggregationSelectionTypes,
         });
 
         relationships = [
@@ -992,7 +945,7 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node }),
+                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node, schemaComposer: composer }),
             });
         }
 

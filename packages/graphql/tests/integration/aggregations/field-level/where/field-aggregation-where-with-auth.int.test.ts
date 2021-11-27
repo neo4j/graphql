@@ -87,7 +87,7 @@ describe(`Field Level Auth Where Requests`, () => {
         await driver.close();
     });
 
-    it("authenticated query", async () => {
+    test("authenticated query", async () => {
         const query = `query {
             ${typeMovie.plural} {
                 ${typeActor.plural}Aggregate(where: {year_GT: 10}) {

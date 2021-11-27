@@ -25,7 +25,7 @@ import { DEBUG_AUTH } from "../constants";
 
 const debug = Debug(DEBUG_AUTH);
 
-function getJWT(context: Context): any {
+async function getJWT(context: Context): Promise<any> {
     const jwtConfig = context.neoSchema.config?.jwt;
     let result;
 
@@ -68,8 +68,23 @@ function getJWT(context: Context): any {
             debug("Skipping verifying JWT as noVerify is not set");
 
             result = jsonwebtoken.decode(token);
-        } else {
-            debug("Verifying JWT");
+        } else if (jwtConfig.jwksEndpoint) {
+            debug("Verifying JWT using OpenID Public Key Set Endpoint");
+
+            // Creates a JWKS Client with a rate limit that
+            // limits the number of calls to our JWKS endpoint
+            client = new JwksClient({
+                jwksUri: jwtConfig.jwksEndpoint,
+                rateLimit: true,
+                jwksRequestsPerMinute: 10, // Default Value
+                cache: true, // Default Value
+                cacheMaxEntries: 5, // Default value
+                cacheMaxAge: 600000, // Defaults to 10m
+            });
+
+            result = await verifyJWKS(client, token);
+        } else if (jwtConfig.secret) {
+            debug("Verifying JWT using secret");
 
             result = jsonwebtoken.verify(token, jwtConfig.secret, {
                 algorithms: ["HS256", "RS256"],
@@ -80,6 +95,31 @@ function getJWT(context: Context): any {
     }
 
     return result;
+}
+
+// Verifies the JWKS asynchronously, returns Promise
+async function verifyJWKS(client: JwksClient, token: string) {
+    function getKey(header, callback) {
+        // Callback that returns the key the corresponding key[kid]
+        client.getSigningKey(header.kid, (err, key) => {
+            const signingKey = key?.getPublicKey();
+            callback(null, signingKey);
+        });
+    }
+
+    // Returns a Promise with verification result or error
+    return new Promise((resolve, reject) =>
+        jsonwebtoken.verify(
+            token,
+            getKey,
+            {
+                algorithms: ["HS256", "RS256"],
+            },
+            function verifyCallback(err, decoded) {
+                return err ? reject(err) : resolve(decoded);
+            }
+        )
+    );
 }
 
 export default getJWT;

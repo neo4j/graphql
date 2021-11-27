@@ -78,7 +78,7 @@ function createNodeWhereAndParams({
 
     const whereAuth = createAuthAndParams({
         entity: node,
-        operation: "READ",
+        operations: "READ",
         context,
         where: {
             varName,
@@ -93,7 +93,7 @@ function createNodeWhereAndParams({
 
     const preAuth = createAuthAndParams({
         entity: node,
-        operation: "READ",
+        operations: "READ",
         context,
         allow: {
             parentNode: node,
@@ -156,7 +156,7 @@ function createProjectionAndParams({
             if (authableField.auth) {
                 const allowAndParams = createAuthAndParams({
                     entity: authableField,
-                    operation: "READ",
+                    operations: "READ",
                     context,
                     allow: { parentNode: node, varName, chainStr: param },
                 });
@@ -478,12 +478,17 @@ function createProjectionAndParams({
             });
 
             const connectionParamName = Object.keys(connection[1])[0];
-            const runFirstColumnParams = connectionParamName
-                ? `{ ${chainStr}: ${chainStr}, ${connectionParamName}: $${connectionParamName} }`
-                : `{ ${chainStr}: ${chainStr} }`;
+            const runFirstColumnParams = [
+                ...[`${chainStr}: ${chainStr}`],
+                ...(connectionParamName ? [`${connectionParamName}: $${connectionParamName}`] : []),
+                ...(context.auth ? ["auth: $auth"] : []),
+                ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
+            ];
 
             res.projection.push(
-                `${field.name}: apoc.cypher.runFirstColumn("${connection[0]} RETURN ${field.name}", ${runFirstColumnParams}, false)`
+                `${field.name}: apoc.cypher.runFirstColumn("${connection[0].replace(/("|')/g, "\\$1")} RETURN ${
+                    field.name
+                }", { ${runFirstColumnParams.join(", ")} }, false)`
             );
             res.params = { ...res.params, ...connection[1] };
             return res;

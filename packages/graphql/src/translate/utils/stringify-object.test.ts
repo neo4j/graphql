@@ -17,23 +17,26 @@
  * limitations under the License.
  */
 
-import { escapeQuery } from "./utils";
+import { stringifyObject } from "./stringify-object";
 
-describe("field-aggregation utils", () => {
-    describe("escapeQuery", () => {
-        test("escape query with normal text", () => {
-            const escaped = escapeQuery("Hello");
-            expect(escaped).toEqual("Hello");
+describe("stringifyObject", () => {
+    test("creates a valid cypher object from a js object", () => {
+        const result = stringifyObject({
+            this: "this",
+            that: `"that"`,
         });
 
-        test("escape query with double quotes", () => {
-            const escaped = escapeQuery(`"Hello"`);
-            expect(escaped).toEqual(`\\"Hello\\"`);
+        expect(result).toEqual(`{ this: this, that: "that" }`);
+    });
+
+    test("ignores undefined, null and empty string values", () => {
+        const result = stringifyObject({
+            nobody: "expects",
+            the: undefined,
+            spanish: null,
+            inquisition: "",
         });
 
-        test("escape query with single and double quotes", () => {
-            const escaped = escapeQuery(`"Hello" and 'goodbye'`);
-            expect(escaped).toEqual(`\\"Hello\\" and \\'goodbye\\'`);
-        });
+        expect(result).toEqual(`{ nobody: expects }`);
     });
 });

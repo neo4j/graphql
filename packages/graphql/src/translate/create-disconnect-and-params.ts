@@ -103,7 +103,7 @@ function createDisconnectAndParams({
 
         if (relatedNode.auth) {
             const whereAuth = createAuthAndParams({
-                operation: "DISCONNECT",
+                operations: "DISCONNECT",
                 entity: relatedNode,
                 context,
                 where: { varName: _varName, node: relatedNode },
@@ -126,7 +126,7 @@ function createDisconnectAndParams({
 
                 const [str, p] = createAuthAndParams({
                     entity: node,
-                    operation: "DISCONNECT",
+                    operations: "DISCONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
                     allow: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_allow` },
@@ -306,7 +306,7 @@ function createDisconnectAndParams({
 
                 const [str, p] = createAuthAndParams({
                     entity: node,
-                    operation: "DISCONNECT",
+                    operations: "DISCONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
                     skipRoles: true,
@@ -349,7 +349,7 @@ function createDisconnectAndParams({
     function reducer(res: Res, disconnect: { where: any; disconnect: any }, index): Res {
         if (parentNode.auth) {
             const whereAuth = createAuthAndParams({
-                operation: "DISCONNECT",
+                operations: "DISCONNECT",
                 entity: parentNode,
                 context,
                 where: { varName: parentVar, node: parentNode },

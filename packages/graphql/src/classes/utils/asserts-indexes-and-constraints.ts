@@ -105,6 +105,7 @@ async function createConstraints({ nodes, session }: { nodes: Node[]; session: S
     nodes.forEach((node) => {
         node.uniqueFields.forEach((field) => {
             constraintsToCreate.push({
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 constraintName: field.unique!.constraintName,
                 label: node.getMainLabel(),
                 property: field.dbPropertyName || field.fieldName,

@@ -109,6 +109,85 @@ Additionally, for projects which have the appropriate Yarn scripts setup, you ca
 yarn test:tck
 ```
 
+### Testing using docker
+
+```bash
+npm run test-docker
+```
+
 ## Linting/formatting
 
 We use ESLint for linting and Prettier for code formatting. Contributions must adhere to our linting and formatting rules.
+
+## Adding a new project to the monorepo
+
+For the sake of completeness, add an entry for the new project into the following files in the root of the repository:
+
+- `tsconfig.json` (`references` entry)
+- `jest.config.base.js` (`moduleNameMapper` entry)
+
+### Dependencies within the monorepo
+
+Adding dependencies within the monorepo is a little bit tricky because of the fact that we need to use uncompiled TypeScript code.
+
+This section will contain a couple of example use cases, one for production dependencies and one for test dependencies. They will use an example project with name "project" in `packages/project`, and the dependency in question will be `@neo4j/graphql`.
+
+#### Production dependencies
+
+First things first, install the dependency as you normally would:
+
+```bash
+yarn add @neo4j/graphql
+```
+
+Now, inside `packages/project/src/tsconfig.json`, this will need to look something like:
+
+```json
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": {
+        "baseUrl": "./",
+        "outDir": "../dist",
+        "paths": {
+            "@neo4j/graphql": ["../../graphql/src"]
+        }
+    },
+    "references": [{ "path": "../../graphql/src/tsconfig.json" }]
+}
+```
+
+The real key entries here are:
+
+- `baseUrl` - for all of the relative references in this file, this will tell `tsc` where to start from
+- `paths` - this will translate `import` statements in code to the relative dependency
+- `references` - gives TypeScript "permission" to accesss the projects at these paths
+
+Finally, it is highly likely that Jest will also need access to this internal dependency, so `packages/project/jest.config.js` will need to look like:
+
+```js
+const globalConf = require("../../jest.config.base");
+
+module.exports = {
+    ...globalConf,
+    displayName: "@neo4j/graphql-project",
+    roots: ["<rootDir>/packages/project/src", "<rootDir>/packages/project/tests"],
+    coverageDirectory: "<rootDir>/packages/project/coverage/",
+    globals: {
+        "ts-jest": {
+            tsconfig: "<rootDir>/packages/project/src/tsconfig.json",
+        },
+    },
+};
+```
+
+The magic sauce here is `globals/ts-jest/tsconfig`, which tells Jest which TypeScript configuration to use.
+
+#### Test dependencies
+
+Let's say you just need an internal dependency for testing purposes. You would install this as a dev dependency:
+
+```bash
+yarn add --dev @neo4j/graphql
+```
+
+You then need to follow the steps above, but using `packages/project/tests/tsconfig.json` instead of the production `tsconfig.json` file.

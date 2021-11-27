@@ -248,6 +248,7 @@ class Model {
         connect,
         disconnect,
         create,
+        connectOrCreate,
         selectionSet,
         args = {},
         context = {},
@@ -257,6 +258,7 @@ class Model {
         update?: any;
         connect?: any;
         disconnect?: any;
+        connectOrCreate?: any;
         create?: any;
         selectionSet?: string | DocumentNode | SelectionSetNode;
         args?: any;
@@ -264,6 +266,7 @@ class Model {
         rootValue?: any;
     } = {}): Promise<T> {
         const mutationName = `update${upperFirst(this.namePluralized)}`;
+        const argWorthy = Boolean(where || update || connect || disconnect || create || connectOrCreate);
 
         let selection = "";
         if (selectionSet) {
@@ -285,6 +288,7 @@ class Model {
             `${update ? `$update: ${this.name}UpdateInput` : ""}`,
             `${connect ? `$connect: ${this.name}ConnectInput` : ""}`,
             `${disconnect ? `$disconnect: ${this.name}DisconnectInput` : ""}`,
+            `${connectOrCreate ? `$connectOrCreate: ${this.name}ConnectOrCreateInput` : ""}`,
             `${create ? `$create: ${this.name}RelationInput` : ""}`,
             `${argWorthy ? ")" : ""}`,
         ];
@@ -295,6 +299,7 @@ class Model {
             `${update ? `update: $update` : ""}`,
             `${connect ? `connect: $connect` : ""}`,
             `${disconnect ? `disconnect: $disconnect` : ""}`,
+            `${connectOrCreate ? `connectOrCreate: $connectOrCreate` : ""}`,
             `${create ? `create: $create` : ""}`,
             `${argWorthy ? ")" : ""}`,
         ];
@@ -306,7 +311,7 @@ class Model {
             }
         `;
 
-        const variableValues = { ...args, where, update, connect, disconnect, create };
+        const variableValues = { ...args, where, update, connect, disconnect, create, connectOrCreate };
 
         const result = await graphql(this.neoSchema.schema, mutation, rootValue, context, variableValues);
 
@@ -382,8 +387,7 @@ class Model {
         const selections: string[] = [];
 
         Object.entries(aggregate).forEach((entry) => {
-            // Must be count
-            if (!Object.keys(entry).length) {
+            if (entry[0] === "count") {
                 selections.push(entry[0]);
 
                 return;

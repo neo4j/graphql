@@ -114,11 +114,11 @@ describe("Interface Relationships - Create create", () => {
             CALL {
             WITH this0, mutateMeta
             MATCH (this0)-[:ACTED_IN]->(this0_Movie:Movie)
-            RETURN  { __resolveType: \\"Movie\\", title: this0_Movie.title, runtime: this0_Movie.runtime } AS actedIn
+            RETURN { __resolveType: \\"Movie\\", runtime: this0_Movie.runtime, title: this0_Movie.title } AS actedIn
             UNION
             WITH this0, mutateMeta
             MATCH (this0)-[:ACTED_IN]->(this0_Series:Series)
-            RETURN  { __resolveType: \\"Series\\", title: this0_Series.title, episodes: this0_Series.episodes } AS actedIn
+            RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS actedIn
             }
             RETURN mutateMeta, this0 { .name, actedIn: collect(actedIn) } AS this0"
         `);

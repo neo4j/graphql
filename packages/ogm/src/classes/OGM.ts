@@ -23,27 +23,29 @@ import { filterDocument } from "../utils";
 
 export type OGMConstructor = Neo4jGraphQLConstructor;
 
-class OGM {
+class OGM<ModelMap = {}> {
     public models: Model[];
 
     checkNeo4jCompat: () => Promise<void>;
 
+    public neoSchema: Neo4jGraphQL;
+
     constructor(input: OGMConstructor) {
         const { typeDefs, ...rest } = input;
 
-        const neoSchema = new Neo4jGraphQL({
+        this.neoSchema = new Neo4jGraphQL({
             ...rest,
             typeDefs: filterDocument(typeDefs),
         });
 
         this.checkNeo4jCompat = function checkNeo4jCompat() {
-            return neoSchema.checkNeo4jCompat({
+            return this.neoSchema.checkNeo4jCompat({
                 driver: rest.driver,
                 ...(rest.config?.driverConfig ? { driverConfig: rest.config.driverConfig } : {}),
             });
         };
 
-        this.models = neoSchema.nodes.map((n) => {
+        this.models = this.neoSchema.nodes.map((n) => {
             const selectionSet = `
                 {
                     ${[n.primitiveFields, n.scalarFields, n.enumFields, n.temporalFields].reduce(
@@ -54,21 +56,23 @@ class OGM {
             `;
 
             return new Model({
-                neoSchema,
+                neoSchema: this.neoSchema,
                 name: n.name,
                 selectionSet,
             });
         });
     }
 
-    model(name: string): Model {
+    model<M extends T extends keyof ModelMap ? ModelMap[T] : Model, T extends keyof ModelMap | string = string>(
+        name: T
+    ): M {
         const found = this.models.find((n) => n.name === name);
 
         if (!found) {
             throw new Error(`Could not find model ${name}`);
         }
 
-        return found;
+        return found as M;
     }
 }
 

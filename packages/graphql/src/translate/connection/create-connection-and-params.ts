@@ -188,7 +188,7 @@ function createConnectionAndParams({
                 unionInterfaceSubquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
                 const allowAndParams = createAuthAndParams({
-                    operation: "READ",
+                    operations: "READ",
                     entity: n,
                     context,
                     allow: {
@@ -227,7 +227,7 @@ function createConnectionAndParams({
                 }
 
                 const whereAuth = createAuthAndParams({
-                    operation: "READ",
+                    operations: "READ",
                     entity: n,
                     context,
                     where: { varName: relatedNodeVariable, node: n },
@@ -253,6 +253,13 @@ function createConnectionAndParams({
         });
 
         const subqueryCypher = ["CALL {", subqueries.join("\nUNION\n"), "}"];
+
+        if (sortInput && sortInput.length) {
+            const sort = sortInput.map((s) =>
+                Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`).join(", ")
+            );
+            subqueryCypher.push(`WITH edge ORDER BY ${sort.join(", ")}`);
+        }
 
         const withValues: string[] = [];
         if (!firstInput && !afterInput) {
@@ -298,7 +305,7 @@ function createConnectionAndParams({
         }
 
         const whereAuth = createAuthAndParams({
-            operation: "READ",
+            operations: "READ",
             entity: relatedNode,
             context,
             where: { varName: relatedNodeVariable, node: relatedNode },
@@ -313,7 +320,7 @@ function createConnectionAndParams({
         }
 
         const allowAndParams = createAuthAndParams({
-            operation: "READ",
+            operations: "READ",
             entity: relatedNode,
             context,
             allow: {

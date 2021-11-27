@@ -90,12 +90,15 @@ Accepts all of the options from https://github.com/ardatan/graphql-tools/blob/%4
 |===
 |Name and Type |Description
 
+|`jwksEndpoint` +
+ +
+ Type: `string`
+|The OpenID Public Key Set Endpoint used to verify JWT tokens. The JWKS used to store the verification information is typically stored at an endpoint similar to \https://YOUR_DOMAIN/.well-known/jwks.json.
+
 |`secret` +
  +
  Type: `string`
-|The secret used to encode JWT tokens. +
- +
- *Required* unless passing in decoded tokens.
+|The secret used to encode JWT tokens.
 
 |`noVerify` +
  +
@@ -247,7 +250,7 @@ Accepts the arguments below:
 |===
 
 [[api-reference-assertconstraints]]
-== `assertConstraints`
+== `assertIndexesAndConstraints`
 
 Asynchronous function to assert the existence of database constraints, that either resolves to `void` in a successful scenario, or throws an error if the necessary consraints do not exist following its execution.
 
@@ -275,14 +278,14 @@ The following will check whether a unique node property constraint exists for la
 
 [source, javascript, indent=0]
 ----
-await neoSchema.assertConstraints();
+await neoSchema.assertIndexesAndConstraints();
 ----
 
 The next example will create the constraint if it does not exist:
 
 [source, javascript, indent=0]
 ----
-await neoSchema.assertConstraints({ options: { create: true } });
+await neoSchema.assertIndexesAndConstraints({ options: { create: true } });
 ----
 
 [[api-reference-assertconstraints-input]]
@@ -306,7 +309,7 @@ Accepts the arguments below:
 |`options` +
  +
  Type: xref::api-reference/neo4jgraphql.adoc#api-reference-assertconstraints-input-assertconstraintsoptions[`AssertConstraintsOptions`]
-|Options for the execution of `assertConstraints`.
+|Options for the execution of `assertIndexesAndConstraints`.
 |===
 
 [[api-reference-assertconstraints-input-driverconfig]]
