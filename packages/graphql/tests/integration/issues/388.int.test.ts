@@ -36,8 +36,8 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
 
         type User {
             id: ID!
-            friends: [User!]! @relationship(type: "HAS_FRIEND", direction: OUT)
-            posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+            friends: [User] @relationship(type: "HAS_FRIEND", direction: OUT)
+            posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
         }
 
         type Query {
@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
                         MATCH (myFriends)-[:HAS_POST]->(post:Post)
                         RETURN post
                     }
-                    RETURN DISTINCT apoc.map.merge(properties(post), { __resolveType: 'Post' }) AS result ORDER BY result.modifiedDate DESC
+                    RETURN DISTINCT post AS result ORDER BY result.modifiedDate DESC
                     """
                 )
         }

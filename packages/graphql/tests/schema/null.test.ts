@@ -48,7 +48,6 @@ describe("Null", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type CreateInfo {
@@ -151,18 +150,6 @@ describe("Null", () => {
               filmedAt: SortDirection
               id: SortDirection
               name: SortDirection
-            }
-
-            type MovieSubscriptionResponse {
-              id: Int!
-              movie: Movie
-              name: String!
-              propsUpdated: [String!]
-              relationshipID: String
-              relationshipName: String
-              toID: String
-              toType: String
-              type: String!
             }
 
             input MovieUpdateInput {
@@ -271,14 +258,6 @@ describe("Null", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-            enum NodeUpdatedType {
-              Connected
-              Created
-              Deleted
-              Disconnected
-              Updated
-            }
-
             type Point {
               crs: String!
               height: Float
@@ -315,11 +294,6 @@ describe("Null", () => {
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
-            }
-
-            type Subscription {
-              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
-              subscribeToMovie(types: [NodeUpdatedType!], where: MovieWhere): MovieSubscriptionResponse!
             }
 
             type UpdateInfo {

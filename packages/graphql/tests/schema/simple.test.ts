@@ -39,7 +39,6 @@ describe("Simple", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type CreateInfo {
@@ -114,18 +113,6 @@ describe("Simple", () => {
               isActive: SortDirection
             }
 
-            type MovieSubscriptionResponse {
-              id: Int!
-              movie: Movie
-              name: String!
-              propsUpdated: [String!]
-              relationshipID: String
-              relationshipName: String
-              toID: String
-              toType: String
-              type: String!
-            }
-
             input MovieUpdateInput {
               actorCount: Int
               averageRating: Float
@@ -172,14 +159,6 @@ describe("Simple", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-            enum NodeUpdatedType {
-              Connected
-              Created
-              Deleted
-              Disconnected
-              Updated
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -191,11 +170,6 @@ describe("Simple", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type Subscription {
-              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
-              subscribeToMovie(types: [NodeUpdatedType!], where: MovieWhere): MovieSubscriptionResponse!
             }
 
             type UpdateInfo {

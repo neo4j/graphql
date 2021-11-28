@@ -86,23 +86,20 @@ describe("Interface Relationships - Update disconnect", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors.args.disconnect.actedIn[0].where.node.title_STARTS_WITH
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Actor', toName: 'Movie', relationshipName: 'ACTED_IN', id: id(this), toID: id(this_disconnect_actedIn0), relationshipID: id(this_disconnect_actedIn0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors.args.disconnect.actedIn[0].where.node.title_STARTS_WITH
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Actor', toName: 'Series', relationshipName: 'ACTED_IN', id: id(this), toID: id(this_disconnect_actedIn0), relationshipID: id(this_disconnect_actedIn0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             }
-            WITH this, this_mutateMeta as mutateMeta
-            RETURN mutateMeta, this { .name } AS this"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -156,47 +153,40 @@ describe("Interface Relationships - Update disconnect", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors.args.disconnect.actedIn[0].where.node.title_STARTS_WITH
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Actor', toName: 'Movie', relationshipName: 'ACTED_IN', id: id(this), toID: id(this_disconnect_actedIn0), relationshipID: id(this_disconnect_actedIn0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_mutateMeta
+            WITH this, this_disconnect_actedIn0
             CALL {
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+            WITH this, this_disconnect_actedIn0
             OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
             WHERE this_disconnect_actedIn0_actors0.name = $updateActors.args.disconnect.actedIn[0].disconnect.actors[0].where.node.name
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'Actor', relationshipName: 'ACTED_IN', id: id(this_disconnect_actedIn0), toID: id(this_disconnect_actedIn0_actors0), relationshipID: id(this_disconnect_actedIn0_actors0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_disconnect_actedIn0_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN REDUCE(tmp1_this_disconnect_actedIn0_mutateMeta = [], tmp2_this_disconnect_actedIn0_mutateMeta IN COLLECT(this_disconnect_actedIn0_mutateMeta) | tmp1_this_disconnect_actedIn0_mutateMeta + tmp2_this_disconnect_actedIn0_mutateMeta) as this_disconnect_actedIn0_mutateMeta
+            RETURN count(*)
             }
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_mutateMeta + this_disconnect_actedIn0_mutateMeta as this_mutateMeta
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors.args.disconnect.actedIn[0].where.node.title_STARTS_WITH
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Actor', toName: 'Series', relationshipName: 'ACTED_IN', id: id(this), toID: id(this_disconnect_actedIn0), relationshipID: id(this_disconnect_actedIn0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_mutateMeta
+            WITH this, this_disconnect_actedIn0
             CALL {
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+            WITH this, this_disconnect_actedIn0
             OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
             WHERE this_disconnect_actedIn0_actors0.name = $updateActors.args.disconnect.actedIn[0].disconnect.actors[0].where.node.name
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Series', toName: 'Actor', relationshipName: 'ACTED_IN', id: id(this_disconnect_actedIn0), toID: id(this_disconnect_actedIn0_actors0), relationshipID: id(this_disconnect_actedIn0_actors0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_disconnect_actedIn0_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN REDUCE(tmp1_this_disconnect_actedIn0_mutateMeta = [], tmp2_this_disconnect_actedIn0_mutateMeta IN COLLECT(this_disconnect_actedIn0_mutateMeta) | tmp1_this_disconnect_actedIn0_mutateMeta + tmp2_this_disconnect_actedIn0_mutateMeta) as this_disconnect_actedIn0_mutateMeta
+            RETURN count(*)
             }
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_mutateMeta + this_disconnect_actedIn0_mutateMeta as this_mutateMeta
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             }
-            WITH this, this_mutateMeta as mutateMeta
-            RETURN mutateMeta, this { .name } AS this"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -261,35 +251,30 @@ describe("Interface Relationships - Update disconnect", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors.args.disconnect.actedIn[0].where.node.title_STARTS_WITH
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Actor', toName: 'Movie', relationshipName: 'ACTED_IN', id: id(this), toID: id(this_disconnect_actedIn0), relationshipID: id(this_disconnect_actedIn0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_mutateMeta
+            WITH this, this_disconnect_actedIn0
             CALL {
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+            WITH this, this_disconnect_actedIn0
             OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
             WHERE this_disconnect_actedIn0_actors0.name = $updateActors.args.disconnect.actedIn[0].disconnect._on.Movie[0].actors[0].where.node.name
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'Actor', relationshipName: 'ACTED_IN', id: id(this_disconnect_actedIn0), toID: id(this_disconnect_actedIn0_actors0), relationshipID: id(this_disconnect_actedIn0_actors0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_disconnect_actedIn0_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN REDUCE(tmp1_this_disconnect_actedIn0_mutateMeta = [], tmp2_this_disconnect_actedIn0_mutateMeta IN COLLECT(this_disconnect_actedIn0_mutateMeta) | tmp1_this_disconnect_actedIn0_mutateMeta + tmp2_this_disconnect_actedIn0_mutateMeta) as this_disconnect_actedIn0_mutateMeta
+            RETURN count(*)
             }
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_mutateMeta + this_disconnect_actedIn0_mutateMeta as this_mutateMeta
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors.args.disconnect.actedIn[0].where.node.title_STARTS_WITH
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Actor', toName: 'Series', relationshipName: 'ACTED_IN', id: id(this), toID: id(this_disconnect_actedIn0), relationshipID: id(this_disconnect_actedIn0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             }
-            WITH this, this_mutateMeta as mutateMeta
-            RETURN mutateMeta, this { .name } AS this"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -363,47 +348,40 @@ describe("Interface Relationships - Update disconnect", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors.args.disconnect.actedIn[0].where.node.title_STARTS_WITH
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Actor', toName: 'Movie', relationshipName: 'ACTED_IN', id: id(this), toID: id(this_disconnect_actedIn0), relationshipID: id(this_disconnect_actedIn0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_mutateMeta
+            WITH this, this_disconnect_actedIn0
             CALL {
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+            WITH this, this_disconnect_actedIn0
             OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
             WHERE this_disconnect_actedIn0_actors0.name = $updateActors.args.disconnect.actedIn[0].disconnect._on.Movie[0].actors[0].where.node.name
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'Actor', relationshipName: 'ACTED_IN', id: id(this_disconnect_actedIn0), toID: id(this_disconnect_actedIn0_actors0), relationshipID: id(this_disconnect_actedIn0_actors0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_disconnect_actedIn0_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN REDUCE(tmp1_this_disconnect_actedIn0_mutateMeta = [], tmp2_this_disconnect_actedIn0_mutateMeta IN COLLECT(this_disconnect_actedIn0_mutateMeta) | tmp1_this_disconnect_actedIn0_mutateMeta + tmp2_this_disconnect_actedIn0_mutateMeta) as this_disconnect_actedIn0_mutateMeta
+            RETURN count(*)
             }
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_mutateMeta + this_disconnect_actedIn0_mutateMeta as this_mutateMeta
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors.args.disconnect.actedIn[0].where.node.title_STARTS_WITH
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Actor', toName: 'Series', relationshipName: 'ACTED_IN', id: id(this), toID: id(this_disconnect_actedIn0), relationshipID: id(this_disconnect_actedIn0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_mutateMeta
+            WITH this, this_disconnect_actedIn0
             CALL {
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+            WITH this, this_disconnect_actedIn0
             OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
             WHERE this_disconnect_actedIn0_actors0.name = $updateActors.args.disconnect.actedIn[0].disconnect.actors[0].where.node.name
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Series', toName: 'Actor', relationshipName: 'ACTED_IN', id: id(this_disconnect_actedIn0), toID: id(this_disconnect_actedIn0_actors0), relationshipID: id(this_disconnect_actedIn0_actors0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_disconnect_actedIn0_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN REDUCE(tmp1_this_disconnect_actedIn0_mutateMeta = [], tmp2_this_disconnect_actedIn0_mutateMeta IN COLLECT(this_disconnect_actedIn0_mutateMeta) | tmp1_this_disconnect_actedIn0_mutateMeta + tmp2_this_disconnect_actedIn0_mutateMeta) as this_disconnect_actedIn0_mutateMeta
+            RETURN count(*)
             }
-            WITH this, this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this_mutateMeta + this_disconnect_actedIn0_mutateMeta as this_mutateMeta
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             }
-            WITH this, this_mutateMeta as mutateMeta
-            RETURN mutateMeta, this { .name } AS this"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

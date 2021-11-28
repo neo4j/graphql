@@ -46,7 +46,6 @@ describe("162", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type CreateInfo {
@@ -100,14 +99,6 @@ describe("162", () => {
               updateTigers(update: TigerUpdateInput, where: TigerWhere): UpdateTigersMutationResponse!
             }
 
-            enum NodeUpdatedType {
-              Connected
-              Created
-              Deleted
-              Disconnected
-              Updated
-            }
-
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
             type PageInfo {
               endCursor: String
@@ -133,15 +124,6 @@ describe("162", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type Subscription {
-              \\"\\"\\"Subscribe to updates from Tiger\\"\\"\\"
-              subscribeToTiger(types: [NodeUpdatedType!], where: TigerWhere): TigerSubscriptionResponse!
-              \\"\\"\\"Subscribe to updates from TigerJawLevel2\\"\\"\\"
-              subscribeToTigerJawLevel2(types: [NodeUpdatedType!], where: TigerJawLevel2Where): TigerJawLevel2SubscriptionResponse!
-              \\"\\"\\"Subscribe to updates from TigerJawLevel2Part1\\"\\"\\"
-              subscribeToTigerJawLevel2Part1(types: [NodeUpdatedType!], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1SubscriptionResponse!
             }
 
             type Tiger {
@@ -309,18 +291,6 @@ describe("162", () => {
               id: SortDirection
             }
 
-            type TigerJawLevel2Part1SubscriptionResponse {
-              id: Int!
-              name: String!
-              propsUpdated: [String!]
-              relationshipID: String
-              relationshipName: String
-              tigerjawlevel2part1: TigerJawLevel2Part1
-              toID: String
-              toType: String
-              type: String!
-            }
-
             input TigerJawLevel2Part1TigerAggregateInput {
               AND: [TigerJawLevel2Part1TigerAggregateInput!]
               OR: [TigerJawLevel2Part1TigerAggregateInput!]
@@ -474,18 +444,6 @@ describe("162", () => {
               id: SortDirection
             }
 
-            type TigerJawLevel2SubscriptionResponse {
-              id: Int!
-              name: String!
-              propsUpdated: [String!]
-              relationshipID: String
-              relationshipName: String
-              tigerjawlevel2: TigerJawLevel2
-              toID: String
-              toType: String
-              type: String!
-            }
-
             type TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection {
               count: Int!
               node: TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection
@@ -530,18 +488,6 @@ describe("162", () => {
             \\"\\"\\"Fields to sort Tigers by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerSort object.\\"\\"\\"
             input TigerSort {
               x: SortDirection
-            }
-
-            type TigerSubscriptionResponse {
-              id: Int!
-              name: String!
-              propsUpdated: [String!]
-              relationshipID: String
-              relationshipName: String
-              tiger: Tiger
-              toID: String
-              toType: String
-              type: String!
             }
 
             input TigerUpdateInput {

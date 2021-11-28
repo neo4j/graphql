@@ -59,7 +59,7 @@ describe("Cypher DateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.datetime = $this_datetime
-            RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
+            RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -98,10 +98,10 @@ describe("Cypher DateTime", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.datetime = $this0_datetime
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
-            WITH this0, this0_mutateMeta as mutateMeta
-            RETURN mutateMeta, this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this0"
+            RETURN
+            this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -140,7 +140,7 @@ describe("Cypher DateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.datetime = $this_update_datetime
-            RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
+            RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -154,18 +154,6 @@ describe("Cypher DateTime", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"this_update\\": {
-                    \\"datetime\\": {
-                        \\"year\\": 1970,
-                        \\"month\\": 1,
-                        \\"day\\": 1,
-                        \\"hour\\": 0,
-                        \\"minute\\": 0,
-                        \\"second\\": 0,
-                        \\"nanosecond\\": 0,
-                        \\"timeZoneOffsetSeconds\\": 0
-                    }
                 }
             }"
         `);

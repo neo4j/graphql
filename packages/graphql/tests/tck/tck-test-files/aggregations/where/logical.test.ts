@@ -65,7 +65,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN (count(this_likesAggregate_node) > $this_likesAggregate_AND_0_count_GT AND count(this_likesAggregate_node) < $this_likesAggregate_AND_1_count_LT)
             \\", { this: this, this_likesAggregate_AND_0_count_GT: $this_likesAggregate_AND_0_count_GT, this_likesAggregate_AND_1_count_LT: $this_likesAggregate_AND_1_count_LT }, false )
-            RETURN this { .content } AS this"
+            RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -101,7 +101,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN (count(this_likesAggregate_node) > $this_likesAggregate_OR_0_count_GT OR count(this_likesAggregate_node) < $this_likesAggregate_OR_1_count_LT)
             \\", { this: this, this_likesAggregate_OR_0_count_GT: $this_likesAggregate_OR_0_count_GT, this_likesAggregate_OR_1_count_LT: $this_likesAggregate_OR_1_count_LT }, false )
-            RETURN this { .content } AS this"
+            RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -144,7 +144,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN (count(this_likesAggregate_node) > $this_likesAggregate_AND_0_count_GT AND count(this_likesAggregate_node) < $this_likesAggregate_AND_1_count_LT) AND (count(this_likesAggregate_node) > $this_likesAggregate_OR_0_count_GT OR count(this_likesAggregate_node) < $this_likesAggregate_OR_1_count_LT)
             \\", { this: this, this_likesAggregate_AND_0_count_GT: $this_likesAggregate_AND_0_count_GT, this_likesAggregate_AND_1_count_LT: $this_likesAggregate_AND_1_count_LT, this_likesAggregate_OR_0_count_GT: $this_likesAggregate_OR_0_count_GT, this_likesAggregate_OR_1_count_LT: $this_likesAggregate_OR_1_count_LT }, false )
-            RETURN this { .content } AS this"
+            RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

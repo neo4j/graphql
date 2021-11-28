@@ -97,7 +97,7 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
             WHERE EXISTS((this)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)
-            RETURN this { .id } AS this"
+            RETURN this { .id } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -124,7 +124,7 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
             WHERE this.content = $this_content AND EXISTS((this)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)
-            RETURN this { .id } AS this"
+            RETURN this { .id } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -162,14 +162,14 @@ describe("Cypher Auth Where", () => {
             WITH this
             MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
             WHERE EXISTS((this_Comment)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_Comment)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Comment_auth_where0_creator_id)
-            RETURN  { __resolveType: \\"Comment\\" } AS content
+            RETURN { __resolveType: \\"Comment\\" } AS content
             UNION
             WITH this
             MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
             WHERE EXISTS((this_Post)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)
-            RETURN  { __resolveType: \\"Post\\", id: this_Post.id } AS content
+            RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
             }
-            RETURN this { .id, content: collect(content) } AS this"
+            RETURN this { .id, content: collect(content) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -225,7 +225,7 @@ describe("Cypher Auth Where", () => {
             WITH collect(edge) as edges, count(edge) as totalCount
             RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
-            RETURN this { .id, contentConnection } AS this"
+            RETURN this { .id, contentConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -281,7 +281,7 @@ describe("Cypher Auth Where", () => {
             WITH collect(edge) as edges, count(edge) as totalCount
             RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
-            RETURN this { .id, contentConnection } AS this"
+            RETURN this { .id, contentConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -322,16 +322,13 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:Post)
             WHERE EXISTS((this)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)
             SET this.content = $this_update_content
-            RETURN [ metaVal IN [{type: 'Updated', name: 'Post', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .id } AS this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_creator_id\\": \\"id-01\\",
-                \\"this_update_content\\": \\"Bob\\",
-                \\"this_update\\": {
-                    \\"content\\": \\"Bob\\"
-                }
+                \\"this_update_content\\": \\"Bob\\"
             }"
         `);
     });
@@ -356,17 +353,14 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:Post)
             WHERE this.content = $this_content AND EXISTS((this)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)
             SET this.content = $this_update_content
-            RETURN [ metaVal IN [{type: 'Updated', name: 'Post', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .id } AS this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_content\\": \\"bob\\",
                 \\"this_auth_where0_creator_id\\": \\"id-01\\",
-                \\"this_update_content\\": \\"Bob\\",
-                \\"this_update\\": {
-                    \\"content\\": \\"Bob\\"
-                }
+                \\"this_update_content\\": \\"Bob\\"
             }"
         `);
     });
@@ -397,25 +391,22 @@ describe("Cypher Auth Where", () => {
             WHERE EXISTS((this_content0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_auth_where0_creator_id)
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
             SET this_content0.id = $this_update_content0_id
-            RETURN this, this_content0, this_has_content0_relationship, [ metaVal IN [{type: 'Updated', name: 'Comment', id: id(this_content0), properties: $this_update_content0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
-            \\", \\"\\", {this:this, this_content0:this_content0, this_has_content0_relationship:this_has_content0_relationship, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id,this_update_content0:$this_update_content0})
-            YIELD value
-            WITH this, this_content0, this_has_content0_relationship, value.mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
+            \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
+            YIELD value as _
+            RETURN count(*)
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
             WHERE EXISTS((this_content0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_auth_where0_creator_id)
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
             SET this_content0.id = $this_update_content0_id
-            RETURN this, this_content0, this_has_content0_relationship, [ metaVal IN [{type: 'Updated', name: 'Post', id: id(this_content0), properties: $this_update_content0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
-            \\", \\"\\", {this:this, this_content0:this_content0, this_has_content0_relationship:this_has_content0_relationship, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id,this_update_content0:$this_update_content0})
-            YIELD value
-            WITH this, this_content0, this_has_content0_relationship, value.mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
+            \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
+            YIELD value as _
+            RETURN count(*)
             }
-            WITH this, this_mutateMeta as mutateMeta
-            RETURN mutateMeta, this { .id } AS this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -423,9 +414,6 @@ describe("Cypher Auth Where", () => {
                 \\"this_auth_where0_id\\": \\"id-01\\",
                 \\"this_content0_auth_where0_creator_id\\": \\"id-01\\",
                 \\"this_update_content0_id\\": \\"new-id\\",
-                \\"this_update_content0\\": {
-                    \\"id\\": \\"new-id\\"
-                },
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -474,8 +462,7 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
             WHERE EXISTS((this)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)
-            DETACH DELETE this
-            RETURN [ metaVal IN [{type: 'Deleted', name: 'Post', id: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta"
+            DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -502,8 +489,7 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
             WHERE this.content = $this_content AND EXISTS((this)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)
-            DETACH DELETE this
-            RETURN [ metaVal IN [{type: 'Deleted', name: 'Post', id: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta"
+            DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -534,16 +520,14 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
             WHERE EXISTS((this_content_Comment0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content_Comment0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content_Comment0_auth_where0_creator_id)
-            WITH this, this_content_Comment0, collect(DISTINCT this_content_Comment0) as this_content_Comment0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Comment', id: id(this_content_Comment0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
+            WITH this, collect(DISTINCT this_content_Comment0) as this_content_Comment0_to_delete
             FOREACH(x IN this_content_Comment0_to_delete | DETACH DELETE x)
-            WITH this, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
+            WITH this
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
             WHERE EXISTS((this_content_Post0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content_Post0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content_Post0_auth_where0_creator_id)
-            WITH this, this_content_Post0, collect(DISTINCT this_content_Post0) as this_content_Post0_to_delete, mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Post', id: id(this_content_Post0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
+            WITH this, collect(DISTINCT this_content_Post0) as this_content_Post0_to_delete
             FOREACH(x IN this_content_Post0_to_delete | DETACH DELETE x)
-            WITH this, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
-            DETACH DELETE this
-            RETURN mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'User', id: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta"
+            DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -581,35 +565,32 @@ describe("Cypher Auth Where", () => {
             SET this0.id = $this0_id
             SET this0.name = $this0_name
             SET this0.password = $this0_password
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'User', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
+            WITH this0
             CALL {
-            WITH this0, this0_mutateMeta
+            	WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Comment)
             	WHERE EXISTS((this0_content_connect0_node)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this0_content_connect0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_content_connect0_node_auth_where0_creator_id)
-            CALL apoc.do.when(this0_content_connect0_node IS NOT NULL AND this0 IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this0_content_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
-            RETURN this0, this0_content_connect0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Comment', id: id(this0), toID: id(this0_content_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_content_connect0_node_mutateMeta
-            \\", \\"\\", {this0:this0, this0_content_connect0_node:this0_content_connect0_node})
-            YIELD value
-            WITH this0, this0_content_connect0_node, value.this0_content_connect0_node_mutateMeta as this0_content_connect_mutateMeta
-            RETURN REDUCE(tmp1_this0_content_connect_mutateMeta = [], tmp2_this0_content_connect_mutateMeta IN COLLECT(this0_content_connect_mutateMeta) | tmp1_this0_content_connect_mutateMeta + tmp2_this0_content_connect_mutateMeta) as this0_content_connect_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             UNION
-            WITH this0, this0_mutateMeta
+            	WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Post)
             	WHERE EXISTS((this0_content_connect0_node)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this0_content_connect0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_content_connect0_node_auth_where0_creator_id)
-            CALL apoc.do.when(this0_content_connect0_node IS NOT NULL AND this0 IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this0_content_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
-            RETURN this0, this0_content_connect0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Post', id: id(this0), toID: id(this0_content_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_content_connect0_node_mutateMeta
-            \\", \\"\\", {this0:this0, this0_content_connect0_node:this0_content_connect0_node})
-            YIELD value
-            WITH this0, this0_content_connect0_node, value.this0_content_connect0_node_mutateMeta as this0_content_connect_mutateMeta
-            RETURN REDUCE(tmp1_this0_content_connect_mutateMeta = [], tmp2_this0_content_connect_mutateMeta IN COLLECT(this0_content_connect_mutateMeta) | tmp1_this0_content_connect_mutateMeta + tmp2_this0_content_connect_mutateMeta) as this0_content_connect_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             }
-            WITH this0, this0_mutateMeta + this0_content_connect_mutateMeta as this0_mutateMeta
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
-            WITH this0, this0_mutateMeta as mutateMeta
-            RETURN mutateMeta, this0 { .id } AS this0"
+            RETURN
+            this0 { .id } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -653,35 +634,32 @@ describe("Cypher Auth Where", () => {
             SET this0.id = $this0_id
             SET this0.name = $this0_name
             SET this0.password = $this0_password
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'User', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
+            WITH this0
             CALL {
-            WITH this0, this0_mutateMeta
+            	WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Comment)
             	WHERE this0_content_connect0_node.id = $this0_content_connect0_node_id AND EXISTS((this0_content_connect0_node)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this0_content_connect0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_content_connect0_node_auth_where0_creator_id)
-            CALL apoc.do.when(this0_content_connect0_node IS NOT NULL AND this0 IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this0_content_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
-            RETURN this0, this0_content_connect0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Comment', id: id(this0), toID: id(this0_content_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_content_connect0_node_mutateMeta
-            \\", \\"\\", {this0:this0, this0_content_connect0_node:this0_content_connect0_node})
-            YIELD value
-            WITH this0, this0_content_connect0_node, value.this0_content_connect0_node_mutateMeta as this0_content_connect_mutateMeta
-            RETURN REDUCE(tmp1_this0_content_connect_mutateMeta = [], tmp2_this0_content_connect_mutateMeta IN COLLECT(this0_content_connect_mutateMeta) | tmp1_this0_content_connect_mutateMeta + tmp2_this0_content_connect_mutateMeta) as this0_content_connect_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             UNION
-            WITH this0, this0_mutateMeta
+            	WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Post)
             	WHERE this0_content_connect0_node.id = $this0_content_connect0_node_id AND EXISTS((this0_content_connect0_node)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this0_content_connect0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_content_connect0_node_auth_where0_creator_id)
-            CALL apoc.do.when(this0_content_connect0_node IS NOT NULL AND this0 IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this0_content_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
-            RETURN this0, this0_content_connect0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Post', id: id(this0), toID: id(this0_content_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_content_connect0_node_mutateMeta
-            \\", \\"\\", {this0:this0, this0_content_connect0_node:this0_content_connect0_node})
-            YIELD value
-            WITH this0, this0_content_connect0_node, value.this0_content_connect0_node_mutateMeta as this0_content_connect_mutateMeta
-            RETURN REDUCE(tmp1_this0_content_connect_mutateMeta = [], tmp2_this0_content_connect_mutateMeta IN COLLECT(this0_content_connect_mutateMeta) | tmp1_this0_content_connect_mutateMeta + tmp2_this0_content_connect_mutateMeta) as this0_content_connect_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             }
-            WITH this0, this0_mutateMeta + this0_content_connect_mutateMeta as this0_mutateMeta
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
-            WITH this0, this0_mutateMeta as mutateMeta
-            RETURN mutateMeta, this0 { .id } AS this0"
+            RETURN
+            this0 { .id } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -720,40 +698,35 @@ describe("Cypher Auth Where", () => {
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             WITH this
             CALL {
-            WITH this
+            	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Comment)
             	WHERE EXISTS((this_content0_connect0_node)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0_connect0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_connect0_node_auth_where0_creator_id)
-            CALL apoc.do.when(this_content0_connect0_node IS NOT NULL AND this IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_content0_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
-            RETURN this, this_content0_connect0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Comment', id: id(this), toID: id(this_content0_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_content0_connect0_node_mutateMeta
-            \\", \\"\\", {this:this, this_content0_connect0_node:this_content0_connect0_node})
-            YIELD value
-            WITH this, this_content0_connect0_node, value.this_content0_connect0_node_mutateMeta as this_content0_connect_mutateMeta
-            RETURN REDUCE(tmp1_this_content0_connect_mutateMeta = [], tmp2_this_content0_connect_mutateMeta IN COLLECT(this_content0_connect_mutateMeta) | tmp1_this_content0_connect_mutateMeta + tmp2_this_content0_connect_mutateMeta) as this_content0_connect_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             }
-            WITH this, this_content0_connect_mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
             UNION
             WITH this
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             WITH this
             CALL {
-            WITH this
+            	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
             	WHERE EXISTS((this_content0_connect0_node)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0_connect0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_connect0_node_auth_where0_creator_id)
-            CALL apoc.do.when(this_content0_connect0_node IS NOT NULL AND this IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_content0_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
-            RETURN this, this_content0_connect0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Post', id: id(this), toID: id(this_content0_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_content0_connect0_node_mutateMeta
-            \\", \\"\\", {this:this, this_content0_connect0_node:this_content0_connect0_node})
-            YIELD value
-            WITH this, this_content0_connect0_node, value.this_content0_connect0_node_mutateMeta as this_content0_connect_mutateMeta
-            RETURN REDUCE(tmp1_this_content0_connect_mutateMeta = [], tmp2_this_content0_connect_mutateMeta IN COLLECT(this_content0_connect_mutateMeta) | tmp1_this_content0_connect_mutateMeta + tmp2_this_content0_connect_mutateMeta) as this_content0_connect_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             }
-            WITH this, this_content0_connect_mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
             }
-            WITH this, this_mutateMeta as mutateMeta
-            RETURN mutateMeta, this { .id } AS this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -789,40 +762,35 @@ describe("Cypher Auth Where", () => {
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             WITH this
             CALL {
-            WITH this
+            	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Comment)
             	WHERE this_content0_connect0_node.id = $this_content0_connect0_node_id AND EXISTS((this_content0_connect0_node)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0_connect0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_connect0_node_auth_where0_creator_id)
-            CALL apoc.do.when(this_content0_connect0_node IS NOT NULL AND this IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_content0_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
-            RETURN this, this_content0_connect0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Comment', id: id(this), toID: id(this_content0_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_content0_connect0_node_mutateMeta
-            \\", \\"\\", {this:this, this_content0_connect0_node:this_content0_connect0_node})
-            YIELD value
-            WITH this, this_content0_connect0_node, value.this_content0_connect0_node_mutateMeta as this_content0_connect_mutateMeta
-            RETURN REDUCE(tmp1_this_content0_connect_mutateMeta = [], tmp2_this_content0_connect_mutateMeta IN COLLECT(this_content0_connect_mutateMeta) | tmp1_this_content0_connect_mutateMeta + tmp2_this_content0_connect_mutateMeta) as this_content0_connect_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             }
-            WITH this, this_content0_connect_mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
             UNION
             WITH this
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             WITH this
             CALL {
-            WITH this
+            	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
             	WHERE this_content0_connect0_node.id = $this_content0_connect0_node_id AND EXISTS((this_content0_connect0_node)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0_connect0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_connect0_node_auth_where0_creator_id)
-            CALL apoc.do.when(this_content0_connect0_node IS NOT NULL AND this IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_content0_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
-            RETURN this, this_content0_connect0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Post', id: id(this), toID: id(this_content0_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_content0_connect0_node_mutateMeta
-            \\", \\"\\", {this:this, this_content0_connect0_node:this_content0_connect0_node})
-            YIELD value
-            WITH this, this_content0_connect0_node, value.this_content0_connect0_node_mutateMeta as this_content0_connect_mutateMeta
-            RETURN REDUCE(tmp1_this_content0_connect_mutateMeta = [], tmp2_this_content0_connect_mutateMeta IN COLLECT(this_content0_connect_mutateMeta) | tmp1_this_content0_connect_mutateMeta + tmp2_this_content0_connect_mutateMeta) as this_content0_connect_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             }
-            WITH this, this_content0_connect_mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
             }
-            WITH this, this_mutateMeta as mutateMeta
-            RETURN mutateMeta, this { .id } AS this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -857,30 +825,27 @@ describe("Cypher Auth Where", () => {
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             WITH this
             CALL {
-            WITH this
+            	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)
             	WHERE EXISTS((this_connect_content0_node)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_content0_node_auth_where0_creator_id)
-            CALL apoc.do.when(this_connect_content0_node IS NOT NULL AND this IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            RETURN this, this_connect_content0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Comment', id: id(this), toID: id(this_connect_content0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_connect_content0_node_mutateMeta
-            \\", \\"\\", {this:this, this_connect_content0_node:this_connect_content0_node})
-            YIELD value
-            WITH this, this_connect_content0_node, value.this_connect_content0_node_mutateMeta as this_connect_content_mutateMeta
-            RETURN REDUCE(tmp1_this_connect_content_mutateMeta = [], tmp2_this_connect_content_mutateMeta IN COLLECT(this_connect_content_mutateMeta) | tmp1_this_connect_content_mutateMeta + tmp2_this_connect_content_mutateMeta) as this_connect_content_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             UNION
-            WITH this
+            	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
             	WHERE EXISTS((this_connect_content0_node)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_content0_node_auth_where0_creator_id)
-            CALL apoc.do.when(this_connect_content0_node IS NOT NULL AND this IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            RETURN this, this_connect_content0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Post', id: id(this), toID: id(this_connect_content0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_connect_content0_node_mutateMeta
-            \\", \\"\\", {this:this, this_connect_content0_node:this_connect_content0_node})
-            YIELD value
-            WITH this, this_connect_content0_node, value.this_connect_content0_node_mutateMeta as this_connect_content_mutateMeta
-            RETURN REDUCE(tmp1_this_connect_content_mutateMeta = [], tmp2_this_connect_content_mutateMeta IN COLLECT(this_connect_content_mutateMeta) | tmp1_this_connect_content_mutateMeta + tmp2_this_connect_content_mutateMeta) as this_connect_content_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             }
-            WITH this, this_connect_content_mutateMeta as mutateMeta
-            RETURN mutateMeta, this { .id } AS this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -914,30 +879,27 @@ describe("Cypher Auth Where", () => {
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             WITH this
             CALL {
-            WITH this
+            	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)
             	WHERE this_connect_content0_node.id = $this_connect_content0_node_id AND EXISTS((this_connect_content0_node)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_content0_node_auth_where0_creator_id)
-            CALL apoc.do.when(this_connect_content0_node IS NOT NULL AND this IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            RETURN this, this_connect_content0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Comment', id: id(this), toID: id(this_connect_content0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_connect_content0_node_mutateMeta
-            \\", \\"\\", {this:this, this_connect_content0_node:this_connect_content0_node})
-            YIELD value
-            WITH this, this_connect_content0_node, value.this_connect_content0_node_mutateMeta as this_connect_content_mutateMeta
-            RETURN REDUCE(tmp1_this_connect_content_mutateMeta = [], tmp2_this_connect_content_mutateMeta IN COLLECT(this_connect_content_mutateMeta) | tmp1_this_connect_content_mutateMeta + tmp2_this_connect_content_mutateMeta) as this_connect_content_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             UNION
-            WITH this
+            	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
             	WHERE this_connect_content0_node.id = $this_connect_content0_node_id AND EXISTS((this_connect_content0_node)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_content0_node_auth_where0_creator_id)
-            CALL apoc.do.when(this_connect_content0_node IS NOT NULL AND this IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            RETURN this, this_connect_content0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Post', id: id(this), toID: id(this_connect_content0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_connect_content0_node_mutateMeta
-            \\", \\"\\", {this:this, this_connect_content0_node:this_connect_content0_node})
-            YIELD value
-            WITH this, this_connect_content0_node, value.this_connect_content0_node_mutateMeta as this_connect_content_mutateMeta
-            RETURN REDUCE(tmp1_this_connect_content_mutateMeta = [], tmp2_this_connect_content_mutateMeta IN COLLECT(this_connect_content_mutateMeta) | tmp1_this_connect_content_mutateMeta + tmp2_this_connect_content_mutateMeta) as this_connect_content_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             }
-            WITH this, this_connect_content_mutateMeta as mutateMeta
-            RETURN mutateMeta, this { .id } AS this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -977,11 +939,10 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Comment)
             WHERE EXISTS((this_content0_disconnect0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_disconnect0_auth_where0_creator_id)
-            WITH this, this_content0_disconnect0, this_content0_disconnect0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Comment', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_content0_disconnect0), relationshipID: id(this_content0_disconnect0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_content0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_content0_disconnect0_rel
             )
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             }
             RETURN count(*)
             UNION
@@ -992,11 +953,10 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
             WHERE EXISTS((this_content0_disconnect0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_disconnect0_auth_where0_creator_id)
-            WITH this, this_content0_disconnect0, this_content0_disconnect0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Post', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_content0_disconnect0), relationshipID: id(this_content0_disconnect0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_content0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_content0_disconnect0_rel
             )
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             }
             RETURN count(*)
             }
@@ -1039,11 +999,10 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Comment)
             WHERE this_content0_disconnect0.id = $updateUsers.args.update.content[0].disconnect[0].where.node.id AND EXISTS((this_content0_disconnect0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_disconnect0_auth_where0_creator_id)
-            WITH this, this_content0_disconnect0, this_content0_disconnect0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Comment', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_content0_disconnect0), relationshipID: id(this_content0_disconnect0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_content0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_content0_disconnect0_rel
             )
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             }
             RETURN count(*)
             UNION
@@ -1054,11 +1013,10 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
             WHERE this_content0_disconnect0.id = $updateUsers.args.update.content[0].disconnect[0].where.node.id AND EXISTS((this_content0_disconnect0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_disconnect0_auth_where0_creator_id)
-            WITH this, this_content0_disconnect0, this_content0_disconnect0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Post', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_content0_disconnect0), relationshipID: id(this_content0_disconnect0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_content0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_content0_disconnect0_rel
             )
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             }
             RETURN count(*)
             }
@@ -1118,23 +1076,20 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
             WHERE EXISTS((this_disconnect_content0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0_auth_where0_creator_id)
-            WITH this, this_disconnect_content0, this_disconnect_content0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Comment', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_disconnect_content0), relationshipID: id(this_disconnect_content0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE EXISTS((this_disconnect_content0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0_auth_where0_creator_id)
-            WITH this, this_disconnect_content0, this_disconnect_content0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Post', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_disconnect_content0), relationshipID: id(this_disconnect_content0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             }
-            WITH this, this_mutateMeta as mutateMeta
-            RETURN mutateMeta, this { .id } AS this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1182,23 +1137,20 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
             WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id AND EXISTS((this_disconnect_content0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0_auth_where0_creator_id)
-            WITH this, this_disconnect_content0, this_disconnect_content0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Comment', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_disconnect_content0), relationshipID: id(this_disconnect_content0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id AND EXISTS((this_disconnect_content0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0_auth_where0_creator_id)
-            WITH this, this_disconnect_content0, this_disconnect_content0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Post', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_disconnect_content0), relationshipID: id(this_disconnect_content0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
+            RETURN count(*)
             }
-            WITH this, this_mutateMeta as mutateMeta
-            RETURN mutateMeta, this { .id } AS this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

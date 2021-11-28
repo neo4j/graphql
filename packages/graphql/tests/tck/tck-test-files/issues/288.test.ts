@@ -69,10 +69,10 @@ describe("#288", () => {
             CREATE (this0:USER)
             SET this0.USERID = $this0_USERID
             SET this0.COMPANYID = $this0_COMPANYID
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'USER', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
-            WITH this0, this0_mutateMeta as mutateMeta
-            RETURN mutateMeta, this0 { .USERID, .COMPANYID } AS this0"
+            RETURN
+            this0 { .USERID, .COMPANYID } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -104,16 +104,13 @@ describe("#288", () => {
             "MATCH (this:USER)
             WHERE this.USERID = $this_USERID
             SET this.COMPANYID = $this_update_COMPANYID
-            RETURN [ metaVal IN [{type: 'Updated', name: 'USER', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .USERID, .COMPANYID } AS this"
+            RETURN this { .USERID, .COMPANYID } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_USERID\\": \\"userid\\",
-                \\"this_update_COMPANYID\\": \\"companyid2\\",
-                \\"this_update\\": {
-                    \\"COMPANYID\\": \\"companyid2\\"
-                }
+                \\"this_update_COMPANYID\\": \\"companyid2\\"
             }"
         `);
     });

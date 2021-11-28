@@ -59,7 +59,7 @@ describe("Cypher LocalTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.time = $this_time
-            RETURN this { .time } AS this"
+            RETURN this { .time } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -91,7 +91,7 @@ describe("Cypher LocalTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.time >= $this_time_GTE
-            RETURN this { .time } AS this"
+            RETURN this { .time } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -126,10 +126,10 @@ describe("Cypher LocalTime", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.time = $this0_time
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
-            WITH this0, this0_mutateMeta as mutateMeta
-            RETURN mutateMeta, this0 { .time } AS this0"
+            RETURN
+            this0 { .time } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -164,7 +164,7 @@ describe("Cypher LocalTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.time = $this_update_time
-            RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .id, .time } AS this"
+            RETURN this { .id, .time } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -174,14 +174,6 @@ describe("Cypher LocalTime", () => {
                     \\"minute\\": 24,
                     \\"second\\": 40,
                     \\"nanosecond\\": 845512000
-                },
-                \\"this_update\\": {
-                    \\"time\\": {
-                        \\"hour\\": 9,
-                        \\"minute\\": 24,
-                        \\"second\\": 40,
-                        \\"nanosecond\\": 845512000
-                    }
                 }
             }"
         `);

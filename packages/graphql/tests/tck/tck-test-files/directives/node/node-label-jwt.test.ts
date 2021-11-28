@@ -65,7 +65,7 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            RETURN this { .title } AS this"
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -91,16 +91,16 @@ describe("Label in Node directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor:\`Person\`)
             WHERE this.age > $this_age_GT
-            RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:\`Film\`)  WHERE this_movies.title = $this_movies_title | this_movies { .title } ] } AS this"
+            RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:\`Film\`)  WHERE this_movies.title = $this_movies_title | this_movies { .title } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_movies_title\\": \\"terminator\\",
                 \\"this_age_GT\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                }
+                },
+                \\"this_movies_title\\": \\"terminator\\"
             }"
         `);
     });
@@ -125,10 +125,10 @@ describe("Label in Node directive", () => {
             "CALL {
             CREATE (this0:\`Film\`)
             SET this0.title = $this0_title
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
-            WITH this0, this0_mutateMeta as mutateMeta
-            RETURN mutateMeta, this0 { .title } AS this0"
+            RETURN
+            this0 { .title } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

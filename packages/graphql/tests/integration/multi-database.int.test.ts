@@ -51,7 +51,12 @@ describe("multi-database", () => {
             await waitSession.close();
         } catch (e) {
             if (e instanceof Error) {
-                if (e.message.includes("Unsupported administration command")) {
+                if (
+                    e.message.includes(
+                        "This is an administration command and it should be executed against the system database"
+                    ) ||
+                    e.message.includes("Unsupported administration command")
+                ) {
                     // No multi-db support, so we skip tests
                     MULTIDB_SUPPORT = false;
                 } else {

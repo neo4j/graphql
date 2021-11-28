@@ -44,7 +44,6 @@ describe("Unions", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type CreateGenresMutationResponse {
@@ -96,18 +95,6 @@ describe("Unions", () => {
             \\"\\"\\"Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.\\"\\"\\"
             input GenreSort {
               id: SortDirection
-            }
-
-            type GenreSubscriptionResponse {
-              genre: Genre
-              id: Int!
-              name: String!
-              propsUpdated: [String!]
-              relationshipID: String
-              relationshipName: String
-              toID: String
-              toType: String
-              type: String!
             }
 
             input GenreUpdateInput {
@@ -328,18 +315,6 @@ describe("Unions", () => {
               id: SortDirection
             }
 
-            type MovieSubscriptionResponse {
-              id: Int!
-              movie: Movie
-              name: String!
-              propsUpdated: [String!]
-              relationshipID: String
-              relationshipName: String
-              toID: String
-              toType: String
-              type: String!
-            }
-
             input MovieUpdateInput {
               id: ID
               search: MovieSearchUpdateInput
@@ -369,14 +344,6 @@ describe("Unions", () => {
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               updateGenres(update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
               updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-            }
-
-            enum NodeUpdatedType {
-              Connected
-              Created
-              Deleted
-              Disconnected
-              Updated
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -413,13 +380,6 @@ describe("Unions", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type Subscription {
-              \\"\\"\\"Subscribe to updates from Genre\\"\\"\\"
-              subscribeToGenre(types: [NodeUpdatedType!], where: GenreWhere): GenreSubscriptionResponse!
-              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
-              subscribeToMovie(types: [NodeUpdatedType!], where: MovieWhere): MovieSubscriptionResponse!
             }
 
             type UpdateGenresMutationResponse {

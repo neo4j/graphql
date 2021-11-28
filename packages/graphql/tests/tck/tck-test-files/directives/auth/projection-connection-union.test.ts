@@ -104,14 +104,14 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
             WITH collect(edge) as edges, count(edge) as totalCount
             RETURN { edges: edges, totalCount: totalCount } AS contentConnection
             }
-            RETURN this { contentConnection } AS this"
+            RETURN this { contentConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_auth_allow0_id\\": \\"super_admin\\",
                 \\"this_Post_user_auth_allow0_id\\": \\"super_admin\\",
-                \\"this_Post_auth_allow0_creator_id\\": \\"super_admin\\"
+                \\"this_Post_auth_allow0_creator_id\\": \\"super_admin\\",
+                \\"this_auth_allow0_id\\": \\"super_admin\\"
             }"
         `);
     });

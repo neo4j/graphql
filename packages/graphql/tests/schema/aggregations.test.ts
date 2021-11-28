@@ -46,7 +46,6 @@ describe("Aggregations", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
@@ -192,18 +191,6 @@ describe("Aggregations", () => {
               title: SortDirection
             }
 
-            type MovieSubscriptionResponse {
-              id: Int!
-              movie: Movie
-              name: String!
-              propsUpdated: [String!]
-              relationshipID: String
-              relationshipName: String
-              toID: String
-              toType: String
-              type: String!
-            }
-
             input MovieUpdateInput {
               createdAt: DateTime
               id: ID
@@ -323,14 +310,6 @@ describe("Aggregations", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-            enum NodeUpdatedType {
-              Connected
-              Created
-              Deleted
-              Disconnected
-              Updated
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -418,7 +397,6 @@ describe("Aggregations", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
@@ -652,14 +630,6 @@ describe("Aggregations", () => {
               deleteUsers(where: UserWhere): DeleteInfo!
               updatePosts(connect: PostConnectInput, create: PostRelationInput, delete: PostDeleteInput, disconnect: PostDisconnectInput, update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
-            }
-
-            enum NodeUpdatedType {
-              Connected
-              Created
-              Deleted
-              Disconnected
-              Updated
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -1161,18 +1131,6 @@ describe("Aggregations", () => {
               title: SortDirection
             }
 
-            type PostSubscriptionResponse {
-              id: Int!
-              name: String!
-              post: Post
-              propsUpdated: [String!]
-              relationshipID: String
-              relationshipName: String
-              toID: String
-              toType: String
-              type: String!
-            }
-
             input PostUpdateInput {
               likes: [PostLikesUpdateFieldInput!]
               title: String
@@ -1249,13 +1207,6 @@ describe("Aggregations", () => {
             type StringAggregateSelectionNullable {
               longest: String
               shortest: String
-            }
-
-            type Subscription {
-              \\"\\"\\"Subscribe to updates from Post\\"\\"\\"
-              subscribeToPost(types: [NodeUpdatedType!], where: PostWhere): PostSubscriptionResponse!
-              \\"\\"\\"Subscribe to updates from User\\"\\"\\"
-              subscribeToUser(types: [NodeUpdatedType!], where: UserWhere): UserSubscriptionResponse!
             }
 
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
@@ -1347,18 +1298,6 @@ describe("Aggregations", () => {
               someLocalTime: SortDirection
               someString: SortDirection
               someTime: SortDirection
-            }
-
-            type UserSubscriptionResponse {
-              id: Int!
-              name: String!
-              propsUpdated: [String!]
-              relationshipID: String
-              relationshipName: String
-              toID: String
-              toType: String
-              type: String!
-              user: User
             }
 
             input UserUpdateInput {

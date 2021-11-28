@@ -80,7 +80,7 @@ export async function translateQuery(
 ): Promise<{ cypher: string; params: Record<string, any> }> {
     const driverBuilder = new DriverBuilder();
 
-    await graphql({
+    const { errors } = await graphql({
         schema: neoSchema.schema,
         source: getQuerySource(query),
         contextValue: {
@@ -89,6 +89,23 @@ export async function translateQuery(
         },
         variableValues: options.variableValues,
     });
+
+    if (errors?.length) {
+        const errorString = errors.map((x) => `${x.message}\n${x.stack}`).join("\n");
+
+        // Because we dont return the correct
+        // contract that the schema is expecting,
+        // instead we return a string and params for testing
+        const expectedErrors = [
+            "Cannot read property 'get' of undefined",
+            "Cannot return null for non-nullable",
+            "Cannot read properties of undefined (reading 'get')",
+        ];
+
+        if (!expectedErrors.some((error) => errorString.includes(error))) {
+            throw new Error(errorString);
+        }
+    }
 
     return {
         cypher: driverBuilder.runMock.calls[0][0],

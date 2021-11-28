@@ -59,7 +59,7 @@ describe("Cypher BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:File)
             WHERE this.size = $this_size
-            RETURN this { .name } AS this"
+            RETURN this { .name } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -89,7 +89,7 @@ describe("Cypher BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:File)
             WHERE this.size = $this_size
-            RETURN this { .name } AS this"
+            RETURN this { .name } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -120,7 +120,7 @@ describe("Cypher BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:File)
             WHERE this.size = $this_size
-            RETURN this { .name } AS this"
+            RETURN this { .name } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

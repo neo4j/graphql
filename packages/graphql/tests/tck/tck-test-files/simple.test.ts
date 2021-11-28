@@ -59,7 +59,7 @@ describe("Simple Cypher tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.title = $this_title
-            RETURN this { .title } AS this"
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -87,7 +87,7 @@ describe("Simple Cypher tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.title = $this_title
-            RETURN this { .id, .title } AS this"
+            RETURN this { .id, .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -116,7 +116,7 @@ describe("Simple Cypher tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.title = $this_title
-            RETURN this { .id, .title } AS this"
+            RETURN this { .id, .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

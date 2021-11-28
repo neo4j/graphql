@@ -79,30 +79,30 @@ describe("Relationship Properties Connect Cypher", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
+            WITH this0
             CALL {
-            WITH this0, this0_mutateMeta
+            	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            CALL apoc.do.when(this0_actors_connect0_node IS NOT NULL AND this0 IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
-            RETURN this0, this0_actors_connect0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'ACTED_IN', toName: 'Actor', id: id(this0), relationshipID: id(this0_actors_connect0_relationship), toID: id(this0_actors_connect0_node), properties: this0_actors_connect0_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_actors_connect0_node_mutateMeta
-            \\", \\"\\", {this0:this0, this0_actors_connect0_node:this0_actors_connect0_node, this0_actors_connect0_relationship_screenTime:$this0_actors_connect0_relationship_screenTime})
-            YIELD value
-            WITH this0, this0_actors_connect0_node, value.this0_actors_connect0_node_mutateMeta as this0_actors_connect_mutateMeta
-            RETURN REDUCE(tmp1_this0_actors_connect_mutateMeta = [], tmp2_this0_actors_connect_mutateMeta IN COLLECT(this0_actors_connect_mutateMeta) | tmp1_this0_actors_connect_mutateMeta + tmp2_this0_actors_connect_mutateMeta) as this0_actors_connect_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             }
-            WITH this0, this0_mutateMeta + this0_actors_connect_mutateMeta as this0_mutateMeta
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            WITH this0
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
+            RETURN this0
             }
-            WITH this0, this0_mutateMeta as mutateMeta
             CALL {
             WITH this0
             MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN mutateMeta, this0 { .title, actorsConnection } AS this0"
+            RETURN
+            this0 { .title, actorsConnection } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -151,31 +151,31 @@ describe("Relationship Properties Connect Cypher", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
+            WITH this0
             CALL {
-            WITH this0, this0_mutateMeta
+            	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
             	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_name
-            CALL apoc.do.when(this0_actors_connect0_node IS NOT NULL AND this0 IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
-            RETURN this0, this0_actors_connect0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'ACTED_IN', toName: 'Actor', id: id(this0), relationshipID: id(this0_actors_connect0_relationship), toID: id(this0_actors_connect0_node), properties: this0_actors_connect0_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_actors_connect0_node_mutateMeta
-            \\", \\"\\", {this0:this0, this0_actors_connect0_node:this0_actors_connect0_node, this0_actors_connect0_relationship_screenTime:$this0_actors_connect0_relationship_screenTime})
-            YIELD value
-            WITH this0, this0_actors_connect0_node, value.this0_actors_connect0_node_mutateMeta as this0_actors_connect_mutateMeta
-            RETURN REDUCE(tmp1_this0_actors_connect_mutateMeta = [], tmp2_this0_actors_connect_mutateMeta IN COLLECT(this0_actors_connect_mutateMeta) | tmp1_this0_actors_connect_mutateMeta + tmp2_this0_actors_connect_mutateMeta) as this0_actors_connect_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             }
-            WITH this0, this0_mutateMeta + this0_actors_connect_mutateMeta as this0_mutateMeta
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            WITH this0
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
+            RETURN this0
             }
-            WITH this0, this0_mutateMeta as mutateMeta
             CALL {
             WITH this0
             MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN mutateMeta, this0 { .title, actorsConnection } AS this0"
+            RETURN
+            this0 { .title, actorsConnection } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -219,25 +219,26 @@ describe("Relationship Properties Connect Cypher", () => {
             WHERE this.title = $this_title
             WITH this
             CALL {
-            WITH this
+            	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
-            CALL apoc.do.when(this_connect_actors0_node IS NOT NULL AND this IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
             SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
-            RETURN this, this_connect_actors0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'ACTED_IN', toName: 'Actor', id: id(this), relationshipID: id(this_connect_actors0_relationship), toID: id(this_connect_actors0_node), properties: this_connect_actors0_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_connect_actors0_node_mutateMeta
-            \\", \\"\\", {this:this, this_connect_actors0_node:this_connect_actors0_node, this_connect_actors0_relationship_screenTime:$this_connect_actors0_relationship_screenTime})
-            YIELD value
-            WITH this, this_connect_actors0_node, value.this_connect_actors0_node_mutateMeta as this_connect_actors_mutateMeta
-            RETURN REDUCE(tmp1_this_connect_actors_mutateMeta = [], tmp2_this_connect_actors_mutateMeta IN COLLECT(this_connect_actors_mutateMeta) | tmp1_this_connect_actors_mutateMeta + tmp2_this_connect_actors_mutateMeta) as this_connect_actors_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             }
-            WITH this, this_connect_actors_mutateMeta as mutateMeta
+            WITH this
+            WITH this
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN mutateMeta, this { .title, actorsConnection } AS this"
+            RETURN this { .title, actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -283,26 +284,27 @@ describe("Relationship Properties Connect Cypher", () => {
             WHERE this.title = $this_title
             WITH this
             CALL {
-            WITH this
+            	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
             	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
-            CALL apoc.do.when(this_connect_actors0_node IS NOT NULL AND this IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
             SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
-            RETURN this, this_connect_actors0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'ACTED_IN', toName: 'Actor', id: id(this), relationshipID: id(this_connect_actors0_relationship), toID: id(this_connect_actors0_node), properties: this_connect_actors0_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_connect_actors0_node_mutateMeta
-            \\", \\"\\", {this:this, this_connect_actors0_node:this_connect_actors0_node, this_connect_actors0_relationship_screenTime:$this_connect_actors0_relationship_screenTime})
-            YIELD value
-            WITH this, this_connect_actors0_node, value.this_connect_actors0_node_mutateMeta as this_connect_actors_mutateMeta
-            RETURN REDUCE(tmp1_this_connect_actors_mutateMeta = [], tmp2_this_connect_actors_mutateMeta IN COLLECT(this_connect_actors_mutateMeta) | tmp1_this_connect_actors_mutateMeta + tmp2_this_connect_actors_mutateMeta) as this_connect_actors_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             }
-            WITH this, this_connect_actors_mutateMeta as mutateMeta
+            WITH this
+            WITH this
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN mutateMeta, this { .title, actorsConnection } AS this"
+            RETURN this { .title, actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

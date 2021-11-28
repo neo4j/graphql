@@ -48,7 +48,6 @@ describe("Alias", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type Actor {
@@ -335,18 +334,6 @@ describe("Alias", () => {
               name: SortDirection
             }
 
-            type ActorSubscriptionResponse {
-              actor: Actor
-              id: Int!
-              name: String!
-              propsUpdated: [String!]
-              relationshipID: String
-              relationshipName: String
-              toID: String
-              toType: String
-              type: String!
-            }
-
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               city: String
@@ -452,18 +439,6 @@ describe("Alias", () => {
               title: SortDirection
             }
 
-            type MovieSubscriptionResponse {
-              id: Int!
-              movie: Movie
-              name: String!
-              propsUpdated: [String!]
-              relationshipID: String
-              relationshipName: String
-              toID: String
-              toType: String
-              type: String!
-            }
-
             input MovieUpdateInput {
               rating: Float
               title: String
@@ -499,14 +474,6 @@ describe("Alias", () => {
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateActors(connect: ActorConnectInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-            }
-
-            enum NodeUpdatedType {
-              Connected
-              Created
-              Deleted
-              Disconnected
-              Updated
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"

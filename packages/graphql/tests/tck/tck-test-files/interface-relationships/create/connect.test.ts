@@ -98,47 +98,44 @@ describe("Interface Relationships - Create connect", () => {
             "CALL {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'Actor', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
+            WITH this0
             CALL {
-            WITH this0, this0_mutateMeta
+            	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
             	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_title_STARTS_WITH
-            CALL apoc.do.when(this0_actedIn_connect0_node IS NOT NULL AND this0 IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this0_actedIn_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
-            RETURN this0, this0_actedIn_connect0_node, [ metaVal IN [{type: 'Connected', name: 'Actor', relationshipName: 'ACTED_IN', toName: 'Movie', id: id(this0), relationshipID: id(this0_actedIn_connect0_relationship), toID: id(this0_actedIn_connect0_node), properties: this0_actedIn_connect0_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_actedIn_connect0_node_mutateMeta
-            \\", \\"\\", {this0:this0, this0_actedIn_connect0_node:this0_actedIn_connect0_node, this0_actedIn_connect0_relationship_screenTime:$this0_actedIn_connect0_relationship_screenTime})
-            YIELD value
-            WITH this0, this0_actedIn_connect0_node, value.this0_actedIn_connect0_node_mutateMeta as this0_actedIn_connect_mutateMeta
-            RETURN REDUCE(tmp1_this0_actedIn_connect_mutateMeta = [], tmp2_this0_actedIn_connect_mutateMeta IN COLLECT(this0_actedIn_connect_mutateMeta) | tmp1_this0_actedIn_connect_mutateMeta + tmp2_this0_actedIn_connect_mutateMeta) as this0_actedIn_connect_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             UNION
-            WITH this0, this0_mutateMeta
+            	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Series)
             	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_title_STARTS_WITH
-            CALL apoc.do.when(this0_actedIn_connect0_node IS NOT NULL AND this0 IS NOT NULL, \\"
+            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this0_actedIn_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
-            RETURN this0, this0_actedIn_connect0_node, [ metaVal IN [{type: 'Connected', name: 'Actor', relationshipName: 'ACTED_IN', toName: 'Series', id: id(this0), relationshipID: id(this0_actedIn_connect0_relationship), toID: id(this0_actedIn_connect0_node), properties: this0_actedIn_connect0_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_actedIn_connect0_node_mutateMeta
-            \\", \\"\\", {this0:this0, this0_actedIn_connect0_node:this0_actedIn_connect0_node, this0_actedIn_connect0_relationship_screenTime:$this0_actedIn_connect0_relationship_screenTime})
-            YIELD value
-            WITH this0, this0_actedIn_connect0_node, value.this0_actedIn_connect0_node_mutateMeta as this0_actedIn_connect_mutateMeta
-            RETURN REDUCE(tmp1_this0_actedIn_connect_mutateMeta = [], tmp2_this0_actedIn_connect_mutateMeta IN COLLECT(this0_actedIn_connect_mutateMeta) | tmp1_this0_actedIn_connect_mutateMeta + tmp2_this0_actedIn_connect_mutateMeta) as this0_actedIn_connect_mutateMeta
+            		)
+            	)
+            	RETURN count(*)
             }
-            WITH this0, this0_mutateMeta + this0_actedIn_connect_mutateMeta as this0_mutateMeta
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
-            WITH this0, this0_mutateMeta as mutateMeta
-            WITH this0, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
+            WITH this0
             CALL {
-            WITH this0, mutateMeta
+            WITH this0
             MATCH (this0)-[:ACTED_IN]->(this0_Movie:Movie)
             RETURN { __resolveType: \\"Movie\\", runtime: this0_Movie.runtime, title: this0_Movie.title } AS actedIn
             UNION
-            WITH this0, mutateMeta
+            WITH this0
             MATCH (this0)-[:ACTED_IN]->(this0_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS actedIn
             }
-            RETURN mutateMeta, this0 { .name, actedIn: collect(actedIn) } AS this0"
+            RETURN
+            this0 { .name, actedIn: collect(actedIn) } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

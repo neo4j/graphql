@@ -75,14 +75,14 @@ describe("Node directive with unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Film)
             WHERE this.title = $this_title
-            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Category\\" IN labels(this_search) AND \\"ExtraLabel1\\" IN labels(this_search) AND \\"ExtraLabel2\\" IN labels(this_search)) OR (\\"Film\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Category\\" IN labels(this_search) AND \\"ExtraLabel1\\" IN labels(this_search) AND \\"ExtraLabel2\\" IN labels(this_search)) AND this_search.name = $this_search_Genre_name | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Film\\" IN labels(this_search)) AND this_search.title = $this_search_Movie_title | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } AS this"
+            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Category\\" IN labels(this_search) AND \\"ExtraLabel1\\" IN labels(this_search) AND \\"ExtraLabel2\\" IN labels(this_search)) OR (\\"Film\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Category\\" IN labels(this_search) AND \\"ExtraLabel1\\" IN labels(this_search) AND \\"ExtraLabel2\\" IN labels(this_search)) AND this_search.name = $this_search_Genre_name | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Film\\" IN labels(this_search)) AND this_search.title = $this_search_Movie_title | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_title\\": \\"some title\\",
                 \\"this_search_Genre_name\\": \\"Horror\\",
-                \\"this_search_Movie_title\\": \\"The Matrix\\",
-                \\"this_title\\": \\"some title\\"
+                \\"this_search_Movie_title\\": \\"The Matrix\\"
             }"
         `);
     });

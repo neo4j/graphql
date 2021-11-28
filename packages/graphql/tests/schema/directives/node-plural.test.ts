@@ -292,7 +292,6 @@ describe("Node Directive", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
-                  subscription: Subscription
                 }
 
                 type CreateInfo {
@@ -318,14 +317,6 @@ describe("Node Directive", () => {
                   updateTechnologies(update: TechUpdateInput, where: TechWhere): UpdateTechnologiesMutationResponse!
                 }
 
-                enum NodeUpdatedType {
-                  Connected
-                  Created
-                  Deleted
-                  Disconnected
-                  Updated
-                }
-
                 type Query {
                   technologies(options: TechOptions, where: TechWhere): [Tech!]!
                   technologiesAggregate(where: TechWhere): TechAggregateSelection!
@@ -342,11 +333,6 @@ describe("Node Directive", () => {
                 type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
-                }
-
-                type Subscription {
-                  \\"\\"\\"Subscribe to updates from Tech\\"\\"\\"
-                  subscribeToTech(types: [NodeUpdatedType!], where: TechWhere): TechSubscriptionResponse!
                 }
 
                 type Tech {
@@ -376,18 +362,6 @@ describe("Node Directive", () => {
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
-                }
-
-                type TechSubscriptionResponse {
-                  id: Int!
-                  name: String!
-                  propsUpdated: [String!]
-                  relationshipID: String
-                  relationshipName: String
-                  tech: Tech
-                  toID: String
-                  toType: String
-                  type: String!
                 }
 
                 input TechUpdateInput {
@@ -453,7 +427,6 @@ describe("Node Directive", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
-                  subscription: Subscription
                 }
 
                 type CreateInfo {
@@ -479,14 +452,6 @@ describe("Node Directive", () => {
                   updateTechs(update: TechsUpdateInput, where: TechsWhere): UpdateTechsMutationResponse!
                 }
 
-                enum NodeUpdatedType {
-                  Connected
-                  Created
-                  Deleted
-                  Disconnected
-                  Updated
-                }
-
                 type Query {
                   techs(options: TechsOptions, where: TechsWhere): [Techs!]!
                   techsAggregate(where: TechsWhere): TechsAggregateSelection!
@@ -503,44 +468,6 @@ describe("Node Directive", () => {
                 type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
-                }
-
-                type Subscription {
-                  \\"\\"\\"Subscribe to updates from Tech\\"\\"\\"
-                  subscribeToTech(types: [NodeUpdatedType!], where: TechWhere): TechSubscriptionResponse!
-                  \\"\\"\\"Subscribe to updates from Techs\\"\\"\\"
-                  subscribeToTechs(types: [NodeUpdatedType!], where: TechsWhere): TechsSubscriptionResponse!
-                }
-
-                type Tech {
-                  name: String
-                }
-
-                type TechSubscriptionResponse {
-                  id: Int!
-                  name: String!
-                  propsUpdated: [String!]
-                  relationshipID: String
-                  relationshipName: String
-                  tech: Tech
-                  toID: String
-                  toType: String
-                  type: String!
-                }
-
-                input TechWhere {
-                  AND: [TechWhere!]
-                  OR: [TechWhere!]
-                  name: String
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_IN: [String]
-                  name_NOT: String
-                  name_NOT_CONTAINS: String
-                  name_NOT_ENDS_WITH: String
-                  name_NOT_IN: [String]
-                  name_NOT_STARTS_WITH: String
-                  name_STARTS_WITH: String
                 }
 
                 type Techs {
@@ -566,18 +493,6 @@ describe("Node Directive", () => {
                 \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechsSort object.\\"\\"\\"
                 input TechsSort {
                   value: SortDirection
-                }
-
-                type TechsSubscriptionResponse {
-                  id: Int!
-                  name: String!
-                  propsUpdated: [String!]
-                  relationshipID: String
-                  relationshipName: String
-                  techs: Techs
-                  toID: String
-                  toType: String
-                  type: String!
                 }
 
                 input TechsUpdateInput {
@@ -632,7 +547,6 @@ describe("Node Directive", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
-                  subscription: Subscription
                 }
 
                 type CreateInfo {
@@ -658,14 +572,6 @@ describe("Node Directive", () => {
                   updateTechs(update: UserUpdateInput, where: UserWhere): UpdateTechsMutationResponse!
                 }
 
-                enum NodeUpdatedType {
-                  Connected
-                  Created
-                  Deleted
-                  Disconnected
-                  Updated
-                }
-
                 type Query {
                   techs(options: UserOptions, where: UserWhere): [User!]!
                   techsAggregate(where: UserWhere): UserAggregateSelection!
@@ -682,44 +588,6 @@ describe("Node Directive", () => {
                 type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
-                }
-
-                type Subscription {
-                  \\"\\"\\"Subscribe to updates from Tech\\"\\"\\"
-                  subscribeToTech(types: [NodeUpdatedType!], where: TechWhere): TechSubscriptionResponse!
-                  \\"\\"\\"Subscribe to updates from User\\"\\"\\"
-                  subscribeToUser(types: [NodeUpdatedType!], where: UserWhere): UserSubscriptionResponse!
-                }
-
-                type Tech {
-                  name: String
-                }
-
-                type TechSubscriptionResponse {
-                  id: Int!
-                  name: String!
-                  propsUpdated: [String!]
-                  relationshipID: String
-                  relationshipName: String
-                  tech: Tech
-                  toID: String
-                  toType: String
-                  type: String!
-                }
-
-                input TechWhere {
-                  AND: [TechWhere!]
-                  OR: [TechWhere!]
-                  name: String
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_IN: [String]
-                  name_NOT: String
-                  name_NOT_CONTAINS: String
-                  name_NOT_ENDS_WITH: String
-                  name_NOT_IN: [String]
-                  name_NOT_STARTS_WITH: String
-                  name_STARTS_WITH: String
                 }
 
                 type UpdateInfo {
@@ -758,18 +626,6 @@ describe("Node Directive", () => {
                 \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
                 input UserSort {
                   value: SortDirection
-                }
-
-                type UserSubscriptionResponse {
-                  id: Int!
-                  name: String!
-                  propsUpdated: [String!]
-                  relationshipID: String
-                  relationshipName: String
-                  toID: String
-                  toType: String
-                  type: String!
-                  user: User
                 }
 
                 input UserUpdateInput {
@@ -811,7 +667,6 @@ describe("Node Directive", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
-                  subscription: Subscription
                 }
 
                 type CreateInfo {
@@ -837,14 +692,6 @@ describe("Node Directive", () => {
                   updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
                 }
 
-                enum NodeUpdatedType {
-                  Connected
-                  Created
-                  Deleted
-                  Disconnected
-                  Updated
-                }
-
                 type Query {
                   users(options: UserOptions, where: UserWhere): [User!]!
                   usersAggregate(where: UserWhere): UserAggregateSelection!
@@ -861,44 +708,6 @@ describe("Node Directive", () => {
                 type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
-                }
-
-                type Subscription {
-                  \\"\\"\\"Subscribe to updates from Tech\\"\\"\\"
-                  subscribeToTech(types: [NodeUpdatedType!], where: TechWhere): TechSubscriptionResponse!
-                  \\"\\"\\"Subscribe to updates from User\\"\\"\\"
-                  subscribeToUser(types: [NodeUpdatedType!], where: UserWhere): UserSubscriptionResponse!
-                }
-
-                type Tech {
-                  name: String
-                }
-
-                type TechSubscriptionResponse {
-                  id: Int!
-                  name: String!
-                  propsUpdated: [String!]
-                  relationshipID: String
-                  relationshipName: String
-                  tech: Tech
-                  toID: String
-                  toType: String
-                  type: String!
-                }
-
-                input TechWhere {
-                  AND: [TechWhere!]
-                  OR: [TechWhere!]
-                  name: String
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_IN: [String]
-                  name_NOT: String
-                  name_NOT_CONTAINS: String
-                  name_NOT_ENDS_WITH: String
-                  name_NOT_IN: [String]
-                  name_NOT_STARTS_WITH: String
-                  name_STARTS_WITH: String
                 }
 
                 type UpdateInfo {
@@ -937,18 +746,6 @@ describe("Node Directive", () => {
                 \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
                 input UserSort {
                   value: SortDirection
-                }
-
-                type UserSubscriptionResponse {
-                  id: Int!
-                  name: String!
-                  propsUpdated: [String!]
-                  relationshipID: String
-                  relationshipName: String
-                  toID: String
-                  toType: String
-                  type: String!
-                  user: User
                 }
 
                 input UserUpdateInput {
@@ -990,7 +787,6 @@ describe("Node Directive", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
-                  subscription: Subscription
                 }
 
                 type CreateInfo {
@@ -1016,14 +812,6 @@ describe("Node Directive", () => {
                   updateUsers(update: UsersUpdateInput, where: UsersWhere): UpdateUsersMutationResponse!
                 }
 
-                enum NodeUpdatedType {
-                  Connected
-                  Created
-                  Deleted
-                  Disconnected
-                  Updated
-                }
-
                 type Query {
                   users(options: UsersOptions, where: UsersWhere): [Users!]!
                   usersAggregate(where: UsersWhere): UsersAggregateSelection!
@@ -1042,13 +830,6 @@ describe("Node Directive", () => {
                   shortest: String
                 }
 
-                type Subscription {
-                  \\"\\"\\"Subscribe to updates from User\\"\\"\\"
-                  subscribeToUser(types: [NodeUpdatedType!], where: UserWhere): UserSubscriptionResponse!
-                  \\"\\"\\"Subscribe to updates from Users\\"\\"\\"
-                  subscribeToUsers(types: [NodeUpdatedType!], where: UsersWhere): UsersSubscriptionResponse!
-                }
-
                 type UpdateInfo {
                   bookmark: String
                   nodesCreated: Int!
@@ -1060,37 +841,6 @@ describe("Node Directive", () => {
                 type UpdateUsersMutationResponse {
                   info: UpdateInfo!
                   users: [Users!]!
-                }
-
-                type User {
-                  name: String
-                }
-
-                type UserSubscriptionResponse {
-                  id: Int!
-                  name: String!
-                  propsUpdated: [String!]
-                  relationshipID: String
-                  relationshipName: String
-                  toID: String
-                  toType: String
-                  type: String!
-                  user: User
-                }
-
-                input UserWhere {
-                  AND: [UserWhere!]
-                  OR: [UserWhere!]
-                  name: String
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_IN: [String]
-                  name_NOT: String
-                  name_NOT_CONTAINS: String
-                  name_NOT_ENDS_WITH: String
-                  name_NOT_IN: [String]
-                  name_NOT_STARTS_WITH: String
-                  name_STARTS_WITH: String
                 }
 
                 type Users {
@@ -1116,18 +866,6 @@ describe("Node Directive", () => {
                 \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UsersSort object.\\"\\"\\"
                 input UsersSort {
                   value: SortDirection
-                }
-
-                type UsersSubscriptionResponse {
-                  id: Int!
-                  name: String!
-                  propsUpdated: [String!]
-                  relationshipID: String
-                  relationshipName: String
-                  toID: String
-                  toType: String
-                  type: String!
-                  users: Users
                 }
 
                 input UsersUpdateInput {

@@ -74,7 +74,7 @@ describe("Cypher alias directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            RETURN this { .name, city: this.cityPropInDb, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title, rating: this_actedIn.ratingPropInDb } ] } AS this"
+            RETURN this { .name, city: this.cityPropInDb, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title, rating: this_actedIn.ratingPropInDb } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -113,7 +113,7 @@ describe("Cypher alias directive", () => {
             WITH collect({ character: this_acted_in_relationship.characterPropInDb, screenTime: this_acted_in_relationship.screenTime, node: { title: this_movie.title, rating: this_movie.ratingPropInDb } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
-            RETURN this { .name, city: this.cityPropInDb, actedInConnection } AS this"
+            RETURN this { .name, city: this.cityPropInDb, actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -168,23 +168,23 @@ describe("Cypher alias directive", () => {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
             SET this0.cityPropInDb = $this0_city
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'Actor', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
+            WITH this0
             CREATE (this0_actedIn0_node:Movie)
             SET this0_actedIn0_node.title = $this0_actedIn0_node_title
             SET this0_actedIn0_node.ratingPropInDb = $this0_actedIn0_node_rating
             MERGE (this0)-[this0_actedIn0_relationship:ACTED_IN]->(this0_actedIn0_node)
             SET this0_actedIn0_relationship.characterPropInDb = $this0_actedIn0_relationship_character
             SET this0_actedIn0_relationship.screenTime = $this0_actedIn0_relationship_screenTime
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0_actedIn0_node), properties: this0_actedIn0_node},{type: 'Connected', name: 'Actor', relationshipName: 'ACTED_IN', toName: 'Movie', id: id(this0), relationshipID: id(this0_actedIn0_relationship), toID: id(this0_actedIn0_node), properties: this0_actedIn0_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
-            WITH this0, this0_mutateMeta as mutateMeta
             CALL {
             WITH this0
             MATCH (this0)-[this0_acted_in_relationship:ACTED_IN]->(this0_movie:Movie)
             WITH collect({ character: this0_acted_in_relationship.characterPropInDb, screenTime: this0_acted_in_relationship.screenTime, node: { title: this0_movie.title, rating: this0_movie.ratingPropInDb } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
-            RETURN mutateMeta, this0 { .name, city: this0.cityPropInDb, actedIn: [ (this0)-[:ACTED_IN]->(this0_actedIn:Movie)   | this0_actedIn { .title, rating: this0_actedIn.ratingPropInDb } ], actedInConnection } AS this0"
+            RETURN
+            this0 { .name, city: this0.cityPropInDb, actedIn: [ (this0)-[:ACTED_IN]->(this0_actedIn:Movie)   | this0_actedIn { .title, rating: this0_actedIn.ratingPropInDb } ], actedInConnection } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -39,7 +39,6 @@ describe("200", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type Category {
@@ -74,18 +73,6 @@ describe("200", () => {
               categoryId: SortDirection
               description: SortDirection
               name: SortDirection
-            }
-
-            type CategorySubscriptionResponse {
-              category: Category
-              id: Int!
-              name: String!
-              propsUpdated: [String!]
-              relationshipID: String
-              relationshipName: String
-              toID: String
-              toType: String
-              type: String!
             }
 
             input CategoryUpdateInput {
@@ -161,14 +148,6 @@ describe("200", () => {
               updateCategories(update: CategoryUpdateInput, where: CategoryWhere): UpdateCategoriesMutationResponse!
             }
 
-            enum NodeUpdatedType {
-              Connected
-              Created
-              Deleted
-              Disconnected
-              Updated
-            }
-
             type Query {
               categories(options: CategoryOptions, where: CategoryWhere): [Category!]!
               categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
@@ -185,11 +164,6 @@ describe("200", () => {
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
-            }
-
-            type Subscription {
-              \\"\\"\\"Subscribe to updates from Category\\"\\"\\"
-              subscribeToCategory(types: [NodeUpdatedType!], where: CategoryWhere): CategorySubscriptionResponse!
             }
 
             type UpdateCategoriesMutationResponse {
