@@ -47,7 +47,7 @@ import { Exclude, Node } from "../classes";
 import { NodeDirective } from "../classes/NodeDirective";
 import Relationship from "../classes/Relationship";
 import * as constants from "../constants";
-import { Auth, PrimitiveField } from "../types";
+import { Auth, FullText, PrimitiveField } from "../types";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import createConnectionFields from "./create-connection-fields";
 import createRelationshipFields from "./create-relationship-fields";
@@ -253,11 +253,12 @@ function makeAugmentedSchema(
 
     const nodes = objectNodes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude", "node"].includes(x.name.value)
+            (x) => !["auth", "exclude", "node", "fulltext"].includes(x.name.value)
         );
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
+        const fulltextDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "fulltext");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
         const { interfaceAuthDirectives, interfaceExcludeDirectives } = nodeInterfaces.reduce<{
@@ -321,6 +322,15 @@ function makeAugmentedSchema(
             objects: objectNodes,
         });
 
+        let fulltextDirective: FullText;
+        if (fulltextDirectiveDefinition) {
+            fulltextDirective = parseFulltextDirective({
+                directive: fulltextDirectiveDefinition,
+                nodeFields,
+                definition,
+            });
+        }
+
         nodeFields.relationFields.forEach((relationship) => {
             if (relationship.properties) {
                 const propertiesInterface = interfaces.find((i) => i.name.value === relationship.properties);
@@ -354,6 +364,8 @@ function makeAugmentedSchema(
             exclude,
             // @ts-ignore we can be sure it's defined
             nodeDirective,
+            // @ts-ignore we can be sure it's defined
+            fulltextDirective,
             description: definition.description?.value,
         });
 
