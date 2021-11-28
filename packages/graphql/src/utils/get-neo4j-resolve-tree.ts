@@ -86,7 +86,7 @@ interface GetNeo4jResolveTreeOptions {
 
 function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4jResolveTreeOptions) {
     const resolveTree = options?.resolveTree || (parseResolveInfo(resolveInfo) as ResolveTree);
-    
+
     let field: GraphQLField<any, any>;
 
     if (options?.field) {
