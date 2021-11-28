@@ -22,13 +22,13 @@ services:
             interval: 1s
             timeout: 1s
             retries: 40
-    tests:
-        build:
-            context: .
-        environment:
-            - NEO_URL=neo4j://neo4j-service:7687
-            - NEO_USER=neo4j
-            - NEO_PASSWORD=test
-        depends_on:
-            neo4j-service:
-                condition: service_healthy
+    # tests:
+    #     build:
+    #         context: .
+    #     environment:
+    #         - NEO_URL=neo4j://neo4j-service:7687
+    #         - NEO_USER=neo4j
+    #         - NEO_PASSWORD=test
+    #     depends_on:
+    #         neo4j-service:
+    #             condition: service_healthy

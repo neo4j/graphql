@@ -78,8 +78,6 @@ function createUpdateAndParams({
     const objUpdateParamsKey = chainStr || `${parentVar}_update`;
 
     function reducer(res: Res, [key, value]: [string, any]) {
-
-
         let param;
 
         if (chainStr) {
