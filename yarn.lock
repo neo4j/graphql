@@ -1767,7 +1767,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@^2.3.0, @neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "@neo4j/graphql-ogm@npm:2.4.0"
+  dependencies:
+    "@graphql-tools/merge": 6.2.14
+    "@neo4j/graphql": ^2.4.0
+    camelcase: ^6.2.0
+    pluralize: ^8.0.0
+  peerDependencies:
+    graphql: ^15.0.0
+    neo4j-driver: ^4.1.0
+  checksum: 71a9b0bd690c5d238f9b80731a57eecdbf32db0e475ceef73b4bfdd35fc3dfa97d047040c18e8d6c3213966c965924851a0351d018dd7544a23bf5b2d7bee25b
+  languageName: node
+  linkType: hard
+
+"@neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
@@ -1795,7 +1810,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@^2.3.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^2.3.0, @neo4j/graphql@^2.4.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -1820,11 +1835,11 @@ __metadata:
     graphql-compose: ^9.0.4
     graphql-parse-resolve-info: ^4.12.0
     graphql-relay: ^0.8.0
-    graphql-subscriptions: 1.2.1
     graphql-tag: 2.11.0
     is-uuid: 1.0.2
     jest: 26.2.2
     jsonwebtoken: ^8.5.1
+    jwks-rsa: ^2.0.5
     koa: ^2.13.4
     koa-jwt: ^4.0.3
     koa-router: ^10.1.1
@@ -1845,31 +1860,6 @@ __metadata:
     neo4j-driver: ^4.1.0
   languageName: unknown
   linkType: soft
-
-"@neo4j/graphql@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "@neo4j/graphql@npm:2.4.0"
-  dependencies:
-    "@graphql-tools/merge": 6.2.14
-    "@graphql-tools/schema": ^7.1.5
-    "@graphql-tools/utils": ^7.10.0
-    camelcase: ^6.2.0
-    debug: ^4.3.2
-    deep-equal: ^2.0.5
-    dot-prop: ^6.0.1
-    graphql-compose: ^9.0.2
-    graphql-parse-resolve-info: ^4.12.0
-    graphql-relay: ^0.8.0
-    jsonwebtoken: ^8.5.1
-    jwks-rsa: ^2.0.5
-    pluralize: ^8.0.0
-    semver: ^7.3.5
-  peerDependencies:
-    graphql: ^15.0.0
-    neo4j-driver: ^4.1.0
-  checksum: 91f53ac8ff419ad586393d73853ee2de38de389a35e39e4fb7c629aa8f6e2b5780e83a767bb23b07aae8f0753b8a243d0ef36b78af3f7411e3cfd1e5226eab22
-  languageName: node
-  linkType: hard
 
 "@neo4j/introspector@workspace:packages/introspector":
   version: 0.0.0-use.local
@@ -8023,7 +8013,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"graphql-compose@npm:^9.0.2, graphql-compose@npm:^9.0.4":
+"graphql-compose@npm:^9.0.4":
   version: 9.0.4
   resolution: "graphql-compose@npm:9.0.4"
   dependencies:
@@ -8070,7 +8060,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"graphql-subscriptions@npm:1.2.1, graphql-subscriptions@npm:^1.0.0":
+"graphql-subscriptions@npm:^1.0.0":
   version: 1.2.1
   resolution: "graphql-subscriptions@npm:1.2.1"
   dependencies:
@@ -11031,7 +11021,7 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "migration@workspace:examples/migration"
   dependencies:
-    "@neo4j/graphql": ^2.3.0
+    "@neo4j/graphql": ^2.4.0
     apollo-server: ^2.23.0
     graphql: ^15.0.0
     neo4j-driver: ^4.2.0
@@ -11421,8 +11411,8 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "neo-push-server@workspace:examples/neo-push/server"
   dependencies:
-    "@neo4j/graphql": ^2.3.0
-    "@neo4j/graphql-ogm": ^2.3.0
+    "@neo4j/graphql": ^2.4.0
+    "@neo4j/graphql-ogm": ^2.4.0
     "@types/bcrypt": 3.0.0
     "@types/debug": 4.1.5
     "@types/dotenv": 8.2.0

@@ -45,9 +45,19 @@ function createPointElement({
         fields.push(isArray ? "crs: p.crs" : `crs: ${variable}.${dbFieldName}.crs`);
     }
 
-    return isArray
-        ? `${resolveTree.alias}: [p in ${variable}.${dbFieldName} | { ${fields.join(", ")} }]`
-        : `${resolveTree.alias}: { ${fields.join(", ")} }`;
+    const projection = isArray
+        ? `[p in ${variable}.${dbFieldName} | { ${fields.join(", ")} }]`
+        : `{ ${fields.join(", ")} }`;
+
+    const cypher = [
+        "apoc.cypher.runFirstColumn(",
+        `'RETURN\nCASE ${variable}.${dbFieldName} IS NOT NULL\n\tWHEN true THEN ${projection}\n\tELSE NULL\nEND AS result',`,
+        `{ ${variable}: ${variable} },`,
+        "false",
+        ")",
+    ];
+
+    return `${resolveTree.alias}: ${cypher.join("")}`;
 }
 
 export default createPointElement;

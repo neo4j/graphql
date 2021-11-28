@@ -58,6 +58,7 @@ import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
 import parseExcludeDirective from "./parse-exclude-directive";
 import parseNodeDirective from "./parse-node-directive";
+import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import * as point from "./point";
 import {
     aggregateResolver,

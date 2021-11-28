@@ -20,26 +20,24 @@
 import { Node } from "../classes";
 import WithProjector from "../classes/WithProjector";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import { ConnectionField, Context, GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, RelationField } from "../types";
+import { ConnectionField, Context, GraphQLOptionsArg, GraphQLSortArg, RelationField } from "../types";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
-import createWhereAndParams from "./create-where-and-params";
+import translateTopLevelMatch from "./translate-top-level-match";
 
 function translateRead({ node, context }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
     const { fieldsByTypeName } = resolveTree;
-    const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
-
-    const labels = node.getLabelString(context);
-
     const varName = "this";
-    const cypher = [ `MATCH (${varName}${labels})`];
-    let projStr = "";
+
     let cypherParams: { [k: string]: any } = {};
-    const whereStrs: string[] = [];
+
+    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });
+    const cypher: string[] = [ topLevelMatch[0] ];
+    cypherParams = { ...cypherParams, ...topLevelMatch[1] };
     const withProjector = new WithProjector({
         variables: [ varName ],
     });
@@ -50,37 +48,8 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         fieldsByTypeName,
         varName,
     });
-    [projStr] = projection;
+    const [projStr] = projection;
     cypherParams = { ...cypherParams, ...projection[1] };
-
-    if (whereInput) {
-        const where = createWhereAndParams({
-            whereInput,
-            varName,
-            node,
-            context,
-            recursing: true,
-        });
-        if (where[0]) {
-            whereStrs.push(where[0]);
-            cypherParams = { ...cypherParams, ...where[1] };
-        }
-    }
-
-    const whereAuth = createAuthAndParams({
-        operations: "READ",
-        entity: node,
-        context,
-        where: { varName, node },
-    });
-    if (whereAuth[0]) {
-        whereStrs.push(whereAuth[0]);
-        cypherParams = { ...cypherParams, ...whereAuth[1] };
-    }
-
-    if (whereStrs.length) {
-        cypher.push(`WHERE ${whereStrs.join(" AND ")}`);
-    }
 
     const allowAndParams = createAuthAndParams({
         operations: "READ",
