@@ -76,7 +76,7 @@ describe("mutation events (update > disconnect)", () => {
 
             type Director {
                 name: String!
-                directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT, properties: "DirectorOf")
+                directed: [Movie] @relationship(type: "DIRECTED", direction: OUT, properties: "DirectorOf")
             }
         `;
 
