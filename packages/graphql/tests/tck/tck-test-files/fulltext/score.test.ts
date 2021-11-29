@@ -49,7 +49,7 @@ describe("Cypher -> fulltext -> Score", () => {
                 $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
             WHERE score = this_fulltext_MovieTitle_score_EQUAL
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -90,7 +90,7 @@ describe("Cypher -> fulltext -> Score", () => {
                 $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
             WHERE score = this_fulltext_MovieTitle_defaultThreshold
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -128,7 +128,7 @@ describe("Cypher -> fulltext -> Score", () => {
                 $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
             WHERE score = this_fulltext_MovieTitle_score_EQUAL
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -39,6 +39,7 @@ describe("200", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type Category {
@@ -73,6 +74,18 @@ describe("200", () => {
               categoryId: SortDirection
               description: SortDirection
               name: SortDirection
+            }
+
+            type CategorySubscriptionResponse {
+              category: Category
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
             }
 
             input CategoryUpdateInput {
@@ -148,6 +161,14 @@ describe("200", () => {
               updateCategories(update: CategoryUpdateInput, where: CategoryWhere): UpdateCategoriesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               categories(options: CategoryOptions, where: CategoryWhere): [Category!]!
               categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
@@ -164,6 +185,50 @@ describe("200", () => {
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Category\\"\\"\\"
+              subscribeToCategory(filter: SubscriptionFilter, where: CategoryWhere): CategorySubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateCategoriesMutationResponse {

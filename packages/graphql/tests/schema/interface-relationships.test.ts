@@ -55,6 +55,7 @@ describe("Interface Relationships", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             interface ActedIn {
@@ -192,6 +193,18 @@ describe("Interface Relationships", () => {
               name: SortDirection
             }
 
+            type ActorSubscriptionResponse {
+              actor: Actor
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: String
@@ -277,6 +290,18 @@ describe("Interface Relationships", () => {
               title: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              id: Int!
+              movie: Movie
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               runtime: Int
               title: String
@@ -315,6 +340,14 @@ describe("Interface Relationships", () => {
               updateActors(connect: ActorConnectInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+            }
+
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -413,6 +446,18 @@ describe("Interface Relationships", () => {
               title: SortDirection
             }
 
+            type SeriesSubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              series: Series
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input SeriesUpdateInput {
               episodes: Int
               title: String
@@ -451,6 +496,54 @@ describe("Interface Relationships", () => {
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Actor\\"\\"\\"
+              subscribeToActor(filter: SubscriptionFilter, where: ActorWhere): ActorSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(filter: SubscriptionFilter, where: MovieWhere): MovieSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Series\\"\\"\\"
+              subscribeToSeries(filter: SubscriptionFilter, where: SeriesWhere): SeriesSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateActorsMutationResponse {
@@ -520,6 +613,7 @@ describe("Interface Relationships", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             interface ActedIn {
@@ -662,6 +756,18 @@ describe("Interface Relationships", () => {
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
+            }
+
+            type ActorSubscriptionResponse {
+              actor: Actor
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
             }
 
             input ActorUpdateInput {
@@ -897,6 +1003,18 @@ describe("Interface Relationships", () => {
               runtime: SortDirection
             }
 
+            type EpisodeSubscriptionResponse {
+              episode: Episode
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input EpisodeUpdateInput {
               runtime: Int
               series: EpisodeSeriesUpdateFieldInput
@@ -1057,6 +1175,18 @@ describe("Interface Relationships", () => {
               title: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              id: Int!
+              movie: Movie
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               actors: [ProductionActorsUpdateFieldInput!]
               runtime: Int
@@ -1104,6 +1234,14 @@ describe("Interface Relationships", () => {
               updateEpisodes(connect: EpisodeConnectInput, create: EpisodeRelationInput, delete: EpisodeDeleteInput, disconnect: EpisodeDisconnectInput, update: EpisodeUpdateInput, where: EpisodeWhere): UpdateEpisodesMutationResponse!
               updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updateSeries(connect: SeriesConnectInput, create: SeriesRelationInput, delete: SeriesDeleteInput, disconnect: SeriesDisconnectInput, update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+            }
+
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -1598,6 +1736,18 @@ describe("Interface Relationships", () => {
               title: SortDirection
             }
 
+            type SeriesSubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              series: Series
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input SeriesUpdateInput {
               actors: [ProductionActorsUpdateFieldInput!]
               episodeCount: Int
@@ -1648,6 +1798,56 @@ describe("Interface Relationships", () => {
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Actor\\"\\"\\"
+              subscribeToActor(filter: SubscriptionFilter, where: ActorWhere): ActorSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Episode\\"\\"\\"
+              subscribeToEpisode(filter: SubscriptionFilter, where: EpisodeWhere): EpisodeSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(filter: SubscriptionFilter, where: MovieWhere): MovieSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Series\\"\\"\\"
+              subscribeToSeries(filter: SubscriptionFilter, where: SeriesWhere): SeriesSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateActorsMutationResponse {
@@ -1723,6 +1923,7 @@ describe("Interface Relationships", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CreateInfo {
@@ -1952,6 +2153,14 @@ describe("Interface Relationships", () => {
               updateType2Interface2s(update: Type2Interface2UpdateInput, where: Type2Interface2Where): UpdateType2Interface2sMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
             type PageInfo {
               endCursor: String
@@ -1993,6 +2202,58 @@ describe("Interface Relationships", () => {
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Type1\\"\\"\\"
+              subscribeToType1(filter: SubscriptionFilter, where: Type1Where): Type1SubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Type1Interface1\\"\\"\\"
+              subscribeToType1Interface1(filter: SubscriptionFilter, where: Type1Interface1Where): Type1Interface1SubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Type1Interface2\\"\\"\\"
+              subscribeToType1Interface2(filter: SubscriptionFilter, where: Type1Interface2Where): Type1Interface2SubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Type2Interface1\\"\\"\\"
+              subscribeToType2Interface1(filter: SubscriptionFilter, where: Type2Interface1Where): Type2Interface1SubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Type2Interface2\\"\\"\\"
+              subscribeToType2Interface2(filter: SubscriptionFilter, where: Type2Interface2Where): Type2Interface2SubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type Type1 {
@@ -2138,6 +2399,18 @@ describe("Interface Relationships", () => {
               field1: SortDirection
             }
 
+            type Type1Interface1SubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+              type1interface1: Type1Interface1
+            }
+
             input Type1Interface1UpdateConnectionInput {
               node: Interface1UpdateInput
             }
@@ -2198,6 +2471,18 @@ describe("Interface Relationships", () => {
               field2: SortDirection
             }
 
+            type Type1Interface2SubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+              type1interface2: Type1Interface2
+            }
+
             input Type1Interface2UpdateInput {
               field2: String
             }
@@ -2231,6 +2516,18 @@ describe("Interface Relationships", () => {
             \\"\\"\\"Fields to sort Type1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Sort object.\\"\\"\\"
             input Type1Sort {
               field1: SortDirection
+            }
+
+            type Type1SubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+              type1: Type1
             }
 
             input Type1UpdateInput {
@@ -2328,6 +2625,18 @@ describe("Interface Relationships", () => {
               field1: SortDirection
             }
 
+            type Type2Interface1SubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+              type2interface1: Type2Interface1
+            }
+
             input Type2Interface1UpdateInput {
               field1: String
               interface2: [Type2Interface1Interface2UpdateFieldInput!]
@@ -2373,6 +2682,18 @@ describe("Interface Relationships", () => {
             \\"\\"\\"Fields to sort Type2Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface2Sort object.\\"\\"\\"
             input Type2Interface2Sort {
               field2: SortDirection
+            }
+
+            type Type2Interface2SubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+              type2interface2: Type2Interface2
             }
 
             input Type2Interface2UpdateInput {
@@ -2471,6 +2792,7 @@ describe("Interface Relationships", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type Comment implements Content {
@@ -2675,6 +2997,18 @@ describe("Interface Relationships", () => {
             input CommentSort {
               content: SortDirection
               id: SortDirection
+            }
+
+            type CommentSubscriptionResponse {
+              comment: Comment
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
             }
 
             input CommentUpdateInput {
@@ -2961,6 +3295,14 @@ describe("Interface Relationships", () => {
               updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
             type PageInfo {
               endCursor: String
@@ -3173,6 +3515,18 @@ describe("Interface Relationships", () => {
               id: SortDirection
             }
 
+            type PostSubscriptionResponse {
+              id: Int!
+              name: String!
+              post: Post
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input PostUpdateInput {
               comments: [PostCommentsUpdateFieldInput!]
               content: String
@@ -3252,6 +3606,54 @@ describe("Interface Relationships", () => {
             type StringAggregateSelectionNullable {
               longest: String
               shortest: String
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Comment\\"\\"\\"
+              subscribeToComment(filter: SubscriptionFilter, where: CommentWhere): CommentSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Post\\"\\"\\"
+              subscribeToPost(filter: SubscriptionFilter, where: PostWhere): PostSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from User\\"\\"\\"
+              subscribeToUser(filter: SubscriptionFilter, where: UserWhere): UserSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateCommentsMutationResponse {
@@ -3382,6 +3784,18 @@ describe("Interface Relationships", () => {
             input UserSort {
               id: SortDirection
               name: SortDirection
+            }
+
+            type UserSubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+              user: User
             }
 
             input UserUpdateInput {

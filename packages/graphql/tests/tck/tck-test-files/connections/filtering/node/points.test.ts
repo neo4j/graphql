@@ -97,7 +97,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
             END AS result',{ this_actor: this_actor },false) } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

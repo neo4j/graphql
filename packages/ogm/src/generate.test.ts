@@ -110,6 +110,25 @@ describe("generate", () => {
               update?: Maybe<UserUpdateInput>;
             };
 
+            export type Subscription = {
+              __typename?: \\"Subscription\\";
+              /** Subscribe to updates from User */
+              subscribeToUser: UserSubscriptionResponse;
+            };
+
+            export type SubscriptionSubscribeToUserArgs = {
+              filter?: Maybe<SubscriptionFilter>;
+              where?: Maybe<UserWhere>;
+            };
+
+            export enum NodeUpdatedType {
+              Updated = \\"Updated\\",
+              Created = \\"Created\\",
+              Deleted = \\"Deleted\\",
+              Connected = \\"Connected\\",
+              Disconnected = \\"Disconnected\\",
+            }
+
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -167,6 +186,58 @@ describe("generate", () => {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               name: StringAggregateSelectionNullable;
+            };
+
+            export type UserSubscriptionResponse = {
+              __typename?: \\"UserSubscriptionResponse\\";
+              type: Scalars[\\"String\\"];
+              name: Scalars[\\"String\\"];
+              id: Scalars[\\"Int\\"];
+              toID?: Maybe<Scalars[\\"String\\"]>;
+              toName?: Maybe<Scalars[\\"String\\"]>;
+              relationshipID?: Maybe<Scalars[\\"String\\"]>;
+              relationshipName?: Maybe<Scalars[\\"String\\"]>;
+              propsUpdated?: Maybe<Array<Scalars[\\"String\\"]>>;
+              user?: Maybe<User>;
+            };
+
+            export type SubscriptionFilter = {
+              type?: Maybe<NodeUpdatedType>;
+              type_NOT?: Maybe<NodeUpdatedType>;
+              type_IN?: Maybe<Array<NodeUpdatedType>>;
+              type_NOT_IN?: Maybe<Array<NodeUpdatedType>>;
+              type_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              id?: Maybe<Scalars[\\"Int\\"]>;
+              id_NOT?: Maybe<Scalars[\\"Int\\"]>;
+              id_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              id_NOT_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              id_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              toID?: Maybe<Scalars[\\"Int\\"]>;
+              toID_NOT?: Maybe<Scalars[\\"Int\\"]>;
+              toID_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              toID_NOT_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              toID_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              relationshipID?: Maybe<Scalars[\\"Int\\"]>;
+              relationshipID_NOT?: Maybe<Scalars[\\"Int\\"]>;
+              relationshipID_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              relationshipID_NOT_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              relationshipID_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              toName?: Maybe<Scalars[\\"String\\"]>;
+              toName_NOT?: Maybe<Scalars[\\"String\\"]>;
+              toName_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              toName_NOT_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              toName_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              relationshipName?: Maybe<Scalars[\\"String\\"]>;
+              relationshipName_NOT?: Maybe<Scalars[\\"String\\"]>;
+              relationshipName_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              relationshipName_NOT_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              relationshipName_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              handle?: Maybe<Scalars[\\"String\\"]>;
+              handle_NOT?: Maybe<Scalars[\\"String\\"]>;
+              handle_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              handle_NOT_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              handle_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              propsUpdated?: Maybe<Array<Scalars[\\"String\\"]>>;
             };
 
             export type UserCreateInput = {
@@ -347,6 +418,25 @@ describe("generate", () => {
               update?: Maybe<UserUpdateInput>;
             };
 
+            export type Subscription = {
+              __typename?: \\"Subscription\\";
+              /** Subscribe to updates from User */
+              subscribeToUser: UserSubscriptionResponse;
+            };
+
+            export type SubscriptionSubscribeToUserArgs = {
+              filter?: Maybe<SubscriptionFilter>;
+              where?: Maybe<UserWhere>;
+            };
+
+            export enum NodeUpdatedType {
+              Updated = \\"Updated\\",
+              Created = \\"Created\\",
+              Deleted = \\"Deleted\\",
+              Connected = \\"Connected\\",
+              Disconnected = \\"Disconnected\\",
+            }
+
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -404,6 +494,58 @@ describe("generate", () => {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               name: StringAggregateSelectionNullable;
+            };
+
+            export type UserSubscriptionResponse = {
+              __typename?: \\"UserSubscriptionResponse\\";
+              type: Scalars[\\"String\\"];
+              name: Scalars[\\"String\\"];
+              id: Scalars[\\"Int\\"];
+              toID?: Maybe<Scalars[\\"String\\"]>;
+              toName?: Maybe<Scalars[\\"String\\"]>;
+              relationshipID?: Maybe<Scalars[\\"String\\"]>;
+              relationshipName?: Maybe<Scalars[\\"String\\"]>;
+              propsUpdated?: Maybe<Array<Scalars[\\"String\\"]>>;
+              user?: Maybe<User>;
+            };
+
+            export type SubscriptionFilter = {
+              type?: Maybe<NodeUpdatedType>;
+              type_NOT?: Maybe<NodeUpdatedType>;
+              type_IN?: Maybe<Array<NodeUpdatedType>>;
+              type_NOT_IN?: Maybe<Array<NodeUpdatedType>>;
+              type_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              id?: Maybe<Scalars[\\"Int\\"]>;
+              id_NOT?: Maybe<Scalars[\\"Int\\"]>;
+              id_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              id_NOT_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              id_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              toID?: Maybe<Scalars[\\"Int\\"]>;
+              toID_NOT?: Maybe<Scalars[\\"Int\\"]>;
+              toID_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              toID_NOT_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              toID_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              relationshipID?: Maybe<Scalars[\\"Int\\"]>;
+              relationshipID_NOT?: Maybe<Scalars[\\"Int\\"]>;
+              relationshipID_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              relationshipID_NOT_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              relationshipID_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              toName?: Maybe<Scalars[\\"String\\"]>;
+              toName_NOT?: Maybe<Scalars[\\"String\\"]>;
+              toName_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              toName_NOT_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              toName_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              relationshipName?: Maybe<Scalars[\\"String\\"]>;
+              relationshipName_NOT?: Maybe<Scalars[\\"String\\"]>;
+              relationshipName_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              relationshipName_NOT_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              relationshipName_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              handle?: Maybe<Scalars[\\"String\\"]>;
+              handle_NOT?: Maybe<Scalars[\\"String\\"]>;
+              handle_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              handle_NOT_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              handle_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              propsUpdated?: Maybe<Array<Scalars[\\"String\\"]>>;
             };
 
             export type UserCreateInput = {
@@ -602,6 +744,25 @@ describe("generate", () => {
               update?: Maybe<UserUpdateInput>;
             };
 
+            export type Subscription = {
+              __typename?: \\"Subscription\\";
+              /** Subscribe to updates from User */
+              subscribeToUser: UserSubscriptionResponse;
+            };
+
+            export type SubscriptionSubscribeToUserArgs = {
+              filter?: Maybe<SubscriptionFilter>;
+              where?: Maybe<UserWhere>;
+            };
+
+            export enum NodeUpdatedType {
+              Updated = \\"Updated\\",
+              Created = \\"Created\\",
+              Deleted = \\"Deleted\\",
+              Connected = \\"Connected\\",
+              Disconnected = \\"Disconnected\\",
+            }
+
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -659,6 +820,58 @@ describe("generate", () => {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               name: StringAggregateSelectionNullable;
+            };
+
+            export type UserSubscriptionResponse = {
+              __typename?: \\"UserSubscriptionResponse\\";
+              type: Scalars[\\"String\\"];
+              name: Scalars[\\"String\\"];
+              id: Scalars[\\"Int\\"];
+              toID?: Maybe<Scalars[\\"String\\"]>;
+              toName?: Maybe<Scalars[\\"String\\"]>;
+              relationshipID?: Maybe<Scalars[\\"String\\"]>;
+              relationshipName?: Maybe<Scalars[\\"String\\"]>;
+              propsUpdated?: Maybe<Array<Scalars[\\"String\\"]>>;
+              user?: Maybe<User>;
+            };
+
+            export type SubscriptionFilter = {
+              type?: Maybe<NodeUpdatedType>;
+              type_NOT?: Maybe<NodeUpdatedType>;
+              type_IN?: Maybe<Array<NodeUpdatedType>>;
+              type_NOT_IN?: Maybe<Array<NodeUpdatedType>>;
+              type_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              id?: Maybe<Scalars[\\"Int\\"]>;
+              id_NOT?: Maybe<Scalars[\\"Int\\"]>;
+              id_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              id_NOT_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              id_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              toID?: Maybe<Scalars[\\"Int\\"]>;
+              toID_NOT?: Maybe<Scalars[\\"Int\\"]>;
+              toID_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              toID_NOT_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              toID_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              relationshipID?: Maybe<Scalars[\\"Int\\"]>;
+              relationshipID_NOT?: Maybe<Scalars[\\"Int\\"]>;
+              relationshipID_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              relationshipID_NOT_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              relationshipID_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              toName?: Maybe<Scalars[\\"String\\"]>;
+              toName_NOT?: Maybe<Scalars[\\"String\\"]>;
+              toName_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              toName_NOT_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              toName_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              relationshipName?: Maybe<Scalars[\\"String\\"]>;
+              relationshipName_NOT?: Maybe<Scalars[\\"String\\"]>;
+              relationshipName_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              relationshipName_NOT_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              relationshipName_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              handle?: Maybe<Scalars[\\"String\\"]>;
+              handle_NOT?: Maybe<Scalars[\\"String\\"]>;
+              handle_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              handle_NOT_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              handle_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              propsUpdated?: Maybe<Array<Scalars[\\"String\\"]>>;
             };
 
             export type UserCreateInput = {
@@ -879,6 +1092,32 @@ describe("generate", () => {
               update?: Maybe<PersonUpdateInput>;
             };
 
+            export type Subscription = {
+              __typename?: \\"Subscription\\";
+              /** Subscribe to updates from Movie */
+              subscribeToMovie: MovieSubscriptionResponse;
+              /** Subscribe to updates from Person */
+              subscribeToPerson: PersonSubscriptionResponse;
+            };
+
+            export type SubscriptionSubscribeToMovieArgs = {
+              filter?: Maybe<SubscriptionFilter>;
+              where?: Maybe<MovieWhere>;
+            };
+
+            export type SubscriptionSubscribeToPersonArgs = {
+              filter?: Maybe<SubscriptionFilter>;
+              where?: Maybe<PersonWhere>;
+            };
+
+            export enum NodeUpdatedType {
+              Updated = \\"Updated\\",
+              Created = \\"Created\\",
+              Deleted = \\"Deleted\\",
+              Connected = \\"Connected\\",
+              Disconnected = \\"Disconnected\\",
+            }
+
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -985,6 +1224,19 @@ describe("generate", () => {
               name: StringAggregateSelectionNonNullable;
             };
 
+            export type MovieSubscriptionResponse = {
+              __typename?: \\"MovieSubscriptionResponse\\";
+              type: Scalars[\\"String\\"];
+              name: Scalars[\\"String\\"];
+              id: Scalars[\\"Int\\"];
+              toID?: Maybe<Scalars[\\"String\\"]>;
+              toName?: Maybe<Scalars[\\"String\\"]>;
+              relationshipID?: Maybe<Scalars[\\"String\\"]>;
+              relationshipName?: Maybe<Scalars[\\"String\\"]>;
+              propsUpdated?: Maybe<Array<Scalars[\\"String\\"]>>;
+              movie?: Maybe<Movie>;
+            };
+
             /** Pagination information (Relay) */
             export type PageInfo = {
               __typename?: \\"PageInfo\\";
@@ -1003,6 +1255,19 @@ describe("generate", () => {
               __typename?: \\"PersonAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               name: StringAggregateSelectionNonNullable;
+            };
+
+            export type PersonSubscriptionResponse = {
+              __typename?: \\"PersonSubscriptionResponse\\";
+              type: Scalars[\\"String\\"];
+              name: Scalars[\\"String\\"];
+              id: Scalars[\\"Int\\"];
+              toID?: Maybe<Scalars[\\"String\\"]>;
+              toName?: Maybe<Scalars[\\"String\\"]>;
+              relationshipID?: Maybe<Scalars[\\"String\\"]>;
+              relationshipName?: Maybe<Scalars[\\"String\\"]>;
+              propsUpdated?: Maybe<Array<Scalars[\\"String\\"]>>;
+              person?: Maybe<Person>;
             };
 
             export type StringAggregateSelectionNonNullable = {
@@ -1270,6 +1535,45 @@ describe("generate", () => {
               name_NOT_STARTS_WITH?: Maybe<Scalars[\\"String\\"]>;
               name_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
               name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
+            };
+
+            export type SubscriptionFilter = {
+              type?: Maybe<NodeUpdatedType>;
+              type_NOT?: Maybe<NodeUpdatedType>;
+              type_IN?: Maybe<Array<NodeUpdatedType>>;
+              type_NOT_IN?: Maybe<Array<NodeUpdatedType>>;
+              type_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              id?: Maybe<Scalars[\\"Int\\"]>;
+              id_NOT?: Maybe<Scalars[\\"Int\\"]>;
+              id_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              id_NOT_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              id_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              toID?: Maybe<Scalars[\\"Int\\"]>;
+              toID_NOT?: Maybe<Scalars[\\"Int\\"]>;
+              toID_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              toID_NOT_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              toID_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              relationshipID?: Maybe<Scalars[\\"Int\\"]>;
+              relationshipID_NOT?: Maybe<Scalars[\\"Int\\"]>;
+              relationshipID_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              relationshipID_NOT_IN?: Maybe<Array<Scalars[\\"Int\\"]>>;
+              relationshipID_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              toName?: Maybe<Scalars[\\"String\\"]>;
+              toName_NOT?: Maybe<Scalars[\\"String\\"]>;
+              toName_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              toName_NOT_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              toName_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              relationshipName?: Maybe<Scalars[\\"String\\"]>;
+              relationshipName_NOT?: Maybe<Scalars[\\"String\\"]>;
+              relationshipName_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              relationshipName_NOT_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              relationshipName_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              handle?: Maybe<Scalars[\\"String\\"]>;
+              handle_NOT?: Maybe<Scalars[\\"String\\"]>;
+              handle_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              handle_NOT_IN?: Maybe<Array<Scalars[\\"String\\"]>>;
+              handle_UNDEFINED?: Maybe<Scalars[\\"Boolean\\"]>;
+              propsUpdated?: Maybe<Array<Scalars[\\"String\\"]>>;
             };
 
             export interface StringAggregateInputNonNullable {

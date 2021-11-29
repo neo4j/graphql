@@ -80,7 +80,7 @@ describe("Relay Cursor Connection projections", () => {
             WITH collect({  }) AS edges
             RETURN { totalCount: size(edges) } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -121,7 +121,7 @@ describe("Relay Cursor Connection projections", () => {
             WITH collect({  }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -158,7 +158,7 @@ describe("Relay Cursor Connection projections", () => {
             WITH size(edges) AS totalCount, edges[..5] AS limitedSelection
             RETURN { edges: limitedSelection, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -204,7 +204,7 @@ describe("Relay Cursor Connection projections", () => {
             WITH count(edge) as totalCount
             RETURN { totalCount: totalCount } AS productionsConnection
             }
-            RETURN this { .name, productionsConnection } as this"
+            RETURN this { .name, productionsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -255,7 +255,7 @@ describe("Relay Cursor Connection projections", () => {
             WITH collect(edge) as edges, count(edge) as totalCount
             RETURN { edges: edges, totalCount: totalCount } AS productionsConnection
             }
-            RETURN this { .name, productionsConnection } as this"
+            RETURN this { .name, productionsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -296,7 +296,7 @@ describe("Relay Cursor Connection projections", () => {
             WITH collect({ node: { name: this_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -338,7 +338,7 @@ describe("Relay Cursor Connection projections", () => {
             WITH size(edges) AS totalCount, edges[..5] AS limitedSelection
             RETURN { edges: limitedSelection, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

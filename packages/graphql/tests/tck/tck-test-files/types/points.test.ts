@@ -67,7 +67,7 @@ describe("Cypher Points", () => {
             CASE this.points IS NOT NULL
             	WHEN true THEN [p in this.points | { point:p, crs: p.crs }]
             	ELSE NULL
-            END AS result',{ this: this },false) } as this"
+            END AS result',{ this: this },false) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -106,7 +106,7 @@ describe("Cypher Points", () => {
             CASE this.points IS NOT NULL
             	WHEN true THEN [p in this.points | { point:p }]
             	ELSE NULL
-            END AS result',{ this: this },false) } as this"
+            END AS result',{ this: this },false) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -146,7 +146,7 @@ describe("Cypher Points", () => {
             CASE this.points IS NOT NULL
             	WHEN true THEN [p in this.points | { point:p, crs: p.crs }]
             	ELSE NULL
-            END AS result',{ this: this },false) } as this"
+            END AS result',{ this: this },false) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -184,7 +184,7 @@ describe("Cypher Points", () => {
             CASE this.points IS NOT NULL
             	WHEN true THEN [p in this.points | { point:p, crs: p.crs }]
             	ELSE NULL
-            END AS result',{ this: this },false) } as this"
+            END AS result',{ this: this },false) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -221,10 +221,10 @@ describe("Cypher Points", () => {
             "CALL {
             CREATE (this0:PointContainer)
             SET this0.points = [p in $this0_points | point(p)]
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'PointContainer', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
-            RETURN
-            this0 { points: apoc.cypher.runFirstColumn('RETURN
+            WITH this0, this0_mutateMeta as mutateMeta
+            RETURN mutateMeta, this0 { points: apoc.cypher.runFirstColumn('RETURN
             CASE this0.points IS NOT NULL
             	WHEN true THEN [p in this0.points | { point:p, crs: p.crs }]
             	ELSE NULL
@@ -267,7 +267,7 @@ describe("Cypher Points", () => {
             "MATCH (this:PointContainer)
             WHERE this.id = $this_id
             SET this.points = [p in $this_update_points | point(p)]
-            RETURN this { points: apoc.cypher.runFirstColumn('RETURN
+            RETURN [ metaVal IN [{type: 'Updated', name: 'PointContainer', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { points: apoc.cypher.runFirstColumn('RETURN
             CASE this.points IS NOT NULL
             	WHEN true THEN [p in this.points | { point:p, crs: p.crs }]
             	ELSE NULL
@@ -282,7 +282,15 @@ describe("Cypher Points", () => {
                         \\"longitude\\": 1,
                         \\"latitude\\": 2
                     }
-                ]
+                ],
+                \\"this_update\\": {
+                    \\"points\\": [
+                        {
+                            \\"longitude\\": 1,
+                            \\"latitude\\": 2
+                        }
+                    ]
+                }
             }"
         `);
     });

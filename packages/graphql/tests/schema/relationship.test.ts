@@ -41,6 +41,7 @@ describe("Relationship", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type Actor {
@@ -70,6 +71,18 @@ describe("Relationship", () => {
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
+            }
+
+            type ActorSubscriptionResponse {
+              actor: Actor
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
             }
 
             input ActorUpdateInput {
@@ -264,6 +277,18 @@ describe("Relationship", () => {
               id: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              id: Int!
+              movie: Movie
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               id: ID
@@ -298,6 +323,14 @@ describe("Relationship", () => {
               updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
             type PageInfo {
               endCursor: String
@@ -325,6 +358,52 @@ describe("Relationship", () => {
             type StringAggregateSelectionNullable {
               longest: String
               shortest: String
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Actor\\"\\"\\"
+              subscribeToActor(filter: SubscriptionFilter, where: ActorWhere): ActorSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(filter: SubscriptionFilter, where: MovieWhere): MovieSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateActorsMutationResponse {
@@ -367,6 +446,7 @@ describe("Relationship", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type Actor {
@@ -501,6 +581,18 @@ describe("Relationship", () => {
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
+            }
+
+            type ActorSubscriptionResponse {
+              actor: Actor
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
             }
 
             input ActorUpdateInput {
@@ -708,6 +800,18 @@ describe("Relationship", () => {
               id: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              id: Int!
+              movie: Movie
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               id: ID
@@ -742,6 +846,14 @@ describe("Relationship", () => {
               updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
             type PageInfo {
               endCursor: String
@@ -769,6 +881,52 @@ describe("Relationship", () => {
             type StringAggregateSelectionNullable {
               longest: String
               shortest: String
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Actor\\"\\"\\"
+              subscribeToActor(filter: SubscriptionFilter, where: ActorWhere): ActorSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(filter: SubscriptionFilter, where: MovieWhere): MovieSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateActorsMutationResponse {

@@ -40,6 +40,7 @@ describe("@exclude directive", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type Actor {
@@ -48,6 +49,18 @@ describe("@exclude directive", () => {
 
             input ActorCreateInput {
               name: String
+            }
+
+            type ActorSubscriptionResponse {
+              actor: Actor
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
             }
 
             input ActorUpdateInput {
@@ -116,6 +129,18 @@ describe("@exclude directive", () => {
               title: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              id: Int!
+              movie: Movie
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               title: String
             }
@@ -144,6 +169,14 @@ describe("@exclude directive", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -160,6 +193,52 @@ describe("@exclude directive", () => {
             type StringAggregateSelectionNullable {
               longest: String
               shortest: String
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Actor\\"\\"\\"
+              subscribeToActor(filter: SubscriptionFilter, where: ActorWhere): ActorSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(filter: SubscriptionFilter, where: MovieWhere): MovieSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateActorsMutationResponse {
@@ -196,6 +275,7 @@ describe("@exclude directive", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type Actor {
@@ -217,6 +297,18 @@ describe("@exclude directive", () => {
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
+            }
+
+            type ActorSubscriptionResponse {
+              actor: Actor
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
             }
 
             input ActorUpdateInput {
@@ -249,6 +341,14 @@ describe("@exclude directive", () => {
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -265,6 +365,50 @@ describe("@exclude directive", () => {
             type StringAggregateSelectionNullable {
               longest: String
               shortest: String
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Actor\\"\\"\\"
+              subscribeToActor(filter: SubscriptionFilter, where: ActorWhere): ActorSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateActorsMutationResponse {
@@ -300,6 +444,38 @@ describe("@exclude directive", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
+            }
+
+            type Actor {
+              name: String
+            }
+
+            type ActorSubscriptionResponse {
+              actor: Actor
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              OR: [ActorWhere!]
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String
+              name_NOT_CONTAINS: String
+              name_NOT_ENDS_WITH: String
+              name_NOT_IN: [String]
+              name_NOT_STARTS_WITH: String
+              name_STARTS_WITH: String
             }
 
             type CreateInfo {
@@ -344,6 +520,18 @@ describe("@exclude directive", () => {
               title: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              id: Int!
+              movie: Movie
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               title: String
             }
@@ -369,6 +557,14 @@ describe("@exclude directive", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -385,6 +581,52 @@ describe("@exclude directive", () => {
             type StringAggregateSelectionNullable {
               longest: String
               shortest: String
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Actor\\"\\"\\"
+              subscribeToActor(filter: SubscriptionFilter, where: ActorWhere): ActorSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(filter: SubscriptionFilter, where: MovieWhere): MovieSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateInfo {
@@ -424,10 +666,38 @@ describe("@exclude directive", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type Actor {
               name: String
+            }
+
+            type ActorSubscriptionResponse {
+              actor: Actor
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              OR: [ActorWhere!]
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String
+              name_NOT_CONTAINS: String
+              name_NOT_ENDS_WITH: String
+              name_NOT_IN: [String]
+              name_NOT_STARTS_WITH: String
+              name_STARTS_WITH: String
             }
 
             type CreateInfo {
@@ -472,6 +742,18 @@ describe("@exclude directive", () => {
               title: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              id: Int!
+              movie: Movie
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               title: String
             }
@@ -497,6 +779,14 @@ describe("@exclude directive", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               customActorQuery: Actor
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
@@ -514,6 +804,52 @@ describe("@exclude directive", () => {
             type StringAggregateSelectionNullable {
               longest: String
               shortest: String
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Actor\\"\\"\\"
+              subscribeToActor(filter: SubscriptionFilter, where: ActorWhere): ActorSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(filter: SubscriptionFilter, where: MovieWhere): MovieSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateInfo {
@@ -550,6 +886,7 @@ describe("@exclude directive", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type Actor {
@@ -574,6 +911,18 @@ describe("@exclude directive", () => {
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
+            }
+
+            type ActorSubscriptionResponse {
+              actor: Actor
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
             }
 
             input ActorUpdateInput {
@@ -758,6 +1107,18 @@ describe("@exclude directive", () => {
               title: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              id: Int!
+              movie: Movie
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               title: String
@@ -789,6 +1150,14 @@ describe("@exclude directive", () => {
               updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
             type PageInfo {
               endCursor: String
@@ -813,6 +1182,52 @@ describe("@exclude directive", () => {
             type StringAggregateSelectionNullable {
               longest: String
               shortest: String
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Actor\\"\\"\\"
+              subscribeToActor(filter: SubscriptionFilter, where: ActorWhere): ActorSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(filter: SubscriptionFilter, where: MovieWhere): MovieSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateInfo {
@@ -844,6 +1259,7 @@ describe("@exclude directive", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type Actor {
@@ -869,6 +1285,18 @@ describe("@exclude directive", () => {
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
+            }
+
+            type ActorSubscriptionResponse {
+              actor: Actor
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
             }
 
             input ActorUpdateInput {
@@ -913,6 +1341,14 @@ describe("@exclude directive", () => {
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -929,6 +1365,50 @@ describe("@exclude directive", () => {
             type StringAggregateSelectionNullable {
               longest: String
               shortest: String
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Actor\\"\\"\\"
+              subscribeToActor(filter: SubscriptionFilter, where: ActorWhere): ActorSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateActorsMutationResponse {
@@ -968,6 +1448,7 @@ describe("@exclude directive", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CreateInfo {
@@ -1008,6 +1489,18 @@ describe("@exclude directive", () => {
               title: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              id: Int!
+              movie: Movie
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               title: String
             }
@@ -1032,6 +1525,14 @@ describe("@exclude directive", () => {
               deleteMovies(where: MovieWhere): DeleteInfo!
               deleteSeries(where: SeriesWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
             }
 
             interface Production {
@@ -1072,6 +1573,18 @@ describe("@exclude directive", () => {
               title: SortDirection
             }
 
+            type SeriesSubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              series: Series
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input SeriesWhere {
               AND: [SeriesWhere!]
               OR: [SeriesWhere!]
@@ -1097,6 +1610,52 @@ describe("@exclude directive", () => {
             type StringAggregateSelectionNullable {
               longest: String
               shortest: String
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(filter: SubscriptionFilter, where: MovieWhere): MovieSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Series\\"\\"\\"
+              subscribeToSeries(filter: SubscriptionFilter, where: SeriesWhere): SeriesSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateInfo {

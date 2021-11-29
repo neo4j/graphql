@@ -91,12 +91,10 @@ describe("Create or connect", () => {
             ON CREATE
             SET
             this0_relationship_this0_movies_connectOrCreate0.screentime = $this0_relationship_this0_movies_connectOrCreate0_on_create_screentime
-            WITH this0
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)-[:ACTED_IN]->(:Movie))), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.movies required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Actor', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
-            RETURN
-            this0 { .name } AS this0"
+            WITH this0, this0_mutateMeta as mutateMeta
+            RETURN mutateMeta, this0 { .name } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -144,6 +142,7 @@ describe("Create or connect", () => {
             WHERE this.name = $this_name
             SET this.name = $this_update_name
             WITH this
+            WITH this
             CALL {
             	WITH this
             	MERGE (this_movies0_connectOrCreate0:Movie { title: $this_movies0_connectOrCreate0_node_title })
@@ -156,9 +155,9 @@ describe("Create or connect", () => {
             this_relationship_this_movies0_connectOrCreate0.screentime = $this_relationship_this_movies0_connectOrCreate0_on_create_screentime
             	RETURN COUNT(*)
             }
-            WITH this
+            WITH this, [ metaVal IN [{type: 'Updated', name: 'Actor', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this)-[:ACTED_IN]->(:Movie))), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.movies required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this { .name } AS this"
+            RETURN mutateMeta, this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -170,6 +169,9 @@ describe("Create or connect", () => {
                 \\"this_relationship_this_movies0_connectOrCreate0_on_create_screentime\\": {
                     \\"low\\": 105,
                     \\"high\\": 0
+                },
+                \\"this_update\\": {
+                    \\"name\\": \\"Tom Hanks 2\\"
                 }
             }"
         `);

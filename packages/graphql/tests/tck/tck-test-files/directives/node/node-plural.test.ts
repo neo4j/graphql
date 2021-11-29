@@ -57,7 +57,7 @@ describe("Plural in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Tech)
-            RETURN this { .name } as this"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -125,10 +125,10 @@ describe("Plural in Node directive", () => {
             "CALL {
             CREATE (this0:Tech)
             SET this0.name = $this0_name
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Tech', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
-            RETURN
-            this0 { .name } AS this0"
+            WITH this0, this0_mutateMeta as mutateMeta
+            RETURN mutateMeta, this0 { .name } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -157,12 +157,15 @@ describe("Plural in Node directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Tech)
             SET this.name = $this_update_name
-            RETURN this { .name } AS this"
+            RETURN [ metaVal IN [{type: 'Updated', name: 'Tech', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_name\\": \\"Matrix\\"
+                \\"this_update_name\\": \\"Matrix\\",
+                \\"this_update\\": {
+                    \\"name\\": \\"Matrix\\"
+                }
             }"
         `);
     });
@@ -184,7 +187,9 @@ describe("Plural in Node directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Tech)
             WHERE this.name = $this_name
-            DETACH DELETE this"
+            WITH this, [ metaVal IN [{type: 'Deleted', name: 'Tech', id: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
+            DETACH DELETE this
+            RETURN mutateMeta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -210,7 +215,7 @@ describe("Plural in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Tech)
-            RETURN this { .name } as this"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

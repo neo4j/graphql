@@ -53,6 +53,7 @@ describe("Unions", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type Author {
@@ -268,6 +269,18 @@ describe("Unions", () => {
             \\"\\"\\"Fields to sort Authors by. The order in which sorts are applied is not guaranteed when specifying many fields in one AuthorSort object.\\"\\"\\"
             input AuthorSort {
               name: SortDirection
+            }
+
+            type AuthorSubscriptionResponse {
+              author: Author
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
             }
 
             input AuthorUpdateInput {
@@ -486,6 +499,18 @@ describe("Unions", () => {
             \\"\\"\\"Fields to sort Books by. The order in which sorts are applied is not guaranteed when specifying many fields in one BookSort object.\\"\\"\\"
             input BookSort {
               title: SortDirection
+            }
+
+            type BookSubscriptionResponse {
+              book: Book
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
             }
 
             input BookUpdateInput {
@@ -743,6 +768,18 @@ describe("Unions", () => {
               subject: SortDirection
             }
 
+            type JournalSubscriptionResponse {
+              id: Int!
+              journal: Journal
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input JournalUpdateInput {
               author: [JournalAuthorUpdateFieldInput!]
               subject: String
@@ -778,6 +815,14 @@ describe("Unions", () => {
               updateAuthors(connect: AuthorConnectInput, create: AuthorRelationInput, delete: AuthorDeleteInput, disconnect: AuthorDisconnectInput, update: AuthorUpdateInput, where: AuthorWhere): UpdateAuthorsMutationResponse!
               updateBooks(connect: BookConnectInput, create: BookRelationInput, delete: BookDeleteInput, disconnect: BookDisconnectInput, update: BookUpdateInput, where: BookWhere): UpdateBooksMutationResponse!
               updateJournals(connect: JournalConnectInput, create: JournalRelationInput, delete: JournalDeleteInput, disconnect: JournalDisconnectInput, update: JournalUpdateInput, where: JournalWhere): UpdateJournalsMutationResponse!
+            }
+
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -822,6 +867,54 @@ describe("Unions", () => {
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Author\\"\\"\\"
+              subscribeToAuthor(filter: SubscriptionFilter, where: AuthorWhere): AuthorSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Book\\"\\"\\"
+              subscribeToBook(filter: SubscriptionFilter, where: BookWhere): BookSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Journal\\"\\"\\"
+              subscribeToJournal(filter: SubscriptionFilter, where: JournalWhere): JournalSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateAuthorsMutationResponse {

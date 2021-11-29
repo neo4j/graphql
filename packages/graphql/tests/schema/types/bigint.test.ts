@@ -37,6 +37,7 @@ describe("Bigint", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
@@ -95,6 +96,18 @@ describe("Bigint", () => {
               size: SortDirection
             }
 
+            type FileSubscriptionResponse {
+              file: File
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input FileUpdateInput {
               name: String
               size: BigInt
@@ -129,6 +142,14 @@ describe("Bigint", () => {
               updateFiles(update: FileUpdateInput, where: FileWhere): UpdateFilesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               files(options: FileOptions, where: FileWhere): [File!]!
               filesAggregate(where: FileWhere): FileAggregateSelection!
@@ -145,6 +166,50 @@ describe("Bigint", () => {
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from File\\"\\"\\"
+              subscribeToFile(filter: SubscriptionFilter, where: FileWhere): FileSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateFilesMutationResponse {

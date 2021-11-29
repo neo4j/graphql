@@ -67,7 +67,7 @@ describe("Cypher Aggregations where node with ID", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN this_likesAggregate_node.id = $this_likesAggregate_node_id_EQUAL
             \\", { this: this, this_likesAggregate_node_id_EQUAL: $this_likesAggregate_node_id_EQUAL }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -96,7 +96,7 @@ describe("Cypher Aggregations where node with ID", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN this_likesAggregate_node._someIdAlias = $this_likesAggregate_node_someIdAlias_EQUAL
             \\", { this: this, this_likesAggregate_node_someIdAlias_EQUAL: $this_likesAggregate_node_someIdAlias_EQUAL }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -99,7 +99,7 @@ describe("#601", () => {
             CALL apoc.util.validate(NOT(ANY(r IN [\\\\\\"view\\\\\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             WITH collect({ fileId: this_documents_uploaded_relationship.fileId, uploadedAt: apoc.date.convertFormat(toString(this_documents_uploaded_relationship.uploadedAt), \\\\\\"iso_zoned_date_time\\\\\\", \\\\\\"iso_offset_date_time\\\\\\") }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS customerContactConnection
-            } RETURN customerContactConnection\\", { this_documents: this_documents, auth: $auth }, false) } ] } as this"
+            } RETURN customerContactConnection\\", { this_documents: this_documents, auth: $auth }, false) } ] } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -107,9 +107,7 @@ describe("#601", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"jwt\\": {}
                 }
             }"
         `);

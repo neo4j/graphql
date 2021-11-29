@@ -59,7 +59,7 @@ describe("Cypher Date", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.date = $this_date
-            RETURN this { .date } as this"
+            RETURN this { .date } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -90,7 +90,7 @@ describe("Cypher Date", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.date >= $this_date_GTE
-            RETURN this { .date } as this"
+            RETURN this { .date } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -124,10 +124,10 @@ describe("Cypher Date", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.date = $this0_date
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
-            RETURN
-            this0 { .date } AS this0"
+            WITH this0, this0_mutateMeta as mutateMeta
+            RETURN mutateMeta, this0 { .date } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -161,7 +161,7 @@ describe("Cypher Date", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.date = $this_update_date
-            RETURN this { .id, .date } AS this"
+            RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .id, .date } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -170,6 +170,13 @@ describe("Cypher Date", () => {
                     \\"year\\": 1970,
                     \\"month\\": 1,
                     \\"day\\": 1
+                },
+                \\"this_update\\": {
+                    \\"date\\": {
+                        \\"year\\": 1970,
+                        \\"month\\": 1,
+                        \\"day\\": 1
+                    }
                 }
             }"
         `);

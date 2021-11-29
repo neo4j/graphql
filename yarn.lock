@@ -1767,22 +1767,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "@neo4j/graphql-ogm@npm:2.4.0"
-  dependencies:
-    "@graphql-tools/merge": 6.2.14
-    "@neo4j/graphql": ^2.4.0
-    camelcase: ^6.2.0
-    pluralize: ^8.0.0
-  peerDependencies:
-    graphql: ^15.0.0
-    neo4j-driver: ^4.1.0
-  checksum: 71a9b0bd690c5d238f9b80731a57eecdbf32db0e475ceef73b4bfdd35fc3dfa97d047040c18e8d6c3213966c965924851a0351d018dd7544a23bf5b2d7bee25b
-  languageName: node
-  linkType: hard
-
-"@neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@^2.4.0, @neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
@@ -1790,7 +1775,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": 2.0.0
     "@graphql-codegen/typescript": 2.0.0
     "@graphql-tools/merge": 6.2.14
-    "@neo4j/graphql": ^2.3.0
+    "@neo4j/graphql": ^2.4.0
     "@types/jest": 26.0.8
     "@types/node": 14.0.27
     camelcase: ^6.2.0
@@ -1810,7 +1795,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@^2.3.0, @neo4j/graphql@^2.4.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^2.4.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:

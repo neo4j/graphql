@@ -83,26 +83,24 @@ describe("connectOrCreate", () => {
                 SET
                 this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate0_on_create_name
                 MERGE (this0)-[this0_relationship_this0_genres_connectOrCreate0:IN_GENRE]->(this0_genres_connectOrCreate0)
-                RETURN this0
+                RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
                 }
-                RETURN
-                this0 { .title } AS this0"
+                WITH this0, this0_mutateMeta as mutateMeta
+                RETURN mutateMeta, this0 { .title } AS this0"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                    "{
-                        \\"this0_title\\": \\"Cool Movie\\",
-                        \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
-                        \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
-                        \\"auth\\": {
-                            \\"isAuthenticated\\": true,
-                            \\"roles\\": [],
-                            \\"jwt\\": {
-                                \\"roles\\": []
-                            }
-                        }
-                    }"
-                    `);
+                "{
+                    \\"this0_title\\": \\"Cool Movie\\",
+                    \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
+                    \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {}
+                    }
+                }"
+            `);
         });
 
         test("Create with createOrConnect and CREATE operation rule", async () => {
@@ -126,26 +124,24 @@ describe("connectOrCreate", () => {
                 SET
                 this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate0_on_create_name
                 MERGE (this0)-[this0_relationship_this0_genres_connectOrCreate0:IN_GENRE]->(this0_genres_connectOrCreate0)
-                RETURN this0
+                RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
                 }
-                RETURN
-                this0 { .title } AS this0"
+                WITH this0, this0_mutateMeta as mutateMeta
+                RETURN mutateMeta, this0 { .title } AS this0"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                            "{
-                                \\"this0_title\\": \\"Cool Movie\\",
-                                \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
-                                \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
-                                \\"auth\\": {
-                                    \\"isAuthenticated\\": true,
-                                    \\"roles\\": [],
-                                    \\"jwt\\": {
-                                        \\"roles\\": []
-                                    }
-                                }
-                            }"
-                            `);
+                "{
+                    \\"this0_title\\": \\"Cool Movie\\",
+                    \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
+                    \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {}
+                    }
+                }"
+            `);
         });
 
         test("Create with createOrConnect and CREATE, CONNECT operation rule", async () => {
@@ -169,26 +165,24 @@ describe("connectOrCreate", () => {
                 SET
                 this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate0_on_create_name
                 MERGE (this0)-[this0_relationship_this0_genres_connectOrCreate0:IN_GENRE]->(this0_genres_connectOrCreate0)
-                RETURN this0
+                RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
                 }
-                RETURN
-                this0 { .title } AS this0"
+                WITH this0, this0_mutateMeta as mutateMeta
+                RETURN mutateMeta, this0 { .title } AS this0"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                            "{
-                                \\"this0_title\\": \\"Cool Movie\\",
-                                \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
-                                \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
-                                \\"auth\\": {
-                                    \\"isAuthenticated\\": true,
-                                    \\"roles\\": [],
-                                    \\"jwt\\": {
-                                        \\"roles\\": []
-                                    }
-                                }
-                            }"
-                            `);
+                "{
+                    \\"this0_title\\": \\"Cool Movie\\",
+                    \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
+                    \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {}
+                    }
+                }"
+            `);
         });
 
         test("Create with createOrConnect and DELETE operation rule", async () => {
@@ -211,10 +205,10 @@ describe("connectOrCreate", () => {
                 SET
                 this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate0_on_create_name
                 MERGE (this0)-[this0_relationship_this0_genres_connectOrCreate0:IN_GENRE]->(this0_genres_connectOrCreate0)
-                RETURN this0
+                RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
                 }
-                RETURN
-                this0 { .title } AS this0"
+                WITH this0, this0_mutateMeta as mutateMeta
+                RETURN mutateMeta, this0 { .title } AS this0"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -262,6 +256,7 @@ describe("connectOrCreate", () => {
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
                 WITH this
+                WITH this
                 CALL {
                 	WITH this
                 	CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -272,7 +267,7 @@ describe("connectOrCreate", () => {
                 MERGE (this)-[this_relationship_this_genres0_connectOrCreate0:IN_GENRE]->(this_genres0_connectOrCreate0)
                 	RETURN COUNT(*)
                 }
-                RETURN this { .title } AS this"
+                RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .title } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -280,12 +275,13 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_genres0_connectOrCreate0_node_name\\": \\"Horror\\",
                     \\"this_genres0_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"this_update\\": {
+                        \\"title\\": \\"Cool Movie\\"
+                    },
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {
-                            \\"roles\\": []
-                        }
+                        \\"jwt\\": {}
                     }
                 }"
             `);
@@ -306,6 +302,7 @@ describe("connectOrCreate", () => {
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
                 WITH this
+                WITH this
                 CALL {
                 	WITH this
                 	CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -316,7 +313,7 @@ describe("connectOrCreate", () => {
                 MERGE (this)-[this_relationship_this_genres0_connectOrCreate0:IN_GENRE]->(this_genres0_connectOrCreate0)
                 	RETURN COUNT(*)
                 }
-                RETURN this { .title } AS this"
+                RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .title } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -324,12 +321,13 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_genres0_connectOrCreate0_node_name\\": \\"Horror\\",
                     \\"this_genres0_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"this_update\\": {
+                        \\"title\\": \\"Cool Movie\\"
+                    },
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {
-                            \\"roles\\": []
-                        }
+                        \\"jwt\\": {}
                     }
                 }"
             `);
@@ -350,6 +348,7 @@ describe("connectOrCreate", () => {
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
                 WITH this
+                WITH this
                 CALL {
                 	WITH this
                 	CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -360,7 +359,7 @@ describe("connectOrCreate", () => {
                 MERGE (this)-[this_relationship_this_genres0_connectOrCreate0:IN_GENRE]->(this_genres0_connectOrCreate0)
                 	RETURN COUNT(*)
                 }
-                RETURN this { .title } AS this"
+                RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .title } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -368,12 +367,13 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_genres0_connectOrCreate0_node_name\\": \\"Horror\\",
                     \\"this_genres0_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"this_update\\": {
+                        \\"title\\": \\"Cool Movie\\"
+                    },
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {
-                            \\"roles\\": []
-                        }
+                        \\"jwt\\": {}
                     }
                 }"
             `);
@@ -394,6 +394,7 @@ describe("connectOrCreate", () => {
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
                 WITH this
+                WITH this
                 CALL {
                 	WITH this
                 	MERGE (this_genres0_connectOrCreate0:Genre { name: $this_genres0_connectOrCreate0_node_name })
@@ -403,14 +404,17 @@ describe("connectOrCreate", () => {
                 MERGE (this)-[this_relationship_this_genres0_connectOrCreate0:IN_GENRE]->(this_genres0_connectOrCreate0)
                 	RETURN COUNT(*)
                 }
-                RETURN this { .title } AS this"
+                RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .title } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_genres0_connectOrCreate0_node_name\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate0_on_create_name\\": \\"Horror\\"
+                    \\"this_genres0_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"this_update\\": {
+                        \\"title\\": \\"Cool Movie\\"
+                    }
                 }"
             `);
         });
@@ -452,20 +456,21 @@ describe("connectOrCreate", () => {
                 SET
                 this_connectOrCreate_genres0.name = $this_connectOrCreate_genres0_on_create_name
                 MERGE (this)-[this_relationship_this_connectOrCreate_genres0:IN_GENRE]->(this_connectOrCreate_genres0)
-                RETURN this { .title } AS this"
+                RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .title } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
+                    \\"this_update\\": {
+                        \\"title\\": \\"Cool Movie\\"
+                    },
                     \\"this_connectOrCreate_genres0_node_name\\": \\"Horror\\",
                     \\"this_connectOrCreate_genres0_on_create_name\\": \\"Horror\\",
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {
-                            \\"roles\\": []
-                        }
+                        \\"jwt\\": {}
                     }
                 }"
             `);
@@ -491,20 +496,21 @@ describe("connectOrCreate", () => {
                 SET
                 this_connectOrCreate_genres0.name = $this_connectOrCreate_genres0_on_create_name
                 MERGE (this)-[this_relationship_this_connectOrCreate_genres0:IN_GENRE]->(this_connectOrCreate_genres0)
-                RETURN this { .title } AS this"
+                RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .title } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
+                    \\"this_update\\": {
+                        \\"title\\": \\"Cool Movie\\"
+                    },
                     \\"this_connectOrCreate_genres0_node_name\\": \\"Horror\\",
                     \\"this_connectOrCreate_genres0_on_create_name\\": \\"Horror\\",
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {
-                            \\"roles\\": []
-                        }
+                        \\"jwt\\": {}
                     }
                 }"
             `);
@@ -530,20 +536,21 @@ describe("connectOrCreate", () => {
                 SET
                 this_connectOrCreate_genres0.name = $this_connectOrCreate_genres0_on_create_name
                 MERGE (this)-[this_relationship_this_connectOrCreate_genres0:IN_GENRE]->(this_connectOrCreate_genres0)
-                RETURN this { .title } AS this"
+                RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .title } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
+                    \\"this_update\\": {
+                        \\"title\\": \\"Cool Movie\\"
+                    },
                     \\"this_connectOrCreate_genres0_node_name\\": \\"Horror\\",
                     \\"this_connectOrCreate_genres0_on_create_name\\": \\"Horror\\",
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {
-                            \\"roles\\": []
-                        }
+                        \\"jwt\\": {}
                     }
                 }"
             `);
@@ -568,12 +575,15 @@ describe("connectOrCreate", () => {
                 SET
                 this_connectOrCreate_genres0.name = $this_connectOrCreate_genres0_on_create_name
                 MERGE (this)-[this_relationship_this_connectOrCreate_genres0:IN_GENRE]->(this_connectOrCreate_genres0)
-                RETURN this { .title } AS this"
+                RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .title } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
+                    \\"this_update\\": {
+                        \\"title\\": \\"Cool Movie\\"
+                    },
                     \\"this_connectOrCreate_genres0_node_name\\": \\"Horror\\",
                     \\"this_connectOrCreate_genres0_on_create_name\\": \\"Horror\\"
                 }"

@@ -98,9 +98,10 @@ describe("Node Directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Comment)
             WHERE EXISTS((this)<-[:HAS_POST]-(:Person)) AND ANY(this_creator IN [(this)<-[:HAS_POST]-(this_creator:Person) | this_creator] WHERE this_creator.id = $this_creator_id)
-            WITH this
             CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            DETACH DELETE this"
+            WITH this, [ metaVal IN [{type: 'Deleted', name: 'Post', id: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
+            DETACH DELETE this
+            RETURN mutateMeta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -108,15 +109,8 @@ describe("Node Directive", () => {
                 \\"this_creator_id\\": \\"123\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"id-01\\"
-                    }
+                    \\"roles\\": [],
+                    \\"jwt\\": {}
                 }
             }"
         `);

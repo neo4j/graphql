@@ -59,7 +59,7 @@ describe("Cypher Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.duration = $this_duration
-            RETURN this { .duration } as this"
+            RETURN this { .duration } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -97,7 +97,7 @@ describe("Cypher Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE datetime() + this.duration >= datetime() + $this_duration_GTE
-            RETURN this { .duration } as this"
+            RETURN this { .duration } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -138,10 +138,10 @@ describe("Cypher Duration", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.duration = $this0_duration
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
-            RETURN
-            this0 { .duration } AS this0"
+            WITH this0, this0_mutateMeta as mutateMeta
+            RETURN mutateMeta, this0 { .duration } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -182,7 +182,7 @@ describe("Cypher Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.duration = $this_update_duration
-            RETURN this { .id, .duration } AS this"
+            RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .id, .duration } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -197,6 +197,20 @@ describe("Cypher Duration", () => {
                     \\"nanoseconds\\": {
                         \\"low\\": 0,
                         \\"high\\": 0
+                    }
+                },
+                \\"this_update\\": {
+                    \\"duration\\": {
+                        \\"months\\": 0,
+                        \\"days\\": 4,
+                        \\"seconds\\": {
+                            \\"low\\": 0,
+                            \\"high\\": 0
+                        },
+                        \\"nanoseconds\\": {
+                            \\"low\\": 0,
+                            \\"high\\": 0
+                        }
                     }
                 }
             }"

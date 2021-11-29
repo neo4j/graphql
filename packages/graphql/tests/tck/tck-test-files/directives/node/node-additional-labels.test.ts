@@ -64,7 +64,7 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Film:Multimedia)
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -89,7 +89,7 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Film:Multimedia)
-            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor:Person)   | this_actors { .name } ] } as this"
+            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor:Person)   | this_actors { .name } ] } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -120,24 +120,26 @@ describe("Node directive with additionalLabels", () => {
             "CALL {
             CREATE (this0:Film:Multimedia)
             SET this0.id = $this0_id
-            WITH this0
+            WITH this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
+            WITH this0, this0_mutateMeta
             CREATE (this0_actors0_node:Actor:Person)
             SET this0_actors0_node.name = $this0_actors0_node_name
             MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Actor', id: id(this0_actors0_node), properties: this0_actors0_node},{type: 'Connected', name: 'Movie', relationshipName: 'ACTED_IN', toName: 'Actor', id: id(this0), toID: id(this0_actors0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
+            WITH this0, this0_mutateMeta as mutateMeta
             CALL {
             CREATE (this1:Film:Multimedia)
             SET this1.id = $this1_id
-            WITH this1
+            WITH this0, this1, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this1), properties: this1}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this1_mutateMeta
+            WITH this0, this1, this1_mutateMeta
             CREATE (this1_actors0_node:Actor:Person)
             SET this1_actors0_node.name = $this1_actors0_node_name
             MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
-            RETURN this1
+            RETURN this1, REDUCE(tmp1_this1_mutateMeta = [], tmp2_this1_mutateMeta IN COLLECT(this1_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Actor', id: id(this1_actors0_node), properties: this1_actors0_node},{type: 'Connected', name: 'Movie', relationshipName: 'ACTED_IN', toName: 'Actor', id: id(this1), toID: id(this1_actors0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this1_mutateMeta + tmp2_this1_mutateMeta) as this1_mutateMeta
             }
-            RETURN
-            this0 { .id } AS this0,
-            this1 { .id } AS this1"
+            WITH this0, this1, mutateMeta + this1_mutateMeta as mutateMeta
+            RETURN mutateMeta, this0 { .id } AS this0, this1 { .id } AS this1"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -167,7 +169,9 @@ describe("Node directive with additionalLabels", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Film:Multimedia)
             WHERE this.id = $this_id
-            DETACH DELETE this"
+            WITH this, [ metaVal IN [{type: 'Deleted', name: 'Movie', id: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
+            DETACH DELETE this
+            RETURN mutateMeta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -197,13 +201,16 @@ describe("Node directive with additionalLabels", () => {
             "MATCH (this:Film:Multimedia)
             WHERE this.id = $this_id
             SET this.id = $this_update_id
-            RETURN this { .id } AS this"
+            RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"1\\",
-                \\"this_update_id\\": \\"2\\"
+                \\"this_update_id\\": \\"2\\",
+                \\"this_update\\": {
+                    \\"id\\": \\"2\\"
+                }
             }"
         `);
     });

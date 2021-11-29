@@ -70,7 +70,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN this_likesAggregate_edge.someInt = $this_likesAggregate_edge_someInt_EQUAL
             \\", { this: this, this_likesAggregate_edge_someInt_EQUAL: $this_likesAggregate_edge_someInt_EQUAL }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -102,7 +102,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN this_likesAggregate_edge._someIntAlias = $this_likesAggregate_edge_someIntAlias_EQUAL
             \\", { this: this, this_likesAggregate_edge_someIntAlias_EQUAL: $this_likesAggregate_edge_someIntAlias_EQUAL }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -134,7 +134,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN this_likesAggregate_edge.someInt > $this_likesAggregate_edge_someInt_GT
             \\", { this: this, this_likesAggregate_edge_someInt_GT: $this_likesAggregate_edge_someInt_GT }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -166,7 +166,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN this_likesAggregate_edge.someInt >= $this_likesAggregate_edge_someInt_GTE
             \\", { this: this, this_likesAggregate_edge_someInt_GTE: $this_likesAggregate_edge_someInt_GTE }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -198,7 +198,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN this_likesAggregate_edge.someInt < $this_likesAggregate_edge_someInt_LT
             \\", { this: this, this_likesAggregate_edge_someInt_LT: $this_likesAggregate_edge_someInt_LT }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -230,7 +230,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN this_likesAggregate_edge.someInt <= $this_likesAggregate_edge_someInt_LTE
             \\", { this: this, this_likesAggregate_edge_someInt_LTE: $this_likesAggregate_edge_someInt_LTE }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -262,7 +262,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN avg(this_likesAggregate_edge.someInt) = $this_likesAggregate_edge_someInt_AVERAGE_EQUAL
             \\", { this: this, this_likesAggregate_edge_someInt_AVERAGE_EQUAL: $this_likesAggregate_edge_someInt_AVERAGE_EQUAL }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -291,7 +291,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN avg(this_likesAggregate_edge.someInt) > $this_likesAggregate_edge_someInt_AVERAGE_GT
             \\", { this: this, this_likesAggregate_edge_someInt_AVERAGE_GT: $this_likesAggregate_edge_someInt_AVERAGE_GT }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -320,7 +320,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN avg(this_likesAggregate_edge.someInt) >= $this_likesAggregate_edge_someInt_AVERAGE_GTE
             \\", { this: this, this_likesAggregate_edge_someInt_AVERAGE_GTE: $this_likesAggregate_edge_someInt_AVERAGE_GTE }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -349,7 +349,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN avg(this_likesAggregate_edge.someInt) < $this_likesAggregate_edge_someInt_AVERAGE_LT
             \\", { this: this, this_likesAggregate_edge_someInt_AVERAGE_LT: $this_likesAggregate_edge_someInt_AVERAGE_LT }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -378,7 +378,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN avg(this_likesAggregate_edge.someInt) <= $this_likesAggregate_edge_someInt_AVERAGE_LTE
             \\", { this: this, this_likesAggregate_edge_someInt_AVERAGE_LTE: $this_likesAggregate_edge_someInt_AVERAGE_LTE }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -408,7 +408,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_edge.someInt) AS this_likesAggregate_edge_someInt_SUM_EQUAL_SUM
             RETURN this_likesAggregate_edge_someInt_SUM_EQUAL_SUM = toFloat($this_likesAggregate_edge_someInt_SUM_EQUAL)
             \\", { this: this, this_likesAggregate_edge_someInt_SUM_EQUAL: $this_likesAggregate_edge_someInt_SUM_EQUAL }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -441,7 +441,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_edge.someInt) AS this_likesAggregate_edge_someInt_SUM_GT_SUM
             RETURN this_likesAggregate_edge_someInt_SUM_GT_SUM > toFloat($this_likesAggregate_edge_someInt_SUM_GT)
             \\", { this: this, this_likesAggregate_edge_someInt_SUM_GT: $this_likesAggregate_edge_someInt_SUM_GT }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -474,7 +474,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_edge.someInt) AS this_likesAggregate_edge_someInt_SUM_GTE_SUM
             RETURN this_likesAggregate_edge_someInt_SUM_GTE_SUM >= toFloat($this_likesAggregate_edge_someInt_SUM_GTE)
             \\", { this: this, this_likesAggregate_edge_someInt_SUM_GTE: $this_likesAggregate_edge_someInt_SUM_GTE }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -507,7 +507,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_edge.someInt) AS this_likesAggregate_edge_someInt_SUM_LT_SUM
             RETURN this_likesAggregate_edge_someInt_SUM_LT_SUM < toFloat($this_likesAggregate_edge_someInt_SUM_LT)
             \\", { this: this, this_likesAggregate_edge_someInt_SUM_LT: $this_likesAggregate_edge_someInt_SUM_LT }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -540,7 +540,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_edge.someInt) AS this_likesAggregate_edge_someInt_SUM_LTE_SUM
             RETURN this_likesAggregate_edge_someInt_SUM_LTE_SUM <= toFloat($this_likesAggregate_edge_someInt_SUM_LTE)
             \\", { this: this, this_likesAggregate_edge_someInt_SUM_LTE: $this_likesAggregate_edge_someInt_SUM_LTE }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -572,7 +572,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN  min(this_likesAggregate_edge.someInt) = $this_likesAggregate_edge_someInt_MIN_EQUAL
             \\", { this: this, this_likesAggregate_edge_someInt_MIN_EQUAL: $this_likesAggregate_edge_someInt_MIN_EQUAL }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -604,7 +604,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN  min(this_likesAggregate_edge.someInt) > $this_likesAggregate_edge_someInt_MIN_GT
             \\", { this: this, this_likesAggregate_edge_someInt_MIN_GT: $this_likesAggregate_edge_someInt_MIN_GT }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -636,7 +636,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN  min(this_likesAggregate_edge.someInt) >= $this_likesAggregate_edge_someInt_MIN_GTE
             \\", { this: this, this_likesAggregate_edge_someInt_MIN_GTE: $this_likesAggregate_edge_someInt_MIN_GTE }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -668,7 +668,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN  min(this_likesAggregate_edge.someInt) < $this_likesAggregate_edge_someInt_MIN_LT
             \\", { this: this, this_likesAggregate_edge_someInt_MIN_LT: $this_likesAggregate_edge_someInt_MIN_LT }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -700,7 +700,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN  min(this_likesAggregate_edge.someInt) <= $this_likesAggregate_edge_someInt_MIN_LTE
             \\", { this: this, this_likesAggregate_edge_someInt_MIN_LTE: $this_likesAggregate_edge_someInt_MIN_LTE }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -732,7 +732,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN  max(this_likesAggregate_edge.someInt) = $this_likesAggregate_edge_someInt_MAX_EQUAL
             \\", { this: this, this_likesAggregate_edge_someInt_MAX_EQUAL: $this_likesAggregate_edge_someInt_MAX_EQUAL }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -764,7 +764,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN  max(this_likesAggregate_edge.someInt) > $this_likesAggregate_edge_someInt_MAX_GT
             \\", { this: this, this_likesAggregate_edge_someInt_MAX_GT: $this_likesAggregate_edge_someInt_MAX_GT }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -796,7 +796,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN  max(this_likesAggregate_edge.someInt) >= $this_likesAggregate_edge_someInt_MAX_GTE
             \\", { this: this, this_likesAggregate_edge_someInt_MAX_GTE: $this_likesAggregate_edge_someInt_MAX_GTE }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -828,7 +828,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN  max(this_likesAggregate_edge.someInt) < $this_likesAggregate_edge_someInt_MAX_LT
             \\", { this: this, this_likesAggregate_edge_someInt_MAX_LT: $this_likesAggregate_edge_someInt_MAX_LT }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -860,7 +860,7 @@ describe("Cypher Aggregations where edge with Int", () => {
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
             RETURN  max(this_likesAggregate_edge.someInt) <= $this_likesAggregate_edge_someInt_MAX_LTE
             \\", { this: this, this_likesAggregate_edge_someInt_MAX_LTE: $this_likesAggregate_edge_someInt_MAX_LTE }, false )
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

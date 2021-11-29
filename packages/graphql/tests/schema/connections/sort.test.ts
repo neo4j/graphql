@@ -41,6 +41,7 @@ describe("Sort", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CreateInfo {
@@ -190,6 +191,18 @@ describe("Sort", () => {
             \\"\\"\\"Fields to sort Node1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Node1Sort object.\\"\\"\\"
             input Node1Sort {
               property: SortDirection
+            }
+
+            type Node1SubscriptionResponse {
+              id: Int!
+              name: String!
+              node1: Node1
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
             }
 
             input Node1UpdateInput {
@@ -360,6 +373,18 @@ describe("Sort", () => {
               relatedTo: [Node2RelatedToCreateFieldInput!]
             }
 
+            type Node2SubscriptionResponse {
+              id: Int!
+              name: String!
+              node2: Node2
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input Node2UpdateInput {
               relatedTo: [Node2RelatedToUpdateFieldInput!]
             }
@@ -372,6 +397,14 @@ describe("Sort", () => {
               relatedToConnection: Node2RelatedToConnectionWhere
               relatedToConnection_NOT: Node2RelatedToConnectionWhere
               relatedTo_NOT: Node1Where
+            }
+
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -401,6 +434,52 @@ describe("Sort", () => {
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Node1\\"\\"\\"
+              subscribeToNode1(filter: SubscriptionFilter, where: Node1Where): Node1SubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Node2\\"\\"\\"
+              subscribeToNode2(filter: SubscriptionFilter, where: Node2Where): Node2SubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             type UpdateInfo {

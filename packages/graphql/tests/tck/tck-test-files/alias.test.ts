@@ -78,7 +78,7 @@ describe("Cypher Alias", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             RETURN this { movieId: this.id, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor)   | this_actors { aliasActorsName: this_actors.name } ], custom: [this_custom IN apoc.cypher.runFirstColumn(\\"MATCH (m:Movie)
-            RETURN m\\", {this: this, auth: $auth}, true) | this_custom { aliasCustomId: this_custom.id }] } as this"
+            RETURN m\\", {this: this, auth: $auth}, true) | this_custom { aliasCustomId: this_custom.id }] } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -86,9 +86,7 @@ describe("Cypher Alias", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"jwt\\": {}
                 }
             }"
         `);

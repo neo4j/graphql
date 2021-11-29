@@ -46,6 +46,7 @@ describe("Aggregations", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
@@ -191,6 +192,18 @@ describe("Aggregations", () => {
               title: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              id: Int!
+              movie: Movie
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               createdAt: DateTime
               id: ID
@@ -310,6 +323,14 @@ describe("Aggregations", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -331,6 +352,50 @@ describe("Aggregations", () => {
             type StringAggregateSelectionNullable {
               longest: String
               shortest: String
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(filter: SubscriptionFilter, where: MovieWhere): MovieSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
@@ -397,6 +462,7 @@ describe("Aggregations", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
@@ -630,6 +696,14 @@ describe("Aggregations", () => {
               deleteUsers(where: UserWhere): DeleteInfo!
               updatePosts(connect: PostConnectInput, create: PostRelationInput, delete: PostDeleteInput, disconnect: PostDisconnectInput, update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
+
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -1131,6 +1205,18 @@ describe("Aggregations", () => {
               title: SortDirection
             }
 
+            type PostSubscriptionResponse {
+              id: Int!
+              name: String!
+              post: Post
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+            }
+
             input PostUpdateInput {
               likes: [PostLikesUpdateFieldInput!]
               title: String
@@ -1207,6 +1293,52 @@ describe("Aggregations", () => {
             type StringAggregateSelectionNullable {
               longest: String
               shortest: String
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Post\\"\\"\\"
+              subscribeToPost(filter: SubscriptionFilter, where: PostWhere): PostSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from User\\"\\"\\"
+              subscribeToUser(filter: SubscriptionFilter, where: UserWhere): UserSubscriptionResponse!
+            }
+
+            input SubscriptionFilter {
+              handle: String
+              handle_IN: [String!]
+              handle_NOT: String
+              handle_NOT_IN: [String!]
+              handle_UNDEFINED: Boolean
+              id: Int
+              id_IN: [Int!]
+              id_NOT: Int
+              id_NOT_IN: [Int!]
+              id_UNDEFINED: Boolean
+              propsUpdated: [String!]
+              relationshipID: Int
+              relationshipID_IN: [Int!]
+              relationshipID_NOT: Int
+              relationshipID_NOT_IN: [Int!]
+              relationshipID_UNDEFINED: Boolean
+              relationshipName: String
+              relationshipName_IN: [String!]
+              relationshipName_NOT: String
+              relationshipName_NOT_IN: [String!]
+              relationshipName_UNDEFINED: Boolean
+              toID: Int
+              toID_IN: [Int!]
+              toID_NOT: Int
+              toID_NOT_IN: [Int!]
+              toID_UNDEFINED: Boolean
+              toName: String
+              toName_IN: [String!]
+              toName_NOT: String
+              toName_NOT_IN: [String!]
+              toName_UNDEFINED: Boolean
+              type: NodeUpdatedType
+              type_IN: [NodeUpdatedType!]
+              type_NOT: NodeUpdatedType
+              type_NOT_IN: [NodeUpdatedType!]
+              type_UNDEFINED: Boolean
             }
 
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
@@ -1298,6 +1430,18 @@ describe("Aggregations", () => {
               someLocalTime: SortDirection
               someString: SortDirection
               someTime: SortDirection
+            }
+
+            type UserSubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toName: String
+              type: String!
+              user: User
             }
 
             input UserUpdateInput {

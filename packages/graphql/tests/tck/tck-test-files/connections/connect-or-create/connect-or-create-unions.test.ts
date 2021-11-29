@@ -125,10 +125,10 @@ describe("Create or connect with unions", () => {
             ON CREATE
             SET
             this0_relationship_this0_actedIn_Series_connectOrCreate0.screentime = $this0_relationship_this0_actedIn_Series_connectOrCreate0_on_create_screentime
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Actor', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
-            RETURN
-            this0 { .name } AS this0"
+            WITH this0, this0_mutateMeta as mutateMeta
+            RETURN mutateMeta, this0 { .name } AS this0"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -197,6 +197,7 @@ describe("Create or connect with unions", () => {
             WHERE this.name = $this_name
             SET this.name = $this_update_name
             WITH this
+            WITH this
             CALL {
             	WITH this
             	MERGE (this_actedIn_Movie0_connectOrCreate0:Movie { isan: $this_actedIn_Movie0_connectOrCreate0_node_isan })
@@ -224,7 +225,7 @@ describe("Create or connect with unions", () => {
             this_relationship_this_actedIn_Series0_connectOrCreate0.screentime = $this_relationship_this_actedIn_Series0_connectOrCreate0_on_create_screentime
             	RETURN COUNT(*)
             }
-            RETURN this { .name } AS this"
+            RETURN [ metaVal IN [{type: 'Updated', name: 'Actor', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -244,6 +245,9 @@ describe("Create or connect with unions", () => {
                 \\"this_relationship_this_actedIn_Series0_connectOrCreate0_on_create_screentime\\": {
                     \\"low\\": 126,
                     \\"high\\": 0
+                },
+                \\"this_update\\": {
+                    \\"name\\": \\"Tom Hanks\\"
                 }
             }"
         `);

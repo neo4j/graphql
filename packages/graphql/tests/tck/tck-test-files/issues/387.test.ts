@@ -86,7 +86,7 @@ describe("#387", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Place)
-            RETURN this { url_works:  apoc.cypher.runFirstColumn(\\"return '' + ''\\", {this: this, auth: $auth}, false), url_fails:  apoc.cypher.runFirstColumn(\\"return '' + ''\\", {this: this, auth: $auth}, false), url_array_works:  apoc.cypher.runFirstColumn(\\"return ['' + '']\\", {this: this, auth: $auth}, false), url_array_fails:  apoc.cypher.runFirstColumn(\\"return ['' + '']\\", {this: this, auth: $auth}, false) } as this"
+            RETURN this { url_works:  apoc.cypher.runFirstColumn(\\"return '' + ''\\", {this: this, auth: $auth}, false), url_fails:  apoc.cypher.runFirstColumn(\\"return '' + ''\\", {this: this, auth: $auth}, false), url_array_works:  apoc.cypher.runFirstColumn(\\"return ['' + '']\\", {this: this, auth: $auth}, false), url_array_fails:  apoc.cypher.runFirstColumn(\\"return ['' + '']\\", {this: this, auth: $auth}, false) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -94,9 +94,7 @@ describe("#387", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"jwt\\": {}
                 }
             }"
         `);

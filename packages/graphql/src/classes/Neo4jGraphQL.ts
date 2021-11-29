@@ -146,10 +146,10 @@ class Neo4jGraphQL {
     }
 
     // Mutates context to add authentication information (.jwt and .auth)
-    public authenticateContext(context: Context) {
+    public async authenticateContext(context: Context) {
 
         if (!context.jwt) {
-            context.jwt = getJWT(context);
+            context.jwt = await getJWT(context);
         }
 
         // temporary cast to as any, remove when type is fixed
@@ -193,13 +193,7 @@ class Neo4jGraphQL {
             }
 
             context.resolveTree = getNeo4jResolveTree(resolveInfo);
-            this.authenticateContext(context);
-
-            if (!context.jwt) {
-                context.jwt = await getJWT(context);
-            }
-
-            context.auth = createAuthParam({ context });
+            await this.authenticateContext(context);
 
             context.queryOptions = config.queryOptions;
             return obj;
