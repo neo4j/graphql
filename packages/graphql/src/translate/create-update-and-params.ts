@@ -29,6 +29,7 @@ import createConnectAndParams from "./create-connect-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
+import createRelationshipValidationStr from "./create-relationship-validation-str";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import { wrapInCall } from "./utils/wrap-in-call";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
@@ -54,6 +55,7 @@ function createUpdateAndParams({
     withProjector,
     context,
     parameterPrefix,
+    fromTopLevel,
 }: {
     parentVar: string;
     updateInput: any;
@@ -64,6 +66,7 @@ function createUpdateAndParams({
     insideDoWhen?: boolean;
     context: Context;
     parameterPrefix: string;
+    fromTopLevel?: boolean;
 }): [string, any] {
     let hasAppliedTimeStamps = false;
 
@@ -608,6 +611,13 @@ function createUpdateAndParams({
         cypher.push(`${ withProjector.nextWith() }`);
         cypher.push(`${apocStr}`);
     }
+
+    const relationshipValidationStr = !fromTopLevel ? createRelationshipValidationStr({ node, context, varName }) : "";
+    if (relationshipValidationStr) {
+        cypher.push(`${ withProjector.nextWith() }`);
+        cypher.push(relationshipValidationStr);
+    }
+
 
     const str = cypher.join('\n');
 
