@@ -376,7 +376,9 @@ describe("Cypher Create", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 }
             }"
         `);

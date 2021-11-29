@@ -301,7 +301,9 @@ describe("Label in Node directive", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 },
                 \\"updateMovies\\": {
                     \\"args\\": {

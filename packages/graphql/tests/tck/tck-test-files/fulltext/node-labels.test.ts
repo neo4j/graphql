@@ -103,7 +103,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
                 $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
             WHERE \\"Movie\\" IN labels(this) AND \\"some-label\\" IN labels(this)
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

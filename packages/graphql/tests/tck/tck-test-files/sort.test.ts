@@ -111,7 +111,9 @@ describe("Cypher sort tests", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 }
             }"
         `);
@@ -258,7 +260,9 @@ describe("Cypher sort tests", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 }
             }"
         `);

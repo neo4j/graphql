@@ -97,7 +97,9 @@ describe("connectOrCreate", () => {
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {}
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
                     }
                 }"
             `);
@@ -138,7 +140,9 @@ describe("connectOrCreate", () => {
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {}
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
                     }
                 }"
             `);
@@ -179,7 +183,9 @@ describe("connectOrCreate", () => {
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {}
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
                     }
                 }"
             `);
@@ -281,7 +287,9 @@ describe("connectOrCreate", () => {
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {}
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
                     }
                 }"
             `);
@@ -327,7 +335,9 @@ describe("connectOrCreate", () => {
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {}
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
                     }
                 }"
             `);
@@ -373,7 +383,9 @@ describe("connectOrCreate", () => {
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {}
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
                     }
                 }"
             `);
@@ -470,7 +482,9 @@ describe("connectOrCreate", () => {
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {}
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
                     }
                 }"
             `);
@@ -510,7 +524,9 @@ describe("connectOrCreate", () => {
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {}
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
                     }
                 }"
             `);
@@ -550,7 +566,9 @@ describe("connectOrCreate", () => {
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
-                        \\"jwt\\": {}
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
                     }
                 }"
             `);

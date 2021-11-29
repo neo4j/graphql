@@ -95,8 +95,15 @@ describe("Cypher Auth isAuthenticated", () => {
             "{
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"jwt\\": {
+                        \\"roles\\": [
+                            \\"admin\\"
+                        ],
+                        \\"sub\\": \\"super_admin\\"
+                    }
                 }
             }"
         `);
@@ -130,8 +137,15 @@ describe("Cypher Auth isAuthenticated", () => {
             "{
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"jwt\\": {
+                        \\"roles\\": [
+                            \\"admin\\"
+                        ],
+                        \\"sub\\": \\"super_admin\\"
+                    }
                 }
             }"
         `);
@@ -165,8 +179,15 @@ describe("Cypher Auth isAuthenticated", () => {
             "{
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"jwt\\": {
+                        \\"roles\\": [
+                            \\"admin\\"
+                        ],
+                        \\"sub\\": \\"super_admin\\"
+                    }
                 }
             }"
         `);
@@ -205,8 +226,15 @@ describe("Cypher Auth isAuthenticated", () => {
                 \\"this0_id\\": \\"1\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"jwt\\": {
+                        \\"roles\\": [
+                            \\"admin\\"
+                        ],
+                        \\"sub\\": \\"super_admin\\"
+                    }
                 }
             }"
         `);
@@ -249,8 +277,15 @@ describe("Cypher Auth isAuthenticated", () => {
                 \\"this0_password\\": \\"super-password\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"jwt\\": {
+                        \\"roles\\": [
+                            \\"admin\\"
+                        ],
+                        \\"sub\\": \\"super_admin\\"
+                    }
                 }
             }"
         `);
@@ -289,8 +324,15 @@ describe("Cypher Auth isAuthenticated", () => {
                 },
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"jwt\\": {
+                        \\"roles\\": [
+                            \\"admin\\"
+                        ],
+                        \\"sub\\": \\"super_admin\\"
+                    }
                 }
             }"
         `);
@@ -329,8 +371,15 @@ describe("Cypher Auth isAuthenticated", () => {
                 },
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"jwt\\": {
+                        \\"roles\\": [
+                            \\"admin\\"
+                        ],
+                        \\"sub\\": \\"super_admin\\"
+                    }
                 }
             }"
         `);
@@ -376,8 +425,15 @@ describe("Cypher Auth isAuthenticated", () => {
             "{
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"jwt\\": {
+                        \\"roles\\": [
+                            \\"admin\\"
+                        ],
+                        \\"sub\\": \\"super_admin\\"
+                    }
                 }
             }"
         `);
@@ -430,8 +486,15 @@ describe("Cypher Auth isAuthenticated", () => {
                 },
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"jwt\\": {
+                        \\"roles\\": [
+                            \\"admin\\"
+                        ],
+                        \\"sub\\": \\"super_admin\\"
+                    }
                 }
             }"
         `);
@@ -463,8 +526,15 @@ describe("Cypher Auth isAuthenticated", () => {
             "{
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"jwt\\": {
+                        \\"roles\\": [
+                            \\"admin\\"
+                        ],
+                        \\"sub\\": \\"super_admin\\"
+                    }
                 }
             }"
         `);
@@ -503,8 +573,15 @@ describe("Cypher Auth isAuthenticated", () => {
             "{
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"jwt\\": {
+                        \\"roles\\": [
+                            \\"admin\\"
+                        ],
+                        \\"sub\\": \\"super_admin\\"
+                    }
                 }
             }"
         `);

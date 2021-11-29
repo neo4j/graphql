@@ -122,7 +122,9 @@ describe("Interface Relationships - Update update", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 },
                 \\"updateActors\\": {
                     \\"args\\": {
@@ -226,7 +228,9 @@ describe("Interface Relationships - Update update", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 },
                 \\"updateActors\\": {
                     \\"args\\": {
@@ -327,7 +331,9 @@ describe("Interface Relationships - Update update", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 },
                 \\"this_update_actedIn0_on_Movie_actors0_name\\": \\"New Actor Name\\",
                 \\"this_update_actedIn0_on_Movie_actors0\\": {
@@ -448,7 +454,9 @@ describe("Interface Relationships - Update update", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 },
                 \\"this_update_actedIn0_on_Movie_actors0_name\\": \\"Different Actor Name\\",
                 \\"this_update_actedIn0_on_Movie_actors0\\": {

@@ -107,7 +107,9 @@ describe("#601", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 }
             }"
         `);

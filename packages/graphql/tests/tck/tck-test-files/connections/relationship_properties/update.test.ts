@@ -180,7 +180,9 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 },
                 \\"updateMovies\\": {
                     \\"args\\": {

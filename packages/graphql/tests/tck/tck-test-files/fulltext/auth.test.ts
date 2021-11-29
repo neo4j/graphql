@@ -72,7 +72,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
             WHERE EXISTS((this)<-[:DIRECTED]-(:Person)) AND ALL(director IN [(this)<-[:DIRECTED]-(director:Person) | director] WHERE director.id IS NOT NULL AND director.id = $this_auth_where0_director_id)
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(result.params).toMatchObject({
@@ -129,7 +129,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
             CALL apoc.util.validate(NOT(EXISTS((this)<-[:DIRECTED]-(:Person)) AND ANY(director IN [(this)<-[:DIRECTED]-(director:Person) | director] WHERE director.id IS NOT NULL AND director.id = $this_auth_allow0_director_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(result.params).toMatchObject({

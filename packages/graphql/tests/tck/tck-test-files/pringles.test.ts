@@ -312,7 +312,9 @@ describe("Cypher Create Pringles", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 },
                 \\"updateProducts\\": {
                     \\"args\\": {

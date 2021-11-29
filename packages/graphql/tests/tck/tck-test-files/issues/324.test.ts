@@ -142,7 +142,9 @@ describe("#324", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 },
                 \\"updatePeople\\": {
                     \\"args\\": {

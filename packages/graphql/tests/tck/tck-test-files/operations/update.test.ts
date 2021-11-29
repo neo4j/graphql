@@ -133,7 +133,9 @@ describe("Cypher Update", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 },
                 \\"updateMovies\\": {
                     \\"args\\": {
@@ -232,7 +234,9 @@ describe("Cypher Update", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 },
                 \\"this_update_actors0\\": {
                     \\"name\\": \\"new actor name\\"
@@ -781,7 +785,9 @@ describe("Cypher Update", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
                 },
                 \\"updateMovies\\": {
                     \\"args\\": {

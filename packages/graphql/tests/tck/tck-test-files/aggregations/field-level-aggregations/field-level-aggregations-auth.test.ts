@@ -76,7 +76,10 @@ describe("Field Level Aggregations", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": [],
+                        \\"sub\\": \\"super_admin\\"
+                    }
                 }
             }"
         `);
@@ -109,7 +112,10 @@ describe("Field Level Aggregations", () => {
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
-                    \\"jwt\\": {}
+                    \\"jwt\\": {
+                        \\"roles\\": [],
+                        \\"sub\\": \\"super_admin\\"
+                    }
                 }
             }"
         `);

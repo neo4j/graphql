@@ -82,13 +82,13 @@ describe("Cypher Auth Projection On Connections", () => {
             WITH collect({ node: { content: this_post.content } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS postsConnection
             }
-            RETURN this { .name, postsConnection } as this"
+            RETURN this { .name, postsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_post_auth_allow0_creator_id\\": \\"super_admin\\",
-                \\"this_auth_allow0_id\\": \\"super_admin\\"
+                \\"this_auth_allow0_id\\": \\"super_admin\\",
+                \\"this_post_auth_allow0_creator_id\\": \\"super_admin\\"
             }"
         `);
     });
