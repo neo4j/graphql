@@ -280,16 +280,14 @@ function createUpdateAndParams({
                             
                             const setRelationshipParameterPrefix = `${parameterPrefix}.${key}${
                                 relationField.union ? `.${refNode.name}` : ""
-                            }[${index}].update.edge`;
+                            }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`;
 
                             const setProperties = createSetRelationshipProperties({
                                 properties: update.update.edge,
                                 varName: relationshipVariable,
                                 relationship,
                                 operation: "UPDATE",
-                                parameterPrefix: `${parameterPrefix}.${key}${
-                                    relationField.union ? `.${refNode.name}` : ""
-                                }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
+                                parameterPrefix: setRelationshipParameterPrefix,
                             });
 
                             childWithProjector.markMutationMeta({
