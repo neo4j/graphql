@@ -197,14 +197,12 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
           }, {})
         : {};
 
-    const returnStatement = nodeProjection ? withProjector.nextReturn(projections) : "RETURN 'Query cannot conclude with CALL'";
-
     const cypher = [
         `${createStrs.join("\n")}`,
         authCalls,
         ...replacedConnectionStrs,
         ...replacedInterfaceStrs,
-        returnStatement,
+        withProjector.nextReturn(projections),
     ];
 
     return [

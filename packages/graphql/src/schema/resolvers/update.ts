@@ -36,24 +36,27 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
             context,
         });
 
-        const responseField = info.fieldNodes[0].selectionSet?.selections.find(
-            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({ camelCase: true })
-        ) as FieldNode; // Field exist by construction and must be selected as it is the only field.
-
-        const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
-
         publishMutateMeta({
             context,
             executeResult,
         });
 
-        return {
+        const response = {
             info: {
                 bookmark: executeResult.bookmark,
                 ...executeResult.statistics,
             },
-            [responseKey]: executeResult.records.map((x) => x.this),
         };
+
+        const responseField = info.fieldNodes[0].selectionSet?.selections.find(
+            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({ camelCase: true })
+        ) as FieldNode; // Field exist by construction and must be selected as it is the only field.
+        if (responseField) {
+            const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
+            response[responseKey] = executeResult.records.map((x) => x.this);
+        }
+
+        return response;
     }
     const relationFields: Record<string, string> = node.relationFields.length
         ? {

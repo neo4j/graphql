@@ -6,17 +6,19 @@ services:
         ports:
             - 7474:7474
             - 7687:7687
+            - 6362:6362
         environment:
-            - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
-            - NEO4J_AUTH=neo4j/test
-            - NEO4J_dbms_security_procedures_unrestricted=apoc.*
-            - NEO4JLABS_PLUGINS=["apoc"]
-            - NEO4J_dbms_security_procedures_whitelist=apoc.*
+            NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
+            NEO4J_AUTH: neo4j/test
+            NEO4JLABS_PLUGINS: '["apoc"]'
+            NEO4J_dbms_security_procedures_unrestricted: apoc.*
+            NEO4J_dbms_security_procedures_allowlist: apoc.*
         volumes:
-            - $HOME/neo4j/data:/data
-            - $HOME/neo4j/logs:/logs
-            - $HOME/neo4j/import:/var/lib/neo4j/import
-            - $HOME/neo4j/plugins:/plugins
+            - "neo-data:/data"
+            - "neo-data:/conf"
+            - "neo-data:/plugins"
+            - "neo-data:/import"
+            - "neo-data:/logs"
         healthcheck:
             test: wget http://localhost:7474/browser -O -
             interval: 1s
@@ -32,3 +34,6 @@ services:
     #     depends_on:
     #         neo4j-service:
     #             condition: service_healthy
+
+volumes:
+  neo-data:

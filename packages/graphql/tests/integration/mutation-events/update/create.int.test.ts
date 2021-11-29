@@ -42,24 +42,24 @@ describe("interface relationships", () => {
             type Episode {
                 title: String!
                 runtime: Int!
-                series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
+                series: Series @relationship(type: "HAS_EPISODE", direction: IN)
             }
 
             interface Production {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type Movie implements Production {
                 title: String!
                 runtime: Int!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type Series implements Production {
                 title: String!
-                episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                episodes: [Episode] @relationship(type: "HAS_EPISODE", direction: OUT)
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             interface ActedIn @relationshipProperties {
@@ -68,7 +68,7 @@ describe("interface relationships", () => {
 
             type Actor {
                 name: String!
-                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [Production] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
 

@@ -93,6 +93,8 @@ describe("Relationship Properties Connect Cypher", () => {
             RETURN REDUCE(tmp1_this0_actors_connect_mutateMeta = [], tmp2_this0_actors_connect_mutateMeta IN COLLECT(this0_actors_connect_mutateMeta) | tmp1_this0_actors_connect_mutateMeta + tmp2_this0_actors_connect_mutateMeta) as this0_actors_connect_mutateMeta
             }
             WITH this0, this0_mutateMeta + this0_actors_connect_mutateMeta as this0_mutateMeta
+            WITH this0, this0_mutateMeta
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
             WITH this0, this0_mutateMeta as mutateMeta
@@ -166,6 +168,8 @@ describe("Relationship Properties Connect Cypher", () => {
             RETURN REDUCE(tmp1_this0_actors_connect_mutateMeta = [], tmp2_this0_actors_connect_mutateMeta IN COLLECT(this0_actors_connect_mutateMeta) | tmp1_this0_actors_connect_mutateMeta + tmp2_this0_actors_connect_mutateMeta) as this0_actors_connect_mutateMeta
             }
             WITH this0, this0_mutateMeta + this0_actors_connect_mutateMeta as this0_mutateMeta
+            WITH this0, this0_mutateMeta
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
             WITH this0, this0_mutateMeta as mutateMeta

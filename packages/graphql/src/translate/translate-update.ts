@@ -424,13 +424,10 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         withInterfaces.forEach((name) => withProjector.removeVariable(name));
     }
 
-    cypher.push(nodeProjection
-        ? withProjector.nextReturn([{
-                initialVariable: varName,
-                str: projStr,
-            }], {})
-        : `RETURN 'Query cannot conclude with CALL'`
-    );
+    cypher.push( withProjector.nextReturn([{
+        initialVariable: varName,
+        str: projStr,
+    }], {}) );
 
     return [
         cypher.filter(Boolean).join("\n"),

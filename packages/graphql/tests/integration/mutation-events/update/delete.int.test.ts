@@ -43,7 +43,7 @@ describe("mutation events (update > delete)", () => {
             type Movie {
                 title: String!
                 runtime: Int!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             interface ActedIn @relationshipProperties {
@@ -52,7 +52,7 @@ describe("mutation events (update > delete)", () => {
 
             type Actor {
                 name: String!
-                actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
 

@@ -155,7 +155,9 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
             CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
             SET this_actors0.name = $this_update_actors0_name
-            RETURN this, this_actors0, this_acted_in0_relationship, [ metaVal IN [{type: 'Updated', name: 'Actor', id: id(this_actors0), properties: $this_update_actors0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
+            WITH this, this_actors0, this_acted_in0_relationship, [ metaVal IN [{type: 'Updated', name: 'Actor', id: id(this_actors0), properties: $this_update_actors0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this_actors0)-[:ACTED_IN]->(:Movie))), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.movies required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
+            RETURN this, this_actors0, this_acted_in0_relationship, mutateMeta
             \\", \\"\\", {this:this, this_actors0:this_actors0, this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name,this_update_actors0:$this_update_actors0})
             YIELD value
             WITH this, this_actors0, this_acted_in0_relationship, value.mutateMeta as mutateMeta

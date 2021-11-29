@@ -35,11 +35,6 @@ export default function createResolver({ node }: { node: Node }) {
             context,
         });
 
-        const responseField = info.fieldNodes[0].selectionSet?.selections.find(
-            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({ camelCase: true })
-        ) as FieldNode; // Field exist by construction and must be selected as it is the only field.
-
-        const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
         const record = executeResult.records[0] || {};
         if (record.mutateMeta) {
             publishMutateMeta({
@@ -49,15 +44,24 @@ export default function createResolver({ node }: { node: Node }) {
             delete record.mutateMeta;
         }
 
-        const result = Object.values(record);
-
-        return {
+        const response = {
             info: {
                 bookmark: executeResult.bookmark,
                 ...executeResult.statistics,
             },
-            [responseKey]: result,
         };
+
+        const responseField = info.fieldNodes[0].selectionSet?.selections.find(
+            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({ camelCase: true })
+        ) as FieldNode; // Field exist by construction and must be selected as it is the only field.
+        if (responseField) {
+    
+            const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
+            const result = Object.values(record);
+            response[responseKey] = result;
+        }
+
+        return response;
     }
 
     return {
