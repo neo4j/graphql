@@ -73,6 +73,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             parentVar: varName,
             withProjector,
             parameterPrefix: `${resolveTree.name}.args.update`,
+            fromTopLevel: true,
         });
         const [updateStr] = updateAndParams;
         cypher.push(updateStr);
