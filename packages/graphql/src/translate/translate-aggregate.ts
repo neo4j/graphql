@@ -92,9 +92,10 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
         if (field) {
             const thisProjections: string[] = [];
-            const aggregateFields =
-                selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNullable`] ||
-                selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNonNullable`];
+            const aggregateFields = selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelection`];
+            // const aggregateFields =
+            //     selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNullable`] ||
+            //     selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNonNullable`]; // TODO: #605 Breaking change, uncomment for 3.0
 
             Object.entries(aggregateFields).forEach((entry) => {
                 // "min" | "max" | "average" | "sum" | "shortest" | "longest"
