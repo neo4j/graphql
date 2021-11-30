@@ -308,11 +308,11 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         expect(typeDefs).toMatchInlineSnapshot(`
             "type EmptyNode {
-            	relationshipFullNodes: [FullNode] @relationship(type: \\"RELATIONSHIP\\", direction: OUT)
+            	relationshipFullNodes: [FullNode!]! @relationship(type: \\"RELATIONSHIP\\", direction: OUT)
             }
 
             type FullNode {
-            	emptyNodesRelationship: [EmptyNode] @relationship(type: \\"RELATIONSHIP\\", direction: IN)
+            	emptyNodesRelationship: [EmptyNode!]! @relationship(type: \\"RELATIONSHIP\\", direction: IN)
             	prop: BigInt!
             }"
         `);
