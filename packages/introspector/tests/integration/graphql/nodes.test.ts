@@ -236,8 +236,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
 
-    // Enable when Neo4j GraphQL Library has support for this
-    test.skip("Can introspect and generate label that starts with a number", async () => {
+    test("Can introspect and generate label that starts with a number", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
@@ -245,11 +244,8 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             return;
         }
 
-        const nodeProperties = { first: "testString", second: neo4j.int(42) };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
-            tx.run("CREATE (:`2number` {prop: $props.second})", { props: nodeProperties })
-        );
+        await wSession.writeTransaction((tx) => tx.run("CREATE (:`2number` {prop: 1})"));
         const bm = wSession.lastBookmark();
         await wSession.close();
 
@@ -261,7 +257,8 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        // TODO: Uncomment when there's support in Neo4j GraphQL
+        // expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
     test("Should not include properties with ambiguous types", async () => {
         // Skip if multi-db not supported
