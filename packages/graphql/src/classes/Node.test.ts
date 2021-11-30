@@ -18,8 +18,8 @@
  */
 
 import Node, { NodeConstructor } from "./Node";
-import { NodeBuilder } from "../utils/test/builders/node-builder";
-import { ContextBuilder } from "../utils/test/builders/context-builder";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 
 describe("Node", () => {
     const defaultContext = new ContextBuilder().instance();

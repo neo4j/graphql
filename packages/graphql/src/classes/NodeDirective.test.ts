@@ -18,7 +18,7 @@
  */
 
 import { NodeDirective } from "./NodeDirective";
-import { ContextBuilder } from "../utils/test/builders/context-builder";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 
 describe("NodeDirective", () => {
     const defaultContext = new ContextBuilder().instance();
