@@ -56,7 +56,7 @@ describe("Localdatetime", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -64,7 +64,7 @@ describe("Localdatetime", () => {
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
             scalar LocalDateTime
 
-            type LocalDateTimeAggregateSelectionNullable {
+            type LocalDateTimeAggregateSelection {
               max: LocalDateTime
               min: LocalDateTime
             }
@@ -76,8 +76,8 @@ describe("Localdatetime", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              localDT: LocalDateTimeAggregateSelectionNullable!
+              id: IDAggregateSelection!
+              localDT: LocalDateTimeAggregateSelection!
             }
 
             input MovieCreateInput {
