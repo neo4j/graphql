@@ -209,8 +209,6 @@ jobs:
   bump-version:
     needs:
       - unit-tests
-      - tck-tests
-      - package-tests
       - upload-integration-coverage
 
     runs-on: ubuntu-latest
