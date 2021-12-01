@@ -328,7 +328,7 @@ jobs:
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
       - name: git merge
-        run: git merge --no-ff origin/release/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+        run: git merge --no-ff origin/release/introspector/${{ needs.bump-version.outputs.version }} --strategy-option theirs
       - name: git tag
         run: |
           git tag -a @neo4j/introspector@${{ needs.bump-version.outputs.version }} -m "@neo4j/introspector@${{ needs.bump-version.outputs.version }}"
