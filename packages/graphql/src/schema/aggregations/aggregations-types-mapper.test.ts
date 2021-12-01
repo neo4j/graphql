@@ -35,19 +35,22 @@ describe("AggregationTypesMapper", () => {
             nullable: false,
         });
 
-        expect(aggregationType?.getTypeName()).toEqual("StringAggregateSelectionNonNullable");
+        expect(aggregationType?.getTypeName()).toEqual("StringAggregateSelection");
+        // expect(aggregationType?.getTypeName()).toEqual("StringAggregateSelectionNonNullable"); // TODO: #605 Breaking change, uncomment for 3.0
         expect(composer.get(aggregationType?.getTypeName())).toBeTruthy();
     });
 
     test("do not duplicate types", () => {
-        const beforeType = composer.get("StringAggregateSelectionNonNullable");
+        const beforeType = composer.get("StringAggregateSelection");
+        // const beforeType = composer.get("StringAggregateSelectionNonNullable"); // TODO: #605 Breaking change, uncomment for 3.0
         const typesMapper2 = new AggregationTypesMapper(composer);
         const aggregationType = typesMapper2.getAggregationType({
             fieldName: "String",
             nullable: false,
         });
 
-        expect(aggregationType?.getTypeName()).toEqual("StringAggregateSelectionNonNullable");
+        expect(aggregationType?.getTypeName()).toEqual("StringAggregateSelection");
+        // expect(aggregationType?.getTypeName()).toEqual("StringAggregateSelectionNonNullable"); // TODO: #605 Breaking change, uncomment for 3.0
         expect(composer.get(aggregationType?.getTypeName())).toBeTruthy();
         expect(beforeType).toEqual(aggregationType);
     });
@@ -58,7 +61,8 @@ describe("AggregationTypesMapper", () => {
             nullable: true,
         });
 
-        expect(aggregationType?.getTypeName()).toEqual("StringAggregateSelectionNullable");
+        expect(aggregationType?.getTypeName()).toEqual("StringAggregateSelection");
+        // expect(aggregationType?.getTypeName()).toEqual("StringAggregateSelectionNullable"); // TODO: #605 Breaking change, uncomment for 3.0
         expect(composer.get(aggregationType?.getTypeName())).toBeTruthy();
     });
 
