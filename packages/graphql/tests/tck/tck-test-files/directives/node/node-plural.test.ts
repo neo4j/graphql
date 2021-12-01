@@ -56,7 +56,7 @@ describe("Plural in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "MATCH (this:\`Tech\`)
             RETURN this { .name } as this"
         `);
 
@@ -76,7 +76,7 @@ describe("Plural in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "MATCH (this:\`Tech\`)
             RETURN count(this)"
         `);
 
@@ -98,7 +98,7 @@ describe("Plural in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "MATCH (this:\`Tech\`)
             RETURN { count: count(this) }"
         `);
 
@@ -123,7 +123,7 @@ describe("Plural in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-            CREATE (this0:Tech)
+            CREATE (this0:\`Tech\`)
             SET this0.name = $this0_name
             RETURN this0
             }
@@ -155,7 +155,7 @@ describe("Plural in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "MATCH (this:\`Tech\`)
             SET this.name = $this_update_name
             RETURN this { .name } AS this"
         `);
@@ -182,7 +182,7 @@ describe("Plural in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "MATCH (this:\`Tech\`)
             WHERE this.name = $this_name
             DETACH DELETE this"
         `);
@@ -209,7 +209,7 @@ describe("Plural in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "MATCH (this:\`Tech\`)
             RETURN this { .name } as this"
         `);
 

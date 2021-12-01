@@ -26,6 +26,7 @@ import generateRelationshipPropsName from "./utils/generate-relationship-props-n
 import { RelationshipPropertiesDirective } from "./directives/RelationshipProperties";
 import createRelationshipFields from "./utils/create-relationship-fields";
 import { ExcludeDirective } from "./directives/Exclude";
+import generateGraphQLSafeName from "./utils/generate-graphql-safe-name";
 
 type GraphQLNodeMap = {
     [key: string]: GraphQLNode;
@@ -45,7 +46,8 @@ function transformNodes(nodes: NodeMap, readonly: boolean): GraphQLNodeMap {
     Object.keys(nodes).forEach((nodeType) => {
         const neo4jNode = nodes[nodeType];
         const mainLabel = neo4jNode.labels[0];
-        const typeName = mainLabel.replace(/[^_0-9A-Z]+/gi, "_");
+        const typeName = generateGraphQLSafeName(mainLabel);
+
         const uniqueTypeName = uniqueString(typeName, takenTypeNames);
         takenTypeNames.push(uniqueTypeName);
 
@@ -79,7 +81,7 @@ function hydrateWithRelationships(nodes: GraphQLNodeMap, rels: RelationshipMap):
 
         if (rel.properties.length) {
             relInterfaceName = uniqueString(
-                generateRelationshipPropsName(relType),
+                generateGraphQLSafeName(generateRelationshipPropsName(relType)),
                 Object.values(nodes).map((n) => n.typeName)
             );
             const relInterfaceNode = new GraphQLNode("interface", relInterfaceName);
