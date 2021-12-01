@@ -1,10 +1,9 @@
-name: "Release (Library and OGM)"
+name: "Release (Introspector)"
 
 on:
   push:
     branches:
-      - release/*
-      - "!release/introspector/*"
+      - release/introspector/*
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -28,8 +27,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - graphql
-          - ogm
+          - introspector
 
     runs-on: ubuntu-latest
 
@@ -52,114 +50,6 @@ jobs:
           flags: ${{ matrix.package }},unit
           fail_ci_if_error: true
 
-  tck-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Run TCK tests
-        run: yarn --cwd packages/graphql run test:tck --coverage
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/graphql/coverage/
-          flags: graphql,tck
-          fail_ci_if_error: true
-
-  schema-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Run Schema tests
-        run: yarn --cwd packages/graphql run test:schema --coverage
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/graphql/coverage/
-          flags: graphql,schema
-          fail_ci_if_error: true
-
-  nextjs-app-setup:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    services:
-      neo4j:
-        image: neo4j:latest
-        env:
-          NEO4J_AUTH: neo4j/mypassword
-          NEO4JLABS_PLUGINS: '["apoc"]'
-        ports:
-          - 7687:7687
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable && yarn build
-      - name: Setup Nextjs app
-        run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
-      - name: Install dependencies
-        run: |
-          cd packages/neo4j-graphql-nextjs
-          chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
-      - name: Copy .env file
-        run: cp docs/modules/ROOT/examples/code-partials/nextjs/env.example packages/neo4j-graphql-nextjs/.env.local
-      - name: Create GraphQL endpoint
-        run: cp docs/modules/ROOT/examples/code-partials/nextjs/graphql.js packages/neo4j-graphql-nextjs/pages/api/graphql.js
-      - name: Start server
-        run: cd packages/neo4j-graphql-nextjs && yarn dev &
-      - name: Query the API and assert that there are no errors
-        run: |
-          sleep 10 &&
-          RES=$(curl 'http://localhost:3000/api/graphql' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: http://localhost:3000' --data-binary '{"query":"{\n  movies {\n    title\n  }\n}"}' --compressed --silent)
-          echo "$RES"
-          echo "$RES" | grep -qv "error"
-
-  package-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - run: yarn build
-      - name: Run @neo4j/graphql package tests
-        run: yarn --cwd packages/graphql run test:package-tests
-
   integration-tests-on-prem:
     needs:
       - cache-dependencies
@@ -167,8 +57,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - graphql
-          - ogm
+          - introspector
         neo4j-version:
           - 4.1.5
           - 4.1
@@ -256,8 +145,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - graphql
-          - ogm
+          - introspector
         aura-instance:
           - free
           - professional
@@ -302,8 +190,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - graphql
-          - ogm
+          - introspector
 
     runs-on: ubuntu-latest
 
@@ -322,8 +209,6 @@ jobs:
   bump-version:
     needs:
       - unit-tests
-      - tck-tests
-      - package-tests
       - upload-integration-coverage
 
     runs-on: ubuntu-latest
@@ -345,35 +230,17 @@ jobs:
       - name: Extract version from branch name
         id: get-version
         run: |
-          version=$(echo ${{ github.ref }} | cut -d/ -f4)
+          version=$(echo ${{ github.ref }} | cut -d/ -f5)
           echo "::set-output name=version::$version"
-      - name: Bump @neo4j/graphql version
+      - name: Bump @neo4j/introspector version
         run: yarn version "${{ steps.get-version.outputs.version }}"
-        working-directory: packages/graphql
-      - name: Bump @neo4j/graphql-ogm version
-        run: yarn version "${{ steps.get-version.outputs.version }}"
-        working-directory: packages/ogm
+        working-directory: packages/introspector
       - name: Commit and push new version numbers
         run: |
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
-          git commit -am "Bump versions to ${{ steps.get-version.outputs.version }}"
+          git commit -am "Bump Introspector version to ${{ steps.get-version.outputs.version }}"
           git push
-
-  slack-release-notification:
-    needs:
-      - bump-version
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Send Slack notification of upcoming release
-        id: slack-notification
-        uses: slackapi/slack-github-action@v1.14.0
-        with:
-          payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASE_NOTIFICATION_WEBHOOK_URL }}
 
   pack:
     needs:
@@ -382,8 +249,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - graphql
-          - ogm
+          - introspector
 
     runs-on: ubuntu-latest
 
@@ -405,7 +271,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: release-tarballs
-          path: packages/${{ matrix.package }}/neo4j-graphql-*.tgz
+          path: packages/${{ matrix.package }}/neo4j-${{ matrix.package }}-*.tgz
 
   npm-publish:
     needs:
@@ -465,8 +331,7 @@ jobs:
         run: git merge --no-ff origin/release/${{ needs.bump-version.outputs.version }} --strategy-option theirs
       - name: git tag
         run: |
-          git tag -a @neo4j/graphql@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql@${{ needs.bump-version.outputs.version }}"
-          git tag -a @neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }}"
+          git tag -a @neo4j/introspector@${{ needs.bump-version.outputs.version }} -m "@neo4j/introspector@${{ needs.bump-version.outputs.version }}"
       - name: git push
         run: git push --follow-tags
 
@@ -488,7 +353,7 @@ jobs:
         run: |
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
-          git push origin --delete release/${{ needs.bump-version.outputs.version }}
+          git push origin --delete release/introspector/${{ needs.bump-version.outputs.version }}
 
   changelog:
     needs:
@@ -498,8 +363,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - graphql
-          - graphql-ogm
+          - introspector
 
     runs-on: ubuntu-latest
 
@@ -533,19 +397,3 @@ jobs:
             ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'alpha') }} ||
             ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'beta') }} ||
             ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'rc') }}
-
-  slack-release-announcement:
-    needs:
-      - bump-version
-      - changelog
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Send Slack announcement of release
-        id: slack-announcement
-        uses: slackapi/slack-github-action@v1.14.0
-        with:
-          payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASE_ANNOUNCEMENT_WEBHOOK_URL }}

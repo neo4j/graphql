@@ -49,7 +49,7 @@ export class NodeDirective {
     public getLabels(typeName: string, context: Context): string[] {
         const mainLabel = this.label || typeName;
         const labels = [mainLabel, ...this.additionalLabels];
-        return this.mapLabelsWithContext(labels, context);
+        return this.mapLabelsWithContext(labels, context).map((l) => this.escapeLabel(l));
     }
 
     private mapLabelsWithContext(labels: string[], context: Context): string[] {
@@ -61,7 +61,7 @@ export class NodeDirective {
             if (ctxPath) {
                 const mappedLabel = ContextParser.getProperty(ctxPath, context);
                 if (!mappedLabel) throw new Error(`Type value required.`);
-                return this.escapeLabel(mappedLabel);
+                return mappedLabel;
             }
             return label;
         });

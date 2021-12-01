@@ -235,6 +235,31 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
+
+    test("Can introspect and generate label that starts with a number", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
+        const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
+        await wSession.writeTransaction((tx) => tx.run("CREATE (:`2number` {prop: 1})"));
+        const bm = wSession.lastBookmark();
+        await wSession.close();
+
+        const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
+
+        expect(typeDefs).toMatchInlineSnapshot(`
+            "type _2number @node(label: \\"2number\\") {
+            	prop: BigInt!
+            }"
+        `);
+
+        // TODO: Uncomment when there's support in Neo4j GraphQL
+        // expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+    });
     test("Should not include properties with ambiguous types", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
@@ -308,11 +333,11 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         expect(typeDefs).toMatchInlineSnapshot(`
             "type EmptyNode {
-            	relationshipFullNodes: [FullNode] @relationship(type: \\"RELATIONSHIP\\", direction: OUT)
+            	relationshipFullNodes: [FullNode!]! @relationship(type: \\"RELATIONSHIP\\", direction: OUT)
             }
 
             type FullNode {
-            	emptyNodesRelationship: [EmptyNode] @relationship(type: \\"RELATIONSHIP\\", direction: IN)
+            	emptyNodesRelationship: [EmptyNode!]! @relationship(type: \\"RELATIONSHIP\\", direction: IN)
             	prop: BigInt!
             }"
         `);
