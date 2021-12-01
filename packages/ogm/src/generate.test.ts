@@ -137,8 +137,8 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
-            export type StringAggregateSelectionNullable = {
-              __typename?: \\"StringAggregateSelectionNullable\\";
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"String\\"]>;
               longest?: Maybe<Scalars[\\"String\\"]>;
             };
@@ -166,7 +166,7 @@ describe("generate", () => {
             export type UserAggregateSelection = {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"];
-              name: StringAggregateSelectionNullable;
+              name: StringAggregateSelection;
             };
 
             export type UserCreateInput = {
@@ -204,13 +204,13 @@ describe("generate", () => {
               name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
             };
 
-            export interface StringAggregateInputNullable {
+            export interface StringAggregateInput {
               shortest?: boolean;
               longest?: boolean;
             }
             export interface UserAggregateInput {
               count?: boolean;
-              name?: StringAggregateInputNullable;
+              name?: StringAggregateInput;
             }
 
             export declare class UserModel {
@@ -374,8 +374,8 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
-            export type StringAggregateSelectionNullable = {
-              __typename?: \\"StringAggregateSelectionNullable\\";
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"String\\"]>;
               longest?: Maybe<Scalars[\\"String\\"]>;
             };
@@ -403,7 +403,7 @@ describe("generate", () => {
             export type UserAggregateSelection = {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"];
-              name: StringAggregateSelectionNullable;
+              name: StringAggregateSelection;
             };
 
             export type UserCreateInput = {
@@ -450,13 +450,13 @@ describe("generate", () => {
               name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
             };
 
-            export interface StringAggregateInputNullable {
+            export interface StringAggregateInput {
               shortest?: boolean;
               longest?: boolean;
             }
             export interface UserAggregateInput {
               count?: boolean;
-              name?: StringAggregateInputNullable;
+              name?: StringAggregateInput;
             }
 
             export declare class UserModel {
@@ -629,8 +629,8 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
-            export type StringAggregateSelectionNullable = {
-              __typename?: \\"StringAggregateSelectionNullable\\";
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
               shortest?: Maybe<Scalars[\\"String\\"]>;
               longest?: Maybe<Scalars[\\"String\\"]>;
             };
@@ -658,7 +658,7 @@ describe("generate", () => {
             export type UserAggregateSelection = {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"];
-              name: StringAggregateSelectionNullable;
+              name: StringAggregateSelection;
             };
 
             export type UserCreateInput = {
@@ -696,13 +696,13 @@ describe("generate", () => {
               name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
             };
 
-            export interface StringAggregateInputNullable {
+            export interface StringAggregateInput {
               shortest?: boolean;
               longest?: boolean;
             }
             export interface UserAggregateInput {
               count?: boolean;
-              name?: StringAggregateInputNullable;
+              name?: StringAggregateInput;
             }
 
             export declare class UserModel {
@@ -916,12 +916,12 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
-            export type IntAggregateSelectionNonNullable = {
-              __typename?: \\"IntAggregateSelectionNonNullable\\";
-              max: Scalars[\\"Int\\"];
-              min: Scalars[\\"Int\\"];
-              average: Scalars[\\"Float\\"];
-              sum: Scalars[\\"Int\\"];
+            export type IntAggregateSelection = {
+              __typename?: \\"IntAggregateSelection\\";
+              max?: Maybe<Scalars[\\"Int\\"]>;
+              min?: Maybe<Scalars[\\"Int\\"]>;
+              average?: Maybe<Scalars[\\"Float\\"]>;
+              sum?: Maybe<Scalars[\\"Int\\"]>;
             };
 
             export type Movie = {
@@ -965,7 +965,7 @@ describe("generate", () => {
             export type MovieAggregateSelection = {
               __typename?: \\"MovieAggregateSelection\\";
               count: Scalars[\\"Int\\"];
-              title: StringAggregateSelectionNonNullable;
+              title: StringAggregateSelection;
             };
 
             export type MoviePersonActorsAggregationSelection = {
@@ -977,12 +977,12 @@ describe("generate", () => {
 
             export type MoviePersonActorsEdgeAggregateSelection = {
               __typename?: \\"MoviePersonActorsEdgeAggregateSelection\\";
-              screenTime: IntAggregateSelectionNonNullable;
+              screenTime: IntAggregateSelection;
             };
 
             export type MoviePersonActorsNodeAggregateSelection = {
               __typename?: \\"MoviePersonActorsNodeAggregateSelection\\";
-              name: StringAggregateSelectionNonNullable;
+              name: StringAggregateSelection;
             };
 
             /** Pagination information (Relay) */
@@ -1002,13 +1002,13 @@ describe("generate", () => {
             export type PersonAggregateSelection = {
               __typename?: \\"PersonAggregateSelection\\";
               count: Scalars[\\"Int\\"];
-              name: StringAggregateSelectionNonNullable;
+              name: StringAggregateSelection;
             };
 
-            export type StringAggregateSelectionNonNullable = {
-              __typename?: \\"StringAggregateSelectionNonNullable\\";
-              shortest: Scalars[\\"String\\"];
-              longest: Scalars[\\"String\\"];
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
+              shortest?: Maybe<Scalars[\\"String\\"]>;
+              longest?: Maybe<Scalars[\\"String\\"]>;
             };
 
             export type UpdateInfo = {
@@ -1272,13 +1272,13 @@ describe("generate", () => {
               name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
             };
 
-            export interface StringAggregateInputNonNullable {
+            export interface StringAggregateInput {
               shortest?: boolean;
               longest?: boolean;
             }
             export interface MovieAggregateInput {
               count?: boolean;
-              title?: StringAggregateInputNonNullable;
+              title?: StringAggregateInput;
             }
 
             export declare class MovieModel {
@@ -1326,13 +1326,13 @@ describe("generate", () => {
               }): Promise<MovieAggregateSelection>;
             }
 
-            export interface StringAggregateInputNonNullable {
+            export interface StringAggregateInput {
               shortest?: boolean;
               longest?: boolean;
             }
             export interface PersonAggregateInput {
               count?: boolean;
-              name?: StringAggregateInputNonNullable;
+              name?: StringAggregateInput;
             }
 
             export declare class PersonModel {

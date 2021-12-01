@@ -87,7 +87,7 @@ describe("Enums", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -117,7 +117,7 @@ describe("Enums", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -298,7 +298,7 @@ describe("Enums", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -405,7 +405,7 @@ describe("Enums", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -508,9 +508,9 @@ describe("Enums", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
