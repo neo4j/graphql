@@ -40,4 +40,5 @@ export {
     Neo4jGraphQLConstructor,
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLForbiddenError,
+    Neo4jGraphQLJWTPlugin,
 } from "./classes";

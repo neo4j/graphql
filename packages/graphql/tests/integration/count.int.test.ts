@@ -25,6 +25,7 @@ import camelCase from "camelcase";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { createJwtRequest } from "../../src/utils/test/utils";
+import { JWTPlugin } from "@neo4j/graphql-plugins";
 
 describe("count", () => {
     let driver: Driver;
@@ -54,7 +55,7 @@ describe("count", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { jwt: new JWTPlugin() } });
 
         try {
             await session.run(

@@ -1,6 +1,6 @@
 {
-    "name": "@neo4j/graphql",
-    "version": "2.5.0",
+    "name": "dans-neo4j-graphql",
+    "version": "0.0.1",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
@@ -37,6 +37,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
+        "@neo4j/graphql-plugins": "^2.5.0",
         "@types/deep-equal": "1.0.1",
         "@types/faker": "5.1.7",
         "@types/is-uuid": "1.0.0",

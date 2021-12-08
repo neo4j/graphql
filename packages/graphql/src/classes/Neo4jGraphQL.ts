@@ -27,13 +27,13 @@ import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
-import { getJWT } from "../auth";
 import { DEBUG_GRAPHQL } from "../constants";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "../translate/create-auth-param";
 import assertIndexesAndConstraints, {
     AssertIndexesAndConstraintsOptions,
 } from "./utils/asserts-indexes-and-constraints";
+import Neo4jGraphQLJWTPlugin from "./Neo4jGraphQLJWTPlugin";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -56,6 +56,11 @@ export interface Neo4jGraphQLConstructor extends Omit<IExecutableSchemaDefinitio
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
     schemaDirectives?: Record<string, typeof SchemaDirectiveVisitor>;
+    plugins?: Neo4jGraphQLPlugins;
+}
+
+interface Neo4jGraphQLPlugins {
+    jwt?: Neo4jGraphQLJWTPlugin;
 }
 
 class Neo4jGraphQL {
@@ -65,9 +70,10 @@ class Neo4jGraphQL {
     public document: DocumentNode;
     private driver?: Driver;
     public config?: Neo4jGraphQLConfig;
+    public plugins?: Neo4jGraphQLPlugins;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, resolvers, schemaDirectives, ...schemaDefinition } = input;
+        const { config = {}, driver, resolvers, schemaDirectives, plugins, ...schemaDefinition } = input;
         const { nodes, relationships, schema } = makeAugmentedSchema(schemaDefinition, {
             enableRegex: config.enableRegex,
             skipValidateTypeDefs: config.skipValidateTypeDefs,
@@ -78,6 +84,7 @@ class Neo4jGraphQL {
         this.nodes = nodes;
         this.relationships = relationships;
         this.schema = schema;
+        this.plugins = plugins;
 
         /*
             Order must be:
@@ -154,12 +161,15 @@ class Neo4jGraphQL {
             context.resolveTree = getNeo4jResolveTree(resolveInfo);
 
             if (!context.jwt) {
-                context.jwt = await getJWT(context);
+                if (this.plugins?.jwt) {
+                    context.jwt = await this.plugins?.jwt.decode(context);
+                }
             }
 
             context.auth = createAuthParam({ context });
 
             context.queryOptions = config.queryOptions;
+
             return obj;
         });
     }

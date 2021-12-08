@@ -1,8 +1,13 @@
 {
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
+        "baseUrl": "./",
         "types": ["node", "jest"],
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "paths": {
+            "@neo4j/graphql-plugins": ["../../plugins/src"],
+            "@neo4j/graphql": ["../src"]
+        }
     },
-    "references": [{ "path": "../src/tsconfig.json" }]
+    "references": [{ "path": "../src/tsconfig.json" }, { "path": "../../plugins/src/tsconfig.json" }]
 }

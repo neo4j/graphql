@@ -1,0 +1,15 @@
+mutation {
+    updateMovies(where: { title: "Forrest Gum" }, connect: { actors: { where: { node: { name: "Tom Hanks" } } } }) {
+        movies {
+            title
+        }
+    }
+}
+
+mutation {
+    updateMovies(where: { title: "Forrest Gum" }, disconnect: { actors: { where: { node: { name: "Tom Hanks" } } } }) {
+        movies {
+            title
+        }
+    }
+}

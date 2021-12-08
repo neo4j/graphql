@@ -1,0 +1,45 @@
+{
+    "name": "@neo4j/graphql-plugins",
+    "version": "2.5.0",
+    "description": "Plugins for Neo4j GraphQL",
+    "keywords": [
+        "neo4j",
+        "graphql",
+        "ogm",
+        "plugins"
+    ],
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/neo4j/graphql/issues"
+    },
+    "homepage": "https://github.com/neo4j/graphql/tree/master/packages/plugins",
+    "exports": "./dist/index.js",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "tsc --project src/",
+        "test": "jest",
+        "test:unit": "jest src/**/*.test.ts",
+        "test:unit:watch": "jest src --watch",
+        "test:int": "jest tests/integration",
+        "test:int:watch": "test:int -- --watch"
+    },
+    "author": "Neo4j Inc.",
+    "dependencies": {
+        "@neo4j/graphql": "^2.5.0",
+        "jsonwebtoken": "^8.5.1",
+        "jwks-rsa": "^2.0.5"
+    },
+    "devDependencies": {
+        "@types/jest": "26.0.8",
+        "@types/node": "14.0.27",
+        "graphql-tag": "2.11.0",
+        "jest": "26.2.2",
+        "libnpmsearch": "3.1.0",
+        "npm-run-all": "^4.1.5",
+        "randomstring": "1.1.5",
+        "semver": "7.3.5",
+        "ts-jest": "26.1.4",
+        "typescript": "3.9.7"
+    }
+}
