@@ -64,7 +64,7 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`:\`Multimedia\`)
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -89,7 +89,7 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`:\`Multimedia\`)
-            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:\`Actor\`:\`Person\`)   | this_actors { .name } ] } as this"
+            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:\`Actor\`:\`Person\`)   | this_actors { .name } ] } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -120,7 +120,8 @@ describe("Node directive with additionalLabels", () => {
             "CALL {
             CREATE (this0:\`Film\`:\`Multimedia\`)
             SET this0.id = $this0_id
-            WITH this0
+            WITH this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
+            WITH this0, this0_mutateMeta
             CREATE (this0_actors0_node:\`Actor\`:\`Person\`)
             SET this0_actors0_node.name = $this0_actors0_node_name
             MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
@@ -130,7 +131,8 @@ describe("Node directive with additionalLabels", () => {
             CALL {
             CREATE (this1:\`Film\`:\`Multimedia\`)
             SET this1.id = $this1_id
-            WITH this1
+            WITH this0, this1, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this1), properties: this1}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this1_mutateMeta
+            WITH this0, this1, this1_mutateMeta
             CREATE (this1_actors0_node:\`Actor\`:\`Person\`)
             SET this1_actors0_node.name = $this1_actors0_node_name
             MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)

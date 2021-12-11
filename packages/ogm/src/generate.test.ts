@@ -1257,10 +1257,6 @@ describe("generate", () => {
               name: StringAggregateSelection;
             };
 
-            export type StringAggregateSelection = {
-              __typename?: \\"StringAggregateSelection\\";
-              shortest?: Maybe<Scalars[\\"String\\"]>;
-              longest?: Maybe<Scalars[\\"String\\"]>;
             export type PersonSubscriptionResponse = {
               __typename?: \\"PersonSubscriptionResponse\\";
               type: Scalars[\\"String\\"];
@@ -1274,10 +1270,10 @@ describe("generate", () => {
               person?: Maybe<Person>;
             };
 
-            export type StringAggregateSelectionNonNullable = {
-              __typename?: \\"StringAggregateSelectionNonNullable\\";
-              shortest: Scalars[\\"String\\"];
-              longest: Scalars[\\"String\\"];
+            export type StringAggregateSelection = {
+              __typename?: \\"StringAggregateSelection\\";
+              shortest?: Maybe<Scalars[\\"String\\"]>;
+              longest?: Maybe<Scalars[\\"String\\"]>;
             };
 
             export type UpdateInfo = {
