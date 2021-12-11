@@ -76,12 +76,12 @@ describe("162", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -189,7 +189,7 @@ describe("162", () => {
 
             type TigerAggregateSelection {
               count: Int!
-              x: IntAggregateSelectionNullable!
+              x: IntAggregateSelection!
             }
 
             input TigerConnectWhere {
@@ -209,7 +209,7 @@ describe("162", () => {
 
             type TigerJawLevel2AggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input TigerJawLevel2ConnectInput {
@@ -256,7 +256,7 @@ describe("162", () => {
 
             type TigerJawLevel2Part1AggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input TigerJawLevel2Part1ConnectFieldInput {
@@ -450,7 +450,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1TigerTigerNodeAggregateSelection {
-              x: IntAggregateSelectionNullable!
+              x: IntAggregateSelection!
             }
 
             input TigerJawLevel2Part1TigerUpdateConnectionInput {
@@ -531,7 +531,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input TigerJawLevel2UpdateInput {

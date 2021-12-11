@@ -63,7 +63,7 @@ describe("Directive-preserve", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -74,7 +74,7 @@ describe("Directive-preserve", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {

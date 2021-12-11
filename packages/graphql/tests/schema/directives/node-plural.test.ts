@@ -69,7 +69,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -125,8 +125,8 @@ describe("Node Directive", () => {
 
                 type TechAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
-                  value: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
+                  value: StringAggregateSelection!
                 }
 
                 input TechCreateInput {
@@ -269,7 +269,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -325,8 +325,8 @@ describe("Node Directive", () => {
 
                 type TechAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
-                  value: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
+                  value: StringAggregateSelection!
                 }
 
                 input TechCreateInput {
@@ -469,7 +469,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -525,8 +525,8 @@ describe("Node Directive", () => {
 
                 type TechAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelectionNullable!
-                  value: StringAggregateSelectionNullable!
+                  name: StringAggregateSelection!
+                  value: StringAggregateSelection!
                 }
 
                 input TechCreateInput {
@@ -669,7 +669,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -757,7 +757,7 @@ describe("Node Directive", () => {
 
                 type TechsAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelectionNullable!
+                  value: StringAggregateSelection!
                 }
 
                 input TechsCreateInput {
@@ -887,7 +887,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -988,7 +988,7 @@ describe("Node Directive", () => {
 
                 type UserAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelectionNullable!
+                  value: StringAggregateSelection!
                 }
 
                 input UserCreateInput {
@@ -1105,7 +1105,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -1206,7 +1206,7 @@ describe("Node Directive", () => {
 
                 type UserAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelectionNullable!
+                  value: StringAggregateSelection!
                 }
 
                 input UserCreateInput {
@@ -1323,7 +1323,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelectionNullable {
+                type StringAggregateSelection {
                   longest: String
                   shortest: String
                 }
@@ -1424,7 +1424,7 @@ describe("Node Directive", () => {
 
                 type UsersAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelectionNullable!
+                  value: StringAggregateSelection!
                 }
 
                 input UsersCreateInput {

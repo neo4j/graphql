@@ -63,8 +63,8 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
-            RETURN this { .title } AS this"
+            "MATCH (this:\`Film\`)
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -88,8 +88,8 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
-            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Person)   | this_actors { .name } ] } AS this"
+            "MATCH (this:\`Film\`)
+            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:\`Person\`)   | this_actors { .name } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -117,10 +117,10 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "MATCH (this:\`Film\`)
             CALL {
             WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Person)
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:\`Person\`)
             WITH collect({ node: { name: this_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
@@ -148,7 +148,7 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-            CREATE (this0:Film)
+            CREATE (this0:\`Film\`)
             SET this0.id = $this0_id
             RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
@@ -186,22 +186,20 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-            CREATE (this0:Film)
+            CREATE (this0:\`Film\`)
             SET this0.id = $this0_id
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
-            WITH this0, this0_mutateMeta
-            CREATE (this0_actors0_node:Person)
+            WITH this0
+            CREATE (this0_actors0_node:\`Person\`)
             SET this0_actors0_node.name = $this0_actors0_node_name
             MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
             RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Actor', id: id(this0_actors0_node), properties: this0_actors0_node},{type: 'Connected', name: 'Movie', relationshipName: 'ACTED_IN', toName: 'Actor', id: id(this0), toID: id(this0_actors0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
             WITH this0, this0_mutateMeta as mutateMeta
             CALL {
-            CREATE (this1:Film)
+            CREATE (this1:\`Film\`)
             SET this1.id = $this1_id
-            WITH this0, this1, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this1), properties: this1}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this1_mutateMeta
-            WITH this0, this1, this1_mutateMeta
-            CREATE (this1_actors0_node:Person)
+            WITH this1
+            CREATE (this1_actors0_node:\`Person\`)
             SET this1_actors0_node.name = $this1_actors0_node_name
             MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
             RETURN this1, REDUCE(tmp1_this1_mutateMeta = [], tmp2_this1_mutateMeta IN COLLECT(this1_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Actor', id: id(this1_actors0_node), properties: this1_actors0_node},{type: 'Connected', name: 'Movie', relationshipName: 'ACTED_IN', toName: 'Actor', id: id(this1), toID: id(this1_actors0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this1_mutateMeta + tmp2_this1_mutateMeta) as this1_mutateMeta
@@ -237,7 +235,7 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "MATCH (this:\`Film\`)
             WHERE this.id = $this_id
             SET this.id = $this_update_id
             RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta, this { .id } AS this"
@@ -276,11 +274,10 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "MATCH (this:\`Film\`)
             WHERE this.id = $this_id
             WITH this
-            WITH this
-            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Person)
+            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
             WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
             CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
             SET this_actors0.name = $this_update_actors0_name
@@ -346,12 +343,12 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "MATCH (this:\`Film\`)
             WHERE this.id = $this_id
             WITH this
             CALL {
-            WITH this
-            	OPTIONAL MATCH (this_connect_actors0_node:Person)
+            	WITH this
+            	OPTIONAL MATCH (this_connect_actors0_node:\`Person\`)
             	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
             CALL apoc.do.when(this_connect_actors0_node IS NOT NULL AND this IS NOT NULL, \\"
             			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
@@ -390,12 +387,12 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "MATCH (this:\`Film\`)
             WHERE this.id = $this_id
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Person)
+            OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:\`Person\`)
             WHERE this_disconnect_actors0.name = $updateMovies.args.disconnect.actors[0].where.node.name
             WITH this, this_disconnect_actors0, this_disconnect_actors0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'Actor', relationshipName: 'ACTED_IN', id: id(this), toID: id(this_disconnect_actors0), relationshipID: id(this_disconnect_actors0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
@@ -444,7 +441,7 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "MATCH (this:\`Film\`)
             WHERE this.id = $this_id
             WITH this, [ metaVal IN [{type: 'Deleted', name: 'Movie', id: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             DETACH DELETE this
@@ -473,10 +470,10 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "MATCH (this:\`Film\`)
             WHERE this.id = $this_id
             WITH this
-            OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Person)
+            OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
             WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
             WITH this, this_actors0, collect(DISTINCT this_actors0) as this_actors0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Actor', id: id(this_actors0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
             FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
@@ -523,11 +520,9 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
-            WHERE EXISTS((this)<-[:ACTED_IN]-(:Person)) AND ANY(this_actors IN [(this)<-[:ACTED_IN]-(this_actors:Person) | this_actors] WHERE this_actors.name = $this_actors_name)
-            WITH this, [ metaVal IN [{type: 'Deleted', name: 'Movie', id: id(this)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
-            DETACH DELETE this
-            RETURN mutateMeta"
+            "MATCH (this:\`Film\`)
+            WHERE EXISTS((this)<-[:ACTED_IN]-(:\`Person\`)) AND ANY(this_actors IN [(this)<-[:ACTED_IN]-(this_actors:\`Person\`) | this_actors] WHERE this_actors.name = $this_actors_name)
+            DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -550,7 +545,7 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "MATCH (this:\`Film\`)
             RETURN count(this)"
         `);
 

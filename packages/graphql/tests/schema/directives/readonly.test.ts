@@ -57,9 +57,9 @@ describe("@readonly directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
             }
 
             type Mutation {
@@ -89,9 +89,9 @@ describe("@readonly directive", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {
@@ -158,8 +158,8 @@ describe("@readonly directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              username: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input UserCreateInput {
@@ -263,9 +263,9 @@ describe("@readonly directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
             }
 
             type Mutation {
@@ -295,9 +295,9 @@ describe("@readonly directive", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {
@@ -364,8 +364,8 @@ describe("@readonly directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNonNullable!
-              username: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input UserCreateInput {

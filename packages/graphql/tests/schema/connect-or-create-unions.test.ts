@@ -283,7 +283,7 @@ describe("Connect Or Create", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -391,8 +391,8 @@ describe("Connect Or Create", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              isan: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectOrCreateWhere {
@@ -526,8 +526,8 @@ describe("Connect Or Create", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              isan: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectOrCreateWhere {
@@ -609,9 +609,9 @@ describe("Connect Or Create", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {

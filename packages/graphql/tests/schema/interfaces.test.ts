@@ -77,7 +77,7 @@ describe("Interfaces", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -93,7 +93,7 @@ describe("Interfaces", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -123,7 +123,7 @@ describe("Interfaces", () => {
             }
 
             type MovieMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieMoviesAggregateInput {

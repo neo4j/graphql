@@ -57,7 +57,7 @@ describe("Cypher", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorCreateInput {
@@ -129,7 +129,7 @@ describe("Cypher", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -141,7 +141,7 @@ describe("Cypher", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -224,7 +224,7 @@ describe("Cypher", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -338,7 +338,7 @@ describe("Cypher", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorCreateInput {
@@ -411,7 +411,7 @@ describe("Cypher", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -423,7 +423,7 @@ describe("Cypher", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -506,7 +506,7 @@ describe("Cypher", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }

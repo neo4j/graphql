@@ -86,7 +86,7 @@ describe("Comments", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNullable {
+            type FloatAggregateSelection {
               average: Float
               max: Float
               min: Float
@@ -100,12 +100,12 @@ describe("Comments", () => {
               ROMANCE
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelectionNullable {
+            type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
@@ -130,10 +130,10 @@ describe("Comments", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {

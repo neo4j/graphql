@@ -157,7 +157,7 @@ describe("Interface Relationships", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -254,11 +254,11 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -268,8 +268,8 @@ describe("Interface Relationships", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -424,8 +424,8 @@ describe("Interface Relationships", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              episodes: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodes: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesCreateInput {
@@ -493,9 +493,9 @@ describe("Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {
@@ -718,7 +718,7 @@ describe("Interface Relationships", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -833,7 +833,7 @@ describe("Interface Relationships", () => {
 
             type EpisodeAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
             }
 
             input EpisodeConnectInput {
@@ -981,8 +981,8 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodeSeriesSeriesNodeAggregateSelection {
-              episodeCount: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input EpisodeSeriesUpdateConnectionInput {
@@ -1038,11 +1038,11 @@ describe("Interface Relationships", () => {
               series_NOT: SeriesWhere
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -1060,11 +1060,11 @@ describe("Interface Relationships", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -1136,8 +1136,8 @@ describe("Interface Relationships", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1503,11 +1503,11 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -1579,8 +1579,8 @@ describe("Interface Relationships", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              episodeCount: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
@@ -1615,7 +1615,7 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesEpisodeEpisodesNodeAggregateSelection {
-              runtime: IntAggregateSelectionNonNullable!
+              runtime: IntAggregateSelection!
             }
 
             input SeriesEpisodesAggregateInput {
@@ -1795,9 +1795,9 @@ describe("Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {
@@ -2199,9 +2199,9 @@ describe("Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type Subscription {
@@ -2264,7 +2264,7 @@ describe("Interface Relationships", () => {
 
             type Type1AggregateSelection {
               count: Int!
-              field1: StringAggregateSelectionNonNullable!
+              field1: StringAggregateSelection!
             }
 
             input Type1ConnectInput {
@@ -2292,7 +2292,7 @@ describe("Interface Relationships", () => {
 
             type Type1Interface1AggregateSelection {
               count: Int!
-              field1: StringAggregateSelectionNonNullable!
+              field1: StringAggregateSelection!
             }
 
             input Type1Interface1ConnectFieldInput {
@@ -2452,7 +2452,7 @@ describe("Interface Relationships", () => {
 
             type Type1Interface2AggregateSelection {
               count: Int!
-              field2: StringAggregateSelectionNonNullable!
+              field2: StringAggregateSelection!
             }
 
             input Type1Interface2CreateInput {
@@ -2560,7 +2560,7 @@ describe("Interface Relationships", () => {
 
             type Type2Interface1AggregateSelection {
               count: Int!
-              field1: StringAggregateSelectionNonNullable!
+              field1: StringAggregateSelection!
             }
 
             input Type2Interface1ConnectInput {
@@ -2665,7 +2665,7 @@ describe("Interface Relationships", () => {
 
             type Type2Interface2AggregateSelection {
               count: Int!
-              field2: StringAggregateSelectionNonNullable!
+              field2: StringAggregateSelection!
             }
 
             input Type2Interface2CreateInput {
@@ -2807,9 +2807,9 @@ describe("Interface Relationships", () => {
             }
 
             type CommentAggregateSelection {
-              content: StringAggregateSelectionNullable!
+              content: StringAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             input CommentConnectInput {
@@ -2966,8 +2966,8 @@ describe("Interface Relationships", () => {
             }
 
             type CommentPostPostNodeAggregateSelection {
-              content: StringAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              content: StringAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             type CommentPostRelationship {
@@ -3024,8 +3024,8 @@ describe("Interface Relationships", () => {
             }
 
             type CommentUserCreatorNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
-              name: StringAggregateSelectionNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input CommentWhere {
@@ -3278,7 +3278,7 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
+            type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
@@ -3323,9 +3323,9 @@ describe("Interface Relationships", () => {
             }
 
             type PostAggregateSelection {
-              content: StringAggregateSelectionNullable!
+              content: StringAggregateSelection!
               count: Int!
-              id: IDAggregateSelectionNullable!
+              id: IDAggregateSelection!
             }
 
             type PostCommentCommentsAggregationSelection {
@@ -3334,8 +3334,8 @@ describe("Interface Relationships", () => {
             }
 
             type PostCommentCommentsNodeAggregateSelection {
-              content: StringAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
+              content: StringAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input PostCommentsAggregateInput {
@@ -3540,8 +3540,8 @@ describe("Interface Relationships", () => {
             }
 
             type PostUserCreatorNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
-              name: StringAggregateSelectionNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input PostWhere {
@@ -3603,7 +3603,7 @@ describe("Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelection {
               longest: String
               shortest: String
             }
@@ -3688,8 +3688,8 @@ describe("Interface Relationships", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-              name: StringAggregateSelectionNullable!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input UserConnectInput {
