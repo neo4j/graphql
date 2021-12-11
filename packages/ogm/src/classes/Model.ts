@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { DocumentNode, graphql, parse, print, SelectionSetNode } from "graphql";
-import pluralize from "pluralize";
-import camelCase from "camelcase";
 import { Neo4jGraphQL, upperFirst } from "@neo4j/graphql";
-import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo, SubscriptionFilter } from "../types";
+import camelCase from "camelcase";
+import { createSourceEventStream, DocumentNode, graphql, parse, print, SelectionSetNode } from "graphql";
+import pluralize from "pluralize";
+import { DeleteInfo, GraphQLOptionsArg, GraphQLWhereArg, SubscriptionFilter } from "../types";
 
 export interface ModelConstructor {
     name: string;
@@ -114,7 +114,7 @@ class Model {
         return (result.data as any)[this.camelCaseName] as T;
     }
 
-    async subscribe<T = any[]>({
+    async subscribe<T>({
         where,
         options,
         filter,
@@ -169,13 +169,16 @@ class Model {
         const variableValues = { where, options, filter, ...args };
         context.useLocalPubsub = true;
 
-        const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
+        // const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
+        const result: AsyncIterable<T> = await createSourceEventStream(this.neoSchema.schema, parse(query), rootValue, context, variableValues);
+        // result.
+        return result;
 
-        if (result.errors?.length) {
-            throw new Error(result.errors[0].message);
-        }
+        // if (result.errors?.length) {
+        //     throw new Error(result.errors[0].message);
+        // }
 
-        return (result.data as any)[this.camelCaseName] as T;
+        // return (result.data as any)[this.camelCaseName] as T;
     }
 
     async count({
