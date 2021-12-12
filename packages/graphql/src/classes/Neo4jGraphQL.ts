@@ -50,6 +50,7 @@ export interface Neo4jGraphQLConfig {
     jwt?: Neo4jGraphQLJWT;
     enableRegex?: boolean;
     skipValidateTypeDefs?: boolean;
+    addInternalIdsToSchema?: boolean;
     queryOptions?: CypherQueryOptions;
 }
 
@@ -89,6 +90,7 @@ class Neo4jGraphQL {
         const { nodes, relationships, schema } = makeAugmentedSchema(schemaDefinition, {
             enableRegex: config.enableRegex,
             skipValidateTypeDefs: config.skipValidateTypeDefs,
+            addInternalIdsToSchema: config.addInternalIdsToSchema,
         });
 
         this.driver = driver;
@@ -121,8 +123,15 @@ class Neo4jGraphQL {
             SchemaDirectiveVisitor.visitSchemaDirectives(this.schema, schemaDirectives);
         }
 
-        this.schema = this.createWrappedSchema({ schema: this.schema, config });
+        this.schema = this.createWrappedSchema({ schema: this.schema });
         this.document = parse(printSchema(schema));
+    }
+
+    async onSubscriptionConnect(context: Context) {
+        this.populateContext(context);
+        await context.neoSchema.authenticateContext(context);
+        context.subCache = context.subCache || {};
+        return context;
     }
 
     // Mutates context with variables from this Neo4jGraphql instance
@@ -134,6 +143,14 @@ class Neo4jGraphQL {
                 );
             }
             context.driver = this.driver;
+        }
+    
+        if (!context.queryOptions) {
+            context.queryOptions = this.config?.queryOptions;
+        }
+
+        if (!context?.driverConfig) {
+            context.driverConfig = this.config?.driverConfig;
         }
 
         if (!context?.pubsub) {
@@ -158,13 +175,10 @@ class Neo4jGraphQL {
 
     private createWrappedSchema({
         schema,
-        config,
     }: {
         schema: GraphQLSchema;
-        config: Neo4jGraphQLConfig;
     }): GraphQLSchema {
         return addSchemaLevelResolver(schema, async (obj, _args, context: any, resolveInfo: GraphQLResolveInfo) => {
-            const { driverConfig } = config;
 
             if (debug.enabled) {
                 const query = print(resolveInfo.operation);
@@ -188,14 +202,9 @@ class Neo4jGraphQL {
             // @ts-ignore: Deleting private property from object
             delete resolveInfo.operation.__runAtMostOnce; // eslint-disable-line no-param-reassign,no-underscore-dangle
 
-            if (!context?.driverConfig) {
-                context.driverConfig = driverConfig;
-            }
-
             context.resolveTree = getNeo4jResolveTree(resolveInfo);
             await this.authenticateContext(context);
 
-            context.queryOptions = config.queryOptions;
             return obj;
         });
     }

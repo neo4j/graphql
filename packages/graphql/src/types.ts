@@ -44,6 +44,7 @@ export interface Context {
     jwt?: JwtPayload;
     auth?: AuthContext;
     queryOptions?: CypherQueryOptions;
+    subCache?: { [ str: string ]: any };
     [k: string]: any;
 }
 
@@ -502,11 +503,6 @@ export interface SubscriptionFilter {
     handle_NOT_IN?: string[];
     handle_UNDEFINED?: string[];
 }
-
-export type SubscriptionContext = Context & {
-    subCache: { [ str: string ]: any };
-};
-
 export interface MutationEvent extends Omit<MutationMetaCommon, 'id' | 'toID' | 'relationshipID'> {
     id: number;
     toID?: number;

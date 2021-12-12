@@ -17,20 +17,24 @@
  * limitations under the License.
  */
 
+import Debug from "debug";
 import { GraphQLResolveInfo } from "graphql";
 import { withFilter } from "graphql-subscriptions";
 import { isInt } from "neo4j-driver";
 import { Node } from "../../classes";
+import { DEBUG_SUBSCRIBE } from "../../constants";
 import translateRead from "../../translate/translate-read";
-import { MutationMetaType, MutationSubscriptionResult, SubscriptionContext, SubscriptionFilter } from "../../types";
-import execute from "../../utils/execute";
+import { Context, MutationSubscriptionResult, SubscriptionFilter } from "../../types";
+import execute, { ExecuteResult } from "../../utils/execute";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
+import { resolveNodeFieldFromSubscriptionResponseAndAddInternalID, preProcessFilters, resolveSubscriptionResult, writeSubscriptionResultToCache } from "./resolveSubscriptionResult";
 
+const debug = Debug(DEBUG_SUBSCRIBE);
 
 export default function subscribeToNodeResolver({ node }: { node: Node }) {
 
     async function loadObjects(
-        context: SubscriptionContext,
+        context: Context,
         bookmark?: string,
     ) {
         // Ensure context.resolveTree.args.where is set.
@@ -75,172 +79,82 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
             where: `${node.name}Where`,
         },
         description: `Subscribe to updates from ${ node.name }`,
-        resolve: (payload) => { return { ...payload }; },
+        resolve: (payload) => payload,
         subscribe: withFilter(
-            (root, args: { filter: SubscriptionFilter }, context: SubscriptionContext, info: GraphQLResolveInfo) => {
-    
-                context.subCache = context.subCache || {};
+            (root, args: { filter: SubscriptionFilter }, context: Context, info: GraphQLResolveInfo) => {
+                if (!context.pubsub) {
+                    throw new Error(`Pubsub not provided. Did you call neoSchema.onSubscriptionConnect(context) ` +
+                    `in your onConnect method when creating the subscription server?`);
+                }
+
                 context.resolveTree = getNeo4jResolveTree(info);
-                context.neoSchema.authenticateContext(context);
                 context.resolveTree = context.resolveTree || {};
                 context.resolveTree.args = context.resolveTree.args || {};
                 context.resolveTree.args.where = context.resolveTree.args.where || {};
 
-                const fields = context.resolveTree.fieldsByTypeName;
-                const rtSubResponse = fields ? fields[`${ node.name }SubscriptionResponse`] : {};
-                fields[`${ node.name }SubscriptionResponse`] = rtSubResponse;
-                const rtPath = rtSubResponse ? rtSubResponse[node.name.toLowerCase()] : {} as any;
-                rtPath.fieldsByTypeName = rtPath.fieldsByTypeName || {};
-                rtSubResponse[node.name.toLowerCase()] = rtPath;
-                const rtNode = rtPath.fieldsByTypeName[node.name] || {};
-                rtPath.fieldsByTypeName[node.name] = rtNode;
-                rtPath.args = context.resolveTree.args;
+                context.resolveTree = resolveNodeFieldFromSubscriptionResponseAndAddInternalID(node, context.resolveTree);
 
-                // eslint-disable-next-line no-underscore-dangle
-                rtNode._id = {
-                    alias: '_id',
-                    args: {},
-                    fieldsByTypeName: {},
-                    name: '_id',
-                };
-
-                context.resolveTree = rtPath as any;
-
-                let types: MutationMetaType[] = [ 'Updated', 'Created', 'Deleted', 'Connected', 'Disconnected' ];
-                // We can use the provided input in our asyncIterator because
-                // it is validated by the graphql enum "NodeUpdatedType"
-                if (args?.filter?.type) {
-                    types = [ args.filter.type ];
-                } else if (args?.filter?.type_IN) {
-                    types = args.filter.type_IN;
-                } else if (args?.filter?.type_NOT) {
-                    types = types.filter((t) => args.filter.type_NOT !== t);
-                } else if (args?.filter?.type_NOT_IN) {
-                    types = types.filter((t) => !args.filter.type_NOT_IN?.includes(t));
-                } else if (args?.filter?.type_UNDEFINED !== undefined) {
-                    // This is essentially pointless (no results would be returned)
-                    // but it's here for consistency
-                    types = args?.filter?.type_UNDEFINED ? [] : types;
-                } else {
-                    types = [ 'Updated', 'Created' ];
-                }
-
+                const types = preProcessFilters(args);
 
                 if (types.includes('Deleted')) {
-                    // Load objects to retrieve them after they have been deleted
+                    // Load objects now to retrieve them after they have been deleted
                     // figure out if we need to do a load of objects
                     loadObjects(context).then().catch(() => {});
                 }
 
                 const iterators = types.map((ev) => `${ node.name }.${ ev }`);
+
                 return context.pubsub.asyncIterator(iterators);
             },
-            async (payload: MutationSubscriptionResult, args: { filter: SubscriptionFilter }, context: SubscriptionContext) => {
-                if (!payload || !payload.id) { return false; }
+            async (payload: MutationSubscriptionResult, args: { filter: SubscriptionFilter }, context: Context) => {
                 if (!context?.resolveTree) { return false; }
-
-                if (args?.filter) {
-                    for (const filterName of [
-                        'type', // This is already filtered above.
-                        'id',
-                        'toID',
-                        'relationshipID',
-                        'toName',
-                        'relationshipName',
-                        'handle',
-                    ]) {
-                        const value = payload[filterName];
-                        const filter = {
-                            filter: args.filter[filterName],
-                            not: args.filter[`${ filterName }_NOT`],
-                            in: args.filter[`${filterName }_IN`],
-                            not_in: args.filter[`${filterName }_NOT_IN`],
-                            undefined: args.filter[`${filterName }_UNDEFINED`],
-                        };
-
-                        if (filter.filter !== undefined && filter.filter !== value) {
-                            return false;
-                        }
-
-                        if (filter.not !== undefined && filter.not === value) {
-                            return false;
-                        }
-
-                        if (filter.in !== undefined && !filter.in.includes(value)) {
-                            return false;
-                        }
-
-                        if (filter.not_in !== undefined && filter.in.includes(value)) {
-                            return false;
-                        }
-
-                        if ((filter.undefined === true && value) || filter.undefined === false && value === undefined) {
-                            return false;
-                        }
-                    }
+                if (!resolveSubscriptionResult(node, payload, args, context.subCache)) {
+                    return false;
                 }
-
-                if ('properties' in payload) {
-                    // eslint-disable-next-line no-param-reassign
-                    payload.propsUpdated = Object.keys(payload.properties);
-                }
-
-                if (args?.filter?.propsUpdated) {
-                    // require at least one of the defined properties to be updated.
-                    if (!payload.propsUpdated) { return false; }
-                    let found = false;
-                    for (const prop of args?.filter?.propsUpdated) {
-                        if (payload.propsUpdated.includes(prop)) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) { return false; }
-                }
-
-                if (payload.type === 'Deleted') {
-                    if (!context.subCache) { return false; }
-
-                    const cached = context.subCache[payload.id];
-                    if (!cached) { return false; }
-
-                    // eslint-disable-next-line no-param-reassign
-                    payload[node.name.toLowerCase()] = cached;
-                    return true;
-                }
-
                 // Ensure context.resolveTree.args.where is set.
                 context.resolveTree.args = context.resolveTree.args || {};
                 context.resolveTree.args.where = context.resolveTree.args.where || {};
 
                 // eslint-disable-next-line @typescript-eslint/dot-notation
                 context.resolveTree.args.where['_id'] = payload.id;
-                const [cypher, params] = translateRead({ context, node });
+                let cypher: string;
+                let params = {};
+                try {
+                    [cypher, params] = translateRead({ context, node });
+                } catch (err) {
+                    debug(`Failed to translate read for ${ payload.name }.${ payload.type }: %s`, err);
+                    throw err;
+                }
 
                 let bookmarks: string[] | undefined;
                 if (payload.bookmark) {
                     bookmarks = [ payload.bookmark ];
                 }
 
-                const executeResult = await execute({
-                    cypher,
-                    params,
-                    defaultAccessMode: "READ",
-                    context,
-                    bookmarks,
-                });
+                let executeResult: ExecuteResult;
+                try {
+                    executeResult = await execute({
+                        cypher,
+                        params,
+                        defaultAccessMode: "READ",
+                        context,
+                        bookmarks,
+                    });
+                } catch (err) {
+                    debug(`Failed to execute read for ${ payload.name }.${ payload.type }: %s`, err);
+                    throw err;
+                }
 
                 const [ record ] = executeResult.records;
                 const self = record?.this;
 
                 if (self) {
-                    // eslint-disable-next-line no-param-reassign
-                    payload[node.name.toLowerCase()] = record.this;
+                    context.subCache = writeSubscriptionResultToCache(node, payload, self, context.subCache);
+                }
 
-                    if ([ 'Updated', 'Created' ].includes(payload.type)) {
-                        context.subCache = context.subCache || {};
-                        context.subCache[payload.id] = self;
-                    }
+                if ('properties' in payload) {
+                    // eslint-disable-next-line no-param-reassign
+                    payload.propsUpdated = Object.keys(payload.properties);
                 }
 
                 return Boolean(self);

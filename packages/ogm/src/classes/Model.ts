@@ -170,9 +170,9 @@ class Model {
         context.useLocalPubsub = true;
 
         // const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
-        const result: AsyncIterable<T> = await createSourceEventStream(this.neoSchema.schema, parse(query), rootValue, context, variableValues);
+        const result = await createSourceEventStream(this.neoSchema.schema, parse(query), rootValue, context, variableValues);
         // result.
-        return result;
+        return result as any;
 
         // if (result.errors?.length) {
         //     throw new Error(result.errors[0].message);

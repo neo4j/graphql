@@ -736,8 +736,26 @@ function makeAugmentedSchema(
                         name: '_id',
                         type: 'Int!',
                         resolve: numericalResolver,
-                        description: 'Neo4j Internal ID. This should not be ' + 
-                            'used as it is subject to be re-used in the database.',
+                        description: `
+                            **Neo4j Internal ID**
+
+                            WARNING:  
+                            Neo4j reuses its internal ids when nodes and relationships
+                            are deleted. This means that applications using, and relying
+                            on internal Neo4j ids, are brittle or at risk of making mistakes.
+                            It is therefore recommended to rather use application-generated ids.
+
+
+                            _id should only be used in conjunction with subscriptions.
+
+
+
+                            Disable this property by setting \`config.addInternalIdsToSchema\` to false.
+
+
+
+                            Reference: https://neo4j.com/docs/cypher-manual/current/clauses/match/#match-node-by-id
+                        `,
                     }
                 } : {}),
             },

@@ -39,6 +39,7 @@ export const DEBUG_AUTH = `${DEBUG_PREFIX}:auth`;
 export const DEBUG_GRAPHQL = `${DEBUG_PREFIX}:graphql`;
 export const DEBUG_EXECUTE = `${DEBUG_PREFIX}:execute`;
 export const DEBUG_PUBLISH = `${DEBUG_PREFIX}:publish`;
+export const DEBUG_SUBSCRIBE = `${DEBUG_PREFIX}:subscribe`;
 
 export const RESERVED_TYPE_NAMES = [
     {
