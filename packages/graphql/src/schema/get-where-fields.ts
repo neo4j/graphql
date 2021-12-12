@@ -32,13 +32,16 @@ function getWhereFields({
     fields,
     enableRegex,
     isInterface,
+    addInternalIdsToSchema,
 }: {
     typeName: string;
     fields: Fields;
     enableRegex?: boolean;
     isInterface?: boolean;
+    addInternalIdsToSchema?: boolean,
 }): { [k: string]: string } {
     return {
+        ...(addInternalIdsToSchema ? { _id: 'Int' } : {}),
         ...(isInterface ? {} : { OR: `[${typeName}Where!]`, AND: `[${typeName}Where!]` }),
         // Custom scalar fields only support basic equality
         ...fields.scalarFields.reduce((res, f) => {

@@ -76,7 +76,15 @@ import { validateDocument } from "./validation";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
-    { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
+    {
+        enableRegex,
+        skipValidateTypeDefs,
+        addInternalIdsToSchema,
+    }: {
+        enableRegex?: boolean;
+        skipValidateTypeDefs?: boolean;
+        addInternalIdsToSchema?: boolean;
+    } = {}
 ): { schema: GraphQLSchema; nodes: Node[]; relationships: Relationship[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
@@ -721,7 +729,18 @@ function makeAugmentedSchema(
 
         const composeNode = composer.createObjectTC({
             name: node.name,
-            fields: nodeFields,
+            fields: {
+                ...nodeFields,
+                ...(addInternalIdsToSchema ? {
+                    _id: {
+                        name: '_id',
+                        type: 'Int!',
+                        resolve: numericalResolver,
+                        description: 'Neo4j Internal ID. This should not be ' + 
+                            'used as it is subject to be re-used in the database.',
+                    }
+                } : {}),
+            },
             description: node.description,
             directives: graphqlDirectivesToCompose(node.otherDirectives),
             interfaces: node.interfaces.map((x) => x.name.value),
@@ -767,6 +786,7 @@ function makeAugmentedSchema(
         const queryFields = getWhereFields({
             typeName: node.name,
             enableRegex,
+            addInternalIdsToSchema,
             fields: {
                 temporalFields: node.temporalFields,
                 enumFields: node.enumFields,

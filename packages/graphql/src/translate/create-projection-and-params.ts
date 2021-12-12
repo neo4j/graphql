@@ -153,6 +153,11 @@ function createProjectionAndParams({
         const temporalField = node.temporalFields.find((x) => x.fieldName === field.name);
         const authableField = node.authableFields.find((x) => x.fieldName === field.name);
 
+        if (field.name === '_id') {
+            res.projection.push(`${key}: id(${ varName })`);
+            return res;
+        }
+
         if (authableField) {
             if (authableField.auth) {
                 const allowAndParams = createAuthAndParams({
