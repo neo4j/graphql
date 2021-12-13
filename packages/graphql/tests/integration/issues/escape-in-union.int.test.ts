@@ -24,8 +24,7 @@ import neo4j from "../neo4j";
 import { generateUniqueType } from "../../../src/utils/test/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
 
-// TODO: finish this, typedefs and query already in place
-describe("https://github.com/neo4j/graphql/issues/594", () => {
+describe("Empty fields on unions due to escaped labels", () => {
     let driver: Driver;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
