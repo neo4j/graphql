@@ -2029,7 +2029,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@^2.5.0, @neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@^2.5.1, @neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
@@ -2037,7 +2037,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": 2.0.0
     "@graphql-codegen/typescript": 2.0.0
     "@graphql-tools/merge": 6.2.14
-    "@neo4j/graphql": ^2.5.0
+    "@neo4j/graphql": ^2.5.1
     "@types/jest": 26.0.8
     "@types/node": 14.0.27
     camelcase: ^6.2.0
@@ -2057,7 +2057,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@^2.5.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^2.5.1, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -2112,7 +2112,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
-    "@neo4j/graphql": ^2.5.0
+    "@neo4j/graphql": ^2.5.1
     "@types/jest": 26.0.8
     "@types/node": 14.0.27
     "@types/pluralize": 0.0.29
@@ -12816,7 +12816,7 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "migration@workspace:examples/migration"
   dependencies:
-    "@neo4j/graphql": ^2.5.0
+    "@neo4j/graphql": ^2.5.1
     apollo-server: ^2.23.0
     graphql: ^15.0.0
     neo4j-driver: ^4.2.0
@@ -13249,8 +13249,8 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "neo-push-server@workspace:examples/neo-push/server"
   dependencies:
-    "@neo4j/graphql": ^2.5.0
-    "@neo4j/graphql-ogm": ^2.5.0
+    "@neo4j/graphql": ^2.5.1
+    "@neo4j/graphql-ogm": ^2.5.1
     "@types/bcrypt": 3.0.0
     "@types/debug": 4.1.5
     "@types/dotenv": 8.2.0
