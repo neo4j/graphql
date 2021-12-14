@@ -84,7 +84,7 @@ describe("Node", () => {
             const labels = node.getLabels(context);
             const labelString = node.getLabelString(context);
 
-            expect(labels).toEqual(["`Movie`"]);
+            expect(labels).toEqual(["Movie"]);
             expect(labelString).toEqual(":`Movie`");
         });
 
@@ -106,7 +106,7 @@ describe("Node", () => {
             const labels = node.getLabels(context);
             const labelString = node.getLabelString(context);
 
-            expect(labels).toEqual(["`Movie`"]);
+            expect(labels).toEqual(["Movie"]);
             expect(labelString).toEqual(":`Movie`");
         });
 
@@ -132,7 +132,7 @@ describe("Node", () => {
             const labels = node.getLabels(context);
             const labelString = node.getLabelString(context);
 
-            expect(labels).toEqual(["`Film`", "`Movie`"]);
+            expect(labels).toEqual(["Film", "Movie"]);
             expect(labelString).toEqual(":`Film`:`Movie`");
         });
     });
