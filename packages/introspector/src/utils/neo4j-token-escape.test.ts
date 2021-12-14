@@ -24,6 +24,7 @@ type Args = [string, string];
 describe("neo4jTokenEscape", () => {
     const cases: Args[] = [
         ["Hello", "`Hello`"],
+        ["`Hello`", "`Hello`"],
         ["He`llo", "`He``llo`"],
         ["He llo", "`He llo`"],
     ];
