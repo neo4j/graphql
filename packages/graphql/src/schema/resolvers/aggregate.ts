@@ -22,10 +22,12 @@ import { execute } from "../../utils";
 import { Node } from "../../classes";
 import { Context } from "../../types";
 import { translateAggregate } from "../../translate";
+import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 
 export default function aggregateResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, _args: any, _context: unknown, _info: GraphQLResolveInfo) {
+    async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
+        context.resolveTree = getNeo4jResolveTree(info);
 
         const [cypher, params] = translateAggregate({
             context,
