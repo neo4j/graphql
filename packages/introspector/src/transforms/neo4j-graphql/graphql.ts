@@ -44,6 +44,10 @@ function transformNodes(nodes: NodeMap, readonly: boolean): GraphQLNodeMap {
     const out = {};
     const takenTypeNames: string[] = [];
     Object.keys(nodes).forEach((nodeType) => {
+        // No labels, skip
+        if (!nodeType) {
+            return;
+        }
         const neo4jNode = nodes[nodeType];
         const mainLabel = neo4jNode.labels[0];
         const typeName = generateGraphQLSafeName(mainLabel);
