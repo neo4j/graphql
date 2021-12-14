@@ -224,12 +224,12 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type Test_Label2 @node(label: \\"Test-Label\\") {
-            	singleProp: BigInt!
+            "type Test_Label @node(label: \\"Test\`Label\\") {
+            	strProp: String!
             }
 
-            type Test_Label @node(label: \\"Test\`Label\\") {
-            	strProp: String!
+            type Test_Label2 @node(label: \\"Test-Label\\") {
+            	singleProp: BigInt!
             }"
         `);
 
