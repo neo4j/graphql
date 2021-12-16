@@ -256,7 +256,10 @@ function createConnectionAndParams({
 
         if (sortInput && sortInput.length) {
             const sort = sortInput.map((s) =>
-                Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`).join(", ")
+                [
+                    ...Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`),
+                    ...Object.entries(s.node || []).map(([f, direction]) => `edge.node.${f} ${direction}`),
+                ].join(", ")
             );
             subqueryCypher.push(`WITH edge ORDER BY ${sort.join(", ")}`);
         }
