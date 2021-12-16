@@ -87,7 +87,7 @@ describe("Interface Relationships", () => {
             }
 
             type Actor {
-              actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
+              actedIn(options: ProductionOptions, where: ProductionWhere): [Production!]!
               actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -105,6 +105,7 @@ describe("Interface Relationships", () => {
 
             input ActorActedInConnectionSort {
               edge: ActedInSort
+              node: ProductionSort
             }
 
             input ActorActedInConnectionWhere {
@@ -348,6 +349,18 @@ describe("Interface Relationships", () => {
               Series: SeriesWhere
             }
 
+            input ProductionOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [ProductionSort]
+            }
+
+            \\"\\"\\"Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.\\"\\"\\"
+            input ProductionSort {
+              title: SortDirection
+            }
+
             input ProductionUpdateInput {
               _on: ProductionImplementationsUpdateInput
               title: String
@@ -378,12 +391,7 @@ describe("Interface Relationships", () => {
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesCount(where: SeriesWhere): Int!
             }
-
-            input QueryOptions {
-              limit: Int
-              offset: Int
-            }
-
+            
             type Series implements Production {
               episodes: Int!
               title: String!
@@ -552,7 +560,7 @@ describe("Interface Relationships", () => {
             }
 
             type Actor {
-              actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
+              actedIn(options: ProductionOptions, where: ProductionWhere): [Production!]!
               actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -571,6 +579,7 @@ describe("Interface Relationships", () => {
 
             input ActorActedInConnectionSort {
               edge: ActedInSort
+              node: ProductionSort
             }
 
             input ActorActedInConnectionWhere {
@@ -1302,6 +1311,18 @@ describe("Interface Relationships", () => {
               Series: SeriesWhere
             }
 
+            input ProductionOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [ProductionSort]
+            }
+
+            \\"\\"\\"Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.\\"\\"\\"
+            input ProductionSort {
+              title: SortDirection
+            }
+
             input ProductionUpdateInput {
               _on: ProductionImplementationsUpdateInput
               actors: [ProductionActorsUpdateFieldInput!]
@@ -1340,11 +1361,6 @@ describe("Interface Relationships", () => {
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesCount(where: SeriesWhere): Int!
-            }
-
-            input QueryOptions {
-              limit: Int
-              offset: Int
             }
 
             type Series implements Production {
@@ -1764,7 +1780,7 @@ describe("Interface Relationships", () => {
 
             interface Interface1 {
               field1: String!
-              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
+              interface2(options: Interface2Options, where: Interface2Where): [Interface2!]!
               interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -1828,6 +1844,10 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input Interface1Interface2ConnectionSort {
+              node: Interface2Sort
+            }
+
             input Interface1Interface2ConnectionWhere {
               AND: [Interface1Interface2ConnectionWhere!]
               OR: [Interface1Interface2ConnectionWhere!]
@@ -1868,6 +1888,18 @@ describe("Interface Relationships", () => {
               disconnect: [Interface1Interface2DisconnectFieldInput!]
               update: Interface1Interface2UpdateConnectionInput
               where: Interface1Interface2ConnectionWhere
+            }
+
+            input Interface1Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more Interface1Sort objects to sort Interface1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [Interface1Sort]
+            }
+
+            \\"\\"\\"Fields to sort Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface1Sort object.\\"\\"\\"
+            input Interface1Sort {
+              field1: SortDirection
             }
 
             input Interface1UpdateInput {
@@ -1913,6 +1945,18 @@ describe("Interface Relationships", () => {
             input Interface2ImplementationsWhere {
               Type1Interface2: Type1Interface2Where
               Type2Interface2: Type2Interface2Where
+            }
+
+            input Interface2Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more Interface2Sort objects to sort Interface2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [Interface2Sort]
+            }
+
+            \\"\\"\\"Fields to sort Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface2Sort object.\\"\\"\\"
+            input Interface2Sort {
+              field2: SortDirection
             }
 
             input Interface2UpdateInput {
@@ -1978,11 +2022,6 @@ describe("Interface Relationships", () => {
               type2Interface2sCount(where: Type2Interface2Where): Int!
             }
 
-            input QueryOptions {
-              limit: Int
-              offset: Int
-            }
-
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -1997,8 +2036,8 @@ describe("Interface Relationships", () => {
 
             type Type1 {
               field1: String!
-              interface1(options: QueryOptions, where: Interface1Where): [Interface1!]!
-              interface1Connection(where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
+              interface1(options: Interface1Options, where: Interface1Where): [Interface1!]!
+              interface1Connection(sort: [Type1Interface1ConnectionSort!], where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
             type Type1AggregateSelection {
@@ -2025,8 +2064,8 @@ describe("Interface Relationships", () => {
 
             type Type1Interface1 implements Interface1 {
               field1: String!
-              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2(options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Connection(sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             type Type1Interface1AggregateSelection {
@@ -2047,6 +2086,10 @@ describe("Interface Relationships", () => {
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input Type1Interface1ConnectionSort {
+              node: Interface1Sort
             }
 
             input Type1Interface1ConnectionWhere {
@@ -2257,8 +2300,8 @@ describe("Interface Relationships", () => {
 
             type Type2Interface1 implements Interface1 {
               field1: String!
-              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2(options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Connection(sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             type Type2Interface1AggregateSelection {
@@ -2881,6 +2924,19 @@ describe("Interface Relationships", () => {
               Post: PostWhere
             }
 
+            input ContentOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more ContentSort objects to sort Contents by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [ContentSort]
+            }
+
+            \\"\\"\\"Fields to sort Contents by. The order in which sorts are applied is not guaranteed when specifying many fields in one ContentSort object.\\"\\"\\"
+            input ContentSort {
+              content: SortDirection
+              id: SortDirection
+            }
+
             input ContentUpdateInput {
               _on: ContentImplementationsUpdateInput
               content: String
@@ -3237,11 +3293,6 @@ describe("Interface Relationships", () => {
               usersCount(where: UserWhere): Int!
             }
 
-            input QueryOptions {
-              limit: Int
-              offset: Int
-            }
-
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -3278,8 +3329,8 @@ describe("Interface Relationships", () => {
             }
 
             type User {
-              content(options: QueryOptions, where: ContentWhere): [Content!]!
-              contentConnection(where: UserContentConnectionWhere): UserContentConnection!
+              content(options: ContentOptions, where: ContentWhere): [Content!]!
+              contentConnection(sort: [UserContentConnectionSort!], where: UserContentConnectionWhere): UserContentConnection!
               id: ID
               name: String
             }
@@ -3307,6 +3358,10 @@ describe("Interface Relationships", () => {
               edges: [UserContentRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input UserContentConnectionSort {
+              node: ContentSort
             }
 
             input UserContentConnectionWhere {
