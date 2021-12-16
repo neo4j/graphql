@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../../src/utils/test/graphql-types";
+import { generateUniqueType } from "../../../tests/utils/graphql-types";
 
 describe("assertIndexesAndConstraints/fulltext", () => {
     let driver: Driver;
