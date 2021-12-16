@@ -73,6 +73,7 @@ type User {
 
 * Any undirected queries should be opt-in.
 * Risk of breaking changes if existing typedefs/queries allow undirected queries.
+* We use relationship direction in a lot of different places in the code - risk that we change or remove the direction where we shouldn't
 
 ## Technical considerations
 
