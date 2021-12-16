@@ -82,7 +82,7 @@ function createRelationshipFields({
                 [rel.fieldName]: {
                     type: rel.typeMeta.pretty,
                     args: {
-                        options: "QueryOptions",
+                        options: `${rel.typeMeta.name}Options`,
                         where: `${rel.typeMeta.name}Where`,
                     },
                 },

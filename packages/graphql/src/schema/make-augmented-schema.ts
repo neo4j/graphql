@@ -45,8 +45,8 @@ import {
     upperFirst,
 } from "graphql-compose";
 import pluralize from "pluralize";
-import { Node, Exclude } from "../classes";
-import getAuth from "./get-auth";
+import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
+import { validateDocument } from "./validation";
 import { PrimitiveField, Auth, FullText } from "../types";
 import {
     aggregateResolver,
@@ -59,24 +59,24 @@ import {
     updateResolver,
     numericalResolver,
 } from "./resolvers";
+import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import * as constants from "../constants";
 import * as Scalars from "./scalars";
+import * as point from "./point";
+import { Node, Exclude } from "../classes";
+import { NodeDirective } from "../classes/NodeDirective";
+import Relationship from "../classes/Relationship";
+import createConnectionFields from "./create-connection-fields";
+import createRelationshipFields from "./create-relationship-fields";
 import parseExcludeDirective from "./parse-exclude-directive";
+import parseFulltextDirective from "./parse/parse-fulltext-directive";
+import parseNodeDirective from "./parse-node-directive";
+import getAuth from "./get-auth";
 import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
-import * as point from "./point";
-import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
-import Relationship from "../classes/Relationship";
-import getWhereFields from "./get-where-fields";
-import { validateDocument } from "./validation";
-import * as constants from "../constants";
-import createRelationshipFields from "./create-relationship-fields";
-import createConnectionFields from "./create-connection-fields";
-import { NodeDirective } from "../classes/NodeDirective";
-import parseNodeDirective from "./parse-node-directive";
-import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import getSortableFields from "./get-sortable-fields";
 import getUniqueFields from "./get-unique-fields";
-import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import getWhereFields from "./get-where-fields";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -484,6 +484,41 @@ function makeAugmentedSchema(
             name: interfaceRelationship.name.value,
             fields: objectComposeFields,
         });
+
+        const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Options`, (tc) => {
+            tc.addFields({
+                limit: "Int",
+                offset: "Int",
+            });
+        });
+
+        const interfaceSortableFields = getSortableFields(interfaceFields).reduce(
+            (res, f) => ({
+                ...res,
+                [f.fieldName]: sortDirection.getTypeName(),
+            }),
+            {}
+        );
+
+        if (Object.keys(interfaceSortableFields).length) {
+            const interfaceSortInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Sort`, (tc) => {
+                tc.addFields(interfaceSortableFields);
+                tc.setDescription(
+                    `Fields to sort ${pluralize(
+                        interfaceRelationship.name.value
+                    )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${interfaceRelationship.name.value}Sort`} object.`
+                );
+            });
+
+            interfaceOptionsInput.addFields({
+                sort: {
+                    description: `Specify one or more ${`${interfaceRelationship.name.value}Sort`} objects to sort ${pluralize(
+                        interfaceRelationship.name.value
+                    )} by. The sorts will be applied in the order in which they are arranged in the array.`,
+                    type: interfaceSortInput.List,
+                },
+            });
+        }
 
         const interfaceWhereFields = getWhereFields({
             typeName: interfaceRelationship.name.value,
