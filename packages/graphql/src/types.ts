@@ -182,6 +182,14 @@ export interface TemporalField extends PrimitiveField {
 
 export type PointField = BaseField;
 
+export type SortableField =
+    | PrimitiveField
+    | CustomScalarField
+    | CustomEnumField
+    | TemporalField
+    | PointField
+    | CypherField;
+
 export type SortDirection = "ASC" | "DESC";
 
 export interface GraphQLSortArg {
