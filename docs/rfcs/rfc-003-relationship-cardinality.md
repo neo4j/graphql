@@ -25,9 +25,9 @@ For any of the fields in the following example, throw an error because of the re
 
 ```graphql
 type Source {
-  example1: [Target!] @relationship(type: "Source", direction: OUT) # If there are no relationships, then should always be empty array and not null
-  example2: [Target]! @relationship(type: "Source", direction: OUT) # This suggests a relationship with no target node
-  example3: [Target] @relationship(type: "Source", direction: OUT) # This is a combination of both of the above problems
+  example1: [Target!] @relationship(type: "HAS_TARGET", direction: OUT) # If there are no relationships, then should always be empty array and not null
+  example2: [Target]! @relationship(type: "HAS_TARGET", direction: OUT) # This suggests a relationship with no target node
+  example3: [Target] @relationship(type: "HAS_TARGET", direction: OUT) # This is a combination of both of the above problems
 }
 ```
 
@@ -39,7 +39,7 @@ For example:
 
 ```graphql
 type Source {
-  example4: Target @relationship(type: "Source", direction: OUT)
+  example4: Target @relationship(type: "HAS_TARGET", direction: OUT)
 }
 ```
 
@@ -59,7 +59,7 @@ For example:
 
 ```graphql
 type Source {
-  example5: Target! @relationship(type: "Source", direction: OUT)
+  example5: Target! @relationship(type: "HAS_TARGET", direction: OUT)
 }
 ```
 
@@ -78,6 +78,20 @@ Rules:
 `create`, `connect`, `connectOrCreate` should throw an error is something is already connected (should this be a pre-check rather than post for performance reasons?)
 
 `disconnect`, `update` and `delete` no longer require a where argument, should have `_emptyInput` if no nested relationships.
+
+#### Cardinality Checks in Cypher
+
+After any operations on a one-to-* relationship or its terminating nodes, we should check that the cardinality of the relationship has been maintained.
+
+This can be achieved using `apoc.util.validate`, something akin to the following which ensures relationship count is 1:
+
+```cypher
+MATCH (:Source)<-[has_target:HAS_TARGET]-(:Target)
+WITH count(has_target) as has_target_count
+CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(has_target_count = 1), '@neo4j/graphql/CARDINALITY_VIOLATION Source.target must be 1', [0])), '@neo4j/graphql/CARDINALITY_VIOLATION', [0])
+```
+
+There is likely a much cleaner solution than this.
 
 ### Many-to-many relationship
 
