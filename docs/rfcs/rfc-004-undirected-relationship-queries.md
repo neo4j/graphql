@@ -2,13 +2,13 @@
 
 ## Problem
 
-Currently, all queries with relations are translated as directed relationships:
+Currently, all queries with relationships are translated with direction:
 
 ```cypher
 MATCH(u:User)-[:ASSOCIATES_WITH]->(a:User)
 ```
 
-However, we don't have a away for users to specify an undirected relationship in a query:
+However, we don't have a way for users to specify an undirected relationship in a query:
 
 ```cypher
 MATCH(u:User)-[:ASSOCIATES_WITH]-(a:User)
@@ -16,9 +16,9 @@ MATCH(u:User)-[:ASSOCIATES_WITH]-(a:User)
 
 This is reported in [issue 142](https://github.com/neo4j/graphql/issues/142) as well as in [Discord](https://discord.com/channels/787399249741479977/818578492723036210/831551053379797074).
 
-## Proposed Solutions
+## Proposed Solution
 
-This solution involve providing an opt-in way for performing a query without defining relation direction by adding a parameter in the **query** field defining the direction
+This solution involves providing an opt-in way for performing a query without defining relationship direction, by adding a parameter in the **query** field defining the direction:
 
 ```graphql
 type User {
@@ -28,6 +28,7 @@ type User {
 ```
 
 This way, the following query:
+
 ```graphql
 query {
   users {
@@ -43,6 +44,7 @@ query {
 ```
 
 Results in the Cypher:
+
 ```cypher
 MATCH (this:User)
 RETURN this { .name, 
@@ -53,9 +55,9 @@ RETURN this { .name,
 
 ### `queryDirection` option
 
-`queryDirection` is an optional parameter in the typedefs should define the default and allowed behaviours of query direction.
+`queryDirection` is an optional parameter in the type definitions should define the default and allowed behaviours of query direction, for example:
 
-```grahpql
+```graphql
 type User {
   name: String!
   friends: [User!] @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DEFAULT_DIRECTED)
@@ -66,25 +68,25 @@ type User {
 
 * `DEFAULT_DIRECTED` (_default_) - All queries are directed by default, but `directed: false` option is available in queries.
 * `DEFAULT_UNDIRECTED` - All queries are undirected by default, but `directed: true` option is available in queries.
-* `DIRECTED_ONLY` - All queries are directed.
+* `DIRECTED_ONLY` - All queries are directed (as of `2.5.3`, this is the default behaviour).
 * `UNDIRECTED_ONLY` - All queries are undirected.
 
 ## Risks
 
-* Any undirected queries should be opt-in.
-* Risk of breaking changes if existing typedefs/queries allow undirected queries.
-* We use relationship direction in a lot of different places in the code - risk that we change or remove the direction where we shouldn't
+* New security considerations for users, as undirected relationship queries will now be possible.
+* We use relationship direction in a lot of different places in the code - risk that we change or remove the direction where we shouldn't.
 
 ## Technical considerations
 
-* `queryDirection` default (`DEFAULT_DIRECTED` vs `DIRECTED_ONLY`)
-* `directed` vs `undirected` parameter
+* Any undirected queries should be opt-in.
+* `queryDirection` default value (`DEFAULT_DIRECTED` vs `DIRECTED_ONLY`).
+* `directed` vs `undirected` parameter.
 
 ## Out of Scope
 
 * **undirected mutations**: A direction needs to be specified and used for mutation. 
 
-## Other solutions considered
+## Discarded Solutions
 
 ### Both direction
 Allow the use of `BOTH` or `NONE` for no relationship direction.
