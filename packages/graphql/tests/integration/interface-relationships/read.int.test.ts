@@ -147,6 +147,89 @@ describe("interface relationships", () => {
         }
     });
 
+    test("should read and return sorted interface relationship fields", async () => {
+        const session = driver.session();
+
+        const actor = {
+            name: generate({
+                readable: true,
+                charset: "alphabetic",
+            }),
+        };
+
+        const movie1 = {
+            title: "A",
+            runtime: faker.random.number(),
+            screenTime: faker.random.number(),
+        };
+
+        const movie2 = {
+            title: "B",
+            runtime: faker.random.number(),
+            screenTime: faker.random.number(),
+        };
+
+        const series1 = {
+            title: "C",
+            episodes: faker.random.number(),
+            screenTime: faker.random.number(),
+        };
+
+        const series2 = {
+            title: "D",
+            episodes: faker.random.number(),
+            screenTime: faker.random.number(),
+        };
+
+        const query = gql`
+            query Actors($name: String) {
+                actors(where: { name: $name }) {
+                    name
+                    actedIn(options: { sort: [{ title: DESC }] }) {
+                        title
+                        ... on Movie {
+                            runtime
+                        }
+                        ... on Series {
+                            episodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (a:Actor { name: $actor.name })
+                CREATE (:Movie { title: $movie1.title, runtime:$movie1.runtime })<-[:ACTED_IN { screenTime: $movie1.screenTime }]-(a)-[:ACTED_IN { screenTime: $movie2.screenTime }]->(:Movie { title: $movie2.title, runtime: $movie2.runtime })
+                CREATE (:Series { title: $series1.title, episodes: $series1.episodes })<-[:ACTED_IN { screenTime: $series1.screenTime }]-(a)-[:ACTED_IN { screenTime: $series2.screenTime }]->(:Series { title: $series2.title, episodes: $series2.episodes })
+            `,
+                { actor, movie1, movie2, series1, series2 }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query.loc!.source,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { name: actor.name },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            const [gqlActor] = gqlResult.data?.actors;
+
+            expect(gqlActor.name).toEqual(actor.name);
+            expect(gqlActor.actedIn).toHaveLength(4);
+            expect(gqlActor.actedIn[0]).toEqual({ title: series2.title, episodes: series2.episodes });
+            expect(gqlActor.actedIn[1]).toEqual({ title: series1.title, episodes: series1.episodes });
+            expect(gqlActor.actedIn[2]).toEqual({ title: movie2.title, runtime: movie2.runtime });
+            expect(gqlActor.actedIn[3]).toEqual({ title: movie1.title, runtime: movie1.runtime });
+        } finally {
+            await session.close();
+        }
+    });
+
     test("should read and return interface relationship fields with shared where", async () => {
         const session = driver.session();
 
