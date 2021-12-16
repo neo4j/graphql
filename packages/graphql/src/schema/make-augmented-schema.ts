@@ -74,6 +74,7 @@ import createConnectionFields from "./create-connection-fields";
 import { NodeDirective } from "../classes/NodeDirective";
 import parseNodeDirective from "./parse-node-directive";
 import parseFulltextDirective from "./parse/parse-fulltext-directive";
+import getSortableFields from "./get-sortable-fields";
 import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 
@@ -683,7 +684,7 @@ function makeAugmentedSchema(
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
-        const sortFields = node.sortableFields.reduce(
+        const sortFields = getSortableFields(node).reduce(
             (res, f) => ({
                 ...res,
                 [f.fieldName]: sortDirection.getTypeName(),
