@@ -209,8 +209,6 @@ jobs:
   bump-version:
     needs:
       - unit-tests
-      - tck-tests
-      - package-tests
       - upload-integration-coverage
 
     runs-on: ubuntu-latest
@@ -258,7 +256,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: release/${{ needs.bump-version.outputs.version }}
+          ref: release/introspector/${{ needs.bump-version.outputs.version }}
       - uses: actions/setup-node@v2
         with:
           node-version: lts/*
@@ -330,7 +328,7 @@ jobs:
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
       - name: git merge
-        run: git merge --no-ff origin/release/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+        run: git merge --no-ff origin/release/introspector/${{ needs.bump-version.outputs.version }} --strategy-option theirs
       - name: git tag
         run: |
           git tag -a @neo4j/introspector@${{ needs.bump-version.outputs.version }} -m "@neo4j/introspector@${{ needs.bump-version.outputs.version }}"
@@ -383,7 +381,7 @@ jobs:
           echo "::set-output name=prerelease::$prerelease"
       - name: Build Changelog
         id: github-release
-        uses: mikepenz/release-changelog-builder-action@v1
+        uses: mikepenz/release-changelog-builder-action@v2
         with:
           configuration: "config/release-changelog-builder-action/configuration-${{ steps.get-label.outputs.label }}.json"
           toTag: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"

@@ -4,7 +4,7 @@
 
 `@neo4j/graphql` currently doesn't support relationship properties, which is preventing a number of users migrating from `neo4j-graphql-js`.
 
-## Usage example
+## Solution
 
 ### Type definitions
 
