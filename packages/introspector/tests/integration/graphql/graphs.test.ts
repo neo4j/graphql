@@ -103,12 +103,12 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         expect(typeDefs).toMatchInlineSnapshot(`
             "type Actor {
-            	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT)
+            	actedInMovies: [Movie!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	name: String!
             }
 
             type Movie {
-            	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN)
+            	actorsActedIn: [Actor!]! @relationship(type: \\"ACTED_IN\\", direction: IN)
             	title: String!
             }"
         `);
@@ -128,9 +128,9 @@ describe("GraphQL - Infer Schema on graphs", () => {
         await wSession.writeTransaction((tx) =>
             tx.run(
                 `CREATE (m:Movie {title: $props.title})
-                CREATE (p:Play {title: $props.title})
-                CREATE (a:Actor {name: $props.name})
-                CREATE (d:Dog {name: $props.name})
+                CREATE (p:Play:Theater {title: $props.title})
+                CREATE (a:Actor:Person {name: $props.name})
+                CREATE (d:Dog:K9 {name: $props.name})
                 MERGE (a)-[:ACTED_IN]->(p)
                 MERGE (a)-[:ACTED_IN]->(m)
                 MERGE (a)-[:DIRECTED]->(m)
@@ -144,27 +144,27 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type Actor {
-            	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT)
-            	actedInPlays: [Play] @relationship(type: \\"ACTED_IN\\", direction: OUT)
-            	directedMovies: [Movie] @relationship(type: \\"DIRECTED\\", direction: OUT)
+            "type Actor @node(additionalLabels: [\\"Person\\"]) {
+            	actedInMovies: [Movie!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
+            	actedInPlays: [Play!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
+            	directedMovies: [Movie!]! @relationship(type: \\"DIRECTED\\", direction: OUT)
             	name: String!
             }
 
-            type Dog {
-            	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT)
+            type Dog @node(additionalLabels: [\\"K9\\"]) {
+            	actedInMovies: [Movie!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	name: String!
             }
 
             type Movie {
-            	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN)
-            	actorsDirected: [Actor] @relationship(type: \\"DIRECTED\\", direction: IN)
-            	dogsActedIn: [Dog] @relationship(type: \\"ACTED_IN\\", direction: IN)
+            	actorsActedIn: [Actor!]! @relationship(type: \\"ACTED_IN\\", direction: IN)
+            	actorsDirected: [Actor!]! @relationship(type: \\"DIRECTED\\", direction: IN)
+            	dogsActedIn: [Dog!]! @relationship(type: \\"ACTED_IN\\", direction: IN)
             	title: String!
             }
 
-            type Play {
-            	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN)
+            type Play @node(additionalLabels: [\\"Theater\\"]) {
+            	actorsActedIn: [Actor!]! @relationship(type: \\"ACTED_IN\\", direction: IN)
             	title: String!
             }"
         `);
@@ -215,9 +215,9 @@ describe("GraphQL - Infer Schema on graphs", () => {
             }
 
             type Actor {
-            	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT, properties: \\"ActedInProperties\\")
-            	directedMovies: [Movie] @relationship(type: \\"DIRECTED\\", direction: OUT, properties: \\"DirectedProperties\\")
-            	moviesWonPrizeFor: [Movie] @relationship(type: \\"WON_PRIZE_FOR\\", direction: IN)
+            	actedInMovies: [Movie!]! @relationship(type: \\"ACTED_IN\\", direction: OUT, properties: \\"ActedInProperties\\")
+            	directedMovies: [Movie!]! @relationship(type: \\"DIRECTED\\", direction: OUT, properties: \\"DirectedProperties\\")
+            	moviesWonPrizeFor: [Movie!]! @relationship(type: \\"WON_PRIZE_FOR\\", direction: IN)
             	name: String!
             }
 
@@ -226,10 +226,10 @@ describe("GraphQL - Infer Schema on graphs", () => {
             }
 
             type Movie {
-            	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN, properties: \\"ActedInProperties\\")
-            	actorsDirected: [Actor] @relationship(type: \\"DIRECTED\\", direction: IN, properties: \\"DirectedProperties\\")
+            	actorsActedIn: [Actor!]! @relationship(type: \\"ACTED_IN\\", direction: IN, properties: \\"ActedInProperties\\")
+            	actorsDirected: [Actor!]! @relationship(type: \\"DIRECTED\\", direction: IN, properties: \\"DirectedProperties\\")
             	title: String!
-            	wonPrizeForActors: [Actor] @relationship(type: \\"WON_PRIZE_FOR\\", direction: OUT)
+            	wonPrizeForActors: [Actor!]! @relationship(type: \\"WON_PRIZE_FOR\\", direction: OUT)
             }"
         `);
 
@@ -269,15 +269,15 @@ describe("GraphQL - Infer Schema on graphs", () => {
             }
 
             type Actor_Label @node(label: \\"Actor-Label\\") {
-            	actedInMovieLabels: [Movie_Label] @relationship(type: \\"ACTED-IN\\", direction: OUT, properties: \\"ActedInProperties\\")
-            	movieLabelsWonPrizeFor: [Movie_Label] @relationship(type: \\"WON_PRIZE_FOR\\", direction: IN)
+            	actedInMovieLabels: [Movie_Label!]! @relationship(type: \\"ACTED-IN\\", direction: OUT, properties: \\"ActedInProperties\\")
+            	movieLabelsWonPrizeFor: [Movie_Label!]! @relationship(type: \\"WON_PRIZE_FOR\\", direction: IN)
             	name: String!
             }
 
             type Movie_Label @node(label: \\"Movie-Label\\") {
-            	actorLabelsActedIn: [Actor_Label] @relationship(type: \\"ACTED-IN\\", direction: IN, properties: \\"ActedInProperties\\")
+            	actorLabelsActedIn: [Actor_Label!]! @relationship(type: \\"ACTED-IN\\", direction: IN, properties: \\"ActedInProperties\\")
             	title: String!
-            	wonPrizeForActorLabels: [Actor_Label] @relationship(type: \\"WON_PRIZE_FOR\\", direction: OUT)
+            	wonPrizeForActorLabels: [Actor_Label!]! @relationship(type: \\"WON_PRIZE_FOR\\", direction: OUT)
             }"
         `);
 

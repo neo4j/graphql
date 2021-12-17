@@ -39,12 +39,12 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
         const typeDefs = gql`
             type Movie {
                 title: String!
-                owners: [User] @relationship(type: "OWNS", direction: IN)
+                owners: [User!]! @relationship(type: "OWNS", direction: IN)
             }
 
             type User {
                 name: String!
-                movies: [Movie] @relationship(type: "OWNS", direction: OUT)
+                movies: [Movie!]! @relationship(type: "OWNS", direction: OUT)
             }
         `;
 

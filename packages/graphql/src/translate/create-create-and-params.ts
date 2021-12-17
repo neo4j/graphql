@@ -24,7 +24,6 @@ import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
-import createRelationshipValidationStr from "./create-relationship-validation-str";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 
 interface Res {
@@ -258,12 +257,6 @@ function createCreateAndParams({
     if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
         creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
-    }
-
-    const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
-    if (relationshipValidationStr) {
-        creates.push(`WITH ${withVars.join(", ")}`);
-        creates.push(relationshipValidationStr);
     }
 
     return [creates.join("\n"), params];

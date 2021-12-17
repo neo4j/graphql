@@ -23,10 +23,12 @@ import { execute } from "../../utils";
 import { translateUpdate } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
+import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 
 export default function updateResolver({ node, schemaComposer }: { node: Node; schemaComposer: SchemaComposer }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
+        context.resolveTree = getNeo4jResolveTree(info);
         const [cypher, params] = translateUpdate({ context, node });
         const executeResult = await execute({
             cypher,

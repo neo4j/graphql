@@ -18,7 +18,7 @@
  */
 
 import { NodeDirective } from "./NodeDirective";
-import { ContextBuilder } from "../utils/test/builders/context-builder";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 
 describe("NodeDirective", () => {
     const defaultContext = new ContextBuilder().instance();
@@ -27,28 +27,28 @@ describe("NodeDirective", () => {
         const instance = new NodeDirective({});
         const labelString = instance.getLabelsString("MyLabel", defaultContext);
 
-        expect(labelString).toEqual(":MyLabel");
+        expect(labelString).toEqual(":`MyLabel`");
     });
 
     test("should generate label string with directive label", () => {
         const instance = new NodeDirective({ label: "MyOtherLabel" });
         const labelString = instance.getLabelsString("MyLabel", defaultContext);
 
-        expect(labelString).toEqual(":MyOtherLabel");
+        expect(labelString).toEqual(":`MyOtherLabel`");
     });
 
     test("should generate label string adding additional labels to input typename", () => {
         const instance = new NodeDirective({ additionalLabels: ["Label1", "Label2"] });
         const labelString = instance.getLabelsString("MyLabel", defaultContext);
 
-        expect(labelString).toEqual(":MyLabel:Label1:Label2");
+        expect(labelString).toEqual(":`MyLabel`:`Label1`:`Label2`");
     });
 
     test("should generate label string adding additional labels to directive label", () => {
         const instance = new NodeDirective({ label: "MyOtherLabel", additionalLabels: ["Label1", "Label2"] });
         const labelString = instance.getLabelsString("MyLabel", defaultContext);
 
-        expect(labelString).toEqual(":MyOtherLabel:Label1:Label2");
+        expect(labelString).toEqual(":`MyOtherLabel`:`Label1`:`Label2`");
     });
 
     test("should throw an error if there are no labels", () => {
@@ -64,7 +64,7 @@ describe("NodeDirective", () => {
             additionalLabels: ["$context.escapeTest1", "$context.escapeTest2"],
         });
         const labelString = instance.getLabelsString("label", context);
-        expect(labelString).toEqual(":label:`123-321`:`He``l``lo`");
+        expect(labelString).toEqual(":`label`:`123-321`:`He``l``lo`");
     });
 
     test("should escape jwt labels", () => {
@@ -73,7 +73,7 @@ describe("NodeDirective", () => {
             additionalLabels: ["$jwt.escapeTest1", "$jwt.escapeTest2"],
         });
         const labelString = instance.getLabelsString("label", context);
-        expect(labelString).toEqual(":label:`123-321`:`He``l``lo`");
+        expect(labelString).toEqual(":`label`:`123-321`:`He``l``lo`");
     });
 
     test("should throw if jwt variable is missing in context", () => {

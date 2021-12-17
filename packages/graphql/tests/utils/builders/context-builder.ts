@@ -19,8 +19,8 @@
 
 import * as neo4j from "neo4j-driver";
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { Neo4jGraphQL } from "../../../classes";
-import { Context } from "../../../types";
+import { Neo4jGraphQL } from "../../../src/classes";
+import { Context } from "../../../src/types";
 import { Builder } from "./builder";
 
 export class ContextBuilder extends Builder<Context, Context> {

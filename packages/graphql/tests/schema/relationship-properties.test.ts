@@ -106,7 +106,7 @@ describe("Relationship-properties", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -137,11 +137,11 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMovieMoviesEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -345,11 +345,11 @@ describe("Relationship-properties", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -366,11 +366,11 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
+              screenTime: IntAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -510,7 +510,7 @@ describe("Relationship-properties", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -608,9 +608,9 @@ describe("Relationship-properties", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -721,7 +721,7 @@ describe("Relationship-properties", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -752,13 +752,13 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMovieMoviesEdgeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              screenTime: IntAggregateSelectionNonNullable!
-              timestamp: DateTimeAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              screenTime: IntAggregateSelection!
+              timestamp: DateTimeAggregateSelection!
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -972,9 +972,9 @@ describe("Relationship-properties", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
+            type DateTimeAggregateSelection {
+              max: DateTime
+              min: DateTime
             }
 
             type DeleteInfo {
@@ -983,16 +983,16 @@ describe("Relationship-properties", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -1009,13 +1009,13 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              screenTime: IntAggregateSelectionNonNullable!
-              timestamp: DateTimeAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              screenTime: IntAggregateSelection!
+              timestamp: DateTimeAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -1171,7 +1171,7 @@ describe("Relationship-properties", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1269,9 +1269,9 @@ describe("Relationship-properties", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -1363,7 +1363,7 @@ describe("Relationship-properties", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -1394,12 +1394,12 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMovieMoviesEdgeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              timestamp: DateTimeAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              timestamp: DateTimeAggregateSelection!
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -1584,9 +1584,9 @@ describe("Relationship-properties", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
+            type DateTimeAggregateSelection {
+              max: DateTime
+              min: DateTime
             }
 
             type DeleteInfo {
@@ -1595,9 +1595,9 @@ describe("Relationship-properties", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
             }
 
             type Movie {
@@ -1614,12 +1614,12 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              timestamp: DateTimeAggregateSelectionNonNullable!
+              id: IDAggregateSelection!
+              timestamp: DateTimeAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -1746,7 +1746,7 @@ describe("Relationship-properties", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1844,9 +1844,9 @@ describe("Relationship-properties", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

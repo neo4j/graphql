@@ -26,6 +26,8 @@ import generateRelationshipPropsName from "./utils/generate-relationship-props-n
 import { RelationshipPropertiesDirective } from "./directives/RelationshipProperties";
 import createRelationshipFields from "./utils/create-relationship-fields";
 import { ExcludeDirective } from "./directives/Exclude";
+import generateGraphQLSafeName from "./utils/generate-graphql-safe-name";
+import nodeKey from "../../utils/node-key";
 
 type GraphQLNodeMap = {
     [key: string]: GraphQLNode;
@@ -35,7 +37,9 @@ export default function graphqlFormatter(neo4jStruct: Neo4jStruct, readonly = fa
     const { nodes, relationships } = neo4jStruct;
     const bareNodes = transformNodes(nodes, readonly);
     const withRelationships = hydrateWithRelationships(bareNodes, relationships);
-    const sorted = Object.keys(withRelationships).sort();
+    const sorted = Object.keys(withRelationships).sort((a, b) => {
+        return withRelationships[a].typeName > withRelationships[b].typeName ? 1 : -1;
+    });
     return sorted.map((typeName) => withRelationships[typeName].toString()).join("\n\n");
 }
 
@@ -43,9 +47,15 @@ function transformNodes(nodes: NodeMap, readonly: boolean): GraphQLNodeMap {
     const out = {};
     const takenTypeNames: string[] = [];
     Object.keys(nodes).forEach((nodeType) => {
+        // No labels, skip
+        if (!nodeType) {
+            return;
+        }
         const neo4jNode = nodes[nodeType];
+        const neo4jNodeKey = nodeKey(neo4jNode.labels);
         const mainLabel = neo4jNode.labels[0];
-        const typeName = mainLabel.replace(/[^_0-9A-Z]+/gi, "_");
+        const typeName = generateGraphQLSafeName(mainLabel);
+
         const uniqueTypeName = uniqueString(typeName, takenTypeNames);
         takenTypeNames.push(uniqueTypeName);
 
@@ -68,7 +78,7 @@ function transformNodes(nodes: NodeMap, readonly: boolean): GraphQLNodeMap {
 
         const fields = createNodeFields(neo4jNode.properties, node.typeName);
         fields.forEach((f) => node.addField(f));
-        out[mainLabel] = node;
+        out[neo4jNodeKey] = node;
     });
     return out;
 }
@@ -79,7 +89,7 @@ function hydrateWithRelationships(nodes: GraphQLNodeMap, rels: RelationshipMap):
 
         if (rel.properties.length) {
             relInterfaceName = uniqueString(
-                generateRelationshipPropsName(relType),
+                generateGraphQLSafeName(generateRelationshipPropsName(relType)),
                 Object.values(nodes).map((n) => n.typeName)
             );
             const relInterfaceNode = new GraphQLNode("interface", relInterfaceName);
@@ -99,9 +109,9 @@ function hydrateWithRelationships(nodes: GraphQLNodeMap, rels: RelationshipMap):
             nodes[path.toTypeId].addField(toField);
         });
     });
-    Object.keys(nodes).forEach((nodeKey) => {
-        if (!nodes[nodeKey].fields.length) {
-            delete nodes[nodeKey];
+    Object.keys(nodes).forEach((key) => {
+        if (!nodes[key].fields.length) {
+            delete nodes[key];
         }
     });
     return nodes;
