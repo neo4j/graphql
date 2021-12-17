@@ -181,6 +181,88 @@ describe("Cypher directive", () => {
         `);
     });
 
+    test("LIMIT happens before custom Cypher if not sorting on the custom Cypher field", async () => {
+        const query = gql`
+            {
+                actors(options: { limit: 10 }) {
+                    randomNumber
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            MATCH (this:Actor)
+            RETURN this
+            LIMIT $this_limit
+            }
+            RETURN this { randomNumber:  apoc.cypher.runFirstColumn(\\"RETURN rand()\\", {this: this, auth: $auth}, false) } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_limit\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                },
+                \\"auth\\": {
+                    \\"isAuthenticated\\": true,
+                    \\"roles\\": [],
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
+                }
+            }"
+        `);
+    });
+
+    test("LIMIT happens after custom Cypher if sorting on the custom Cypher field", async () => {
+        const query = gql`
+            {
+                actors(options: { limit: 10, sort: [{ randomNumber: ASC }] }) {
+                    randomNumber
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            MATCH (this:Actor)
+            RETURN this
+            }
+            RETURN this { randomNumber:  apoc.cypher.runFirstColumn(\\"RETURN rand()\\", {this: this, auth: $auth}, false) } as this
+            WITH this, this { randomNumber:  apoc.cypher.runFirstColumn(\\"RETURN rand()\\", {this: this, auth: $auth}, false) } AS this_sort
+            ORDER BY this_sort.randomNumber ASC
+            LIMIT $this_limit"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_limit\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                },
+                \\"auth\\": {
+                    \\"isAuthenticated\\": true,
+                    \\"roles\\": [],
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
+                }
+            }"
+        `);
+    });
+
     test("Nested directive", async () => {
         const query = gql`
             {

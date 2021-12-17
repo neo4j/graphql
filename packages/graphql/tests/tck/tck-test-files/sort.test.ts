@@ -78,8 +78,9 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { .title } as this
-            ORDER BY this.id DESC"
+            WITH this
+            ORDER BY this.id DESC
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -135,8 +136,9 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { .title } as this
-            ORDER BY this.id DESC, this.title ASC"
+            WITH this
+            ORDER BY this.id DESC, this.title ASC
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -161,12 +163,16 @@ describe("Cypher sort tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CALL {
+            MATCH (this:Movie)
             WHERE this.title = $this_title
-            RETURN this { .title } as this
-            ORDER BY this.id DESC, this.title ASC
+            WITH this, this { .title } AS this_sort
+            ORDER BY this_sort.id DESC, this_sort.title ASC
+            RETURN this
             SKIP $this_offset
-            LIMIT $this_limit"
+            LIMIT $this_limit
+            }
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

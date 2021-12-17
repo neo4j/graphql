@@ -87,9 +87,12 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN this { .title } as this
-            LIMIT $this_limit"
+            "CALL {
+            MATCH (this:Movie)
+            RETURN this
+            LIMIT $this_limit
+            }
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -117,10 +120,13 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN this { .title } as this
+            "CALL {
+            MATCH (this:Movie)
+            RETURN this
             SKIP $this_offset
-            LIMIT $this_limit"
+            LIMIT $this_limit
+            }
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -153,10 +159,13 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN this { .title } as this
+            "CALL {
+            MATCH (this:Movie)
+            RETURN this
             SKIP $this_offset
-            LIMIT $this_limit"
+            LIMIT $this_limit
+            }
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -189,11 +198,14 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CALL {
+            MATCH (this:Movie)
             WHERE this.title = $this_title
-            RETURN this { .title } as this
+            RETURN this
             SKIP $this_offset
-            LIMIT $this_limit"
+            LIMIT $this_limit
+            }
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

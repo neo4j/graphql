@@ -18,40 +18,38 @@
  */
 
 import { Node } from "../classes";
+import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
-import { GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField, RelationField } from "../types";
+import { GraphQLWhereArg, GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
-import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
-import translateTopLevelMatch from "./translate-top-level-match";
 
 function translateRead({ node, context }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
     const { fieldsByTypeName } = resolveTree;
+    const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
 
     const hasOffset = Boolean(optionsInput?.offset) || optionsInput?.offset === 0;
     const hasLimit = Boolean(optionsInput?.limit) || optionsInput?.limit === 0;
 
+    const labels = node.labelString;
+
     const varName = "this";
     const limitOrderVarName = "this_sort";
-    let matchAndWhereStr = "";
+    const matchStr = `MATCH (${varName}${labels})`;
+    let whereStr = "";
     let authStr = "";
     let offsetStr = "";
     let limitStr = "";
     let sortStr = "";
-    let cypherSort = false;
     let projAuth = "";
     let projStr = "";
     let limitOrderProjStr = "";
     let cypherParams: { [k: string]: any } = {};
+    const whereStrs: string[] = [];
     const connectionStrs: string[] = [];
-    const interfaceStrs: string[] = [];
-
-    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });
-    matchAndWhereStr = topLevelMatch[0];
-    cypherParams = { ...cypherParams, ...topLevelMatch[1] };
 
     const projection = createProjectionAndParams({
         node,
@@ -83,25 +81,37 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         });
     }
 
-    if (projection[2]?.interfaceFields?.length) {
-        projection[2].interfaceFields.forEach((interfaceResolveTree) => {
-            const relationshipField = node.relationFields.find(
-                (x) => x.fieldName === interfaceResolveTree.name
-            ) as RelationField;
-            const interfaceProjection = createInterfaceProjectionAndParams({
-                resolveTree: interfaceResolveTree,
-                field: relationshipField,
-                context,
-                node,
-                nodeVariable: varName,
-            });
-            interfaceStrs.push(interfaceProjection.cypher);
-            cypherParams = { ...cypherParams, ...interfaceProjection.params };
+    if (whereInput) {
+        const where = createWhereAndParams({
+            whereInput,
+            varName,
+            node,
+            context,
+            recursing: true,
         });
+        if (where[0]) {
+            whereStrs.push(where[0]);
+            cypherParams = { ...cypherParams, ...where[1] };
+        }
+    }
+
+    const whereAuth = createAuthAndParams({
+        operation: "READ",
+        entity: node,
+        context,
+        where: { varName, node },
+    });
+    if (whereAuth[0]) {
+        whereStrs.push(whereAuth[0]);
+        cypherParams = { ...cypherParams, ...whereAuth[1] };
+    }
+
+    if (whereStrs.length) {
+        whereStr = `WHERE ${whereStrs.join(" AND ")}`;
     }
 
     const allowAndParams = createAuthAndParams({
-        operations: "READ",
+        operation: "READ",
         entity: node,
         context,
         allow: {
@@ -146,15 +156,12 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
                 return [
                     ...res,
                     ...Object.entries(sort).map(([field, direction]) => {
-                        if (!cypherSort && node.cypherFields.some((f) => f.fieldName === field)) {
-                            cypherSort = true;
-                        }
                         return `${hasLimit ? limitOrderVarName : varName}.${field} ${direction}`;
                     }),
                 ];
             }, []);
 
-            sortStr = sortArr.length ? `ORDER BY ${sortArr.join(", ")}` : "";
+            sortStr = `ORDER BY ${sortArr.join(", ")}`;
         }
     }
 
@@ -162,39 +169,29 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
 
     if (!hasLimit) {
         cypher = [
-            matchAndWhereStr,
+            matchStr,
+            whereStr,
             authStr,
-            ...(sortStr && !cypherSort ? [`WITH ${varName}`, sortStr] : []),
+            ...(sortStr ? [`WITH ${varName}`, sortStr] : []),
             ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
             ...connectionStrs,
-            ...interfaceStrs,
             `RETURN ${varName} ${projStr} as ${varName}`,
-            ...(sortStr && cypherSort ? [sortStr] : []),
             offsetStr,
         ];
     } else {
         cypher = [
             "CALL {",
-            matchAndWhereStr,
+            matchStr,
+            whereStr,
             authStr,
-            ...(sortStr && !cypherSort
-                ? [`WITH ${varName}, ${varName} ${limitOrderProjStr} AS ${limitOrderVarName}`, sortStr]
-                : []),
+            ...(sortStr ? [`WITH ${varName}, ${varName} ${limitOrderProjStr} AS ${limitOrderVarName}`, sortStr] : []),
             ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
             `RETURN ${varName}`,
-            ...(!cypherSort ? [offsetStr, limitStr] : []),
+            offsetStr,
+            limitStr,
             "}",
             ...connectionStrs,
-            ...interfaceStrs,
             `RETURN ${varName} ${projStr} as ${varName}`,
-            ...(sortStr && cypherSort
-                ? [
-                      `WITH ${varName}, ${varName} ${limitOrderProjStr} AS ${limitOrderVarName}`,
-                      sortStr,
-                      offsetStr,
-                      limitStr,
-                  ]
-                : []),
         ];
     }
 
