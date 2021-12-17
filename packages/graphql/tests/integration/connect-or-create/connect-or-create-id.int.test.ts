@@ -23,8 +23,8 @@ import { gql } from "apollo-server";
 import { graphql, DocumentNode } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../../src/utils/test/graphql-types";
-import { getQuerySource } from "../../utils";
+import { generateUniqueType } from "../../../tests/utils/graphql-types";
+import { getQuerySource } from "../../utils/get-query-source";
 
 describe("connectorcreate with @id", () => {
     let driver: Driver;

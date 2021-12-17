@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { RelationField } from "../../../types";
+import { RelationField } from "../../../src/types";
 import { Builder } from "./builder";
 
 export class RelationFieldBuilder extends Builder<RelationField, RelationField> {
