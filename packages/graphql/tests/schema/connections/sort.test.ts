@@ -399,8 +399,8 @@ describe("Sort", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateInfo {

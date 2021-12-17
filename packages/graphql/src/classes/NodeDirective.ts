@@ -42,7 +42,7 @@ export class NodeDirective {
         if (!typeName) {
             throw new Neo4jGraphQLError("Could not generate label string in @node directive due to empty typeName");
         }
-        const labels = this.getLabels(typeName, context);
+        const labels = this.getLabels(typeName, context).map((l) => this.escapeLabel(l));
         return `:${labels.join(":")}`;
     }
 
@@ -61,7 +61,7 @@ export class NodeDirective {
             if (ctxPath) {
                 const mappedLabel = ContextParser.getProperty(ctxPath, context);
                 if (!mappedLabel) throw new Error(`Type value required.`);
-                return this.escapeLabel(mappedLabel);
+                return mappedLabel;
             }
             return label;
         });

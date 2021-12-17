@@ -541,10 +541,10 @@ describe("Unions", () => {
             }
 
             type IntAggregateSelection {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Journal {
@@ -820,8 +820,8 @@ describe("Unions", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateAuthorsMutationResponse {

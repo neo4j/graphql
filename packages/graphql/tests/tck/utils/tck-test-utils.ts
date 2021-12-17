@@ -21,7 +21,8 @@ import { DocumentNode, graphql } from "graphql";
 import { IncomingMessage } from "http";
 import createAuthParam from "../../../src/translate/create-auth-param";
 import { Neo4jGraphQL } from "../../../src";
-import { DriverBuilder } from "../../../src/utils/test/builders/driver-builder";
+import { DriverBuilder } from "../../../tests/utils/builders/driver-builder";
+import { getQuerySource } from "../../utils/get-query-source";
 
 export function compareParams({
     params,
@@ -81,8 +82,7 @@ export async function translateQuery(
 
     const { errors } = await graphql({
         schema: neoSchema.schema,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        source: query.loc!.source,
+        source: getQuerySource(query),
         contextValue: {
             req: options.req,
             driver: driverBuilder.instance(),

@@ -76,8 +76,8 @@ describe("@writeonly directive", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateInfo {
@@ -212,8 +212,8 @@ describe("@writeonly directive", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateInfo {

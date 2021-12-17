@@ -242,10 +242,10 @@ describe("Interface Relationships", () => {
             }
 
             type IntAggregateSelection {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -449,8 +449,8 @@ describe("Interface Relationships", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -921,10 +921,10 @@ describe("Interface Relationships", () => {
             }
 
             type IntAggregateSelection {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie implements Production {
@@ -1646,8 +1646,8 @@ describe("Interface Relationships", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -1991,8 +1991,8 @@ describe("Interface Relationships", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type Type1 {
@@ -2945,8 +2945,8 @@ describe("Interface Relationships", () => {
             }
 
             type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Mutation {
@@ -3250,8 +3250,8 @@ describe("Interface Relationships", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateCommentsMutationResponse {

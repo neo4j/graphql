@@ -21,7 +21,7 @@ import { generate } from "randomstring";
 import createAuthAndParams from "./create-auth-and-params";
 import { Neo4jGraphQL } from "../classes";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test/builders/node-builder";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 
 describe("createAuthAndParams", () => {
     describe("operations", () => {
@@ -80,7 +80,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                operation: "READ",
+                operations: "READ",
                 allow: { parentNode: node, varName: "this" },
             });
 
@@ -714,7 +714,7 @@ describe("createAuthAndParams", () => {
                 createAuthAndParams({
                     context,
                     entity: node,
-                    operation: "READ",
+                    operations: "READ",
                     allow: { parentNode: node, varName: "this" },
                 });
             }).toThrow("Unauthenticated");
@@ -772,7 +772,7 @@ describe("createAuthAndParams", () => {
                 createAuthAndParams({
                     context,
                     entity: node,
-                    operation: "READ",
+                    operations: "READ",
                     allow: { parentNode: node, varName: "this" },
                 });
             }).toThrow("Unauthenticated");
@@ -829,7 +829,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                operation: "READ",
+                operations: "READ",
                 allow: { parentNode: node, varName: "this" },
             });
 
@@ -890,7 +890,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                operation: "READ",
+                operations: "READ",
                 allow: { parentNode: node, varName: "this" },
             });
 

@@ -19,12 +19,11 @@
 
 import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
-import { Socket } from "net";
 import neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
-import { generateUniqueType } from "../../../../../src/utils/test/graphql-types";
+import { generateUniqueType } from "../../../../../tests/utils/graphql-types";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 
 describe("Field Level Aggregations Auth", () => {
     let driver: Driver;
@@ -79,12 +78,6 @@ describe("Field Level Aggregations Auth", () => {
             let neoSchema: Neo4jGraphQL;
 
             beforeAll(() => {
-                const token = jsonwebtoken.sign(
-                    {
-                        roles: [],
-                    },
-                    secret
-                );
                 const extendedTypeDefs = `${typeDefs}
                 extend type ${typeMovie.name} @auth(rules: [{ isAuthenticated: true }])`;
 
@@ -97,12 +90,10 @@ describe("Field Level Aggregations Auth", () => {
                     },
                 });
 
-                const socket = new Socket({ readable: true });
-                req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                req = createJwtRequest(secret);
             });
 
-            it("accepts authenticated requests to movie -> actorAggregate", async () => {
+            test("accepts authenticated requests to movie -> actorAggregate", async () => {
                 const query = `query {
                 ${typeMovie.plural} {
                     ${typeActor.plural}Aggregate {
@@ -119,7 +110,7 @@ describe("Field Level Aggregations Auth", () => {
                 expect(gqlResult.errors).toBeUndefined();
             });
 
-            it("accepts authenticated requests to actor -> movieAggregate", async () => {
+            test("accepts authenticated requests to actor -> movieAggregate", async () => {
                 const query = `query {
                 ${typeActor.plural} {
                     ${typeMovie.plural}Aggregate {
@@ -136,7 +127,7 @@ describe("Field Level Aggregations Auth", () => {
                 expect(gqlResult.errors).toBeUndefined();
             });
 
-            it("rejects unauthenticated requests to movie -> actorAggregate", async () => {
+            test("rejects unauthenticated requests to movie -> actorAggregate", async () => {
                 const query = `query {
                 ${typeMovie.plural} {
                     ${typeActor.plural}Aggregate {
@@ -153,7 +144,7 @@ describe("Field Level Aggregations Auth", () => {
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             });
 
-            it("rejects unauthenticated requests to actor -> movieAggregate", async () => {
+            test("rejects unauthenticated requests to actor -> movieAggregate", async () => {
                 const query = `query {
                 ${typeActor.plural} {
                     ${typeMovie.plural}Aggregate {
@@ -172,8 +163,6 @@ describe("Field Level Aggregations Auth", () => {
         });
         describe(`allow requests ~ ${testCase.name}`, () => {
             let neoSchema: Neo4jGraphQL;
-            let token: string;
-            let invalidToken: string;
 
             beforeAll(() => {
                 const extendedTypeDefs = `${typeDefs}
@@ -189,25 +178,9 @@ describe("Field Level Aggregations Auth", () => {
                         },
                     },
                 });
-
-                token = jsonwebtoken.sign(
-                    {
-                        roles: [],
-                        sub: 1234,
-                    },
-                    secret
-                );
-
-                invalidToken = jsonwebtoken.sign(
-                    {
-                        roles: [],
-                        sub: 2222,
-                    },
-                    secret
-                );
             });
 
-            it("authenticated query", async () => {
+            test("authenticated query", async () => {
                 const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
@@ -216,10 +189,7 @@ describe("Field Level Aggregations Auth", () => {
                         }
                     }`;
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
-
+                const req = createJwtRequest(secret, { sub: 1234 });
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
@@ -228,7 +198,7 @@ describe("Field Level Aggregations Auth", () => {
                 expect(gqlResult.errors).toBeUndefined();
             });
 
-            it("unauthenticated query", async () => {
+            test("unauthenticated query", async () => {
                 const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
@@ -245,7 +215,7 @@ describe("Field Level Aggregations Auth", () => {
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             });
 
-            it("authenticated query with wrong credentials", async () => {
+            test("authenticated query with wrong credentials", async () => {
                 const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
@@ -253,9 +223,7 @@ describe("Field Level Aggregations Auth", () => {
                             }
                         }
                     }`;
-                const socket = new Socket({ readable: true });
-                const invalidReq = new IncomingMessage(socket);
-                invalidReq.headers.authorization = `Bearer ${invalidToken}`;
+                const invalidReq = createJwtRequest(secret, { sub: 2222 });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -265,7 +233,5 @@ describe("Field Level Aggregations Auth", () => {
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             });
         });
-
-        describe(`field level requests ~ ${testCase.name}`, () => {});
     });
 });

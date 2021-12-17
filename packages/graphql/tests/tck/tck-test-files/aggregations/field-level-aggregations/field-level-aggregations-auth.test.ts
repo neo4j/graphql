@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Field Level Aggregations", () => {
@@ -68,7 +68,7 @@ describe("Field Level Aggregations", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .title, actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\" MATCH (this)<-[r:ACTED_IN]-(n:Actor)      RETURN COUNT(n) \\", { this: this })) } } as this"
+            RETURN this { .title, actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)      RETURN COUNT(n)\\", { this: this })) } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -104,7 +104,7 @@ describe("Field Level Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            RETURN this { .name, moviesAggregate: { count: head(apoc.cypher.runFirstColumn(\\" MATCH (this)-[r:ACTED_IN]->(n:Movie)     CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\\\\\"@neo4j/graphql/UNAUTHENTICATED\\\\\\", [0])), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0]) RETURN COUNT(n) \\", { auth: $auth, this: this })) } } as this"
+            RETURN this { .name, moviesAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:ACTED_IN]->(n:Movie)     CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\\\\\"@neo4j/graphql/UNAUTHENTICATED\\\\\\", [0])), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0]) RETURN COUNT(n)\\", { auth: $auth, this: this })) } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

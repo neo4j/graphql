@@ -164,7 +164,7 @@ function createWhereAndParams({
                         res.clauses.push(
                             `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`
                         );
-                        return res;
+                        return;
                     }
 
                     let resultStr = [

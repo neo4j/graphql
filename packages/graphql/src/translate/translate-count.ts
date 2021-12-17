@@ -33,7 +33,7 @@ function translateCount({ node, context }: { node: Node; context: Context }): [s
     cypherParams = { ...cypherParams, ...topLevelMatch[1] };
 
     const allowAuth = createAuthAndParams({
-        operation: "READ",
+        operations: "READ",
         entity: node,
         context,
         allow: {

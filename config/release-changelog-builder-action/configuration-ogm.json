@@ -1,5 +1,21 @@
 {
-    "ignore_labels": ["graphql"],
+    "categories": [
+        {
+            "title": "## 🚀 Features",
+            "labels": ["feature", "ogm"],
+            "exhaustive": true
+        },
+        {
+            "title": "## 🐛 Fixes",
+            "labels": ["fix", "ogm"],
+            "exhaustive": true
+        },
+        {
+            "title": "## 🧪 Tests",
+            "labels": ["test", "ogm"],
+            "exhaustive": true
+        }
+    ],
     "template": "Updates the `@neo4j/graphql` dependency, and introduces the changes listed below (if any).\n\n${{CHANGELOG}}",
     "tag_resolver": {
         "method": "sort"

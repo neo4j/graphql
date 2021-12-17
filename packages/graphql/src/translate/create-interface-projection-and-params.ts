@@ -45,15 +45,8 @@ function createInterfaceProjectionAndParams({
             `MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}(${param}:${refNode.name})`,
         ];
 
-        const fieldsByTypeName = {
-            [refNode.name]: {
-                ...resolveTree.fieldsByTypeName[field.typeMeta.name],
-                ...resolveTree.fieldsByTypeName[refNode.name],
-            },
-        };
-
         const allowAndParams = createAuthAndParams({
-            operation: "READ",
+            operations: "READ",
             entity: refNode,
             context,
             allow: {
@@ -131,7 +124,7 @@ function createInterfaceProjectionAndParams({
         }
 
         const whereAuth = createAuthAndParams({
-            operation: "READ",
+            operations: "READ",
             entity: refNode,
             context,
             where: { varName: param, node: refNode },
@@ -146,7 +139,7 @@ function createInterfaceProjectionAndParams({
         }
 
         const recurse = createProjectionAndParams({
-            fieldsByTypeName,
+            fieldsByTypeName: resolveTree.fieldsByTypeName,
             node: refNode,
             context,
             varName: param,

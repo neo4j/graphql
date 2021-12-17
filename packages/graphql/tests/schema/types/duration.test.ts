@@ -60,13 +60,13 @@ describe("Duration", () => {
             scalar Duration
 
             type DurationAggregateSelection {
-              max: Duration!
-              min: Duration!
+              max: Duration
+              min: Duration
             }
 
             type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Movie {

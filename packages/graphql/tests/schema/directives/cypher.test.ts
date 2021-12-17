@@ -117,8 +117,8 @@ describe("Cypher", () => {
             }
 
             type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Movie {
@@ -192,8 +192,8 @@ describe("Cypher", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -246,177 +246,177 @@ describe("Cypher", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-          "schema {
-            query: Query
-            mutation: Mutation
-          }
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-          type Actor {
-            name: String
-            totalScreenTime: Int!
-          }
+            type Actor {
+              name: String
+              totalScreenTime: Int!
+            }
 
-          type ActorAggregateSelection {
-            count: Int!
-            name: StringAggregateSelection!
-          }
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
 
-          input ActorCreateInput {
-            name: String
-          }
+            input ActorCreateInput {
+              name: String
+            }
 
-          input ActorOptions {
-            limit: Int
-            offset: Int
-            \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-            sort: [ActorSort]
-          }
+            input ActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [ActorSort]
+            }
 
-          \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
-          input ActorSort {
-            name: SortDirection
-            totalScreenTime: SortDirection
-          }
+            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            input ActorSort {
+              name: SortDirection
+              totalScreenTime: SortDirection
+            }
 
-          input ActorUpdateInput {
-            name: String
-          }
+            input ActorUpdateInput {
+              name: String
+            }
 
-          input ActorWhere {
-            AND: [ActorWhere!]
-            OR: [ActorWhere!]
-            name: String
-            name_CONTAINS: String
-            name_ENDS_WITH: String
-            name_IN: [String]
-            name_NOT: String
-            name_NOT_CONTAINS: String
-            name_NOT_ENDS_WITH: String
-            name_NOT_IN: [String]
-            name_NOT_STARTS_WITH: String
-            name_STARTS_WITH: String
-          }
+            input ActorWhere {
+              AND: [ActorWhere!]
+              OR: [ActorWhere!]
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String
+              name_NOT_CONTAINS: String
+              name_NOT_ENDS_WITH: String
+              name_NOT_IN: [String]
+              name_NOT_STARTS_WITH: String
+              name_STARTS_WITH: String
+            }
 
-          type CreateActorsMutationResponse {
-            actors: [Actor!]!
-            info: CreateInfo!
-          }
+            type CreateActorsMutationResponse {
+              actors: [Actor!]!
+              info: CreateInfo!
+            }
 
-          type CreateInfo {
-            bookmark: String
-            nodesCreated: Int!
-            relationshipsCreated: Int!
-          }
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-          type CreateMoviesMutationResponse {
-            info: CreateInfo!
-            movies: [Movie!]!
-          }
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
 
-          type DeleteInfo {
-            bookmark: String
-            nodesDeleted: Int!
-            relationshipsDeleted: Int!
-          }
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-          type IDAggregateSelection {
-            longest: ID!
-            shortest: ID!
-          }
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
+            }
 
-          type Movie {
-            actors(title: String): [Actor]
-            id: ID
-          }
+            type Movie {
+              actors(title: String): [Actor]
+              id: ID
+            }
 
-          type MovieAggregateSelection {
-            count: Int!
-            id: IDAggregateSelection!
-          }
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
+            }
 
-          input MovieCreateInput {
-            id: ID
-          }
+            input MovieCreateInput {
+              id: ID
+            }
 
-          input MovieOptions {
-            limit: Int
-            offset: Int
-            \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-            sort: [MovieSort]
-          }
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [MovieSort]
+            }
 
-          \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
-          input MovieSort {
-            id: SortDirection
-          }
+            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            input MovieSort {
+              id: SortDirection
+            }
 
-          input MovieUpdateInput {
-            id: ID
-          }
+            input MovieUpdateInput {
+              id: ID
+            }
 
-          input MovieWhere {
-            AND: [MovieWhere!]
-            OR: [MovieWhere!]
-            id: ID
-            id_CONTAINS: ID
-            id_ENDS_WITH: ID
-            id_IN: [ID]
-            id_NOT: ID
-            id_NOT_CONTAINS: ID
-            id_NOT_ENDS_WITH: ID
-            id_NOT_IN: [ID]
-            id_NOT_STARTS_WITH: ID
-            id_STARTS_WITH: ID
-          }
+            input MovieWhere {
+              AND: [MovieWhere!]
+              OR: [MovieWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+            }
 
-          type Mutation {
-            createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
-            createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-            deleteActors(where: ActorWhere): DeleteInfo!
-            deleteMovies(where: MovieWhere): DeleteInfo!
-            updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-            updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-          }
+            type Mutation {
+              createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              deleteActors(where: ActorWhere): DeleteInfo!
+              deleteMovies(where: MovieWhere): DeleteInfo!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
 
-          type Query {
-            actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-            actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-            actorsCount(where: ActorWhere): Int!
-            movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-            moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-            moviesCount(where: MovieWhere): Int!
-          }
+            type Query {
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsCount(where: ActorWhere): Int!
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
+            }
 
-          enum SortDirection {
-            \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-            ASC
-            \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-            DESC
-          }
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-          type StringAggregateSelection {
-            longest: String!
-            shortest: String!
-          }
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
+            }
 
-          type UpdateActorsMutationResponse {
-            actors: [Actor!]!
-            info: UpdateInfo!
-          }
+            type UpdateActorsMutationResponse {
+              actors: [Actor!]!
+              info: UpdateInfo!
+            }
 
-          type UpdateInfo {
-            bookmark: String
-            nodesCreated: Int!
-            nodesDeleted: Int!
-            relationshipsCreated: Int!
-            relationshipsDeleted: Int!
-          }
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-          type UpdateMoviesMutationResponse {
-            info: UpdateInfo!
-            movies: [Movie!]!
-          }
-          "
-      `);
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }
+            "
+        `);
     });
 });

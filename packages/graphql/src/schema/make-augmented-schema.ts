@@ -36,11 +36,14 @@ import {
     parse,
     print,
     ScalarTypeDefinitionNode,
-    UnionTypeDefinitionNode
+    UnionTypeDefinitionNode,
 } from "graphql";
 import {
     InputTypeComposer,
-    InputTypeComposerFieldConfigAsObjectDefinition, ObjectTypeComposer, SchemaComposer, upperFirst
+    InputTypeComposerFieldConfigAsObjectDefinition,
+    ObjectTypeComposer,
+    SchemaComposer,
+    upperFirst,
 } from "graphql-compose";
 import pluralize from "pluralize";
 import { Exclude, Node } from "../classes";
@@ -66,11 +69,15 @@ import {
     cypherResolver,
     defaultFieldResolver,
     deleteResolver,
-    findResolver, idResolver, numericalResolver, updateResolver
+    findResolver,
+    updateResolver,
+    numericalResolver,
 } from "./resolvers";
 import * as Scalars from "./scalars";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
 import { validateDocument } from "./validation";
+import getUniqueFields from "./get-unique-fields";
+import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -122,87 +129,7 @@ function makeAugmentedSchema(
         },
     });
 
-    const composeInt = {
-        type: "Int!",
-        resolve: numericalResolver,
-        args: {},
-    };
-
-    const composeFloat = {
-        type: "Float!",
-        resolve: numericalResolver,
-        args: {},
-    };
-
-    const composeId = {
-        type: "ID!",
-        resolve: idResolver,
-        args: {},
-    };
-
-    // Foreach i if i[1] is ? then we will assume it takes on type { min, max }
-    const aggregationSelectionTypeMatrix: [string, any?][] = [
-        [
-            "ID",
-            {
-                shortest: composeId,
-                longest: composeId,
-            },
-        ],
-        [
-            "String",
-            {
-                shortest: "String!",
-                longest: "String!",
-            },
-        ],
-        [
-            "Float",
-            {
-                max: composeFloat,
-                min: composeFloat,
-                average: composeFloat,
-                sum: composeFloat,
-            },
-        ],
-        [
-            "Int",
-            {
-                max: composeInt,
-                min: composeInt,
-                average: composeFloat,
-                sum: composeInt,
-            },
-        ],
-        [
-            "BigInt",
-            {
-                max: "BigInt!",
-                min: "BigInt!",
-                average: "BigInt!",
-                sum: "BigInt!",
-            },
-        ],
-        ["DateTime"],
-        ["LocalDateTime"],
-        ["LocalTime"],
-        ["Time"],
-        ["Duration"],
-    ];
-
-    const aggregationSelectionTypeNames = aggregationSelectionTypeMatrix.map(([name]) => name);
-
-    const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<
-        Record<string, ObjectTypeComposer<unknown, unknown>>
-    >((res, [name, fields]) => {
-        return {
-            ...res,
-            [name]: composer.createObjectTC({
-                name: `${name}AggregateSelection`,
-                fields: fields ?? { min: `${name}!`, max: `${name}!` },
-            }),
-        };
-    }, {});
+    const aggregationTypesMapper = new AggregationTypesMapper(composer);
 
     composer.createInputTC({
         name: "QueryOptions",
@@ -534,9 +461,10 @@ function makeAugmentedSchema(
             const faqURL = `https://neo4j.com/docs/graphql-manual/current/troubleshooting/faqs/`;
             input.addFields({
                 _emptyInput: {
-                    type: 'Boolean',
-                    description: `Appears because this input type would be empty otherwise because this type is ` +
-                        `composed of just generated and/or relationship properties. See ${ faqURL }`,
+                    type: "Boolean",
+                    description:
+                        `Appears because this input type would be empty otherwise because this type is ` +
+                        `composed of just generated and/or relationship properties. See ${faqURL}`,
                 },
             });
         }
@@ -636,7 +564,6 @@ function makeAugmentedSchema(
             sourceName: interfaceRelationship.name.value,
             nodes,
             relationshipPropertyFields: relationshipFields,
-            aggregationSelectionTypes,
         });
 
         relationships = [
@@ -722,8 +649,8 @@ function makeAugmentedSchema(
             interfaceDisconnectInput.setField("_on", implementationsDisconnectInput);
         }
 
-        ensureNonEmptyInput(`${ interfaceRelationship.name.value }CreateInput`);
-        ensureNonEmptyInput(`${ interfaceRelationship.name.value }UpdateInput`);
+        ensureNonEmptyInput(`${interfaceRelationship.name.value}CreateInput`);
+        ensureNonEmptyInput(`${interfaceRelationship.name.value}UpdateInput`);
         [
             implementationsConnectInput,
             implementationsDeleteInput,
@@ -833,22 +760,26 @@ function makeAugmentedSchema(
             },
         });
 
+        const countField = {
+            type: "Int!",
+            resolve: numericalResolver,
+            args: {},
+        };
+
         composer.createObjectTC({
             name: `${node.name}AggregateSelection`,
             fields: {
-                count: composeInt,
+                count: countField,
                 ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
                     if (field.typeMeta.array) {
                         return res;
                     }
+                    const objectTypeComposer = aggregationTypesMapper.getAggregationType({
+                        fieldName: field.typeMeta.name,
+                        nullable: !field.typeMeta.required,
+                    });
 
-                    if (!aggregationSelectionTypeNames.includes(field.typeMeta.name)) {
-                        return res;
-                    }
-
-                    const objectTypeComposer = (aggregationSelectionTypes[
-                        field.typeMeta.name
-                    ] as unknown) as ObjectTypeComposer<unknown, unknown>;
+                    if (!objectTypeComposer) return res;
 
                     res[field.fieldName] = objectTypeComposer.NonNull;
 
@@ -881,6 +812,13 @@ function makeAugmentedSchema(
                 fields,
             });
         }
+
+        const uniqueFields = getUniqueFields(node);
+
+        composer.createInputTC({
+            name: `${node.name}UniqueWhere`,
+            fields: uniqueFields,
+        });
 
         composer.createInputTC({
             name: `${node.name}CreateInput`,
@@ -947,7 +885,6 @@ function makeAugmentedSchema(
             sourceName: node.name,
             nodes,
             relationshipPropertyFields: relationshipFields,
-            aggregationSelectionTypes,
         });
 
         relationships = [
@@ -961,8 +898,8 @@ function makeAugmentedSchema(
             }),
         ];
 
-        ensureNonEmptyInput(`${ node.name }UpdateInput`);
-        ensureNonEmptyInput(`${ node.name }CreateInput`);
+        ensureNonEmptyInput(`${node.name}UpdateInput`);
+        ensureNonEmptyInput(`${node.name}CreateInput`);
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
@@ -992,7 +929,7 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node }),
+                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node, schemaComposer: composer }),
             });
         }
     });

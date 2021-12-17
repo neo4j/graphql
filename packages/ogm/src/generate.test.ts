@@ -139,8 +139,8 @@ describe("generate", () => {
 
             export type StringAggregateSelection = {
               __typename?: \\"StringAggregateSelection\\";
-              shortest: Scalars[\\"String\\"];
-              longest: Scalars[\\"String\\"];
+              shortest?: Maybe<Scalars[\\"String\\"]>;
+              longest?: Maybe<Scalars[\\"String\\"]>;
             };
 
             export type UpdateInfo = {
@@ -376,8 +376,8 @@ describe("generate", () => {
 
             export type StringAggregateSelection = {
               __typename?: \\"StringAggregateSelection\\";
-              shortest: Scalars[\\"String\\"];
-              longest: Scalars[\\"String\\"];
+              shortest?: Maybe<Scalars[\\"String\\"]>;
+              longest?: Maybe<Scalars[\\"String\\"]>;
             };
 
             export type UpdateInfo = {
@@ -631,8 +631,8 @@ describe("generate", () => {
 
             export type StringAggregateSelection = {
               __typename?: \\"StringAggregateSelection\\";
-              shortest: Scalars[\\"String\\"];
-              longest: Scalars[\\"String\\"];
+              shortest?: Maybe<Scalars[\\"String\\"]>;
+              longest?: Maybe<Scalars[\\"String\\"]>;
             };
 
             export type UpdateInfo = {
@@ -918,10 +918,10 @@ describe("generate", () => {
 
             export type IntAggregateSelection = {
               __typename?: \\"IntAggregateSelection\\";
-              max: Scalars[\\"Int\\"];
-              min: Scalars[\\"Int\\"];
-              average: Scalars[\\"Float\\"];
-              sum: Scalars[\\"Int\\"];
+              max?: Maybe<Scalars[\\"Int\\"]>;
+              min?: Maybe<Scalars[\\"Int\\"]>;
+              average?: Maybe<Scalars[\\"Float\\"]>;
+              sum?: Maybe<Scalars[\\"Int\\"]>;
             };
 
             export type Movie = {
@@ -1007,8 +1007,8 @@ describe("generate", () => {
 
             export type StringAggregateSelection = {
               __typename?: \\"StringAggregateSelection\\";
-              shortest: Scalars[\\"String\\"];
-              longest: Scalars[\\"String\\"];
+              shortest?: Maybe<Scalars[\\"String\\"]>;
+              longest?: Maybe<Scalars[\\"String\\"]>;
             };
 
             export type UpdateInfo = {
@@ -1305,6 +1305,7 @@ describe("generate", () => {
                 connect?: MovieConnectInput;
                 disconnect?: MovieDisconnectInput;
                 create?: MovieCreateInput;
+
                 selectionSet?: string | DocumentNode | SelectionSetNode;
                 args?: any;
                 context?: any;

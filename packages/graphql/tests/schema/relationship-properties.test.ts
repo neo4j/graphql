@@ -346,10 +346,10 @@ describe("Relationship-properties", () => {
             }
 
             type IntAggregateSelection {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -609,8 +609,8 @@ describe("Relationship-properties", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -973,8 +973,8 @@ describe("Relationship-properties", () => {
             scalar DateTime
 
             type DateTimeAggregateSelection {
-              max: DateTime!
-              min: DateTime!
+              max: DateTime
+              min: DateTime
             }
 
             type DeleteInfo {
@@ -984,15 +984,15 @@ describe("Relationship-properties", () => {
             }
 
             type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type IntAggregateSelection {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -1270,8 +1270,8 @@ describe("Relationship-properties", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -1585,8 +1585,8 @@ describe("Relationship-properties", () => {
             scalar DateTime
 
             type DateTimeAggregateSelection {
-              max: DateTime!
-              min: DateTime!
+              max: DateTime
+              min: DateTime
             }
 
             type DeleteInfo {
@@ -1596,8 +1596,8 @@ describe("Relationship-properties", () => {
             }
 
             type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Movie {
@@ -1845,8 +1845,8 @@ describe("Relationship-properties", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

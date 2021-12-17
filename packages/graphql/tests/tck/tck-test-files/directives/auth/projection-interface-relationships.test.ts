@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Auth projections for interface relationship fields", () => {
@@ -90,12 +90,12 @@ describe("Auth projections for interface relationship fields", () => {
             CALL {
             WITH this
             MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-            RETURN { __resolveType: \\"Movie\\", title: this_Movie.title, runtime: this_Movie.runtime } AS actedIn
+            RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
             UNION
             WITH this
             MATCH (this)-[:ACTED_IN]->(this_Series:Series)
             CALL apoc.util.validate(NOT(this_Series.episodes IS NOT NULL AND this_Series.episodes = $this_Series_auth_allow0_episodes), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN { __resolveType: \\"Series\\", title: this_Series.title, episodes: this_Series.episodes } AS actedIn
+            RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
             RETURN this { actedIn: collect(actedIn) } as this"
         `);

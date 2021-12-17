@@ -27,7 +27,8 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
 
     class DisallowDirective extends SchemaDirectiveVisitor {
         public visitFieldDefinition(field: Field) {
-            field.resolve = function () {
+            // eslint-disable-next-line no-param-reassign
+            field.resolve = () => {
                 // Disallow any and all access, all the time
                 throw new Error("go away");
             };

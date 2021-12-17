@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+/* eslint-disable no-underscore-dangle */
 import { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../classes";
 import {
@@ -270,3 +271,4 @@ describe("execute", () => {
         });
     });
 });
+/* eslint-enable no-underscore-dangle */

@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { GraphQLResolveInfo } from "graphql";
 import { UnionTypeDefinitionNode } from "graphql/language/ast";
 import { execute } from "../../utils";
 import { BaseField, ConnectionField, Context } from "../../types";
@@ -27,6 +28,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import createProjectionAndParams from "../../translate/create-projection-and-params";
 import createConnectionAndParams from "../../translate/connection/create-connection-and-params";
 import { isNeoInt } from "../../utils/utils";
+import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 
 export default function cypherResolver({
     field,
@@ -37,8 +39,9 @@ export default function cypherResolver({
     statement: string;
     type: "Query" | "Mutation";
 }) {
-    async function resolve(_root: any, args: any, _context: unknown) {
+    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
+        context.resolveTree = getNeo4jResolveTree(info);
         const { resolveTree } = context;
         const cypherStrs: string[] = [];
         const connectionProjectionStrs: string[] = [];

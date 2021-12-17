@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Field Level Aggregations Alias", () => {
@@ -73,12 +73,12 @@ describe("Field Level Aggregations Alias", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
-            RETURN this { actorsAggregate: { node: { name: head(apoc.cypher.runFirstColumn(\\" MATCH (this)<-[r:ACTED_IN]-(n:Person)
+            "MATCH (this:\`Film\`)
+            RETURN this { actorsAggregate: { node: { name: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:\`Person\`)
                     WITH n as n
                     ORDER BY size(n.name) DESC
                     WITH collect(n.name) as list
-                    RETURN {longest: head(list), shortest: last(list)} \\", { this: this })) } } } as this"
+                    RETURN {longest: head(list), shortest: last(list)}\\", { this: this })) } } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
