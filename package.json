@@ -44,5 +44,6 @@
         "set-tz": "0.2.0",
         "ts-jest": "^26.5.4",
         "typescript": "3.9.7"
-    }
+    },
+    "packageManager": "yarn@3.1.1"
 }
