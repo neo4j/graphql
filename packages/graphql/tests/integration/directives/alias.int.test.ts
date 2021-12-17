@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import * as neo4jDriver from "neo4j-driver";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
 
 describe("@alias directive", () => {
     let driver: Driver;

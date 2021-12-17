@@ -18,12 +18,12 @@
  */
 
 import { dedent } from "graphql-compose";
-import { ContextBuilder } from "../../utils/test/builders/context-builder";
 import { Context } from "../../types";
 import { buildMergeStatement } from "./build-merge-statement";
-import { NodeBuilder } from "../../utils/test/builders/node-builder";
+import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
 import { Node, Neo4jGraphQLCypherBuilderError } from "../../classes";
-import { RelationFieldBuilder } from "../../utils/test/builders/relation-field-builder";
+import { ContextBuilder } from "../../../tests/utils/builders/context-builder";
+import { RelationFieldBuilder } from "../../../tests/utils/builders/relation-field-builder";
 
 describe("build merge statement", () => {
     let context: Context;

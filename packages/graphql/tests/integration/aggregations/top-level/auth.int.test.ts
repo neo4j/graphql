@@ -24,7 +24,7 @@ import pluralize from "pluralize";
 import camelCase from "camelcase";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("aggregations-top_level-auth", () => {
     let driver: Driver;
