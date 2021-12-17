@@ -64,7 +64,7 @@ function translateTopLevelMatch({
 
         if (node.nodeDirective?.additionalLabels?.length) {
             node.getLabels(context).forEach((label) => {
-                whereStrs.push(`"${label.replace(/`/g, "")}" IN labels(${varName})`);
+                whereStrs.push(`"${label}" IN labels(${varName})`);
             });
         }
 

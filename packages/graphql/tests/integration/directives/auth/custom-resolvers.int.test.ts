@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("auth/custom-resolvers", () => {
     let driver: Driver;

@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Create or connect", () => {
@@ -91,8 +91,6 @@ describe("Create or connect", () => {
             ON CREATE
             SET
             this0_relationship_this0_movies_connectOrCreate0.screentime = $this0_relationship_this0_movies_connectOrCreate0_on_create_screentime
-            WITH this0
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)-[:ACTED_IN]->(:Movie))), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.movies required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this0
             }
             RETURN
@@ -156,8 +154,6 @@ describe("Create or connect", () => {
             this_relationship_this_movies0_connectOrCreate0.screentime = $this_relationship_this_movies0_connectOrCreate0_on_create_screentime
             	RETURN COUNT(*)
             }
-            WITH this
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this)-[:ACTED_IN]->(:Movie))), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.movies required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this { .name } AS this"
         `);
 

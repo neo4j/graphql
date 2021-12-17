@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { NodeConstructor, Node } from "../../../classes";
-import { NodeDirectiveConstructor, NodeDirective } from "../../../classes/NodeDirective";
+import { NodeConstructor, Node } from "../../../src/classes";
+import { NodeDirectiveConstructor, NodeDirective } from "../../../src/classes/NodeDirective";
 import { Builder } from "./builder";
 
 export class NodeBuilder extends Builder<Node, NodeConstructor> {
