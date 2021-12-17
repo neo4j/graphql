@@ -942,6 +942,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req: adminReq, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
+                expect(gqlResultAdmin.data?.[type.plural]).toHaveLength(2);
                 expect(gqlResultAdmin.data).toEqual({
                     [type.plural]: expect.arrayContaining([
                         { id: userId, name: "User1", password: "password" },
