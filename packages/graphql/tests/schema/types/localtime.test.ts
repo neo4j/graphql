@@ -57,16 +57,16 @@ describe("Localtime", () => {
             }
 
             type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             \\"\\"\\"A local time, represented as a time string without timezone information\\"\\"\\"
             scalar LocalTime
 
             type LocalTimeAggregateSelection {
-              max: LocalTime!
-              min: LocalTime!
+              max: LocalTime
+              min: LocalTime
             }
 
             type Movie {

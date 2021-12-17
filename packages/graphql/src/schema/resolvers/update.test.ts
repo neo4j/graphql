@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
+import { SchemaComposer } from "graphql-compose";
 import updateResolver from "./update";
-import { NodeBuilder } from "../../utils/test";
+import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
 
 describe("Update resolver", () => {
     test("should return the correct; type, args and resolve", () => {
@@ -28,7 +29,9 @@ describe("Update resolver", () => {
             relationFields: [{}, {}],
         }).instance();
 
-        const result = updateResolver({ node });
+        const schemaComposer = new SchemaComposer();
+
+        const result = updateResolver({ node, schemaComposer });
         expect(result.type).toEqual("UpdateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({

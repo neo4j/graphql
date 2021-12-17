@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
                         MATCH (myFriends)-[:HAS_POST]->(post:Post)
                         RETURN post
                     }
-                    RETURN DISTINCT apoc.map.merge(properties(post), { __resolveType: 'Post' }) AS result ORDER BY result.modifiedDate DESC
+                    RETURN DISTINCT post AS result ORDER BY result.modifiedDate DESC
                     """
                 )
         }

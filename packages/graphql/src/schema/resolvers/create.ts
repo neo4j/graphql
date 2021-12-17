@@ -22,10 +22,12 @@ import { execute } from "../../utils";
 import { translateCreate } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
+import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 
 export default function createResolver({ node }: { node: Node }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
+        context.resolveTree = getNeo4jResolveTree(info);
         const [cypher, params] = translateCreate({ context, node });
 
         const executeResult = await execute({
@@ -35,18 +37,18 @@ export default function createResolver({ node }: { node: Node }) {
             context,
         });
 
-        const responseField = info.fieldNodes[0].selectionSet?.selections.find(
+        const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
             (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({ camelCase: true })
-        ) as FieldNode; // Field exist by construction and must be selected as it is the only field.
+        ) as FieldNode;
 
-        const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
+        const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
 
         return {
             info: {
                 bookmark: executeResult.bookmark,
                 ...executeResult.statistics,
             },
-            [responseKey]: Object.values(executeResult.records[0] || {}),
+            ...(nodeProjection ? { [nodeKey]: Object.values(executeResult.records[0] || {}) } : {}),
         };
     }
 

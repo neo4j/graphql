@@ -18,7 +18,6 @@
  */
 
 // Import using commonJS
-// eslint-disable-next-line import/no-unresolved
 const { Neo4jGraphQL } = require("@neo4j/graphql");
 const { printSchema } = require("graphql");
 // Augment schema with simple typeDefs input

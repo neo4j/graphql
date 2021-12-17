@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -19,5 +18,3 @@
  */
 
 export { default as validateDocument } from "./validate-document";
-
-/* eslint-enable import/prefer-default-export */

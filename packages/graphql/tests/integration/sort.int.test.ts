@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
+import { gql } from "apollo-server";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
@@ -34,146 +35,344 @@ describe("sort", () => {
         await driver.close();
     });
 
-    test("should sort a list of nodes", async () => {
-        await Promise.all(
-            ["ASC", "DESC"].map(async (type) => {
-                const session = driver.session();
+    describe("primitive fields", () => {
+        test("should sort a list of nodes", async () => {
+            await Promise.all(
+                ["ASC", "DESC"].map(async (type) => {
+                    const session = driver.session();
 
-                const typeDefs = `
-                    type Movie {
-                        id: ID
-                        number: Int
-                    }
-                `;
-
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-                const movieIds = [
-                    generate({
-                        charset: "alphabetic",
-                    }),
-                    generate({
-                        charset: "alphabetic",
-                    }),
-                    generate({
-                        charset: "alphabetic",
-                    }),
-                ].map((x) => `"${x}"`);
-
-                const query = `
-                    query {
-                        movies(
-                            where: { id_IN: [${movieIds.join(",")}] },
-                            options: { sort: [{ number: ${type} }] }
-                        ) {
-                           number
+                    const typeDefs = `
+                        type Movie {
+                            id: ID
+                            number: Int
                         }
-                    }
-                `;
+                    `;
 
-                try {
-                    await session.run(`
-                        CREATE (:Movie {id: ${movieIds[0]}, number: 1})
-                        CREATE (:Movie {id: ${movieIds[1]}, number: 2})
-                        CREATE (:Movie {id: ${movieIds[2]}, number: 3})
-                    `);
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-                    const gqlResult = await graphql({
-                        schema: neoSchema.schema,
-                        source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                    });
+                    const movieIds = [
+                        generate({
+                            charset: "alphabetic",
+                        }),
+                        generate({
+                            charset: "alphabetic",
+                        }),
+                        generate({
+                            charset: "alphabetic",
+                        }),
+                    ].map((x) => `"${x}"`);
 
-                    expect(gqlResult.errors).toBeUndefined();
-
-                    const { movies } = gqlResult.data as any;
-
-                    /* eslint-disable jest/no-conditional-expect */
-                    if (type === "ASC") {
-                        expect(movies[0].number).toEqual(1);
-                        expect(movies[1].number).toEqual(2);
-                        expect(movies[2].number).toEqual(3);
-                    }
-
-                    if (type === "DESC") {
-                        expect(movies[0].number).toEqual(3);
-                        expect(movies[1].number).toEqual(2);
-                        expect(movies[2].number).toEqual(1);
-                    }
-                    /* eslint-enable jest/no-conditional-expect */
-                } finally {
-                    await session.close();
-                }
-            })
-        );
-    });
-
-    test("should sort nested relationships", async () => {
-        await Promise.all(
-            ["ASC", "DESC"].map(async (type) => {
-                const session = driver.session();
-
-                const typeDefs = `
-                    type Movie {
-                        id: ID
-                        genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
-                    }
-
-                    type Genre {
-                        id: ID
-                    }
-                `;
-
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-                const movieId = generate({
-                    charset: "alphabetic",
-                });
-
-                const query = `
-                    query {
-                        movies(where: { id: "${movieId}" }) {
-                            genres(options: { sort: [{ id: ${type} }] }) {
-                                id
+                    const query = `
+                        query {
+                            movies(
+                                where: { id_IN: [${movieIds.join(",")}] },
+                                options: { sort: [{ number: ${type} }] }
+                            ) {
+                               number
                             }
                         }
+                    `;
+
+                    try {
+                        await session.run(`
+                            CREATE (:Movie {id: ${movieIds[0]}, number: 1})
+                            CREATE (:Movie {id: ${movieIds[1]}, number: 2})
+                            CREATE (:Movie {id: ${movieIds[2]}, number: 3})
+                        `);
+
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query,
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        });
+
+                        expect(gqlResult.errors).toBeUndefined();
+
+                        const { movies } = gqlResult.data as any;
+
+                        /* eslint-disable jest/no-conditional-expect */
+                        if (type === "ASC") {
+                            expect(movies[0].number).toEqual(1);
+                            expect(movies[1].number).toEqual(2);
+                            expect(movies[2].number).toEqual(3);
+                        }
+
+                        if (type === "DESC") {
+                            expect(movies[0].number).toEqual(3);
+                            expect(movies[1].number).toEqual(2);
+                            expect(movies[2].number).toEqual(1);
+                        }
+                        /* eslint-enable jest/no-conditional-expect */
+                    } finally {
+                        await session.close();
                     }
-                `;
+                })
+            );
+        });
 
-                try {
-                    await session.run(`
-                        CREATE (m:Movie {id: "${movieId}"})
-                        CREATE (g1:Genre {id: "1"})
-                        CREATE (g2:Genre {id: "2"})
-                        MERGE (m)-[:HAS_GENRE]->(g1)
-                        MERGE (m)-[:HAS_GENRE]->(g2)
-                    `);
+        test("should sort nested relationships", async () => {
+            await Promise.all(
+                ["ASC", "DESC"].map(async (type) => {
+                    const session = driver.session();
 
-                    const gqlResult = await graphql({
-                        schema: neoSchema.schema,
-                        source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    const typeDefs = `
+                        type Movie {
+                            id: ID
+                            genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
+                        }
+
+                        type Genre {
+                            id: ID
+                        }
+                    `;
+
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                    const movieId = generate({
+                        charset: "alphabetic",
                     });
 
-                    expect(gqlResult.errors).toBeUndefined();
+                    const query = `
+                        query {
+                            movies(where: { id: "${movieId}" }) {
+                                genres(options: { sort: [{ id: ${type} }] }) {
+                                    id
+                                }
+                            }
+                        }
+                    `;
 
-                    const { genres } = (gqlResult.data as any).movies[0];
+                    try {
+                        await session.run(`
+                            CREATE (m:Movie {id: "${movieId}"})
+                            CREATE (g1:Genre {id: "1"})
+                            CREATE (g2:Genre {id: "2"})
+                            MERGE (m)-[:HAS_GENRE]->(g1)
+                            MERGE (m)-[:HAS_GENRE]->(g2)
+                        `);
 
-                    /* eslint-disable jest/no-conditional-expect */
-                    if (type === "ASC") {
-                        expect(genres[0].id).toEqual("1");
-                        expect(genres[1].id).toEqual("2");
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query,
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        });
+
+                        expect(gqlResult.errors).toBeUndefined();
+
+                        const { genres } = (gqlResult.data as any).movies[0];
+
+                        /* eslint-disable jest/no-conditional-expect */
+                        if (type === "ASC") {
+                            expect(genres[0].id).toEqual("1");
+                            expect(genres[1].id).toEqual("2");
+                        }
+
+                        if (type === "DESC") {
+                            expect(genres[0].id).toEqual("2");
+                            expect(genres[1].id).toEqual("1");
+                        }
+                        /* eslint-enable jest/no-conditional-expect */
+                    } finally {
+                        await session.close();
                     }
+                })
+            );
+        });
+    });
 
-                    if (type === "DESC") {
-                        expect(genres[0].id).toEqual("2");
-                        expect(genres[1].id).toEqual("1");
-                    }
-                    /* eslint-enable jest/no-conditional-expect */
-                } finally {
-                    await session.close();
+    describe("cypher fields", () => {
+        let session: Session;
+
+        const typeDefs = gql`
+            type Movie {
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+            type Actor {
+                name: String!
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                totalScreenTime: Int!
+                    @cypher(
+                        statement: """
+                        MATCH (this)-[r:ACTED_IN]->(:Movie)
+                        RETURN sum(r.screenTime)
+                        """
+                    )
+            }
+            interface ActedIn {
+                screenTime: Int!
+            }
+        `;
+
+        const { schema } = new Neo4jGraphQL({ typeDefs });
+
+        const title1 = generate({
+            charset: "alphabetic",
+        });
+        const title2 = generate({
+            charset: "alphabetic",
+        });
+        const name1 = generate({
+            charset: "alphabetic",
+        });
+        const name2 = generate({
+            charset: "alphabetic",
+        });
+
+        beforeAll(async () => {
+            session = driver.session();
+            await session.run(
+                `
+                        CREATE (m1:Movie {title: $title1})
+                        CREATE (m2:Movie {title: $title2})
+                        CREATE (a1:Actor {name: $name1})
+                        CREATE (a2:Actor {name: $name2})
+                        MERGE (a1)-[:ACTED_IN {screenTime: 1}]->(m1)<-[:ACTED_IN {screenTime: 1}]-(a2)
+                        MERGE (a1)-[:ACTED_IN {screenTime: 1}]->(m2)
+                    `,
+                {
+                    title1,
+                    title2,
+                    name1,
+                    name2,
                 }
-            })
-        );
+            );
+        });
+
+        afterAll(async () => {
+            await session.close();
+        });
+
+        test("should sort DESC on top level", async () => {
+            const query = gql`
+                query($actorNames: [String!]!, $direction: SortDirection!) {
+                    actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                        name
+                        totalScreenTime
+                    }
+                }
+            `;
+
+            const graphqlResult = await graphql({
+                schema,
+                source: query.loc!.source,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { actorNames: [name1, name2], direction: "DESC" },
+            });
+
+            expect(graphqlResult.errors).toBeUndefined();
+
+            const graphqlActors = graphqlResult.data?.actors;
+
+            expect(graphqlActors).toHaveLength(2);
+
+            expect(graphqlActors[0].name).toEqual(name1);
+            expect(graphqlActors[0].totalScreenTime).toEqual(2);
+            expect(graphqlActors[1].name).toEqual(name2);
+            expect(graphqlActors[1].totalScreenTime).toEqual(1);
+        });
+
+        test("should sort ASC on top level", async () => {
+            const query = gql`
+                query($actorNames: [String!]!, $direction: SortDirection!) {
+                    actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                        name
+                        totalScreenTime
+                    }
+                }
+            `;
+
+            const graphqlResult = await graphql({
+                schema,
+                source: query.loc!.source,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { actorNames: [name1, name2], direction: "ASC" },
+            });
+
+            expect(graphqlResult.errors).toBeUndefined();
+
+            const graphqlActors = graphqlResult.data?.actors;
+
+            expect(graphqlActors).toHaveLength(2);
+
+            expect(graphqlActors[0].name).toEqual(name2);
+            expect(graphqlActors[0].totalScreenTime).toEqual(1);
+            expect(graphqlActors[1].name).toEqual(name1);
+            expect(graphqlActors[1].totalScreenTime).toEqual(2);
+        });
+
+        test("should sort ASC on nested level", async () => {
+            const query = gql`
+                query($title: String!, $actorNames: [String!]!, $direction: SortDirection!) {
+                    movies(where: { title: $title }) {
+                        title
+                        actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                            name
+                            totalScreenTime
+                        }
+                    }
+                }
+            `;
+
+            const graphqlResult = await graphql({
+                schema,
+                source: query.loc!.source,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { title: title1, actorNames: [name1, name2], direction: "ASC" },
+            });
+
+            expect(graphqlResult.errors).toBeUndefined();
+
+            const graphqlMovies = graphqlResult.data?.movies;
+
+            expect(graphqlMovies).toHaveLength(1);
+            expect(graphqlMovies[0].title).toBe(title1);
+
+            const graphqlActors = graphqlResult.data?.movies[0].actors;
+
+            expect(graphqlActors).toHaveLength(2);
+
+            expect(graphqlActors[0].name).toEqual(name2);
+            expect(graphqlActors[0].totalScreenTime).toEqual(1);
+            expect(graphqlActors[1].name).toEqual(name1);
+            expect(graphqlActors[1].totalScreenTime).toEqual(2);
+        });
+
+        test("should sort DESC on nested level", async () => {
+            const query = gql`
+                query($title: String!, $actorNames: [String!]!, $direction: SortDirection!) {
+                    movies(where: { title: $title }) {
+                        title
+                        actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                            name
+                            totalScreenTime
+                        }
+                    }
+                }
+            `;
+
+            const graphqlResult = await graphql({
+                schema,
+                source: query.loc!.source,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { title: title1, actorNames: [name1, name2], direction: "DESC" },
+            });
+
+            expect(graphqlResult.errors).toBeUndefined();
+
+            const graphqlMovies = graphqlResult.data?.movies;
+
+            expect(graphqlMovies).toHaveLength(1);
+            expect(graphqlMovies[0].title).toBe(title1);
+
+            const graphqlActors = graphqlResult.data?.movies[0].actors;
+
+            expect(graphqlActors).toHaveLength(2);
+
+            expect(graphqlActors[0].name).toEqual(name1);
+            expect(graphqlActors[0].totalScreenTime).toEqual(2);
+            expect(graphqlActors[1].name).toEqual(name2);
+            expect(graphqlActors[1].totalScreenTime).toEqual(1);
+        });
     });
 });

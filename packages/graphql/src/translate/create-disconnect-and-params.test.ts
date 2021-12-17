@@ -21,7 +21,7 @@ import createDisconnectAndParams from "./create-disconnect-and-params";
 import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 
 describe("createDisconnectAndParams", () => {
     test("should return the correct disconnect", () => {
@@ -32,6 +32,7 @@ describe("createDisconnectAndParams", () => {
                     direction: "OUT",
                     type: "SIMILAR",
                     fieldName: "similarMovies",
+                    inherited: false,
                     typeMeta: {
                         name: "Movie",
                         array: true,
@@ -90,7 +91,7 @@ describe("createDisconnectAndParams", () => {
             relationField: node.relationFields[0],
             parentVar: "this",
             context,
-            refNode: node,
+            refNodes: [node],
             parentNode: node,
             parameterPrefix: "this", // TODO
         });

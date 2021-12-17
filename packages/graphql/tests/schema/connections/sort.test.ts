@@ -77,6 +77,7 @@ describe("Sort", () => {
             type Node1 {
               property: String!
               relatedTo(options: Node2Options, where: Node2Where): [Node2!]!
+              relatedToAggregate(where: Node2Where): Node1Node2RelatedToAggregationSelection
               relatedToConnection(after: String, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
             }
 
@@ -106,11 +107,25 @@ describe("Sort", () => {
               relatedTo: [Node1RelatedToDisconnectFieldInput!]
             }
 
+            type Node1Node2RelatedToAggregationSelection {
+              count: Int!
+            }
+
             input Node1Options {
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more Node1Sort objects to sort Node1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [Node1Sort]
+            }
+
+            input Node1RelatedToAggregateInput {
+              AND: [Node1RelatedToAggregateInput!]
+              OR: [Node1RelatedToAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
             }
 
             input Node1RelatedToConnectFieldInput {
@@ -196,6 +211,7 @@ describe("Sort", () => {
               property_NOT_STARTS_WITH: String
               property_STARTS_WITH: String
               relatedTo: Node2Where
+              relatedToAggregate: Node1RelatedToAggregateInput
               relatedToConnection: Node1RelatedToConnectionWhere
               relatedToConnection_NOT: Node1RelatedToConnectionWhere
               relatedTo_NOT: Node2Where
@@ -203,6 +219,7 @@ describe("Sort", () => {
 
             type Node2 {
               relatedTo(options: Node1Options, where: Node1Where): [Node1!]!
+              relatedToAggregate(where: Node1Where): Node2Node1RelatedToAggregationSelection
               relatedToConnection(after: String, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
             }
 
@@ -230,9 +247,29 @@ describe("Sort", () => {
               relatedTo: [Node2RelatedToDisconnectFieldInput!]
             }
 
+            type Node2Node1RelatedToAggregationSelection {
+              count: Int!
+              node: Node2Node1RelatedToNodeAggregateSelection
+            }
+
+            type Node2Node1RelatedToNodeAggregateSelection {
+              property: StringAggregateSelection!
+            }
+
             input Node2Options {
               limit: Int
               offset: Int
+            }
+
+            input Node2RelatedToAggregateInput {
+              AND: [Node2RelatedToAggregateInput!]
+              OR: [Node2RelatedToAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: Node2RelatedToNodeAggregationWhereInput
             }
 
             input Node2RelatedToConnectFieldInput {
@@ -276,6 +313,31 @@ describe("Sort", () => {
               create: [Node2RelatedToCreateFieldInput!]
             }
 
+            input Node2RelatedToNodeAggregationWhereInput {
+              AND: [Node2RelatedToNodeAggregationWhereInput!]
+              OR: [Node2RelatedToNodeAggregationWhereInput!]
+              property_AVERAGE_EQUAL: Float
+              property_AVERAGE_GT: Float
+              property_AVERAGE_GTE: Float
+              property_AVERAGE_LT: Float
+              property_AVERAGE_LTE: Float
+              property_EQUAL: String
+              property_GT: Int
+              property_GTE: Int
+              property_LONGEST_EQUAL: Int
+              property_LONGEST_GT: Int
+              property_LONGEST_GTE: Int
+              property_LONGEST_LT: Int
+              property_LONGEST_LTE: Int
+              property_LT: Int
+              property_LTE: Int
+              property_SHORTEST_EQUAL: Int
+              property_SHORTEST_GT: Int
+              property_SHORTEST_GTE: Int
+              property_SHORTEST_LT: Int
+              property_SHORTEST_LTE: Int
+            }
+
             type Node2RelatedToRelationship {
               cursor: String!
               node: Node1!
@@ -306,6 +368,7 @@ describe("Sort", () => {
               AND: [Node2Where!]
               OR: [Node2Where!]
               relatedTo: Node1Where
+              relatedToAggregate: Node2RelatedToAggregateInput
               relatedToConnection: Node2RelatedToConnectionWhere
               relatedToConnection_NOT: Node2RelatedToConnectionWhere
               relatedTo_NOT: Node1Where
@@ -336,8 +399,8 @@ describe("Sort", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateInfo {

@@ -16,14 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { GraphQLResolveInfo } from "graphql";
 import { execute } from "../../utils";
 import { translateRead } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
+import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 
 export default function findResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, _args: any, _context: unknown) {
+    async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
+        context.resolveTree = getNeo4jResolveTree(info);
         const [cypher, params] = translateRead({ context, node });
 
         const executeResult = await execute({
@@ -39,6 +43,10 @@ export default function findResolver({ node }: { node: Node }) {
     return {
         type: `[${node.name}!]!`,
         resolve,
-        args: { where: `${node.name}Where`, options: `${node.name}Options` },
+        args: {
+            where: `${node.name}Where`,
+            options: `${node.name}Options`,
+            ...(node.fulltextDirective ? { fulltext: `${node.name}Fulltext` } : {}),
+        },
     };
 }

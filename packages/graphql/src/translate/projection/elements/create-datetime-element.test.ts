@@ -19,7 +19,7 @@
 
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { TemporalField } from "../../../types";
-import createDatetimeElement from "./create-datetime-element";
+import { createDatetimeElement } from "./create-datetime-element";
 
 describe("createDatetimeElement", () => {
     test("returns projection element for single datetime value", () => {

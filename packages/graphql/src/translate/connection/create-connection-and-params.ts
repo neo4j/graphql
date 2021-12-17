@@ -30,6 +30,7 @@ import createConnectionWhereAndParams from "../where/create-connection-where-and
 import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
+import filterInterfaceNodes from "../../utils/filter-interface-nodes";
 
 function createConnectionAndParams({
     resolveTree,
@@ -84,19 +85,31 @@ function createConnectionAndParams({
         elementsToCollect.push(relationshipPropertyEntries.join(", "));
     }
 
-    if (field.relationship.union) {
-        const unionNodes = context.neoSchema.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name));
-        const unionSubqueries: string[] = [];
+    if (field.relationship.union || field.relationship.interface) {
+        const relatedNodes = field.relationship.union
+            ? context.neoSchema.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
+            : context.neoSchema.nodes.filter(
+                  (x) =>
+                      field.relationship?.interface?.implementations?.includes(x.name) &&
+                      filterInterfaceNodes({ node: x, whereInput: whereInput?.node })
+              );
+        const subqueries: string[] = [];
 
-        unionNodes.forEach((n) => {
-            if (!whereInput || Object.prototype.hasOwnProperty.call(whereInput, n.name)) {
-                const labels = n.labelString;
-
+        relatedNodes.forEach((n) => {
+            if (
+                !whereInput ||
+                Object.prototype.hasOwnProperty.call(whereInput, n.name) ||
+                (field.relationship.interface &&
+                    !field.relationship.interface?.implementations?.some((i) =>
+                        Object.prototype.hasOwnProperty.call(resolveTree.args.where, i)
+                    ))
+            ) {
+                const labels = n.getLabelString(context);
                 const relatedNodeVariable = `${nodeVariable}_${n.name}`;
                 const nodeOutStr = `(${relatedNodeVariable}${labels})`;
 
-                const unionSubquery: string[] = [];
-                const unionSubqueryElementsToCollect = [...elementsToCollect];
+                const unionInterfaceSubquery: string[] = [];
+                const subqueryElementsToCollect = [...elementsToCollect];
 
                 const nestedSubqueries: string[] = [];
 
@@ -117,7 +130,7 @@ function createConnectionAndParams({
                         resolveType: true,
                     });
                     const [nodeProjection, nodeProjectionParams] = nodeProjectionAndParams;
-                    unionSubqueryElementsToCollect.push(`node: ${nodeProjection}`);
+                    subqueryElementsToCollect.push(`node: ${nodeProjection}`);
                     globalParams = {
                         ...globalParams,
                         ...nodeProjectionParams,
@@ -168,14 +181,14 @@ function createConnectionAndParams({
                     }
                 } else {
                     // This ensures that totalCount calculation is accurate if edges not asked for
-                    unionSubqueryElementsToCollect.push(`node: { __resolveType: "${n.name}" }`);
+                    subqueryElementsToCollect.push(`node: { __resolveType: "${n.name}" }`);
                 }
 
-                unionSubquery.push(`WITH ${nodeVariable}`);
-                unionSubquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
+                unionInterfaceSubquery.push(`WITH ${nodeVariable}`);
+                unionInterfaceSubquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
                 const allowAndParams = createAuthAndParams({
-                    operation: "READ",
+                    operations: "READ",
                     entity: n,
                     context,
                     allow: {
@@ -185,16 +198,17 @@ function createConnectionAndParams({
                 });
                 if (allowAndParams[0]) {
                     globalParams = { ...globalParams, ...allowAndParams[1] };
-                    unionSubquery.push(
+                    unionInterfaceSubquery.push(
                         `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                     );
                 }
 
                 const whereStrs: string[] = [];
-                const unionWhere = (whereInput || {})[n.name];
-                if (unionWhere) {
+                const unionInterfaceWhere = field.relationship.union ? (whereInput || {})[n.name] : whereInput || {};
+
+                if (unionInterfaceWhere) {
                     const where = createConnectionWhereAndParams({
-                        whereInput: unionWhere,
+                        whereInput: unionInterfaceWhere,
                         node: n,
                         nodeVariable: relatedNodeVariable,
                         relationship,
@@ -202,7 +216,7 @@ function createConnectionAndParams({
                         context,
                         parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                             resolveTree.alias
-                        }.args.where.${n.name}`,
+                        }.args.where${field.relationship.union ? `.${n.name}` : ""}`,
                     });
                     const [whereClause] = where;
                     if (whereClause) {
@@ -213,7 +227,7 @@ function createConnectionAndParams({
                 }
 
                 const whereAuth = createAuthAndParams({
-                    operation: "READ",
+                    operations: "READ",
                     entity: n,
                     context,
                     where: { varName: relatedNodeVariable, node: n },
@@ -224,21 +238,28 @@ function createConnectionAndParams({
                 }
 
                 if (whereStrs.length) {
-                    unionSubquery.push(`WHERE ${whereStrs.join(" AND ")}`);
+                    unionInterfaceSubquery.push(`WHERE ${whereStrs.join(" AND ")}`);
                 }
 
                 if (nestedSubqueries.length) {
-                    unionSubquery.push(nestedSubqueries.join("\n"));
+                    unionInterfaceSubquery.push(nestedSubqueries.join("\n"));
                 }
 
-                unionSubquery.push(`WITH { ${unionSubqueryElementsToCollect.join(", ")} } AS edge`);
-                unionSubquery.push("RETURN edge");
+                unionInterfaceSubquery.push(`WITH { ${subqueryElementsToCollect.join(", ")} } AS edge`);
+                unionInterfaceSubquery.push("RETURN edge");
 
-                unionSubqueries.push(unionSubquery.join("\n"));
+                subqueries.push(unionInterfaceSubquery.join("\n"));
             }
         });
 
-        const unionSubqueryCypher = ["CALL {", unionSubqueries.join("\nUNION\n"), "}"];
+        const subqueryCypher = ["CALL {", subqueries.join("\nUNION\n"), "}"];
+
+        if (sortInput && sortInput.length) {
+            const sort = sortInput.map((s) =>
+                Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`).join(", ")
+            );
+            subqueryCypher.push(`WITH edge ORDER BY ${sort.join(", ")}`);
+        }
 
         const withValues: string[] = [];
         if (!firstInput && !afterInput) {
@@ -246,20 +267,20 @@ function createConnectionAndParams({
                 withValues.push("collect(edge) as edges");
             }
             withValues.push("count(edge) as totalCount");
-            unionSubqueryCypher.push(`WITH ${withValues.join(", ")}`);
+            subqueryCypher.push(`WITH ${withValues.join(", ")}`);
         } else {
             const offsetLimitStr = createOffsetLimitStr({
                 offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
                 limit: firstInput as Integer | number | undefined,
             });
-            unionSubqueryCypher.push("WITH collect(edge) AS allEdges");
-            unionSubqueryCypher.push(`WITH allEdges, size(allEdges) as totalCount, allEdges${offsetLimitStr} AS edges`);
+            subqueryCypher.push("WITH collect(edge) AS allEdges");
+            subqueryCypher.push(`WITH allEdges, size(allEdges) as totalCount, allEdges${offsetLimitStr} AS edges`);
         }
-        subquery.push(unionSubqueryCypher.join("\n"));
+        subquery.push(subqueryCypher.join("\n"));
     } else {
         const relatedNodeVariable = `${nodeVariable}_${field.relationship.typeMeta.name.toLowerCase()}`;
         const relatedNode = context.neoSchema.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
-        const labels = relatedNode.labelString;
+        const labels = relatedNode.getLabelString(context);
         const nodeOutStr = `(${relatedNodeVariable}${labels})`;
         subquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
@@ -284,7 +305,7 @@ function createConnectionAndParams({
         }
 
         const whereAuth = createAuthAndParams({
-            operation: "READ",
+            operations: "READ",
             entity: relatedNode,
             context,
             where: { varName: relatedNodeVariable, node: relatedNode },
@@ -299,7 +320,7 @@ function createConnectionAndParams({
         }
 
         const allowAndParams = createAuthAndParams({
-            operation: "READ",
+            operations: "READ",
             entity: relatedNode,
             context,
             allow: {

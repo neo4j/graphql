@@ -76,14 +76,15 @@ describe("162", () => {
             }
 
             type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type IntAggregateSelection {
-              average: Float!
-              max: Int!
-              min: Int!
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Mutation {
@@ -145,6 +146,7 @@ describe("162", () => {
             type TigerJawLevel2 {
               id: ID
               part1(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1
+              part1Aggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
               part1Connection(after: String, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
             }
 
@@ -180,7 +182,19 @@ describe("162", () => {
             type TigerJawLevel2Part1 {
               id: ID
               tiger(options: TigerOptions, where: TigerWhere): Tiger
+              tigerAggregate(where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection
               tigerConnection(after: String, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
+            }
+
+            input TigerJawLevel2Part1AggregateInput {
+              AND: [TigerJawLevel2Part1AggregateInput!]
+              OR: [TigerJawLevel2Part1AggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: TigerJawLevel2Part1NodeAggregationWhereInput
             }
 
             type TigerJawLevel2Part1AggregateSelection {
@@ -250,6 +264,12 @@ describe("162", () => {
               create: TigerJawLevel2Part1CreateFieldInput
             }
 
+            input TigerJawLevel2Part1NodeAggregationWhereInput {
+              AND: [TigerJawLevel2Part1NodeAggregationWhereInput!]
+              OR: [TigerJawLevel2Part1NodeAggregationWhereInput!]
+              id_EQUAL: ID
+            }
+
             input TigerJawLevel2Part1Options {
               limit: Int
               offset: Int
@@ -269,6 +289,17 @@ describe("162", () => {
             \\"\\"\\"Fields to sort TigerJawLevel2Part1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Part1Sort object.\\"\\"\\"
             input TigerJawLevel2Part1Sort {
               id: SortDirection
+            }
+
+            input TigerJawLevel2Part1TigerAggregateInput {
+              AND: [TigerJawLevel2Part1TigerAggregateInput!]
+              OR: [TigerJawLevel2Part1TigerAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: TigerJawLevel2Part1TigerNodeAggregationWhereInput
             }
 
             input TigerJawLevel2Part1TigerConnectFieldInput {
@@ -309,9 +340,48 @@ describe("162", () => {
               create: TigerJawLevel2Part1TigerCreateFieldInput
             }
 
+            input TigerJawLevel2Part1TigerNodeAggregationWhereInput {
+              AND: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
+              OR: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
+              x_AVERAGE_EQUAL: Float
+              x_AVERAGE_GT: Float
+              x_AVERAGE_GTE: Float
+              x_AVERAGE_LT: Float
+              x_AVERAGE_LTE: Float
+              x_EQUAL: Int
+              x_GT: Int
+              x_GTE: Int
+              x_LT: Int
+              x_LTE: Int
+              x_MAX_EQUAL: Int
+              x_MAX_GT: Int
+              x_MAX_GTE: Int
+              x_MAX_LT: Int
+              x_MAX_LTE: Int
+              x_MIN_EQUAL: Int
+              x_MIN_GT: Int
+              x_MIN_GTE: Int
+              x_MIN_LT: Int
+              x_MIN_LTE: Int
+              x_SUM_EQUAL: Int
+              x_SUM_GT: Int
+              x_SUM_GTE: Int
+              x_SUM_LT: Int
+              x_SUM_LTE: Int
+            }
+
             type TigerJawLevel2Part1TigerRelationship {
               cursor: String!
               node: Tiger!
+            }
+
+            type TigerJawLevel2Part1TigerTigerAggregationSelection {
+              count: Int!
+              node: TigerJawLevel2Part1TigerTigerNodeAggregateSelection
+            }
+
+            type TigerJawLevel2Part1TigerTigerNodeAggregateSelection {
+              x: IntAggregateSelection!
             }
 
             input TigerJawLevel2Part1TigerUpdateConnectionInput {
@@ -359,6 +429,7 @@ describe("162", () => {
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               tiger: TigerWhere
+              tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
               tigerConnection: TigerJawLevel2Part1TigerConnectionWhere
               tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere
               tiger_NOT: TigerWhere
@@ -371,6 +442,15 @@ describe("162", () => {
             \\"\\"\\"Fields to sort TigerJawLevel2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Sort object.\\"\\"\\"
             input TigerJawLevel2Sort {
               id: SortDirection
+            }
+
+            type TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection {
+              count: Int!
+              node: TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection
+            }
+
+            type TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection {
+              id: IDAggregateSelection!
             }
 
             input TigerJawLevel2UpdateInput {
@@ -392,6 +472,7 @@ describe("162", () => {
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               part1: TigerJawLevel2Part1Where
+              part1Aggregate: TigerJawLevel2Part1AggregateInput
               part1Connection: TigerJawLevel2Part1ConnectionWhere
               part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere
               part1_NOT: TigerJawLevel2Part1Where

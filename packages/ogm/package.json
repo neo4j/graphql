@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-ogm",
-    "version": "2.2.0",
+    "version": "2.5.3",
     "description": "GraphQL powered OGM for Neo4j and Javascript applications",
     "keywords": [
         "neo4j",
@@ -19,17 +19,20 @@
         "build": "tsc --project src/",
         "test": "jest",
         "test:unit": "jest src/**/*.test.ts",
-        "test:unit:watch": "test:unit -- --watch",
+        "test:unit:watch": "jest src --watch",
         "test:int": "jest tests/integration",
-        "test:int:watch": "test:int -- --watch",
-        "conditional-publish": "(node ./scripts/check-version.js && npm publish --access=public) ; exit 0"
+        "test:int:watch": "test:int -- --watch"
     },
     "author": "Neo4j Inc.",
     "dependencies": {
+        "@graphql-codegen/core": "2.0.0",
+        "@graphql-codegen/plugin-helpers": "2.0.0",
+        "@graphql-codegen/typescript": "2.0.0",
         "@graphql-tools/merge": "6.2.14",
-        "@neo4j/graphql": "^2.2.0",
+        "@neo4j/graphql": "^2.5.3",
         "camelcase": "^6.2.0",
-        "pluralize": "^8.0.0"
+        "pluralize": "^8.0.0",
+        "prettier": "2.3.2"
     },
     "peerDependencies": {
         "graphql": "^15.0.0",
@@ -40,6 +43,7 @@
         "@types/node": "14.0.27",
         "graphql-tag": "2.11.0",
         "jest": "26.2.2",
+        "jsonwebtoken": "8.5.1",
         "libnpmsearch": "3.1.0",
         "npm-run-all": "^4.1.5",
         "randomstring": "1.1.5",

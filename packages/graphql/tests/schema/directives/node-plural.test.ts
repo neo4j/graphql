@@ -19,125 +19,125 @@ describe("Node Directive", () => {
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
             expect(printedSchema).toMatchInlineSnapshot(`
-                            "schema {
-                              query: Query
-                              mutation: Mutation
-                            }
+                "schema {
+                  query: Query
+                  mutation: Mutation
+                }
 
-                            type CreateInfo {
-                              bookmark: String
-                              nodesCreated: Int!
-                              relationshipsCreated: Int!
-                            }
+                type CreateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  relationshipsCreated: Int!
+                }
 
-                            type CreateTechsMutationResponse {
-                              info: CreateInfo!
-                              techs: [Tech!]!
-                            }
+                type CreateTechsMutationResponse {
+                  info: CreateInfo!
+                  techs: [Tech!]!
+                }
 
-                            type DeleteInfo {
-                              bookmark: String
-                              nodesDeleted: Int!
-                              relationshipsDeleted: Int!
-                            }
+                type DeleteInfo {
+                  bookmark: String
+                  nodesDeleted: Int!
+                  relationshipsDeleted: Int!
+                }
 
-                            type Mutation {
-                              createTechs(input: [TechCreateInput!]!): CreateTechsMutationResponse!
-                              deleteTechs(where: TechWhere): DeleteInfo!
-                              updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
-                            }
+                type Mutation {
+                  createTechs(input: [TechCreateInput!]!): CreateTechsMutationResponse!
+                  deleteTechs(where: TechWhere): DeleteInfo!
+                  updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
+                }
 
-                            type Query {
-                              techs(options: TechOptions, where: TechWhere): [Tech!]!
-                              techsAggregate(where: TechWhere): TechAggregateSelection!
-                              techsCount(where: TechWhere): Int!
-                            }
+                type Query {
+                  techs(options: TechOptions, where: TechWhere): [Tech!]!
+                  techsAggregate(where: TechWhere): TechAggregateSelection!
+                  techsCount(where: TechWhere): Int!
+                }
 
-                            enum SortDirection {
-                              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-                              ASC
-                              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-                              DESC
-                            }
+                enum SortDirection {
+                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+                  ASC
+                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+                  DESC
+                }
 
-                            type StringAggregateSelection {
-                              longest: String!
-                              shortest: String!
-                            }
+                type StringAggregateSelection {
+                  longest: String
+                  shortest: String
+                }
 
-                            type Tech {
-                              name: String
-                              value: String
-                            }
+                type Tech {
+                  name: String
+                  value: String
+                }
 
-                            type TechAggregateSelection {
-                              count: Int!
-                              name: StringAggregateSelection!
-                              value: StringAggregateSelection!
-                            }
+                type TechAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelection!
+                  value: StringAggregateSelection!
+                }
 
-                            input TechCreateInput {
-                              name: String
-                              value: String
-                            }
+                input TechCreateInput {
+                  name: String
+                  value: String
+                }
 
-                            input TechOptions {
-                              limit: Int
-                              offset: Int
-                              \\"\\"\\"Specify one or more TechSort objects to sort Teches by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                              sort: [TechSort]
-                            }
+                input TechOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"Specify one or more TechSort objects to sort Teches by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  sort: [TechSort]
+                }
 
-                            \\"\\"\\"Fields to sort Teches by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
-                            input TechSort {
-                              name: SortDirection
-                              value: SortDirection
-                            }
+                \\"\\"\\"Fields to sort Teches by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                input TechSort {
+                  name: SortDirection
+                  value: SortDirection
+                }
 
-                            input TechUpdateInput {
-                              name: String
-                              value: String
-                            }
+                input TechUpdateInput {
+                  name: String
+                  value: String
+                }
 
-                            input TechWhere {
-                              AND: [TechWhere!]
-                              OR: [TechWhere!]
-                              name: String
-                              name_CONTAINS: String
-                              name_ENDS_WITH: String
-                              name_IN: [String]
-                              name_NOT: String
-                              name_NOT_CONTAINS: String
-                              name_NOT_ENDS_WITH: String
-                              name_NOT_IN: [String]
-                              name_NOT_STARTS_WITH: String
-                              name_STARTS_WITH: String
-                              value: String
-                              value_CONTAINS: String
-                              value_ENDS_WITH: String
-                              value_IN: [String]
-                              value_NOT: String
-                              value_NOT_CONTAINS: String
-                              value_NOT_ENDS_WITH: String
-                              value_NOT_IN: [String]
-                              value_NOT_STARTS_WITH: String
-                              value_STARTS_WITH: String
-                            }
+                input TechWhere {
+                  AND: [TechWhere!]
+                  OR: [TechWhere!]
+                  name: String
+                  name_CONTAINS: String
+                  name_ENDS_WITH: String
+                  name_IN: [String]
+                  name_NOT: String
+                  name_NOT_CONTAINS: String
+                  name_NOT_ENDS_WITH: String
+                  name_NOT_IN: [String]
+                  name_NOT_STARTS_WITH: String
+                  name_STARTS_WITH: String
+                  value: String
+                  value_CONTAINS: String
+                  value_ENDS_WITH: String
+                  value_IN: [String]
+                  value_NOT: String
+                  value_NOT_CONTAINS: String
+                  value_NOT_ENDS_WITH: String
+                  value_NOT_IN: [String]
+                  value_NOT_STARTS_WITH: String
+                  value_STARTS_WITH: String
+                }
 
-                            type UpdateInfo {
-                              bookmark: String
-                              nodesCreated: Int!
-                              nodesDeleted: Int!
-                              relationshipsCreated: Int!
-                              relationshipsDeleted: Int!
-                            }
+                type UpdateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  nodesDeleted: Int!
+                  relationshipsCreated: Int!
+                  relationshipsDeleted: Int!
+                }
 
-                            type UpdateTechsMutationResponse {
-                              info: UpdateInfo!
-                              techs: [Tech!]!
-                            }
-                            "
-                    `);
+                type UpdateTechsMutationResponse {
+                  info: UpdateInfo!
+                  techs: [Tech!]!
+                }
+                "
+            `);
         });
 
         test("Partial types with same plural in both", () => {
@@ -154,125 +154,125 @@ describe("Node Directive", () => {
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
             expect(printedSchema).toMatchInlineSnapshot(`
-                            "schema {
-                              query: Query
-                              mutation: Mutation
-                            }
+                "schema {
+                  query: Query
+                  mutation: Mutation
+                }
 
-                            type CreateInfo {
-                              bookmark: String
-                              nodesCreated: Int!
-                              relationshipsCreated: Int!
-                            }
+                type CreateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  relationshipsCreated: Int!
+                }
 
-                            type CreateTechsMutationResponse {
-                              info: CreateInfo!
-                              techs: [Tech!]!
-                            }
+                type CreateTechsMutationResponse {
+                  info: CreateInfo!
+                  techs: [Tech!]!
+                }
 
-                            type DeleteInfo {
-                              bookmark: String
-                              nodesDeleted: Int!
-                              relationshipsDeleted: Int!
-                            }
+                type DeleteInfo {
+                  bookmark: String
+                  nodesDeleted: Int!
+                  relationshipsDeleted: Int!
+                }
 
-                            type Mutation {
-                              createTechs(input: [TechCreateInput!]!): CreateTechsMutationResponse!
-                              deleteTechs(where: TechWhere): DeleteInfo!
-                              updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
-                            }
+                type Mutation {
+                  createTechs(input: [TechCreateInput!]!): CreateTechsMutationResponse!
+                  deleteTechs(where: TechWhere): DeleteInfo!
+                  updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
+                }
 
-                            type Query {
-                              techs(options: TechOptions, where: TechWhere): [Tech!]!
-                              techsAggregate(where: TechWhere): TechAggregateSelection!
-                              techsCount(where: TechWhere): Int!
-                            }
+                type Query {
+                  techs(options: TechOptions, where: TechWhere): [Tech!]!
+                  techsAggregate(where: TechWhere): TechAggregateSelection!
+                  techsCount(where: TechWhere): Int!
+                }
 
-                            enum SortDirection {
-                              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-                              ASC
-                              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-                              DESC
-                            }
+                enum SortDirection {
+                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+                  ASC
+                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+                  DESC
+                }
 
-                            type StringAggregateSelection {
-                              longest: String!
-                              shortest: String!
-                            }
+                type StringAggregateSelection {
+                  longest: String
+                  shortest: String
+                }
 
-                            type Tech {
-                              name: String
-                              value: String
-                            }
+                type Tech {
+                  name: String
+                  value: String
+                }
 
-                            type TechAggregateSelection {
-                              count: Int!
-                              name: StringAggregateSelection!
-                              value: StringAggregateSelection!
-                            }
+                type TechAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelection!
+                  value: StringAggregateSelection!
+                }
 
-                            input TechCreateInput {
-                              name: String
-                              value: String
-                            }
+                input TechCreateInput {
+                  name: String
+                  value: String
+                }
 
-                            input TechOptions {
-                              limit: Int
-                              offset: Int
-                              \\"\\"\\"Specify one or more TechSort objects to sort Teches by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                              sort: [TechSort]
-                            }
+                input TechOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"Specify one or more TechSort objects to sort Teches by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  sort: [TechSort]
+                }
 
-                            \\"\\"\\"Fields to sort Teches by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
-                            input TechSort {
-                              name: SortDirection
-                              value: SortDirection
-                            }
+                \\"\\"\\"Fields to sort Teches by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                input TechSort {
+                  name: SortDirection
+                  value: SortDirection
+                }
 
-                            input TechUpdateInput {
-                              name: String
-                              value: String
-                            }
+                input TechUpdateInput {
+                  name: String
+                  value: String
+                }
 
-                            input TechWhere {
-                              AND: [TechWhere!]
-                              OR: [TechWhere!]
-                              name: String
-                              name_CONTAINS: String
-                              name_ENDS_WITH: String
-                              name_IN: [String]
-                              name_NOT: String
-                              name_NOT_CONTAINS: String
-                              name_NOT_ENDS_WITH: String
-                              name_NOT_IN: [String]
-                              name_NOT_STARTS_WITH: String
-                              name_STARTS_WITH: String
-                              value: String
-                              value_CONTAINS: String
-                              value_ENDS_WITH: String
-                              value_IN: [String]
-                              value_NOT: String
-                              value_NOT_CONTAINS: String
-                              value_NOT_ENDS_WITH: String
-                              value_NOT_IN: [String]
-                              value_NOT_STARTS_WITH: String
-                              value_STARTS_WITH: String
-                            }
+                input TechWhere {
+                  AND: [TechWhere!]
+                  OR: [TechWhere!]
+                  name: String
+                  name_CONTAINS: String
+                  name_ENDS_WITH: String
+                  name_IN: [String]
+                  name_NOT: String
+                  name_NOT_CONTAINS: String
+                  name_NOT_ENDS_WITH: String
+                  name_NOT_IN: [String]
+                  name_NOT_STARTS_WITH: String
+                  name_STARTS_WITH: String
+                  value: String
+                  value_CONTAINS: String
+                  value_ENDS_WITH: String
+                  value_IN: [String]
+                  value_NOT: String
+                  value_NOT_CONTAINS: String
+                  value_NOT_ENDS_WITH: String
+                  value_NOT_IN: [String]
+                  value_NOT_STARTS_WITH: String
+                  value_STARTS_WITH: String
+                }
 
-                            type UpdateInfo {
-                              bookmark: String
-                              nodesCreated: Int!
-                              nodesDeleted: Int!
-                              relationshipsCreated: Int!
-                              relationshipsDeleted: Int!
-                            }
+                type UpdateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  nodesDeleted: Int!
+                  relationshipsCreated: Int!
+                  relationshipsDeleted: Int!
+                }
 
-                            type UpdateTechsMutationResponse {
-                              info: UpdateInfo!
-                              techs: [Tech!]!
-                            }
-                            "
-                    `);
+                type UpdateTechsMutationResponse {
+                  info: UpdateInfo!
+                  techs: [Tech!]!
+                }
+                "
+            `);
         });
 
         test("Partial types with different plural", () => {
@@ -331,8 +331,8 @@ describe("Node Directive", () => {
                 }
 
                 type StringAggregateSelection {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type Tech {
@@ -466,8 +466,8 @@ describe("Node Directive", () => {
                 }
 
                 type StringAggregateSelection {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type Techs {
@@ -586,8 +586,8 @@ describe("Node Directive", () => {
                 }
 
                 type StringAggregateSelection {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type UpdateInfo {
@@ -706,8 +706,8 @@ describe("Node Directive", () => {
                 }
 
                 type StringAggregateSelection {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type UpdateInfo {
@@ -826,8 +826,8 @@ describe("Node Directive", () => {
                 }
 
                 type StringAggregateSelection {
-                  longest: String!
-                  shortest: String!
+                  longest: String
+                  shortest: String
                 }
 
                 type UpdateInfo {

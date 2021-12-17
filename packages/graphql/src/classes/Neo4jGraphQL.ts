@@ -26,16 +26,19 @@ import type { DriverConfig, CypherQueryOptions } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
-import { checkNeo4jCompat } from "../utils";
-import { getJWT } from "../auth/index";
+import checkNeo4jCompat from "./utils/verify-database";
+import { getJWT } from "../auth";
 import { DEBUG_GRAPHQL } from "../constants";
-import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "../translate/create-auth-param";
+import assertIndexesAndConstraints, {
+    AssertIndexesAndConstraintsOptions,
+} from "./utils/asserts-indexes-and-constraints";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
 export interface Neo4jGraphQLJWT {
-    secret: string;
+    jwksEndpoint?: string;
+    secret?: string;
     noVerify?: boolean;
     rolesPath?: string;
 }
@@ -56,15 +59,10 @@ export interface Neo4jGraphQLConstructor extends Omit<IExecutableSchemaDefinitio
 
 class Neo4jGraphQL {
     public schema: GraphQLSchema;
-
     public nodes: Node[];
-
     public relationships: Relationship[];
-
     public document: DocumentNode;
-
     private driver?: Driver;
-
     public config?: Neo4jGraphQLConfig;
 
     constructor(input: Neo4jGraphQLConstructor) {
@@ -114,7 +112,7 @@ class Neo4jGraphQL {
         schema: GraphQLSchema;
         config: Neo4jGraphQLConfig;
     }): GraphQLSchema {
-        return addSchemaLevelResolver(schema, (obj, _args, context: any, resolveInfo: GraphQLResolveInfo) => {
+        return addSchemaLevelResolver(schema, async (obj, _args, context: any, resolveInfo: GraphQLResolveInfo) => {
             const { driverConfig } = config;
 
             if (debug.enabled) {
@@ -151,11 +149,8 @@ class Neo4jGraphQL {
             }
 
             context.neoSchema = this;
-
-            context.resolveTree = getNeo4jResolveTree(resolveInfo);
-
             if (!context.jwt) {
-                context.jwt = getJWT(context);
+                context.jwt = await getJWT(context);
             }
 
             context.auth = createAuthParam({ context });
@@ -174,6 +169,19 @@ class Neo4jGraphQL {
         }
 
         return checkNeo4jCompat({ driver, driverConfig });
+    }
+
+    async assertIndexesAndConstraints(
+        input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
+    ): Promise<void> {
+        const driver = input.driver || this.driver;
+        const driverConfig = input.driverConfig || this.config?.driverConfig;
+
+        if (!driver) {
+            throw new Error("neo4j-driver Driver missing");
+        }
+
+        await assertIndexesAndConstraints({ driver, driverConfig, nodes: this.nodes, options: input.options });
     }
 }
 

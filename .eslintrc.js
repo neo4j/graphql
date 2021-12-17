@@ -18,11 +18,12 @@ const baseExtends = [
 ]; // Always spread at end of extends due to plugin:prettier/recommended
 
 const baseRules = {
-    "no-underscore-dangle": "warn", // TODO Refactor instances of _varName to remove dangling underscore, and delete this line (also fixes @typescript-eslint/naming-convention)
+    "no-underscore-dangle": ["warn", { allow: ["_on", "__typename"] }], // TODO Refactor instances of _varName to remove dangling underscore, and delete this line (also fixes @typescript-eslint/naming-convention)
     "no-param-reassign": "warn", // Dangerous to have this off (out-of-scope side effects are bad), but there are some valid reasons for violations (Array.reduce(), setting GraphQL context, etc.), so use comments to disable ESLint for these
     "max-classes-per-file": "off", // Stylistic decision - we can judge whether there are too many classes in one file during code review
     "eslint-comments/no-unused-disable": "error", // Turn on optional rule to report eslint-disable comments having no effect
-    "class-methods-use-this": "off"    
+    "class-methods-use-this": "off",
+    "prefer-destructuring": "off",
 };
 
 const typeScriptParser = {
@@ -44,11 +45,12 @@ const baseTypeScriptExtends = [
 const baseTypeScriptRules = {
     ...baseRules,
     "no-unused-vars": "off", // Must be disabled to allow @typescript-eslint/no-unused-vars to work
+    "class-methods-use-this": "off",
     "@typescript-eslint/naming-convention": "warn", // TODO Rename instances of _varName, and delete this line (also fixes no-underscore-dangle)
     "@typescript-eslint/no-explicit-any": "off", // Long term goal should be to have this rule on
-    "@typescript-eslint/no-use-before-define": "warn", // Unavoidable in some places, but a refactor should potentially happen and this rule switched on
+    "@typescript-eslint/no-use-before-define": "off", // Unavoidable in some places, but a refactor should potentially happen and this rule switched on
     "@typescript-eslint/explicit-module-boundary-types": "off", // TODO We should really define what our functions return
-    "@typescript-eslint/no-unused-vars": ["error"], // Additional rule enabled because we don't want unused variables hanging about!
+    "@typescript-eslint/no-unused-vars": ["error", { args: "none" }], // Additional rule enabled because we don't want unused variables hanging about! Note: Unused parameters are allowed
     /*
     start of @typescript-eslint/recommended-requiring-type-checking rules
     TODO Over the long term, reduce our usage of `any` and switch these rules on
@@ -64,6 +66,10 @@ const baseTypeScriptRules = {
     "@typescript-eslint/quotes": "off",
     "@typescript-eslint/lines-between-class-members": ["error", "always", { exceptAfterSingleLine: true }],
     "@typescript-eslint/no-unnecessary-type-assertion": ["off"],
+    "import/prefer-default-export": "off",
+    // disallow certain syntax forms
+    // http://eslint.org/docs/rules/no-restricted-syntax
+    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
 };
 
 module.exports = {
@@ -121,7 +127,12 @@ module.exports = {
             ...typeScriptParser,
             plugins: ["@typescript-eslint"],
             extends: baseTypeScriptExtends,
-            rules: { "no-console": "off", ...baseTypeScriptRules, "@typescript-eslint/ban-ts-comment": "off" },
+            rules: {
+                "no-console": "off",
+                ...baseTypeScriptRules,
+                "@typescript-eslint/ban-ts-comment": "off",
+                "@typescript-eslint/no-non-null-assertion": "off",
+            },
         },
     ],
 };

@@ -19,54 +19,23 @@
 
 import { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import { BaseField, Context, GraphQLWhereArg, PrimitiveField, TemporalField } from "../types";
+import { BaseField, Context, PrimitiveField, TemporalField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
-import createWhereAndParams from "./create-where-and-params";
-import createDatetimeElement from "./projection/elements/create-datetime-element";
+import { createDatetimeElement } from "./projection/elements/create-datetime-element";
+import translateTopLevelMatch from "./translate-top-level-match";
 
 function translateAggregate({ node, context }: { node: Node; context: Context }): [string, any] {
-    const whereInput = context.resolveTree.args.where as GraphQLWhereArg;
     const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";
     let cypherParams: { [k: string]: any } = {};
-    const whereStrs: string[] = [];
     const cypherStrs: string[] = [];
 
-    const labels = node.labelString;
-
-    cypherStrs.push(`MATCH (${varName}${labels})`);
-
-    if (whereInput) {
-        const where = createWhereAndParams({
-            whereInput,
-            varName,
-            node,
-            context,
-            recursing: true,
-        });
-        if (where[0]) {
-            whereStrs.push(where[0]);
-            cypherParams = { ...cypherParams, ...where[1] };
-        }
-    }
-
-    const whereAuth = createAuthAndParams({
-        operation: "READ",
-        entity: node,
-        context,
-        where: { varName, node },
-    });
-    if (whereAuth[0]) {
-        whereStrs.push(whereAuth[0]);
-        cypherParams = { ...cypherParams, ...whereAuth[1] };
-    }
-
-    if (whereStrs.length) {
-        cypherStrs.push(`WHERE ${whereStrs.join(" AND ")}`);
-    }
+    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });
+    cypherStrs.push(topLevelMatch[0]);
+    cypherParams = { ...cypherParams, ...topLevelMatch[1] };
 
     const allowAuth = createAuthAndParams({
-        operation: "READ",
+        operations: "READ",
         entity: node,
         context,
         allow: {
@@ -90,7 +59,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
             if (authField.auth) {
                 const allowAndParams = createAuthAndParams({
                     entity: authField,
-                    operation: "READ",
+                    operations: "READ",
                     context,
                     allow: { parentNode: node, varName, chainStr: authField.fieldName },
                 });
@@ -107,14 +76,15 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     }
 
     Object.entries(selections).forEach((selection) => {
-        if (selection[0] === "count") {
-            projections.push(`count: count(${varName})`);
+        if (selection[1].name === "count") {
+            projections.push(`${selection[1].alias || selection[1].name}: count(${varName})`);
         }
 
         const primitiveField = node.primitiveFields.find((x) => x.fieldName === selection[1].name);
         const temporalField = node.temporalFields.find((x) => x.fieldName === selection[1].name);
         const field: BaseField = (primitiveField as PrimitiveField) || (temporalField as TemporalField);
         let isDateTime = false;
+        const isString = primitiveField && primitiveField.typeMeta.name === "String";
 
         if (!primitiveField && temporalField && temporalField.typeMeta.name === "DateTime") {
             isDateTime = true;
@@ -122,40 +92,62 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
         if (field) {
             const thisProjections: string[] = [];
+            const aggregateFields = selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelection`];
+            // const aggregateFields =
+            //     selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNullable`] ||
+            //     selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNonNullable`]; // TODO: #605 Breaking change, uncomment for 3.0
 
-            Object.entries(selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelection`]).forEach(
-                (entry) => {
-                    // "min" | "max" | "average" | "shortest" | "longest"
-                    let operator = entry[1].name;
+            Object.entries(aggregateFields).forEach((entry) => {
+                // "min" | "max" | "average" | "sum" | "shortest" | "longest"
+                let operator = entry[1].name;
 
-                    if (operator === "average") {
-                        operator = "avg";
-                    }
-
-                    if (operator === "shortest") {
-                        operator = "min";
-                    }
-
-                    if (operator === "longest") {
-                        operator = "max";
-                    }
-
-                    const fieldName = field.dbPropertyName || field.fieldName;
-
-                    if (isDateTime) {
-                        thisProjections.push(
-                            createDatetimeElement({
-                                resolveTree: entry[1],
-                                field: field as TemporalField,
-                                variable: varName,
-                                valueOverride: `${operator}(this.${fieldName})`,
-                            })
-                        );
-                    } else {
-                        thisProjections.push(`${entry[1].alias || entry[1].name}: ${operator}(this.${fieldName})`);
-                    }
+                if (operator === "average") {
+                    operator = "avg";
                 }
-            );
+
+                if (operator === "shortest") {
+                    operator = "min";
+                }
+
+                if (operator === "longest") {
+                    operator = "max";
+                }
+
+                const fieldName = field.dbPropertyName || field.fieldName;
+
+                if (isDateTime) {
+                    thisProjections.push(
+                        createDatetimeElement({
+                            resolveTree: entry[1],
+                            field: field as TemporalField,
+                            variable: varName,
+                            valueOverride: `${operator}(this.${fieldName})`,
+                        })
+                    );
+
+                    return;
+                }
+
+                if (isString) {
+                    const lessOrGreaterThan = entry[1].name === "shortest" ? "<" : ">";
+
+                    const reduce = `
+                            reduce(shortest = collect(this.${fieldName})[0], current IN collect(this.${fieldName}) | apoc.cypher.runFirstColumn("
+                                RETURN
+                                CASE size(current) ${lessOrGreaterThan} size(shortest)
+                                WHEN true THEN current
+                                ELSE shortest
+                                END AS result
+                            ", { current: current, shortest: shortest }, false))
+                        `;
+
+                    thisProjections.push(`${entry[1].alias || entry[1].name}: ${reduce}`);
+
+                    return;
+                }
+
+                thisProjections.push(`${entry[1].alias || entry[1].name}: ${operator}(this.${fieldName})`);
+            });
 
             projections.push(`${selection[1].alias || selection[1].name}: { ${thisProjections.join(", ")} }`);
         }

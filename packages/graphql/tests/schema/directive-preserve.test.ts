@@ -63,8 +63,8 @@ describe("Directive-preserve", () => {
             }
 
             type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Movie @preservedTopLevel {

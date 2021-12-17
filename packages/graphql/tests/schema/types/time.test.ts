@@ -57,8 +57,8 @@ describe("Time", () => {
             }
 
             type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+              longest: ID
+              shortest: ID
             }
 
             type Movie {
@@ -141,8 +141,8 @@ describe("Time", () => {
             scalar Time
 
             type TimeAggregateSelection {
-              max: Time!
-              min: Time!
+              max: Time
+              min: Time
             }
 
             type UpdateInfo {

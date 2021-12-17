@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { isInt } from "neo4j-driver";
+import { GraphQLResolveInfo } from "graphql";
+import { UnionTypeDefinitionNode } from "graphql/language/ast";
 import { execute } from "../../utils";
 import { BaseField, ConnectionField, Context } from "../../types";
 import { graphqlArgsToCompose } from "../to-compose";
@@ -26,6 +27,8 @@ import createAuthParam from "../../translate/create-auth-param";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import createProjectionAndParams from "../../translate/create-projection-and-params";
 import createConnectionAndParams from "../../translate/connection/create-connection-and-params";
+import { isNeoInt } from "../../utils/utils";
+import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 
 export default function cypherResolver({
     field,
@@ -36,14 +39,19 @@ export default function cypherResolver({
     statement: string;
     type: "Query" | "Mutation";
 }) {
-    async function resolve(_root: any, args: any, _context: unknown) {
+    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
+        context.resolveTree = getNeo4jResolveTree(info);
         const { resolveTree } = context;
         const cypherStrs: string[] = [];
-        let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
-        let projectionStr = "";
         const connectionProjectionStrs: string[] = [];
-        let projectionAuthStr = "";
+        let projectionStr = "";
+        const unionWhere: string[] = [];
+        const projectionAuthStrs: string[] = [];
+        let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
+
+        const isArray = field.typeMeta.array;
+
         const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
             field.typeMeta.name
         );
@@ -61,6 +69,11 @@ export default function cypherResolver({
         }
 
         const referenceNode = context.neoSchema.nodes.find((x) => x.name === field.typeMeta.name);
+        const unions = context.neoSchema.document.definitions.filter(
+            (x) => x.kind === "UnionTypeDefinition"
+        ) as UnionTypeDefinitionNode[];
+        const referenceUnion = unions.find((u) => u.name.value === field.typeMeta.name);
+
         if (referenceNode) {
             const recurse = createProjectionAndParams({
                 fieldsByTypeName: resolveTree.fieldsByTypeName,
@@ -73,7 +86,7 @@ export default function cypherResolver({
             params = { ...params, ...p };
 
             if (meta?.authValidateStrs?.length) {
-                projectionAuthStr = meta.authValidateStrs.join(" AND ");
+                projectionAuthStrs.push(...projectionAuthStrs, meta.authValidateStrs.join(" AND "));
             }
 
             if (meta?.connectionFields?.length) {
@@ -95,8 +108,52 @@ export default function cypherResolver({
             }
         }
 
+        if (referenceUnion) {
+            const headStrs: string[] = [];
+            const referencedNodes =
+                referenceUnion?.types
+                    ?.map((u) => context.neoSchema.nodes.find((n) => n.name === u.name.value))
+                    ?.filter((b) => b !== undefined)
+                    ?.filter((n) => Object.keys(resolveTree.fieldsByTypeName).includes(n?.name ?? "")) || [];
+
+            referencedNodes.forEach((node) => {
+                if (node) {
+                    const labelsStatements = node.getLabels(context).map((label) => `"${label}" IN labels(this)`);
+                    unionWhere.push(`(${labelsStatements.join("AND")})`);
+
+                    const innerHeadStr: string[] = [`[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`];
+
+                    if (resolveTree.fieldsByTypeName[node.name]) {
+                        const [str, p, meta] = createProjectionAndParams({
+                            fieldsByTypeName: resolveTree.fieldsByTypeName,
+                            node,
+                            context,
+                            varName: "this",
+                        });
+
+                        innerHeadStr.push(
+                            [`| this { __resolveType: "${node.name}", `, ...str.replace("{", "").split("")].join("")
+                        );
+                        params = { ...params, ...p };
+
+                        if (meta?.authValidateStrs?.length) {
+                            projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
+                        }
+                    } else {
+                        innerHeadStr.push(`| this { __resolveType: "${node.name}" } `);
+                    }
+
+                    innerHeadStr.push(`]`);
+
+                    headStrs.push(innerHeadStr.join(" "));
+                }
+            });
+
+            projectionStr = `${headStrs.join(" + ")}`;
+        }
+
         const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
-        const apocParams = Object.entries(args).reduce(
+        const apocParams = Object.entries(resolveTree.args).reduce(
             (r: { strs: string[]; params: any }, entry) => {
                 return {
                     strs: [...r.strs, `${entry[0]}: $${entry[0]}`],
@@ -105,9 +162,12 @@ export default function cypherResolver({
             },
             { strs: initApocParamsStrs, params }
         ) as { strs: string[]; params: any };
+
+        params = { ...params, ...apocParams.params };
+
         const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
-        const expectMultipleValues = !isPrimitive && !isScalar && !isEnum && field.typeMeta.array ? "true" : "false";
+        const expectMultipleValues = !isPrimitive && !isScalar && !isEnum && isArray ? "true" : "false";
         if (type === "Query") {
             cypherStrs.push(`
                 WITH apoc.cypher.runFirstColumn("${statement}", ${apocParamsStr}, ${expectMultipleValues}) as x
@@ -121,9 +181,15 @@ export default function cypherResolver({
             `);
         }
 
-        if (projectionAuthStr) {
+        if (unionWhere.length) {
+            cypherStrs.push(`WHERE ${unionWhere.join(" OR ")}`);
+        }
+
+        if (projectionAuthStrs.length) {
             cypherStrs.push(
-                `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStr}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStrs.join(
+                    " AND "
+                )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
             );
         }
 
@@ -131,6 +197,8 @@ export default function cypherResolver({
 
         if (isPrimitive || isEnum || isScalar) {
             cypherStrs.push(`RETURN this`);
+        } else if (referenceUnion) {
+            cypherStrs.push(`RETURN head( ${projectionStr} ) AS this`);
         } else {
             cypherStrs.push(`RETURN this ${projectionStr} AS this`);
         }
@@ -153,7 +221,7 @@ export default function cypherResolver({
                 return undefined;
             }
 
-            if (isInt(value)) {
+            if (isNeoInt(value)) {
                 return Number(value);
             }
 

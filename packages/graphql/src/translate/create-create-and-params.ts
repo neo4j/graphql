@@ -24,6 +24,7 @@ import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
+import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 
 interface Res {
     creates: string[];
@@ -51,7 +52,7 @@ function createCreateAndParams({
     insideDoWhen?: boolean;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
-        const _varName = `${varName}_${key}`;
+        const varNameKey = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key === x.fieldName);
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
@@ -70,25 +71,33 @@ function createCreateAndParams({
                 });
 
                 // refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             refNodes.forEach((refNode) => {
                 const v = relationField.union ? value[refNode.name] : value;
-                const unionTypeName = relationField.union ? refNode.name : "";
+                const unionTypeName = relationField.union || relationField.interface ? refNode.name : "";
 
                 if (v.create) {
                     const creates = relationField.typeMeta.array ? v.create : [v.create];
                     creates.forEach((create, index) => {
+                        if (relationField.interface && !create.node[refNode.name]) {
+                            return;
+                        }
+
                         res.creates.push(`\nWITH ${withVars.join(", ")}`);
 
-                        const baseName = `${_varName}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
+                        const baseName = `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
                         const nodeName = `${baseName}_node`;
                         const propertiesName = `${baseName}_relationship`;
 
                         const recurse = createCreateAndParams({
-                            input: create.node,
+                            input: relationField.interface ? create.node[refNode.name] : create.node,
                             context,
                             node: refNode,
                             varName: nodeName,
@@ -119,15 +128,15 @@ function createCreateAndParams({
                     });
                 }
 
-                if (v.connect) {
+                if (!relationField.interface && v.connect) {
                     const connectAndParams = createConnectAndParams({
                         withVars,
                         value: v.connect,
-                        varName: `${_varName}${relationField.union ? "_" : ""}${unionTypeName}_connect`,
+                        varName: `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}_connect`,
                         parentVar: varName,
                         relationField,
                         context,
-                        refNode,
+                        refNodes: [refNode],
                         labelOverride: unionTypeName,
                         parentNode: node,
                         fromCreate: true,
@@ -135,7 +144,37 @@ function createCreateAndParams({
                     res.creates.push(connectAndParams[0]);
                     res.params = { ...res.params, ...connectAndParams[1] };
                 }
+
+                if (v.connectOrCreate) {
+                    const [connectOrCreateQuery, connectOrCreateParams] = createConnectOrCreateAndParams({
+                        input: v.connectOrCreate,
+                        varName: `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}_connectOrCreate`,
+                        parentVar: varName,
+                        relationField,
+                        refNode,
+                        context,
+                    });
+                    res.creates.push(connectOrCreateQuery);
+                    res.params = { ...res.params, ...connectOrCreateParams };
+                }
             });
+
+            if (relationField.interface && value.connect) {
+                const connectAndParams = createConnectAndParams({
+                    withVars,
+                    value: value.connect,
+                    varName: `${varNameKey}${relationField.union ? "_" : ""}_connect`,
+                    parentVar: varName,
+                    relationField,
+                    context,
+                    refNodes,
+                    labelOverride: "",
+                    parentNode: node,
+                    fromCreate: true,
+                });
+                res.creates.push(connectAndParams[0]);
+                res.params = { ...res.params, ...connectAndParams[1] };
+            }
 
             return res;
         }
@@ -143,9 +182,9 @@ function createCreateAndParams({
         if (primitiveField?.auth) {
             const authAndParams = createAuthAndParams({
                 entity: primitiveField,
-                operation: "CREATE",
+                operations: "CREATE",
                 context,
-                bind: { parentNode: node, varName, chainStr: _varName },
+                bind: { parentNode: node, varName, chainStr: varNameKey },
                 escapeQuotes: Boolean(insideDoWhen),
             });
             if (authAndParams[0]) {
@@ -160,23 +199,23 @@ function createCreateAndParams({
 
         if (pointField) {
             if (pointField.typeMeta.array) {
-                res.creates.push(`SET ${varName}.${dbFieldName} = [p in $${_varName} | point(p)]`);
+                res.creates.push(`SET ${varName}.${dbFieldName} = [p in $${varNameKey} | point(p)]`);
             } else {
-                res.creates.push(`SET ${varName}.${dbFieldName} = point($${_varName})`);
+                res.creates.push(`SET ${varName}.${dbFieldName} = point($${varNameKey})`);
             }
 
-            res.params[_varName] = value;
+            res.params[varNameKey] = value;
 
             return res;
         }
 
-        res.creates.push(`SET ${varName}.${dbFieldName} = $${_varName}`);
-        res.params[_varName] = value;
+        res.creates.push(`SET ${varName}.${dbFieldName} = $${varNameKey}`);
+        res.params[varNameKey] = value;
 
         return res;
     }
 
-    const labels = node.labelString;
+    const labels = node.getLabelString(context);
     const initial = [`CREATE (${varName}${labels})`];
 
     const timestampedFields = node.temporalFields.filter(
@@ -203,7 +242,7 @@ function createCreateAndParams({
     if (node.auth) {
         const bindAndParams = createAuthAndParams({
             entity: node,
-            operation: "CREATE",
+            operations: "CREATE",
             context,
             bind: { parentNode: node, varName },
             escapeQuotes: Boolean(insideDoWhen),

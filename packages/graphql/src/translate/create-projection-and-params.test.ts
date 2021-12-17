@@ -20,7 +20,7 @@
 import createProjectionAndParams from "./create-projection-and-params";
 import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
-import { NodeBuilder } from "../utils/test";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {

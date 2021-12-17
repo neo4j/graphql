@@ -1,8 +1,22 @@
-graphql:
-  - packages/graphql/**/*
-
-ogm:
-  - packages/ogm/**/*
-  
-documentation:
-  - docs/modules/ROOT/**/*
+version: 1
+labels:
+  - label: feature
+    title: ^(?:[fF]eature|[fF]eat):.*
+  - label: fix
+    title: ^(?:[bB]ugfix|[fF]ix):.*
+  - label: feature
+    branch: ^(?:[fF]eature|[fF]eat)/.*
+  - label: fix
+    branch: ^(?:[bB]ugfix|[fF]ix)/.*
+  - label: documentation
+    files:
+      - docs/modules/ROOT/.*
+  - label: graphql
+    files:
+      - packages/graphql/.*
+  - label: ogm
+    files:
+      - packages/ogm/.*
+  - label: introspector
+    files:
+      - packages/introspector/.*

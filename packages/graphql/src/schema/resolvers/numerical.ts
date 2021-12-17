@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
+import { GraphQLResolveInfo } from "graphql";
 import defaultFieldResolver from "./defaultField";
-import { Integer, isInt } from "neo4j-driver";
+import { isNeoInt } from "../../utils/utils";
 
-function numerical(source, args, context, info) {
+function numerical(source, args, context, info: GraphQLResolveInfo) {
     const value = defaultFieldResolver(source, args, context, info);
 
-    // @ts-ignore: outputValue is unknown
-    if (isInt(value)) {
-        return (value as Integer).toNumber();
+    if (isNeoInt(value)) {
+        return value.toNumber();
     }
 
     return value;

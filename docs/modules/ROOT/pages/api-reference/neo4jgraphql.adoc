@@ -90,12 +90,15 @@ Accepts all of the options from https://github.com/ardatan/graphql-tools/blob/%4
 |===
 |Name and Type |Description
 
+|`jwksEndpoint` +
+ +
+ Type: `string`
+|The OpenID Public Key Set Endpoint used to verify JWT tokens. The JWKS used to store the verification information is typically stored at an endpoint similar to \https://YOUR_DOMAIN/.well-known/jwks.json.
+
 |`secret` +
  +
  Type: `string`
-|The secret used to encode JWT tokens. +
- +
- *Required* unless passing in decoded tokens.
+|The secret used to encode JWT tokens.
 
 |`noVerify` +
  +
@@ -191,4 +194,149 @@ const { CypherRuntime } = require("@neo4j/graphql");
  - `CypherReplanning.DEFAULT` +
  - `CypherReplanning.FORCE` +
  - `CypherReplanning.SKIP`
+|===
+
+[[api-reference-checkneo4jcompat]]
+== `checkNeo4jCompat`
+
+Asynchronous function to check the compatibility of the specified DBMS, that either resolves to `void` in a successful scenario, or throws an error if the database is not compatible with the Neo4j GraphQL Library.
+
+Takes an `input` object as a parameter, the supported fields of which are described below.
+
+=== Example
+
+Given any valid type definitions saved to the variable `typeDefs` and a valid driver instance saved to the variable `driver`, the following will confirm database compatibility:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+await neoSchema.checkNeo4jCompat();
+----
+
+[[api-reference-checkneo4jcompat-input]]
+=== Input
+
+Accepts the arguments below:
+
+|===
+|Name and Type |Description
+
+|`driver` +
+ +
+ Type: https://neo4j.com/docs/javascript-manual/current/[`Driver`]
+|An instance of a Neo4j driver.
+
+|`driverConfig` +
+ +
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-checkneo4jcompat-input-driverconfig[`DriverConfig`]
+|Additional driver configuration options.
+|===
+
+[[api-reference-checkneo4jcompat-input-driverconfig]]
+==== `DriverConfig`
+
+|===
+|Name and Type |Description
+
+|`database` +
+ +
+ Type: `string`
+|The name of the database within the DBMS to connect to.
+
+|`bookmarks` +
+ +
+ Type: `string` or `Array<string>`
+|One or more bookmarks to use for the connection.
+|===
+
+[[api-reference-assertconstraints]]
+== `assertIndexesAndConstraints`
+
+Asynchronous function to assert the existence of database constraints, that either resolves to `void` in a successful scenario, or throws an error if the necessary consraints do not exist following its execution.
+
+Takes an `input` object as a parameter, the supported fields of which are described below.
+
+=== Example
+
+Given the following type definitions saved to the variable `typeDefs` and a valid driver instance saved to the variable `driver`:
+
+[source, graphql, indent=0]
+----
+type Book {
+    isbn: String! @unique
+}
+----
+
+And the construction of a `Neo4jGraphQL`, using:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+----
+
+The following will check whether a unique node property constraint exists for label "Book" and property "isbn", and throw an error if it does not:
+
+[source, javascript, indent=0]
+----
+await neoSchema.assertIndexesAndConstraints();
+----
+
+The next example will create the constraint if it does not exist:
+
+[source, javascript, indent=0]
+----
+await neoSchema.assertIndexesAndConstraints({ options: { create: true } });
+----
+
+[[api-reference-assertconstraints-input]]
+=== Input
+
+Accepts the arguments below:
+
+|===
+|Name and Type |Description
+
+|`driver` +
+ +
+ Type: https://neo4j.com/docs/javascript-manual/current/[`Driver`]
+|An instance of a Neo4j driver.
+
+|`driverConfig` +
+ +
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-assertconstraints-input-driverconfig[`DriverConfig`]
+|Additional driver configuration options.
+
+|`options` +
+ +
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-assertconstraints-input-assertconstraintsoptions[`AssertConstraintsOptions`]
+|Options for the execution of `assertIndexesAndConstraints`.
+|===
+
+[[api-reference-assertconstraints-input-driverconfig]]
+==== `DriverConfig`
+
+|===
+|Name and Type |Description
+
+|`database` +
+ +
+ Type: `string`
+|The name of the database within the DBMS to connect to.
+
+|`bookmarks` +
+ +
+ Type: `string` or `Array<string>`
+|One or more bookmarks to use for the connection.
+|===
+
+[[api-reference-assertconstraints-input-assertconstraintsoptions]]
+==== `AssertConstraintsOptions`
+
+|===
+|Name and Type |Description
+
+|`create` +
+ +
+ Type: `boolean`
+|Whether or not to create constraints if they do not yet exist. Disabled by default.
 |===

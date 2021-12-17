@@ -17,9 +17,7 @@
  * limitations under the License.
  */
 
-// eslint-disable-next-line import/no-unresolved
 const { ApolloServer } = require("apollo-server");
-// eslint-disable-next-line import/no-unresolved
 const { Neo4jGraphQL } = require("@neo4j/graphql");
 
 const defaultTypeDefs = `
@@ -43,6 +41,7 @@ async function start(typeDefs = defaultTypeDefs, driver = {}) {
         context: ({ req }) => ({ driver, req }),
     });
     const { url } = await server.listen();
+    // eslint-disable-next-line no-console
     console.log(`🚀  Server ready at ${url}`);
 }
 

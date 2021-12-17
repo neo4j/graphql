@@ -52,9 +52,22 @@ describe("Alias", () => {
 
             type Actor {
               actedIn(options: MovieOptions, where: MovieWhere): [Movie]
+              actedInAggregate(where: MovieWhere): ActorMovieActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               city: String
               name: String!
+            }
+
+            input ActorActedInAggregateInput {
+              AND: [ActorActedInAggregateInput!]
+              OR: [ActorActedInAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: ActorActedInEdgeAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
             }
 
             input ActorActedInConnectFieldInput {
@@ -95,9 +108,109 @@ describe("Alias", () => {
               where: ActorActedInConnectionWhere
             }
 
+            input ActorActedInEdgeAggregationWhereInput {
+              AND: [ActorActedInEdgeAggregationWhereInput!]
+              OR: [ActorActedInEdgeAggregationWhereInput!]
+              character_AVERAGE_EQUAL: Float
+              character_AVERAGE_GT: Float
+              character_AVERAGE_GTE: Float
+              character_AVERAGE_LT: Float
+              character_AVERAGE_LTE: Float
+              character_EQUAL: String
+              character_GT: Int
+              character_GTE: Int
+              character_LONGEST_EQUAL: Int
+              character_LONGEST_GT: Int
+              character_LONGEST_GTE: Int
+              character_LONGEST_LT: Int
+              character_LONGEST_LTE: Int
+              character_LT: Int
+              character_LTE: Int
+              character_SHORTEST_EQUAL: Int
+              character_SHORTEST_GT: Int
+              character_SHORTEST_GTE: Int
+              character_SHORTEST_LT: Int
+              character_SHORTEST_LTE: Int
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
+            }
+
             input ActorActedInFieldInput {
               connect: [ActorActedInConnectFieldInput!]
               create: [ActorActedInCreateFieldInput!]
+            }
+
+            input ActorActedInNodeAggregationWhereInput {
+              AND: [ActorActedInNodeAggregationWhereInput!]
+              OR: [ActorActedInNodeAggregationWhereInput!]
+              rating_AVERAGE_EQUAL: Float
+              rating_AVERAGE_GT: Float
+              rating_AVERAGE_GTE: Float
+              rating_AVERAGE_LT: Float
+              rating_AVERAGE_LTE: Float
+              rating_EQUAL: Float
+              rating_GT: Float
+              rating_GTE: Float
+              rating_LT: Float
+              rating_LTE: Float
+              rating_MAX_EQUAL: Float
+              rating_MAX_GT: Float
+              rating_MAX_GTE: Float
+              rating_MAX_LT: Float
+              rating_MAX_LTE: Float
+              rating_MIN_EQUAL: Float
+              rating_MIN_GT: Float
+              rating_MIN_GTE: Float
+              rating_MIN_LT: Float
+              rating_MIN_LTE: Float
+              rating_SUM_EQUAL: Float
+              rating_SUM_GT: Float
+              rating_SUM_GTE: Float
+              rating_SUM_LT: Float
+              rating_SUM_LTE: Float
+              title_AVERAGE_EQUAL: Float
+              title_AVERAGE_GT: Float
+              title_AVERAGE_GTE: Float
+              title_AVERAGE_LT: Float
+              title_AVERAGE_LTE: Float
+              title_EQUAL: String
+              title_GT: Int
+              title_GTE: Int
+              title_LONGEST_EQUAL: Int
+              title_LONGEST_GT: Int
+              title_LONGEST_GTE: Int
+              title_LONGEST_LT: Int
+              title_LONGEST_LTE: Int
+              title_LT: Int
+              title_LTE: Int
+              title_SHORTEST_EQUAL: Int
+              title_SHORTEST_GT: Int
+              title_SHORTEST_GTE: Int
+              title_SHORTEST_LT: Int
+              title_SHORTEST_LTE: Int
             }
 
             interface ActorActedInProps {
@@ -188,6 +301,22 @@ describe("Alias", () => {
               actedIn: [ActorActedInDisconnectFieldInput!]
             }
 
+            type ActorMovieActedInAggregationSelection {
+              count: Int!
+              edge: ActorMovieActedInEdgeAggregateSelection
+              node: ActorMovieActedInNodeAggregateSelection
+            }
+
+            type ActorMovieActedInEdgeAggregateSelection {
+              character: StringAggregateSelection!
+              screenTime: IntAggregateSelection!
+            }
+
+            type ActorMovieActedInNodeAggregateSelection {
+              rating: FloatAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             input ActorOptions {
               limit: Int
               offset: Int
@@ -215,6 +344,7 @@ describe("Alias", () => {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
               actedIn: MovieWhere
+              actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionWhere
               actedInConnection_NOT: ActorActedInConnectionWhere
               actedIn_NOT: MovieWhere
@@ -263,9 +393,17 @@ describe("Alias", () => {
             }
 
             type FloatAggregateSelection {
-              average: Float!
-              max: Float!
-              min: Float!
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
+            }
+
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Movie {
@@ -363,8 +501,8 @@ describe("Alias", () => {
             }
 
             type StringAggregateSelection {
-              longest: String!
-              shortest: String!
+              longest: String
+              shortest: String
             }
 
             type UpdateActorsMutationResponse {

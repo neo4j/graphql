@@ -3,13 +3,31 @@
 
 == Configuration
 
-If you want the Neo4j GraphQL Library to perform JWT decoding and verification for you, you must pass the configuration option `jwt` into the `Neo4jGraphQL` or `OGM` constructor, which has the following arguments:
+If you want the Neo4j GraphQL Library to perform JWT decoding and verification for you, you must pass the configuration option `jwt` into the `Neo4jGraphQL` or `OGM` constructor, which has EITHER of the following arguments:
 
-- `secret` - The secret to be used to decode and verify JWTs
+- `jwksEndpoint` (recommended) - The OpenID Public Key Set Endpoint that verifies the JWT. The https://auth0.com/docs/security/tokens/json-web-tokens/json-web-key-sets[JSON Web Key Sets] used under the OpenID Configuration are typically stored at an endpoint similar to \https://YOUR_DOMAIN/.well-known/jwks.json
+- `secret` - The secret to be used to decode and verify JWTs. Either the secret or the PEM encoded public key used to verify the JWT.
+
+Optional arguments:
+
 - `noVerify` (optional) - Disable verification of JWTs, defaults to _false_
 - `rolesPath` (optional) - A string key to specify where to find roles in the JWT, defaults to "roles"
 
-The simplest construction of a `Neo4jGraphQL` instance would be:
+The recommended construction of a `Neo4jGraphQL` instance would be:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        jwt: {
+            jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json"
+        }
+    }
+});
+----
+
+Another valid construction could be:
 
 [source, javascript, indent=0]
 ----
@@ -22,6 +40,7 @@ const neoSchema = new Neo4jGraphQL({
     }
 });
 ----
+
 
 It is also possible to pass in JWTs which have already been decoded, in which case the `jwt` option is _not necessary_. This is covered in the section xref::auth/setup.adoc#auth-setup-passing-in[Passing in JWTs] below.
 
@@ -46,8 +65,8 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     config: {
         jwt: {
-            secret,
-            rolesPath: "https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles"
+            jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json",
+            rolesPath: "https://YOUR_DOMAIN/claims\\.https://YOUR_DOMAIN/claims/roles"
         }
     }
 });

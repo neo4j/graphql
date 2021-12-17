@@ -45,7 +45,7 @@ describe("OGM", () => {
 
         const ogm = new OGM({ typeDefs, driver, config: { driverConfig: { database: "another-random-db" } } });
 
-        await expect(ogm.model("Movie")?.find()).rejects.toThrow();
+        await expect(ogm.model("Movie").find()).rejects.toThrow();
 
         await session.close();
     });
@@ -74,7 +74,7 @@ describe("OGM", () => {
 
             const Movie = ogm.model("Movie");
 
-            const movies = await Movie?.find({ where: { id } });
+            const movies = await Movie.find({ where: { id } });
 
             // should return without error due to the fact auth should be removed
             expect(movies).toEqual([{ id }]);
@@ -108,7 +108,7 @@ describe("OGM", () => {
 
                 const Movie = ogm.model("Movie");
 
-                const movies = await Movie?.find({ where: { id } });
+                const movies = await Movie.find({ where: { id } });
 
                 expect(movies).toEqual([{ id }]);
             } finally {
@@ -142,7 +142,7 @@ describe("OGM", () => {
 
                 const Movie = ogm.model("Movie");
 
-                const movies = await Movie?.find({ where: { id }, options: { limit: 2 } });
+                const movies = await Movie.find({ where: { id }, options: { limit: 2 } });
 
                 expect(movies).toEqual([{ id }, { id }]);
             } finally {
@@ -188,7 +188,7 @@ describe("OGM", () => {
 
                 const Movie = ogm.model("Movie");
 
-                const movies = await Movie?.find({ where: { id }, selectionSet });
+                const movies = await Movie.find({ where: { id }, selectionSet });
 
                 expect(movies).toEqual([{ id, genres: [{ id }] }]);
             } finally {
@@ -866,7 +866,7 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
-            const User = (ogm.model("User") as unknown) as Model;
+            const User = ogm.model("User") as unknown as Model;
 
             const id = generate({
                 charset: "alphabetic",
@@ -888,6 +888,48 @@ describe("OGM", () => {
     });
 
     describe("aggregations", () => {
+        test("should return aggregated count on its own", async () => {
+            const session = driver.session();
+
+            const typeDefs = gql`
+                type Movie {
+                    testId: ID
+                    title: String
+                    imdbRating: Int
+                }
+            `;
+
+            const ogm = new OGM({ typeDefs, driver });
+
+            const testId = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await session.run(`
+                    CREATE (:Movie {testId: "${testId}"})
+                    CREATE (:Movie {testId: "${testId}"})
+                    CREATE (:Movie {testId: "${testId}"})
+                    CREATE (:Movie {testId: "${testId}"})
+                `);
+
+                const Movie = ogm.model("Movie");
+
+                const result = await Movie?.aggregate({
+                    where: { testId },
+                    aggregate: {
+                        count: true,
+                    },
+                });
+
+                expect(result).toEqual({
+                    count: 4,
+                });
+            } finally {
+                await session.close();
+            }
+        });
+
         test("should return aggregated fields", async () => {
             const session = driver.session();
 
