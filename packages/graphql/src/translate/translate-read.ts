@@ -35,7 +35,6 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     const hasLimit = Boolean(optionsInput?.limit) || optionsInput?.limit === 0;
 
     const varName = "this";
-    const limitOrderVarName = "this_sort";
     let matchAndWhereStr = "";
     let authStr = "";
     let offsetStr = "";
@@ -44,7 +43,6 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     let cypherSort = false;
     let projAuth = "";
     let projStr = "";
-    let limitOrderProjStr = "";
     let cypherParams: { [k: string]: any } = {};
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
@@ -126,22 +124,6 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         }
 
         if (optionsInput.sort && optionsInput.sort.length) {
-            if (hasLimit) {
-                const sortFields = optionsInput.sort.map((sort) => Object.keys(sort)[0]);
-                const orderByProjection = createProjectionAndParams({
-                    node,
-                    context,
-                    fieldsByTypeName: {
-                        [node.name]: Object.fromEntries(
-                            Object.entries(fieldsByTypeName[node.name]).filter(([key]) => sortFields.includes(key))
-                        ),
-                    },
-                    varName,
-                });
-                [limitOrderProjStr] = orderByProjection;
-                cypherParams = { ...cypherParams, ...orderByProjection[1] };
-            }
-
             const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {
                 return [
                     ...res,
@@ -149,7 +131,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
                         if (!cypherSort && node.cypherFields.some((f) => f.fieldName === field)) {
                             cypherSort = true;
                         }
-                        return `${hasLimit ? limitOrderVarName : varName}.${field} ${direction}`;
+                        return `${varName}.${field} ${direction}`;
                     }),
                 ];
             }, []);
@@ -160,7 +142,22 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
 
     let cypher: string[] = [];
 
-    if (!hasLimit || cypherSort || !node.cypherFields.length) {
+    if (node.cypherFields.length && hasLimit && !cypherSort) {
+        cypher = [
+            "CALL {",
+            matchAndWhereStr,
+            authStr,
+            ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
+            `RETURN ${varName}`,
+            ...(sortStr ? [sortStr] : []),
+            ...(offsetStr ? [offsetStr] : []),
+            ...(limitStr ? [limitStr] : []),
+            "}",
+            ...connectionStrs,
+            ...interfaceStrs,
+            `RETURN ${varName} ${projStr} as ${varName}`,
+        ];
+    } else {
         cypher = [
             matchAndWhereStr,
             authStr,
@@ -171,30 +168,6 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
             ...(sortStr ? [sortStr] : []),
             ...(offsetStr ? [offsetStr] : []),
             ...(limitStr ? [limitStr] : []),
-        ];
-    } else {
-        cypher = [
-            "CALL {",
-            matchAndWhereStr,
-            authStr,
-            ...(sortStr && !cypherSort
-                ? [`WITH ${varName}, ${varName} ${limitOrderProjStr} AS ${limitOrderVarName}`, sortStr]
-                : []),
-            ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
-            `RETURN ${varName}`,
-            ...(!cypherSort ? [offsetStr, limitStr] : []),
-            "}",
-            ...connectionStrs,
-            ...interfaceStrs,
-            `RETURN ${varName} ${projStr} as ${varName}`,
-            ...(sortStr && cypherSort
-                ? [
-                      `WITH ${varName}, ${varName} ${limitOrderProjStr} AS ${limitOrderVarName}`,
-                      sortStr,
-                      offsetStr,
-                      limitStr,
-                  ]
-                : []),
         ];
     }
 

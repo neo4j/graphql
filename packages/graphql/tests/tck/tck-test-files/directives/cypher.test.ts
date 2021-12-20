@@ -238,7 +238,7 @@ describe("Cypher directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
             RETURN this { randomNumber:  apoc.cypher.runFirstColumn(\\"RETURN rand()\\", {this: this, auth: $auth}, false) } as this
-            ORDER BY this_sort.randomNumber ASC
+            ORDER BY this.randomNumber ASC
             LIMIT $this_limit"
         `);
 

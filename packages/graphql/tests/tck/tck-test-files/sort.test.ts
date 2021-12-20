@@ -164,9 +164,8 @@ describe("Cypher sort tests", () => {
             "CALL {
             MATCH (this:Movie)
             WHERE this.title = $this_title
-            WITH this, this { .title } AS this_sort
-            ORDER BY this_sort.id DESC, this_sort.title ASC
             RETURN this
+            ORDER BY this.id DESC, this.title ASC
             SKIP $this_offset
             LIMIT $this_limit
             }
