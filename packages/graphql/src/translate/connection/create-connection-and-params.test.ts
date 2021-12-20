@@ -92,6 +92,8 @@ describe("createConnectionAndParams", () => {
                 fieldName: "actors",
                 type: "ACTED_IN",
                 direction: "IN",
+                paramName: "acted_in",
+                multiple: false,
                 // @ts-ignore
                 typeMeta: {
                     name: "Actor",
@@ -186,6 +188,8 @@ describe("createConnectionAndParams", () => {
                 fieldName: "actors",
                 type: "ACTED_IN",
                 direction: "IN",
+                paramName: "acted_in",
+                multiple: false,
                 // @ts-ignore
                 typeMeta: {
                     name: "Actor",
@@ -274,6 +278,8 @@ describe("createConnectionAndParams", () => {
                 fieldName: "actors",
                 type: "ACTED_IN",
                 direction: "IN",
+                paramName: "acted_in",
+                multiple: false,
                 // @ts-ignore
                 typeMeta: {
                     name: "Actor",

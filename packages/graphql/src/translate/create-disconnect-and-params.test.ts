@@ -31,6 +31,9 @@ describe("createDisconnectAndParams", () => {
                 {
                     direction: "OUT",
                     type: "SIMILAR",
+                    types: ["SIMILAR"],
+                    paramName: "similar",
+                    multiple: false,
                     fieldName: "similarMovies",
                     inherited: false,
                     typeMeta: {
