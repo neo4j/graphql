@@ -30,11 +30,11 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     const { resolveTree } = context;
     const { fieldsByTypeName } = resolveTree;
     const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
+    const varName = "this";
 
     const hasOffset = Boolean(optionsInput?.offset) || optionsInput?.offset === 0;
     const hasLimit = Boolean(optionsInput?.limit) || optionsInput?.limit === 0;
 
-    const varName = "this";
     let matchAndWhereStr = "";
     let authStr = "";
     let offsetStr = "";
@@ -136,7 +136,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
                 ];
             }, []);
 
-            sortStr = sortArr.length ? `ORDER BY ${sortArr.join(", ")}` : "";
+            sortStr = `ORDER BY ${sortArr.join(", ")}`;
         }
     }
 
