@@ -2051,7 +2051,7 @@ __metadata:
     randomstring: 1.1.5
     semver: 7.3.5
     ts-jest: 26.1.4
-    typescript: 3.9.7
+    typescript: 4.2.4
   peerDependencies:
     graphql: ^15.0.0
     neo4j-driver: ^4.1.0
@@ -2102,7 +2102,7 @@ __metadata:
     supertest: ^6.1.6
     ts-jest: 26.1.4
     ts-node: ^10.0.0
-    typescript: 3.9.7
+    typescript: 4.2.4
   peerDependencies:
     graphql: ^15.0.0
     neo4j-driver: ^4.1.0
@@ -2122,7 +2122,7 @@ __metadata:
     jest: 26.2.2
     pluralize: ^8.0.0
     ts-jest: 26.1.4
-    typescript: 3.9.7
+    typescript: 4.2.4
   peerDependencies:
     neo4j-driver: ^4.1.0
   languageName: unknown
@@ -2338,6 +2338,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tsconfig/create-react-app@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@tsconfig/create-react-app@npm:1.0.2"
+  checksum: e979d169eb3b15aad769de5e95e1184a1429914ceebfc8911152e1f7e750550510a24db6aa52aef0e017cccf7679f130d67f58923953c107ff59a7b5d89c4faf
+  languageName: node
+  linkType: hard
+
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.8
   resolution: "@tsconfig/node10@npm:1.0.8"
@@ -2345,7 +2352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node12@npm:^1.0.7":
+"@tsconfig/node12@npm:^1.0.7, @tsconfig/node12@npm:^1.0.9":
   version: 1.0.9
   resolution: "@tsconfig/node12@npm:1.0.9"
   checksum: 5532bfb5df47ed3a507da533c731a2fb80ee2e886edadbf20e664dcd3172d5c159577a281d15733b8d0c30bfa4e6b48496bef0704192c085520bc76bb9938068
@@ -2363,13 +2370,6 @@ __metadata:
   version: 1.0.1
   resolution: "@tsconfig/node16@npm:1.0.1"
   checksum: c389a4a81c291a27b96705de7fbe46d29aa4eb771450a41dfc075d89e1fdd63141898043a0d9f627460a1c409d06635a044dc4b3a4516173769a7d0a1558c51d
-  languageName: node
-  linkType: hard
-
-"@tsconfig/recommended@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@tsconfig/recommended@npm:1.0.1"
-  checksum: 5510ca13427372ca0bea427a18cd70e5e9cab65e6b99bf238613869c447d80db9a05991353db47885e9cfc8a7ce81094d44a1abdff60cf833467187fe8bb863d
   languageName: node
   linkType: hard
 
@@ -13220,6 +13220,7 @@ fsevents@^1.2.7:
     "@fortawesome/fontawesome-svg-core": 1.2.32
     "@fortawesome/free-solid-svg-icons": 5.15.1
     "@fortawesome/react-fontawesome": 0.1.13
+    "@tsconfig/create-react-app": ^1.0.2
     "@types/react": 17.0.0
     "@types/react-dom": 17.0.0
     "@types/react-router-dom": 5.1.6
@@ -13246,7 +13247,7 @@ fsevents@^1.2.7:
     showdown: 1.9.1
     style-loader: 2.0.0
     ts-loader: 8.0.12
-    typescript: 4.1.3
+    typescript: 4.2.4
     webpack: 5.10.3
     webpack-cli: 4.5.0
     webpack-dev-server: 3.11.0
@@ -13285,7 +13286,7 @@ fsevents@^1.2.7:
     ts-jest: 26.4.4
     ts-node: 9.1.1
     tsconfig-paths: ^3.9.0
-    typescript: 4.1.3
+    typescript: 4.2.4
   languageName: unknown
   linkType: soft
 
@@ -13334,7 +13335,7 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "neo4j-graphql@workspace:."
   dependencies:
-    "@tsconfig/recommended": ^1.0.1
+    "@tsconfig/node12": ^1.0.9
     "@typescript-eslint/eslint-plugin": 4.1.1
     "@typescript-eslint/parser": 4.15.1
     concurrently: 6.0.0
@@ -13356,7 +13357,7 @@ fsevents@^1.2.7:
     prettier: 2.1.2
     set-tz: 0.2.0
     ts-jest: ^26.5.4
-    typescript: 3.9.7
+    typescript: 4.2.4
   languageName: unknown
   linkType: soft
 
@@ -18253,43 +18254,23 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-typescript@3.9.7:
-  version: 3.9.7
-  resolution: "typescript@npm:3.9.7"
+typescript@4.2.4:
+  version: 4.2.4
+  resolution: "typescript@npm:4.2.4"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10848a9c35fd8c70a8792b8bd9485317534bcd58768793d3b7d9c7486e9fd30cf345f83fa2a324e0bf6088bc8a4d8d061d58fda38b18c2ff187cf01fbbff6267
+  checksum: edaede2fa77f56b7fba80ee624a2368ab1216e75b0434d968ccb47ab0a5e2f6d94f848b3b111c1237dd71e988cd376af26370dcdad3b94355c76e759f0dd0a1e
   languageName: node
   linkType: hard
 
-typescript@4.1.3:
-  version: 4.1.3
-  resolution: "typescript@npm:4.1.3"
+"typescript@patch:typescript@4.2.4#builtin<compat/typescript>":
+  version: 4.2.4
+  resolution: "typescript@patch:typescript@npm%3A4.2.4#builtin<compat/typescript>::version=4.2.4&hash=a45b0e"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 4f7ab1506ea22c7a1c313ec5b4285e93ce08d709ad6086d02d3096adb399ca339972ee56d1e578213c51dd0fb7b0fad50283c2d3c39642405644458ae29774f8
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@3.9.7#builtin<compat/typescript>":
-  version: 3.9.7
-  resolution: "typescript@patch:typescript@npm%3A3.9.7#builtin<compat/typescript>::version=3.9.7&hash=a45b0e"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: ee9b64dafd9997a7f659c402dc4500792e05724a39a9071a0b79fd513466d6f4497e7d4963e092804a387b77e9cb9d4bfe365433fcbf2ca9eea44476ba3df14d
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@4.1.3#builtin<compat/typescript>":
-  version: 4.1.3
-  resolution: "typescript@patch:typescript@npm%3A4.1.3#builtin<compat/typescript>::version=4.1.3&hash=a45b0e"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 28f0f616bf6284543bb14d4bfe0e1a74963e5df0396ebccfc6a57bfd4ab70b4284e51b3a2045ed2466151a4a58c8a549edb886a2f7a2232cf08fcf73496592e6
+  checksum: 3be44317593182e8ce494c114e7ad9b0bb2553a22f3085cc6da4f0a36912c20850daa9be4c898af2ab6fc8b12f430c1c9e46ac715721867cd38643f2350d3ef9
   languageName: node
   linkType: hard
 

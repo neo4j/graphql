@@ -22,7 +22,7 @@
         "test-docker": "docker-compose up --build --abort-on-container-exit"
     },
     "devDependencies": {
-        "@tsconfig/recommended": "^1.0.1",
+        "@tsconfig/node12": "^1.0.9",
         "@typescript-eslint/eslint-plugin": "4.1.1",
         "@typescript-eslint/parser": "4.15.1",
         "concurrently": "6.0.0",
@@ -44,6 +44,6 @@
         "prettier": "2.1.2",
         "set-tz": "0.2.0",
         "ts-jest": "^26.5.4",
-        "typescript": "3.9.7"
+        "typescript": "4.2.4"
     }
 }
