@@ -22,6 +22,7 @@
         "test-docker": "docker-compose up --build --abort-on-container-exit"
     },
     "devDependencies": {
+        "@tsconfig/recommended": "^1.0.1",
         "@typescript-eslint/eslint-plugin": "4.1.1",
         "@typescript-eslint/parser": "4.15.1",
         "concurrently": "6.0.0",

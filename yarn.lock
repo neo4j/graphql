@@ -2366,6 +2366,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tsconfig/recommended@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@tsconfig/recommended@npm:1.0.1"
+  checksum: 5510ca13427372ca0bea427a18cd70e5e9cab65e6b99bf238613869c447d80db9a05991353db47885e9cfc8a7ce81094d44a1abdff60cf833467187fe8bb863d
+  languageName: node
+  linkType: hard
+
 "@types/accepts@npm:*, @types/accepts@npm:^1.3.5":
   version: 1.3.5
   resolution: "@types/accepts@npm:1.3.5"
@@ -13327,6 +13334,7 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "neo4j-graphql@workspace:."
   dependencies:
+    "@tsconfig/recommended": ^1.0.1
     "@typescript-eslint/eslint-plugin": 4.1.1
     "@typescript-eslint/parser": 4.15.1
     concurrently: 6.0.0
