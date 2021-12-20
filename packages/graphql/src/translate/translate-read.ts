@@ -160,17 +160,17 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
 
     let cypher: string[] = [];
 
-    if (!hasLimit) {
+    if (!hasLimit || cypherSort || !node.cypherFields.length) {
         cypher = [
             matchAndWhereStr,
             authStr,
-            ...(sortStr && !cypherSort ? [`WITH ${varName}`, sortStr] : []),
             ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
             ...connectionStrs,
             ...interfaceStrs,
             `RETURN ${varName} ${projStr} as ${varName}`,
-            ...(sortStr && cypherSort ? [sortStr] : []),
-            offsetStr,
+            ...(sortStr ? [sortStr] : []),
+            ...(offsetStr ? [offsetStr] : []),
+            ...(limitStr ? [limitStr] : []),
         ];
     } else {
         cypher = [

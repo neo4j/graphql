@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher pagination tests", () => {
@@ -87,12 +87,9 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            MATCH (this:Movie)
-            RETURN this
-            LIMIT $this_limit
-            }
-            RETURN this { .title } as this"
+            "MATCH (this:Movie)
+            RETURN this { .title } as this
+            LIMIT $this_limit"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -120,13 +117,10 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            MATCH (this:Movie)
-            RETURN this
+            "MATCH (this:Movie)
+            RETURN this { .title } as this
             SKIP $this_offset
-            LIMIT $this_limit
-            }
-            RETURN this { .title } as this"
+            LIMIT $this_limit"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -159,13 +153,10 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            MATCH (this:Movie)
-            RETURN this
+            "MATCH (this:Movie)
+            RETURN this { .title } as this
             SKIP $this_offset
-            LIMIT $this_limit
-            }
-            RETURN this { .title } as this"
+            LIMIT $this_limit"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -198,14 +189,11 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            MATCH (this:Movie)
+            "MATCH (this:Movie)
             WHERE this.title = $this_title
-            RETURN this
+            RETURN this { .title } as this
             SKIP $this_offset
-            LIMIT $this_limit
-            }
-            RETURN this { .title } as this"
+            LIMIT $this_limit"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

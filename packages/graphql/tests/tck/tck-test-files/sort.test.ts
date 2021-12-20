@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher sort tests", () => {
@@ -78,9 +78,8 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            WITH this
-            ORDER BY this.id DESC
-            RETURN this { .title } as this"
+            RETURN this { .title } as this
+            ORDER BY this.id DESC"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -136,9 +135,8 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            WITH this
-            ORDER BY this.id DESC, this.title ASC
-            RETURN this { .title } as this"
+            RETURN this { .title } as this
+            ORDER BY this.id DESC, this.title ASC"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
