@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLScalarType, Kind } from "graphql";
+import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
 
 export const ScalarType = new GraphQLScalarType({
     name: "Scalar",
@@ -49,5 +49,47 @@ export const ScalarType = new GraphQLScalarType({
             default:
                 throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime | Date");
         }
+    },
+});
+
+/**
+ * Allows multiple relationship types
+ * @example
+ * DIRECTED
+ * DIRECTED|ACTED_IN
+ * DIRECTED|ACTED_IN|PRODUCED
+ */
+const RELATIONSHIP_TYPE_REGEX = /^[A-Za-z]\w*(?:\|[A-Za-z]\w*)*$/;
+
+export const RelationshipType = new GraphQLScalarType({
+    name: "RelationshipType",
+    description:
+        'A string value representing how the field relates to the parent. Can be multiple types as in "DIRECTED|ACTED_IN"',
+    serialize(value) {
+        if (typeof value !== "string") {
+            throw new TypeError(`Value is not string: ${value}`);
+        }
+        if (!RELATIONSHIP_TYPE_REGEX.test(value)) {
+            throw new TypeError(`Value is not a valid relationship type: ${value}`);
+        }
+        return value;
+    },
+    parseValue(value) {
+        if (typeof value !== "string") {
+            throw new TypeError(`Value is not string: ${value}`);
+        }
+        if (!RELATIONSHIP_TYPE_REGEX.test(value)) {
+            throw new TypeError(`Value is not a valid relationship type: ${value}`);
+        }
+        return value;
+    },
+    parseLiteral(ast) {
+        if (ast.kind !== Kind.STRING) {
+            throw new GraphQLError(`Can only validate strings as relationship types but got a: ${ast.kind}`);
+        }
+        if (!RELATIONSHIP_TYPE_REGEX.test(ast.value)) {
+            throw new TypeError(`Value is not a valid relationship type: ${ast.value}`);
+        }
+        return ast.value;
     },
 });

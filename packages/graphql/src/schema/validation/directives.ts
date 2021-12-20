@@ -28,7 +28,7 @@ import {
     GraphQLInt,
 } from "graphql";
 import { ExcludeOperationEnum, RelationshipDirectionEnum, TimestampOperationEnum } from "./enums";
-import { ScalarType } from "./scalars";
+import { RelationshipType, ScalarType } from "./scalars";
 
 export const aliasDirective = new GraphQLDirective({
     name: "alias",
@@ -161,7 +161,7 @@ export const relationshipDirective = new GraphQLDirective({
     locations: [DirectiveLocation.FIELD_DEFINITION],
     args: {
         type: {
-            type: new GraphQLNonNull(GraphQLString),
+            type: new GraphQLNonNull(RelationshipType),
         },
         direction: {
             type: new GraphQLNonNull(RelationshipDirectionEnum),
