@@ -56,10 +56,16 @@ export const RESERVED_TYPE_NAMES = [
     },
 ];
 
+export const RELATIONSHIP_TYPE_FIELD = "_type";
+
 // [0]Field [1]Error
 export const RESERVED_INTERFACE_FIELDS = [
     ["node", "Interface field name 'node' reserved to support relay See https://relay.dev/graphql/"],
     ["cursor", "Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"],
+    [
+        RELATIONSHIP_TYPE_FIELD,
+        `Interface field name '${RELATIONSHIP_TYPE_FIELD}' reserved to support multiple relationship types`,
+    ],
 ];
 
 export const WHERE_AGGREGATION_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
