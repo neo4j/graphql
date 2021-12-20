@@ -109,7 +109,7 @@ function createUpdateAndParams({
                 const subquery: string[] = [];
 
                 updates.forEach((update, index) => {
-                    const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}_relationship`;
+                    const relationshipVariable = `${varName}_${relationField.paramName}${index}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                     const _varName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
 

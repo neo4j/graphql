@@ -55,7 +55,7 @@ function createConnectionAndParams({
     const firstInput = resolveTree.args.first;
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
-    const relationshipVariable = `${nodeVariable}_${field.relationship.type.toLowerCase()}_relationship`;
+    const relationshipVariable = `${nodeVariable}_${field.relationship.paramName}_relationship`;
     const relationship = context.neoSchema.relationships.find(
         (r) => r.name === field.relationshipTypeName
     ) as Relationship;
@@ -256,7 +256,9 @@ function createConnectionAndParams({
 
         if (sortInput && sortInput.length) {
             const sort = sortInput.map((s) =>
-                Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`).join(", ")
+                Object.entries(s.edge || [])
+                    .map(([f, direction]) => `edge.${f} ${direction}`)
+                    .join(", ")
             );
             subqueryCypher.push(`WITH edge ORDER BY ${sort.join(", ")}`);
         }
