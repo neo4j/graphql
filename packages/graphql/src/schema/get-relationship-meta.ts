@@ -18,12 +18,7 @@
  */
 
 import { FieldDefinitionNode, StringValueNode } from "graphql";
-
-type RelationshipMeta = {
-    direction: "IN" | "OUT";
-    type: string;
-    properties?: string;
-};
+import { RelationshipMeta } from "../types";
 
 function getRelationshipMeta(
     field: FieldDefinitionNode,
@@ -60,14 +55,21 @@ function getRelationshipMeta(
         throw new Error("@relationship properties not a string");
     }
 
-    const direction = directionArg.value.value as "IN" | "OUT";
-    const type = typeArg.value.value;
+    const direction = directionArg.value.value as RelationshipMeta["direction"];
     const properties = (propertiesArg?.value as StringValueNode)?.value;
+    const type = typeArg.value.value;
+
+    const paramName = type.replace("|", "_").toLowerCase();
+    const types = Array.from(new Set(type.split("|")));
+    const multiple = types.length > 1;
 
     return {
         direction,
-        type,
+        multiple,
         properties,
+        paramName,
+        type,
+        types,
     };
 }
 

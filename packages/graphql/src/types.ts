@@ -100,6 +100,44 @@ export interface TypeMeta {
     };
 }
 
+export type RelationshipDirection = "IN" | "OUT";
+
+export interface RelationshipMeta {
+    /**
+     * Value passed into the `direction` argument of `@relationship` directive
+     */
+    direction: RelationshipDirection;
+    /**
+     * A more suitable form of `type` appropriate for translation where non-word
+     * characters are replaced with an underscore and converted to lowercase
+     * @example
+     * [:DIRECTED|ACTED_IN] -> directed_acted_in
+     */
+    paramName: string;
+    /**
+     * Value passed into the `properties` argument of `@relationship` directive
+     */
+    properties?: string;
+    /**
+     * Whether relationship type represents multiple relationship types. Derived from `types`
+     * @example
+     * [:DIRECTED] = false
+     * [:DIRECTED|ACTED_IN] = true
+     */
+    multiple: boolean;
+    /**
+     * Value passed into the `type` argument of `@relationship` directive
+     */
+    type: string;
+    /**
+     * An array of relationship types taken from `type`
+     * @example
+     * [:DIRECTED] = [DIRECTED]
+     * [:DIRECTED|ACTED_IN] = [DIRECTED, ACTED_IN]
+     */
+    types: string[];
+}
+
 export interface Unique {
     constraintName: string;
 }
@@ -125,12 +163,9 @@ export interface BaseField {
 /**
  * Representation of the `@relationship` directive and its meta.
  */
-export interface RelationField extends BaseField {
-    direction: "OUT" | "IN";
-    type: string;
+export interface RelationField extends BaseField, RelationshipMeta {
     connectionPrefix?: string;
     inherited: boolean;
-    properties?: string;
     union?: UnionField;
     interface?: InterfaceField;
 }
