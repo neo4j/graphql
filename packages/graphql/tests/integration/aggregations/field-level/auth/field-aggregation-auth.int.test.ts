@@ -22,8 +22,8 @@ import { graphql } from "graphql";
 import { IncomingMessage } from "http";
 import neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
-import { generateUniqueType } from "../../../../../src/utils/test/graphql-types";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { generateUniqueType } from "../../../../../tests/utils/graphql-types";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 
 describe("Field Level Aggregations Auth", () => {
     let driver: Driver;

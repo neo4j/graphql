@@ -21,7 +21,7 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
 
 // Reference: https://github.com/neo4j/graphql/pull/330
 // Reference: https://github.com/neo4j/graphql/pull/303#discussion_r671148932
