@@ -21,7 +21,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - run: yarn build
       - name: Pack ${{ matrix.package }}
         run: npm pack
