@@ -20,6 +20,30 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
 
+  lint:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          list-files: shell
+          filters: |
+            typescript:
+              - added|modified: '*.ts'
+      - name: Run ESLint
+        run: eslint ${{ steps.filter.outputs.typescript_files }}
+
   unit-tests:
     needs:
       - cache-dependencies
