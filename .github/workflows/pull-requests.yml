@@ -20,6 +20,43 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
 
+  typescript-changes:
+    runs-on: ubuntu-latest
+
+    outputs:
+      backend: ${{ steps.filter.outputs.typescript }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          list-files: shell
+          filters: |
+            typescript:
+              - added|modified: '*.ts'
+
+  license-header-check:
+    needs: typescript-changes
+    if: ${{ needs.changes.outputs.typescript == 'true' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+      - name: Install addlicense
+        run: go install github.com/google/addlicense@latest
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          list-files: shell
+          filters: |
+            typescript:
+              - added|modified: '*.ts'
+      - name: Run addlicense
+        run: addlicense -f ./addlicense -check ${{ steps.filter.outputs.typescript_files }}
+
   lint:
     needs:
       - cache-dependencies
