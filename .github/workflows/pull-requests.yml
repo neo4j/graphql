@@ -42,7 +42,7 @@ jobs:
             typescript:
               - added|modified: '*.ts'
       - name: Run ESLint
-        run: eslint ${{ steps.filter.outputs.typescript_files }}
+        run: yarn lint:ci ${{ steps.filter.outputs.typescript_files }}
 
   unit-tests:
     needs:
