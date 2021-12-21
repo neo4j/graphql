@@ -15,6 +15,12 @@
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*.ts",
+        "dist/**/*.ts.map",
+        "dist/**/*.js",
+        "dist/**/*.js.map"
+    ],
     "scripts": {
         "clean": "cd src/ && tsc --build --clean",
         "test": "jest",
