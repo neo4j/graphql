@@ -34,6 +34,7 @@ jobs:
         run: yarn --immutable
       - uses: reviewdog/action-eslint@v1
         with:
+          fail_on_error: true
           eslint_flags: "."
 
   unit-tests:
