@@ -40,3 +40,11 @@ Blogs, talks and other content surrounding Neo4j GraphQL. Sign up for [NODES 202
 4. [Migrating To The Official Neo4j GraphQL Library](https://youtu.be/4_rp1ikvFKc)
 5. [Announcing the Stable Release of the Official Neo4j GraphQL Library 1.0.0](https://medium.com/neo4j/announcing-the-stable-release-of-the-official-neo4j-graphql-library-1-0-0-6cdd30cd40b)
 6. [Announcing the Neo4j GraphQL Library Beta Release](https://medium.com/neo4j/announcing-the-neo4j-graphql-library-beta-99ae8541bbe7)
+
+## Hiring
+
+Love this project and want to work on it full-time? We're hiring!
+
+We're currently looking for backend, full-stack and DevOps engineers to join the GraphQL Team at Neo4j.
+
+Search for "GraphQL Team" at https://neo4j.com/careers/ or [drop us an email](mailto:team-graphql@neo4j.com) if you're interested.
