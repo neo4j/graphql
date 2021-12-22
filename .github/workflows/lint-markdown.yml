@@ -1,4 +1,4 @@
-name: "Markdown Lint"
+name: "Lint Markdown"
 
 on:
   pull_request:
@@ -25,5 +25,6 @@ jobs:
           filters: |
             markdown:
               - added|modified: '*.md'
-      - name: Install markdownlint
+      - uses: xt0rted/markdownlint-problem-matcher@v1
+      - name: Run markdownlint
         run: markdownlint --config ./.markdownlint.json ${{ steps.filter.outputs.markdown_files }}
