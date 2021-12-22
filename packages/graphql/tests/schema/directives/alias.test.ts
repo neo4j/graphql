@@ -71,7 +71,7 @@ describe("Alias", () => {
             }
 
             input ActorActedInConnectFieldInput {
-              edge: ActorActedInPropsCreateInput!
+              edge: ActorActedInRelationshipCreateInput!
               where: MovieConnectWhere
             }
 
@@ -89,14 +89,14 @@ describe("Alias", () => {
             input ActorActedInConnectionWhere {
               AND: [ActorActedInConnectionWhere!]
               OR: [ActorActedInConnectionWhere!]
-              edge: ActorActedInPropsWhere
-              edge_NOT: ActorActedInPropsWhere
+              edge: ActorActedInRelationshipWhere
+              edge_NOT: ActorActedInRelationshipWhere
               node: MovieWhere
               node_NOT: MovieWhere
             }
 
             input ActorActedInCreateFieldInput {
-              edge: ActorActedInPropsCreateInput!
+              edge: ActorActedInRelationshipCreateInput!
               node: MovieCreateInput!
             }
 
@@ -218,11 +218,6 @@ describe("Alias", () => {
               screenTime: Int
             }
 
-            input ActorActedInPropsCreateInput {
-              character: String!
-              screenTime: Int
-            }
-
             input ActorActedInPropsSort {
               character: SortDirection
               screenTime: SortDirection
@@ -233,9 +228,21 @@ describe("Alias", () => {
               screenTime: Int
             }
 
-            input ActorActedInPropsWhere {
-              AND: [ActorActedInPropsWhere!]
-              OR: [ActorActedInPropsWhere!]
+            type ActorActedInRelationship implements ActorActedInProps {
+              character: String!
+              cursor: String!
+              node: Movie!
+              screenTime: Int
+            }
+
+            input ActorActedInRelationshipCreateInput {
+              character: String!
+              screenTime: Int
+            }
+
+            input ActorActedInRelationshipWhere {
+              AND: [ActorActedInRelationshipWhere!]
+              OR: [ActorActedInRelationshipWhere!]
               character: String
               character_CONTAINS: String
               character_ENDS_WITH: String
@@ -254,13 +261,6 @@ describe("Alias", () => {
               screenTime_LTE: Int
               screenTime_NOT: Int
               screenTime_NOT_IN: [Int]
-            }
-
-            type ActorActedInRelationship implements ActorActedInProps {
-              character: String!
-              cursor: String!
-              node: Movie!
-              screenTime: Int
             }
 
             input ActorActedInUpdateConnectionInput {

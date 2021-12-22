@@ -56,12 +56,6 @@ describe("Relationship-properties", () => {
               startDate: Date!
             }
 
-            input ActedInCreateInput {
-              leadRole: Boolean!
-              screenTime: Int!
-              startDate: Date!
-            }
-
             input ActedInSort {
               leadRole: SortDirection
               screenTime: SortDirection
@@ -72,29 +66,6 @@ describe("Relationship-properties", () => {
               leadRole: Boolean
               screenTime: Int
               startDate: Date
-            }
-
-            input ActedInWhere {
-              AND: [ActedInWhere!]
-              OR: [ActedInWhere!]
-              leadRole: Boolean
-              leadRole_NOT: Boolean
-              screenTime: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int]
-              screenTime_LT: Int
-              screenTime_LTE: Int
-              screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
-              startDate: Date
-              startDate_GT: Date
-              startDate_GTE: Date
-              startDate_IN: [Date]
-              startDate_LT: Date
-              startDate_LTE: Date
-              startDate_NOT: Date
-              startDate_NOT_IN: [Date]
             }
 
             type Actor {
@@ -158,7 +129,7 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
-              edge: ActedInCreateInput!
+              edge: ActorMoviesRelationshipCreateInput!
               where: MovieConnectWhere
             }
 
@@ -176,14 +147,14 @@ describe("Relationship-properties", () => {
             input ActorMoviesConnectionWhere {
               AND: [ActorMoviesConnectionWhere!]
               OR: [ActorMoviesConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: ActorMoviesRelationshipWhere
+              edge_NOT: ActorMoviesRelationshipWhere
               node: MovieWhere
               node_NOT: MovieWhere
             }
 
             input ActorMoviesCreateFieldInput {
-              edge: ActedInCreateInput!
+              edge: ActorMoviesRelationshipCreateInput!
               node: MovieCreateInput!
             }
 
@@ -263,6 +234,35 @@ describe("Relationship-properties", () => {
               node: Movie!
               screenTime: Int!
               startDate: Date!
+            }
+
+            input ActorMoviesRelationshipCreateInput {
+              leadRole: Boolean!
+              screenTime: Int!
+              startDate: Date!
+            }
+
+            input ActorMoviesRelationshipWhere {
+              AND: [ActorMoviesRelationshipWhere!]
+              OR: [ActorMoviesRelationshipWhere!]
+              leadRole: Boolean
+              leadRole_NOT: Boolean
+              screenTime: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_IN: [Int]
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_NOT: Int
+              screenTime_NOT_IN: [Int]
+              startDate: Date
+              startDate_GT: Date
+              startDate_GTE: Date
+              startDate_IN: [Date]
+              startDate_LT: Date
+              startDate_LTE: Date
+              startDate_NOT: Date
+              startDate_NOT_IN: [Date]
             }
 
             input ActorMoviesUpdateConnectionInput {
@@ -387,7 +387,7 @@ describe("Relationship-properties", () => {
 
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
-              edge: ActedInCreateInput!
+              edge: MovieActorsRelationshipCreateInput!
               where: ActorConnectWhere
             }
 
@@ -405,14 +405,14 @@ describe("Relationship-properties", () => {
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
               OR: [MovieActorsConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: MovieActorsRelationshipWhere
+              edge_NOT: MovieActorsRelationshipWhere
               node: ActorWhere
               node_NOT: ActorWhere
             }
 
             input MovieActorsCreateFieldInput {
-              edge: ActedInCreateInput!
+              edge: MovieActorsRelationshipCreateInput!
               node: ActorCreateInput!
             }
 
@@ -492,6 +492,35 @@ describe("Relationship-properties", () => {
               node: Actor!
               screenTime: Int!
               startDate: Date!
+            }
+
+            input MovieActorsRelationshipCreateInput {
+              leadRole: Boolean!
+              screenTime: Int!
+              startDate: Date!
+            }
+
+            input MovieActorsRelationshipWhere {
+              AND: [MovieActorsRelationshipWhere!]
+              OR: [MovieActorsRelationshipWhere!]
+              leadRole: Boolean
+              leadRole_NOT: Boolean
+              screenTime: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_IN: [Int]
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_NOT: Int
+              screenTime_NOT_IN: [Int]
+              startDate: Date
+              startDate_GT: Date
+              startDate_GTE: Date
+              startDate_IN: [Date]
+              startDate_LT: Date
+              startDate_LTE: Date
+              startDate_NOT: Date
+              startDate_NOT_IN: [Date]
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -667,10 +696,6 @@ describe("Relationship-properties", () => {
               timestamp: DateTime!
             }
 
-            input ActedInCreateInput {
-              screenTime: Int!
-            }
-
             input ActedInSort {
               id: SortDirection
               screenTime: SortDirection
@@ -679,37 +704,6 @@ describe("Relationship-properties", () => {
 
             input ActedInUpdateInput {
               screenTime: Int
-            }
-
-            input ActedInWhere {
-              AND: [ActedInWhere!]
-              OR: [ActedInWhere!]
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
-              id_STARTS_WITH: ID
-              screenTime: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int]
-              screenTime_LT: Int
-              screenTime_LTE: Int
-              screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
-              timestamp: DateTime
-              timestamp_GT: DateTime
-              timestamp_GTE: DateTime
-              timestamp_IN: [DateTime]
-              timestamp_LT: DateTime
-              timestamp_LTE: DateTime
-              timestamp_NOT: DateTime
-              timestamp_NOT_IN: [DateTime]
             }
 
             type Actor {
@@ -775,7 +769,7 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
-              edge: ActedInCreateInput!
+              edge: ActorMoviesRelationshipCreateInput!
               where: MovieConnectWhere
             }
 
@@ -793,14 +787,14 @@ describe("Relationship-properties", () => {
             input ActorMoviesConnectionWhere {
               AND: [ActorMoviesConnectionWhere!]
               OR: [ActorMoviesConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: ActorMoviesRelationshipWhere
+              edge_NOT: ActorMoviesRelationshipWhere
               node: MovieWhere
               node_NOT: MovieWhere
             }
 
             input ActorMoviesCreateFieldInput {
-              edge: ActedInCreateInput!
+              edge: ActorMoviesRelationshipCreateInput!
               node: MovieCreateInput!
             }
 
@@ -896,6 +890,41 @@ describe("Relationship-properties", () => {
               node: Movie!
               screenTime: Int!
               timestamp: DateTime!
+            }
+
+            input ActorMoviesRelationshipCreateInput {
+              screenTime: Int!
+            }
+
+            input ActorMoviesRelationshipWhere {
+              AND: [ActorMoviesRelationshipWhere!]
+              OR: [ActorMoviesRelationshipWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+              screenTime: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_IN: [Int]
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_NOT: Int
+              screenTime_NOT_IN: [Int]
+              timestamp: DateTime
+              timestamp_GT: DateTime
+              timestamp_GTE: DateTime
+              timestamp_IN: [DateTime]
+              timestamp_LT: DateTime
+              timestamp_LTE: DateTime
+              timestamp_NOT: DateTime
+              timestamp_NOT_IN: [DateTime]
             }
 
             input ActorMoviesUpdateConnectionInput {
@@ -1032,7 +1061,7 @@ describe("Relationship-properties", () => {
 
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
-              edge: ActedInCreateInput!
+              edge: MovieActorsRelationshipCreateInput!
               where: ActorConnectWhere
             }
 
@@ -1050,14 +1079,14 @@ describe("Relationship-properties", () => {
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
               OR: [MovieActorsConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: MovieActorsRelationshipWhere
+              edge_NOT: MovieActorsRelationshipWhere
               node: ActorWhere
               node_NOT: ActorWhere
             }
 
             input MovieActorsCreateFieldInput {
-              edge: ActedInCreateInput!
+              edge: MovieActorsRelationshipCreateInput!
               node: ActorCreateInput!
             }
 
@@ -1153,6 +1182,41 @@ describe("Relationship-properties", () => {
               node: Actor!
               screenTime: Int!
               timestamp: DateTime!
+            }
+
+            input MovieActorsRelationshipCreateInput {
+              screenTime: Int!
+            }
+
+            input MovieActorsRelationshipWhere {
+              AND: [MovieActorsRelationshipWhere!]
+              OR: [MovieActorsRelationshipWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+              screenTime: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_IN: [Int]
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_NOT: Int
+              screenTime_NOT_IN: [Int]
+              timestamp: DateTime
+              timestamp_GT: DateTime
+              timestamp_GTE: DateTime
+              timestamp_IN: [DateTime]
+              timestamp_LT: DateTime
+              timestamp_LTE: DateTime
+              timestamp_NOT: DateTime
+              timestamp_NOT_IN: [DateTime]
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -1331,29 +1395,6 @@ describe("Relationship-properties", () => {
               timestamp: SortDirection
             }
 
-            input ActedInWhere {
-              AND: [ActedInWhere!]
-              OR: [ActedInWhere!]
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
-              id_STARTS_WITH: ID
-              timestamp: DateTime
-              timestamp_GT: DateTime
-              timestamp_GTE: DateTime
-              timestamp_IN: [DateTime]
-              timestamp_LT: DateTime
-              timestamp_LTE: DateTime
-              timestamp_NOT: DateTime
-              timestamp_NOT_IN: [DateTime]
-            }
-
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
               moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
@@ -1433,8 +1474,8 @@ describe("Relationship-properties", () => {
             input ActorMoviesConnectionWhere {
               AND: [ActorMoviesConnectionWhere!]
               OR: [ActorMoviesConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: ActorMoviesRelationshipWhere
+              edge_NOT: ActorMoviesRelationshipWhere
               node: MovieWhere
               node_NOT: MovieWhere
             }
@@ -1509,6 +1550,29 @@ describe("Relationship-properties", () => {
               id: ID!
               node: Movie!
               timestamp: DateTime!
+            }
+
+            input ActorMoviesRelationshipWhere {
+              AND: [ActorMoviesRelationshipWhere!]
+              OR: [ActorMoviesRelationshipWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+              timestamp: DateTime
+              timestamp_GT: DateTime
+              timestamp_GTE: DateTime
+              timestamp_IN: [DateTime]
+              timestamp_LT: DateTime
+              timestamp_LTE: DateTime
+              timestamp_NOT: DateTime
+              timestamp_NOT_IN: [DateTime]
             }
 
             input ActorMoviesUpdateConnectionInput {
@@ -1653,8 +1717,8 @@ describe("Relationship-properties", () => {
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
               OR: [MovieActorsConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: MovieActorsRelationshipWhere
+              edge_NOT: MovieActorsRelationshipWhere
               node: ActorWhere
               node_NOT: ActorWhere
             }
@@ -1729,6 +1793,29 @@ describe("Relationship-properties", () => {
               id: ID!
               node: Actor!
               timestamp: DateTime!
+            }
+
+            input MovieActorsRelationshipWhere {
+              AND: [MovieActorsRelationshipWhere!]
+              OR: [MovieActorsRelationshipWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+              timestamp: DateTime
+              timestamp_GT: DateTime
+              timestamp_GTE: DateTime
+              timestamp_IN: [DateTime]
+              timestamp_LT: DateTime
+              timestamp_LTE: DateTime
+              timestamp_NOT: DateTime
+              timestamp_NOT_IN: [DateTime]
             }
 
             input MovieActorsUpdateConnectionInput {

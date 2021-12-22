@@ -449,29 +449,6 @@ describe("Connect Or Create", () => {
               screentime: Int
             }
 
-            input ActedInWhere {
-              AND: [ActedInWhere!]
-              OR: [ActedInWhere!]
-              characterName: String
-              characterName_CONTAINS: String
-              characterName_ENDS_WITH: String
-              characterName_IN: [String]
-              characterName_NOT: String
-              characterName_NOT_CONTAINS: String
-              characterName_NOT_ENDS_WITH: String
-              characterName_NOT_IN: [String]
-              characterName_NOT_STARTS_WITH: String
-              characterName_STARTS_WITH: String
-              screentime: Int
-              screentime_GT: Int
-              screentime_GTE: Int
-              screentime_IN: [Int]
-              screentime_LT: Int
-              screentime_LTE: Int
-              screentime_NOT: Int
-              screentime_NOT_IN: [Int]
-            }
-
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
@@ -534,7 +511,7 @@ describe("Connect Or Create", () => {
             }
 
             input ActorMoviesConnectFieldInput {
-              edge: ActedInCreateInput!
+              edge: ActorMoviesRelationshipCreateInput!
               where: MovieConnectWhere
             }
 
@@ -562,14 +539,14 @@ describe("Connect Or Create", () => {
             input ActorMoviesConnectionWhere {
               AND: [ActorMoviesConnectionWhere!]
               OR: [ActorMoviesConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: ActorMoviesRelationshipWhere
+              edge_NOT: ActorMoviesRelationshipWhere
               node: MovieWhere
               node_NOT: MovieWhere
             }
 
             input ActorMoviesCreateFieldInput {
-              edge: ActedInCreateInput!
+              edge: ActorMoviesRelationshipCreateInput!
               node: MovieCreateInput!
             }
 
@@ -687,6 +664,34 @@ describe("Connect Or Create", () => {
               cursor: String!
               node: Movie!
               screentime: Int!
+            }
+
+            input ActorMoviesRelationshipCreateInput {
+              characterName: String
+              screentime: Int!
+            }
+
+            input ActorMoviesRelationshipWhere {
+              AND: [ActorMoviesRelationshipWhere!]
+              OR: [ActorMoviesRelationshipWhere!]
+              characterName: String
+              characterName_CONTAINS: String
+              characterName_ENDS_WITH: String
+              characterName_IN: [String]
+              characterName_NOT: String
+              characterName_NOT_CONTAINS: String
+              characterName_NOT_ENDS_WITH: String
+              characterName_NOT_IN: [String]
+              characterName_NOT_STARTS_WITH: String
+              characterName_STARTS_WITH: String
+              screentime: Int
+              screentime_GT: Int
+              screentime_GTE: Int
+              screentime_IN: [Int]
+              screentime_LT: Int
+              screentime_LTE: Int
+              screentime_NOT: Int
+              screentime_NOT_IN: [Int]
             }
 
             input ActorMoviesUpdateConnectionInput {

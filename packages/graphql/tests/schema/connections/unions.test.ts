@@ -96,21 +96,21 @@ describe("Unions", () => {
 
             input AuthorPublicationsBookConnectFieldInput {
               connect: [BookConnectInput!]
-              edge: WroteCreateInput!
+              edge: AuthorPublicationsRelationshipCreateInput!
               where: BookConnectWhere
             }
 
             input AuthorPublicationsBookConnectionWhere {
               AND: [AuthorPublicationsBookConnectionWhere!]
               OR: [AuthorPublicationsBookConnectionWhere!]
-              edge: WroteWhere
-              edge_NOT: WroteWhere
+              edge: AuthorPublicationsRelationshipWhere
+              edge_NOT: AuthorPublicationsRelationshipWhere
               node: BookWhere
               node_NOT: BookWhere
             }
 
             input AuthorPublicationsBookCreateFieldInput {
-              edge: WroteCreateInput!
+              edge: AuthorPublicationsRelationshipCreateInput!
               node: BookCreateInput!
             }
 
@@ -157,8 +157,8 @@ describe("Unions", () => {
             input AuthorPublicationsConnectionBookWhere {
               AND: [AuthorPublicationsConnectionBookWhere]
               OR: [AuthorPublicationsConnectionBookWhere]
-              edge: WroteWhere
-              edge_NOT: WroteWhere
+              edge: AuthorPublicationsRelationshipWhere
+              edge_NOT: AuthorPublicationsRelationshipWhere
               node: BookWhere
               node_NOT: BookWhere
             }
@@ -166,8 +166,8 @@ describe("Unions", () => {
             input AuthorPublicationsConnectionJournalWhere {
               AND: [AuthorPublicationsConnectionJournalWhere]
               OR: [AuthorPublicationsConnectionJournalWhere]
-              edge: WroteWhere
-              edge_NOT: WroteWhere
+              edge: AuthorPublicationsRelationshipWhere
+              edge_NOT: AuthorPublicationsRelationshipWhere
               node: JournalWhere
               node_NOT: JournalWhere
             }
@@ -203,21 +203,21 @@ describe("Unions", () => {
 
             input AuthorPublicationsJournalConnectFieldInput {
               connect: [JournalConnectInput!]
-              edge: WroteCreateInput!
+              edge: AuthorPublicationsRelationshipCreateInput!
               where: JournalConnectWhere
             }
 
             input AuthorPublicationsJournalConnectionWhere {
               AND: [AuthorPublicationsJournalConnectionWhere!]
               OR: [AuthorPublicationsJournalConnectionWhere!]
-              edge: WroteWhere
-              edge_NOT: WroteWhere
+              edge: AuthorPublicationsRelationshipWhere
+              edge_NOT: AuthorPublicationsRelationshipWhere
               node: JournalWhere
               node_NOT: JournalWhere
             }
 
             input AuthorPublicationsJournalCreateFieldInput {
-              edge: WroteCreateInput!
+              edge: AuthorPublicationsRelationshipCreateInput!
               node: JournalCreateInput!
             }
 
@@ -254,6 +254,23 @@ describe("Unions", () => {
               cursor: String!
               node: Publication!
               words: Int!
+            }
+
+            input AuthorPublicationsRelationshipCreateInput {
+              words: Int!
+            }
+
+            input AuthorPublicationsRelationshipWhere {
+              AND: [AuthorPublicationsRelationshipWhere!]
+              OR: [AuthorPublicationsRelationshipWhere!]
+              words: Int
+              words_GT: Int
+              words_GTE: Int
+              words_IN: [Int]
+              words_LT: Int
+              words_LTE: Int
+              words_NOT: Int
+              words_NOT_IN: [Int]
             }
 
             input AuthorPublicationsUpdateInput {
@@ -332,7 +349,7 @@ describe("Unions", () => {
 
             input BookAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
-              edge: WroteCreateInput!
+              edge: BookAuthorRelationshipCreateInput!
               where: AuthorConnectWhere
             }
 
@@ -350,14 +367,14 @@ describe("Unions", () => {
             input BookAuthorConnectionWhere {
               AND: [BookAuthorConnectionWhere!]
               OR: [BookAuthorConnectionWhere!]
-              edge: WroteWhere
-              edge_NOT: WroteWhere
+              edge: BookAuthorRelationshipWhere
+              edge_NOT: BookAuthorRelationshipWhere
               node: AuthorWhere
               node_NOT: AuthorWhere
             }
 
             input BookAuthorCreateFieldInput {
-              edge: WroteCreateInput!
+              edge: BookAuthorRelationshipCreateInput!
               node: AuthorCreateInput!
             }
 
@@ -437,6 +454,23 @@ describe("Unions", () => {
               words: Int!
             }
 
+            input BookAuthorRelationshipCreateInput {
+              words: Int!
+            }
+
+            input BookAuthorRelationshipWhere {
+              AND: [BookAuthorRelationshipWhere!]
+              OR: [BookAuthorRelationshipWhere!]
+              words: Int
+              words_GT: Int
+              words_GTE: Int
+              words_IN: [Int]
+              words_LT: Int
+              words_LTE: Int
+              words_NOT: Int
+              words_NOT_IN: [Int]
+            }
+            
             input BookAuthorUpdateConnectionInput {
               edge: WroteUpdateInput
               node: AuthorUpdateInput
@@ -587,7 +621,7 @@ describe("Unions", () => {
 
             input JournalAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
-              edge: WroteCreateInput!
+              edge: JournalAuthorRelationshipCreateInput!
               where: AuthorConnectWhere
             }
 
@@ -605,14 +639,14 @@ describe("Unions", () => {
             input JournalAuthorConnectionWhere {
               AND: [JournalAuthorConnectionWhere!]
               OR: [JournalAuthorConnectionWhere!]
-              edge: WroteWhere
-              edge_NOT: WroteWhere
+              edge: JournalAuthorRelationshipWhere
+              edge_NOT: JournalAuthorRelationshipWhere
               node: AuthorWhere
               node_NOT: AuthorWhere
             }
 
             input JournalAuthorCreateFieldInput {
-              edge: WroteCreateInput!
+              edge: JournalAuthorRelationshipCreateInput!
               node: AuthorCreateInput!
             }
 
@@ -690,6 +724,23 @@ describe("Unions", () => {
               cursor: String!
               node: Author!
               words: Int!
+            }
+
+            input JournalAuthorRelationshipCreateInput {
+              words: Int!
+            }
+
+            input JournalAuthorRelationshipWhere {
+              AND: [JournalAuthorRelationshipWhere!]
+              OR: [JournalAuthorRelationshipWhere!]
+              words: Int
+              words_GT: Int
+              words_GTE: Int
+              words_IN: [Int]
+              words_LT: Int
+              words_LTE: Int
+              words_NOT: Int
+              words_NOT_IN: [Int]
             }
 
             input JournalAuthorUpdateConnectionInput {
@@ -851,29 +902,12 @@ describe("Unions", () => {
               words: Int!
             }
 
-            input WroteCreateInput {
-              words: Int!
-            }
-
             input WroteSort {
               words: SortDirection
             }
 
             input WroteUpdateInput {
               words: Int
-            }
-
-            input WroteWhere {
-              AND: [WroteWhere!]
-              OR: [WroteWhere!]
-              words: Int
-              words_GT: Int
-              words_GTE: Int
-              words_IN: [Int]
-              words_LT: Int
-              words_LTE: Int
-              words_NOT: Int
-              words_NOT_IN: [Int]
             }
             "
         `);

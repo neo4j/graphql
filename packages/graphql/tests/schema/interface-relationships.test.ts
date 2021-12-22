@@ -73,19 +73,6 @@ describe("Interface Relationships", () => {
               screenTime: Int
             }
 
-            input ActedInWhere {
-              AND: [ActedInWhere!]
-              OR: [ActedInWhere!]
-              screenTime: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int]
-              screenTime_LT: Int
-              screenTime_LTE: Int
-              screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
-            }
-
             type Actor {
               actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
               actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
@@ -110,8 +97,8 @@ describe("Interface Relationships", () => {
             input ActorActedInConnectionWhere {
               AND: [ActorActedInConnectionWhere!]
               OR: [ActorActedInConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: ActorActedInRelationshipWhere
+              edge_NOT: ActorActedInRelationshipWhere
               node: ProductionWhere
               node_NOT: ProductionWhere
             }
@@ -138,6 +125,19 @@ describe("Interface Relationships", () => {
               cursor: String!
               node: Production!
               screenTime: Int!
+            }
+
+            input ActorActedInRelationshipWhere {
+              AND: [ActorActedInRelationshipWhere!]
+              OR: [ActorActedInRelationshipWhere!]
+              screenTime: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_IN: [Int]
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_NOT: Int
+              screenTime_NOT_IN: [Int]
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -538,19 +538,6 @@ describe("Interface Relationships", () => {
               screenTime: Int
             }
 
-            input ActedInWhere {
-              AND: [ActedInWhere!]
-              OR: [ActedInWhere!]
-              screenTime: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int]
-              screenTime_LT: Int
-              screenTime_LTE: Int
-              screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
-            }
-
             type Actor {
               actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
               actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
@@ -576,8 +563,8 @@ describe("Interface Relationships", () => {
             input ActorActedInConnectionWhere {
               AND: [ActorActedInConnectionWhere!]
               OR: [ActorActedInConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: ActorActedInRelationshipWhere
+              edge_NOT: ActorActedInRelationshipWhere
               node: ProductionWhere
               node_NOT: ProductionWhere
             }
@@ -606,6 +593,19 @@ describe("Interface Relationships", () => {
               cursor: String!
               node: Production!
               screenTime: Int!
+            }
+
+            input ActorActedInRelationshipWhere {
+              AND: [ActorActedInRelationshipWhere!]
+              OR: [ActorActedInRelationshipWhere!]
+              screenTime: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_IN: [Int]
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_NOT: Int
+              screenTime_NOT_IN: [Int]
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -1134,7 +1134,7 @@ describe("Interface Relationships", () => {
 
             input ProductionActorsConnectFieldInput {
               connect: [ActorConnectInput!]
-              edge: ActedInCreateInput!
+              edge: ProductionActorsRelationshipCreateInput!
               where: ActorConnectWhere
             }
 
@@ -1152,14 +1152,14 @@ describe("Interface Relationships", () => {
             input ProductionActorsConnectionWhere {
               AND: [ProductionActorsConnectionWhere!]
               OR: [ProductionActorsConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: ProductionActorsRelationshipWhere
+              edge_NOT: ProductionActorsRelationshipWhere
               node: ActorWhere
               node_NOT: ActorWhere
             }
 
             input ProductionActorsCreateFieldInput {
-              edge: ActedInCreateInput!
+              edge: ProductionActorsRelationshipCreateInput!
               node: ActorCreateInput!
             }
 
@@ -1237,6 +1237,23 @@ describe("Interface Relationships", () => {
               cursor: String!
               node: Actor!
               screenTime: Int!
+            }
+
+            input ProductionActorsRelationshipCreateInput {
+              screenTime: Int!
+            }
+
+            input ProductionActorsRelationshipWhere {
+              AND: [ProductionActorsRelationshipWhere!]
+              OR: [ProductionActorsRelationshipWhere!]
+              screenTime: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_IN: [Int]
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_NOT: Int
+              screenTime_NOT_IN: [Int]
             }
 
             input ProductionActorsUpdateConnectionInput {

@@ -1,6 +1,7 @@
 import { GraphQLResolveInfo } from "graphql";
 import { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { Node, Relationship } from "../classes";
+import { RELATIONSHIP_TYPE_FIELD } from "../constants";
 import { ConnectionField, ConnectionQueryArgs } from "../types";
 import { ObjectFields } from "./get-obj-field-meta";
 import { connectionFieldResolver } from "./pagination";
@@ -49,14 +50,25 @@ function createConnectionFields({
             });
         });
 
-        if (connectionField.relationship.properties && !connectionField.relationship.union) {
-            const propertiesInterface = schemaComposer.getIFTC(connectionField.relationship.properties);
-            relationship.addInterface(propertiesInterface);
-            relationship.addFields(propertiesInterface.getFields());
+        if (
+            (connectionField.relationship.multiple || connectionField.relationship.properties) &&
+            !connectionField.relationship.union
+        ) {
+            if (connectionField.relationship.properties) {
+                const propertiesInterface = schemaComposer.getIFTC(connectionField.relationship.properties);
+                relationship.addInterface(propertiesInterface);
+                relationship.addFields(propertiesInterface.getFields());
+            }
+
+            if (connectionField.relationship.multiple) {
+                relationship.addFields({
+                    [RELATIONSHIP_TYPE_FIELD]: `${connectionField.relationshipTypeName}Type!`,
+                });
+            }
 
             connectionWhere.addFields({
-                edge: `${connectionField.relationship.properties}Where`,
-                edge_NOT: `${connectionField.relationship.properties}Where`,
+                edge: `${connectionField.relationshipTypeName}Where`,
+                edge_NOT: `${connectionField.relationshipTypeName}Where`,
             });
         }
 
@@ -96,8 +108,8 @@ function createConnectionFields({
                 relationship.addFields(propertiesInterface.getFields());
 
                 connectionWhere.addFields({
-                    edge: `${connectionField.relationship.properties}Where`,
-                    edge_NOT: `${connectionField.relationship.properties}Where`,
+                    edge: `${connectionField.relationshipTypeName}Where`,
+                    edge_NOT: `${connectionField.relationshipTypeName}Where`,
                 });
             }
         } else if (connectionField.relationship.union) {
@@ -118,14 +130,21 @@ function createConnectionFields({
                     node_NOT: `${n.name}Where`,
                 });
 
-                if (connectionField.relationship.properties) {
-                    const propertiesInterface = schemaComposer.getIFTC(connectionField.relationship.properties);
-                    relationship.addInterface(propertiesInterface);
-                    relationship.addFields(propertiesInterface.getFields());
+                if (connectionField.relationship.multiple || connectionField.relationship.properties) {
+                    if (connectionField.relationship.multiple) {
+                        relationship.addFields({
+                            [RELATIONSHIP_TYPE_FIELD]: `${connectionField.relationshipTypeName}Type`,
+                        });
+                    }
+                    if (connectionField.relationship.properties) {
+                        const propertiesInterface = schemaComposer.getIFTC(connectionField.relationship.properties);
+                        relationship.addInterface(propertiesInterface);
+                        relationship.addFields(propertiesInterface.getFields());
+                    }
 
                     unionWhere.addFields({
-                        edge: `${connectionField.relationship.properties}Where`,
-                        edge_NOT: `${connectionField.relationship.properties}Where`,
+                        edge: `${connectionField.relationshipTypeName}Where`,
+                        edge_NOT: `${connectionField.relationshipTypeName}Where`,
                     });
                 }
 

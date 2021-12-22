@@ -6,7 +6,12 @@ import {
     upperFirst,
 } from "graphql-compose";
 import { Node } from "../../classes";
-import { WHERE_AGGREGATION_AVERAGE_TYPES, WHERE_AGGREGATION_OPERATORS, WHERE_AGGREGATION_TYPES } from "../../constants";
+import {
+    RELATIONSHIP_TYPE_FIELD,
+    WHERE_AGGREGATION_AVERAGE_TYPES,
+    WHERE_AGGREGATION_OPERATORS,
+    WHERE_AGGREGATION_TYPES,
+} from "../../constants";
 import { BaseField, RelationField } from "../../types";
 import { ObjectFields } from "../get-obj-field-meta";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
@@ -32,10 +37,10 @@ function createRelationshipFields({
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
     const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
 
-    let nodeConnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
-    let nodeDeleteInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
-    let nodeDisconnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
-    let nodeRelationInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
+    let nodeConnectInput: InputTypeComposer;
+    let nodeDeleteInput: InputTypeComposer;
+    let nodeDisconnectInput: InputTypeComposer;
+    let nodeRelationInput: InputTypeComposer;
 
     if (relationshipFields.length) {
         [nodeConnectInput, nodeDeleteInput, nodeDisconnectInput, nodeRelationInput] = [
@@ -47,31 +52,102 @@ function createRelationshipFields({
     }
 
     relationshipFields.forEach((rel) => {
+        const upperNodeName = upperFirst(sourceName);
+        const upperFieldName = upperFirst(rel.fieldName);
+        const typePrefix = `${upperNodeName}${upperFieldName}`;
+
+        /**
+         * An enum holding each type defined in `@relationship`
+         */
+        const nodeFieldRelationshipEnum = schemaComposer.createEnumTC({
+            name: `${typePrefix}RelationshipType`,
+            values: rel.types.reduce(
+                (res, type) => ({
+                    ...res,
+                    [type]: {
+                        value: type,
+                    },
+                }),
+                {}
+            ),
+        });
+
         let hasNonGeneratedProperties = false;
         let hasNonNullNonGeneratedProperties = false;
         let anyNonNullRelProperties = false;
         let relFields: ObjectFields | undefined;
 
-        if (rel.properties) {
-            relFields = relationshipPropertyFields.get(rel.properties);
+        let edgeCreate: string;
+        let edgeWhere: string;
 
-            if (relFields) {
-                const nonGeneratedProperties = [
-                    ...relFields.primitiveFields.filter((field) => !field.autogenerate),
-                    ...relFields.scalarFields,
-                    ...relFields.enumFields,
-                    ...relFields.temporalFields.filter((field) => !field.timestamps),
-                    ...relFields.pointFields,
-                ];
-                hasNonGeneratedProperties = nonGeneratedProperties.length > 0;
-                hasNonNullNonGeneratedProperties = nonGeneratedProperties.some((field) => field.typeMeta.required);
-                anyNonNullRelProperties = [
-                    ...relFields.primitiveFields,
-                    ...relFields.scalarFields,
-                    ...relFields.enumFields,
-                    ...relFields.temporalFields,
-                    ...relFields.pointFields,
-                ].some((field) => field.typeMeta.required);
+        if (rel.multiple || rel.properties) {
+            let requireCreate = false;
+            const prefix = `${typePrefix}Relationship`;
+            const edgeCreateInput = schemaComposer.createInputTC({
+                name: `${prefix}CreateInput`,
+                fields: {},
+            });
+            const edgeWhereInput = schemaComposer.createInputTC({
+                name: `${prefix}Where`,
+                fields: {},
+            });
+
+            if (rel.multiple) {
+                // Require edge create to determine type
+                edgeWhereInput.addFields({
+                    [RELATIONSHIP_TYPE_FIELD]: nodeFieldRelationshipEnum.getTypeName(),
+                });
+                edgeCreateInput.addFields({
+                    [RELATIONSHIP_TYPE_FIELD]: `${nodeFieldRelationshipEnum.getTypeName()}!`,
+                });
+                requireCreate = true;
+            }
+            if (rel.properties) {
+                relFields = relationshipPropertyFields.get(rel.properties);
+
+                if (relFields) {
+                    const nonGeneratedProperties = [
+                        ...relFields.primitiveFields.filter((field) => !field.autogenerate),
+                        ...relFields.scalarFields,
+                        ...relFields.enumFields,
+                        ...relFields.temporalFields.filter((field) => !field.timestamps),
+                        ...relFields.pointFields,
+                    ];
+
+                    hasNonGeneratedProperties = nonGeneratedProperties.length > 0;
+                    if (hasNonGeneratedProperties) {
+                        edgeCreateInput.addFields(
+                            nonGeneratedProperties.reduce(
+                                (res, f) => ({
+                                    ...res,
+                                    [f.fieldName]: f.typeMeta.input.create.pretty,
+                                }),
+                                {}
+                            )
+                        );
+                    }
+                    hasNonNullNonGeneratedProperties = nonGeneratedProperties.some((field) => field.typeMeta.required);
+                    anyNonNullRelProperties = [
+                        ...relFields.primitiveFields,
+                        ...relFields.scalarFields,
+                        ...relFields.enumFields,
+                        ...relFields.temporalFields,
+                        ...relFields.pointFields,
+                    ].some((field) => field.typeMeta.required);
+                    if (hasNonNullNonGeneratedProperties) {
+                        requireCreate = true;
+                    }
+                }
+                edgeWhereInput.addFields({
+                    AND: `[${prefix}Where!]`,
+                    OR: `[${prefix}Where!]`,
+                    ...schemaComposer.getITC(`${rel.properties}Where`).removeField(["AND", "OR"]).getFields(),
+                });
+            }
+            edgeWhere = edgeWhereInput.getTypeName();
+            // Only create edge if any fields are added, i.e. RELATION_TYPE or nonGeneratedProperties
+            if (edgeCreateInput.getFieldNames().length) {
+                edgeCreate = `${edgeCreateInput.getTypeName()}${requireCreate ? "!" : ""}`;
             }
         }
 
@@ -239,10 +315,6 @@ function createRelationshipFields({
                 },
             });
 
-            const upperFieldName = upperFirst(rel.fieldName);
-            const upperNodeName = upperFirst(sourceName);
-            const typePrefix = `${upperNodeName}${upperFieldName}`;
-
             const [unionConnectInput, unionCreateInput, unionDeleteInput, unionDisconnectInput, unionUpdateInput] = [
                 "Connect",
                 "Create",
@@ -282,13 +354,7 @@ function createRelationshipFields({
                         name: createName,
                         fields: {
                             node: `${n.name}CreateInput!`,
-                            ...(hasNonGeneratedProperties
-                                ? {
-                                      edge: `${rel.properties}CreateInput${
-                                          hasNonNullNonGeneratedProperties ? `!` : ""
-                                      }`,
-                                  }
-                                : {}),
+                            ...(edgeCreate ? { edge: edgeCreate } : {}),
                         },
                     });
 
@@ -325,13 +391,7 @@ function createRelationshipFields({
                                           : `${n.name}ConnectInput`,
                                   }
                                 : {}),
-                            ...(hasNonGeneratedProperties
-                                ? {
-                                      edge: `${rel.properties}CreateInput${
-                                          hasNonNullNonGeneratedProperties ? `!` : ""
-                                      }`,
-                                  }
-                                : {}),
+                            ...(edgeCreate ? { edge: edgeCreate } : {}),
                         },
                     });
 
@@ -403,10 +463,10 @@ function createRelationshipFields({
                         node_NOT: `${n.name}Where`,
                         AND: `[${whereName}!]`,
                         OR: `[${whereName}!]`,
-                        ...(rel.properties
+                        ...(edgeWhere
                             ? {
-                                  edge: `${rel.properties}Where`,
-                                  edge_NOT: `${rel.properties}Where`,
+                                  edge: edgeWhere,
+                                  edge_NOT: edgeWhere,
                               }
                             : {}),
                     },
@@ -644,9 +704,7 @@ function createRelationshipFields({
         schemaComposer.getOrCreateITC(createName, (tc) => {
             tc.addFields({
                 node: `${n.name}CreateInput!`,
-                ...(hasNonGeneratedProperties
-                    ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
-                    : {}),
+                ...(edgeCreate ? { edge: edgeCreate } : {}),
             });
         });
 
@@ -665,9 +723,7 @@ function createRelationshipFields({
                 ...(n.relationFields.length
                     ? { connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput` }
                     : {}),
-                ...(hasNonGeneratedProperties
-                    ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
-                    : {}),
+                ...(edgeCreate ? { edge: edgeCreate } : {}),
             });
         });
 

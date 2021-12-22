@@ -57,25 +57,12 @@ describe("Enums", () => {
               roleType: RoleType!
             }
 
-            input ActedInCreateInput {
-              roleType: RoleType!
-            }
-
             input ActedInSort {
               roleType: SortDirection
             }
 
             input ActedInUpdateInput {
               roleType: RoleType
-            }
-
-            input ActedInWhere {
-              AND: [ActedInWhere!]
-              OR: [ActedInWhere!]
-              roleType: RoleType
-              roleType_IN: [RoleType]
-              roleType_NOT: RoleType
-              roleType_NOT_IN: [RoleType]
             }
 
             type Actor {
@@ -133,7 +120,7 @@ describe("Enums", () => {
 
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
-              edge: ActedInCreateInput!
+              edge: ActorMoviesRelationshipCreateInput!
               where: MovieConnectWhere
             }
 
@@ -151,14 +138,14 @@ describe("Enums", () => {
             input ActorMoviesConnectionWhere {
               AND: [ActorMoviesConnectionWhere!]
               OR: [ActorMoviesConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: ActorMoviesRelationshipWhere
+              edge_NOT: ActorMoviesRelationshipWhere
               node: MovieWhere
               node_NOT: MovieWhere
             }
 
             input ActorMoviesCreateFieldInput {
-              edge: ActedInCreateInput!
+              edge: ActorMoviesRelationshipCreateInput!
               node: MovieCreateInput!
             }
 
@@ -206,6 +193,19 @@ describe("Enums", () => {
               cursor: String!
               node: Movie!
               roleType: RoleType!
+            }
+
+            input ActorMoviesRelationshipCreateInput {
+              roleType: RoleType!
+            }
+
+            input ActorMoviesRelationshipWhere {
+              AND: [ActorMoviesRelationshipWhere!]
+              OR: [ActorMoviesRelationshipWhere!]
+              roleType: RoleType
+              roleType_IN: [RoleType]
+              roleType_NOT: RoleType
+              roleType_NOT_IN: [RoleType]
             }
 
             input ActorMoviesUpdateConnectionInput {
@@ -314,7 +314,7 @@ describe("Enums", () => {
 
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
-              edge: ActedInCreateInput!
+              edge: MovieActorsRelationshipCreateInput!
               where: ActorConnectWhere
             }
 
@@ -332,14 +332,14 @@ describe("Enums", () => {
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
               OR: [MovieActorsConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: MovieActorsRelationshipWhere
+              edge_NOT: MovieActorsRelationshipWhere
               node: ActorWhere
               node_NOT: ActorWhere
             }
 
             input MovieActorsCreateFieldInput {
-              edge: ActedInCreateInput!
+              edge: MovieActorsRelationshipCreateInput!
               node: ActorCreateInput!
             }
 
@@ -387,6 +387,19 @@ describe("Enums", () => {
               cursor: String!
               node: Actor!
               roleType: RoleType!
+            }
+
+            input MovieActorsRelationshipCreateInput {
+              roleType: RoleType!
+            }
+
+            input MovieActorsRelationshipWhere {
+              AND: [MovieActorsRelationshipWhere!]
+              OR: [MovieActorsRelationshipWhere!]
+              roleType: RoleType
+              roleType_IN: [RoleType]
+              roleType_NOT: RoleType
+              roleType_NOT_IN: [RoleType]
             }
 
             input MovieActorsUpdateConnectionInput {

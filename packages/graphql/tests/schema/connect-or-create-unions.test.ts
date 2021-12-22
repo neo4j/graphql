@@ -71,19 +71,6 @@ describe("Connect Or Create", () => {
               screenTime: Int
             }
 
-            input ActedInWhere {
-              AND: [ActedInWhere!]
-              OR: [ActedInWhere!]
-              screenTime: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int]
-              screenTime_LT: Int
-              screenTime_LTE: Int
-              screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
-            }
-
             type Actor {
               actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
               actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
@@ -109,8 +96,8 @@ describe("Connect Or Create", () => {
             input ActorActedInConnectionMovieWhere {
               AND: [ActorActedInConnectionMovieWhere]
               OR: [ActorActedInConnectionMovieWhere]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: ActorActedInRelationshipWhere
+              edge_NOT: ActorActedInRelationshipWhere
               node: MovieWhere
               node_NOT: MovieWhere
             }
@@ -118,8 +105,8 @@ describe("Connect Or Create", () => {
             input ActorActedInConnectionSeriesWhere {
               AND: [ActorActedInConnectionSeriesWhere]
               OR: [ActorActedInConnectionSeriesWhere]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: ActorActedInRelationshipWhere
+              edge_NOT: ActorActedInRelationshipWhere
               node: SeriesWhere
               node_NOT: SeriesWhere
             }
@@ -154,7 +141,7 @@ describe("Connect Or Create", () => {
             }
 
             input ActorActedInMovieConnectFieldInput {
-              edge: ActedInCreateInput!
+              edge: ActorActedInRelationshipCreateInput!
               where: MovieConnectWhere
             }
 
@@ -171,14 +158,14 @@ describe("Connect Or Create", () => {
             input ActorActedInMovieConnectionWhere {
               AND: [ActorActedInMovieConnectionWhere!]
               OR: [ActorActedInMovieConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: ActorActedInRelationshipWhere
+              edge_NOT: ActorActedInRelationshipWhere
               node: MovieWhere
               node_NOT: MovieWhere
             }
 
             input ActorActedInMovieCreateFieldInput {
-              edge: ActedInCreateInput!
+              edge: ActorActedInRelationshipCreateInput!
               node: MovieCreateInput!
             }
 
@@ -217,8 +204,25 @@ describe("Connect Or Create", () => {
               screenTime: Int!
             }
 
+            input ActorActedInRelationshipCreateInput {
+              screenTime: Int!
+            }
+
+            input ActorActedInRelationshipWhere {
+              AND: [ActorActedInRelationshipWhere!]
+              OR: [ActorActedInRelationshipWhere!]
+              screenTime: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_IN: [Int]
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_NOT: Int
+              screenTime_NOT_IN: [Int]
+            }
+
             input ActorActedInSeriesConnectFieldInput {
-              edge: ActedInCreateInput!
+              edge: ActorActedInRelationshipCreateInput!
               where: SeriesConnectWhere
             }
 
@@ -235,14 +239,14 @@ describe("Connect Or Create", () => {
             input ActorActedInSeriesConnectionWhere {
               AND: [ActorActedInSeriesConnectionWhere!]
               OR: [ActorActedInSeriesConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge: ActorActedInRelationshipWhere
+              edge_NOT: ActorActedInRelationshipWhere
               node: SeriesWhere
               node_NOT: SeriesWhere
             }
 
             input ActorActedInSeriesCreateFieldInput {
-              edge: ActedInCreateInput!
+              edge: ActorActedInRelationshipCreateInput!
               node: SeriesCreateInput!
             }
 

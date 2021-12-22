@@ -20,14 +20,17 @@
 // This file should only be used for tests. As randomstring is a devDependecy
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { generate } from "randomstring";
+import { upperFirst } from "graphql-compose";
 import pluralize from "pluralize";
 import camelCase from "camelcase";
 
 export function generateUniqueType(baseName: string): TestType {
-    const type = `${generate({
-        charset: "alphabetic",
-        readable: true,
-    })}${baseName}`;
+    const type = `${upperFirst(
+        generate({
+            charset: "alphabetic",
+            readable: true,
+        })
+    )}${baseName}`;
 
     const plural = pluralize(camelCase(type));
     return {
