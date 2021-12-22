@@ -2080,7 +2080,7 @@ __metadata:
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
     faker: 5.2.0
-    graphql-compose: ^9.0.4
+    graphql-compose: 9.0.4
     graphql-parse-resolve-info: ^4.12.0
     graphql-relay: ^0.8.0
     graphql-tag: 2.11.0
@@ -9307,7 +9307,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"graphql-compose@npm:^9.0.4":
+"graphql-compose@npm:9.0.4":
   version: 9.0.4
   resolution: "graphql-compose@npm:9.0.4"
   dependencies:
