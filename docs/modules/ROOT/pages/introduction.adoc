@@ -67,6 +67,7 @@ Additionally, prerelease version numbers may have additional suffixes, for examp
   - *4.1:* 4.1.5+ with APOC 4.1.0.10+
   - *4.2:* 4.2.9+ with APOC 4.2.0.8+
   - *4.3:* 4.3.2+ with APOC 4.3.0.3+
+  - *4.4:* 4.4.0+ with APOC 4.4.0.1+
 2. https://nodejs.org/en/[Node.js] 12+
 
 == Resources
