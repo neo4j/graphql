@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: add labels
-        uses: andymckay/labeler@v1.0.4
+        uses: andymckay/labeler@v1
         with:
           add-labels: "confirmed"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
