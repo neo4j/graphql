@@ -287,7 +287,7 @@ describe("Cypher Update", () => {
             	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
             		)
             	)
             	RETURN count(*)
@@ -334,7 +334,7 @@ describe("Cypher Update", () => {
             	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
             		)
             	)
             	RETURN count(*)
@@ -346,7 +346,7 @@ describe("Cypher Update", () => {
             	WHERE this_connect_actors1_node.name = $this_connect_actors1_node_name
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_actors1_node WHEN NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
+            			MERGE (this)<-[:ACTED_IN]-(this_connect_actors1_node)
             		)
             	)
             	RETURN count(*)
@@ -565,7 +565,7 @@ describe("Cypher Update", () => {
             CREATE (this_create_movies0_node:Movie)
             SET this_create_movies0_node.id = $this_create_movies0_node_id
             SET this_create_movies0_node.title = $this_create_movies0_node_title
-            MERGE (this)-[this_create_movies0_relationship:ACTED_IN]->(this_create_movies0_node)
+            MERGE (this)-[:ACTED_IN]->(this_create_movies0_node)
             RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)   | this_movies { .id, .title } ] } AS this"
         `);
 
@@ -612,11 +612,11 @@ describe("Cypher Update", () => {
             CREATE (this_create_movies0_node:Movie)
             SET this_create_movies0_node.id = $this_create_movies0_node_id
             SET this_create_movies0_node.title = $this_create_movies0_node_title
-            MERGE (this)-[this_create_movies0_relationship:ACTED_IN]->(this_create_movies0_node)
+            MERGE (this)-[:ACTED_IN]->(this_create_movies0_node)
             CREATE (this_create_movies1_node:Movie)
             SET this_create_movies1_node.id = $this_create_movies1_node_id
             SET this_create_movies1_node.title = $this_create_movies1_node_title
-            MERGE (this)-[this_create_movies1_relationship:ACTED_IN]->(this_create_movies1_node)
+            MERGE (this)-[:ACTED_IN]->(this_create_movies1_node)
             RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)   | this_movies { .id, .title } ] } AS this"
         `);
 

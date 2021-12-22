@@ -79,9 +79,9 @@ function createConnectionAndParams({
     const elementsToCollect: string[] = [];
 
     if (relationshipProperties.length) {
-        const relationshipPropertyEntries = relationshipProperties
-            .filter((p) => p.name !== "cursor")
-            .map((v) => createRelationshipPropertyElement({ resolveTree: v, relationship, relationshipVariable }));
+        const relationshipPropertyEntries = relationshipProperties.map((v) =>
+            createRelationshipPropertyElement({ resolveTree: v, relationship, relationshipVariable })
+        );
         elementsToCollect.push(relationshipPropertyEntries.join(", "));
     }
 

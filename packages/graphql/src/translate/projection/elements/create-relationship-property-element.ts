@@ -19,6 +19,7 @@
 
 import { ResolveTree } from "graphql-parse-resolve-info";
 import Relationship from "../../../classes/Relationship";
+import { RELATIONSHIP_TYPE_FIELD } from "../../../constants";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createDatetimeElement } from "./create-datetime-element";
 import createPointElement from "./create-point-element";
@@ -32,8 +33,13 @@ function createRelationshipPropertyElement({
     relationship: Relationship;
     relationshipVariable: string;
 }): string {
+    const relationshipTypeField = resolveTree.name === RELATIONSHIP_TYPE_FIELD;
     const temporalField = relationship.temporalFields.find((f) => f.fieldName === resolveTree.name);
     const pointField = relationship.pointFields.find((f) => f.fieldName === resolveTree.name);
+
+    if (relationshipTypeField) {
+        return `${resolveTree.alias}: type(${relationshipVariable})`;
+    }
 
     if (temporalField?.typeMeta.name === "DateTime") {
         return createDatetimeElement({ resolveTree, field: temporalField, variable: relationshipVariable });

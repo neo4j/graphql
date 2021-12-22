@@ -21,7 +21,7 @@ import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, RELATIONSHIP_TYPE_FIELD } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
@@ -96,6 +96,9 @@ function createCreateAndParams({
                         const nodeName = `${baseName}_node`;
                         const propertiesName = `${baseName}_relationship`;
 
+                        const { [RELATIONSHIP_TYPE_FIELD]: relationFieldType, ...properties } = create.edge ?? {};
+                        const hasProperties = Object.keys(properties).length > 0;
+
                         const recurse = createCreateAndParams({
                             input: relationField.interface ? create.node[refNode.name] : create.node,
                             context,
@@ -108,16 +111,18 @@ function createCreateAndParams({
 
                         const inStr = relationField.direction === "IN" ? "<-" : "-";
                         const outStr = relationField.direction === "OUT" ? "->" : "-";
-                        const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
+                        const relTypeStr = `[${hasProperties ? propertiesName : ""}:${
+                            relationFieldType ?? relationField.type
+                        }]`;
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
-                        if (relationField.properties) {
+                        if (hasProperties) {
                             const relationship = (context.neoSchema.relationships.find(
                                 (x) => x.properties === relationField.properties
                             ) as unknown) as Relationship;
 
                             const setA = createSetRelationshipPropertiesAndParams({
-                                properties: create.edge ?? {},
+                                properties,
                                 varName: propertiesName,
                                 relationship,
                                 operation: "CREATE",

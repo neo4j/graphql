@@ -24,7 +24,7 @@ import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, RELATIONSHIP_TYPE_FIELD } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
@@ -248,7 +248,12 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     }${index}`;
                     const nodeName = `${baseName}_node${relationField.interface ? `_${refNode.name}` : ""}`;
                     const propertiesName = `${baseName}_relationship`;
-                    const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
+
+                    const { [RELATIONSHIP_TYPE_FIELD]: relationFieldType, ...properties } = create.edge ?? {};
+                    const hasProperties = Object.keys(properties).length > 0;
+                    const relTypeStr = `[${hasProperties ? propertiesName : ""}:${
+                        relationFieldType ?? relationField.type
+                    }]`;
 
                     const createAndParams = createCreateAndParams({
                         context,
@@ -261,13 +266,13 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     cypherParams = { ...cypherParams, ...createAndParams[1] };
                     createStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
-                    if (relationField.properties) {
+                    if (hasProperties) {
                         const relationship = (context.neoSchema.relationships.find(
                             (x) => x.properties === relationField.properties
                         ) as unknown) as Relationship;
 
                         const setA = createSetRelationshipPropertiesAndParams({
-                            properties: create.edge ?? {},
+                            properties,
                             varName: propertiesName,
                             relationship,
                             operation: "CREATE",

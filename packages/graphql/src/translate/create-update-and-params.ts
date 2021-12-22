@@ -22,7 +22,7 @@ import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, RELATIONSHIP_TYPE_FIELD } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createAuthParam from "./create-auth-param";
 import createAuthAndParams from "./create-auth-and-params";
@@ -360,6 +360,9 @@ function createUpdateAndParams({
                             const nodeName = `${baseName}_node`;
                             const propertiesName = `${baseName}_relationship`;
 
+                            const { [RELATIONSHIP_TYPE_FIELD]: relationFieldType, ...properties } = create.edge ?? {};
+                            const hasProperties = Object.keys(properties).length > 0;
+
                             const createAndParams = createCreateAndParams({
                                 context,
                                 node: refNode,
@@ -371,14 +374,14 @@ function createUpdateAndParams({
                             subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
                             subquery.push(
-                                `MERGE (${parentVar})${inStr}[${create.edge ? propertiesName : ""}:${
-                                    relationField.type
+                                `MERGE (${parentVar})${inStr}[${hasProperties ? propertiesName : ""}:${
+                                    relationFieldType ?? relationField.type
                                 }]${outStr}(${nodeName})`
                             );
 
-                            if (create.edge) {
+                            if (hasProperties) {
                                 const setA = createSetRelationshipProperties({
-                                    properties: create.edge,
+                                    properties,
                                     varName: propertiesName,
                                     relationship,
                                     operation: "CREATE",

@@ -18,6 +18,7 @@
  */
 
 import Relationship from "../../classes/Relationship";
+import { RELATIONSHIP_TYPE_FIELD } from "../../constants";
 import { GraphQLWhereArg, Context, PrimitiveField } from "../../types";
 import createFilter from "./create-filter";
 
@@ -45,6 +46,15 @@ function createRelationshipWhereAndParams({
 
     function reducer(res: Res, [key, value]: [string, GraphQLWhereArg]): Res {
         const param = `${parameterPrefix}.${key}`;
+
+        // Relationship Type
+
+        if (key === RELATIONSHIP_TYPE_FIELD) {
+            res.clauses.push(`type(${relationshipVariable}) = $${param}`);
+            return res;
+        }
+
+        // Relationship Properties
 
         const re = /(?<field>[_A-Za-z][_0-9A-Za-z]*?)(?:_(?<not>NOT))?(?:_(?<operator>INCLUDES|IN|MATCHES|CONTAINS|STARTS_WITH|ENDS_WITH|LT|GT|GTE|LTE|DISTANCE))?$/gm;
 

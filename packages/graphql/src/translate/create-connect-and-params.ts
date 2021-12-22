@@ -21,7 +21,7 @@ import { Node, Relationship } from "../classes";
 import { RelationField, Context } from "../types";
 import createWhereAndParams from "./create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, RELATIONSHIP_TYPE_FIELD } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 
 interface Res {
@@ -64,9 +64,13 @@ function createConnectAndParams({
         const baseName = `${varName}${index}`;
         const nodeName = `${baseName}_node`;
         const relationshipName = `${baseName}_relationship`;
+
+        const { [RELATIONSHIP_TYPE_FIELD]: relationFieldType, ...properties } = connect.edge ?? {};
+        const hasProperties = Object.keys(properties).length > 0;
+
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
-        const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationField.type}]`;
+        const relTypeStr = `[${hasProperties ? relationshipName : ""}:${relationFieldType ?? relationField.type}]`;
 
         const subquery: string[] = [];
         const labels = relatedNode.getLabelString(context);
@@ -202,12 +206,12 @@ function createConnectAndParams({
         subquery.push(`\t\tFOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
         subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
-        if (relationField.properties) {
+        if (hasProperties) {
             const relationship = (context.neoSchema.relationships.find(
                 (x) => x.properties === relationField.properties
             ) as unknown) as Relationship;
             const setA = createSetRelationshipPropertiesAndParams({
-                properties: connect.edge ?? {},
+                properties,
                 varName: relationshipName,
                 relationship,
                 operation: "CREATE",
