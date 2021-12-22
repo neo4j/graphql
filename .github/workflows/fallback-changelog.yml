@@ -58,7 +58,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - name: git merge
-        run: git merge --no-ff origin/release/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+        run: git merge --no-ff origin/release/$VERSION --strategy-option theirs
       - name: git push
         run: git push
 
