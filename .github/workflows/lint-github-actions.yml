@@ -1,6 +1,9 @@
 name: "Lint GitHub Actions"
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
     branches:
       - master
@@ -8,7 +11,7 @@ on:
       - ".github/workflows/**"
 
 jobs:
-  build-docs:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
