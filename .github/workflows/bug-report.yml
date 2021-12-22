@@ -15,7 +15,7 @@ jobs:
         with:
           project: Bug Triage
           column: Bug reports
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
           action: add
       - name: Add comment
         uses: peter-evans/create-or-update-comment@v1.4.5

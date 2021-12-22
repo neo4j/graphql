@@ -1,11 +1,11 @@
-name: Bug confirmed label
+name: Bug confirmed comment
 
 on:
   issues:
     types: [labeled]
 
 jobs:
-  remove_labels:
+  add_confirmed_comment:
     if: ${{ github.event.label.name == 'confirmed' }}
 
     runs-on: ubuntu-latest
