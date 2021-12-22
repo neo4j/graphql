@@ -1,0 +1,50 @@
+name: "reviewdog"
+
+on:
+  workflow_run:
+    workflows: ["Lint GitHub Actions"]
+    types:
+      - completed
+
+jobs:
+  reviewdog:
+    if: github.event.workflow_run.conclusion == 'success'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Download linting output"
+        uses: actions/github-script@v3.1.0
+        with:
+          script: |
+            var artifacts = await github.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: ${{ github.event.workflow_run.id }},
+            });
+            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "lint"
+            })[0];
+            var download = await github.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{ github.workspace }}/lint.zip', Buffer.from(download.data));
+      - run: unzip lint.zip
+      - id: get-details
+        run: |
+          commit=$(<commit)
+          pull_request=$(<pull_request)
+          echo "::set-output name=commit::$commit"
+          echo "::set-output name=pull_request::$pull_request"
+      - uses: reviewdog/action-setup@v1
+      - run: cat report | reviewdog -reporter=github-check -fail-on-error
+        env:
+          CI_PULL_REQUEST: ${{ steps.get-details.outputs.commit }}
+          CI_COMMIT: ${{ steps.get-details.outputs.pull_request }}
+          CI_REPO_OWNER: neo4j
+          CI_REPO_NAME: graphql
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}

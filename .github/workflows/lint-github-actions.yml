@@ -1,0 +1,28 @@
+name: "Lint GitHub Actions"
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/**"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create output for reviewdog
+        run: |
+          mkdir lint
+          bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          echo $(./actionlint -oneline) > ./lint/report
+          echo $(git rev-parse @) > ./lint/commit
+          echo ${{ github.event.number }} > ./lint/pull_request
+        shell: bash
+      - name: Archive linting output
+        uses: actions/upload-artifact@v2
+        with:
+          name: lint
+          path: lint/
