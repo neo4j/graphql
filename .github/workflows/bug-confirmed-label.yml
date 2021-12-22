@@ -6,14 +6,14 @@ on:
       - moved
 
 jobs:
-  remove_labels:
+  add_confirmed_label:
     if: github.event.project_card.column_id == '17295560'
 
     runs-on: ubuntu-latest
 
     steps:
       - name: add labels
-        uses: andymckay/labeler@v1
+        uses: andymckay/labeler@1.0.4
         with:
           add-labels: "confirmed"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
