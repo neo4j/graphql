@@ -32,6 +32,8 @@ class OGM<ModelMap = {}> {
 
     constructor(input: OGMConstructor) {
         const { typeDefs, ...rest } = input;
+        rest.config = rest.config || {};
+        rest.config.addInternalIdsToSchema = true;
 
         this.neoSchema = new Neo4jGraphQL({
             ...rest,

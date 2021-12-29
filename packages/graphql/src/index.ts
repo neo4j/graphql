@@ -35,6 +35,7 @@ export {
     CypherRuntime,
     CypherUpdateStrategy,
     SubscriptionFilter,
+    MutationEvent,
 } from "./types";
 export {
     Neo4jGraphQL,
@@ -42,3 +43,7 @@ export {
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLForbiddenError,
 } from "./classes";
+
+export * from './schema/resolvers/resolveSubscriptionResult';
+export * from './utils/pubsub';
+export { default as publishMutateMeta } from './utils/publish-mutate-meta';

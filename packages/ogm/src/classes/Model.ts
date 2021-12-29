@@ -17,10 +17,13 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL, upperFirst } from "@neo4j/graphql";
+import { localPubSub, Neo4jGraphQL, preProcessFilters, upperFirst, MutationEvent } from "@neo4j/graphql";
 import camelCase from "camelcase";
-import { createSourceEventStream, DocumentNode, graphql, parse, print, SelectionSetNode } from "graphql";
+import { DocumentNode, graphql, parse, print, SelectionSetNode } from "graphql";
+import { PubSubEngine } from "graphql-subscriptions";
 import pluralize from "pluralize";
+import { from, Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { DeleteInfo, GraphQLOptionsArg, GraphQLWhereArg, SubscriptionFilter } from "../types";
 
 export interface ModelConstructor {
@@ -114,15 +117,7 @@ class Model {
         return (result.data as any)[this.camelCaseName] as T;
     }
 
-    async subscribe<T>({
-        where,
-        options,
-        filter,
-        selectionSet,
-        args = {},
-        context = {},
-        rootValue = null,
-    }: {
+    observe<T>(params: {
         where?: GraphQLWhereArg;
         options?: GraphQLOptionsArg;
         filter?: SubscriptionFilter;
@@ -130,49 +125,124 @@ class Model {
         args?: any;
         context?: any;
         rootValue?: any;
-    } = {}): Promise<T> {
-        const arrDefinitions: string[] = [];
-        const arrApply: string[] = [];
-        if (where) {
-            arrDefinitions.push(`$where: ${this.name}Where`);
-            arrApply.push(`where: $where`);
+
+
+        pubsub?: 'local' | 'foreign' | PubSubEngine;
+        disableDeletedCache?: boolean;
+        disableResolve?: boolean;
+
+    } = {}) {
+        let pubsub: PubSubEngine;
+        if (typeof params.pubsub === 'object') {
+            pubsub = params.pubsub;
+        } else if (params.pubsub === 'foreign') {
+            pubsub = this.neoSchema.pubsub;
+        } else {
+            pubsub = localPubSub;
         }
 
-        if (options) {
-            arrDefinitions.push(`$options: ${this.name}Options`);
-            arrApply.push(`options: $options`);
+        if (!pubsub) { throw new Error(`Pubsub not defined.`); }
+
+        params.filter = params.filter || {};
+        params.args = params.args || {};
+
+        const types = preProcessFilters(params.filter);
+
+        const subCache = {};
+        if (types.includes('Deleted') && !params.disableDeletedCache) {
+            // Load objects now to retrieve them after they have been deleted
+            // figure out if we need to do a load of objects
+            // loadObjects(context).then().catch(() => {});
+            // TODO: load initial objects w/subcache
         }
 
-        if (filter) {
-            arrDefinitions.push(`$filter: SubscriptionFilter`);
-            arrApply.push(`filter: $filter`);
-        }
+        const iterators = types.map((ev) => `${ this.name }.${ ev }`);
 
-        let strDefinitions = '';
-        if (arrDefinitions.length) {
-            strDefinitions = ['(', ...arrDefinitions, ')'].join(' ');
-        }
+        const asyncIterator = {
+            [Symbol.asyncIterator]() {
+                return pubsub.asyncIterator<MutationEvent>(iterators);
+            },
+        } as unknown as Iterable<MutationEvent>;
 
-        let strApply = '';
-        if (arrApply.length) {
-            strApply = ['(', ...arrApply, ')'].join(' ');
-        }
+        return from(asyncIterator)
+            .pipe(map(async (value) => {
+                const argsDef = `(
+                    $where: ${ this.name }Where
+                )`;
 
-        const selection = printSelectionSet(selectionSet || this.selectionSet);
+                const argsApply = `(
+                    where: $where
+                )`;
+        
+                const selection = printSelectionSet(params.selectionSet || this.selectionSet);
+        
+                const query = `
+                    query ${ argsDef }{
+                        ${this.camelCaseName}${ argsApply } ${selection}
+                    }
+                `;
 
-        const query = `
-            subscription ${strDefinitions}{
-                ${this.camelCaseName}${strApply} ${selection}
-            }
-        `;
+                const variableValues = {
+                    where: { _id: value.id },
+                };
 
-        const variableValues = { where, options, filter, ...args };
-        context.useLocalPubsub = true;
+                const result = await graphql(this.neoSchema.schema, query, undefined, params.context, variableValues);
+                console.log(result);
+                return value;
+            }));
 
-        // const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
-        const result = await createSourceEventStream(this.neoSchema.schema, parse(query), rootValue, context, variableValues);
-        // result.
-        return result as any;
+        // const subject = new Subject();
+
+        // // (Symbol as any).asyncIterator = Symbol.asyncIterator || Symbol.for('Symbol.asyncIterator');
+        // for await (let payload of asyncIterator) {
+        //     console.log(payload);
+        // }
+
+        // return subject.asObservable();
+
+
+        // const arrDefinitions: string[] = [];
+        // const arrApply: string[] = [];
+        // if (where) {
+        //     arrDefinitions.push(`$where: ${this.name}Where`);
+        //     arrApply.push(`where: $where`);
+        // }
+
+        // if (options) {
+        //     arrDefinitions.push(`$options: ${this.name}Options`);
+        //     arrApply.push(`options: $options`);
+        // }
+
+        // if (filter) {
+        //     arrDefinitions.push(`$filter: SubscriptionFilter`);
+        //     arrApply.push(`filter: $filter`);
+        // }
+
+        // let strDefinitions = '';
+        // if (arrDefinitions.length) {
+        //     strDefinitions = ['(', ...arrDefinitions, ')'].join(' ');
+        // }
+
+        // let strApply = '';
+        // if (arrApply.length) {
+        //     strApply = ['(', ...arrApply, ')'].join(' ');
+        // }
+
+        // const selection = printSelectionSet(selectionSet || this.selectionSet);
+
+        // const query = `
+        //     subscription ${strDefinitions}{
+        //         ${this.camelCaseName}${strApply} ${selection}
+        //     }
+        // `;
+
+        // const variableValues = { where, options, filter, ...args };
+        // context.useLocalPubsub = true;
+
+        // // const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
+        // const result = await createSourceEventStream(this.neoSchema.schema, parse(query), rootValue, context, variableValues);
+        // // result.
+        // return result as any;
 
         // if (result.errors?.length) {
         //     throw new Error(result.errors[0].message);

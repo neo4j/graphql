@@ -94,7 +94,7 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
 
                 context.resolveTree = resolveNodeFieldFromSubscriptionResponseAndAddInternalID(node, context.resolveTree);
 
-                const types = preProcessFilters(args);
+                const types = preProcessFilters(args.filter);
 
                 if (types.includes('Deleted')) {
                     // Load objects now to retrieve them after they have been deleted

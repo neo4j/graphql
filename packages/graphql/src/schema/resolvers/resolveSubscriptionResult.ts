@@ -18,29 +18,28 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { SubscriptionFilter } from "../..";
 import { Node } from "../../classes";
-import { MutationMetaType, MutationSubscriptionResult } from "../../types";
+import { MutationMetaType, MutationSubscriptionResult, SubscriptionFilter } from "../../types";
 
 export function preProcessFilters(
-    args: { filter: SubscriptionFilter },
+    filter: SubscriptionFilter,
 ) {
     
     let types: MutationMetaType[] = [ 'Updated', 'Created', 'Deleted', 'Connected', 'Disconnected' ];
     // We can use the provided input in our asyncIterator because
     // it is validated by the graphql enum "NodeUpdatedType"
-    if (args?.filter?.type) {
-        types = [ args.filter.type ];
-    } else if (args?.filter?.type_IN) {
-        types = args.filter.type_IN;
-    } else if (args?.filter?.type_NOT) {
-        types = types.filter((t) => args.filter.type_NOT !== t);
-    } else if (args?.filter?.type_NOT_IN) {
-        types = types.filter((t) => !args.filter.type_NOT_IN?.includes(t));
-    } else if (args?.filter?.type_UNDEFINED !== undefined) {
+    if (filter?.type) {
+        types = [ filter.type ];
+    } else if (filter?.type_IN) {
+        types = filter.type_IN;
+    } else if (filter?.type_NOT) {
+        types = types.filter((t) => filter.type_NOT !== t);
+    } else if (filter?.type_NOT_IN) {
+        types = types.filter((t) => !filter.type_NOT_IN?.includes(t));
+    } else if (filter?.type_UNDEFINED !== undefined) {
         // This is essentially pointless (no results would be returned)
         // but it's here for consistency
-        types = args?.filter?.type_UNDEFINED ? [] : types;
+        types = filter?.type_UNDEFINED ? [] : types;
     } else {
         types = [ 'Updated', 'Created' ];
     }
