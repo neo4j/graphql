@@ -180,6 +180,27 @@ describe("generate", () => {
             export type User = {
               __typename?: \\"User\\";
               name?: Maybe<Scalars[\\"String\\"]>;
+              /**
+               * **Neo4j Internal ID**
+               *
+               * WARNING:
+               * Neo4j reuses its internal ids when nodes and relationships
+               * are deleted. This means that applications using, and relying
+               * on internal Neo4j ids, are brittle or at risk of making mistakes.
+               * It is therefore recommended to rather use application-generated ids.
+               *
+               *
+               * _id should only be used in conjunction with subscriptions.
+               *
+               *
+               *
+               * Disable this property by setting \`config.addInternalIdsToSchema\` to false.
+               *
+               *
+               *
+               * Reference: https://neo4j.com/docs/cypher-manual/current/clauses/match/#match-node-by-id
+               */
+              _id: Scalars[\\"Int\\"];
             };
 
             export type UserAggregateSelection = {
@@ -261,6 +282,7 @@ describe("generate", () => {
             };
 
             export type UserWhere = {
+              _id?: Maybe<Scalars[\\"Int\\"]>;
               OR?: Maybe<Array<UserWhere>>;
               AND?: Maybe<Array<UserWhere>>;
               name?: Maybe<Scalars[\\"String\\"]>;
@@ -488,6 +510,27 @@ describe("generate", () => {
             export type User = {
               __typename?: \\"User\\";
               name?: Maybe<Scalars[\\"String\\"]>;
+              /**
+               * **Neo4j Internal ID**
+               *
+               * WARNING:
+               * Neo4j reuses its internal ids when nodes and relationships
+               * are deleted. This means that applications using, and relying
+               * on internal Neo4j ids, are brittle or at risk of making mistakes.
+               * It is therefore recommended to rather use application-generated ids.
+               *
+               *
+               * _id should only be used in conjunction with subscriptions.
+               *
+               *
+               *
+               * Disable this property by setting \`config.addInternalIdsToSchema\` to false.
+               *
+               *
+               *
+               * Reference: https://neo4j.com/docs/cypher-manual/current/clauses/match/#match-node-by-id
+               */
+              _id: Scalars[\\"Int\\"];
             };
 
             export type UserAggregateSelection = {
@@ -578,6 +621,7 @@ describe("generate", () => {
             };
 
             export type UserWhere = {
+              _id?: Maybe<Scalars[\\"Int\\"]>;
               OR?: Maybe<Array<UserWhere>>;
               AND?: Maybe<Array<UserWhere>>;
               name?: Maybe<Scalars[\\"String\\"]>;
@@ -814,6 +858,27 @@ describe("generate", () => {
             export type User = {
               __typename?: \\"User\\";
               name?: Maybe<Scalars[\\"String\\"]>;
+              /**
+               * **Neo4j Internal ID**
+               *
+               * WARNING:
+               * Neo4j reuses its internal ids when nodes and relationships
+               * are deleted. This means that applications using, and relying
+               * on internal Neo4j ids, are brittle or at risk of making mistakes.
+               * It is therefore recommended to rather use application-generated ids.
+               *
+               *
+               * _id should only be used in conjunction with subscriptions.
+               *
+               *
+               *
+               * Disable this property by setting \`config.addInternalIdsToSchema\` to false.
+               *
+               *
+               *
+               * Reference: https://neo4j.com/docs/cypher-manual/current/clauses/match/#match-node-by-id
+               */
+              _id: Scalars[\\"Int\\"];
             };
 
             export type UserAggregateSelection = {
@@ -895,6 +960,7 @@ describe("generate", () => {
             };
 
             export type UserWhere = {
+              _id?: Maybe<Scalars[\\"Int\\"]>;
               OR?: Maybe<Array<UserWhere>>;
               AND?: Maybe<Array<UserWhere>>;
               name?: Maybe<Scalars[\\"String\\"]>;
@@ -1166,6 +1232,27 @@ describe("generate", () => {
             export type Movie = {
               __typename?: \\"Movie\\";
               title: Scalars[\\"String\\"];
+              /**
+               * **Neo4j Internal ID**
+               *
+               * WARNING:
+               * Neo4j reuses its internal ids when nodes and relationships
+               * are deleted. This means that applications using, and relying
+               * on internal Neo4j ids, are brittle or at risk of making mistakes.
+               * It is therefore recommended to rather use application-generated ids.
+               *
+               *
+               * _id should only be used in conjunction with subscriptions.
+               *
+               *
+               *
+               * Disable this property by setting \`config.addInternalIdsToSchema\` to false.
+               *
+               *
+               *
+               * Reference: https://neo4j.com/docs/cypher-manual/current/clauses/match/#match-node-by-id
+               */
+              _id: Scalars[\\"Int\\"];
               actors?: Maybe<Array<Maybe<Person>>>;
               actorsAggregate?: Maybe<MoviePersonActorsAggregationSelection>;
               actorsConnection: MovieActorsConnection;
@@ -1249,6 +1336,27 @@ describe("generate", () => {
             export type Person = {
               __typename?: \\"Person\\";
               name: Scalars[\\"String\\"];
+              /**
+               * **Neo4j Internal ID**
+               *
+               * WARNING:
+               * Neo4j reuses its internal ids when nodes and relationships
+               * are deleted. This means that applications using, and relying
+               * on internal Neo4j ids, are brittle or at risk of making mistakes.
+               * It is therefore recommended to rather use application-generated ids.
+               *
+               *
+               * _id should only be used in conjunction with subscriptions.
+               *
+               *
+               *
+               * Disable this property by setting \`config.addInternalIdsToSchema\` to false.
+               *
+               *
+               *
+               * Reference: https://neo4j.com/docs/cypher-manual/current/clauses/match/#match-node-by-id
+               */
+              _id: Scalars[\\"Int\\"];
             };
 
             export type PersonAggregateSelection = {
@@ -1479,6 +1587,7 @@ describe("generate", () => {
             };
 
             export type MovieWhere = {
+              _id?: Maybe<Scalars[\\"Int\\"]>;
               OR?: Maybe<Array<MovieWhere>>;
               AND?: Maybe<Array<MovieWhere>>;
               title?: Maybe<Scalars[\\"String\\"]>;
@@ -1523,6 +1632,7 @@ describe("generate", () => {
             };
 
             export type PersonWhere = {
+              _id?: Maybe<Scalars[\\"Int\\"]>;
               OR?: Maybe<Array<PersonWhere>>;
               AND?: Maybe<Array<PersonWhere>>;
               name?: Maybe<Scalars[\\"String\\"]>;

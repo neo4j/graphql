@@ -20,7 +20,7 @@
 import { FieldNode, GraphQLResolveInfo } from "graphql";
 import { SchemaComposer } from "graphql-compose";
 import { Node } from "../../classes";
-import { translateUpdate } from "../../translate";
+import translateUpdate from "../../translate/translate-update";
 import { Context } from "../../types";
 import { execute, publishMutateMeta } from "../../utils";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";

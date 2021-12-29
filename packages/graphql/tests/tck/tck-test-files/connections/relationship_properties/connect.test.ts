@@ -92,7 +92,8 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH this0, this0_actors_connect0_node, value.this0_actors_connect0_node_mutateMeta as this0_actors_connect_mutateMeta
             RETURN REDUCE(tmp1_this0_actors_connect_mutateMeta = [], tmp2_this0_actors_connect_mutateMeta IN COLLECT(this0_actors_connect_mutateMeta) | tmp1_this0_actors_connect_mutateMeta + tmp2_this0_actors_connect_mutateMeta) as this0_actors_connect_mutateMeta
             }
-            RETURN this0
+            WITH this0, this0_mutateMeta + this0_actors_connect_mutateMeta as this0_mutateMeta
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
             WITH this0, this0_mutateMeta as mutateMeta
             CALL {
@@ -164,7 +165,8 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH this0, this0_actors_connect0_node, value.this0_actors_connect0_node_mutateMeta as this0_actors_connect_mutateMeta
             RETURN REDUCE(tmp1_this0_actors_connect_mutateMeta = [], tmp2_this0_actors_connect_mutateMeta IN COLLECT(this0_actors_connect_mutateMeta) | tmp1_this0_actors_connect_mutateMeta + tmp2_this0_actors_connect_mutateMeta) as this0_actors_connect_mutateMeta
             }
-            RETURN this0
+            WITH this0, this0_mutateMeta + this0_actors_connect_mutateMeta as this0_mutateMeta
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
             WITH this0, this0_mutateMeta as mutateMeta
             CALL {
@@ -228,7 +230,7 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH this, this_connect_actors0_node, value.this_connect_actors0_node_mutateMeta as this_connect_actors_mutateMeta
             RETURN REDUCE(tmp1_this_connect_actors_mutateMeta = [], tmp2_this_connect_actors_mutateMeta IN COLLECT(this_connect_actors_mutateMeta) | tmp1_this_connect_actors_mutateMeta + tmp2_this_connect_actors_mutateMeta) as this_connect_actors_mutateMeta
             }
-            WITH this
+            WITH this, this_connect_actors_mutateMeta as mutateMeta
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -293,7 +295,7 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH this, this_connect_actors0_node, value.this_connect_actors0_node_mutateMeta as this_connect_actors_mutateMeta
             RETURN REDUCE(tmp1_this_connect_actors_mutateMeta = [], tmp2_this_connect_actors_mutateMeta IN COLLECT(this_connect_actors_mutateMeta) | tmp1_this_connect_actors_mutateMeta + tmp2_this_connect_actors_mutateMeta) as this_connect_actors_mutateMeta
             }
-            WITH this
+            WITH this, this_connect_actors_mutateMeta as mutateMeta
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)

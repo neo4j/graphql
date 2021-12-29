@@ -92,7 +92,7 @@ describe("Relationship Properties Create Cypher", () => {
             SET this0_actors0_node.name = $this0_actors0_node_name
             MERGE (this0)<-[this0_actors0_relationship:ACTED_IN]-(this0_actors0_node)
             SET this0_actors0_relationship.screenTime = $this0_actors0_relationship_screenTime
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Actor', id: id(this0_actors0_node), properties: this0_actors0_node},{type: 'Connected', name: 'Movie', relationshipName: 'ACTED_IN', toName: 'Actor', id: id(this0), relationshipID: id(this0_actors0_relationship), toID: id(this0_actors0_node), properties: this0_actors0_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
             WITH this0, this0_mutateMeta as mutateMeta
             CALL {

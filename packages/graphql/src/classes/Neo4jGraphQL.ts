@@ -17,23 +17,24 @@
  * limitations under the License.
  */
 
-import Debug from "debug";
-import { Driver } from "neo4j-driver";
-import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, printSchema, print } from "graphql";
-import { PubSub, PubSubEngine } from "graphql-subscriptions";
 import { addResolversToSchema, addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
-import type { DriverConfig, CypherQueryOptions, Context } from "../types";
-import { makeAugmentedSchema } from "../schema";
-import Node from "./Node";
-import Relationship from "./Relationship";
-import checkNeo4jCompat from "./utils/verify-database";
+import Debug from "debug";
+import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, print, printSchema } from "graphql";
+import { PubSub, PubSubEngine } from "graphql-subscriptions";
+import { Driver } from "neo4j-driver";
 import { getJWT } from "../auth";
 import { DEBUG_GRAPHQL } from "../constants";
+import { makeAugmentedSchema } from "../schema";
 import createAuthParam from "../translate/create-auth-param";
+import type { Context, CypherQueryOptions, DriverConfig } from "../types";
+import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
+import Node from "./Node";
+import Relationship from "./Relationship";
 import assertIndexesAndConstraints, {
-    AssertIndexesAndConstraintsOptions,
+    AssertIndexesAndConstraintsOptions
 } from "./utils/asserts-indexes-and-constraints";
+import checkNeo4jCompat from "./utils/verify-database";
 
 const debug = Debug(DEBUG_GRAPHQL);
 

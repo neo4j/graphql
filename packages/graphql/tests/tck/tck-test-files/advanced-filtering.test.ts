@@ -72,7 +72,7 @@ describe("Cypher Advanced Filtering", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this._id IN $this__id_IN
-            RETURN this { ._id } AS this"
+            RETURN this { _id: id(this) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
