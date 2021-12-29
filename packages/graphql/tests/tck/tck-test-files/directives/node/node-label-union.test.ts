@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Node directive with unions", () => {
@@ -75,7 +75,7 @@ describe("Node directive with unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
             WHERE this.title = $this_title
-            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"\`Category\`\\" IN labels(this_search) AND \\"\`ExtraLabel1\`\\" IN labels(this_search) AND \\"\`ExtraLabel2\`\\" IN labels(this_search)) OR (\\"\`Film\`\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"\`Category\`\\" IN labels(this_search) AND \\"\`ExtraLabel1\`\\" IN labels(this_search) AND \\"\`ExtraLabel2\`\\" IN labels(this_search)) AND this_search.name = $this_search_Genre_name | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"\`Film\`\\" IN labels(this_search)) AND this_search.title = $this_search_Movie_title | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } AS this"
+            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Category\\" IN labels(this_search) AND \\"ExtraLabel1\\" IN labels(this_search) AND \\"ExtraLabel2\\" IN labels(this_search)) OR (\\"Film\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Category\\" IN labels(this_search) AND \\"ExtraLabel1\\" IN labels(this_search) AND \\"ExtraLabel2\\" IN labels(this_search)) AND this_search.name = $this_search_Genre_name | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Film\\" IN labels(this_search)) AND this_search.title = $this_search_Movie_title | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

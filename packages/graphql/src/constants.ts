@@ -21,7 +21,6 @@ const DEBUG_PREFIX = "@neo4j/graphql";
 
 export const AUTH_FORBIDDEN_ERROR = "@neo4j/graphql/FORBIDDEN";
 export const AUTH_UNAUTHENTICATED_ERROR = "@neo4j/graphql/UNAUTHENTICATED";
-export const RELATIONSHIP_REQUIREMENT_PREFIX = "@neo4j/graphql/RELATIONSHIP-REQUIRED";
 export const MIN_VERSIONS = [
     { majorMinor: "4.1", neo4j: "4.1.5" },
     { majorMinor: "4.2", neo4j: "4.2.9" },

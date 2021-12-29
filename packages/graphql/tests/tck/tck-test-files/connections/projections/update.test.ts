@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Projections -> Update", () => {
@@ -79,7 +79,6 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
             "MATCH (this:Movie)
             WHERE this.title = $this_title
             WITH this
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)

@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Update update", () => {
@@ -92,26 +92,20 @@ describe("Interface Relationships - Update update", () => {
             WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
             SET this_actedIn0.title = $this_update_actedIn0_title
-            WITH this, this_actedIn0, this_acted_in0_relationship, [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this_actedIn0), properties: $this_update_actedIn0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this_actedIn0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this, this_actedIn0, this_acted_in0_relationship, mutateMeta
-            \\", \\"\\", {this:this, this_actedIn0:this_actedIn0, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_title:$this_update_actedIn0_title,this_update_actedIn0:$this_update_actedIn0})
-            YIELD value
-            WITH this, this_actedIn0, this_acted_in0_relationship, value.mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
+            \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_title:$this_update_actedIn0_title})
+            YIELD value as _
+            RETURN count(*)
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
             WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
             SET this_actedIn0.title = $this_update_actedIn0_title
-            WITH this, this_actedIn0, this_acted_in0_relationship, [ metaVal IN [{type: 'Updated', name: 'Series', id: id(this_actedIn0), properties: $this_update_actedIn0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this_actedIn0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDSeries.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this, this_actedIn0, this_acted_in0_relationship, mutateMeta
-            \\", \\"\\", {this:this, this_actedIn0:this_actedIn0, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_title:$this_update_actedIn0_title,this_update_actedIn0:$this_update_actedIn0})
-            YIELD value
-            WITH this, this_actedIn0, this_acted_in0_relationship, value.mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
+            \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_title:$this_update_actedIn0_title})
+            YIELD value as _
+            RETURN count(*)
             }
             WITH this, this_mutateMeta as mutateMeta
             RETURN mutateMeta, this { .name } AS this"
@@ -190,17 +184,13 @@ describe("Interface Relationships - Update update", () => {
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
             CALL apoc.do.when(this_actedIn0_actors0 IS NOT NULL, \\\\\\"
             SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name
-            RETURN this, this_actedIn0, this_acted_in0_relationship, this_actedIn0_actors0, this_actedIn0_acted_in0_relationship, [ metaVal IN [{type: 'Updated', name: 'Actor', id: id(this_actedIn0_actors0), properties: $this_update_actedIn0_actors0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, this_acted_in0_relationship:this_acted_in0_relationship, this_actedIn0_actors0:this_actedIn0_actors0, this_actedIn0_acted_in0_relationship:this_actedIn0_acted_in0_relationship, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name,this_update_actedIn0_actors0:$this_update_actedIn0_actors0})
-            YIELD value
-            WITH this, this_actedIn0, this_acted_in0_relationship, this_actedIn0_actors0, this_actedIn0_acted_in0_relationship, value.mutateMeta as mutateMeta
-            WITH this, this_actedIn0, this_acted_in0_relationship, mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this_actedIn0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this, this_actedIn0, this_acted_in0_relationship, mutateMeta
-            \\", \\"\\", {this:this, this_actedIn0:this_actedIn0, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name,this_update_actedIn0_actors0:$this_update_actedIn0_actors0})
-            YIELD value
-            WITH this, this_actedIn0, this_acted_in0_relationship, value.mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
+            \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
+            YIELD value as _
+            RETURN count(*)
+            \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
+            YIELD value as _
+            RETURN count(*)
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
@@ -211,17 +201,13 @@ describe("Interface Relationships - Update update", () => {
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
             CALL apoc.do.when(this_actedIn0_actors0 IS NOT NULL, \\\\\\"
             SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name
-            RETURN this, this_actedIn0, this_acted_in0_relationship, this_actedIn0_actors0, this_actedIn0_acted_in0_relationship, [ metaVal IN [{type: 'Updated', name: 'Actor', id: id(this_actedIn0_actors0), properties: $this_update_actedIn0_actors0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, this_acted_in0_relationship:this_acted_in0_relationship, this_actedIn0_actors0:this_actedIn0_actors0, this_actedIn0_acted_in0_relationship:this_actedIn0_acted_in0_relationship, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name,this_update_actedIn0_actors0:$this_update_actedIn0_actors0})
-            YIELD value
-            WITH this, this_actedIn0, this_acted_in0_relationship, this_actedIn0_actors0, this_actedIn0_acted_in0_relationship, value.mutateMeta as mutateMeta
-            WITH this, this_actedIn0, this_acted_in0_relationship, mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this_actedIn0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDSeries.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this, this_actedIn0, this_acted_in0_relationship, mutateMeta
-            \\", \\"\\", {this:this, this_actedIn0:this_actedIn0, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name,this_update_actedIn0_actors0:$this_update_actedIn0_actors0})
-            YIELD value
-            WITH this, this_actedIn0, this_acted_in0_relationship, value.mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
+            \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
+            YIELD value as _
+            RETURN count(*)
+            \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
+            YIELD value as _
+            RETURN count(*)
             }
             WITH this, this_mutateMeta as mutateMeta
             RETURN mutateMeta, this { .name } AS this"
@@ -305,36 +291,26 @@ describe("Interface Relationships - Update update", () => {
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
-            WITH this, this_actedIn0, this_acted_in0_relationship
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this_actedIn0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            WITH this, this_actedIn0, this_acted_in0_relationship
-            WITH this, this_actedIn0, this_acted_in0_relationship
+            WITH this, this_actedIn0
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
             CALL apoc.do.when(this_actedIn0_actors0 IS NOT NULL, \\\\\\"
             SET this_actedIn0_actors0.name = $this_update_actedIn0_on_Movie_actors0_name
-            RETURN this, this_actedIn0, this_acted_in0_relationship, this_actedIn0_actors0, this_actedIn0_acted_in0_relationship, [ metaVal IN [{type: 'Updated', name: 'Actor', id: id(this_actedIn0_actors0), properties: $this_update_actedIn0_on_Movie_actors0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, this_acted_in0_relationship:this_acted_in0_relationship, this_actedIn0_actors0:this_actedIn0_actors0, this_actedIn0_acted_in0_relationship:this_actedIn0_acted_in0_relationship, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name,this_update_actedIn0_on_Movie_actors0:$this_update_actedIn0_on_Movie_actors0})
-            YIELD value
-            WITH this, this_actedIn0, this_acted_in0_relationship, this_actedIn0_actors0, this_actedIn0_acted_in0_relationship, value.mutateMeta as mutateMeta
-            WITH this, this_actedIn0, this_acted_in0_relationship, mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this_actedIn0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this, this_actedIn0, this_acted_in0_relationship, mutateMeta
-            \\", \\"\\", {this:this, this_actedIn0:this_actedIn0, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name,this_update_actedIn0_on_Movie_actors0:$this_update_actedIn0_on_Movie_actors0})
-            YIELD value
-            WITH this, this_actedIn0, this_acted_in0_relationship, value.mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
+            \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name})
+            YIELD value as _
+            RETURN count(*)
+            \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name})
+            YIELD value as _
+            RETURN count(*)
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
             WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
-            WITH this, this_actedIn0, this_acted_in0_relationship
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this_actedIn0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDSeries.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this, this_actedIn0, this_acted_in0_relationship
-            \\", \\"\\", {this:this, this_actedIn0:this_actedIn0, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth})
-            YIELD value
-            WITH this, this_actedIn0, this_acted_in0_relationship, value.mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
+            \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth})
+            YIELD value as _
+            RETURN count(*)
             }
             WITH this, this_mutateMeta as mutateMeta
             RETURN mutateMeta, this { .name } AS this"
@@ -425,24 +401,17 @@ describe("Interface Relationships - Update update", () => {
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
-            WITH this, this_actedIn0, this_acted_in0_relationship
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this_actedIn0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            WITH this, this_actedIn0, this_acted_in0_relationship
-            WITH this, this_actedIn0, this_acted_in0_relationship
+            WITH this, this_actedIn0
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
             CALL apoc.do.when(this_actedIn0_actors0 IS NOT NULL, \\\\\\"
             SET this_actedIn0_actors0.name = $this_update_actedIn0_on_Movie_actors0_name
-            RETURN this, this_actedIn0, this_acted_in0_relationship, this_actedIn0_actors0, this_actedIn0_acted_in0_relationship, [ metaVal IN [{type: 'Updated', name: 'Actor', id: id(this_actedIn0_actors0), properties: $this_update_actedIn0_on_Movie_actors0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, this_acted_in0_relationship:this_acted_in0_relationship, this_actedIn0_actors0:this_actedIn0_actors0, this_actedIn0_acted_in0_relationship:this_actedIn0_acted_in0_relationship, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name,this_update_actedIn0_on_Movie_actors0:$this_update_actedIn0_on_Movie_actors0})
-            YIELD value
-            WITH this, this_actedIn0, this_acted_in0_relationship, this_actedIn0_actors0, this_actedIn0_acted_in0_relationship, value.mutateMeta as mutateMeta
-            WITH this, this_actedIn0, this_acted_in0_relationship, mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this_actedIn0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this, this_actedIn0, this_acted_in0_relationship, mutateMeta
-            \\", \\"\\", {this:this, this_actedIn0:this_actedIn0, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name,this_update_actedIn0_on_Movie_actors0:$this_update_actedIn0_on_Movie_actors0})
-            YIELD value
-            WITH this, this_actedIn0, this_acted_in0_relationship, value.mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
+            \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name})
+            YIELD value as _
+            RETURN count(*)
+            \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name})
+            YIELD value as _
+            RETURN count(*)
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
@@ -453,17 +422,13 @@ describe("Interface Relationships - Update update", () => {
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
             CALL apoc.do.when(this_actedIn0_actors0 IS NOT NULL, \\\\\\"
             SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name
-            RETURN this, this_actedIn0, this_acted_in0_relationship, this_actedIn0_actors0, this_actedIn0_acted_in0_relationship, [ metaVal IN [{type: 'Updated', name: 'Actor', id: id(this_actedIn0_actors0), properties: $this_update_actedIn0_actors0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, this_acted_in0_relationship:this_acted_in0_relationship, this_actedIn0_actors0:this_actedIn0_actors0, this_actedIn0_acted_in0_relationship:this_actedIn0_acted_in0_relationship, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name,this_update_actedIn0_actors0:$this_update_actedIn0_actors0})
-            YIELD value
-            WITH this, this_actedIn0, this_acted_in0_relationship, this_actedIn0_actors0, this_actedIn0_acted_in0_relationship, value.mutateMeta as mutateMeta
-            WITH this, this_actedIn0, this_acted_in0_relationship, mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this_actedIn0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDSeries.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this, this_actedIn0, this_acted_in0_relationship, mutateMeta
-            \\", \\"\\", {this:this, this_actedIn0:this_actedIn0, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name,this_update_actedIn0_actors0:$this_update_actedIn0_actors0})
-            YIELD value
-            WITH this, this_actedIn0, this_acted_in0_relationship, value.mutateMeta as this_mutateMeta
-            RETURN this_mutateMeta
+            RETURN count(*)
+            \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
+            YIELD value as _
+            RETURN count(*)
+            \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
+            YIELD value as _
+            RETURN count(*)
             }
             WITH this, this_mutateMeta as mutateMeta
             RETURN mutateMeta, this { .name } AS this"

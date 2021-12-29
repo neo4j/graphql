@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { Neo4jGraphQL } from "../classes";
 import WithProjector from "../classes/WithProjector";
 import { Context } from "../types";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test/builders/node-builder";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 
 describe("createDisconnectAndParams", () => {

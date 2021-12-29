@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql",
-    "version": "2.5.0",
+    "version": "2.5.4",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
@@ -73,7 +73,7 @@
         "debug": "^4.3.2",
         "deep-equal": "^2.0.5",
         "dot-prop": "^6.0.1",
-        "graphql-compose": "^9.0.4",
+        "graphql-compose": "9.0.4",
         "graphql-parse-resolve-info": "^4.12.0",
         "graphql-relay": "^0.8.0",
         "graphql-subscriptions": "1.2.1",

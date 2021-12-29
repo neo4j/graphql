@@ -21,7 +21,7 @@ import { Neo4jGraphQL } from "../classes";
 import WithProjector from "../classes/WithProjector";
 import { Context } from "../types";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test/builders/node-builder";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import createCreateAndParams from "./create-create-and-params";
 
 describe("createCreateAndParams", () => {

@@ -12,8 +12,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@neo4j/graphql": "^2.5.0",
-        "@neo4j/graphql-ogm": "^2.5.0",
+        "@neo4j/graphql": "^2.5.4",
+        "@neo4j/graphql-ogm": "^2.5.4",
         "apollo-server-express": "2.19.0",
         "bcrypt": "5.0.1",
         "debug": "4.3.1",

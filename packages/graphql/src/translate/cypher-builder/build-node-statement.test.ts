@@ -18,9 +18,9 @@
  */
 
 import { buildNodeStatement } from "./build-node-statement";
-import { ContextBuilder } from "../../utils/test/builders/context-builder";
 import { Context } from "../../types";
-import { NodeBuilder } from "../../utils/test/builders/node-builder";
+import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import { ContextBuilder } from "../../../tests/utils/builders/context-builder";
 
 describe("build node statement", () => {
     let context: Context;

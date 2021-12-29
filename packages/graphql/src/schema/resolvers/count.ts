@@ -16,15 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { GraphQLResolveInfo } from "graphql";
 import { execute } from "../../utils";
 import { translateCount } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
 import { isNeoInt } from "../../utils/utils";
+import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 
 export default function countResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, _args: any, _context: unknown) {
+    async function resolve(_root: any, _args: any, _context: unknown, info?: GraphQLResolveInfo) {
         const context = _context as Context;
+        if (info) {
+            // FIXME: info is always available, this is only to support unit tests at count.test.ts
+            context.resolveTree = getNeo4jResolveTree(info);
+        }
         const [cypher, params] = translateCount({ context, node });
 
         const executeResult = await execute({

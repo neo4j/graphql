@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import createConnectAndParams from "./create-connect-and-params";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { Neo4jGraphQL } from "../classes";
+import WithProjector from "../classes/WithProjector";
 import { Context } from "../types";
 import { trimmer } from "../utils";
-import WithProjector from "../classes/WithProjector";
-import { NodeBuilder } from "../utils/test/builders/node-builder";
+import createConnectAndParams from "./create-connect-and-params";
 
 describe("createConnectAndParams", () => {
     test("should return the correct connection", () => {

@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Projections -> Create", () => {
@@ -79,9 +79,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
             WITH this0, this0_mutateMeta as mutateMeta
             CALL {
@@ -128,17 +126,13 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
             WITH this0, this0_mutateMeta as mutateMeta
             CALL {
             CREATE (this1:Movie)
             SET this1.title = $this1_title
-            WITH this0, this1, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this1), properties: this1}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this1_mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this1)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this1, REDUCE(tmp1_this1_mutateMeta = [], tmp2_this1_mutateMeta IN COLLECT(this1_mutateMeta) | tmp1_this1_mutateMeta + tmp2_this1_mutateMeta) as this1_mutateMeta
+            RETURN this1
             }
             WITH this0, this1, mutateMeta + this1_mutateMeta as mutateMeta
             CALL {
@@ -192,17 +186,13 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
             WITH this0, this0_mutateMeta as mutateMeta
             CALL {
             CREATE (this1:Movie)
             SET this1.title = $this1_title
-            WITH this0, this1, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this1), properties: this1}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this1_mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this1)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this1, REDUCE(tmp1_this1_mutateMeta = [], tmp2_this1_mutateMeta IN COLLECT(this1_mutateMeta) | tmp1_this1_mutateMeta + tmp2_this1_mutateMeta) as this1_mutateMeta
+            RETURN this1
             }
             WITH this0, this1, mutateMeta + this1_mutateMeta as mutateMeta
             CALL {

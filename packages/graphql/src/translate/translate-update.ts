@@ -29,7 +29,6 @@ import createDeleteAndParams from "./create-delete-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
-import createRelationshipValidationStr from "./create-relationship-validation-str";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
@@ -73,7 +72,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             parentVar: varName,
             withProjector,
             parameterPrefix: `${resolveTree.name}.args.update`,
-            fromTopLevel: true,
         });
         const [updateStr] = updateAndParams;
         cypher.push(updateStr);
@@ -358,14 +356,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
     if (projAuth) {
         cypher.push(projAuth);
-    }
-
-    const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
-    if (relationshipValidationStr) {
-        cypher.push(
-            withProjector.nextWith(),
-            relationshipValidationStr,
-        );
     }
 
     if (nodeProjection?.fieldsByTypeName) {

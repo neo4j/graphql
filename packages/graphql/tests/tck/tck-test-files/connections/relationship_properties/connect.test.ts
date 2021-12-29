@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Relationship Properties Connect Cypher", () => {
@@ -92,10 +92,7 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH this0, this0_actors_connect0_node, value.this0_actors_connect0_node_mutateMeta as this0_actors_connect_mutateMeta
             RETURN REDUCE(tmp1_this0_actors_connect_mutateMeta = [], tmp2_this0_actors_connect_mutateMeta IN COLLECT(this0_actors_connect_mutateMeta) | tmp1_this0_actors_connect_mutateMeta + tmp2_this0_actors_connect_mutateMeta) as this0_actors_connect_mutateMeta
             }
-            WITH this0, this0_mutateMeta + this0_actors_connect_mutateMeta as this0_mutateMeta
-            WITH this0, this0_mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
             WITH this0, this0_mutateMeta as mutateMeta
             CALL {
@@ -167,10 +164,7 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH this0, this0_actors_connect0_node, value.this0_actors_connect0_node_mutateMeta as this0_actors_connect_mutateMeta
             RETURN REDUCE(tmp1_this0_actors_connect_mutateMeta = [], tmp2_this0_actors_connect_mutateMeta IN COLLECT(this0_actors_connect_mutateMeta) | tmp1_this0_actors_connect_mutateMeta + tmp2_this0_actors_connect_mutateMeta) as this0_actors_connect_mutateMeta
             }
-            WITH this0, this0_mutateMeta + this0_actors_connect_mutateMeta as this0_mutateMeta
-            WITH this0, this0_mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
             WITH this0, this0_mutateMeta as mutateMeta
             CALL {
@@ -234,9 +228,7 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH this, this_connect_actors0_node, value.this_connect_actors0_node_mutateMeta as this_connect_actors_mutateMeta
             RETURN REDUCE(tmp1_this_connect_actors_mutateMeta = [], tmp2_this_connect_actors_mutateMeta IN COLLECT(this_connect_actors_mutateMeta) | tmp1_this_connect_actors_mutateMeta + tmp2_this_connect_actors_mutateMeta) as this_connect_actors_mutateMeta
             }
-            WITH this, this_connect_actors_mutateMeta as mutateMeta
-            WITH this, mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
+            WITH this
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -301,9 +293,7 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH this, this_connect_actors0_node, value.this_connect_actors0_node_mutateMeta as this_connect_actors_mutateMeta
             RETURN REDUCE(tmp1_this_connect_actors_mutateMeta = [], tmp2_this_connect_actors_mutateMeta IN COLLECT(this_connect_actors_mutateMeta) | tmp1_this_connect_actors_mutateMeta + tmp2_this_connect_actors_mutateMeta) as this_connect_actors_mutateMeta
             }
-            WITH this, this_connect_actors_mutateMeta as mutateMeta
-            WITH this, mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
+            WITH this
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)

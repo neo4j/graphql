@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Create or connect", () => {
@@ -91,9 +91,7 @@ describe("Create or connect", () => {
             ON CREATE
             SET
             this0_relationship_this0_movies_connectOrCreate0.screentime = $this0_relationship_this0_movies_connectOrCreate0_on_create_screentime
-            WITH this0, [ metaVal IN [{type: 'Created', name: 'Actor', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as this0_mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)-[:ACTED_IN]->(:Movie))), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.movies required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
+            RETURN this0
             }
             WITH this0, this0_mutateMeta as mutateMeta
             RETURN mutateMeta, this0 { .name } AS this0"
@@ -157,9 +155,7 @@ describe("Create or connect", () => {
             this_relationship_this_movies0_connectOrCreate0.screentime = $this_relationship_this_movies0_connectOrCreate0_on_create_screentime
             	RETURN COUNT(*)
             }
-            WITH this, [ metaVal IN [{type: 'Updated', name: 'Actor', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL AND (metaVal.toID IS NOT NULL OR metaVal.toName IS NULL) ] as mutateMeta
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this)-[:ACTED_IN]->(:Movie))), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.movies required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
-            RETURN mutateMeta, this { .name } AS this"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

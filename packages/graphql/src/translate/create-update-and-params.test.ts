@@ -21,8 +21,8 @@ import createUpdateAndParams from "./create-update-and-params";
 import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import WithProjector from "../classes/WithProjector";
-import { NodeBuilder } from "../utils/test/builders/node-builder";
 
 describe("createUpdateAndParams", () => {
     test("should return the correct update and params", () => {

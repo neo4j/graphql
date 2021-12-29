@@ -101,7 +101,6 @@ export interface TypeMeta {
             pretty: string;
         };
     };
-    arrayTypeRequired?: boolean;
 }
 
 export interface Unique {
