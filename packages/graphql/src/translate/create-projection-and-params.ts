@@ -194,6 +194,8 @@ function createProjectionAndParams({
             ) as UnionTypeDefinitionNode[];
             const referenceUnion = unions.find((u) => u.name.value === cypherField.typeMeta.name);
 
+            let expectMultipleValues = "false";
+
             if (referenceNode) {
                 const recurse = createProjectionAndParams({
                     fieldsByTypeName: fieldFields,
@@ -208,6 +210,7 @@ function createProjectionAndParams({
                 if (meta?.authValidateStrs?.length) {
                     projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
                 }
+                expectMultipleValues = cypherField.typeMeta.array ? "true" : "false";
             }
 
             if (referenceUnion) {
@@ -259,6 +262,7 @@ function createProjectionAndParams({
                 });
 
                 projectionStr = `${!isArray ? "head(" : ""} ${headStrs.join(" + ")} ${!isArray ? ")" : ""}`;
+                expectMultipleValues = cypherField.typeMeta.array ? "true" : "false";
             }
 
             const initApocParamsStrs = [
@@ -282,7 +286,6 @@ function createProjectionAndParams({
                 ...(context.cypherParams ? { cypherParams: context.cypherParams } : {}),
             };
 
-            const expectMultipleValues = cypherField.typeMeta.array ? "true" : "false";
             const apocWhere = projectionAuthStrs.length
                 ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStrs.join(
                       " AND "
