@@ -308,8 +308,11 @@ function createProjectionAndParams({
             }
 
             if (cypherField.typeMeta.array) {
-                res.projection.push(`${key}: apoc.coll.flatten([${apocStr}])`);
-
+                if (referenceUnion) {
+                    res.projection.push(`${key}: apoc.coll.flatten([${apocStr}])`);
+                } else {
+                    res.projection.push(`${key}: [${apocStr}]`);
+                }
                 return res;
             }
 
