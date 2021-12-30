@@ -129,7 +129,6 @@ class Model {
         context?: any;
         rootValue?: any;
 
-
         pubsub?: 'local' | 'foreign' | PubSubEngine;
         disableDeletedCache?: boolean;
         disableResolve?: boolean;
@@ -147,7 +146,7 @@ class Model {
         if (!pubsub) { throw new Error(`Pubsub not defined.`); }
 
         params.filter = params.filter || {};
-        params.args = params.args || {};
+        // params.args = params.args || {};
 
         const types = preProcessFilters(params.filter);
 
@@ -178,7 +177,6 @@ class Model {
             if (iterator.return) {
                 return iterator.return();
             }
-            return
         }
 
         const resolveResultFromPayload = async (value: MutationEventWithResult<T>) => {
@@ -199,10 +197,17 @@ class Model {
             `;
 
             const variableValues = {
-                where: { _id: value.id },
+                ...params.args,
+                where: {
+                    ...params.where,
+                    _id: value.id,
+                },
             };
 
-            const result = await graphql(this.neoSchema.schema, query, undefined, params.context || {}, variableValues);
+            const result = await graphql(this.neoSchema.schema, query, params.rootValue, params.context || {}, variableValues);
+            if (result.errors?.length) {
+                throw new Error(result.errors[0].message);
+            }
             if (result && result.data) {
                 const [ obj ] = result.data[this.camelCaseName];
                 value.result = obj;
@@ -213,39 +218,37 @@ class Model {
 
         new Promise(async (resolve) => {
             promResolve = resolve;
-            while (running) {
-                const res = await iterator.next();
-                if (res.done) {
-                    break;
-                }
-                if (res.value) {
-                    try {
+            const iterable = {
+                [Symbol.asyncIterator]() { return iterator; }
+            };
 
-                        const args = { filter: params.filter || {} };
-                        const payload = res.value;
-    
-                        if (!filterSubscriptionResult(payload, args)) {
-                            continue;
-                        }
-    
-                        if (payload.type === 'Deleted') {
-                            if (!subCache) { continue; }
-    
-                            const cached = subCache[payload.id];
-                            if (!cached) { continue; }
-    
-                            payload.result = cached;
-                        }
-    
-                        const mapped = await resolveResultFromPayload(payload);
-                        sub.next(mapped);
-                    } catch(err) {
+            console.log('START');
+            for await (const payload of iterable) {
+                try {
+                    const args = { filter: params.filter || {} };
 
-                        debug(err);
-                        sub.error(err);
+                    if (!filterSubscriptionResult(payload, args)) {
+                        continue;
                     }
+
+                    if (payload.type === 'Deleted') {
+                        if (!subCache) { continue; }
+
+                        const cached = subCache[payload.id];
+                        if (!cached) { continue; }
+
+                        payload.result = cached;
+                    }
+
+                    const mapped = await resolveResultFromPayload(payload);
+                    sub.next(mapped);
+                } catch(err) {
+
+                    debug(err);
+                    sub.error(err);
                 }
             }
+            console.log('CLEANUP');
         }).catch((err) => {
             debug(err);
             sub.error(err);

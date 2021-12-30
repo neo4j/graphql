@@ -88,18 +88,26 @@ describe("OGM Subscriptions", () => {
             }
         `;
 
-        const name = 'Lord of the Wizards and the Half Blood Vampire';
-
         const ogm = new OGM({ typeDefs, driver });
 
         const Movie = ogm.model('Movie');
         const obs = Movie.observe<{ name: string }>({});
         const result = await obs.close();
         expect(result?.done).toEqual(true);
+        await new Promise((resolve) => setTimeout(resolve, 200));
     });
 
     // test.skip('should use local pubsub by default');
     // test.skip('should override foreign pubsub');
     // test.skip('should override pubsub');
+    // test.skip('should filter results before execution');
+    // test.skip('should pass arguments to subscription');
+    // test.skip('resolve a deleted object from the cache');
+    // test.skip('');
+    // test.skip('');
+    // test.skip('');
+    // test.skip('');
+    // test.skip('');
+    // test.skip('');
 
 });
