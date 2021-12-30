@@ -508,3 +508,7 @@ export interface MutationEvent extends Omit<MutationMetaCommon, 'id' | 'toID' | 
     relationshipID?: number;
     bookmark?: string | null;
 }
+
+export interface MutationEventWithResult<R> extends MutationEvent {
+    result?: R
+}

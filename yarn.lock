@@ -2056,7 +2056,7 @@ __metadata:
   peerDependencies:
     graphql: ^15.0.0
     neo4j-driver: ^4.1.0
-    rxjs: 6.6.3
+    rxjs: ^6.6.3
   languageName: unknown
   linkType: soft
 

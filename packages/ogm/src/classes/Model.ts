@@ -17,14 +17,17 @@
  * limitations under the License.
  */
 
-import { localPubSub, Neo4jGraphQL, preProcessFilters, upperFirst, MutationEvent } from "@neo4j/graphql";
+import { filterSubscriptionResult, localPubSub, Neo4jGraphQL, preProcessFilters, upperFirst } from "@neo4j/graphql";
+import { MutationEventWithResult } from "@neo4j/graphql/src/types";
 import camelCase from "camelcase";
 import { DocumentNode, graphql, parse, print, SelectionSetNode } from "graphql";
 import { PubSubEngine } from "graphql-subscriptions";
 import pluralize from "pluralize";
-import { from, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { Observable, Subject } from "rxjs";
 import { DeleteInfo, GraphQLOptionsArg, GraphQLWhereArg, SubscriptionFilter } from "../types";
+import Debug from "debug";
+
+const debug = Debug('@neo4j/graphql-ogm');
 
 export interface ModelConstructor {
     name: string;
@@ -157,98 +160,105 @@ class Model {
         }
 
         const iterators = types.map((ev) => `${ this.name }.${ ev }`);
+        const iterator = pubsub.asyncIterator<MutationEventWithResult<T>>(iterators);
 
-        const asyncIterator = {
-            [Symbol.asyncIterator]() {
-                return pubsub.asyncIterator<MutationEvent>(iterators);
-            },
-        } as unknown as Iterable<MutationEvent>;
+        // const asyncIterator = pubsub.asyncIterator<MutationEvent>(iterators);
+        // for async (const v of asyncIterator) {
 
-        return from(asyncIterator)
-            .pipe(map(async (value) => {
-                const argsDef = `(
-                    $where: ${ this.name }Where
-                )`;
+        // }
 
-                const argsApply = `(
-                    where: $where
-                )`;
-        
-                const selection = printSelectionSet(params.selectionSet || this.selectionSet);
-        
-                const query = `
-                    query ${ argsDef }{
-                        ${this.camelCaseName}${ argsApply } ${selection}
+        const sub = new Subject<MutationEventWithResult<T>>();
+        let promResolve;
+        let running = true;
+    
+        const close = async () => {
+            running = false;
+            promResolve();
+            sub.complete();
+            if (iterator.return) {
+                return iterator.return();
+            }
+            return
+        }
+
+        const resolveResultFromPayload = async (value: MutationEventWithResult<T>) => {
+            const argsDef = `(
+                $where: ${ this.name }Where
+            )`;
+
+            const argsApply = `(
+                where: $where
+            )`;
+    
+            const selection = printSelectionSet(params.selectionSet || this.selectionSet);
+    
+            const query = `
+                query ${ argsDef }{
+                    ${this.camelCaseName}${ argsApply } ${selection}
+                }
+            `;
+
+            const variableValues = {
+                where: { _id: value.id },
+            };
+
+            const result = await graphql(this.neoSchema.schema, query, undefined, params.context || {}, variableValues);
+            if (result && result.data) {
+                const [ obj ] = result.data[this.camelCaseName];
+                value.result = obj;
+            }
+
+            return value;
+        }
+
+        new Promise(async (resolve) => {
+            promResolve = resolve;
+            while (running) {
+                const res = await iterator.next();
+                if (res.done) {
+                    break;
+                }
+                if (res.value) {
+                    try {
+
+                        const args = { filter: params.filter || {} };
+                        const payload = res.value;
+    
+                        if (!filterSubscriptionResult(payload, args)) {
+                            continue;
+                        }
+    
+                        if (payload.type === 'Deleted') {
+                            if (!subCache) { continue; }
+    
+                            const cached = subCache[payload.id];
+                            if (!cached) { continue; }
+    
+                            payload.result = cached;
+                        }
+    
+                        const mapped = await resolveResultFromPayload(payload);
+                        sub.next(mapped);
+                    } catch(err) {
+
+                        debug(err);
+                        sub.error(err);
                     }
-                `;
-
-                const variableValues = {
-                    where: { _id: value.id },
-                };
-
-                const result = await graphql(this.neoSchema.schema, query, undefined, params.context, variableValues);
-                console.log(result);
-                return value;
-            }));
-
-        // const subject = new Subject();
-
-        // // (Symbol as any).asyncIterator = Symbol.asyncIterator || Symbol.for('Symbol.asyncIterator');
-        // for await (let payload of asyncIterator) {
-        //     console.log(payload);
-        // }
-
-        // return subject.asObservable();
+                }
+            }
+        }).catch((err) => {
+            debug(err);
+            sub.error(err);
+            close();
+        });
 
 
-        // const arrDefinitions: string[] = [];
-        // const arrApply: string[] = [];
-        // if (where) {
-        //     arrDefinitions.push(`$where: ${this.name}Where`);
-        //     arrApply.push(`where: $where`);
-        // }
+        const obs: Observable<MutationEventWithResult<T>> & {
+            close: () => Promise<IteratorResult<MutationEventWithResult<T>, any> | undefined>;
+        } = sub.asObservable() as any;
+        obs.close = close;
 
-        // if (options) {
-        //     arrDefinitions.push(`$options: ${this.name}Options`);
-        //     arrApply.push(`options: $options`);
-        // }
-
-        // if (filter) {
-        //     arrDefinitions.push(`$filter: SubscriptionFilter`);
-        //     arrApply.push(`filter: $filter`);
-        // }
-
-        // let strDefinitions = '';
-        // if (arrDefinitions.length) {
-        //     strDefinitions = ['(', ...arrDefinitions, ')'].join(' ');
-        // }
-
-        // let strApply = '';
-        // if (arrApply.length) {
-        //     strApply = ['(', ...arrApply, ')'].join(' ');
-        // }
-
-        // const selection = printSelectionSet(selectionSet || this.selectionSet);
-
-        // const query = `
-        //     subscription ${strDefinitions}{
-        //         ${this.camelCaseName}${strApply} ${selection}
-        //     }
-        // `;
-
-        // const variableValues = { where, options, filter, ...args };
-        // context.useLocalPubsub = true;
-
-        // // const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
-        // const result = await createSourceEventStream(this.neoSchema.schema, parse(query), rootValue, context, variableValues);
-        // // result.
-        // return result as any;
-
-        // if (result.errors?.length) {
-        //     throw new Error(result.errors[0].message);
-        // }
-
-        // return (result.data as any)[this.camelCaseName] as T;
+        return obs;
     }
 
     async count({

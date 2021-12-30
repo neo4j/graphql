@@ -19,7 +19,7 @@
 
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../../classes";
-import { MutationMetaType, MutationSubscriptionResult, SubscriptionFilter } from "../../types";
+import { MutationMetaType, MutationSubscriptionResult, SubscriptionFilter, MutationEvent } from "../../types";
 
 export function preProcessFilters(
     filter: SubscriptionFilter,
@@ -48,9 +48,8 @@ export function preProcessFilters(
 }
 
 export function filterSubscriptionResult(
-    payload: MutationSubscriptionResult,
+    payload: MutationSubscriptionResult | MutationEvent,
     args: { filter: SubscriptionFilter },
-    subCache?: { [key: string]: any },
 ) {
     if (!payload || !payload.id) { return false; }
     
@@ -97,7 +96,7 @@ export function filterSubscriptionResult(
 
     if (args?.filter?.propsUpdated) {
         // require at least one of the defined properties to be updated.
-        if (!payload.propsUpdated) { return false; }
+        if (!('propsUpdated' in payload)) { return false; }
         let found = false;
         for (const prop of args?.filter?.propsUpdated) {
             if (payload.propsUpdated.includes(prop)) {
@@ -119,11 +118,11 @@ export function filterSubscriptionResult(
  */
 export function resolveSubscriptionResult(
     node: Node,
-    payload: MutationSubscriptionResult,
+    payload: MutationSubscriptionResult | MutationEvent,
     args: { filter: SubscriptionFilter },
     subCache?: { [key: string]: any },
 ) {
-    if (!filterSubscriptionResult(payload, args, subCache)) {
+    if (!filterSubscriptionResult(payload, args)) {
         return false;
     }
 

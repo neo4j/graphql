@@ -35,41 +35,67 @@ describe("OGM Subscriptions", () => {
     });
 
     test("should return result when subscribed to", async () => {
-        const session = driver.session();
+        // const session = driver.session();
 
         const typeDefs = gql`
             type Movie {
-                id: ID!
+                name: String!
             }
         `;
+
+        const name = 'Lord of the Wizards';
 
         const ogm = new OGM({ typeDefs, driver });
 
         const Movie = ogm.model('Movie');
-        const subscription = Movie
-            .observe({})
-            .subscribe((result) => {
-                console.log(result);
+        const obs = Movie.observe<{ name: string }>({});
+        const movies: any[] = [];
+        const prom = new Promise((resolve) => {
+            const sub = obs.subscribe((res) => {
+                movies.push(res);
+                resolve(movies);
             });
-
-
-        localPubSub.publish('Movie.Created', {
-            "name": "Movie",
-            "id": 26,
-            "type": "Created",
-            "properties": {
-              "name": "Mr Director"
-            },
-            "bookmark": "FB:kcwQvD1NlYfdQKqlcPiAwmu+Sx2Q"
         });
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await Movie.create({
+            input: {
+                name,
+            },
+        });
 
-        expect(true).toEqual(false);
+        // const movie = await obs.toPromise();
+        await prom;
+        expect(movies).toHaveLength(1);
+        const [ movie ] = movies;
+        expect(movie.name).toEqual('Movie');
+        expect(movie).toEqual({
+            name: 'Movie',
+            id: expect.any(Number),
+            type: 'Created',
+            properties: { name, },
+            bookmark: expect.any(String),
+            result: { name, },
+        });
+        await obs.close();
+    });
 
+    test("should close the observable and cleanup", async () => {
+        // const session = driver.session();
 
+        const typeDefs = gql`
+            type Movie {
+                name: String!
+            }
+        `;
 
-        await session.close();
+        const name = 'Lord of the Wizards and the Half Blood Vampire';
+
+        const ogm = new OGM({ typeDefs, driver });
+
+        const Movie = ogm.model('Movie');
+        const obs = Movie.observe<{ name: string }>({});
+        const result = await obs.close();
+        expect(result?.done).toEqual(true);
     });
 
     // test.skip('should use local pubsub by default');
