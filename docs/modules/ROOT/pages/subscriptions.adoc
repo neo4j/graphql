@@ -1,0 +1,100 @@
+[[subscriptions]]
+= Subscriptions
+
+Each node defined in type definitions will have one Subscription field generated for it
+which can be used to retrieve events for node Created, Updated, Deleted, Connected, and Disconnected.
+
+Please ensure that you have followed the xref::getting-started.adoc[Setup Websockets & Subscriptions in Getting Started] before following this guide.
+
+The examples in this chapter will use the following type definitions:
+
+[source, graphql, indent=0]
+----
+type Post {
+    id: ID! @id
+    content: String!
+    creator: User! @relationship(type: "HAS_POST", direction: IN, properties: "PostedAt")
+    createdAt: DateTime!
+}
+
+type User {
+    id: ID! @id
+    name: String!
+    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "PostedAt")
+}
+
+interface PostedAt {
+    date: DateTime
+}
+----
+
+For which the following Subscription fields will be generated:
+
+[source, graphql, indent=0]
+----
+type Subscription {
+    subscribeToPost()
+    subscribeToUser()
+    posts(where: PostWhere, options: PostOptions): [Post!]!
+    postsCount(where: PostWhere): Int!
+    postsAggregate(where: PostWhere): PostAggregationSelection!
+
+    users(where: UserWhere, options: UserOptions): [User!]!
+    usersCount(where: UserWhere): Int!
+    usersAggregate(where: UserWhere): UserAggregationSelection!
+}
+----
+
+
+== SubscribeToX
+
+Each field for querying data accepts two arguments:
+
+- `where` - used for xref::filtering.adoc[Filtering] data
+- `options` - used to specify xref::sorting.adoc[Sorting] and xref::pagination/index.adoc[Pagination] options
+
+=== Subscribing to all Created & Updated events
+
+The following Query will return all User nodes, returning their ID and name.
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        id
+        name
+    }
+}
+----
+
+==== Authentication & Authorization
+
+Following every subscription event the system will resolve the node from the database using the context from the user that they had when they first connected to the websocket. This means that, if you have setup `@auth()` directives that filter results out then the subscription system will honour those filters and not return those results for this user. It uses the same auth logic as Queries.
+
+=== Subscribe to user with name "Jane Smith" and their posts
+
+The following Query will return all Users, returning the content which they have posted.
+
+[source, graphql, indent=0]
+----
+query {
+    users(where: { name: "Jane Smith" }) {
+        id
+        name
+        posts {
+            content
+        }
+    }
+}
+----
+
+=== Subscribe to Connected and Disconnected events
+
+=== Subscribe to Deleted events
+
+== Using an external PubSub engine
+
+By default Neo4j Graphql will use a local pubsub instance to publish and subscribe to events. You can provide a custom PubSub instance (eg for Redis, Kafka, etc) by passing the `pubsub` property when you create your Neo4jGraphql instance. This means that events published by a single instance of Neo4j Graphql will not be received by other instances of Neo4j Graphql.
+
+If you are horizontally scaling your Neo4j Graphql instance we recommend using an external
+PubSub Engine. There are a number of https://github.com/apollographql/graphql-subscriptions#pubsub-implementations[PubSub Engine implementations] available.

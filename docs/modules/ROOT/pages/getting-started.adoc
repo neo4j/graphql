@@ -225,3 +225,73 @@ Of course, you only have the one of each, so you will see the result below:
   }
 }
 ----
+
+== (Advanced) Setup Websockets & Subscriptions with Apollo
+
+For additional information please visit the https://www.apollographql.com/docs/apollo-server/data/subscriptions/[Apollo Guide]
+
+. Install the websocket transport for subscriptions:
++
+[source, bash, indent=0]
+----
+npm subscriptions-transport-ws --save
+----
++
+. Below `new Neo4jGraphql(...)` setup the subscription server:
+
+[source, javascript, indent=0]
+----
+...
+
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+import { execute, subscribe } from 'graphql';
+
+...
+
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+const graphqlPath = '/api/graphql';
+const subscriptionServer = SubscriptionServer.create({
+    schema: neoSchema.schema,
+    execute,
+    subscribe,
+    async onConnect(connectionParams, webSocket, context, info) {
+      // Websocket connected here
+      return neoSchema.onSubscriptionConnect(context);
+    },
+}, {
+    // Express (from createServer(app)):
+    server: httpServer
+    // Fastify:
+    // server: fastifyInstance.server,
+    path: graphqlPath,
+});
+
+const apolloServer = new ApolloServer({
+    schema: neoSchema.schema,
+    context: ({ request }) => ({ request }),
+    plugins: [
+        {
+            async serverWillStart() {
+                return {
+                    async drainServer() {
+                        subscriptionServer.close();
+                    }
+                };
+            }
+        },
+    ],
+});
+
+await apolloServer.start();
+
+server.register(apolloServer.createHandler({
+    path: graphqlPath,
+}));
+
+
+await server.listen(4000);
+
+----
+
+Visiting `localhost:4000/api/graphql` will now allow you to listen to subscriptions. See the xref::subscriptions.adoc[Subscriptions guide.]
