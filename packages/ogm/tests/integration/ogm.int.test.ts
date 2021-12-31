@@ -77,7 +77,7 @@ describe("OGM", () => {
             const movies = await Movie.find({ where: { id } });
 
             // should return without error due to the fact auth should be removed
-            expect(movies).toEqual([{ id }]);
+            expect(movies).toEqual([{ id, _id: expect.any(Number) }]);
         } finally {
             await session.close();
         }
@@ -110,7 +110,7 @@ describe("OGM", () => {
 
                 const movies = await Movie.find({ where: { id } });
 
-                expect(movies).toEqual([{ id }]);
+                expect(movies).toEqual([{ id, _id: expect.any(Number) }]);
             } finally {
                 await session.close();
             }
@@ -144,7 +144,10 @@ describe("OGM", () => {
 
                 const movies = await Movie.find({ where: { id }, options: { limit: 2 } });
 
-                expect(movies).toEqual([{ id }, { id }]);
+                expect(movies).toEqual([
+                    { id, _id: expect.any(Number) },
+                    { id, _id: expect.any(Number) },
+                ]);
             } finally {
                 await session.close();
             }
@@ -288,7 +291,7 @@ describe("OGM", () => {
 
                 const { movies } = await Movie?.create({ input: [{ id }] });
 
-                expect(movies).toEqual([{ id }]);
+                expect(movies).toEqual([{ id, _id: expect.any(Number) }]);
 
                 const reFind = await session.run(
                     `
@@ -327,7 +330,10 @@ describe("OGM", () => {
 
                 const { movies } = await Movie?.create({ input: [{ id: id1 }, { id: id2 }] });
 
-                expect(movies).toEqual([{ id: id1 }, { id: id2 }]);
+                expect(movies).toEqual([
+                    { id: id1, _id: expect.any(Number) },
+                    { id: id2, _id: expect.any(Number) },
+                ]);
             } finally {
                 await session.close();
             }
@@ -539,7 +545,7 @@ describe("OGM", () => {
 
                 const { movies } = await Movie?.update({ where: { id }, update: { name: updatedName } });
 
-                expect(movies).toEqual([{ id, name: updatedName }]);
+                expect(movies).toEqual([{ _id: expect.any(Number), id, name: updatedName }]);
             } finally {
                 await session.close();
             }
