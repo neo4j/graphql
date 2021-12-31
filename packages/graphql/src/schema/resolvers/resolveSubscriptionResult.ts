@@ -48,58 +48,56 @@ export function preProcessFilters(
 }
 
 export function filterSubscriptionResult(
-    payload: MutationSubscriptionResult | MutationEvent,
-    args: { filter: SubscriptionFilter },
+    payload: MutationEvent,
+    filter: SubscriptionFilter,
 ) {
     if (!payload || !payload.id) { return false; }
+    if (!filter) { return true; }
     
-    if (args?.filter) {
-        for (const filterName of [
-            'type', // This is already filtered above.
-            'id',
-            'toID',
-            'relationshipID',
-            'toName',
-            'relationshipName',
-            'handle',
-        ]) {
-            const value = payload[filterName];
-            const filter = {
-                filter: args.filter[filterName],
-                not: args.filter[`${ filterName }_NOT`],
-                in: args.filter[`${filterName }_IN`],
-                not_in: args.filter[`${filterName }_NOT_IN`],
-                undefined: args.filter[`${filterName }_UNDEFINED`],
-            };
+    for (const filterName of [
+        'type', // This may be filtered muliple times (in pubsub and here)
+        'id',
+        'toID',
+        'relationshipID',
+        'toName',
+        'relationshipName',
+        'handle',
+    ]) {
+        const value = payload[filterName];
+        const filter_vals = {
+            filter: filter[filterName],
+            not: filter[`${ filterName }_NOT`],
+            in: filter[`${filterName }_IN`],
+            not_in: filter[`${filterName }_NOT_IN`],
+            undefined: filter[`${filterName }_UNDEFINED`],
+        };
 
-            if (filter.filter !== undefined && filter.filter !== value) {
-                return false;
-            }
+        if (filter_vals.filter !== undefined && filter_vals.filter !== value) {
+            return false;
+        }
 
-            if (filter.not !== undefined && filter.not === value) {
-                return false;
-            }
+        if (filter_vals.not !== undefined && filter_vals.not === value) {
+            return false;
+        }
 
-            if (filter.in !== undefined && !filter.in.includes(value)) {
-                return false;
-            }
+        if (filter_vals.in !== undefined && !filter_vals.in.includes(value)) {
+            return false;
+        }
 
-            if (filter.not_in !== undefined && filter.in.includes(value)) {
-                return false;
-            }
+        if (filter_vals.not_in !== undefined && filter_vals.in.includes(value)) {
+            return false;
+        }
 
-            if ((filter.undefined === true && value) || filter.undefined === false && value === undefined) {
-                return false;
-            }
+        if ((filter_vals.undefined === true && value) || filter_vals.undefined === false && value === undefined) {
+            return false;
         }
     }
 
-    if (args?.filter?.propsUpdated) {
-        // require at least one of the defined properties to be updated.
-        if (!('propsUpdated' in payload)) { return false; }
+    if (filter.propsUpdated) {
+        const propsUpdated: string[] = 'properties' in payload ? Object.keys((payload as any).properties) : [];
         let found = false;
-        for (const prop of args?.filter?.propsUpdated) {
-            if (payload.propsUpdated.includes(prop)) {
+        for (const prop of filter.propsUpdated) {
+            if (propsUpdated.includes(prop)) {
                 found = true;
                 break;
             }
@@ -118,11 +116,11 @@ export function filterSubscriptionResult(
  */
 export function resolveSubscriptionResult(
     node: Node,
-    payload: MutationSubscriptionResult | MutationEvent,
-    args: { filter: SubscriptionFilter },
+    payload: MutationEvent,
+    filter: SubscriptionFilter,
     subCache?: { [key: string]: any },
 ) {
-    if (!filterSubscriptionResult(payload, args)) {
+    if (!filterSubscriptionResult(payload, filter)) {
         return false;
     }
 

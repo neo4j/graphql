@@ -108,7 +108,7 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
             },
             async (payload: MutationSubscriptionResult, args: { filter: SubscriptionFilter }, context: Context) => {
                 if (!context?.resolveTree) { return false; }
-                if (!resolveSubscriptionResult(node, payload, args, context.subCache)) {
+                if (!resolveSubscriptionResult(node, payload, args?.filter, context.subCache)) {
                     return false;
                 }
                 // Ensure context.resolveTree.args.where is set.

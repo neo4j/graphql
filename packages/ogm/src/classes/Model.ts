@@ -120,18 +120,154 @@ class Model {
         return (result.data as any)[this.camelCaseName] as T;
     }
 
+    /**
+     * Observe subscription events emitted for this model's
+     * type using rxjs.
+     * 
+     * **Example:**
+     * 
+     * ```typescript
+     * 
+     * const Movie = ogm.model('Movie');
+     * const obs = Movie.observe({
+     *   filter: { type_IN: [ 'Created', 'Updated', 'Connected', 'Disconnected' ] },
+     *   where: {
+     *     released: true,
+     *   }
+     * });
+     * 
+     * const sub = obs.subscribe((payload) => {
+     *   if (payload.properties && payload.properties.released) {
+     *      sendEmailToAllMembers(
+     *         `${ payload.result.name } was just released!`
+     *          + `Get your tickets now! `
+     *     `);
+     *   }
+     * })
+     * 
+     * // Ensure cleanup somewhere when you're done observing:
+     * sub.unsubscribe();
+     * await obs.close();
+     * 
+     * ```
+     * 
+     * ## Cleanup
+     *
+     * Ensure that you cleanup this function with `await obs.close();`
+     * 
+     * ## Default Types
+     * 
+     * By default, this function only observes "Created" and "Updated"
+     * events. Change the "filter.type_IN" option to add other events.
+     * 
+     * ## subCache for deleted nodes
+     * 
+     * For `Deleted` events, if you want a record of the node that was deleted,
+     * you may set `enableSubCache` to true. This will build a cache at the
+     * beginning of the observe function (if possible) and the cache will try
+     * to stay up to date with any updates, creates, etc.
+     * 
+     * ## Horizontal Scalability
+     * 
+     * By default, OGM will only listen to `local` pubsub events which occur
+     * on *this* instance
+     * of the application (IE OGM must be running alongside Neo4j GraphQL).
+     * If you have multiple applications or multiple instances of this running
+     * where OGM runs in parallel with Neo4j Graphql then you should be set to
+     * go by default. If you run OGM on a seperate instance from Neo4j Graphql
+     * you will have to roll out your own event system. You may set `pubsub: 'foreign'`
+     * as to use OGM's `pubsub` instance or you may pass a custom pubsub instance in.
+     * 
+     * In most cases, so long as OGM and Neo4j GraphQL have similar versions, then this
+     * should work. If you plan to use the `foreign` pubsub in this model *and* you
+     * have horizontal scalability implemented for this applicaiton then please consider,
+     * when designing this application, to roll out some kind of exclusive event system
+     * to prevent code from being executed multiple times on the same machine. Neo4J GraphQL
+     * does not provide this as we assume the user will be OK with executing events
+     * within the same application instance that they were emitted.
+     * 
+     * @param params 
+     * @returns An observable which can be subscribed to which contains event payloads.
+     * This observable must be closed to clean it up properly & prevent memory leaks and
+     * a degredation in performance. It also holds the subCache which is used to retrieve
+     * deleted items.
+     */
     observe<T>(params: {
+        /**
+         * Filter events by node using neo4j where conditions
+         * for this model.
+         */
         where?: GraphQLWhereArg;
+        /**
+         * Options to use for the deleteCache.
+         */
         options?: GraphQLOptionsArg;
+
+        /**
+         * Filter events before they are resolved & emitted
+         */
         filter?: SubscriptionFilter;
         selectionSet?: string | DocumentNode | SelectionSetNode;
         args?: any;
         context?: any;
         rootValue?: any;
 
+        /**
+         * See `Horizontal Scalability` under Model.observe for more information.
+         * 
+         * Set to 'local' to use this applications localPubSub instance.
+         * 
+         * Set to 'foreign' to use OGM's pubsub instance
+         * 
+         * Can also set to a custom pubsub engine.
+         */
         pubsub?: 'local' | 'foreign' | PubSubEngine;
-        disableDeletedCache?: boolean;
+
+        /**
+         * If enabled, will add a cached result to the "Deleted" event types.
+         * To build that cache, the system must load all objects at the beginning
+         * of the event. It will also update that cache if any "Updated" or "Created"
+         * events occur. The cache can be accessed as the "subCache" return property.
+         * 
+         * Increases load on DB and memory used if subCache is used.
+         * 
+         * Disables the deleted cache. This is only used when "Deleted"
+         * is in the list of event types to subscribe to.
+         * 
+         * This property will be ignored (not set) if `disableResolve`
+         * is set to `true`.
+         */
+        enableSubCache?: boolean;
+        cbSubCacheResolved?: (err?: Error) => void;
+
+        /**
+         * Increases event emit speed and load on DB if resolve is used.
+         * 
+         * If this is set to true, it will disable the subscription resolver
+         * and drastically increase the performance of this function. However,
+         * `where` and `options` arguments will be ignored and "result" in the
+         * payloads will be `undefined`. This also disables the subCache.
+         * 
+         * **Note:**  
+         *  `payload.properties` will still contain the values that changed for
+         * that event. 
+         * 
+         * **For example:**  
+         * Given you set this value to true, when you observe `Movie` with a
+         * where filter of `{name_IN: ['Pulp Fiction', 'The Dark Knight']}`, then movies with a
+         * different name will still be sent to all subscriptions and `payload.result` will
+         * be undefined instead of the movie.
+         */ 
         disableResolve?: boolean;
+
+
+        /**
+         * No performance gain.
+         * 
+         * If an event does not resolve to a node then continue to pass the event on
+         * to subscriptions with `payload.result` set to undefined.
+         */
+        keepUnresolved?: boolean;
 
     } = {}) {
         let pubsub: PubSubEngine;
@@ -145,41 +281,23 @@ class Model {
 
         if (!pubsub) { throw new Error(`Pubsub not defined.`); }
 
+
         params.filter = params.filter || {};
         // params.args = params.args || {};
 
         const types = preProcessFilters(params.filter);
 
-        const subCache = {};
-        if (types.includes('Deleted') && !params.disableDeletedCache) {
-            // Load objects now to retrieve them after they have been deleted
-            // figure out if we need to do a load of objects
-            // loadObjects(context).then().catch(() => {});
-            // TODO: load initial objects w/subcache
+        if (params.disableResolve) {
+            params.enableSubCache = false;
         }
 
-        const iterators = types.map((ev) => `${ this.name }.${ ev }`);
-        const iterator = pubsub.asyncIterator<MutationEventWithResult<T>>(iterators);
-
-        // const asyncIterator = pubsub.asyncIterator<MutationEvent>(iterators);
-        // for async (const v of asyncIterator) {
-
-        // }
-
-        const sub = new Subject<MutationEventWithResult<T>>();
-        let promResolve;
-        let running = true;
-    
-        const close = async () => {
-            running = false;
-            promResolve();
-            sub.complete();
-            if (iterator.return) {
-                return iterator.return();
-            }
-        }
-
-        const resolveResultFromPayload = async (value: MutationEventWithResult<T>) => {
+        /**
+         * Loads objects given `where` and `options` params.
+         * Provide an option _id to also resolve by internal ID
+         * @param _id 
+         * @returns 
+         */
+        const loadObjects = async (_id?: number) => {
             const argsDef = `(
                 $where: ${ this.name }Where
             )`;
@@ -196,25 +314,101 @@ class Model {
                 }
             `;
 
-            const variableValues = {
+            const input = {
                 ...params.args,
                 where: {
                     ...params.where,
-                    _id: value.id,
                 },
             };
 
-            const result = await graphql(this.neoSchema.schema, query, params.rootValue, params.context || {}, variableValues);
+            if (_id) {
+                input.where._id = _id;
+            }
+
+            const result = await graphql(this.neoSchema.schema, query, params.rootValue, params.context || {}, input);
             if (result.errors?.length) {
                 throw new Error(result.errors[0].message);
             }
-            if (result && result.data) {
-                const [ obj ] = result.data[this.camelCaseName];
+            
+            if (result?.data && result.data[this.camelCaseName]) {
+                const objs = result.data[this.camelCaseName];
+
+                if (subCache && params.enableSubCache) {
+                    for (const obj of objs) {
+                        console.log(obj);
+                        if (!obj._id) { continue; }
+                        subCache[obj._id] = obj;
+                    }
+                }
+                return objs;
+            }
+
+            return [];
+        }
+
+        const resolveResultFromPayload = async (value: MutationEventWithResult<T>) => {
+            if (value.type === 'Deleted') {
+                // resolve object from sub cache if available.
+                value.result = subCache ? subCache[value.id] : undefined;
+                return value;
+            }
+
+            const [ obj ] = await loadObjects(value.id);
+            if (obj) {
                 value.result = obj;
             }
 
             return value;
         }
+
+        const subCache = {};
+        if (params.enableSubCache) {
+            // Load objects now to retrieve them after they have been deleted
+            // figure out if we need to do a load of objects
+            loadObjects().then((objs) => {
+                if (params.cbSubCacheResolved) {
+                    params.cbSubCacheResolved();
+                }
+
+            }).catch((err) => {
+                debug('Could not resolve subCache: %s', err);
+                if (params.cbSubCacheResolved) {
+                    params.cbSubCacheResolved(err);
+                }
+            });
+        }
+
+        const iterators = types.map((ev) => `${ this.name }.${ ev }`);
+        const iterator = pubsub.asyncIterator<MutationEventWithResult<T>>(iterators);
+
+        const sub = new Subject<MutationEventWithResult<T>>();
+        const obs: Observable<MutationEventWithResult<T>> & {
+            close: () => Promise<IteratorResult<MutationEventWithResult<T>, any> | undefined>;
+            closed?: boolean;
+            subCache?: { [ id: number ]: T },
+        } = sub.asObservable() as any;
+        obs.subCache = subCache;
+        let promResolve;
+    
+        /**
+         * Cleanup `observe` function. Delete the subCache,
+         * delete the subject, and return the iterator.
+         * @returns 
+         */
+        const close = async () => {
+            promResolve();
+            sub.complete();
+            delete obs.subCache;
+            for (const key in subCache) {
+                delete subCache[key];
+            }
+            obs.close = async () => undefined;
+            obs.closed = true;
+            if (iterator.return) {
+                return iterator.return();
+            }
+        }
+        obs.close = close;
 
         new Promise(async (resolve) => {
             promResolve = resolve;
@@ -222,12 +416,11 @@ class Model {
                 [Symbol.asyncIterator]() { return iterator; }
             };
 
-            console.log('START');
             for await (const payload of iterable) {
                 try {
                     const args = { filter: params.filter || {} };
 
-                    if (!filterSubscriptionResult(payload, args)) {
+                    if (!filterSubscriptionResult(payload, args?.filter)) {
                         continue;
                     }
 
@@ -240,26 +433,25 @@ class Model {
                         payload.result = cached;
                     }
 
-                    const mapped = await resolveResultFromPayload(payload);
-                    sub.next(mapped);
+                    if (params.disableResolve) {
+                        sub.next(payload);
+                    } else {
+                        const mapped = await resolveResultFromPayload(payload);
+                        if (mapped.result || params.keepUnresolved) {
+                            sub.next(mapped);
+                        }
+                    }
                 } catch(err) {
 
                     debug(err);
                     sub.error(err);
                 }
             }
-            console.log('CLEANUP');
         }).catch((err) => {
             debug(err);
             sub.error(err);
             close();
         });
-
-
-        const obs: Observable<MutationEventWithResult<T>> & {
-            close: () => Promise<IteratorResult<MutationEventWithResult<T>, any> | undefined>;
-        } = sub.asObservable() as any;
-        obs.close = close;
 
         return obs;
     }
