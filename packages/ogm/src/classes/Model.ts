@@ -238,6 +238,11 @@ class Model {
          * is set to `true`.
          */
         enableSubCache?: boolean;
+
+        /**
+         * Callback which is fired after the subCache is initialized or there was
+         * an error initializing the subCache.
+         */
         cbSubCacheResolved?: (err?: Error) => void;
 
         /**

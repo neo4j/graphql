@@ -9,6 +9,10 @@ See xref::ogm/api-reference/model/create.adoc[`create`].
 
 See xref::ogm/api-reference/model/find.adoc[`find`].
 
+== `observe`
+
+See xref::ogm/api-reference/model/observe.adoc[`observe`].
+
 == `update`
 
 See xref::ogm/api-reference/model/update.adoc[`update`].

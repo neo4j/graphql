@@ -1,0 +1,175 @@
+[[ogm-api-reference-model-observe]]
+= `observe`
+
+This method can be used to observe & subscribe to events from nodes and their relationships. Maps to xref::subscriptions.adoc[Subscriptions].
+
+By default, this function only observes "Created" and "Updated"
+events. Change the "filter.type_IN" option to add other events.
+
+Returns an observable which can be subscribed to which contains event payloads.
+This observable must be closed to clean it up properly & prevent memory leaks and
+a degredation in performance. It also holds the subCache which is used to retrieve
+deleted items.
+
+
+Ensure that you cleanup this function with `await obs.close();`
+
+== Example
+
+To subscribe to all Created, Updated, Connected, and Disconnected events where
+the movie's `released` property is set to true:
+
+[source, javascript, indent=0]
+----
+const Movie = ogm.model('Movie');
+const obs = Movie.observe({
+  filter: { type_IN: [ 'Created', 'Updated', 'Connected', 'Disconnected' ] },
+  where: {
+    released: true,
+  }
+});
+
+const sub = obs.subscribe((payload) => {
+  // Note: there is no guarantee here that you are transitioning to
+  // a different state. EG: You could update the `released` property to
+  // `true` and, even if it is already set to `true`, then `properties.released`
+  // will still be set in `payload.properties`.
+  if (payload.properties && payload.properties.released
+    && payload.result.releaseNotificationSent === false
+  ) {
+     sendReleaseNotification(
+        `${ payload.result.name } was just released!`
+         + `Get your tickets now! `
+    );
+  }
+})
+
+
+// Ensure cleanup somewhere when you're done observing:
+function cleanupMovieService() {
+    sub.unsubscribe();
+    await obs.close();
+}
+----
+
+== Arguments
+
+|===
+|Name and Type |Description
+
+|`where` +
+ +
+ Type: `GraphQLWhereArg`
+|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc[Filtering].
+
+|`options` +
+ +
+ Type: `GraphQLOptionsArg`
+|A JavaScript object representation of the GraphQL `options` input type used for xref::sorting.adoc[Sorting] and xref::pagination/index.adoc[Pagination].
+
+|`filter` +
+ +
+ Type: `SubscriptionFilter`
+|Filters which which determine if an event is resolved. If an event does not match a filter it will not be fired in the payload unless `keepUnresolved` is set to true.
+
+|`selectionSet` +
+ +
+ Type: `string` or `DocumentNode` or `SelectionSetNode`
+|Selection set for the Mutation, see xref::ogm/selection-set.adoc[Selection Set] for more information.
+
+|`args` +
+ +
+ Type: `any`
+|The `args` value for the GraphQL Mutation.
+
+|`context` +
+ +
+ Type: `any`
+|The `context` value for the GraphQL Mutation.
+
+|`rootValue` +
+ +
+ Type: `any`
+|The `rootValue` value for the GraphQL Mutation.
+
+|`pubsub` +
+ +
+ Type: `'local' | 'foreign' | PubSubEngine`
+|See `Horizontal Scalability` below for more information.
+Set to 'local' to use this applications localPubSub instance.
+Set to 'foreign' to use OGM's pubsub instance. Can also set to a custom pubsub engine.
+
+|`enableSubCache` +
+ +
+ Type: `boolean`
+|Must be set to true for Deleted events to resolve. (or you can set `keepUnresolved` to true)
+If enabled, will add a cached result to the "Deleted" event types.
+To build that cache, the system must load all objects at the beginning
+of the event. It will also update that cache if any "Updated" or "Created"
+events occur. The cache can be accessed as the "subCache" return property.
+
+Increases load on DB and memory used if subCache is used.
+
+Disables the deleted cache. This is only used when "Deleted"
+is in the list of event types to subscribe to.
+
+This property will be ignored (not set) if `disableResolve`
+is set to `true`.
+
+|`disableResolve` +
+ +
+ Type: `boolean`
+|Increases event emit speed and load on DB if resolve is used.
+
+
+If this is set to true, it will disable the subscription resolver
+and drastically increase the performance of this function. However,
+`where` and `options` arguments will be ignored and "result" in the
+payloads will be `undefined`. This also disables the subCache.
+
+**Note:**  
+ `payload.properties` will still contain the values that changed for
+that event. 
+
+**For example:**  
+Given you set this value to true, when you observe `Movie` with a
+where filter of `{name_IN: ['Pulp Fiction', 'The Dark Knight']}`, then movies with a
+different name will still be sent to all subscriptions and `payload.result` will
+be undefined instead of the movie.
+
+|`keepUnresolved` +
+ +
+ Type: `any`
+|
+No performance gain.
+
+If an event does not resolve to a node then continue to pass the event on
+to subscriptions with `payload.result` set to undefined.
+
+|===
+
+== Deleted Node Caching
+For `Deleted` events, if you want a record of the node that was deleted,
+you may set `enableSubCache` to true. This will build a cache at the
+beginning of the observe function (if possible) and the cache will try
+to stay up to date with any updates, creates, etc. Otherwise, Deleted events
+will not be seen in payloads and will not be resolved.
+
+== Horizontal Scalability
+
+By default, OGM will only listen to `local` pubsub events which occur
+on *this* instance
+of the application (IE OGM must be running alongside Neo4j GraphQL).
+If you have multiple applications or multiple instances of this running
+where OGM runs in parallel with Neo4j Graphql then you should be set to
+go by default. If you run OGM on a seperate instance from Neo4j Graphql
+you will have to roll out your own event system. You may set `pubsub: 'foreign'`
+as to use OGM's `pubsub` instance or you may pass a custom pubsub instance in.
+
+In most cases, so long as OGM and Neo4j GraphQL have similar versions, then this
+should work. If you plan to use the `foreign` pubsub in this model *and* you
+have horizontal scalability implemented for this applicaiton then please consider,
+when designing this application, to roll out some kind of exclusive event system
+to prevent code from being executed multiple times on the same machine. Neo4J GraphQL
+does not provide this as we assume the user will be OK with executing events
+within the same application instance that they were emitted.

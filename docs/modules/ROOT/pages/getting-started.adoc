@@ -228,7 +228,7 @@ Of course, you only have the one of each, so you will see the result below:
 
 == (Advanced) Setup Websockets & Subscriptions with Apollo
 
-For additional information please visit the https://www.apollographql.com/docs/apollo-server/data/subscriptions/[Apollo Guide]
+Setting up subscriptions is only necessary if you want to receive real-time, authenticated, and authorized updates on your client.
 
 . Install the websocket transport for subscriptions:
 +
@@ -238,7 +238,7 @@ npm subscriptions-transport-ws --save
 ----
 +
 . Below `new Neo4jGraphql(...)` setup the subscription server:
-
++
 [source, javascript, indent=0]
 ----
 ...
@@ -293,5 +293,7 @@ server.register(apolloServer.createHandler({
 await server.listen(4000);
 
 ----
-
-Visiting `localhost:4000/api/graphql` will now allow you to listen to subscriptions. See the xref::subscriptions.adoc[Subscriptions guide.]
++
+. Visiting `localhost:4000/api/graphql` will now allow you to listen to subscriptions. See the xref::subscriptions.adoc[Subscriptions guide.]
++
+. For additional information please visit the https://www.apollographql.com/docs/apollo-server/data/subscriptions/[Apollo Guide]
