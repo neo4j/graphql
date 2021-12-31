@@ -306,7 +306,8 @@ class Model {
                 where: $where
             )`;
     
-            const selection = printSelectionSet(params.selectionSet || this.selectionSet);
+            let selection = printSelectionSet(params.selectionSet || this.selectionSet);
+            selection = selection.replace('{', '{\n_id');
     
             const query = `
                 query ${ argsDef }{

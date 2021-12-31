@@ -52,7 +52,7 @@ class OGM<ModelMap = {}> {
                 {
                     ${[n.primitiveFields, n.scalarFields, n.enumFields, n.temporalFields].reduce(
                         (res: string[], v) => [...res, ...v.map((x) => x.fieldName)],
-                        [ '_id' ]
+                        []
                     )}
                 }
             `;
