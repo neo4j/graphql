@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { UnionTypeDefinitionNode } from "graphql/language/ast";
+import { UnionTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql/language/ast";
 import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
@@ -173,7 +173,7 @@ function createProjectionAndParams({
 
         if (cypherField) {
             const projectionAuthStrs: string[] = [];
-            const unionWheres: string[] = [];
+            const unionOrInterfaceWheres: string[] = [];
             let projectionStr = "";
 
             const isArray = cypherField.typeMeta.array;
@@ -193,6 +193,8 @@ function createProjectionAndParams({
                 (x) => x.kind === "UnionTypeDefinition"
             ) as UnionTypeDefinitionNode[];
             const referenceUnion = unions.find((u) => u.name.value === cypherField.typeMeta.name);
+            const interfaces = context.neoSchema.document.definitions.filter((x) => x.kind === "InterfaceTypeDefinition") as InterfaceTypeDefinitionNode[]
+            const referenceInterface = interfaces.find((i) => i.name.value === cypherField.typeMeta.name)
 
             let expectMultipleValues = "false";
 
@@ -226,7 +228,7 @@ function createProjectionAndParams({
                         const labelsStatements = refNode
                             .getLabels(context)
                             .map((label) => `"${label}" IN labels(${varName}_${key})`);
-                        unionWheres.push(`(${labelsStatements.join("AND")})`);
+                        unionOrInterfaceWheres.push(`(${labelsStatements.join("AND")})`);
 
                         const innerHeadStr: string[] = [
                             `[ ${varName}_${key} IN [${varName}_${key}] WHERE (${labelsStatements.join(" AND ")})`,
@@ -265,6 +267,54 @@ function createProjectionAndParams({
                 expectMultipleValues = cypherField.typeMeta.array ? "true" : "false";
             }
 
+            if (referenceInterface) {
+                const headStrs: string[] = [];
+                const referencedNodes = 
+                    context.neoSchema.nodes
+                        .filter((n) => n.interfaces.some((i) => i.name.value === referenceInterface.name.value));
+                referencedNodes.forEach((refNode) => {
+                    if (refNode) {
+                        const labelsStatements = refNode
+                            .getLabels(context)
+                            .map((label) => `"${label}" IN labels(${varName}_${key})`);
+                        unionOrInterfaceWheres.push(`(${labelsStatements.join("AND")})`);
+
+                        const innerHeadStr: string[] = [
+                            `[ ${varName}_${key} IN [${varName}_${key}] WHERE (${labelsStatements.join(" AND ")})`,
+                        ];
+
+                        if (fieldFields[refNode.name]) {
+                            const [str, p, meta] = createProjectionAndParams({
+                                fieldsByTypeName: fieldFields,
+                                node: refNode,
+                                context,
+                                varName: `${varName}_${key}`,
+                            });
+
+                            innerHeadStr.push(
+                                [
+                                    `| ${varName}_${key} { __resolveType: "${refNode.name}", `,
+                                    ...str.replace("{", "").split(""),
+                                ].join("")
+                            );
+                            res.params = { ...res.params, ...p };
+
+                            if (meta?.authValidateStrs?.length) {
+                                projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
+                            }
+                        } else {
+                            innerHeadStr.push(`| ${varName}_${key} { __resolveType: "${refNode.name}" } `);
+                        }
+
+                        innerHeadStr.push(`]`);
+
+                        headStrs.push(innerHeadStr.join(" "));
+                    }
+                });
+                projectionStr = `${!isArray ? "head(" : ""} ${headStrs.join(" + ")} ${!isArray ? ")" : ""}`;
+                expectMultipleValues = cypherField.typeMeta.array ? "true" : "false";
+            }
+
             const initApocParamsStrs = [
                 ...(context.auth ? ["auth: $auth"] : []),
                 ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
@@ -291,7 +341,7 @@ function createProjectionAndParams({
                       " AND "
                   )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                 : "";
-            const unionWhere = unionWheres.length ? `WHERE ${unionWheres.join(" OR ")}` : "";
+            const unionWhere = unionOrInterfaceWheres.length ? `WHERE ${unionOrInterfaceWheres.join(" OR ")}` : "";
             const apocParamsStr = `{this: ${chainStr || varName}${
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}`;
@@ -299,7 +349,7 @@ function createProjectionAndParams({
                 cypherField.statement
             }", ${apocParamsStr}, ${expectMultipleValues})${apocWhere ? ` ${apocWhere}` : ""}${
                 unionWhere ? ` ${unionWhere} ` : ""
-            }${projectionStr ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""}`;
+            }${projectionStr ? ` | ${(!referenceUnion && !referenceInterface) ? param : ""} ${projectionStr}` : ""}`;
 
             if (isPrimitive || isEnum || isScalar) {
                 res.projection.push(`${key}: ${apocStr}`);
@@ -308,7 +358,7 @@ function createProjectionAndParams({
             }
 
             if (cypherField.typeMeta.array) {
-                if (referenceUnion) {
+                if (referenceUnion || referenceInterface) {
                     res.projection.push(`${key}: apoc.coll.flatten([${apocStr}])`);
                 } else {
                     res.projection.push(`${key}: [${apocStr}]`);
