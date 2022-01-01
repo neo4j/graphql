@@ -1032,29 +1032,12 @@ describe("generate", () => {
               people: Array<Person>;
             };
 
-            export type ActedInCreateInput = {
-              screenTime: Scalars[\\"Int\\"];
-            };
-
             export type ActedInSort = {
               screenTime?: Maybe<SortDirection>;
             };
 
             export type ActedInUpdateInput = {
               screenTime?: Maybe<Scalars[\\"Int\\"]>;
-            };
-
-            export type ActedInWhere = {
-              OR?: Maybe<Array<ActedInWhere>>;
-              AND?: Maybe<Array<ActedInWhere>>;
-              screenTime?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_NOT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_IN?: Maybe<Array<Maybe<Scalars[\\"Int\\"]>>>;
-              screenTime_NOT_IN?: Maybe<Array<Maybe<Scalars[\\"Int\\"]>>>;
-              screenTime_LT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_LTE?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_GT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_GTE?: Maybe<Scalars[\\"Int\\"]>;
             };
 
             export type MovieActorsAggregateInput = {
@@ -1071,7 +1054,7 @@ describe("generate", () => {
 
             export type MovieActorsConnectFieldInput = {
               where?: Maybe<PersonConnectWhere>;
-              edge: ActedInCreateInput;
+              edge: MovieActorsRelationshipCreateInput;
             };
 
             export type MovieActorsConnectionSort = {
@@ -1082,15 +1065,15 @@ describe("generate", () => {
             export type MovieActorsConnectionWhere = {
               AND?: Maybe<Array<MovieActorsConnectionWhere>>;
               OR?: Maybe<Array<MovieActorsConnectionWhere>>;
-              edge?: Maybe<ActedInWhere>;
-              edge_NOT?: Maybe<ActedInWhere>;
+              edge?: Maybe<MovieActorsRelationshipWhere>;
+              edge_NOT?: Maybe<MovieActorsRelationshipWhere>;
               node?: Maybe<PersonWhere>;
               node_NOT?: Maybe<PersonWhere>;
             };
 
             export type MovieActorsCreateFieldInput = {
               node: PersonCreateInput;
-              edge: ActedInCreateInput;
+              edge: MovieActorsRelationshipCreateInput;
             };
 
             export type MovieActorsDeleteFieldInput = {
@@ -1159,6 +1142,23 @@ describe("generate", () => {
               name_AVERAGE_LTE?: Maybe<Scalars[\\"Float\\"]>;
               name_LONGEST_LTE?: Maybe<Scalars[\\"Int\\"]>;
               name_SHORTEST_LTE?: Maybe<Scalars[\\"Int\\"]>;
+            };
+
+            export type MovieActorsRelationshipCreateInput = {
+              screenTime: Scalars[\\"Int\\"];
+            };
+
+            export type MovieActorsRelationshipWhere = {
+              AND?: Maybe<Array<MovieActorsRelationshipWhere>>;
+              OR?: Maybe<Array<MovieActorsRelationshipWhere>>;
+              screenTime?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_NOT?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_IN?: Maybe<Array<Maybe<Scalars[\\"Int\\"]>>>;
+              screenTime_NOT_IN?: Maybe<Array<Maybe<Scalars[\\"Int\\"]>>>;
+              screenTime_LT?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_LTE?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_GT?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime_GTE?: Maybe<Scalars[\\"Int\\"]>;
             };
 
             export type MovieActorsUpdateConnectionInput = {
