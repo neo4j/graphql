@@ -114,8 +114,12 @@ function getOnCreateFields({
 }): { node: string } | { node: string; edge: string } {
     const nodeField = `${node.name}CreateInput!`;
 
-    if (hasNonGeneratedProperties) {
-        const edgeField = `${relationField.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`;
+    if (relationField.multiple || hasNonGeneratedProperties) {
+        const prefix = `${relationField.connectionPrefix}${upperFirst(relationField.fieldName)}`;
+        const required = relationField.multiple || hasNonNullNonGeneratedProperties;
+
+        const edgeField = `${prefix}RelationshipCreateInput${required ? "!" : ""}`;
+
         return {
             node: nodeField,
             edge: edgeField,

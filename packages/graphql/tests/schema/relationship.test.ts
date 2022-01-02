@@ -348,9 +348,10 @@ describe("Relationship", () => {
         `);
     });
 
-    test("Single Relationship With Multiple Types", () => {
+    test("Single Relationship With Multiple Types with Unique ID On Relationship", () => {
         const typeDefs = gql`
             type Actor {
+                id: ID! @id
                 name: String
             }
 
@@ -369,12 +370,18 @@ describe("Relationship", () => {
           }
 
           type Actor {
+            id: ID!
             name: String
           }
 
           type ActorAggregateSelection {
             count: Int!
+            id: IDAggregateSelection!
             name: StringAggregateSelection!
+          }
+
+          input ActorConnectOrCreateWhere {
+            node: ActorUniqueWhere!
           }
 
           input ActorConnectWhere {
@@ -394,7 +401,12 @@ describe("Relationship", () => {
 
           \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
           input ActorSort {
+            id: SortDirection
             name: SortDirection
+          }
+
+          input ActorUniqueWhere {
+            id: ID
           }
 
           input ActorUpdateInput {
@@ -404,6 +416,16 @@ describe("Relationship", () => {
           input ActorWhere {
             AND: [ActorWhere!]
             OR: [ActorWhere!]
+            id: ID
+            id_CONTAINS: ID
+            id_ENDS_WITH: ID
+            id_IN: [ID]
+            id_NOT: ID
+            id_NOT_CONTAINS: ID
+            id_NOT_ENDS_WITH: ID
+            id_NOT_IN: [ID]
+            id_NOT_STARTS_WITH: ID
+            id_STARTS_WITH: ID
             name: String
             name_CONTAINS: String
             name_ENDS_WITH: String
@@ -456,6 +478,7 @@ describe("Relationship", () => {
           }
 
           type MovieActorActorsNodeAggregateSelection {
+            id: IDAggregateSelection!
             name: StringAggregateSelection!
           }
 
@@ -473,6 +496,16 @@ describe("Relationship", () => {
           input MovieActorsConnectFieldInput {
             edge: MovieActorsRelationshipCreateInput!
             where: ActorConnectWhere
+          }
+
+          input MovieActorsConnectOrCreateFieldInput {
+            onCreate: MovieActorsConnectOrCreateFieldInputOnCreate!
+            where: ActorConnectOrCreateWhere!
+          }
+
+          input MovieActorsConnectOrCreateFieldInputOnCreate {
+            edge: MovieActorsRelationshipCreateInput!
+            node: ActorCreateInput!
           }
 
           type MovieActorsConnection {
@@ -509,12 +542,14 @@ describe("Relationship", () => {
 
           input MovieActorsFieldInput {
             connect: [MovieActorsConnectFieldInput!]
+            connectOrCreate: [MovieActorsConnectOrCreateFieldInput!]
             create: [MovieActorsCreateFieldInput!]
           }
 
           input MovieActorsNodeAggregationWhereInput {
             AND: [MovieActorsNodeAggregationWhereInput!]
             OR: [MovieActorsNodeAggregationWhereInput!]
+            id_EQUAL: ID
             name_AVERAGE_EQUAL: Float
             name_AVERAGE_GT: Float
             name_AVERAGE_GTE: Float
@@ -562,6 +597,7 @@ describe("Relationship", () => {
 
           input MovieActorsUpdateFieldInput {
             connect: [MovieActorsConnectFieldInput!]
+            connectOrCreate: [MovieActorsConnectOrCreateFieldInput!]
             create: [MovieActorsCreateFieldInput!]
             delete: [MovieActorsDeleteFieldInput!]
             disconnect: [MovieActorsDisconnectFieldInput!]
@@ -576,6 +612,10 @@ describe("Relationship", () => {
 
           input MovieConnectInput {
             actors: [MovieActorsConnectFieldInput!]
+          }
+
+          input MovieConnectOrCreateInput {
+            actors: [MovieActorsConnectOrCreateFieldInput!]
           }
 
           input MovieCreateInput {
@@ -638,7 +678,7 @@ describe("Relationship", () => {
             deleteActors(where: ActorWhere): DeleteInfo!
             deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
             updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-            updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            updateMovies(connect: MovieConnectInput, connectOrCreate: MovieConnectOrCreateInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
           }
 
           \\"\\"\\"Pagination information (Relay)\\"\\"\\"

@@ -434,11 +434,6 @@ describe("Connect Or Create", () => {
               screentime: Int!
             }
 
-            input ActedInCreateInput {
-              characterName: String
-              screentime: Int!
-            }
-
             input ActedInSort {
               characterName: SortDirection
               screentime: SortDirection
@@ -521,7 +516,7 @@ describe("Connect Or Create", () => {
             }
 
             input ActorMoviesConnectOrCreateFieldInputOnCreate {
-              edge: ActedInCreateInput!
+              edge: ActorMoviesRelationshipCreateInput!
               node: MovieCreateInput!
             }
 
