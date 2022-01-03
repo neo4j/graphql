@@ -244,7 +244,11 @@ export default function cypherResolver({
             cypherStrs.push(`RETURN head( ${projectionStr} ) AS this`);
         } else if(referenceInterface) {
             cypherStrs.push(`CALL { ${projectionStr} }`);
-            cypherStrs.push(`RETURN head(collect( ${field.fieldName} )) AS this`)
+            if (expectMultipleValues) {
+                cypherStrs.push(`RETURN ${field.fieldName} AS this`)
+            } else {
+                cypherStrs.push(`RETURN head(collect( ${field.fieldName} )) AS this`)
+            }
         } else {
             cypherStrs.push(`RETURN this ${projectionStr} AS this`);
         }
