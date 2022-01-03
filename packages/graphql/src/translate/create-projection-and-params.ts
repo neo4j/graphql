@@ -277,7 +277,7 @@ function createProjectionAndParams({
                         .filter((n) => n.interfaces.some((i) => i.name.value === referenceInterface.name.value));
                 referencedNodes.forEach((refNode) => {
                     if (refNode) {
-                        const labelsStatements = `"${refNode.name}" IN labels(this)`;
+                        const labelsStatements = `"${refNode.name}" IN labels(${varName}_${key})`;
                         unionOrInterfaceWheres.push(labelsStatements);
     
                         const innerHeadStr: string[] = [`[ ${varName}_${key} IN [${varName}_${key}] WHERE (${varName}_${key}:${refNode.getMainLabel()})`];
