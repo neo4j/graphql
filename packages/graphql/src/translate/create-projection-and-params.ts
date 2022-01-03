@@ -193,8 +193,6 @@ function createProjectionAndParams({
                 (x) => x.kind === "UnionTypeDefinition"
             ) as UnionTypeDefinitionNode[];
             const referenceUnion = unions.find((u) => u.name.value === cypherField.typeMeta.name);
-            const interfaces = context.neoSchema.document.definitions.filter((x) => x.kind === "InterfaceTypeDefinition") as InterfaceTypeDefinitionNode[]
-            const referenceInterface = interfaces.find((i) => i.name.value === cypherField.typeMeta.name)
 
             let expectMultipleValues = "false";
 
@@ -267,6 +265,11 @@ function createProjectionAndParams({
                 expectMultipleValues = cypherField.typeMeta.array ? "true" : "false";
             }
 
+            const interfaces = context.neoSchema.document.definitions
+                .filter((d) => d.kind === "InterfaceTypeDefinition") as InterfaceTypeDefinitionNode[]
+            const referenceInterface = interfaces
+                .find((i) => i.name.value === cypherField.typeMeta.name)
+
             if (referenceInterface) {
                 const headStrs: string[] = [];
                 const referencedNodes = 
@@ -274,38 +277,35 @@ function createProjectionAndParams({
                         .filter((n) => n.interfaces.some((i) => i.name.value === referenceInterface.name.value));
                 referencedNodes.forEach((refNode) => {
                     if (refNode) {
-                        const labelsStatements = refNode
-                            .getLabels(context)
-                            .map((label) => `"${label}" IN labels(${varName}_${key})`);
-                        unionOrInterfaceWheres.push(`(${labelsStatements.join("AND")})`);
+                        const labelsStatements = `"${refNode.name}" IN labels(this)`;
+                        unionOrInterfaceWheres.push(labelsStatements);
+    
+                        const innerHeadStr: string[] = [`[ ${varName}_${key} IN [${varName}_${key}] WHERE (${varName}_${key}:${refNode.getMainLabel()})`];
+    
+                        const [str, p, meta] = createProjectionAndParams({
+                            fieldsByTypeName: fieldFields,
+                            node: refNode,
+                            context,
+                            varName: `${varName}_${key}`,
+                        });
 
-                        const innerHeadStr: string[] = [
-                            `[ ${varName}_${key} IN [${varName}_${key}] WHERE (${labelsStatements.join(" AND ")})`,
-                        ];
-
-                        if (fieldFields[refNode.name]) {
-                            const [str, p, meta] = createProjectionAndParams({
-                                fieldsByTypeName: fieldFields,
-                                node: refNode,
-                                context,
-                                varName: `${varName}_${key}`,
-                            });
-
+                        if (str.slice(1, -1).trim().length > 0) {
                             innerHeadStr.push(
                                 [
                                     `| ${varName}_${key} { __resolveType: "${refNode.name}", `,
                                     ...str.replace("{", "").split(""),
                                 ].join("")
                             );
-                            res.params = { ...res.params, ...p };
-
-                            if (meta?.authValidateStrs?.length) {
-                                projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
-                            }
                         } else {
                             innerHeadStr.push(`| ${varName}_${key} { __resolveType: "${refNode.name}" } `);
                         }
 
+                        res.params = { ...res.params, ...p };
+
+                        if (meta?.authValidateStrs?.length) {
+                            projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
+                        }
+                        
                         innerHeadStr.push(`]`);
 
                         headStrs.push(innerHeadStr.join(" "));
