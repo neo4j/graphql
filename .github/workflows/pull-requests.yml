@@ -4,6 +4,8 @@ on:
   pull_request:
     branches:
       - dev
+    paths-ignore:
+      - "docs/**"
 
 jobs:
   cache-dependencies:
@@ -36,6 +38,43 @@ jobs:
         with:
           fail_on_error: true
           eslint_flags: "."
+
+  typescript-changes:
+    runs-on: ubuntu-latest
+
+    outputs:
+      typescript: ${{ steps.filter.outputs.typescript }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          list-files: shell
+          filters: |
+            typescript:
+              - added|modified: '*.ts'
+
+  license-header-check:
+    needs: typescript-changes
+    if: ${{ needs.typescript-changes.outputs.typescript == 'true' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+      - name: Install addlicense
+        run: go install github.com/google/addlicense@latest
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          list-files: shell
+          filters: |
+            typescript:
+              - added|modified: '*.ts'
+      - name: Run addlicense
+        run: addlicense -f ./addlicense -check ${{ steps.filter.outputs.typescript_files }}
 
   unit-tests:
     needs:

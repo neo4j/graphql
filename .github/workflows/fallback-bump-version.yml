@@ -23,7 +23,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Bump @neo4j/graphql version
         run: yarn version "${{ steps.get-version.outputs.version }}"
         working-directory: packages/graphql
