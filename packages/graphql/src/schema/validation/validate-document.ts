@@ -27,6 +27,7 @@ import {
     InputValueDefinitionNode,
     FieldDefinitionNode,
     TypeNode,
+    specifiedDirectives,
 } from "graphql";
 import pluralize from "pluralize";
 import * as scalars from "../scalars";
@@ -155,7 +156,7 @@ function validateDocument(document: DocumentNode): void {
     const doc = filterDocument(document);
 
     const schemaToExtend = new GraphQLSchema({
-        directives: Object.values(directives),
+        directives: [...Object.values(directives), ...specifiedDirectives],
         types: [...Object.values(scalars), ...Object.values(enums), ...Object.values(point)],
     });
 
