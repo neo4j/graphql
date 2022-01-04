@@ -7543,6 +7543,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dotenv@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "dotenv@npm:10.0.0"
+  checksum: 9c45712e213de63bdb646b8e5344749b7566e25a67bbd3f03711d54e40eff10066c1f23eff0081d0949fda7c8efcc6e9e8bf18d0f023a8274f55f5d5f97bb6db
+  languageName: node
+  linkType: hard
+
 "duplexer3@npm:^0.1.4":
   version: 0.1.4
   resolution: "duplexer3@npm:0.1.4"
@@ -13332,6 +13339,7 @@ fsevents@^1.2.7:
     "@typescript-eslint/eslint-plugin": 4.1.1
     "@typescript-eslint/parser": 4.15.1
     concurrently: 6.0.0
+    dotenv: ^10.0.0
     eslint: 7.9.0
     eslint-config-airbnb-typescript: 10.0.0
     eslint-config-prettier: 6.11.0
