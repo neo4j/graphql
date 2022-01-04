@@ -240,8 +240,8 @@ jobs:
       - name: Uppercase instance name
         run: |
           lowercase_instance=${{ matrix.aura-instance }}
-          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>${GITHUB_ENV}
-          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
+          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>"${GITHUB_ENV}"
+          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>"${GITHUB_ENV}"
       - name: Delete all data in instance
         run: ts-node tests/integration/teardown.ts
         working-directory: packages/graphql
@@ -277,8 +277,8 @@ jobs:
       - name: Uppercase instance name
         run: |
           lowercase_instance=${{ matrix.aura-instance }}
-          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>${GITHUB_ENV}
-          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
+          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>"${GITHUB_ENV}"
+          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>"${GITHUB_ENV}"
       - name: Run @neo4j/graphql integration tests
         run: |
           yarn test:int -t '^(?!delete should delete a movie, a single nested actor and another movie they act in|update should delete a nested actor and one of their nested movies, within an update block)' --coverage
@@ -433,11 +433,11 @@ jobs:
           fi
 
           npm config set @neo4j:registry https://registry.npmjs.org
-          npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+          npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
 
           for tarball in *.tgz
           do
-            npm publish $tarball --tag=$tag --access=public
+            npm publish "$tarball" --tag=$tag --access=public
           done
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -7536,7 +7536,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:*, dotenv@npm:8.2.0, dotenv@npm:^8.2.0":
+"dotenv@npm:*, dotenv@npm:^8.2.0":
   version: 8.2.0
   resolution: "dotenv@npm:8.2.0"
   checksum: ad4c8e0df3e24b4811c8e93377d048a10a9b213dcd9f062483b4a2d3168f08f10ec9c618c23f5639060d230ccdb174c08761479e9baa29610aa978e1ee66df76
@@ -7546,7 +7546,7 @@ __metadata:
 "dotenv@npm:^10.0.0":
   version: 10.0.0
   resolution: "dotenv@npm:10.0.0"
-  checksum: 9c45712e213de63bdb646b8e5344749b7566e25a67bbd3f03711d54e40eff10066c1f23eff0081d0949fda7c8efcc6e9e8bf18d0f023a8274f55f5d5f97bb6db
+  checksum: f412c5fe8c24fbe313d302d2500e247ba8a1946492db405a4de4d30dd0eb186a88a43f13c958c5a7de303938949c4231c56994f97d05c4bc1f22478d631b4005
   languageName: node
   linkType: hard
 
@@ -13275,7 +13275,7 @@ fsevents@^1.2.7:
     bcrypt: 5.0.1
     cross-env: 7.0.3
     debug: 4.3.1
-    dotenv: 8.2.0
+    dotenv: ^10.0.0
     express: 4.17.1
     faker: 5.1.0
     graphql: ^15.0.0
