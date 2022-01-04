@@ -176,6 +176,7 @@ jobs:
           - 4.2
           - 4.3.2
           - 4.3
+          - 4.4
 
     runs-on: ubuntu-latest
 
@@ -397,7 +398,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - run: yarn build
+      - run: yarn build --verbose
       - name: Pack ${{ matrix.package }}
         run: npm pack
         working-directory: packages/${{ matrix.package }}

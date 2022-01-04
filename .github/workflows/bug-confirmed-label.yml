@@ -1,0 +1,19 @@
+name: Bug confirmed label
+
+on:
+  project_card:
+    types:
+      - moved
+
+jobs:
+  add_confirmed_label:
+    if: github.event.project_card.column_id == '17295560'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: add labels
+        uses: andymckay/labeler@1.0.4
+        with:
+          add-labels: "confirmed"
+          repo-token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
