@@ -2045,7 +2045,7 @@ __metadata:
     jest: 26.2.2
     jsonwebtoken: 8.5.1
     libnpmsearch: 3.1.0
-    npm-run-all: ^4.1.5
+    npm-run-all: 4.1.5
     pluralize: ^8.0.0
     prettier: 2.3.2
     randomstring: 1.1.5
@@ -2069,14 +2069,14 @@ __metadata:
     "@types/faker": 5.1.7
     "@types/is-uuid": 1.0.0
     "@types/jest": 26.0.8
-    "@types/jsonwebtoken": ^8.5.4
+    "@types/jsonwebtoken": 8.5.4
     "@types/node": 14.0.27
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.6
     apollo-server: ^3.0.2
     camelcase: ^6.2.0
     debug: ^4.3.2
-    dedent: ^0.7.0
+    dedent: 0.7.0
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
     faker: 5.2.0
@@ -2088,20 +2088,20 @@ __metadata:
     jest: 26.2.2
     jsonwebtoken: ^8.5.1
     jwks-rsa: ^2.0.5
-    koa: ^2.13.4
-    koa-jwt: ^4.0.3
-    koa-router: ^10.1.1
+    koa: 2.13.4
+    koa-jwt: 4.0.3
+    koa-router: 10.1.1
     libnpmsearch: 3.1.0
-    mock-jwks: ^1.0.1
-    nock: ^13.2.1
+    mock-jwks: 1.0.1
+    nock: 13.2.1
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
     randomstring: 1.1.5
     rimraf: 3.0.2
     semver: ^7.3.5
-    supertest: ^6.1.6
+    supertest: 6.1.6
     ts-jest: 26.1.4
-    ts-node: ^10.0.0
+    ts-node: 10.0.0
     typescript: 3.9.7
   peerDependencies:
     graphql: ^15.0.0
@@ -2132,8 +2132,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/package-tests@workspace:packages/package-tests"
   dependencies:
-    npm-run-all: ^4.1.5
-    rimraf: ^3.0.2
+    npm-run-all: 4.1.5
+    rimraf: 3.0.2
     upper-case-first: ^2.0.2
   languageName: unknown
   linkType: soft
@@ -2839,7 +2839,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:^8.5.4":
+"@types/jsonwebtoken@npm:8.5.4":
   version: 8.5.4
   resolution: "@types/jsonwebtoken@npm:8.5.4"
   dependencies:
@@ -5882,7 +5882,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cheerio@npm:^1.0.0-rc.3":
+"cheerio@npm:1.0.0-rc.10":
   version: 1.0.0-rc.10
   resolution: "cheerio@npm:1.0.0-rc.10"
   dependencies:
@@ -7007,7 +7007,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dedent@npm:^0.7.0":
+"dedent@npm:0.7.0, dedent@npm:^0.7.0":
   version: 0.7.0
   resolution: "dedent@npm:0.7.0"
   checksum: 87de191050d9a40dd70cad01159a0bcf05ecb59750951242070b6abf9569088684880d00ba92a955b4058804f16eeaf91d604f283929b4f614d181cd7ae633d2
@@ -7543,7 +7543,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^10.0.0":
+"dotenv@npm:10.0.0, dotenv@npm:^10.0.0":
   version: 10.0.0
   resolution: "dotenv@npm:10.0.0"
   checksum: f412c5fe8c24fbe313d302d2500e247ba8a1946492db405a4de4d30dd0eb186a88a43f13c958c5a7de303938949c4231c56994f97d05c4bc1f22478d631b4005
@@ -7964,7 +7964,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-resolver-typescript@npm:^2.4.0":
+"eslint-import-resolver-typescript@npm:2.4.0":
   version: 2.4.0
   resolution: "eslint-import-resolver-typescript@npm:2.4.0"
   dependencies:
@@ -8036,7 +8036,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jsx-a11y@npm:^6.4.1":
+"eslint-plugin-jsx-a11y@npm:6.4.1":
   version: 6.4.1
   resolution: "eslint-plugin-jsx-a11y@npm:6.4.1"
   dependencies:
@@ -8057,7 +8057,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:^7.23.1":
+"eslint-plugin-react@npm:7.23.2":
   version: 7.23.2
   resolution: "eslint-plugin-react@npm:7.23.2"
   dependencies:
@@ -9351,9 +9351,9 @@ fsevents@^1.2.7:
     "@neo4j-antora/antora-add-notes": ^0.1.6
     "@neo4j-documentation/macros": ^1.0.0
     "@neo4j-documentation/remote-include": ^1.0.0
-    cheerio: ^1.0.0-rc.3
+    cheerio: 1.0.0-rc.10
     express: ^4.17.1
-    hyperlink: ^4.6.0
+    hyperlink: 4.7.0
     npm-watch: ^0.6.0
   languageName: unknown
   linkType: soft
@@ -9441,7 +9441,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"graphql@npm:^15.0.0, graphql@npm:^15.5.0":
+"graphql@npm:15.5.0, graphql@npm:^15.0.0":
   version: 15.5.0
   resolution: "graphql@npm:15.5.0"
   checksum: 58a69f7274ae94c690bfa2517f96bbaf1327e1ca1fc46606e772ba2f7ca517adeb375346301373351e693022f448b7866163034209623d7c5315819ef8c5e7c0
@@ -10053,7 +10053,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"hyperlink@npm:^4.6.0":
+"hyperlink@npm:4.7.0":
   version: 4.7.0
   resolution: "hyperlink@npm:4.7.0"
   dependencies:
@@ -11982,7 +11982,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"koa-jwt@npm:^4.0.3":
+"koa-jwt@npm:4.0.3":
   version: 4.0.3
   resolution: "koa-jwt@npm:4.0.3"
   dependencies:
@@ -11993,7 +11993,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"koa-router@npm:^10.1.1":
+"koa-router@npm:10.1.1":
   version: 10.1.1
   resolution: "koa-router@npm:10.1.1"
   dependencies:
@@ -12013,7 +12013,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"koa@npm:^2.13.4":
+"koa@npm:2.13.4":
   version: 2.13.4
   resolution: "koa@npm:2.13.4"
   dependencies:
@@ -13077,7 +13077,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"mock-jwks@npm:^1.0.1":
+"mock-jwks@npm:1.0.1":
   version: 1.0.1
   resolution: "mock-jwks@npm:1.0.1"
   dependencies:
@@ -13308,6 +13308,18 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"neo4j-driver@npm:4.4.0, neo4j-driver@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "neo4j-driver@npm:4.4.0"
+  dependencies:
+    "@babel/runtime": ^7.5.5
+    neo4j-driver-bolt-connection: ^4.4.0
+    neo4j-driver-core: ^4.4.0
+    rxjs: ^6.6.3
+  checksum: f6125e3767b49ff927399fa069bd36324bd3fce5d935b6bee4c182571375e1dd7c81b41724a14d89dd72c8cc018c81b74fa6ffb14eb645264a262601976b30fb
+  languageName: node
+  linkType: hard
+
 "neo4j-driver@npm:^4.2.0":
   version: 4.2.3
   resolution: "neo4j-driver@npm:4.2.3"
@@ -13320,18 +13332,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"neo4j-driver@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "neo4j-driver@npm:4.4.0"
-  dependencies:
-    "@babel/runtime": ^7.5.5
-    neo4j-driver-bolt-connection: ^4.4.0
-    neo4j-driver-core: ^4.4.0
-    rxjs: ^6.6.3
-  checksum: f6125e3767b49ff927399fa069bd36324bd3fce5d935b6bee4c182571375e1dd7c81b41724a14d89dd72c8cc018c81b74fa6ffb14eb645264a262601976b30fb
-  languageName: node
-  linkType: hard
-
 "neo4j-graphql@workspace:.":
   version: 0.0.0-use.local
   resolution: "neo4j-graphql@workspace:."
@@ -13339,25 +13339,25 @@ fsevents@^1.2.7:
     "@typescript-eslint/eslint-plugin": 4.1.1
     "@typescript-eslint/parser": 4.15.1
     concurrently: 6.0.0
-    dotenv: ^10.0.0
+    dotenv: 10.0.0
     eslint: 7.9.0
     eslint-config-airbnb-typescript: 10.0.0
     eslint-config-prettier: 6.11.0
-    eslint-import-resolver-typescript: ^2.4.0
+    eslint-import-resolver-typescript: 2.4.0
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.22.0
     eslint-plugin-jest: 24.0.1
-    eslint-plugin-jsx-a11y: ^6.4.1
-    eslint-plugin-react: ^7.23.1
-    graphql: ^15.5.0
+    eslint-plugin-jsx-a11y: 6.4.1
+    eslint-plugin-react: 7.23.2
+    graphql: 15.5.0
     husky: 4.2.5
     jest: 26.6.3
     lint-staged: 10.2.11
-    neo4j-driver: ^4.4.0
+    neo4j-driver: 4.4.0
     npm-run-all: 4.1.5
     prettier: 2.1.2
     set-tz: 0.2.0
-    ts-jest: ^26.5.4
+    ts-jest: 26.5.5
     typescript: 3.9.7
   languageName: unknown
   linkType: soft
@@ -13388,7 +13388,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"nock@npm:^13.2.1":
+"nock@npm:13.2.1":
   version: 13.2.1
   resolution: "nock@npm:13.2.1"
   dependencies:
@@ -13648,7 +13648,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"npm-run-all@npm:4.1.5, npm-run-all@npm:^4.1.5":
+"npm-run-all@npm:4.1.5":
   version: 4.1.5
   resolution: "npm-run-all@npm:4.1.5"
   dependencies:
@@ -17402,7 +17402,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"supertest@npm:^6.1.6":
+"supertest@npm:6.1.6":
   version: 6.1.6
   resolution: "supertest@npm:6.1.6"
   dependencies:
@@ -17994,7 +17994,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^26.5.4":
+"ts-jest@npm:26.5.5":
   version: 26.5.5
   resolution: "ts-jest@npm:26.5.5"
   dependencies:
@@ -18033,28 +18033,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"ts-node@npm:9.1.1":
-  version: 9.1.1
-  resolution: "ts-node@npm:9.1.1"
-  dependencies:
-    arg: ^4.1.0
-    create-require: ^1.1.0
-    diff: ^4.0.1
-    make-error: ^1.1.1
-    source-map-support: ^0.5.17
-    yn: 3.1.1
-  peerDependencies:
-    typescript: ">=2.7"
-  bin:
-    ts-node: dist/bin.js
-    ts-node-script: dist/bin-script.js
-    ts-node-transpile-only: dist/bin-transpile.js
-    ts-script: dist/bin-script-deprecated.js
-  checksum: 356e2647b8b1e6ab00380c0537fa569b63bd9b6f006cc40fd650f81fae1817bd8fecc075300036950d8f45c1d85b95be33cd1e48a1a424a7d86c3dbb42bf60e5
-  languageName: node
-  linkType: hard
-
-"ts-node@npm:^10.0.0":
+"ts-node@npm:10.0.0":
   version: 10.0.0
   resolution: "ts-node@npm:10.0.0"
   dependencies:
@@ -18085,6 +18064,27 @@ resolve@^2.0.0-next.3:
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
   checksum: 96d633774e13eb90ad49d644f397e99f5da72818e36040bf5b6bd66d0ab369dbb4348e499193c0fa45071f8e9559bb7724174139389e56bb562db36a3842484e
+  languageName: node
+  linkType: hard
+
+"ts-node@npm:9.1.1":
+  version: 9.1.1
+  resolution: "ts-node@npm:9.1.1"
+  dependencies:
+    arg: ^4.1.0
+    create-require: ^1.1.0
+    diff: ^4.0.1
+    make-error: ^1.1.1
+    source-map-support: ^0.5.17
+    yn: 3.1.1
+  peerDependencies:
+    typescript: ">=2.7"
+  bin:
+    ts-node: dist/bin.js
+    ts-node-script: dist/bin-script.js
+    ts-node-transpile-only: dist/bin-transpile.js
+    ts-script: dist/bin-script-deprecated.js
+  checksum: 356e2647b8b1e6ab00380c0537fa569b63bd9b6f006cc40fd650f81fae1817bd8fecc075300036950d8f45c1d85b95be33cd1e48a1a424a7d86c3dbb42bf60e5
   languageName: node
   linkType: hard
 
