@@ -18,6 +18,25 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
 
+  reviewdog-eslint:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - uses: reviewdog/action-eslint@v1
+        with:
+          fail_on_error: true
+          eslint_flags: "."
+
   unit-tests:
     needs:
       - cache-dependencies

@@ -28,7 +28,7 @@ jobs:
       - name: Uppercase package name
         run: |
           lowercase_package=${{ matrix.package }}
-          echo "SONAR_TOKEN_SECRET=SONAR_TOKEN_${lowercase_package^^}" >>${GITHUB_ENV}
+          echo "SONAR_TOKEN_SECRET=SONAR_TOKEN_${lowercase_package^^}" >>"${GITHUB_ENV}"
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:

@@ -103,6 +103,18 @@ NEO_URL=neo4j://localhost:7687 NEO_USER=admin NEO_PASSWORD=password yarn test
 The above command can additionally be run from `packages/graphql`, `packages/ogm`,
 or any directory where there is a `jest.config.js` file!
 
+Alternatively, you can put these environment variables in a `.env` file in the
+root of the repo which will automatically get picked up:
+
+```env
+NEO_URL=neo4j://localhost:7687
+NEO_USER=admin
+NEO_PASSWORD=password
+```
+
+The above command can additionally be run from `packages/graphql`, `packages/ogm`,
+or any directory where there is a `jest.config.js` file!
+
 Additionally, for projects which have the appropriate Yarn scripts setup, you can
 run individual test suites. For instance, to run the TCK test suite of `@neo4j/graphql`,
 run the following from `packages/graphql`:
