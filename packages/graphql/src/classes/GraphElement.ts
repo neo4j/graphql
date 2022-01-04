@@ -25,7 +25,6 @@ import type {
     TemporalField,
     PointField,
     BaseField,
-    InterfaceField,
 } from "../types";
 
 export interface GraphElementConstructor {
