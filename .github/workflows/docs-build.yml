@@ -3,9 +3,9 @@ name: "Documentation Build"
 on:
   pull_request:
     branches:
-      - master
+      - dev
     paths:
-      - "docs/**"
+      - "docs/modules/ROOT/**"
 
 jobs:
   build-docs:

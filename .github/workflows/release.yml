@@ -19,7 +19,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
 
   unit-tests:
     needs:
@@ -40,7 +40,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Run packages/${{ matrix.package }} unit tests
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
@@ -65,7 +65,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Run TCK tests
         run: yarn --cwd packages/graphql run test:tck --coverage
       - name: Upload coverage to Codecov
@@ -89,7 +89,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Run Schema tests
         run: yarn --cwd packages/graphql run test:schema --coverage
       - name: Upload coverage to Codecov
@@ -122,7 +122,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable && yarn build
+        run: yarn && yarn build
       - name: Setup Nextjs app
         run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
       - name: Install dependencies
@@ -155,7 +155,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - run: yarn build
       - name: Run @neo4j/graphql package tests
         run: yarn --cwd packages/graphql run test:package-tests
@@ -198,7 +198,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --coverage
@@ -234,14 +234,14 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Install ts-node and typescript
         run: npm install -g ts-node typescript
       - name: Uppercase instance name
         run: |
           lowercase_instance=${{ matrix.aura-instance }}
-          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>${GITHUB_ENV}
-          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
+          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>"${GITHUB_ENV}"
+          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>"${GITHUB_ENV}"
       - name: Delete all data in instance
         run: ts-node tests/integration/teardown.ts
         working-directory: packages/graphql
@@ -273,12 +273,12 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Uppercase instance name
         run: |
           lowercase_instance=${{ matrix.aura-instance }}
-          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>${GITHUB_ENV}
-          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
+          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>"${GITHUB_ENV}"
+          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>"${GITHUB_ENV}"
       - name: Run @neo4j/graphql integration tests
         run: |
           yarn test:int -t '^(?!delete should delete a movie, a single nested actor and another movie they act in|update should delete a nested actor and one of their nested movies, within an update block)' --coverage
@@ -342,7 +342,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Extract version from branch name
         id: get-version
         run: |
@@ -397,8 +397,8 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
-      - run: yarn build
+        run: yarn
+      - run: yarn build --verbose
       - name: Pack ${{ matrix.package }}
         run: npm pack
         working-directory: packages/${{ matrix.package }}
@@ -433,11 +433,11 @@ jobs:
           fi
 
           npm config set @neo4j:registry https://registry.npmjs.org
-          npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+          npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
 
           for tarball in *.tgz
           do
-            npm publish $tarball --tag=$tag --access=public
+            npm publish "$tarball" --tag=$tag --access=public
           done
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -470,6 +470,15 @@ jobs:
           git tag -a @neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }}"
       - name: git push
         run: git push --follow-tags
+      - uses: actions/checkout@v2
+        with:
+          ref: dev
+          fetch-depth: 0
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+      - name: git merge
+        run: git merge --no-ff origin/release/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+      - name: git push
+        run: git push
 
   delete-release-branch:
     needs:

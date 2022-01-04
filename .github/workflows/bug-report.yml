@@ -1,0 +1,33 @@
+name: New bug reports
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  add-new-bug-reports-to-triage:
+    if: contains(github.event.issue.labels.*.name, 'bug report')
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: alex-page/github-project-automation-plus@v0.8.1
+        with:
+          project: Bug Triage
+          column: Bug reports
+          repo-token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+          action: add
+      - name: Add comment
+        uses: peter-evans/create-or-update-comment@v1.4.5
+        with:
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Many thanks for raising this bug report @${{ github.event.issue.user.login }}. :bug: We will now attempt to reproduce the bug based on the steps you have provided.
+
+            Please ensure that you've provided the necessary information for a minimal reproduction, including but not limited to:
+            * Type definitions
+            * Resolvers
+            * Query and/or Mutation (or multiple) needed to reproduce
+
+            Thanks again! :pray:

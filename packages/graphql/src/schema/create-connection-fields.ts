@@ -181,20 +181,22 @@ function createConnectionFields({
             };
         }
 
-        composeNode.addFields({
-            [connectionField.fieldName]: {
-                type: connection.NonNull,
-                args: composeNodeArgs,
-                resolve: (source, args: ConnectionQueryArgs, ctx, info: GraphQLResolveInfo) => {
-                    return connectionFieldResolver({
-                        connectionField,
-                        args,
-                        info,
-                        source,
-                    });
+        if (!connectionField.relationship.writeonly) {
+            composeNode.addFields({
+                [connectionField.fieldName]: {
+                    type: connection.NonNull,
+                    args: composeNodeArgs,
+                    resolve: (source, args: ConnectionQueryArgs, ctx, info: GraphQLResolveInfo) => {
+                        return connectionFieldResolver({
+                            connectionField,
+                            args,
+                            info,
+                            source,
+                        });
+                    },
                 },
-            },
-        });
+            });
+        }
 
         const relFields = connectionField.relationship.properties
             ? relationshipPropertyFields.get(connectionField.relationship.properties)

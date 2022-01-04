@@ -154,15 +154,17 @@ function createRelationshipFields({
         if (rel.interface) {
             const refNodes = nodes.filter((x) => rel.interface?.implementations?.includes(x.name));
 
-            composeNode.addFields({
-                [rel.fieldName]: {
-                    type: rel.typeMeta.pretty,
-                    args: {
-                        options: "QueryOptions",
-                        where: `${rel.typeMeta.name}Where`,
+            if (!rel.writeonly) {
+                composeNode.addFields({
+                    [rel.fieldName]: {
+                        type: rel.typeMeta.pretty,
+                        args: {
+                            options: "QueryOptions",
+                            where: `${rel.typeMeta.name}Where`,
+                        },
                     },
-                },
-            });
+                });
+            }
 
             const connectWhere = schemaComposer.getOrCreateITC(`${rel.typeMeta.name}ConnectWhere`, (tc) => {
                 tc.addFields({
@@ -305,15 +307,17 @@ function createRelationshipFields({
         if (rel.union) {
             const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
-            composeNode.addFields({
-                [rel.fieldName]: {
-                    type: rel.typeMeta.pretty,
-                    args: {
-                        options: "QueryOptions",
-                        where: `${rel.typeMeta.name}Where`,
+            if (!rel.writeonly) {
+                composeNode.addFields({
+                    [rel.fieldName]: {
+                        type: rel.typeMeta.pretty,
+                        args: {
+                            options: "QueryOptions",
+                            where: `${rel.typeMeta.name}Where`,
+                        },
                     },
-                },
-            });
+                });
+            }
 
             const [unionConnectInput, unionCreateInput, unionDeleteInput, unionDisconnectInput, unionUpdateInput] = [
                 "Connect",
@@ -727,34 +731,36 @@ function createRelationshipFields({
             });
         });
 
-        composeNode.addFields({
-            [rel.fieldName]: {
-                type: rel.typeMeta.pretty,
-                args: {
-                    where: `${rel.typeMeta.name}Where`,
-                    options: `${rel.typeMeta.name}Options`,
-                },
-            },
-        });
-
-        if (composeNode instanceof ObjectTypeComposer) {
-            const baseTypeName = `${sourceName}${n.name}${upperFirst(rel.fieldName)}`;
-            const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer);
-
-            const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
-                baseTypeName,
-                n,
-                relFields
-            );
-
+        if (!rel.writeonly) {
             composeNode.addFields({
-                [`${rel.fieldName}Aggregate`]: {
-                    type: aggregationTypeObject,
+                [rel.fieldName]: {
+                    type: rel.typeMeta.pretty,
                     args: {
                         where: `${rel.typeMeta.name}Where`,
+                        options: `${rel.typeMeta.name}Options`,
                     },
                 },
             });
+
+            if (composeNode instanceof ObjectTypeComposer) {
+                const baseTypeName = `${sourceName}${n.name}${upperFirst(rel.fieldName)}`;
+                const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer);
+
+                const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
+                    baseTypeName,
+                    n,
+                    relFields
+                );
+
+                composeNode.addFields({
+                    [`${rel.fieldName}Aggregate`]: {
+                        type: aggregationTypeObject,
+                        args: {
+                            where: `${rel.typeMeta.name}Where`,
+                        },
+                    },
+                });
+            }
         }
 
         schemaComposer.getOrCreateITC(connectionUpdateInputName, (tc) => {

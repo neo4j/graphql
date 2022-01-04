@@ -2,7 +2,7 @@
 name: "\U0001F4AC  Questions/Help"
 about: If you have questions, get in touch on Slack
 title: ""
-labels: close, help wanted, inbox, question
+labels: close, help wanted, question
 assignees: ""
 ---
 

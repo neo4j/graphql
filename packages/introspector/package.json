@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/introspector",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Introspect a Neo4j database model/schema",
     "keywords": [
         "neo4j",
@@ -15,6 +15,12 @@
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*.ts",
+        "dist/**/*.ts.map",
+        "dist/**/*.js",
+        "dist/**/*.js.map"
+    ],
     "scripts": {
         "clean": "cd src/ && tsc --build --clean",
         "test": "jest",
@@ -27,7 +33,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@neo4j/graphql": "^2.5.3",
+        "@neo4j/graphql": "^2.5.5",
         "@types/jest": "26.0.8",
         "@types/node": "14.0.27",
         "@types/pluralize": "0.0.29",
