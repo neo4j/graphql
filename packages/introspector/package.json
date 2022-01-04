@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/introspector",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Introspect a Neo4j database model/schema",
     "keywords": [
         "neo4j",
