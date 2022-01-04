@@ -52,6 +52,15 @@ jobs:
           git tag -a "@neo4j/graphql-ogm@$VERSION" -m "@neo4j/graphql-ogm@$VERSION"
       - name: git push
         run: git push --follow-tags
+      - uses: actions/checkout@v2
+        with:
+          ref: dev
+          fetch-depth: 0
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+      - name: git merge
+        run: git merge --no-ff origin/release/$VERSION --strategy-option theirs
+      - name: git push
+        run: git push
 
   changelog:
     needs:

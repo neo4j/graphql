@@ -3,7 +3,7 @@ name: "Pull Request"
 on:
   pull_request:
     branches:
-      - master
+      - dev
     paths-ignore:
       - "docs/**"
 

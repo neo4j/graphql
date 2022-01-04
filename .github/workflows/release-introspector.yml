@@ -335,6 +335,15 @@ jobs:
           git tag -a @neo4j/introspector@${{ needs.bump-version.outputs.version }} -m "@neo4j/introspector@${{ needs.bump-version.outputs.version }}"
       - name: git push
         run: git push --follow-tags
+      - uses: actions/checkout@v2
+        with:
+          ref: dev
+          fetch-depth: 0
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+      - name: git merge
+        run: git merge --no-ff origin/release/introspector/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+      - name: git push
+        run: git push
 
   delete-release-branch:
     needs:
