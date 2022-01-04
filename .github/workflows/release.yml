@@ -398,7 +398,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - run: yarn build
+      - run: yarn build --verbose
       - name: Pack ${{ matrix.package }}
         run: npm pack
         working-directory: packages/${{ matrix.package }}
