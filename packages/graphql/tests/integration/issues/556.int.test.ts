@@ -23,16 +23,16 @@ import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
-describe("https://github.com/neo4j/graphql/issues/557 - Input Object type ArticleCreateInput must define one or more fields", () => {
+describe("https://github.com/neo4j/graphql/issues/556 - Input Object type ArticleCreateInput must define one or more fields", () => {
     let driver: Driver;
     let bookmarks: string[];
     const typeDefs = gql`
-        type User557 {
+        type User556 {
             name: String!
-            things: [Thing557!]! @relationship(type: "HAS_THINGS", direction: OUT)
+            things: [Thing556!]! @relationship(type: "HAS_THINGS", direction: OUT)
         }
 
-        type Thing557 {
+        type Thing556 {
             id: ID! @id
         }
     `;
@@ -45,8 +45,8 @@ describe("https://github.com/neo4j/graphql/issues/557 - Input Object type Articl
         const session = driver.session();
 
         try {
-            await session.run(`MATCH (u:User557) DETACH DELETE u`);
-            await session.run(`MATCH (t:Thing557) DETACH DELETE t`);
+            await session.run(`MATCH (u:User556) DETACH DELETE u`);
+            await session.run(`MATCH (t:Thing556) DETACH DELETE t`);
         } finally {
             await session.close();
         }
@@ -61,8 +61,8 @@ describe("https://github.com/neo4j/graphql/issues/557 - Input Object type Articl
 
         const query = `
             mutation {
-                createUser557s(input: { name: "Darrell", things: { create: [{ node: {} }, { node: {} }] } }) {
-                    user557s {
+                createUser556s(input: { name: "Darrell", things: { create: [{ node: {} }, { node: {} }] } }) {
+                    user556s {
                         name
                         things {
                             id
@@ -82,9 +82,9 @@ describe("https://github.com/neo4j/graphql/issues/557 - Input Object type Articl
 
         expect(result.errors).toBeFalsy();
 
-        expect(result.data?.createUser557s.user557s).toHaveLength(1);
-        expect(result.data?.createUser557s.user557s[0].name).toEqual("Darrell");
-        expect(result.data?.createUser557s.user557s[0].things).toHaveLength(2);
+        expect(result.data?.createUser556s.user556s).toHaveLength(1);
+        expect(result.data?.createUser556s.user556s[0].name).toEqual("Darrell");
+        expect(result.data?.createUser556s.user556s[0].things).toHaveLength(2);
         await session.close();
     });
 });
