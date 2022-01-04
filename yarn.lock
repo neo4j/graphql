@@ -2041,7 +2041,7 @@ __metadata:
     "@types/jest": 26.0.8
     "@types/node": 14.0.27
     camelcase: ^6.2.0
-    graphql-tag: 2.11.0
+    graphql-tag: 2.12.6
     jest: 26.2.2
     jsonwebtoken: 8.5.1
     libnpmsearch: 3.1.0
@@ -2073,7 +2073,7 @@ __metadata:
     "@types/node": 14.0.27
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.6
-    apollo-server: ^3.0.2
+    apollo-server: 3.1.1
     camelcase: ^6.2.0
     debug: ^4.3.2
     dedent: 0.7.0
@@ -2083,7 +2083,7 @@ __metadata:
     graphql-compose: 9.0.4
     graphql-parse-resolve-info: ^4.12.0
     graphql-relay: ^0.8.0
-    graphql-tag: 2.11.0
+    graphql-tag: 2.12.6
     is-uuid: 1.0.2
     jest: 26.2.2
     jsonwebtoken: ^8.5.1
@@ -4522,6 +4522,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"apollo-server@npm:3.1.1":
+  version: 3.1.1
+  resolution: "apollo-server@npm:3.1.1"
+  dependencies:
+    apollo-server-core: ^3.1.1
+    apollo-server-express: ^3.1.1
+    express: ^4.17.1
+  peerDependencies:
+    graphql: ^15.3.0
+  checksum: 44b41d66b291c305ff4abfe1b3493c6259bf12b1fe9f496b95835d58b8fa58fd7f58c386e18381b39d65cb747b533cacc1b899655ed45ac8dbac5a2b14892815
+  languageName: node
+  linkType: hard
+
 "apollo-server@npm:^2.23.0":
   version: 2.23.0
   resolution: "apollo-server@npm:2.23.0"
@@ -4535,19 +4548,6 @@ __metadata:
   peerDependencies:
     graphql: ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
   checksum: 93302d7bb30974ebd1f8be79f06596105fd455fce27bc639603bd0d7af7b7679cfb4d1d32118c6816bcde7106402ac936e941584fdb32bb5326721a914831a92
-  languageName: node
-  linkType: hard
-
-"apollo-server@npm:^3.0.2":
-  version: 3.1.1
-  resolution: "apollo-server@npm:3.1.1"
-  dependencies:
-    apollo-server-core: ^3.1.1
-    apollo-server-express: ^3.1.1
-    express: ^4.17.1
-  peerDependencies:
-    graphql: ^15.3.0
-  checksum: 44b41d66b291c305ff4abfe1b3493c6259bf12b1fe9f496b95835d58b8fa58fd7f58c386e18381b39d65cb747b533cacc1b899655ed45ac8dbac5a2b14892815
   languageName: node
   linkType: hard
 
@@ -9396,6 +9396,17 @@ fsevents@^1.2.7:
   peerDependencies:
     graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
   checksum: a36557381cd0c8cdc507c6d63bd49fb9d2a409c990f7ce4964d9ddc1c7195d8ca52659a2bae305b50977e0dd29a162e0997b1cc84b2ceb3ad745991699d67bda
+  languageName: node
+  linkType: hard
+
+"graphql-tag@npm:2.12.6":
+  version: 2.12.6
+  resolution: "graphql-tag@npm:2.12.6"
+  dependencies:
+    tslib: ^2.1.0
+  peerDependencies:
+    graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+  checksum: b15162a3d62f17b9b79302445b9ee330e041582f1c7faca74b9dec5daa74272c906ec1c34e1c50592bb6215e5c3eba80a309103f6ba9e4c1cddc350c46f010df
   languageName: node
   linkType: hard
 
