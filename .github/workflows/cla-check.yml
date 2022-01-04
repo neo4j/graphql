@@ -7,7 +7,7 @@ on:
 
 jobs:
   cla-check:
-    if: github.event.pull_request.user.login != 'renovate-bot'
+    if: github.event.pull_request.user.login != 'renovate[bot]'
 
     runs-on: ubuntu-latest
 
@@ -19,10 +19,6 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT"
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
