@@ -1486,19 +1486,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/merge@npm:6.2.14":
-  version: 6.2.14
-  resolution: "@graphql-tools/merge@npm:6.2.14"
-  dependencies:
-    "@graphql-tools/schema": ^7.0.0
-    "@graphql-tools/utils": ^7.7.0
-    tslib: ~2.2.0
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0
-  checksum: f5ac009e4d99bb8a3ebc52e56db2fd6e7f2ee892a5e9cee7779de68a7970202b1a1b0d0324df8ca910dcac953e04c05cf914109dcc5681e4fda763b419b363eb
-  languageName: node
-  linkType: hard
-
 "@graphql-tools/merge@npm:6.2.16":
   version: 6.2.16
   resolution: "@graphql-tools/merge@npm:6.2.16"
@@ -1512,7 +1499,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/merge@npm:^6.2.16":
+"@graphql-tools/merge@npm:6.2.17, @graphql-tools/merge@npm:^6.2.16":
   version: 6.2.17
   resolution: "@graphql-tools/merge@npm:6.2.17"
   dependencies:
@@ -1573,18 +1560,6 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
   checksum: 4568a2ed431e2357848fcc01b3a0d440eea399b9846e14b27fc214e21034fed2557d7e548dfc9e772d3a9a04b65ea64caecc17b8cb25daba601da374f305ff23
-  languageName: node
-  linkType: hard
-
-"@graphql-tools/schema@npm:^7.0.0":
-  version: 7.1.3
-  resolution: "@graphql-tools/schema@npm:7.1.3"
-  dependencies:
-    "@graphql-tools/utils": ^7.1.2
-    tslib: ~2.1.0
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0
-  checksum: 352b0bab6fa5c1ed9b8364cf6a15dac86cc97d24ca74ebba06d6aa067f80118aaf2b6db813eb45a1aa8bc8ec5c3309c3cbab228f827c860a2951501b1a470492
   languageName: node
   linkType: hard
 
@@ -1651,7 +1626,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/utils@npm:^7.1.2, @graphql-tools/utils@npm:^7.7.0":
+"@graphql-tools/utils@npm:^7.1.2":
   version: 7.8.0
   resolution: "@graphql-tools/utils@npm:7.8.0"
   dependencies:
@@ -2036,7 +2011,7 @@ __metadata:
     "@graphql-codegen/core": 2.0.0
     "@graphql-codegen/plugin-helpers": 2.0.0
     "@graphql-codegen/typescript": 2.0.0
-    "@graphql-tools/merge": 6.2.14
+    "@graphql-tools/merge": 6.2.17
     "@neo4j/graphql": ^2.5.5
     "@types/jest": 26.0.8
     "@types/node": 14.0.27
@@ -2062,7 +2037,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
-    "@graphql-tools/merge": 6.2.14
+    "@graphql-tools/merge": 6.2.17
     "@graphql-tools/schema": ^7.1.5
     "@graphql-tools/utils": ^7.10.0
     "@types/deep-equal": 1.0.1
@@ -18136,13 +18111,6 @@ resolve@^2.0.0-next.3:
   version: 2.0.3
   resolution: "tslib@npm:2.0.3"
   checksum: 00fcdd1f9995c9f8eb6a4a1ad03f55bc95946321b7f55434182dddac259d4e095fedf78a84f73b6e32dd3f881d9281f09cb583123d3159ed4bdac9ad7393ef8b
-  languageName: node
-  linkType: hard
-
-"tslib@npm:~2.1.0":
-  version: 2.1.0
-  resolution: "tslib@npm:2.1.0"
-  checksum: aa189c8179de0427b0906da30926fd53c59d96ec239dff87d6e6bc831f608df0cbd6f77c61dabc074408bd0aa0b9ae4ec35cb2c15f729e32f37274db5730cb78
   languageName: node
   linkType: hard
 
