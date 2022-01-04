@@ -16,7 +16,7 @@ jobs:
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - id: get-version
         run: |
-          version=$(echo $GITHUB_REF | cut -d/ -f4)
+          version=$(echo "$GITHUB_REF" | cut -d/ -f4)
           echo "::set-output name=version::$version"
       - uses: actions/setup-node@v2
         with:
