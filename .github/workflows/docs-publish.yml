@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: "Download built documentation"
-        uses: actions/github-script@v3.1.0
+        uses: actions/github-script@v3.1.1
         with:
           script: |
             var artifacts = await github.actions.listWorkflowRunArtifacts({
