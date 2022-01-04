@@ -7,7 +7,7 @@ on:
 
 jobs:
   cla-check:
-    if: github.event.pull_request_target.user.login != 'renovate-bot'
+    if: github.event.pull_request.user.login != 'renovate-bot'
 
     runs-on: ubuntu-latest
 
