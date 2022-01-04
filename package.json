@@ -25,6 +25,7 @@
         "@typescript-eslint/eslint-plugin": "4.1.1",
         "@typescript-eslint/parser": "4.15.1",
         "concurrently": "6.0.0",
+        "dotenv": "^10.0.0",
         "eslint": "7.9.0",
         "eslint-config-airbnb-typescript": "10.0.0",
         "eslint-config-prettier": "6.11.0",
@@ -44,5 +45,6 @@
         "set-tz": "0.2.0",
         "ts-jest": "^26.5.4",
         "typescript": "3.9.7"
-    }
+    },
+    "packageManager": "yarn@3.1.1"
 }

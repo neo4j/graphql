@@ -3,7 +3,9 @@ name: "Pull Request"
 on:
   pull_request:
     branches:
-      - master
+      - dev
+    paths-ignore:
+      - "docs/**"
 
 jobs:
   cache-dependencies:
@@ -17,6 +19,62 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
+
+  reviewdog-eslint:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - uses: reviewdog/action-eslint@v1
+        with:
+          fail_on_error: true
+          eslint_flags: "."
+
+  typescript-changes:
+    runs-on: ubuntu-latest
+
+    outputs:
+      typescript: ${{ steps.filter.outputs.typescript }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          list-files: shell
+          filters: |
+            typescript:
+              - added|modified: '*.ts'
+
+  license-header-check:
+    needs: typescript-changes
+    if: ${{ needs.typescript-changes.outputs.typescript == 'true' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+      - name: Install addlicense
+        run: go install github.com/google/addlicense@latest
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          list-files: shell
+          filters: |
+            typescript:
+              - added|modified: '*.ts'
+      - name: Run addlicense
+        run: addlicense -f ./addlicense -check ${{ steps.filter.outputs.typescript_files }}
 
   unit-tests:
     needs:
@@ -152,6 +210,7 @@ jobs:
           - 4.2
           - 4.3.2
           - 4.3
+          - 4.4
 
     runs-on: ubuntu-latest
 

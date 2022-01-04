@@ -3,7 +3,7 @@ name: "CLA Check"
 on:
   pull_request_target:
     branches:
-      - master
+      - dev
 
 jobs:
   cla-check:
@@ -22,9 +22,9 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - run: |
-          owner=$(echo $GITHUB_REPOSITORY | cut -d/ -f1)
-          repository=$(echo $GITHUB_REPOSITORY | cut -d/ -f2)
+          owner=$(echo "$GITHUB_REPOSITORY" | cut -d/ -f1)
+          repository=$(echo "$GITHUB_REPOSITORY" | cut -d/ -f2)
 
-          ./bin/examine-pull-request $owner $repository "${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}" $PULL_REQUEST_NUMBER cla-database.csv
+          ./bin/examine-pull-request "$owner" "$repository" "${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}" "$PULL_REQUEST_NUMBER" cla-database.csv
         env:
           PULL_REQUEST_NUMBER: ${{ github.event.number }}
