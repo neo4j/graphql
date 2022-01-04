@@ -19,7 +19,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
 
   unit-tests:
     needs:
@@ -40,7 +40,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Run packages/${{ matrix.package }} unit tests
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
@@ -65,7 +65,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Run TCK tests
         run: yarn --cwd packages/graphql run test:tck --coverage
       - name: Upload coverage to Codecov
@@ -89,7 +89,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Run Schema tests
         run: yarn --cwd packages/graphql run test:schema --coverage
       - name: Upload coverage to Codecov
@@ -122,7 +122,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable && yarn build
+        run: yarn && yarn build
       - name: Setup Nextjs app
         run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
       - name: Install dependencies
@@ -155,7 +155,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - run: yarn build
       - name: Run @neo4j/graphql package tests
         run: yarn --cwd packages/graphql run test:package-tests
@@ -198,7 +198,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --coverage
@@ -234,7 +234,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Install ts-node and typescript
         run: npm install -g ts-node typescript
       - name: Uppercase instance name
@@ -273,7 +273,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Uppercase instance name
         run: |
           lowercase_instance=${{ matrix.aura-instance }}
@@ -342,7 +342,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Extract version from branch name
         id: get-version
         run: |
@@ -397,7 +397,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - run: yarn build --verbose
       - name: Pack ${{ matrix.package }}
         run: npm pack
@@ -470,6 +470,15 @@ jobs:
           git tag -a @neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }}"
       - name: git push
         run: git push --follow-tags
+      - uses: actions/checkout@v2
+        with:
+          ref: dev
+          fetch-depth: 0
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+      - name: git merge
+        run: git merge --no-ff origin/release/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+      - name: git push
+        run: git push
 
   delete-release-branch:
     needs:

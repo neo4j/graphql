@@ -21,13 +21,11 @@ import { gql } from "apollo-server";
 import { validateSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
 
-
 describe("https://github.com/neo4j/graphql/issues/556", () => {
     test("should compile type defs with no errors", () => {
-
         const typeDefs = gql`
             type Journalist {
-                articles: [Article]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle" )
+                articles: [Article]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle")
             }
 
             interface HasArticle @relationshipProperties {
@@ -36,8 +34,8 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
 
             type Article {
                 id: ID! @id
-                blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock" )
-                images: [ Image! ] @relationship(type: "HAS_IMAGE", direction: OUT )
+                blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
+                images: [Image!] @relationship(type: "HAS_IMAGE", direction: OUT)
             }
 
             interface HasBlock @relationshipProperties {
@@ -59,19 +57,19 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
 
             type ImageBlock implements Block {
                 id: ID @id
-                images: [ Image! ]! @relationship(type: "HAS_IMAGE", direction: OUT )
+                images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
             }
 
             interface Image {
-                featuredIn: [ Article! ]
+                featuredIn: [Article!]
             }
 
             type PDFImage implements Image {
-                featuredIn: [ Article! ] @relationship(type: "HAS_IMAGE", direction: IN )
+                featuredIn: [Article!] @relationship(type: "HAS_IMAGE", direction: IN)
                 url: String!
             }
         `;
- 
+
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         expect(neoSchema.schema).toBeDefined();
 
@@ -79,17 +77,15 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
         expect(errors).toEqual([]);
     });
     test("should compile empty type def with error", () => {
-
         const typeDefs = `
             type Journalist {
             }
 
         `;
- 
+
         expect(() => new Neo4jGraphQL({ typeDefs })).toThrow();
     });
     test("should compile empty input with error", () => {
-
         const typeDefs = `
             input JournalistInput {
             }
@@ -98,11 +94,10 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
             }
 
         `;
- 
+
         expect(() => new Neo4jGraphQL({ typeDefs })).toThrow();
     });
     test("should compile empty interface with error", () => {
-
         const typeDefs = `
             interface Person {
             }
@@ -112,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
             }
 
         `;
- 
+
         expect(() => new Neo4jGraphQL({ typeDefs })).toThrow();
     });
 });

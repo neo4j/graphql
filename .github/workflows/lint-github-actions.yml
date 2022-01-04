@@ -3,10 +3,10 @@ name: "Lint GitHub Actions"
 on:
   push:
     branches:
-      - master
+      - dev
   pull_request:
     branches:
-      - master
+      - dev
     paths:
       - ".github/workflows/**"
 
