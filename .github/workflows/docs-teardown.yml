@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - "docs/**"
+      - "docs/modules/ROOT/**"
     types:
       - closed
 
