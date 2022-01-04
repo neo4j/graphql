@@ -3,9 +3,9 @@ name: "Documentation Teardown"
 on:
   pull_request_target:
     branches:
-      - master
+      - dev
     paths:
-      - "docs/**"
+      - "docs/modules/ROOT/**"
     types:
       - closed
 

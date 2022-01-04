@@ -643,4 +643,17 @@ describe("validateDocument", () => {
             });
         });
     });
+
+    describe("https://github.com/neo4j/graphql/issues/609 - specified directives", () => {
+        test("should not throw error when using @deprecated directive", () => {
+            const doc = gql`
+                type Deprecated {
+                    deprecatedField: String @deprecated
+                }
+            `;
+
+            const res = validateDocument(doc);
+            expect(res).toBeUndefined();
+        });
+    });
 });

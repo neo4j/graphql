@@ -466,7 +466,7 @@ function createProjectionAndParams({
 
             const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
             const innerStr = `${pathStr}  ${whereStr} | ${param} ${projectionStr}`;
-            let nestedQuery;
+            let nestedQuery: string;
 
             if (optionsInput) {
                 const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
