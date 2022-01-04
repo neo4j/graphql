@@ -16,7 +16,7 @@ jobs:
     steps:
       - id: get-version
         run: |
-          version=$(echo $GITHUB_REF | cut -d/ -f4)
+          version=$(echo "$GITHUB_REF" | cut -d/ -f4)
           echo "::set-output name=version::$version"
 
   merge-tag-push:
@@ -45,11 +45,11 @@ jobs:
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
       - name: git merge
-        run: git merge --no-ff origin/release/$VERSION --strategy-option theirs
+        run: git merge --no-ff "origin/release/$VERSION" --strategy-option theirs
       - name: git tag
         run: |
-          git tag -a @neo4j/graphql@$VERSION -m "@neo4j/graphql@$VERSION"
-          git tag -a @neo4j/graphql-ogm@$VERSION -m "@neo4j/graphql-ogm@$VERSION"
+          git tag -a "@neo4j/graphql@$VERSION" -m "@neo4j/graphql@$VERSION"
+          git tag -a "@neo4j/graphql-ogm@$VERSION" -m "@neo4j/graphql-ogm@$VERSION"
       - name: git push
         run: git push --follow-tags
 
@@ -81,7 +81,7 @@ jobs:
       - name: Extract prerelease from version
         id: get-prerelease
         run: |
-          prerelease=$(echo $VERSION | cut -d@ -f3 | cut -d- -f2)
+          prerelease=$(echo "$VERSION" | cut -d@ -f3 | cut -d- -f2)
           echo "::set-output name=prerelease::$prerelease"
       - name: Build Changelog
         id: github-release
