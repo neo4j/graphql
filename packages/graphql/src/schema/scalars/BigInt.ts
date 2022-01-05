@@ -17,24 +17,36 @@
  * limitations under the License.
  */
 
-import { GraphQLScalarType, Kind, ValueNode } from "graphql";
-import { int, Integer } from "neo4j-driver";
+import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
+import { int, Integer, isInt } from "neo4j-driver";
 
-export default new GraphQLScalarType({
+export default new GraphQLScalarType<Integer, string>({
     name: "BigInt",
     description:
         "A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.",
-    serialize(value: Integer) {
-        return value.toString(10);
+    serialize(outputValue) {
+        if (isInt(outputValue)) {
+            return outputValue.toString(10);
+        }
+
+        if (typeof outputValue === "string") {
+            return outputValue;
+        }
+
+        if (typeof outputValue === "number") {
+            return outputValue.toString(10);
+        }
+
+        throw new GraphQLError(`BigInt cannot represent value: ${outputValue}`);
     },
-    parseValue(value: string) {
-        if (typeof value !== "string") {
-            throw new Error(
+    parseValue(inputValue) {
+        if (typeof inputValue !== "string") {
+            throw new GraphQLError(
                 "BigInt values are not JSON serializable. Please pass as a string in variables, or inline in the GraphQL query."
             );
         }
 
-        return int(value);
+        return int(inputValue);
     },
     parseLiteral(ast: ValueNode) {
         switch (ast.kind) {
@@ -42,7 +54,7 @@ export default new GraphQLScalarType({
             case Kind.STRING:
                 return int(ast.value);
             default:
-                throw new Error("Value must be either a BigInt, or a string representing a BigInt value.");
+                throw new GraphQLError("Value must be either a BigInt, or a string representing a BigInt value.");
         }
     },
 });
