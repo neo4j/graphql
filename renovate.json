@@ -1,5 +1,6 @@
 {
     "extends": ["config:js-lib"],
+    "baseBranches": ["dev"],
     "rebaseWhen": "auto",
     "packageRules": [
         {
