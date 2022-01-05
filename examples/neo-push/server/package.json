@@ -14,7 +14,7 @@
     "dependencies": {
         "@neo4j/graphql": "^2.5.5",
         "@neo4j/graphql-ogm": "^2.5.5",
-        "apollo-server-express": "2.19.0",
+        "apollo-server-express": "^3.6.1",
         "bcrypt": "5.0.1",
         "debug": "4.3.1",
         "dotenv": "^10.0.0",
@@ -33,7 +33,7 @@
         "@types/jsonwebtoken": "8.5.1",
         "@types/node": "14.14.14",
         "@types/uuid": "8.3.0",
-        "apollo-server-testing": "2.19.0",
+        "apollo-server-testing": "^2.25.3",
         "cross-env": "7.0.3",
         "faker": "5.1.0",
         "jest": "26.6.3",
