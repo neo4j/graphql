@@ -1,8 +1,18 @@
 {
-    "extends": [
-        "config:js-lib"
-    ],
-    "baseBranches": [
-        "dev"
+    "extends": ["config:js-lib"],
+    "rebaseWhen": "auto",
+    "packageRules": [
+        {
+            "matchDepTypes": ["dependencies"],
+            "addLabels": ["dependency upgrade"]
+        },
+        {
+            "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+            "automerge": true
+        },
+        {
+            "matchDepTypes": ["devDependencies"],
+            "automerge": true
+        }
     ]
 }
