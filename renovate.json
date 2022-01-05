@@ -4,7 +4,18 @@
     "packageRules": [
         {
             "matchDepTypes": ["dependencies"],
-            "addLabels": ["dependency upgrade"]
+            "matchFiles": ["packages/graphql/package.json"],
+            "labels": ["dependency upgrade", "graphql"]
+        },
+        {
+            "matchDepTypes": ["dependencies"],
+            "matchFiles": ["packages/introspector/package.json"],
+            "labels": ["dependency upgrade", "introspector"]
+        },
+        {
+            "matchDepTypes": ["dependencies"],
+            "matchFiles": ["packages/ogm/package.json"],
+            "labels": ["dependency upgrade", "ogm"]
         },
         {
             "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
