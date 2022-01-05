@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import pluralize from "pluralize";
 import { gql } from "apollo-server";
 import { Driver, Session, Integer } from "neo4j-driver";
 import { graphql, DocumentNode } from "graphql";
@@ -54,7 +53,7 @@ describe("Update -> ConnectOrCreate", () => {
 
         query = gql`
             mutation {
-              update${pluralize(typeMovie.name)}(
+              ${typeMovie.methods.update}(
                 update: {
                     title: "Forrest Gump 2"
                     genres: {

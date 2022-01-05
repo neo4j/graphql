@@ -61,7 +61,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     let updateArgs = {};
 
     const mutationResponse =
-        resolveTree.fieldsByTypeName[`Update${node.getPlural({ camelCase: false })}MutationResponse`];
+        resolveTree.fieldsByTypeName[`Update${node.getPlural({ camelCase: true, pascalCase: true })}MutationResponse`];
 
     const nodeProjection = Object.values(mutationResponse).find(
         (field) => field.name === node.getPlural({ camelCase: true })

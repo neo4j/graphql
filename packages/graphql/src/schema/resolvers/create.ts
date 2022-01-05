@@ -53,7 +53,7 @@ export default function createResolver({ node }: { node: Node }) {
     }
 
     return {
-        type: `Create${node.getPlural({ camelCase: false })}MutationResponse!`,
+        type: `Create${node.getPlural({ camelCase: true, pascalCase: true })}MutationResponse!`,
         resolve,
         args: { input: `[${node.name}CreateInput!]!` },
     };

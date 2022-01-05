@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import pluralize from "pluralize";
 import { gql } from "apollo-server";
 import { Driver, Session, Integer } from "neo4j-driver";
 import { graphql, DocumentNode } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../../tests/utils/graphql-types";
+import { generateUniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 
 describe("Create -> ConnectOrCreate Union", () => {
@@ -84,7 +83,7 @@ describe("Create -> ConnectOrCreate Union", () => {
 
         const query = gql`
             mutation {
-                create${pluralize(typeActor.name)}(
+                ${typeActor.methods.create}(
                     input: {
                             name: "Tom Hanks"
                             actedIn: {
@@ -125,7 +124,7 @@ describe("Create -> ConnectOrCreate Union", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[`create${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
+        expect((gqlResult as any).data[typeActor.methods.create][typeActor.plural]).toEqual([
             {
                 name: "Tom Hanks",
             },
@@ -174,7 +173,7 @@ describe("Create -> ConnectOrCreate Union", () => {
 
         const query = gql`
             mutation {
-                create${pluralize(typeActor.name)}(
+                ${typeActor.methods.create}(
                     input: {
                             name: "${actorName}"
                             actedIn: {
@@ -215,7 +214,7 @@ describe("Create -> ConnectOrCreate Union", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[`create${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
+        expect((gqlResult as any).data[typeActor.methods.create][typeActor.plural]).toEqual([
             {
                 name: actorName,
             },

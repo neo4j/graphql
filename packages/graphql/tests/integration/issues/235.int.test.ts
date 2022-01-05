@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
 
         const createBs = `
             mutation CreateBs($b1: String!, $b2: String!) {
-                createBS(input: [{ name: $b1 }, { name: $b2 }]) {
+                createBs(input: [{ name: $b1 }, { name: $b2 }]) {
                     bs {
                         name
                     }
@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
 
         const createAs = `
             mutation CreateAs($a: String!, $b1: String, $b2: String, $c: String!) {
-                createAS(
+                createAs(
                     input: [
                         {
                             name: $a
@@ -121,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
         });
 
         expect(createBsResult.errors).toBeFalsy();
-        expect(createBsResult.data?.createBS.bs).toEqual([{ name: b1 }, { name: b2 }]);
+        expect(createBsResult.data?.createBs.bs).toEqual([{ name: b1 }, { name: b2 }]);
 
         const createAsResult = await graphql({
             schema: neoSchema.schema,
@@ -131,12 +131,12 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
         });
 
         expect(createAsResult.errors).toBeFalsy();
-        expect(createAsResult.data?.createAS.as).toHaveLength(1);
-        expect(createAsResult.data?.createAS.as[0].name).toEqual(a);
-        expect(createAsResult.data?.createAS.as[0].rel_b).toHaveLength(2);
-        expect(createAsResult.data?.createAS.as[0].rel_b).toContainEqual({ name: b1 });
-        expect(createAsResult.data?.createAS.as[0].rel_b).toContainEqual({ name: b2 });
-        expect(createAsResult.data?.createAS.as[0].rel_c).toEqual([{ name: c }]);
+        expect(createAsResult.data?.createAs.as).toHaveLength(1);
+        expect(createAsResult.data?.createAs.as[0].name).toEqual(a);
+        expect(createAsResult.data?.createAs.as[0].rel_b).toHaveLength(2);
+        expect(createAsResult.data?.createAs.as[0].rel_b).toContainEqual({ name: b1 });
+        expect(createAsResult.data?.createAs.as[0].rel_b).toContainEqual({ name: b2 });
+        expect(createAsResult.data?.createAs.as[0].rel_c).toEqual([{ name: c }]);
 
         const asResult = await graphql({
             schema: neoSchema.schema,

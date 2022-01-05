@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import pluralize from "pluralize";
 import { Driver, Session } from "neo4j-driver";
 import { gql } from "apollo-server";
 import { graphql, DocumentNode } from "graphql";
@@ -71,7 +70,7 @@ describe("connectorcreate with @id", () => {
     test("create -> connectOrCreate with specified ID", async () => {
         const query = gql`
             mutation {
-              create${pluralize(typeActor.name)}(
+              ${typeActor.methods.create}(
                 input: [
                   {
                     name: "Tom Hanks"
@@ -102,7 +101,7 @@ describe("connectorcreate with @id", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[`create${pluralize(typeActor.name)}`][typeActor.plural]).toEqual([
+        expect((gqlResult as any).data[typeActor.methods.create][typeActor.plural]).toEqual([
             {
                 name: "Tom Hanks",
                 movies: [{ id: "myid", title: "The Terminal" }],
@@ -125,7 +124,7 @@ describe("connectorcreate with @id", () => {
 
         const query = gql`
             mutation {
-              create${pluralize(typeActor.name)}(
+              ${typeActor.methods.create}(
                 input: [
                   {
                     name: "Tom Hanks"
@@ -157,20 +156,14 @@ describe("connectorcreate with @id", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult as any).data[`create${pluralize(typeActor.name)}`][typeActor.plural]).toHaveLength(1);
-        expect((gqlResult as any).data[`create${pluralize(typeActor.name)}`][typeActor.plural][0].name).toEqual(
-            "Tom Hanks"
-        );
+        expect((gqlResult as any).data[typeActor.methods.create][typeActor.plural]).toHaveLength(1);
 
-        expect((gqlResult as any).data[`create${pluralize(typeActor.name)}`][typeActor.plural][0].movies).toHaveLength(
-            1
-        );
-        expect(
-            (gqlResult as any).data[`create${pluralize(typeActor.name)}`][typeActor.plural][0].movies[0].title
-        ).toEqual(title);
+        const resultActor = (gqlResult as any).data[typeActor.methods.create][typeActor.plural][0];
+        expect(resultActor.name).toEqual("Tom Hanks");
 
-        expect(
-            typeof (gqlResult as any).data[`create${pluralize(typeActor.name)}`][typeActor.plural][0].movies[0].id
-        ).toEqual("string");
+        expect(resultActor.movies).toHaveLength(1);
+        expect(resultActor.movies[0].title).toEqual(title);
+
+        expect(typeof resultActor.movies[0].id).toEqual("string");
     });
 });

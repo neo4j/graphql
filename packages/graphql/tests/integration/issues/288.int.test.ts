@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
         const createMutation = `
             mutation {
-                createUSERS(input: { USERID: "${userid}", COMPANYID: "${companyid1}" }) {
+                createUsers(input: { USERID: "${userid}", COMPANYID: "${companyid1}" }) {
                     users {
                         USERID
                         COMPANYID
@@ -68,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
         const updateMutation = `
             mutation {
-                updateUSERS(where: { USERID: "${userid}" }, update: { COMPANYID: "${companyid2}" }) {
+                updateUsers(where: { USERID: "${userid}" }, update: { COMPANYID: "${companyid2}" }) {
                     users {
                         USERID
                         COMPANYID
@@ -88,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
             expect(createResult.errors).toBeFalsy();
 
-            expect(createResult?.data?.createUSERS?.users).toEqual([{ USERID: userid, COMPANYID: companyid1 }]);
+            expect(createResult?.data?.createUsers?.users).toEqual([{ USERID: userid, COMPANYID: companyid1 }]);
 
             const updateResult = await graphql({
                 schema: neoSchema.schema,
@@ -98,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
             expect(updateResult.errors).toBeFalsy();
 
-            expect(updateResult?.data?.updateUSERS?.users).toEqual([{ USERID: userid, COMPANYID: companyid2 }]);
+            expect(updateResult?.data?.updateUsers?.users).toEqual([{ USERID: userid, COMPANYID: companyid2 }]);
 
             await session.run(`MATCH (u:USER) WHERE u.USERID = "${userid}" DELETE u`);
         } finally {

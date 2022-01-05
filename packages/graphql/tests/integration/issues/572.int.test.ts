@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import pluralize from "pluralize";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
@@ -50,7 +49,7 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
 
         const query = `
             mutation {
-                create${pluralize(user.name)}(input: { name: "Ford" }) {
+                ${user.methods.create}(input: { name: "Ford" }) {
                     info {
                         nodesCreated
                     }
@@ -66,7 +65,7 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
-            [`create${pluralize(user.name)}`]: {
+            [user.methods.create]: {
                 info: {
                     nodesCreated: 1,
                 },

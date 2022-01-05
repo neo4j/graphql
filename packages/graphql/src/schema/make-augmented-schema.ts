@@ -870,7 +870,7 @@ function makeAugmentedSchema(
 
         ["Create", "Update"].map((operation) =>
             composer.createObjectTC({
-                name: `${operation}${node.getPlural({ camelCase: false })}MutationResponse`,
+                name: `${operation}${node.getPlural({ camelCase: true, pascalCase: true })}MutationResponse`,
                 fields: {
                     info: `${operation}Info!`,
                     [node.getPlural({ camelCase: true })]: `[${node.name}!]!`,
@@ -917,19 +917,22 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${node.getPlural({ camelCase: false })}`]: createResolver({ node }),
+                [`create${node.getPlural({ camelCase: true, pascalCase: true })}`]: createResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${node.getPlural({ camelCase: false })}`]: deleteResolver({ node }),
+                [`delete${node.getPlural({ camelCase: true, pascalCase: true })}`]: deleteResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node, schemaComposer: composer }),
+                [`update${node.getPlural({ camelCase: true, pascalCase: true })}`]: updateResolver({
+                    node,
+                    schemaComposer: composer,
+                }),
             });
         }
     });

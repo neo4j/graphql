@@ -22,6 +22,7 @@
 import { generate } from "randomstring";
 import pluralize from "pluralize";
 import camelCase from "camelcase";
+import { upperFirst } from "graphql-compose";
 
 export function generateUniqueType(baseName: string): TestType {
     const type = `${generate({
@@ -30,13 +31,25 @@ export function generateUniqueType(baseName: string): TestType {
     })}${baseName}`;
 
     const plural = pluralize(camelCase(type));
+    const pascalCasePlural = upperFirst(plural);
+
     return {
         name: type,
         plural,
+        methods: {
+            create: `create${pascalCasePlural}`,
+            update: `update${pascalCasePlural}`,
+            delete: `delete${pascalCasePlural}`,
+        },
     };
 }
 
 export type TestType = {
     name: string;
     plural: string;
+    methods: {
+        create: string;
+        update: string;
+        delete: string;
+    };
 };
