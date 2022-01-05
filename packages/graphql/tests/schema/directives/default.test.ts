@@ -172,11 +172,15 @@ describe("@default directive", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [UserSort]
             }
 
-            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
             input UserSort {
               fromInterface: SortDirection
               id: SortDirection
@@ -268,8 +272,7 @@ describe("@default directive", () => {
               verifiedDate_NOT: DateTime
               verifiedDate_NOT_IN: [DateTime]
               verified_NOT: Boolean
-            }
-            "
+            }"
         `);
     });
 });
