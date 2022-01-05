@@ -38,7 +38,7 @@ export default function createResolver({ node }: { node: Node }) {
         });
 
         const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
-            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({ camelCase: true })
+            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({})
         ) as FieldNode;
 
         const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
@@ -53,7 +53,7 @@ export default function createResolver({ node }: { node: Node }) {
     }
 
     return {
-        type: `Create${node.getPlural({ camelCase: true, pascalCase: true })}MutationResponse!`,
+        type: `Create${node.getPlural({ pascalCase: true })}MutationResponse!`,
         resolve,
         args: { input: `[${node.name}CreateInput!]!` },
     };

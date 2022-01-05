@@ -33,11 +33,9 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
     let interfaceParams: any;
 
     const mutationResponse =
-        resolveTree.fieldsByTypeName[`Create${node.getPlural({ pascalCase: true, camelCase: true })}MutationResponse`];
+        resolveTree.fieldsByTypeName[`Create${node.getPlural({ pascalCase: true })}MutationResponse`];
 
-    const nodeProjection = Object.values(mutationResponse).find(
-        (field) => field.name === node.getPlural({ camelCase: true })
-    );
+    const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.getPlural({}));
 
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {

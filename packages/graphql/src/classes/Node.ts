@@ -196,8 +196,7 @@ class Node extends GraphElement {
         return this.nodeDirective?.label || this.name;
     }
 
-    public getPlural(options: { camelCase: boolean; pascalCase?: boolean }): string {
-        // camelCase is optional in this case to maintain backward compatibility
+    public getPlural(options: { pascalCase?: boolean }): string {
         let plural = pluralize(camelCase(this.name));
         if (this.nodeDirective?.plural) {
             plural = camelCase(this.nodeDirective.plural);

@@ -38,7 +38,7 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
         });
 
         const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
-            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({ camelCase: true })
+            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({})
         ) as FieldNode;
 
         const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
@@ -64,7 +64,7 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
         relationFields.connectOrCreate = `${node.name}ConnectOrCreateInput`;
     }
     return {
-        type: `Update${node.getPlural({ camelCase: true, pascalCase: true })}MutationResponse!`,
+        type: `Update${node.getPlural({ pascalCase: true })}MutationResponse!`,
         resolve,
         args: {
             where: `${node.name}Where`,
