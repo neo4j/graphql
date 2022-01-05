@@ -2,6 +2,7 @@ import {
     BooleanValueNode,
     DirectiveNode,
     InterfaceTypeDefinitionNode,
+    Kind,
     ObjectTypeDefinitionNode,
     StringValueNode,
 } from "graphql";
@@ -15,7 +16,7 @@ function getUniqueMeta(
 ): Unique | undefined {
     const uniqueDirective = directives.find((x) => x.name.value === "unique");
 
-    if (uniqueDirective && type.kind === "InterfaceTypeDefinition") {
+    if (uniqueDirective && type.kind === Kind.INTERFACE_TYPE_DEFINITION) {
         throw new Error(`@unique directive cannot be used on interface type fields: ${type.name.value}.${fieldName}`);
     }
 
