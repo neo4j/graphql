@@ -2,6 +2,7 @@
     "extends": ["config:js-lib"],
     "baseBranches": ["dev"],
     "rebaseWhen": "auto",
+    "automerge": true,
     "packageRules": [
         {
             "matchDepTypes": ["dependencies"],
@@ -19,12 +20,9 @@
             "labels": ["dependency upgrade", "ogm"]
         },
         {
-            "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-            "automerge": true
-        },
-        {
-            "matchDepTypes": ["devDependencies"],
-            "automerge": true
+            "matchDepTypes": ["dependencies"],
+            "matchUpdateTypes": ["major"],
+            "automerge": false
         }
     ]
 }
