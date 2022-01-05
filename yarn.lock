@@ -2076,7 +2076,7 @@ __metadata:
     "@types/faker": 5.1.7
     "@types/is-uuid": 1.0.0
     "@types/jest": 26.0.24
-    "@types/jsonwebtoken": 8.5.4
+    "@types/jsonwebtoken": 8.5.6
     "@types/node": 14.0.27
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.6
@@ -2836,12 +2836,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:8.5.4":
-  version: 8.5.4
-  resolution: "@types/jsonwebtoken@npm:8.5.4"
+"@types/jsonwebtoken@npm:8.5.6":
+  version: 8.5.6
+  resolution: "@types/jsonwebtoken@npm:8.5.6"
   dependencies:
     "@types/node": "*"
-  checksum: 541d41eb8115afd422e0333d7ba79399febc86818015b3ecb7c36b2b7f9b4476a33aa13a4f23f81a08b201c5cdacbe2903b6d03cd4930abf83a4e14be3696719
+  checksum: c1c0e40cb1366d3b5f72c2c283abee8e5aedc5656d8857752ed4cb318eb8e117dad87f35431f73cdc03e7b02d169d19b3a1e58422ef94776c17cfd003ee05a33
   languageName: node
   linkType: hard
 
