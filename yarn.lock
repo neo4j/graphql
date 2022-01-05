@@ -2126,7 +2126,7 @@ __metadata:
     "@graphql-tools/schema": ^7.1.5
     "@graphql-tools/utils": ^7.10.0
     "@types/deep-equal": 1.0.1
-    "@types/faker": 5.1.7
+    "@types/faker": 5.5.9
     "@types/is-uuid": 1.0.0
     "@types/jest": 26.0.24
     "@types/jsonwebtoken": 8.5.6
@@ -2139,7 +2139,7 @@ __metadata:
     dedent: 0.7.0
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
-    faker: 5.2.0
+    faker: 5.5.3
     graphql-compose: 9.0.4
     graphql-parse-resolve-info: ^4.12.0
     graphql-relay: ^0.8.0
@@ -2737,10 +2737,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/faker@npm:5.1.7":
-  version: 5.1.7
-  resolution: "@types/faker@npm:5.1.7"
-  checksum: 24390a1bdcb8346df4dff71174c216273416a55333c0834abd7c76a7d3e3e1d227dc1e52b1caaf2a8a0c321f1d7414c01aca06ea8e37a5ff46d0aeae9d746242
+"@types/faker@npm:5.5.9":
+  version: 5.5.9
+  resolution: "@types/faker@npm:5.5.9"
+  checksum: c2cbd082abe29047c89cf29b86257e582d2a177a9d1ed3abf99aa1cc025d5e8a3d201dfaddf8441bfcc57ed43e4da80e666951e1c23a5b759ac441a5855b5c36
   languageName: node
   linkType: hard
 
@@ -8601,10 +8601,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"faker@npm:5.2.0":
-  version: 5.2.0
-  resolution: "faker@npm:5.2.0"
-  checksum: 26ea6e06679052f3ea2637e9dfa2db227b14a37ccc29db33976290a2dec344b3806f78d08c6c1fdeaa866960104936d6c802e86e1114bdca7fb337675bbb57e5
+"faker@npm:5.5.3":
+  version: 5.5.3
+  resolution: "faker@npm:5.5.3"
+  checksum: 684fd64c8d3897e54248f95b4f6319f75d97691b8500cd13adf4af2c28f9204f766c1d1aaa6b41338f0beaaa87256c3132f8708a1a8f189d122b92f6b98081c3
   languageName: node
   linkType: hard
 
