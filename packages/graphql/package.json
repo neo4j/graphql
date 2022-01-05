@@ -79,7 +79,7 @@
         "debug": "^4.3.2",
         "deep-equal": "^2.0.5",
         "dot-prop": "^6.0.1",
-        "graphql-compose": "9.0.4",
+        "graphql-compose": "^9.0.6",
         "graphql-parse-resolve-info": "^4.12.0",
         "graphql-relay": "^0.8.0",
         "jsonwebtoken": "^8.5.1",

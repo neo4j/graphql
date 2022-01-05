@@ -1730,7 +1730,7 @@ __metadata:
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
     faker: 5.2.0
-    graphql-compose: 9.0.4
+    graphql-compose: ^9.0.6
     graphql-parse-resolve-info: ^4.12.0
     graphql-relay: ^0.8.0
     graphql-tag: ^2.12.6
@@ -2511,13 +2511,6 @@ __metadata:
   version: 2.4.1
   resolution: "@types/normalize-package-data@npm:2.4.1"
   checksum: e87bccbf11f95035c89a132b52b79ce69a1e3652fe55962363063c9c0dae0fe2477ebc585e03a9652adc6f381d24ba5589cc5e51849df4ced3d3e004a7d40ed5
-  languageName: node
-  linkType: hard
-
-"@types/object-path@npm:0.11.1":
-  version: 0.11.1
-  resolution: "@types/object-path@npm:0.11.1"
-  checksum: 007e819d1d9dc830491b60023b1502ef1e421416d9953d6fefcda7d06eb91548eef8ee30073a9cfb6a834ac977042f6e1a761cde2d6a7973b06ddca753be91e3
   languageName: node
   linkType: hard
 
@@ -8648,16 +8641,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-compose@npm:9.0.4":
-  version: 9.0.4
-  resolution: "graphql-compose@npm:9.0.4"
+"graphql-compose@npm:^9.0.6":
+  version: 9.0.6
+  resolution: "graphql-compose@npm:9.0.6"
   dependencies:
-    "@types/object-path": 0.11.1
     graphql-type-json: 0.3.2
-    object-path: 0.11.8
   peerDependencies:
     graphql: ^14.2.0 || ^15.0.0 || ^16.0.0
-  checksum: add6c0f46a7cd123cf9d932708950371a3a937e141922545c45d8b8bae9399f5de3cd3607a67c3eb3a5bfc0f0e876d22bd4c08a0a5feb955423f35e0621dfbcb
+  checksum: 85fd2c3fc67d45fe8271a4957b2246618b2ff3d91d8ab51cbfee0c91dc0ccdaec40efe2a6e6f51da36513d98bebfeb5f507e202b8c170ecd559f11cdc8f6cd03
   languageName: node
   linkType: hard
 
@@ -13007,7 +12998,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object-path@npm:0.11.8, object-path@npm:^0.11.4":
+"object-path@npm:^0.11.4":
   version: 0.11.8
   resolution: "object-path@npm:0.11.8"
   checksum: 684ccf0fb6b82f067dc81e2763481606692b8485bec03eb2a64e086a44dbea122b2b9ef44423a08e09041348fe4b4b67bd59985598f1652f67df95f0618f5968
