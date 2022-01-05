@@ -6382,14 +6382,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:6.0.0":
-  version: 6.0.0
-  resolution: "concurrently@npm:6.0.0"
+"concurrently@npm:6.5.1":
+  version: 6.5.1
+  resolution: "concurrently@npm:6.5.1"
   dependencies:
     chalk: ^4.1.0
     date-fns: ^2.16.1
-    lodash: ^4.17.20
-    read-pkg: ^5.2.0
+    lodash: ^4.17.21
     rxjs: ^6.6.3
     spawn-command: ^0.0.2-1
     supports-color: ^8.1.0
@@ -6397,7 +6396,7 @@ __metadata:
     yargs: ^16.2.0
   bin:
     concurrently: bin/concurrently.js
-  checksum: c329f5db72890b5372b2ebf5e8a4b0e3572086dee55afb2fe5d81c819917bc2dc395f613dc81de7eacc13e007c49375afa23898499544fadf550a3ffcb8a77b0
+  checksum: 3f4d89b464fa5c9fb6f9489b46594c30ba54eff6ff10ab3cb5f30f64b74c83be664623a0f0cc731a3cb3f057a1f4a3292f7d3470c012a292c44aca31f214a3fa
   languageName: node
   linkType: hard
 
@@ -12498,7 +12497,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.x, lodash@npm:^4.17.11, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.7.0, lodash@npm:~4.17.0":
+"lodash@npm:4.x, lodash@npm:^4.17.11, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.7.0, lodash@npm:~4.17.0":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
@@ -13421,7 +13420,7 @@ fsevents@^1.2.7:
   dependencies:
     "@typescript-eslint/eslint-plugin": 4.1.1
     "@typescript-eslint/parser": 4.15.1
-    concurrently: 6.0.0
+    concurrently: 6.5.1
     dotenv: 10.0.0
     eslint: 7.32.0
     eslint-config-airbnb-typescript: 10.0.2
