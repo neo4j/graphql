@@ -2142,7 +2142,7 @@ __metadata:
     faker: 5.5.3
     graphql-compose: 9.0.4
     graphql-parse-resolve-info: ^4.12.0
-    graphql-relay: ^0.8.0
+    graphql-relay: ^0.10.0
     graphql-tag: 2.12.6
     is-uuid: 1.0.2
     jest: 26.6.3
@@ -9511,12 +9511,12 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"graphql-relay@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "graphql-relay@npm:0.8.0"
+"graphql-relay@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "graphql-relay@npm:0.10.0"
   peerDependencies:
-    graphql: 15.5.1
-  checksum: 66bd9d611098bdfe9dd86e391f5c59185f25484000877513ad0f97f79ce5eea52aaef4e05589d8030de9c8910990afb7c5491e9fdf81280032c59dc7cb285da9
+    graphql: ^16.2.0
+  checksum: 74b2b608ed7c18cc405d53fa7e482a68442a4dc7c0748bba029c59e1d23c6c6e5b8193c775eb73f6bb0dce49501f66af0453eb0b0f0362374cef9f97528852c0
   languageName: node
   linkType: hard
 
