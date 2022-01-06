@@ -33,7 +33,7 @@ describe("Cypher alias directive", () => {
             type Actor {
                 name: String!
                 city: String @alias(property: "cityPropInDb")
-                actedIn: [Movie] @relationship(direction: OUT, type: "ACTED_IN", properties: "ActorActedInProps")
+                actedIn: [Movie!]! @relationship(direction: OUT, type: "ACTED_IN", properties: "ActorActedInProps")
             }
 
             type Movie {

@@ -31,7 +31,7 @@ describe("Relationship", () => {
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -119,7 +119,7 @@ describe("Relationship", () => {
             }
 
             type Movie {
-              actors(options: ActorOptions, where: ActorWhere): [Actor]!
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
@@ -352,12 +352,12 @@ describe("Relationship", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -370,7 +370,7 @@ describe("Relationship", () => {
             }
 
             type Actor {
-              movies(options: MovieOptions, where: MovieWhere): [Movie]
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String
@@ -556,7 +556,7 @@ describe("Relationship", () => {
             }
 
             type Movie {
-              actors(options: ActorOptions, where: ActorWhere): [Actor]!
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID

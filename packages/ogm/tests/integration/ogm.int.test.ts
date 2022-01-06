@@ -160,7 +160,7 @@ describe("OGM", () => {
 
                 type Movie {
                     id: ID
-                    genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
+                    genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 }
             `;
 
@@ -340,9 +340,9 @@ describe("OGM", () => {
                 type Product {
                     id: ID!
                     name: String!
-                    sizes: [Size] @relationship(type: "HAS_SIZE", direction: OUT)
-                    colors: [Color] @relationship(type: "HAS_COLOR", direction: OUT)
-                    photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+                    sizes: [Size!]! @relationship(type: "HAS_SIZE", direction: OUT)
+                    colors: [Color!]! @relationship(type: "HAS_COLOR", direction: OUT)
+                    photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
                 }
 
                 type Size {
@@ -353,14 +353,14 @@ describe("OGM", () => {
                 type Color {
                     id: ID!
                     name: String!
-                    photos: [Photo] @relationship(type: "OF_COLOR", direction: IN)
+                    photos: [Photo!]! @relationship(type: "OF_COLOR", direction: IN)
                 }
 
                 type Photo {
                     id: ID!
                     description: String!
                     url: String!
-                    color: Color @relationship(type: "OF_COLOR", direction: OUT)
+                    color: Color! @relationship(type: "OF_COLOR", direction: OUT)
                 }
             `;
 
@@ -606,12 +606,12 @@ describe("OGM", () => {
             const typeDefs = gql`
                 type Actor {
                     id: ID
-                    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
                 type Movie {
                     id: ID
-                    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             `;
 
@@ -666,12 +666,12 @@ describe("OGM", () => {
             const typeDefs = `
                 type Actor {
                     id: ID
-                    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
                 type Movie {
                     id: ID
-                    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             `;
 
@@ -724,12 +724,12 @@ describe("OGM", () => {
             const typeDefs = `
                 type Actor {
                     id: ID
-                    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
                 type Movie {
                     id: ID
-                    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             `;
 
@@ -818,7 +818,7 @@ describe("OGM", () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
-                    genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
+                    genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
                 }
 
                 type Genre {
@@ -866,7 +866,7 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
-            const User = ogm.model("User") as unknown as Model;
+            const User = (ogm.model("User") as unknown) as Model;
 
             const id = generate({
                 charset: "alphabetic",

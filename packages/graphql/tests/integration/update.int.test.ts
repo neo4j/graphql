@@ -149,12 +149,12 @@ describe("update", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -289,12 +289,12 @@ describe("update", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -369,12 +369,12 @@ describe("update", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -437,12 +437,12 @@ describe("update", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -505,12 +505,12 @@ describe("update", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -595,12 +595,12 @@ describe("update", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -680,13 +680,13 @@ describe("update", () => {
         const typeDefs = `
             type Actor {
               name: String
-              movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+              movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
               id: ID
               title: String
-              actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+              actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -759,12 +759,12 @@ describe("update", () => {
         const typeDefs = `
             type Actor {
                 id: ID
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -824,18 +824,18 @@ describe("update", () => {
         const typeDefs = `
             type Actor {
                 id: ID
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
-                series: [Series] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                series: [Series!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Series {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -897,18 +897,18 @@ describe("update", () => {
         }
     });
 
-    test("should disconnect an actor from a movie", async () => {
+    test("!", async () => {
         const session = driver.session();
 
         const typeDefs = `
             type Actor {
                 id: ID
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -969,7 +969,7 @@ describe("update", () => {
         const typeDefs = `
             type Product {
                 id: ID
-                photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+                photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
             }
 
             type Color {
@@ -978,7 +978,7 @@ describe("update", () => {
 
             type Photo {
                 id: ID
-                color: Color @relationship(type: "OF_COLOR", direction: OUT)
+                color: Color! @relationship(type: "OF_COLOR", direction: OUT)
             }
         `;
 
@@ -1015,9 +1015,6 @@ describe("update", () => {
                     id
                     photos {
                         id
-                        color {
-                            id
-                        }
                     }
                 }
             }
@@ -1050,7 +1047,7 @@ describe("update", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult?.data?.updateProducts).toEqual({
-                products: [{ id: productId, photos: [{ id: photoId, color: null }] }],
+                products: [{ id: productId, photos: [{ id: photoId }] }],
             });
         } finally {
             await session.close();
@@ -1064,7 +1061,7 @@ describe("update", () => {
           type Product {
              id: ID
              name: String
-             photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+             photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
            }
 
 
@@ -1076,7 +1073,7 @@ describe("update", () => {
            type Photo {
              id: ID
              name: String
-             color: Color @relationship(type: "OF_COLOR", direction: OUT)
+             color: Color! @relationship(type: "OF_COLOR", direction: OUT)
            }
         `;
 
@@ -1226,7 +1223,7 @@ describe("update", () => {
           type Product {
              id: ID
              name: String
-             photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+             photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
            }
 
 
@@ -1238,7 +1235,7 @@ describe("update", () => {
            type Photo {
              id: ID
              name: String
-             color: Color @relationship(type: "OF_COLOR", direction: OUT)
+             color: Color! @relationship(type: "OF_COLOR", direction: OUT)
            }
         `;
 
@@ -1329,7 +1326,7 @@ describe("update", () => {
           type Product {
              id: ID
              name: String
-             photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+             photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
            }
 
 
@@ -1341,7 +1338,7 @@ describe("update", () => {
            type Photo {
              id: ID
              name: String
-             color: Color @relationship(type: "OF_COLOR", direction: OUT)
+             color: Color! @relationship(type: "OF_COLOR", direction: OUT)
            }
         `;
 

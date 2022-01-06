@@ -40,8 +40,8 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
             type A {
                 ID: ID! @id
                 name: String!
-                rel_b: [B] @relationship(type: "REL_B", direction: OUT)
-                rel_c: [C] @relationship(type: "REL_C", direction: OUT)
+                rel_b: [B!]! @relationship(type: "REL_B", direction: OUT)
+                rel_c: [C!]! @relationship(type: "REL_C", direction: OUT)
             }
 
             type B {

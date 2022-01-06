@@ -242,12 +242,12 @@ describe("validateDocument", () => {
                 eligibleForBonus: Boolean
                 bonusPercentage: Float
                 salaryReviewDate: DateTime
-                pays_salary: EmploymentRecord @relationship(type: "PAYS_SALARY", direction: IN)
+                pays_salary: EmploymentRecord! @relationship(type: "PAYS_SALARY", direction: IN)
             }
 
             type EmploymentRecord {
                 employmentRecordId: ID!
-                pays_salary: [Salary] @relationship(type: "PAYS_SALARY", direction: OUT)
+                pays_salary: [Salary!]! @relationship(type: "PAYS_SALARY", direction: OUT)
             }
 
             input EmpRecord {
@@ -368,9 +368,9 @@ describe("validateDocument", () => {
                 type Order {
                     orderID: ID! @id
                     placedAt: DateTime @timestamp
-                    shipTo: Address @relationship(type: "SHIPS_TO", direction: OUT)
-                    customer: Customer @relationship(type: "PLACED", direction: IN)
-                    books: [Book] @relationship(type: "CONTAINS", direction: OUT)
+                    shipTo: Address! @relationship(type: "SHIPS_TO", direction: OUT)
+                    customer: Customer! @relationship(type: "PLACED", direction: IN)
+                    books: [Book!]! @relationship(type: "CONTAINS", direction: OUT)
                 }
 
                 extend type Order {
@@ -384,8 +384,8 @@ describe("validateDocument", () => {
 
                 type Customer {
                     username: String
-                    orders: [Order] @relationship(type: "PLACED", direction: OUT)
-                    reviews: [Review] @relationship(type: "WROTE", direction: OUT)
+                    orders: [Order!]! @relationship(type: "PLACED", direction: OUT)
+                    reviews: [Review!]! @relationship(type: "WROTE", direction: OUT)
                     recommended(limit: Int = 3): [Book]
                         @cypher(
                             statement: "MATCH (this)-[:PLACED]->(:Order)-[:CONTAINS]->(:Book)<-[:CONTAINS]-(:Order)<-[:PLACED]-(c:Customer) MATCH (c)-[:PLACED]->(:Order)-[:CONTAINS]->(rec:Book) WHERE NOT EXISTS((this)-[:PLACED]->(:Order)-[:CONTAINS]->(rec)) RETURN rec LIMIT $limit"
@@ -418,9 +418,9 @@ describe("validateDocument", () => {
                     title: String
                     price: Float
                     description: String
-                    authors: [Author] @relationship(type: "AUTHOR_OF", direction: IN)
-                    subjects: [Subject] @relationship(type: "ABOUT", direction: OUT)
-                    reviews: [Review] @relationship(type: "REVIEWS", direction: IN)
+                    authors: [Author!]! @relationship(type: "AUTHOR_OF", direction: IN)
+                    subjects: [Subject!]! @relationship(type: "ABOUT", direction: OUT)
+                    reviews: [Review!]! @relationship(type: "REVIEWS", direction: IN)
                 }
 
                 extend type Book {
@@ -442,18 +442,18 @@ describe("validateDocument", () => {
                     rating: Int
                     text: String
                     createdAt: DateTime @timestamp
-                    book: Book @relationship(type: "REVIEWS", direction: OUT)
-                    author: Customer @relationship(type: "WROTE", direction: IN)
+                    book: Book! @relationship(type: "REVIEWS", direction: OUT)
+                    author: Customer! @relationship(type: "WROTE", direction: IN)
                 }
 
                 type Author {
                     name: String!
-                    books: [Book] @relationship(type: "AUTHOR_OF", direction: OUT)
+                    books: [Book!]! @relationship(type: "AUTHOR_OF", direction: OUT)
                 }
 
                 type Subject {
                     name: String!
-                    books: [Book] @relationship(type: "ABOUT", direction: IN)
+                    books: [Book!]! @relationship(type: "ABOUT", direction: IN)
                 }
 
                 type Mutation {
@@ -583,7 +583,7 @@ describe("validateDocument", () => {
                 const doc = gql`
                     type Movie {
                         id: ID
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "PageInfo")
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "PageInfo")
                     }
 
                     interface PageInfo {
@@ -604,7 +604,7 @@ describe("validateDocument", () => {
                 const doc = gql`
                     type Movie {
                         id: ID
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "NodeConnection")
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "NodeConnection")
                     }
 
                     interface NodeConnection {
@@ -625,7 +625,7 @@ describe("validateDocument", () => {
                 const doc = gql`
                     type Movie {
                         id: ID
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "Node")
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "Node")
                     }
 
                     interface Node {

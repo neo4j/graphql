@@ -39,7 +39,7 @@ describe("#601", () => {
                 id: ID! @id
                 stakeholder: Stakeholder! @relationship(type: "REQUIRES", direction: OUT)
 
-                customerContact: CustomerContact
+                customerContact: CustomerContact!
                     @relationship(type: "UPLOADED", properties: "UploadedDocument", direction: IN)
             }
 

@@ -36,14 +36,14 @@ describe("Field Level Aggregations Auth", () => {
         year: Int
         createdAt: DateTime
         testId: Int
-        ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN)
+        ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
     }
 
     type ${typeActor.name} {
         name: String
         year: Int
         createdAt: DateTime
-        ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT)
+        ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
     }`;
     const secret = "secret";
 

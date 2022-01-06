@@ -758,7 +758,7 @@ describe("generate", () => {
         const typeDefs = `
             type Movie {
                 title: String!
-                actors: [Person] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
             type Person {
                 name: String!
@@ -927,7 +927,7 @@ describe("generate", () => {
             export type Movie = {
               __typename?: \\"Movie\\";
               title: Scalars[\\"String\\"];
-              actors?: Maybe<Array<Maybe<Person>>>;
+              actors: Array<Person>;
               actorsAggregate?: Maybe<MoviePersonActorsAggregationSelection>;
               actorsConnection: MovieActorsConnection;
             };

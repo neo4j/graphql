@@ -36,7 +36,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
 
             type Post {
                 content: String!
-                likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {

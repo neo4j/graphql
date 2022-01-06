@@ -36,7 +36,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
 
             type Post {
                 content: String!
-                likes: [User] @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 

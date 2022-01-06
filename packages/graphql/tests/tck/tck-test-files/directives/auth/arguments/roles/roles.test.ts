@@ -37,21 +37,21 @@ describe("Cypher Auth Roles", () => {
             type Comment {
                 id: String
                 content: String
-                post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+                post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
             }
 
             type Post {
                 id: String
                 content: String
-                creator: User @relationship(type: "HAS_POST", direction: OUT)
-                comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+                creator: User! @relationship(type: "HAS_POST", direction: OUT)
+                comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 
             type User {
                 id: ID
                 name: String
                 password: String
-                posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
             extend type User

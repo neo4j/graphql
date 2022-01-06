@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
-describe("Node directive with unions", () => {
+describe("!", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
@@ -38,7 +38,7 @@ describe("Node directive with unions", () => {
 
             type Movie @node(label: "Film") {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 

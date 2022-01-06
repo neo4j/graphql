@@ -30,14 +30,14 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
         type User {
             client_id: String
             uid: String
-            demographics: [UserDemographics] @relationship(type: "HAS_DEMOGRAPHIC", direction: OUT)
+            demographics: [UserDemographics!]! @relationship(type: "HAS_DEMOGRAPHIC", direction: OUT)
         }
 
         type UserDemographics {
             client_id: String
             type: String
             value: String
-            users: [User] @relationship(type: "HAS_DEMOGRAPHIC", direction: IN)
+            users: [User!]! @relationship(type: "HAS_DEMOGRAPHIC", direction: IN)
         }
     `;
 

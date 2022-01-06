@@ -41,25 +41,25 @@ describe("Cypher Auth Where", () => {
                 ) {
                 id: ID
                 content: String
-                creator: User @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             type User {
                 id: ID
                 name: String
-                content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+                content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
 
             type Comment implements Content {
                 id: ID
                 content: String
-                creator: User
+                creator: User!
             }
 
             type Post implements Content {
                 id: ID
                 content: String
-                creator: User
+                creator: User!
             }
 
             extend type User

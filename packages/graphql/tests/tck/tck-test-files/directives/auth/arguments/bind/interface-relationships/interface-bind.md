@@ -7,23 +7,23 @@ Schema:
 ```graphql
 interface Content @auth(rules: [{ operations: [CREATE, CONNECT, DISCONNECT], bind: { creator: { id: "$jwt.sub" } } }]) {
     id: ID
-    creator: User @relationship(type: "HAS_CONTENT", direction: IN)
+    creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
 }
 
 type Comment implements Content {
     id: ID
-    creator: User
+    creator: User!
 }
 
 type Post implements Content {
     id: ID
-    creator: User
+    creator: User!
 }
 
 type User {
     id: ID
     name: String
-    content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+    content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
 }
 
 extend type User @auth(rules: [{ operations: [CREATE, UPDATE, CONNECT, DISCONNECT], bind: { id: "$jwt.sub" } }])

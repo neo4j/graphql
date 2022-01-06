@@ -11,25 +11,25 @@ interface Content
     ) {
     id: ID
     content: String
-    creator: User @relationship(type: "HAS_CONTENT", direction: IN)
+    creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
 }
 
 type User {
     id: ID
     name: String
-    content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+    content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
 }
 
 type Comment implements Content {
     id: ID
     content: String
-    creator: User
+    creator: User!
 }
 
 type Post implements Content {
     id: ID
     content: String
-    creator: User
+    creator: User!
 }
 
 extend type User @auth(rules: [{ operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT], where: { id: "$jwt.sub" } }])
@@ -604,14 +604,14 @@ WITH this
 OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
 WHERE EXISTS((this_content_Comment0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content_Comment0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content_Comment0_auth_where0_creator_id)
 
-WITH this, collect(DISTINCT this_content_Comment0) as this_content_Comment0_to_delete 
+WITH this, collect(DISTINCT this_content_Comment0) as this_content_Comment0_to_delete
 FOREACH(x IN this_content_Comment0_to_delete | DETACH DELETE x)
 
 WITH this
 OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
 WHERE EXISTS((this_content_Post0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content_Post0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content_Post0_auth_where0_creator_id)
 
-WITH this, collect(DISTINCT this_content_Post0) as this_content_Post0_to_delete 
+WITH this, collect(DISTINCT this_content_Post0) as this_content_Post0_to_delete
 FOREACH(x IN this_content_Post0_to_delete | DETACH DELETE x)
 
 DETACH DELETE this

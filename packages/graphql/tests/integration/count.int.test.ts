@@ -150,7 +150,7 @@ describe("count", () => {
 
             type Post {
                 id: ID
-                creator: User @relationship(type: "POSTED", direction: IN)
+                creator: User! @relationship(type: "POSTED", direction: IN)
             }
 
             extend type Post @auth(rules: [{ where: { creator: { id: "$jwt.sub" } } }])
