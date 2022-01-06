@@ -723,7 +723,7 @@ function makeAugmentedSchema(
                 name: `${node.name}Sort`,
                 fields: sortFields,
                 description: `Fields to sort ${node.getPlural({
-                    pascalCase: true,
+                    upperFirst: true,
                 })} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${node.name}Sort`} object.`,
             });
 
@@ -732,7 +732,7 @@ function makeAugmentedSchema(
                 fields: {
                     sort: {
                         description: `Specify one or more ${`${node.name}Sort`} objects to sort ${node.getPlural({
-                            pascalCase: true,
+                            upperFirst: true,
                         })} by. The sorts will be applied in the order in which they are arranged in the array.`,
                         type: sortInput.List,
                     },
@@ -869,7 +869,7 @@ function makeAugmentedSchema(
 
         ["Create", "Update"].map((operation) =>
             composer.createObjectTC({
-                name: `${operation}${node.getPlural({ pascalCase: true })}MutationResponse`,
+                name: `${operation}${node.getPlural({ upperFirst: true })}MutationResponse`,
                 fields: {
                     info: `${operation}Info!`,
                     [node.getPlural({})]: `[${node.name}!]!`,
@@ -916,19 +916,19 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${node.getPlural({ pascalCase: true })}`]: createResolver({ node }),
+                [`create${node.getPlural({ upperFirst: true })}`]: createResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${node.getPlural({ pascalCase: true })}`]: deleteResolver({ node }),
+                [`delete${node.getPlural({ upperFirst: true })}`]: deleteResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${node.getPlural({ pascalCase: true })}`]: updateResolver({
+                [`update${node.getPlural({ upperFirst: true })}`]: updateResolver({
                     node,
                     schemaComposer: composer,
                 }),

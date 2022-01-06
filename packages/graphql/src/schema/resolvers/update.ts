@@ -64,7 +64,7 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
         relationFields.connectOrCreate = `${node.name}ConnectOrCreateInput`;
     }
     return {
-        type: `Update${node.getPlural({ pascalCase: true })}MutationResponse!`,
+        type: `Update${node.getPlural({ upperFirst: true })}MutationResponse!`,
         resolve,
         args: {
             where: `${node.name}Where`,

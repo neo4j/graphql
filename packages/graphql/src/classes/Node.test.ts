@@ -62,6 +62,15 @@ describe("Node", () => {
         expect(node.getLabels(defaultContext)).toEqual(["Movie"]);
     });
 
+    test("should return camelCased plural", () => {
+        const node = new NodeBuilder({
+            name: "super_movie",
+        }).instance();
+
+        expect(node.getPlural()).toEqual("superMovies");
+        expect(node.getPlural({ upperFirst: true })).toEqual("SuperMovies");
+    });
+
     describe("NodeDirective", () => {
         test("should return labels updated with jwt values from Context", () => {
             const node = new NodeBuilder({

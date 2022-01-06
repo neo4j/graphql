@@ -196,12 +196,12 @@ class Node extends GraphElement {
         return this.nodeDirective?.label || this.name;
     }
 
-    public getPlural(options: { pascalCase?: boolean }): string {
+    public getPlural(options: { upperFirst?: boolean } = {}): string {
         let plural = pluralize(camelCase(this.name));
         if (this.nodeDirective?.plural) {
             plural = camelCase(this.nodeDirective.plural);
         }
-        return options.pascalCase ? upperFirst(plural) : plural;
+        return options.upperFirst ? upperFirst(plural) : plural;
     }
 }
 
