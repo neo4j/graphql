@@ -8065,16 +8065,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:6.11.0":
-  version: 6.11.0
-  resolution: "eslint-config-prettier@npm:6.11.0"
+"eslint-config-prettier@npm:6.15.0":
+  version: 6.15.0
+  resolution: "eslint-config-prettier@npm:6.15.0"
   dependencies:
     get-stdin: ^6.0.0
   peerDependencies:
     eslint: ">=3.14.1"
   bin:
     eslint-config-prettier-check: bin/cli.js
-  checksum: d01be735dfcfe4ce5629bc5778be07d73519b3460698ae15623026c542896529cbbb494ec9c0116d71810a3968403fffb473fb6f6dc2b76c2066676afdda3421
+  checksum: 02f461a5d7fbf06bd17077e76857eb7cf70def81762fb853094ae16e895231b2bf53c7ca83f535b943d7558fdd02ac41b33eb6d59523e60b1d8c6d1730d00f1e
   languageName: node
   linkType: hard
 
@@ -13568,7 +13568,7 @@ fsevents@^1.2.7:
     dotenv: 10.0.0
     eslint: 7.32.0
     eslint-config-airbnb-typescript: 10.0.2
-    eslint-config-prettier: 6.11.0
+    eslint-config-prettier: 6.15.0
     eslint-import-resolver-typescript: 2.5.0
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.25.4
