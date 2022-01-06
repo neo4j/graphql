@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { upperFirst } from "graphql-compose";
 import { Node, Relationship } from "../classes";
 import { Context, RelationField, ConnectionField } from "../types";
 import createProjectionAndParams from "./create-projection-and-params";
@@ -32,6 +31,7 @@ import createSetRelationshipPropertiesAndParams from "./create-set-relationship-
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
+import { upperFirst } from "../utils/upper-first";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;

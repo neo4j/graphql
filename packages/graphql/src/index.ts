@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { upperFirst } from "graphql-compose";
+import { upperFirst } from "./utils/upper-first";
 
 export { upperFirst };
 export {

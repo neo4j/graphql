@@ -22,7 +22,7 @@
 import { generate } from "randomstring";
 import pluralize from "pluralize";
 import camelCase from "camelcase";
-import { upperFirst } from "graphql-compose";
+import { upperFirst } from "../../src/utils/upper-first";
 
 export function generateUniqueType(baseName: string): TestType {
     const type = `${generate({

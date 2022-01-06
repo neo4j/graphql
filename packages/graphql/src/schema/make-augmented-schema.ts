@@ -43,7 +43,6 @@ import {
     InputTypeComposerFieldConfigAsObjectDefinition,
     ObjectTypeComposer,
     SchemaComposer,
-    upperFirst,
 } from "graphql-compose";
 import { Exclude, Node } from "../classes";
 import { NodeDirective } from "../classes/NodeDirective";
@@ -77,6 +76,7 @@ import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-co
 import { validateDocument } from "./validation";
 import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import { upperFirst } from "../utils/upper-first";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
