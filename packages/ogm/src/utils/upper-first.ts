@@ -17,24 +17,8 @@
  * limitations under the License.
  */
 
-export {
-    DriverConfig,
-    GraphQLOptionsArg,
-    GraphQLWhereArg,
-    DeleteInfo,
-    GraphQLSortArg,
-    CypherConnectComponentsPlanner,
-    CypherExpressionEngine,
-    CypherInterpretedPipesFallback,
-    CypherOperatorEngine,
-    CypherPlanner,
-    CypherReplanning,
-    CypherRuntime,
-    CypherUpdateStrategy,
-} from "./types";
-export {
-    Neo4jGraphQL,
-    Neo4jGraphQLConstructor,
-    Neo4jGraphQLAuthenticationError,
-    Neo4jGraphQLForbiddenError,
-} from "./classes";
+// TODO: duplicate from @neo4j/graphql utils
+/* Sets first letter of the string as toUpperCase */
+export function upperFirst(str: string): string {
+    return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
+}
