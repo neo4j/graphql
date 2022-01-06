@@ -111,7 +111,7 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
-            const typeMeta = getFieldTypeMeta(field);
+            const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
             const defaultDirective = directives.find((x) => x.name.value === "default");
@@ -182,6 +182,18 @@ function getObjFieldMeta({
 
                 if (aliasDirective) {
                     throw new Error("@alias directive cannot be used on relationship fields");
+                }
+
+                const msg = `Cannot represent null for the relationship ${obj.name.value}.${field.name.value}, try using NonNull operator '!'`;
+
+                if (typeMeta.originalType?.kind !== "NonNullType") {
+                    throw new Error(msg);
+                }
+
+                if (typeMeta.originalType?.type.kind === "ListType") {
+                    if (typeMeta.originalType?.type.type.kind !== "NonNullType") {
+                        throw new Error(msg);
+                    }
                 }
 
                 const relationField: RelationField = {

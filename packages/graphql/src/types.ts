@@ -98,6 +98,7 @@ export interface TypeMeta {
             pretty: string;
         };
     };
+    arrayTypeMeta?: TypeMeta;
 }
 
 export interface Unique {
