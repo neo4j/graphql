@@ -95,7 +95,6 @@ function filterDocument(document: DocumentNode): DocumentNode {
     const filterFields = (fields: readonly FieldDefinitionNode[] | undefined) => {
         return fields
             ?.filter((f) => {
-                // CHECK
                 const type = getArgumentType(f.type);
                 const match = /(?:Create|Update)(?<nodeName>.+)MutationResponse/gm.exec(type);
                 if (match?.groups?.nodeName) {
