@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { InputValueDefinitionNode, DirectiveNode } from "graphql";
+import { InputValueDefinitionNode, DirectiveNode, TypeNode } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { JwtPayload } from "jsonwebtoken";
 import { Driver, Integer } from "neo4j-driver";
@@ -98,7 +98,7 @@ export interface TypeMeta {
             pretty: string;
         };
     };
-    arrayTypeMeta?: TypeMeta;
+    originalType?: TypeNode;
 }
 
 export interface Unique {
