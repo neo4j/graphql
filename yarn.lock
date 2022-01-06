@@ -2110,7 +2110,7 @@ __metadata:
     prettier: 2.3.2
     randomstring: 1.2.1
     semver: 7.3.5
-    ts-jest: 26.1.4
+    ts-jest: 26.5.6
     typescript: 3.9.7
   peerDependencies:
     graphql: ^15.0.0
@@ -2160,7 +2160,7 @@ __metadata:
     rimraf: 3.0.2
     semver: ^7.3.5
     supertest: 6.1.6
-    ts-jest: 26.1.4
+    ts-jest: 26.5.6
     ts-node: 10.0.0
     typescript: 3.9.7
   peerDependencies:
@@ -2181,7 +2181,7 @@ __metadata:
     debug: ^4.3.2
     jest: 26.6.3
     pluralize: ^8.0.0
-    ts-jest: 26.1.4
+    ts-jest: 26.5.6
     typescript: 3.9.7
   peerDependencies:
     neo4j-driver: ^4.1.0
@@ -11702,7 +11702,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-util@npm:26.x, jest-util@npm:^26.1.0, jest-util@npm:^26.6.2":
+"jest-util@npm:^26.1.0, jest-util@npm:^26.6.2":
   version: 26.6.2
   resolution: "jest-util@npm:26.6.2"
   dependencies:
@@ -13583,7 +13583,7 @@ fsevents@^1.2.7:
     npm-run-all: 4.1.5
     prettier: 2.1.2
     set-tz: 0.2.0
-    ts-jest: 26.5.5
+    ts-jest: 26.5.6
     typescript: 3.9.7
   languageName: unknown
   linkType: soft
@@ -18223,29 +18223,6 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:26.1.4":
-  version: 26.1.4
-  resolution: "ts-jest@npm:26.1.4"
-  dependencies:
-    bs-logger: 0.x
-    buffer-from: 1.x
-    fast-json-stable-stringify: 2.x
-    jest-util: 26.x
-    json5: 2.x
-    lodash.memoize: 4.x
-    make-error: 1.x
-    mkdirp: 1.x
-    semver: 7.x
-    yargs-parser: 18.x
-  peerDependencies:
-    jest: ">=26 <27"
-    typescript: ">=3.8 <4.0"
-  bin:
-    ts-jest: cli.js
-  checksum: 975058e888048d5b27701e924b9fe98b5586185cff076019064acaba9a26e5f57dcd643a1b14e1f882595d66df23fba9847a2e5d91755d6e31062846c3a91c0a
-  languageName: node
-  linkType: hard
-
 "ts-jest@npm:26.4.4":
   version: 26.4.4
   resolution: "ts-jest@npm:26.4.4"
@@ -18270,9 +18247,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:26.5.5":
-  version: 26.5.5
-  resolution: "ts-jest@npm:26.5.5"
+"ts-jest@npm:26.5.6":
+  version: 26.5.6
+  resolution: "ts-jest@npm:26.5.6"
   dependencies:
     bs-logger: 0.x
     buffer-from: 1.x
@@ -18289,7 +18266,7 @@ resolve@^2.0.0-next.3:
     typescript: ">=3.8 <5.0"
   bin:
     ts-jest: cli.js
-  checksum: 135bd444a49c73d70c05a471c8a17342c1bb5842df9a70155c0a6f1edfea4772fd67b691635bd98e1ad37aa30a33a2878e8821e00570723ded5ce0ff69c803fc
+  checksum: 6f65ad4fe67ab3f0fd4c7f9954acbee863af05b2b3f88dd0f490bbcdc58002960fac908b2cb9f009ec14da6fe13cb00a39e291260d6e555abe72448d1c0a017f
   languageName: node
   linkType: hard
 
@@ -19996,16 +19973,6 @@ typescript@4.1.3:
   languageName: node
   linkType: hard
 
-"yargs-parser@npm:18.x, yargs-parser@npm:^18.1.2, yargs-parser@npm:^18.1.3":
-  version: 18.1.3
-  resolution: "yargs-parser@npm:18.1.3"
-  dependencies:
-    camelcase: ^5.0.0
-    decamelize: ^1.2.0
-  checksum: 60e8c7d1b85814594d3719300ecad4e6ae3796748b0926137bfec1f3042581b8646d67e83c6fc80a692ef08b8390f21ddcacb9464476c39bbdf52e34961dd4d9
-  languageName: node
-  linkType: hard
-
 "yargs-parser@npm:20.x, yargs-parser@npm:^20.2.2":
   version: 20.2.7
   resolution: "yargs-parser@npm:20.2.7"
@@ -20030,6 +19997,16 @@ typescript@4.1.3:
     camelcase: ^5.0.0
     decamelize: ^1.2.0
   checksum: 01901b674045405d7ca2b70e0c4b0fca79a4c069d49b6b0a5aaaceddd3ba67a6610e1146ee12dba1224e1956f03d7228e25fd671e7d766fccfbc8e5975bf39f0
+  languageName: node
+  linkType: hard
+
+"yargs-parser@npm:^18.1.2, yargs-parser@npm:^18.1.3":
+  version: 18.1.3
+  resolution: "yargs-parser@npm:18.1.3"
+  dependencies:
+    camelcase: ^5.0.0
+    decamelize: ^1.2.0
+  checksum: 60e8c7d1b85814594d3719300ecad4e6ae3796748b0926137bfec1f3042581b8646d67e83c6fc80a692ef08b8390f21ddcacb9464476c39bbdf52e34961dd4d9
   languageName: node
   linkType: hard
 
