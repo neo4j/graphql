@@ -38,7 +38,7 @@
         "@neo4j/graphql": "^2.5.5",
         "camelcase": "^6.2.0",
         "pluralize": "^8.0.0",
-        "prettier": "2.3.2"
+        "prettier": "^2.5.1"
     },
     "peerDependencies": {
         "graphql": "^16.0.0",
