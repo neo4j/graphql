@@ -6150,7 +6150,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cli-truncate@npm:2.1.0, cli-truncate@npm:^2.1.0":
+"cli-truncate@npm:^2.1.0":
   version: 2.1.0
   resolution: "cli-truncate@npm:2.1.0"
   dependencies:
@@ -6322,6 +6322,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"colorette@npm:^2.0.16":
+  version: 2.0.16
+  resolution: "colorette@npm:2.0.16"
+  checksum: cd55596a3a2d1071c1a28eee7fd8a5387593ff1bd10a3e8d0a6221499311fe34a9f2b9272d77c391e0e003dcdc8934fb2f8d106e7ef1f7516f8060c901d41a27
+  languageName: node
+  linkType: hard
+
 "combined-stream@npm:^1.0.5, combined-stream@npm:^1.0.6, combined-stream@npm:^1.0.8, combined-stream@npm:~1.0.6":
   version: 1.0.8
   resolution: "combined-stream@npm:1.0.8"
@@ -6345,10 +6352,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "commander@npm:5.1.0"
-  checksum: 0b7fec1712fbcc6230fcb161d8d73b4730fa91a21dc089515489402ad78810547683f058e2a9835929c212fead1d6a6ade70db28bbb03edbc2829a9ab7d69447
+"commander@npm:^6.2.0":
+  version: 6.2.1
+  resolution: "commander@npm:6.2.1"
+  checksum: d7090410c0de6bc5c67d3ca41c41760d6d268f3c799e530aafb73b7437d1826bbf0d2a3edac33f8b57cc9887b4a986dce307fa5557e109be40eadb7c43b21742
   languageName: node
   linkType: hard
 
@@ -6634,19 +6641,6 @@ __metadata:
     object-assign: ^4
     vary: ^1
   checksum: ced838404ccd184f61ab4fdc5847035b681c90db7ac17e428f3d81d69e2989d2b680cc254da0e2554f5ed4f8a341820a1ce3d1c16b499f6e2f47a1b9b07b5006
-  languageName: node
-  linkType: hard
-
-"cosmiconfig@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "cosmiconfig@npm:6.0.0"
-  dependencies:
-    "@types/parse-json": ^4.0.0
-    import-fresh: ^3.1.0
-    parse-json: ^5.0.0
-    path-type: ^4.0.0
-    yaml: ^1.7.2
-  checksum: 8eed7c854b91643ecb820767d0deb038b50780ecc3d53b0b19e03ed8aabed4ae77271198d1ae3d49c3b110867edf679f5faad924820a8d1774144a87cb6f98fc
   languageName: node
   linkType: hard
 
@@ -7068,7 +7062,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:^4.3.1":
+"debug@npm:^4.2.0, debug@npm:^4.3.1":
   version: 4.3.3
   resolution: "debug@npm:4.3.3"
   dependencies:
@@ -8456,7 +8450,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"execa@npm:^4.0.0, execa@npm:^4.0.1":
+"execa@npm:^4.0.0, execa@npm:^4.1.0":
   version: 4.1.0
   resolution: "execa@npm:4.1.0"
   dependencies:
@@ -8754,15 +8748,6 @@ __metadata:
   dependencies:
     pend: ~1.2.0
   checksum: c8585fd5713f4476eb8261150900d2cb7f6ff2d87f8feb306ccc8a1122efd152f1783bdb2b8dc891395744583436bfd8081d8e63ece0ec8687eeefea394d4ff2
-  languageName: node
-  linkType: hard
-
-"figures@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "figures@npm:3.2.0"
-  dependencies:
-    escape-string-regexp: ^1.0.5
-  checksum: 85a6ad29e9aca80b49b817e7c89ecc4716ff14e3779d9835af554db91bac41c0f289c418923519392a1e582b4d10482ad282021330cd045bb7b80c84152f2a2b
   languageName: node
   linkType: hard
 
@@ -10308,7 +10293,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"import-fresh@npm:^3.0.0, import-fresh@npm:^3.1.0, import-fresh@npm:^3.2.1":
+"import-fresh@npm:^3.0.0, import-fresh@npm:^3.2.1":
   version: 3.3.0
   resolution: "import-fresh@npm:3.3.0"
   dependencies:
@@ -12365,19 +12350,19 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:10.2.11":
-  version: 10.2.11
-  resolution: "lint-staged@npm:10.2.11"
+"lint-staged@npm:10.5.4":
+  version: 10.5.4
+  resolution: "lint-staged@npm:10.5.4"
   dependencies:
-    chalk: ^4.0.0
-    cli-truncate: 2.1.0
-    commander: ^5.1.0
-    cosmiconfig: ^6.0.0
-    debug: ^4.1.1
+    chalk: ^4.1.0
+    cli-truncate: ^2.1.0
+    commander: ^6.2.0
+    cosmiconfig: ^7.0.0
+    debug: ^4.2.0
     dedent: ^0.7.0
-    enquirer: ^2.3.5
-    execa: ^4.0.1
-    listr2: ^2.1.0
+    enquirer: ^2.3.6
+    execa: ^4.1.0
+    listr2: ^3.2.2
     log-symbols: ^4.0.0
     micromatch: ^4.0.2
     normalize-path: ^3.0.0
@@ -12386,25 +12371,28 @@ fsevents@^1.2.7:
     stringify-object: ^3.3.0
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: ee71b5bd9e04de7a6971cb199974a84203e87302cebeac8345d8593cb5cf05abe04c3d4153aadc2ca1a12fd85f988d041e445d12cdddf4bd9abc29776e872cb0
+  checksum: 4cc65f6c0a22dc091d0bbdfa6c15cd6e9b7d0d1e7603f5441bf9ac62f3a760fa36b0bda2db4c31b4084f28ba47cd4d0a176c3c3b314a97de8326e050d20b1635
   languageName: node
   linkType: hard
 
-"listr2@npm:^2.1.0":
-  version: 2.6.2
-  resolution: "listr2@npm:2.6.2"
+"listr2@npm:^3.2.2":
+  version: 3.14.0
+  resolution: "listr2@npm:3.14.0"
   dependencies:
-    chalk: ^4.1.0
     cli-truncate: ^2.1.0
-    figures: ^3.2.0
-    indent-string: ^4.0.0
+    colorette: ^2.0.16
     log-update: ^4.0.0
     p-map: ^4.0.0
-    rxjs: ^6.6.2
+    rfdc: ^1.3.0
+    rxjs: ^7.5.1
     through: ^2.3.8
+    wrap-ansi: ^7.0.0
   peerDependencies:
     enquirer: ">= 2.3.0 < 3"
-  checksum: 8944d5e2d4c8b548276b28ab71f1fff2fdb16cd6b08586c26ce5456a7a3d1f4014e1182405872602951ce4f4ca2d416a494054ef70ff39ce7b961a6b927c2628
+  peerDependenciesMeta:
+    enquirer:
+      optional: true
+  checksum: fdb8b2d6bdf5df9371ebd5082bee46c6d0ca3d1e5f2b11fbb5a127839855d5f3da9d4968fce94f0a5ec67cac2459766abbb1faeef621065ebb1829b11ef9476d
   languageName: node
   linkType: hard
 
@@ -13590,7 +13578,7 @@ fsevents@^1.2.7:
     graphql: 15.5.0
     husky: 4.3.8
     jest: 26.6.3
-    lint-staged: 10.2.11
+    lint-staged: 10.5.4
     neo4j-driver: 4.4.0
     npm-run-all: 4.1.5
     prettier: 2.1.2
@@ -16449,6 +16437,13 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
+"rfdc@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "rfdc@npm:1.3.0"
+  checksum: fb2ba8512e43519983b4c61bd3fa77c0f410eff6bae68b08614437bc3f35f91362215f7b4a73cbda6f67330b5746ce07db5dd9850ad3edc91271ad6deea0df32
+  languageName: node
+  linkType: hard
+
 "rimraf@npm:3.0.2, rimraf@npm:^3.0.0, rimraf@npm:^3.0.2":
   version: 3.0.2
   resolution: "rimraf@npm:3.0.2"
@@ -16487,12 +16482,21 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^6.6.2, rxjs@npm:^6.6.3":
+"rxjs@npm:^6.6.3":
   version: 6.6.7
   resolution: "rxjs@npm:6.6.7"
   dependencies:
     tslib: ^1.9.0
   checksum: bc334edef1bb8bbf56590b0b25734ba0deaf8825b703256a93714308ea36dff8a11d25533671adf8e104e5e8f256aa6fdfe39b2e248cdbd7a5f90c260acbbd1b
+  languageName: node
+  linkType: hard
+
+"rxjs@npm:^7.5.1":
+  version: 7.5.1
+  resolution: "rxjs@npm:7.5.1"
+  dependencies:
+    tslib: ^2.1.0
+  checksum: 78e3eecb1644dd83adabc8d956f879dca62eb19c8afcd6acac71cf6d94534c33ea201e65387494fdeb1332395cba081e194f5a9699d58a5d48e416b8b52372aa
   languageName: node
   linkType: hard
 
@@ -19966,7 +19970,7 @@ typescript@4.1.3:
   languageName: node
   linkType: hard
 
-"yaml@npm:^1.10.0, yaml@npm:^1.10.2, yaml@npm:^1.7.2":
+"yaml@npm:^1.10.0, yaml@npm:^1.10.2":
   version: 1.10.2
   resolution: "yaml@npm:1.10.2"
   checksum: ce4ada136e8a78a0b08dc10b4b900936912d15de59905b2bf415b4d33c63df1d555d23acb2a41b23cf9fb5da41c256441afca3d6509de7247daa062fd2c5ea5f
