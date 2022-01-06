@@ -49,7 +49,7 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
 
         const query = `
             mutation {
-                ${user.methods.create}(input: { name: "Ford" }) {
+                ${user.operations.create}(input: { name: "Ford" }) {
                     info {
                         nodesCreated
                     }
@@ -65,7 +65,7 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
-            [user.methods.create]: {
+            [user.operations.create]: {
                 info: {
                     nodesCreated: 1,
                 },

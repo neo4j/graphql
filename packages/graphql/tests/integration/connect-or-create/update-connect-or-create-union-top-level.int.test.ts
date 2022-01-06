@@ -84,7 +84,7 @@ describe("Update -> ConnectOrCreate union top level", () => {
 
         const query = gql`
             mutation {
-                ${typeActor.methods.update}(
+                ${typeActor.operations.update}(
                     update: {
                             name: "Tom Hanks"
                     },
@@ -122,7 +122,7 @@ describe("Update -> ConnectOrCreate union top level", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeActor.methods.update][typeActor.plural]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.update][typeActor.plural]).toEqual([
             {
                 name: "Tom Hanks",
             },
@@ -172,7 +172,7 @@ describe("Update -> ConnectOrCreate union top level", () => {
 
         const query = gql`
             mutation {
-                ${typeActor.methods.update}(
+                ${typeActor.operations.update}(
                     update: {
                             name: "${actorName}"
                     },
@@ -211,7 +211,7 @@ describe("Update -> ConnectOrCreate union top level", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeActor.methods.update][typeActor.plural]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.update][typeActor.plural]).toEqual([
             {
                 name: actorName,
             },

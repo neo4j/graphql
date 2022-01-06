@@ -70,7 +70,7 @@ describe("connectorcreate with @id", () => {
     test("create -> connectOrCreate with specified ID", async () => {
         const query = gql`
             mutation {
-              ${typeActor.methods.create}(
+              ${typeActor.operations.create}(
                 input: [
                   {
                     name: "Tom Hanks"
@@ -101,7 +101,7 @@ describe("connectorcreate with @id", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeActor.methods.create][typeActor.plural]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.create][typeActor.plural]).toEqual([
             {
                 name: "Tom Hanks",
                 movies: [{ id: "myid", title: "The Terminal" }],
@@ -124,7 +124,7 @@ describe("connectorcreate with @id", () => {
 
         const query = gql`
             mutation {
-              ${typeActor.methods.create}(
+              ${typeActor.operations.create}(
                 input: [
                   {
                     name: "Tom Hanks"
@@ -156,9 +156,9 @@ describe("connectorcreate with @id", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult as any).data[typeActor.methods.create][typeActor.plural]).toHaveLength(1);
+        expect((gqlResult as any).data[typeActor.operations.create][typeActor.plural]).toHaveLength(1);
 
-        const resultActor = (gqlResult as any).data[typeActor.methods.create][typeActor.plural][0];
+        const resultActor = (gqlResult as any).data[typeActor.operations.create][typeActor.plural][0];
         expect(resultActor.name).toEqual("Tom Hanks");
 
         expect(resultActor.movies).toHaveLength(1);

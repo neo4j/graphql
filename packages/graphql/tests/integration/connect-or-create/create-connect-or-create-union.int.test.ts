@@ -83,7 +83,7 @@ describe("Create -> ConnectOrCreate Union", () => {
 
         const query = gql`
             mutation {
-                ${typeActor.methods.create}(
+                ${typeActor.operations.create}(
                     input: {
                             name: "Tom Hanks"
                             actedIn: {
@@ -124,7 +124,7 @@ describe("Create -> ConnectOrCreate Union", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeActor.methods.create][typeActor.plural]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.create][typeActor.plural]).toEqual([
             {
                 name: "Tom Hanks",
             },
@@ -173,7 +173,7 @@ describe("Create -> ConnectOrCreate Union", () => {
 
         const query = gql`
             mutation {
-                ${typeActor.methods.create}(
+                ${typeActor.operations.create}(
                     input: {
                             name: "${actorName}"
                             actedIn: {
@@ -214,7 +214,7 @@ describe("Create -> ConnectOrCreate Union", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeActor.methods.create][typeActor.plural]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.create][typeActor.plural]).toEqual([
             {
                 name: actorName,
             },

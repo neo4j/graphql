@@ -75,7 +75,7 @@ describe("Update -> ConnectOrCreate Top Level", () => {
 
         const query = gql`
             mutation {
-              ${typeActor.methods.update}(
+              ${typeActor.operations.update}(
                 update: {
                     name: "Tom Hanks 2"
                 },
@@ -100,7 +100,7 @@ describe("Update -> ConnectOrCreate Top Level", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeActor.methods.update][typeActor.plural]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.update][typeActor.plural]).toEqual([
             {
                 name: "Tom Hanks 2",
             },
@@ -132,7 +132,7 @@ describe("Update -> ConnectOrCreate Top Level", () => {
 
         const query = gql`
             mutation {
-              ${typeActor.methods.update}(
+              ${typeActor.operations.update}(
                 update: {
                     name: "${updatedActorName}"
                 },
@@ -157,7 +157,7 @@ describe("Update -> ConnectOrCreate Top Level", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeActor.methods.update][typeActor.plural]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.update][typeActor.plural]).toEqual([
             {
                 name: updatedActorName,
             },

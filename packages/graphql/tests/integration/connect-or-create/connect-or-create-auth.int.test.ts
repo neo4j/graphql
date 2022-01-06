@@ -53,7 +53,7 @@ describe("Update -> ConnectOrCreate", () => {
 
         query = gql`
             mutation {
-              ${typeMovie.methods.update}(
+              ${typeMovie.operations.update}(
                 update: {
                     title: "Forrest Gump 2"
                     genres: {

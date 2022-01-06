@@ -36,7 +36,7 @@ export function generateUniqueType(baseName: string): TestType {
     return {
         name: type,
         plural,
-        methods: {
+        operations: {
             create: `create${pascalCasePlural}`,
             update: `update${pascalCasePlural}`,
             delete: `delete${pascalCasePlural}`,
@@ -47,7 +47,7 @@ export function generateUniqueType(baseName: string): TestType {
 export type TestType = {
     name: string;
     plural: string;
-    methods: {
+    operations: {
         create: string;
         update: string;
         delete: string;
