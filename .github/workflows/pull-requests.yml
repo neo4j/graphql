@@ -39,6 +39,24 @@ jobs:
           fail_on_error: true
           eslint_flags: "."
 
+  package-tests:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn
+      - run: yarn build
+      - name: Run @neo4j/graphql package tests
+        run: yarn --cwd packages/graphql run test:package-tests
+
   typescript-changes:
     runs-on: ubuntu-latest
 
