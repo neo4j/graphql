@@ -20,7 +20,6 @@
 import { DirectiveNode, NamedTypeNode } from "graphql";
 import camelCase from "camelcase";
 import pluralize from "pluralize";
-import { upperFirst } from "graphql-compose";
 import type {
     RelationField,
     ConnectionField,
@@ -184,6 +183,13 @@ class Node extends GraphElement {
         return this.constrainableFields.filter((field) => field.unique);
     }
 
+    public get plural(): string {
+        if (this.nodeDirective?.plural) {
+            return camelCase(this.nodeDirective.plural);
+        }
+        return pluralize(camelCase(this.name));
+    }
+
     public getLabelString(context: Context): string {
         return this.nodeDirective?.getLabelsString(this.name, context) || `:${this.name}`;
     }
@@ -194,14 +200,6 @@ class Node extends GraphElement {
 
     public getMainLabel(): string {
         return this.nodeDirective?.label || this.name;
-    }
-
-    public getPlural(options: { upperFirst?: boolean } = {}): string {
-        let plural = pluralize(camelCase(this.name));
-        if (this.nodeDirective?.plural) {
-            plural = camelCase(this.nodeDirective.plural);
-        }
-        return options.upperFirst ? upperFirst(plural) : plural;
     }
 }
 

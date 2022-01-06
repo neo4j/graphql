@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { upperFirst } from "graphql-compose";
 import { Node, Relationship } from "../classes";
 import { Context, RelationField, ConnectionField } from "../types";
 import createProjectionAndParams from "./create-projection-and-params";
@@ -60,10 +61,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const interfaceStrs: string[] = [];
     let updateArgs = {};
 
-    const mutationResponse =
-        resolveTree.fieldsByTypeName[`Update${node.getPlural({ upperFirst: true })}MutationResponse`];
+    const mutationResponse = resolveTree.fieldsByTypeName[`Update${upperFirst(node.plural)}MutationResponse`];
 
-    const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.getPlural({}));
+    const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
 
     if (updateInput) {
         const updateAndParams = createUpdateAndParams({

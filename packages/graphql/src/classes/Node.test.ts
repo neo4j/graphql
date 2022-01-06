@@ -67,8 +67,7 @@ describe("Node", () => {
             name: "super_movie",
         }).instance();
 
-        expect(node.getPlural()).toEqual("superMovies");
-        expect(node.getPlural({ upperFirst: true })).toEqual("SuperMovies");
+        expect(node.plural).toEqual("superMovies");
     });
 
     describe("NodeDirective", () => {

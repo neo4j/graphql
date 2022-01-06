@@ -18,6 +18,7 @@
  */
 
 import { FieldNode, GraphQLResolveInfo } from "graphql";
+import { upperFirst } from "graphql-compose";
 import { execute } from "../../utils";
 import { translateCreate } from "../../translate";
 import { Node } from "../../classes";
@@ -38,7 +39,7 @@ export default function createResolver({ node }: { node: Node }) {
         });
 
         const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
-            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({})
+            (selection) => selection.kind === "Field" && selection.name.value === node.plural
         ) as FieldNode;
 
         const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
@@ -53,7 +54,7 @@ export default function createResolver({ node }: { node: Node }) {
     }
 
     return {
-        type: `Create${node.getPlural({ upperFirst: true })}MutationResponse!`,
+        type: `Create${upperFirst(node.plural)}MutationResponse!`,
         resolve,
         args: { input: `[${node.name}CreateInput!]!` },
     };

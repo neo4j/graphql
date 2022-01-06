@@ -722,18 +722,18 @@ function makeAugmentedSchema(
             const sortInput = composer.createInputTC({
                 name: `${node.name}Sort`,
                 fields: sortFields,
-                description: `Fields to sort ${node.getPlural({
-                    upperFirst: true,
-                })} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${node.name}Sort`} object.`,
+                description: `Fields to sort ${upperFirst(
+                    node.plural
+                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${node.name}Sort`} object.`,
             });
 
             composer.createInputTC({
                 name: `${node.name}Options`,
                 fields: {
                     sort: {
-                        description: `Specify one or more ${`${node.name}Sort`} objects to sort ${node.getPlural({
-                            upperFirst: true,
-                        })} by. The sorts will be applied in the order in which they are arranged in the array.`,
+                        description: `Specify one or more ${`${node.name}Sort`} objects to sort ${upperFirst(
+                            node.plural
+                        )} by. The sorts will be applied in the order in which they are arranged in the array.`,
                         type: sortInput.List,
                     },
                     limit: "Int",
@@ -869,10 +869,10 @@ function makeAugmentedSchema(
 
         ["Create", "Update"].map((operation) =>
             composer.createObjectTC({
-                name: `${operation}${node.getPlural({ upperFirst: true })}MutationResponse`,
+                name: `${operation}${upperFirst(node.plural)}MutationResponse`,
                 fields: {
                     info: `${operation}Info!`,
-                    [node.getPlural({})]: `[${node.name}!]!`,
+                    [node.plural]: `[${node.name}!]!`,
                 },
             })
         );
@@ -902,33 +902,33 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [node.getPlural({})]: findResolver({ node }),
+                [node.plural]: findResolver({ node }),
             });
 
             composer.Query.addFields({
-                [`${node.getPlural({})}Count`]: countResolver({ node }),
+                [`${node.plural}Count`]: countResolver({ node }),
             });
 
             composer.Query.addFields({
-                [`${node.getPlural({})}Aggregate`]: aggregateResolver({ node }),
+                [`${node.plural}Aggregate`]: aggregateResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${node.getPlural({ upperFirst: true })}`]: createResolver({ node }),
+                [`create${upperFirst(node.plural)}`]: createResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${node.getPlural({ upperFirst: true })}`]: deleteResolver({ node }),
+                [`delete${upperFirst(node.plural)}`]: deleteResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${node.getPlural({ upperFirst: true })}`]: updateResolver({
+                [`update${upperFirst(node.plural)}`]: updateResolver({
                     node,
                     schemaComposer: composer,
                 }),
