@@ -45,7 +45,6 @@ import {
     SchemaComposer,
     upperFirst,
 } from "graphql-compose";
-import pluralize from "pluralize";
 import { Exclude, Node } from "../classes";
 import { NodeDirective } from "../classes/NodeDirective";
 import Relationship from "../classes/Relationship";
@@ -723,18 +722,18 @@ function makeAugmentedSchema(
             const sortInput = composer.createInputTC({
                 name: `${node.name}Sort`,
                 fields: sortFields,
-                description: `Fields to sort ${pluralize(
-                    node.name
-                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${node.name}Sort`} object.`,
+                description: `Fields to sort ${node.getPlural({
+                    pascalCase: true,
+                })} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${node.name}Sort`} object.`,
             });
 
             composer.createInputTC({
                 name: `${node.name}Options`,
                 fields: {
                     sort: {
-                        description: `Specify one or more ${`${node.name}Sort`} objects to sort ${pluralize(
-                            node.name
-                        )} by. The sorts will be applied in the order in which they are arranged in the array.`,
+                        description: `Specify one or more ${`${node.name}Sort`} objects to sort ${node.getPlural({
+                            pascalCase: true,
+                        })} by. The sorts will be applied in the order in which they are arranged in the array.`,
                         type: sortInput.List,
                     },
                     limit: "Int",
