@@ -2108,7 +2108,7 @@ __metadata:
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
     prettier: 2.3.2
-    randomstring: 1.1.5
+    randomstring: 1.2.1
     semver: 7.3.5
     ts-jest: 26.1.4
     typescript: 3.9.7
@@ -2132,7 +2132,7 @@ __metadata:
     "@types/jsonwebtoken": 8.5.6
     "@types/node": 14.18.5
     "@types/pluralize": 0.0.29
-    "@types/randomstring": 1.1.6
+    "@types/randomstring": 1.1.8
     apollo-server: 3.6.1
     camelcase: ^6.2.0
     debug: ^4.3.2
@@ -2156,7 +2156,7 @@ __metadata:
     nock: 13.2.1
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
-    randomstring: 1.1.5
+    randomstring: 1.2.1
     rimraf: 3.0.2
     semver: ^7.3.5
     supertest: 6.1.6
@@ -3069,10 +3069,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/randomstring@npm:1.1.6":
-  version: 1.1.6
-  resolution: "@types/randomstring@npm:1.1.6"
-  checksum: 8d86fbc25adae21c9bb48652dd13b5db3fa83d49632269fe3618272a8131dcf8e108c165e948ab5e20c962eb123189d34a4e29218f6e85155e7f9f81c324f1fe
+"@types/randomstring@npm:1.1.8":
+  version: 1.1.8
+  resolution: "@types/randomstring@npm:1.1.8"
+  checksum: 22a9e4b09583ad8e7fa7ca214133abc014636d7d6eb49ca9ee671c09b241311107b0a6ea48205bf795ac61fbe5b185ac415aed2dd27c7f5806235bfea0e5532f
   languageName: node
   linkType: hard
 
@@ -15656,6 +15656,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"randombytes@npm:2.0.3":
+  version: 2.0.3
+  resolution: "randombytes@npm:2.0.3"
+  checksum: 13e1abd143404dd87024bf345fb1a446b2e2ee46d8e1a5a073e8370c9b1e58000d81a97d4327ba7089087213eb6d8c77fa67ab4e91aa00605126d634fcccb9d4
+  languageName: node
+  linkType: hard
+
 "randombytes@npm:^2.1.0":
   version: 2.1.0
   resolution: "randombytes@npm:2.1.0"
@@ -15673,6 +15680,18 @@ fsevents@^1.2.7:
   bin:
     randomstring: bin/randomstring
   checksum: 7e969682b4f6e32fd947870e3ec2b271359c98aecdd2d8370b87a13df5512ac0e19d5bc5846abbae8b204934b77db52ffa9ca5c0b16a8127a79543dbaa5c6a3c
+  languageName: node
+  linkType: hard
+
+"randomstring@npm:1.2.1":
+  version: 1.2.1
+  resolution: "randomstring@npm:1.2.1"
+  dependencies:
+    array-uniq: 1.0.2
+    randombytes: 2.0.3
+  bin:
+    randomstring: bin/randomstring
+  checksum: 501da2ec59638d502dbb66c237ab80790dbb0b50b493347cbf6abc2dfbf6fe08f195d85e37911689bc406f85d31cf9826757398b5af8c9cae7c0ad4f808f3ac0
   languageName: node
   linkType: hard
 
