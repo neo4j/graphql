@@ -2129,7 +2129,7 @@ __metadata:
     ts-jest: 26.5.6
     typescript: 3.9.7
   peerDependencies:
-    graphql: ^15.0.0
+    graphql: ^15.0.0 || ^16.0.0
     neo4j-driver: ^4.1.0
   languageName: unknown
   linkType: soft
@@ -2180,7 +2180,7 @@ __metadata:
     ts-node: 10.4.0
     typescript: 3.9.7
   peerDependencies:
-    graphql: ^15.0.0
+    graphql: ^15.0.0 || ^16.0.0
     neo4j-driver: ^4.1.0
   languageName: unknown
   linkType: soft
@@ -9495,7 +9495,14 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"graphql@npm:15.5.0, graphql@npm:^15.0.0":
+"graphql@npm:16.2.0":
+  version: 16.2.0
+  resolution: "graphql@npm:16.2.0"
+  checksum: 204b5c9991b82561651a28b13dbb2e0e67514171a6a8c045ca4a527b944087344a14519d0426d661b49f2305584b390591abadc82b942f7b65e64e05cb31a584
+  languageName: node
+  linkType: hard
+
+"graphql@npm:^15.0.0":
   version: 15.5.0
   resolution: "graphql@npm:15.5.0"
   checksum: 58a69f7274ae94c690bfa2517f96bbaf1327e1ca1fc46606e772ba2f7ca517adeb375346301373351e693022f448b7866163034209623d7c5315819ef8c5e7c0
@@ -13429,7 +13436,7 @@ fsevents@^1.2.7:
     eslint-plugin-jest: 24.7.0
     eslint-plugin-jsx-a11y: 6.5.1
     eslint-plugin-react: 7.28.0
-    graphql: 15.5.0
+    graphql: 16.2.0
     husky: 4.3.8
     jest: 26.6.3
     lint-staged: 10.5.4
