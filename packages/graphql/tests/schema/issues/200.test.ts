@@ -64,11 +64,15 @@ describe("200", () => {
             input CategoryOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more CategorySort objects to sort Categories by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more CategorySort objects to sort Categories by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [CategorySort]
             }
 
-            \\"\\"\\"Fields to sort Categories by. The order in which sorts are applied is not guaranteed when specifying many fields in one CategorySort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Categories by. The order in which sorts are applied is not guaranteed when specifying many fields in one CategorySort object.
+            \\"\\"\\"
             input CategorySort {
               categoryId: SortDirection
               description: SortDirection
@@ -177,8 +181,7 @@ describe("200", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }
-            "
+            }"
         `);
     });
 });

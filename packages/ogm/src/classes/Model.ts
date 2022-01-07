@@ -105,7 +105,13 @@ class Model {
 
         const variableValues = { where, options, ...args };
 
-        const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
+        const result = await graphql({
+            schema: this.neoSchema.schema,
+            source: query,
+            rootValue,
+            contextValue: context,
+            variableValues,
+        });
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
@@ -145,7 +151,12 @@ class Model {
 
         const variableValues = { where };
 
-        const result = await graphql(this.neoSchema.schema, query, null, {}, variableValues);
+        const result = await graphql({
+            schema: this.neoSchema.schema,
+            source: query,
+            contextValue: {},
+            variableValues,
+        });
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
@@ -189,7 +200,13 @@ class Model {
 
         const variableValues = { ...args, input };
 
-        const result = await graphql(this.neoSchema.schema, mutation, rootValue, context, variableValues);
+        const result = await graphql({
+            schema: this.neoSchema.schema,
+            source: mutation,
+            rootValue,
+            contextValue: context,
+            variableValues,
+        });
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
@@ -267,7 +284,13 @@ class Model {
 
         const variableValues = { ...args, where, update, connect, disconnect, create, connectOrCreate };
 
-        const result = await graphql(this.neoSchema.schema, mutation, rootValue, context, variableValues);
+        const result = await graphql({
+            schema: this.neoSchema.schema,
+            source: mutation,
+            rootValue,
+            contextValue: context,
+            variableValues,
+        });
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
@@ -315,7 +338,13 @@ class Model {
 
         const variableValues = { where, delete: deleteInput };
 
-        const result = await graphql(this.neoSchema.schema, mutation, rootValue, context, variableValues);
+        const result = await graphql({
+            schema: this.neoSchema.schema,
+            source: mutation,
+            rootValue,
+            contextValue: context,
+            variableValues,
+        });
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
@@ -388,7 +417,13 @@ class Model {
 
         const variableValues = { where };
 
-        const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
+        const result = await graphql({
+            schema: this.neoSchema.schema,
+            source: query,
+            rootValue,
+            contextValue: context,
+            variableValues,
+        });
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);

@@ -69,7 +69,7 @@
         "supertest": "6.1.6",
         "ts-jest": "27.1.2",
         "ts-node": "10.4.0",
-        "typescript": "3.9.7"
+        "typescript": "4.2.4"
     },
     "dependencies": {
         "@graphql-tools/merge": "^8.2.1",
@@ -80,16 +80,16 @@
         "debug": "^4.3.2",
         "deep-equal": "^2.0.5",
         "dot-prop": "^6.0.1",
-        "graphql-compose": "9.0.4",
+        "graphql-compose": "^9.0.6",
         "graphql-parse-resolve-info": "^4.12.0",
-        "graphql-relay": "^0.8.0",
+        "graphql-relay": "^0.10.0",
         "jsonwebtoken": "^8.5.1",
         "jwks-rsa": "^2.0.5",
         "pluralize": "^8.0.0",
         "semver": "^7.3.5"
     },
     "peerDependencies": {
-        "graphql": "^15.0.0",
+        "graphql": "^16.0.0",
         "neo4j-driver": "^4.1.0"
     }
 }
