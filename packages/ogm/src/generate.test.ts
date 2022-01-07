@@ -943,9 +943,9 @@ describe("generate", () => {
 
             export type MovieActorsConnectionArgs = {
               where?: Maybe<MovieActorsConnectionWhere>;
-              sort?: Maybe<Array<MovieActorsConnectionSort>>;
               first?: Maybe<Scalars[\\"Int\\"]>;
               after?: Maybe<Scalars[\\"String\\"]>;
+              sort?: Maybe<Array<MovieActorsConnectionSort>>;
             };
 
             export type MovieActorsConnection = {
