@@ -58,7 +58,7 @@ describe("Unions", () => {
             type Author {
               name: String!
               publications(options: QueryOptions, where: PublicationWhere): [Publication]
-              publicationsConnection(sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
+              publicationsConnection(after: String, first: Int, sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
             type AuthorAggregateSelection {
