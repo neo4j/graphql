@@ -20,19 +20,18 @@
 import Debug from "debug";
 import { GraphQLResolveInfo, print } from "graphql";
 import { Driver } from "neo4j-driver";
-
 import { getJWT } from "../../auth";
 import { Neo4jGraphQL, Neo4jGraphQLConfig } from "../../classes";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
+import { Context } from "../../types";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
 export const wrapResolver =
     ({ driver, config, neoSchema }: { driver?: Driver; config: Neo4jGraphQLConfig; neoSchema: Neo4jGraphQL }) =>
     (next) =>
-    async (root, args, context, info: GraphQLResolveInfo) => {
+    async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const { driverConfig } = config;
 
         if (debug.enabled) {

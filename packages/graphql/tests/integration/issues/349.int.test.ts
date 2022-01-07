@@ -20,8 +20,8 @@
 import neo4j from "neo4j-driver";
 import { getDirective, MapperKind, mapSchema } from "@graphql-tools/utils";
 import { graphql, GraphQLSchema } from "graphql";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { gql } from "apollo-server";
+import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("https://github.com/neo4j/graphql/issues/349", () => {
     function disallowDirective(directiveName: string) {
@@ -30,8 +30,8 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
             disallowDirectiveTransformer: (schema: GraphQLSchema) =>
                 mapSchema(schema, {
                     [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
-                        const disallowDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
-                        if (disallowDirective) {
+                        const fieldDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
+                        if (fieldDirective) {
                             fieldConfig.resolve = () => {
                                 throw new Error("go away");
                             };

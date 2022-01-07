@@ -45,8 +45,8 @@ describe("Custom Directives", () => {
                 upperDirectiveTransformer: (schema: GraphQLSchema) =>
                     mapSchema(schema, {
                         [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
-                            const upperDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
-                            if (upperDirective) {
+                            const fieldDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
+                            if (fieldDirective) {
                                 const { resolve = defaultFieldResolver } = fieldConfig;
                                 fieldConfig.resolve = async function (source, args, context, info) {
                                     const result = await resolve(source, args, context, info);
@@ -55,8 +55,8 @@ describe("Custom Directives", () => {
                                     }
                                     return result;
                                 };
-                                return fieldConfig;
                             }
+                            return fieldConfig;
                         },
                     }),
             };

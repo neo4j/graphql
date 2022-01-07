@@ -18,8 +18,7 @@
  */
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
-import { forEachField, TypeSource } from "@graphql-tools/utils";
+import { TypeSource } from "@graphql-tools/utils";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
@@ -28,7 +27,6 @@ import {
     EnumTypeDefinitionNode,
     GraphQLInt,
     GraphQLNonNull,
-    GraphQLSchema,
     GraphQLString,
     InputObjectTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
@@ -68,7 +66,6 @@ import {
     countResolver,
     createResolver,
     cypherResolver,
-    defaultFieldResolver,
     deleteResolver,
     findResolver,
     updateResolver,
@@ -795,8 +792,8 @@ function makeAugmentedSchema(
         });
 
         if (node.fulltextDirective) {
-            const fields = node.fulltextDirective.indexes.reduce((res, index) => {
-                return {
+            const fields = node.fulltextDirective.indexes.reduce(
+                (res, index) => ({
                     ...res,
                     [index.name]: composer.createInputTC({
                         name: `${node.name}${upperFirst(index.name)}Fulltext`,
@@ -805,8 +802,9 @@ function makeAugmentedSchema(
                             score_EQUAL: "Int",
                         },
                     }),
-                };
-            }, {});
+                }),
+                {}
+            );
 
             composer.createInputTC({
                 name: `${node.name}Fulltext`,
@@ -1052,24 +1050,9 @@ function makeAugmentedSchema(
         }),
     };
 
-    // const schema = makeExecutableSchema({
-    //     ...schemaDefinition,
-    //     typeDefs: parsedDoc,
-    //     resolvers: generatedResolvers,
-    // });
-
-    // // Assign a default field resolver to account for aliasing of fields
-    // forEachField(schema, (field) => {
-    //     if (!field.resolve) {
-    //         // eslint-disable-next-line no-param-reassign
-    //         field.resolve = defaultFieldResolver;
-    //     }
-    // });
-
     return {
         nodes,
         relationships,
-        // schema,
         typeDefs: parsedDoc,
         resolvers: generatedResolvers,
     };

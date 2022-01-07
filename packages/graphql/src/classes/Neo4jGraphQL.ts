@@ -19,24 +19,21 @@
 
 import Debug from "debug";
 import { Driver } from "neo4j-driver";
-import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, printSchema, print } from "graphql";
+import { DocumentNode, GraphQLSchema, parse, printSchema } from "graphql";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
+import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import { forEachField } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
-
 import type { DriverConfig, CypherQueryOptions } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
-import { getJWT } from "../auth";
 import { DEBUG_GRAPHQL } from "../constants";
-import createAuthParam from "../translate/create-auth-param";
 import assertIndexesAndConstraints, {
     AssertIndexesAndConstraintsOptions,
 } from "./utils/asserts-indexes-and-constraints";
 import { wrapResolver } from "../schema/resolvers/wrapper";
-import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import { defaultFieldResolver } from "../schema/resolvers";
 
 const debug = Debug(DEBUG_GRAPHQL);
@@ -104,20 +101,6 @@ class Neo4jGraphQL {
         });
 
         this.schema = schema;
-
-        /*
-            Order must be:
-
-                addResolversToSchema -> visitSchemaDirectives -> createWrappedSchema
-
-            addResolversToSchema breaks schema directives added before it
-
-            createWrappedSchema must come last so that all requests have context prepared correctly
-        */
-
-        // if (schemaDirectives) {
-        //     SchemaDirectiveVisitor.visitSchemaDirectives(this.schema, schemaDirectives);
-        // }
 
         this.document = parse(printSchema(schema));
     }
