@@ -63,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
             resolvers: { Mutation: { doStuff: () => "OK" } },
         });
 
-        const schema = disallowDirectiveTransformer(neo4jGraphQL.schema);
+        const schema = disallowDirectiveTransformer(neo4jGraphQL.schema as GraphQLSchema);
 
         test("DisallowDirective", async () => {
             const gqlResult = await graphql({
@@ -120,7 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
             },
         });
 
-        const schema = disallowDirectiveTransformer(neo4jGraphQL.schema);
+        const schema = disallowDirectiveTransformer(neo4jGraphQL.schema as GraphQLSchema);
 
         test("mutation top - DisallowDirective", async () => {
             const gqlResult = await graphql({
