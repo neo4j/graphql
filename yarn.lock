@@ -2585,7 +2585,7 @@ __metadata:
     dedent: 0.7.0
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
-    faker: 5.5.3
+    faker: 6.6.6
     graphql-compose: 9.0.4
     graphql-parse-resolve-info: ^4.12.0
     graphql-relay: ^0.8.0
@@ -9148,10 +9148,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"faker@npm:5.5.3":
-  version: 5.5.3
-  resolution: "faker@npm:5.5.3"
-  checksum: 684fd64c8d3897e54248f95b4f6319f75d97691b8500cd13adf4af2c28f9204f766c1d1aaa6b41338f0beaaa87256c3132f8708a1a8f189d122b92f6b98081c3
+"faker@npm:6.6.6":
+  version: 6.6.6
+  resolution: "faker@npm:6.6.6"
+  checksum: bfb0d581ab4d76095f2c6bff213fe1735ce077f0f8df849c144ad26035e105bce1b7a704cc030366338c52e25b636ac097a712426a78c9b8804af78f6f2bffe7
   languageName: node
   linkType: hard
 
