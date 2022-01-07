@@ -65,13 +65,19 @@ function createConnectionFields({
             [`${connectionField.fieldName}_NOT`]: connectionWhere,
         });
 
-        let composeNodeArgs: {
+        const composeNodeArgs: {
             where: any;
             sort?: any;
             first?: any;
             after?: any;
         } = {
             where: connectionWhere,
+            first: {
+                type: "Int",
+            },
+            after: {
+                type: "String",
+            },
         };
 
         if (connectionField.relationship.properties) {
@@ -150,16 +156,6 @@ function createConnectionFields({
                     composeNodeArgs.sort = connectionSort.NonNull.List;
                 }
             }
-
-            composeNodeArgs = {
-                ...composeNodeArgs,
-                first: {
-                    type: "Int",
-                },
-                after: {
-                    type: "String",
-                },
-            };
         }
 
         composeNode.addFields({
