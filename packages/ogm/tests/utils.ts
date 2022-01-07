@@ -43,7 +43,7 @@ export function createJwtRequest(secret: string, extraData: Record<string, any> 
     return req;
 }
 
-export function generateUniqueType(baseName: string): TestType {
+export function generateUniqueType(baseName: string) {
     const type = `${generate({
         charset: "alphabetic",
         readable: true,
@@ -55,8 +55,3 @@ export function generateUniqueType(baseName: string): TestType {
         plural,
     };
 }
-
-export type TestType = {
-    name: string;
-    plural: string;
-};

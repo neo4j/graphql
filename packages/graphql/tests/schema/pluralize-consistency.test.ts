@@ -49,14 +49,14 @@ describe("Pluralize consistency", () => {
               relationshipsCreated: Int!
             }
 
-            type CreateSuperFriendsMutationResponse {
+            type CreateSuper_friendsMutationResponse {
               info: CreateInfo!
-              superFriends: [super_friend!]!
+              super_friends: [super_friend!]!
             }
 
-            type CreateSuperUsersMutationResponse {
+            type CreateSuper_usersMutationResponse {
               info: CreateInfo!
-              superUsers: [super_user!]!
+              super_users: [super_user!]!
             }
 
             type DeleteInfo {
@@ -66,12 +66,12 @@ describe("Pluralize consistency", () => {
             }
 
             type Mutation {
-              createSuperFriends(input: [super_friendCreateInput!]!): CreateSuperFriendsMutationResponse!
-              createSuperUsers(input: [super_userCreateInput!]!): CreateSuperUsersMutationResponse!
-              deleteSuperFriends(where: super_friendWhere): DeleteInfo!
-              deleteSuperUsers(delete: super_userDeleteInput, where: super_userWhere): DeleteInfo!
-              updateSuperFriends(update: super_friendUpdateInput, where: super_friendWhere): UpdateSuperFriendsMutationResponse!
-              updateSuperUsers(connect: super_userConnectInput, create: super_userRelationInput, delete: super_userDeleteInput, disconnect: super_userDisconnectInput, update: super_userUpdateInput, where: super_userWhere): UpdateSuperUsersMutationResponse!
+              createSuper_friends(input: [super_friendCreateInput!]!): CreateSuper_friendsMutationResponse!
+              createSuper_users(input: [super_userCreateInput!]!): CreateSuper_usersMutationResponse!
+              deleteSuper_friends(where: super_friendWhere): DeleteInfo!
+              deleteSuper_users(delete: super_userDeleteInput, where: super_userWhere): DeleteInfo!
+              updateSuper_friends(update: super_friendUpdateInput, where: super_friendWhere): UpdateSuper_friendsMutationResponse!
+              updateSuper_users(connect: super_userConnectInput, create: super_userRelationInput, delete: super_userDeleteInput, disconnect: super_userDisconnectInput, update: super_userUpdateInput, where: super_userWhere): UpdateSuper_usersMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -83,12 +83,12 @@ describe("Pluralize consistency", () => {
             }
 
             type Query {
-              superFriends(options: super_friendOptions, where: super_friendWhere): [super_friend!]!
-              superFriendsAggregate(where: super_friendWhere): super_friendAggregateSelection!
-              superFriendsCount(where: super_friendWhere): Int!
-              superUsers(options: super_userOptions, where: super_userWhere): [super_user!]!
-              superUsersAggregate(where: super_userWhere): super_userAggregateSelection!
-              superUsersCount(where: super_userWhere): Int!
+              super_friends(options: super_friendOptions, where: super_friendWhere): [super_friend!]!
+              super_friendsAggregate(where: super_friendWhere): super_friendAggregateSelection!
+              super_friendsCount(where: super_friendWhere): Int!
+              super_users(options: super_userOptions, where: super_userWhere): [super_user!]!
+              super_usersAggregate(where: super_userWhere): super_userAggregateSelection!
+              super_usersCount(where: super_userWhere): Int!
             }
 
             enum SortDirection {
@@ -111,14 +111,14 @@ describe("Pluralize consistency", () => {
               relationshipsDeleted: Int!
             }
 
-            type UpdateSuperFriendsMutationResponse {
+            type UpdateSuper_friendsMutationResponse {
               info: UpdateInfo!
-              superFriends: [super_friend!]!
+              super_friends: [super_friend!]!
             }
 
-            type UpdateSuperUsersMutationResponse {
+            type UpdateSuper_usersMutationResponse {
               info: UpdateInfo!
-              superUsers: [super_user!]!
+              super_users: [super_user!]!
             }
 
             type super_friend {
@@ -141,11 +141,11 @@ describe("Pluralize consistency", () => {
             input super_friendOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more super_friendSort objects to sort SuperFriends by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"Specify one or more super_friendSort objects to sort Super_friends by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [super_friendSort]
             }
 
-            \\"\\"\\"Fields to sort SuperFriends by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_friendSort object.\\"\\"\\"
+            \\"\\"\\"Fields to sort Super_friends by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_friendSort object.\\"\\"\\"
             input super_friendSort {
               name: SortDirection
             }
@@ -293,7 +293,7 @@ describe("Pluralize consistency", () => {
             input super_userOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more super_userSort objects to sort SuperUsers by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"Specify one or more super_userSort objects to sort Super_users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [super_userSort]
             }
 
@@ -301,7 +301,7 @@ describe("Pluralize consistency", () => {
               my_friend: [super_userMy_friendCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort SuperUsers by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_userSort object.\\"\\"\\"
+            \\"\\"\\"Fields to sort Super_users by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_userSort object.\\"\\"\\"
             input super_userSort {
               name: SortDirection
             }

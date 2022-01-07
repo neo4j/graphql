@@ -50,8 +50,8 @@ describe("#288", () => {
     test("Can create a USER and COMPANYID is populated", async () => {
         const query = gql`
             mutation {
-                createUsers(input: { USERID: "userid", COMPANYID: "companyid" }) {
-                    users {
+                createUSERS(input: { USERID: "userid", COMPANYID: "companyid" }) {
+                    uSERS {
                         USERID
                         COMPANYID
                     }
@@ -86,8 +86,8 @@ describe("#288", () => {
     test("Can update a USER and COMPANYID is populated", async () => {
         const query = gql`
             mutation {
-                updateUsers(where: { USERID: "userid" }, update: { COMPANYID: "companyid2" }) {
-                    users {
+                updateUSERS(where: { USERID: "userid" }, update: { COMPANYID: "companyid2" }) {
+                    uSERS {
                         USERID
                         COMPANYID
                     }

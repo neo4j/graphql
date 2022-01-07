@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import camelCase from "camelcase";
 import neo4jDriver, { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import pluralize from "pluralize";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("DateTime", () => {
     let driver: Driver;
@@ -157,14 +156,10 @@ describe("DateTime", () => {
         test("should find a movie (with a DateTime)", async () => {
             const session = driver.session();
 
-            const randomType = `${generate({
-                charset: "alphabetic",
-            })}Movie`;
-
-            const pluralRandomType = pluralize(camelCase(randomType));
+            const randomType = generateUniqueType("Movie");
 
             const typeDefs = `
-                type ${randomType} {
+                type ${randomType.name} {
                     datetime: DateTime
                 }
             `;
@@ -177,7 +172,7 @@ describe("DateTime", () => {
 
             const query = `
                 query {
-                    ${pluralRandomType}(where: { datetime: "${date.toISOString()}" }) {
+                    ${randomType.plural}(where: { datetime: "${date.toISOString()}" }) {
                         datetime
                     }
                 }
@@ -188,7 +183,7 @@ describe("DateTime", () => {
             try {
                 await session.run(
                     `
-                   CREATE (m:${randomType})
+                   CREATE (m:${randomType.name})
                    SET m.datetime = $nDateTime
                `,
                     { nDateTime }
@@ -201,7 +196,7 @@ describe("DateTime", () => {
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
-                expect((gqlResult.data as any)[pluralRandomType][0]).toEqual({ datetime: date.toISOString() });
+                expect((gqlResult.data as any)[randomType.plural][0]).toEqual({ datetime: date.toISOString() });
             } finally {
                 await session.close();
             }
@@ -210,14 +205,10 @@ describe("DateTime", () => {
         test("should find a movie (with a DateTime created with a timezone)", async () => {
             const session = driver.session();
 
-            const randomType = `${generate({
-                charset: "alphabetic",
-            })}Movie`;
-
-            const pluralRandomType = pluralize(camelCase(randomType));
+            const randomType = generateUniqueType("Movie");
 
             const typeDefs = `
-                type ${randomType} {
+                type ${randomType.name} {
                     name: String
                     datetime: DateTime
                 }
@@ -231,7 +222,7 @@ describe("DateTime", () => {
 
             const query = `
                 query {
-                    ${pluralRandomType}(where: { name: "${randomType}" }) {
+                    ${randomType.plural}(where: { name: "${randomType.name}" }) {
                         datetime
                     }
                 }
@@ -239,8 +230,8 @@ describe("DateTime", () => {
 
             try {
                 await session.run(`
-                   CREATE (m:${randomType})
-                   SET m.name = "${randomType}"
+                   CREATE (m:${randomType.name})
+                   SET m.name = "${randomType.name}"
                    SET m.datetime = datetime("${date.toISOString().replace("Z", "[Etc/UTC]")}")
                `);
 
@@ -251,7 +242,7 @@ describe("DateTime", () => {
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
-                expect((gqlResult.data as any)[pluralRandomType][0]).toEqual({ datetime: date.toISOString() });
+                expect((gqlResult.data as any)[randomType.plural][0]).toEqual({ datetime: date.toISOString() });
             } finally {
                 await session.close();
             }

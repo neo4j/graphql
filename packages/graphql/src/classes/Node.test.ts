@@ -62,12 +62,12 @@ describe("Node", () => {
         expect(node.getLabels(defaultContext)).toEqual(["Movie"]);
     });
 
-    test("should return camelCased plural", () => {
+    test("should return plural with underscores", () => {
         const node = new NodeBuilder({
             name: "super_movie",
         }).instance();
 
-        expect(node.plural).toEqual("superMovies");
+        expect(node.plural).toEqual("super_movies");
     });
 
     describe("NodeDirective", () => {
