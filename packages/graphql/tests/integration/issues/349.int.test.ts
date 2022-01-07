@@ -32,6 +32,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                     [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
                         const fieldDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
                         if (fieldDirective) {
+                            // eslint-disable-next-line no-param-reassign
                             fieldConfig.resolve = () => {
                                 throw new Error("go away");
                             };

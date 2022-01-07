@@ -48,7 +48,8 @@ describe("Custom Directives", () => {
                             const fieldDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
                             if (fieldDirective) {
                                 const { resolve = defaultFieldResolver } = fieldConfig;
-                                fieldConfig.resolve = async function (source, args, context, info) {
+                                // eslint-disable-next-line no-param-reassign
+                                fieldConfig.resolve = async (source, args, context, info) => {
                                     const result = await resolve(source, args, context, info);
                                     if (typeof result === "string") {
                                         return result.toUpperCase();
