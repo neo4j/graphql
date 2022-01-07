@@ -124,7 +124,7 @@ export function createConnectionWithEdgeProperties({
         [pageInfoKey]: {
             [startCursorKey]: startCursor,
             [endCursorKey]: endCursor,
-            [hasPreviousPageKey]: lastEdgeCursor > 0,
+            [hasPreviousPageKey]: sliceStart > 0,
             [hasNextPageKey]: typeof first === "number" ? sliceEnd < totalCount : false,
         },
     };
