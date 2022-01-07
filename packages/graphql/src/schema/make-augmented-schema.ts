@@ -19,11 +19,12 @@
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
-import { forEachField } from "@graphql-tools/utils";
+import { forEachField, TypeSource } from "@graphql-tools/utils";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
     DirectiveNode,
+    DocumentNode,
     EnumTypeDefinitionNode,
     GraphQLInt,
     GraphQLNonNull,
@@ -80,9 +81,9 @@ import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 
 function makeAugmentedSchema(
-    { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
+    typeDefs: TypeSource,
     { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
-): { schema: GraphQLSchema; nodes: Node[]; relationships: Relationship[] } {
+): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
     if (!skipValidateTypeDefs) {
@@ -1051,24 +1052,26 @@ function makeAugmentedSchema(
         }),
     };
 
-    const schema = makeExecutableSchema({
-        ...schemaDefinition,
-        typeDefs: parsedDoc,
-        resolvers: generatedResolvers,
-    });
+    // const schema = makeExecutableSchema({
+    //     ...schemaDefinition,
+    //     typeDefs: parsedDoc,
+    //     resolvers: generatedResolvers,
+    // });
 
-    // Assign a default field resolver to account for aliasing of fields
-    forEachField(schema, (field) => {
-        if (!field.resolve) {
-            // eslint-disable-next-line no-param-reassign
-            field.resolve = defaultFieldResolver;
-        }
-    });
+    // // Assign a default field resolver to account for aliasing of fields
+    // forEachField(schema, (field) => {
+    //     if (!field.resolve) {
+    //         // eslint-disable-next-line no-param-reassign
+    //         field.resolve = defaultFieldResolver;
+    //     }
+    // });
 
     return {
         nodes,
         relationships,
-        schema,
+        // schema,
+        typeDefs: parsedDoc,
+        resolvers: generatedResolvers,
     };
 }
 

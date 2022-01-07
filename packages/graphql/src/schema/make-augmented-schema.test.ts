@@ -51,8 +51,8 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
-        const document = parse(printSchema(neoSchema.schema));
+        const neoSchema = makeAugmentedSchema(typeDefs);
+        const document = neoSchema.typeDefs;
         const queryObject = document.definitions.find(
             (x) => x.kind === "ObjectTypeDefinition" && x.name.value === "Query"
         ) as ObjectTypeDefinitionNode;
@@ -67,8 +67,9 @@ describe("makeAugmentedSchema", () => {
 
             // Find
             const nodeFindQuery = queryObject.fields?.find((x) => x.name.value === pluralize(camelCase(type)));
-            const nodeFindQueryType = (((nodeFindQuery?.type as NonNullTypeNode).type as ListTypeNode)
-                .type as NonNullTypeNode).type as NamedTypeNode;
+            const nodeFindQueryType = (
+                ((nodeFindQuery?.type as NonNullTypeNode).type as ListTypeNode).type as NonNullTypeNode
+            ).type as NamedTypeNode;
             expect(nodeFindQueryType.name.value).toEqual(type);
 
             // Options
@@ -98,7 +99,7 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate a non ID field");
+        expect(() => makeAugmentedSchema(typeDefs)).toThrow("cannot auto-generate a non ID field");
     });
 
     test("should throw cannot auto-generate an array", () => {
@@ -108,7 +109,7 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate an array");
+        expect(() => makeAugmentedSchema(typeDefs)).toThrow("cannot auto-generate an array");
     });
 
     test("should throw cannot timestamp on array of DateTime", () => {
@@ -118,7 +119,7 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate an array");
+        expect(() => makeAugmentedSchema(typeDefs)).toThrow("cannot auto-generate an array");
     });
 
     test("should throw cannot have auth directive on a relationship", () => {
@@ -128,7 +129,7 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot have auth directive on a relationship");
+        expect(() => makeAugmentedSchema(typeDefs)).toThrow("cannot have auth directive on a relationship");
     });
 
     describe("REGEX", () => {
@@ -139,9 +140,9 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = makeAugmentedSchema(typeDefs);
 
-            const document = parse(printSchema(neoSchema.schema));
+            const document = neoSchema.typeDefs;
 
             const nodeWhereInput = document.definitions.find(
                 (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "MovieWhere"
@@ -159,9 +160,9 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs }, { enableRegex: true });
+            const neoSchema = makeAugmentedSchema(typeDefs, { enableRegex: true });
 
-            const document = parse(printSchema(neoSchema.schema));
+            const document = neoSchema.typeDefs;
 
             const nodeWhereInput = document.definitions.find(
                 (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
@@ -187,9 +188,9 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = makeAugmentedSchema(typeDefs);
 
-            const document = parse(printSchema(neoSchema.schema));
+            const document = neoSchema.typeDefs;
 
             // make sure the schema constructs
             expect(document.kind).toEqual("Document");
@@ -211,7 +212,7 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+        expect(() => makeAugmentedSchema(typeDefs)).toThrow(
             "Cannot have @auth directive on relationship properties interface"
         );
     });
@@ -231,7 +232,7 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Directive "@cypher" may not be used on INTERFACE.');
+        expect(() => makeAugmentedSchema(typeDefs)).toThrow('Directive "@cypher" may not be used on INTERFACE.');
     });
 
     test("should throw error if @auth is used on relationship property", () => {
@@ -249,7 +250,7 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("Cannot have @auth directive on relationship property");
+        expect(() => makeAugmentedSchema(typeDefs)).toThrow("Cannot have @auth directive on relationship property");
     });
 
     test("should throw error if @relationship is used on relationship property", () => {
@@ -267,7 +268,7 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+        expect(() => makeAugmentedSchema(typeDefs)).toThrow(
             "Cannot have @relationship directive on relationship property"
         );
     });
@@ -288,9 +289,7 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-            "Cannot have @cypher directive on relationship property"
-        );
+        expect(() => makeAugmentedSchema(typeDefs)).toThrow("Cannot have @cypher directive on relationship property");
     });
 
     describe("Reserved Names", () => {
@@ -312,7 +311,7 @@ describe("makeAugmentedSchema", () => {
                         }
                     `;
 
-                    expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                    expect(() => makeAugmentedSchema(typeDefs)).toThrow(
                         (constants.RESERVED_INTERFACE_FIELDS.find((x) => x[0] === "node") as string[])[1]
                     );
                 });
@@ -333,7 +332,7 @@ describe("makeAugmentedSchema", () => {
                         }
                     `;
 
-                    expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                    expect(() => makeAugmentedSchema(typeDefs)).toThrow(
                         (constants.RESERVED_INTERFACE_FIELDS.find((x) => x[0] === "cursor") as string[])[1]
                     );
                 });
@@ -358,7 +357,7 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
                 "@unique directive cannot be used on interface type fields: ActedIn.id"
             );
         });
@@ -376,7 +375,7 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
                 "@unique directive cannot be used on interface type fields: Production.id"
             );
         });
@@ -395,7 +394,7 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
                 "Directive @unique cannot be used in combination with @relationship"
             );
         });

@@ -18,49 +18,56 @@
  */
 
 import neo4j from "neo4j-driver";
-import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
-import { graphql } from "graphql";
+import { getDirective, MapperKind, mapSchema } from "@graphql-tools/utils";
+import { graphql, GraphQLSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { gql } from "apollo-server";
 
 describe("https://github.com/neo4j/graphql/issues/349", () => {
-    type Field = Parameters<SchemaDirectiveVisitor["visitFieldDefinition"]>[0];
-
-    class DisallowDirective extends SchemaDirectiveVisitor {
-        public visitFieldDefinition(field: Field) {
-            // eslint-disable-next-line no-param-reassign
-            field.resolve = () => {
-                // Disallow any and all access, all the time
-                throw new Error("go away");
-            };
-        }
+    function disallowDirective(directiveName: string) {
+        return {
+            disallowDirectiveTypeDefs: `directive @${directiveName} on FIELD_DEFINITION`,
+            disallowDirectiveTransformer: (schema: GraphQLSchema) =>
+                mapSchema(schema, {
+                    [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
+                        const disallowDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
+                        if (disallowDirective) {
+                            fieldConfig.resolve = () => {
+                                throw new Error("go away");
+                            };
+                        }
+                        return fieldConfig;
+                    },
+                }),
+        };
     }
 
-    const schemaDirectives = {
-        disallow: DisallowDirective,
-    };
+    const { disallowDirectiveTypeDefs, disallowDirectiveTransformer } = disallowDirective("disallow");
 
     describe("https://github.com/neo4j/graphql/issues/349#issuecomment-885295157", () => {
         const neo4jGraphQL = new Neo4jGraphQL({
-            typeDefs: /* GraphQL */ `
-                directive @disallow on FIELD_DEFINITION
+            typeDefs: [
+                disallowDirectiveTypeDefs,
+                gql`
+                    type Mutation {
+                        doStuff: String! @disallow
+                    }
 
-                type Mutation {
-                    doStuff: String! @disallow
-                }
-
-                type Query {
-                    noop: Boolean
-                }
-            `,
+                    type Query {
+                        noop: Boolean
+                    }
+                `,
+            ],
 
             driver: neo4j.driver("bolt://localhost:7687"),
             resolvers: { Mutation: { doStuff: () => "OK" } },
-            schemaDirectives,
         });
+
+        const schema = disallowDirectiveTransformer(neo4jGraphQL.schema);
 
         test("DisallowDirective", async () => {
             const gqlResult = await graphql({
-                schema: neo4jGraphQL.schema,
+                schema,
                 source: /* GraphQL */ `
                     mutation {
                         doStuff
@@ -76,23 +83,24 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
 
     describe("https://github.com/neo4j/graphql/issues/349#issuecomment-885311918", () => {
         const neo4jGraphQL = new Neo4jGraphQL({
-            typeDefs: /* GraphQL */ `
-                directive @disallow on FIELD_DEFINITION
+            typeDefs: [
+                disallowDirectiveTypeDefs,
+                gql`
+                    type NestedResult {
+                        stuff: String! @disallow
+                    }
 
-                type NestedResult {
-                    stuff: String! @disallow
-                }
+                    type Mutation {
+                        doStuff: String! @disallow
+                        doNestedStuff: NestedResult!
+                    }
 
-                type Mutation {
-                    doStuff: String! @disallow
-                    doNestedStuff: NestedResult!
-                }
-
-                type Query {
-                    getStuff: String! @disallow
-                    getNestedStuff: NestedResult!
-                }
-            `,
+                    type Query {
+                        getStuff: String! @disallow
+                        getNestedStuff: NestedResult!
+                    }
+                `,
+            ],
 
             driver: neo4j.driver("bolt://localhost:7687"),
             resolvers: {
@@ -110,12 +118,13 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                     getNestedStuff: () => "OK",
                 },
             },
-            schemaDirectives,
         });
+
+        const schema = disallowDirectiveTransformer(neo4jGraphQL.schema);
 
         test("mutation top - DisallowDirective", async () => {
             const gqlResult = await graphql({
-                schema: neo4jGraphQL.schema,
+                schema,
                 source: /* GraphQL */ `
                     mutation {
                         doStuff
@@ -130,7 +139,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
 
         test("query top - DisallowDirective", async () => {
             const gqlResult = await graphql({
-                schema: neo4jGraphQL.schema,
+                schema,
                 source: /* GraphQL */ `
                     query {
                         getStuff
@@ -145,7 +154,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
 
         test("mutation nested - DisallowDirective", async () => {
             const gqlResult = await graphql({
-                schema: neo4jGraphQL.schema,
+                schema,
                 source: /* GraphQL */ `
                     mutation {
                         doNestedStuff {
@@ -162,7 +171,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
 
         test("query nested - DisallowDirective", async () => {
             const gqlResult = await graphql({
-                schema: neo4jGraphQL.schema,
+                schema,
                 source: /* GraphQL */ `
                     query {
                         getNestedStuff {
@@ -180,21 +189,23 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
 
     describe("schemaDirectives can be an empty object", () => {
         const neo4jGraphQL = new Neo4jGraphQL({
-            typeDefs: /* GraphQL */ `
-                directive @disallow on FIELD_DEFINITION
+            typeDefs: [
+                disallowDirectiveTypeDefs,
+                gql`
+                    directive @disallow on FIELD_DEFINITION
 
-                type Mutation {
-                    doStuff: String! @disallow
-                }
+                    type Mutation {
+                        doStuff: String! @disallow
+                    }
 
-                type Query {
-                    noop: Boolean
-                }
-            `,
+                    type Query {
+                        noop: Boolean
+                    }
+                `,
+            ],
 
             driver: neo4j.driver("bolt://localhost:7687"),
             resolvers: { Mutation: { doStuff: () => "OK" } },
-            schemaDirectives: {},
         });
 
         test("DisallowDirective", async () => {

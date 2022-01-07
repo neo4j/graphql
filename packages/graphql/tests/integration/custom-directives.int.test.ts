@@ -19,8 +19,8 @@
 
 import { Driver } from "neo4j-driver";
 import { gql } from "apollo-server";
-import { graphql, defaultFieldResolver } from "graphql";
-import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
+import { graphql, defaultFieldResolver, GraphQLSchema } from "graphql";
+import { getDirective, MapperKind, mapSchema } from "@graphql-tools/utils";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
 import neo4j from "./neo4j";
@@ -39,31 +39,46 @@ describe("Custom Directives", () => {
     test("should define a custom schemaDirective and resolve it", async () => {
         const session = driver.session();
 
-        class UpperCaseDirective extends SchemaDirectiveVisitor {
-            visitFieldDefinition(field) {
-                const { resolve = defaultFieldResolver } = field;
-                // eslint-disable-next-line no-param-reassign
-                field.resolve = async function r(...args) {
-                    const result = await resolve.apply(this, args);
-                    if (typeof result === "string") {
-                        return result.toUpperCase();
-                    }
-                    return result;
-                };
-            }
+        function upperDirective(directiveName: string) {
+            return {
+                upperDirectiveTypeDefs: `directive @${directiveName} on FIELD_DEFINITION`,
+                upperDirectiveTransformer: (schema: GraphQLSchema) =>
+                    mapSchema(schema, {
+                        [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
+                            const upperDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
+                            if (upperDirective) {
+                                const { resolve = defaultFieldResolver } = fieldConfig;
+                                fieldConfig.resolve = async function (source, args, context, info) {
+                                    const result = await resolve(source, args, context, info);
+                                    if (typeof result === "string") {
+                                        return result.toUpperCase();
+                                    }
+                                    return result;
+                                };
+                                return fieldConfig;
+                            }
+                        },
+                    }),
+            };
         }
 
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs: gql`
-                directive @uppercase on FIELD_DEFINITION
+        const { upperDirectiveTypeDefs, upperDirectiveTransformer } = upperDirective("uppercase");
 
-                type Movie {
-                    name: String @uppercase
-                }
-            `,
-            schemaDirectives: { uppercase: UpperCaseDirective },
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs: [
+                upperDirectiveTypeDefs,
+                gql`
+                    directive @uppercase on FIELD_DEFINITION
+
+                    type Movie {
+                        name: String @uppercase
+                    }
+                `,
+            ],
             driver,
         });
+
+        const schema = upperDirectiveTransformer(neoSchema.schema);
 
         const name = generate({
             charset: "alphabetic",
@@ -81,7 +96,7 @@ describe("Custom Directives", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema,
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
