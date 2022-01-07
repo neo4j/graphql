@@ -53,7 +53,7 @@
         "@types/randomstring": "1.1.8",
         "apollo-server": "3.6.1",
         "dedent": "0.7.0",
-        "faker": "5.5.3",
+        "faker": "6.6.6",
         "graphql-tag": "2.12.6",
         "is-uuid": "1.0.2",
         "jest": "27.4.7",
