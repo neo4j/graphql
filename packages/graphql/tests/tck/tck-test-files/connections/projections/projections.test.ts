@@ -201,8 +201,8 @@ describe("Relay Cursor Connection projections", () => {
             WITH { node: { __resolveType: \\"Series\\" } } AS edge
             RETURN edge
             }
-            WITH count(edge) as totalCount
-            RETURN { totalCount: totalCount } AS productionsConnection
+            WITH collect(edge) as edges
+            RETURN { totalCount: size(edges) } AS productionsConnection
             }
             RETURN this { .name, productionsConnection } as this"
         `);
@@ -252,8 +252,8 @@ describe("Relay Cursor Connection projections", () => {
             WITH { node: { __resolveType: \\"Series\\" } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS productionsConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS productionsConnection
             }
             RETURN this { .name, productionsConnection } as this"
         `);

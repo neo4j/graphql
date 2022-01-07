@@ -100,8 +100,8 @@ describe("Cypher -> Connections -> Unions", () => {
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -158,8 +158,8 @@ describe("Cypher -> Connections -> Unions", () => {
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -232,8 +232,8 @@ describe("Cypher -> Connections -> Unions", () => {
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -315,8 +315,8 @@ describe("Cypher -> Connections -> Unions", () => {
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -398,8 +398,8 @@ describe("Cypher -> Connections -> Unions", () => {
             RETURN edge
             }
             WITH edge ORDER BY edge.words ASC
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
