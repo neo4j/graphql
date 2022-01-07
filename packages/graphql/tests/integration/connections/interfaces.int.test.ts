@@ -406,6 +406,146 @@ describe("Connections -> Interfaces", () => {
         }
     });
 
+    test("Projecting node and relationship properties with pagination", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+            query Actors($name: String) {
+                actors(where: { name: $name }) {
+                    name
+                    actedInConnection(first: 2, sort: { edge: { screenTime: DESC } }) {
+                        pageInfo {
+                            hasNextPage
+                            hasPreviousPage
+                            endCursor
+                        }
+                        edges {
+                            screenTime
+                            node {
+                                title
+                                ... on Movie {
+                                    runtime
+                                }
+                                ... on Series {
+                                    episodes
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const nextQuery = `
+            query Actors($name: String, $after: String) {
+                actors(where: { name: $name }) {
+                    name
+                    actedInConnection(first: 2, after: $after, sort: { edge: { screenTime: DESC } }) {
+                        pageInfo {
+                            hasNextPage
+                            hasPreviousPage
+                            endCursor
+                        }
+                        edges {
+                            screenTime
+                            node {
+                                title
+                                ... on Movie {
+                                    runtime
+                                }
+                                ... on Series {
+                                    episodes
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks } },
+                variableValues: {
+                    name: actorName,
+                },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.actors).toEqual([
+                {
+                    name: actorName,
+                    actedInConnection: {
+                        pageInfo: {
+                            hasNextPage: true,
+                            hasPreviousPage: false,
+                            endCursor: expect.any(String),
+                        },
+                        edges: [
+                            {
+                                screenTime: seriesScreenTime,
+                                node: {
+                                    title: seriesTitle,
+                                    episodes: seriesEpisodes,
+                                },
+                            },
+                            {
+                                screenTime: movie2ScreenTime,
+                                node: {
+                                    title: movie2Title,
+                                    runtime: movie2Runtime,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+
+            const nextResult = await graphql({
+                schema: neoSchema.schema,
+                source: nextQuery,
+                contextValue: { driver, driverConfig: { bookmarks } },
+                variableValues: {
+                    name: actorName,
+                    after: result.data?.actors[0].actedInConnection.pageInfo.endCursor,
+                },
+            });
+
+            expect(nextResult.errors).toBeFalsy();
+
+            expect(nextResult?.data?.actors).toEqual([
+                {
+                    name: actorName,
+                    actedInConnection: {
+                        pageInfo: {
+                            hasNextPage: false,
+                            hasPreviousPage: true,
+                            endCursor: expect.any(String),
+                        },
+                        edges: [
+                            {
+                                screenTime: movie1ScreenTime,
+                                node: {
+                                    title: movie1Title,
+                                    runtime: movie1Runtime,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
     test("With where argument for shared field on node with node in database", async () => {
         const session = driver.session();
 

@@ -259,6 +259,141 @@ describe("Connections -> Unions", () => {
         }
     });
 
+    test("Projecting node and relationship properties with pagination", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+            query($authorName: String) {
+                authors(where: { name: $authorName }) {
+                    name
+                    publicationsConnection(first: 2, sort: [{ edge: { words: ASC } }]) {
+                        pageInfo {
+                            hasNextPage
+                            hasPreviousPage
+                            endCursor
+                        }
+                        edges {
+                            words
+                            node {
+                                ... on Book {
+                                    title
+                                }
+                                ... on Journal {
+                                    subject
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const nextQuery = `
+            query($authorName: String, $after: String) {
+                authors(where: { name: $authorName }) {
+                    name
+                    publicationsConnection(first: 2, after: $after, sort: [{ edge: { words: ASC } }]) {
+                        pageInfo {
+                            hasNextPage
+                            hasPreviousPage
+                            endCursor
+                        }
+                        edges {
+                            words
+                            node {
+                                ... on Book {
+                                    title
+                                }
+                                ... on Journal {
+                                    subject
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks } },
+                variableValues: {
+                    authorName,
+                },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.authors).toEqual([
+                {
+                    name: authorName,
+                    publicationsConnection: {
+                        pageInfo: {
+                            hasNextPage: true,
+                            hasPreviousPage: false,
+                            endCursor: expect.any(String),
+                        },
+                        edges: [
+                            {
+                                words: journalWordCount,
+                                node: {
+                                    subject: journalSubject,
+                                },
+                            },
+                            {
+                                words: book2WordCount,
+                                node: {
+                                    title: book2Title,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+
+            const nextResult = await graphql({
+                schema: neoSchema.schema,
+                source: nextQuery,
+                contextValue: { driver, driverConfig: { bookmarks } },
+                variableValues: {
+                    authorName,
+                    after: result.data?.authors[0].publicationsConnection.pageInfo.endCursor,
+                },
+            });
+
+            expect(nextResult.errors).toBeFalsy();
+
+            expect(nextResult.data?.authors).toEqual([
+                {
+                    name: authorName,
+                    publicationsConnection: {
+                        pageInfo: {
+                            hasNextPage: false,
+                            hasPreviousPage: true,
+                            endCursor: expect.any(String),
+                        },
+                        edges: [
+                            {
+                                words: book1WordCount,
+                                node: {
+                                    title: book1Title,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
     test("Projecting node and relationship properties for one union member with no arguments", async () => {
         const session = driver.session();
 
