@@ -50,7 +50,16 @@ function createConnectionAndParams({
 
     const subquery = ["CALL {", `WITH ${nodeVariable}`];
 
-    const sortInput = resolveTree.args.sort as ConnectionSortArg[];
+    const sortInput = (resolveTree.args.sort ?? []) as ConnectionSortArg[];
+    // Fields of {edge, node} to sort on. A simple resolve tree will be added if not in selection set
+    // Since nodes of abstract types and edges are constructed sort will not work if field is not in selection set
+    const sortFields: Record<keyof ConnectionSortArg, string[]> = Object.assign(
+        {},
+        ...(["edge", "node"] as Array<keyof ConnectionSortArg>).map((element) => ({
+            [element]: sortInput.map(({ [element]: sortField = {} }) => Object.keys(sortField)).flat(),
+        }))
+    );
+
     const afterInput = resolveTree.args.after;
     const firstInput = resolveTree.args.first;
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
@@ -73,6 +82,15 @@ function createConnectionAndParams({
         const relationshipFieldsByTypeName = connection.edges.fieldsByTypeName[field.relationshipTypeName];
 
         relationshipProperties = Object.values(relationshipFieldsByTypeName).filter((v) => v.name !== "node");
+
+        sortFields.edge.forEach((sortField) => {
+            // For every sort field on edge check to see if the field is in selection set
+            if (!relationshipProperties.find((rt) => rt.name === sortField)) {
+                // if it doesn't exist add a basic resolve tree to relationshipProperties
+                relationshipProperties.push({ alias: sortField, args: {}, fieldsByTypeName: {}, name: sortField });
+            }
+        });
+
         node = Object.values(relationshipFieldsByTypeName).find((v) => v.name === "node") as ResolveTree;
     }
 
@@ -120,6 +138,17 @@ function createConnectionAndParams({
                             ...node?.fieldsByTypeName[field.relationship.typeMeta.name],
                         },
                     };
+
+                    sortFields.node.forEach((sortField) => {
+                        // For every sort field on node check to see if the field is in selection set
+                        if (!Object.values(nodeFieldsByTypeName[n.name]).find((r) => r.name === sortField)) {
+                            // if it doesn't exist add a basic resolve tree to FieldsByTypeName on reference node
+                            nodeFieldsByTypeName[n.name] = {
+                                ...nodeFieldsByTypeName[n.name],
+                                [sortField]: { alias: sortField, args: {}, fieldsByTypeName: {}, name: sortField },
+                            };
+                        }
+                    });
 
                     const nodeProjectionAndParams = createProjectionAndParams({
                         fieldsByTypeName: nodeFieldsByTypeName,
@@ -254,7 +283,7 @@ function createConnectionAndParams({
 
         const subqueryCypher = ["CALL {", subqueries.join("\nUNION\n"), "}"];
 
-        if (sortInput && sortInput.length) {
+        if (sortInput.length) {
             const sort = sortInput.map((s) =>
                 [
                     ...Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`),
@@ -336,7 +365,7 @@ function createConnectionAndParams({
             subquery.push(`CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
-        if (sortInput && sortInput.length) {
+        if (sortInput.length) {
             const sort = sortInput.map((s) =>
                 [
                     ...Object.entries(s.edge || []).map(
