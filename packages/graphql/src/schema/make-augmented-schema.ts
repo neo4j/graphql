@@ -39,15 +39,16 @@ import {
     UnionTypeDefinitionNode,
 } from "graphql";
 import {
-    SchemaComposer,
-    ObjectTypeComposer,
+    InputTypeComposer,
     InputTypeComposerFieldConfigAsObjectDefinition,
+    ObjectTypeComposer,
+    SchemaComposer,
     upperFirst,
 } from "graphql-compose";
 import pluralize from "pluralize";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
 import { validateDocument } from "./validation";
-import { PrimitiveField, Auth, FullText } from "../types";
+import { Auth, FullText, PrimitiveField } from "../types";
 import {
     aggregateResolver,
     countResolver,
@@ -63,7 +64,7 @@ import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper"
 import * as constants from "../constants";
 import * as Scalars from "./scalars";
 import * as point from "./point";
-import { Node, Exclude } from "../classes";
+import { Exclude, Node } from "../classes";
 import { NodeDirective } from "../classes/NodeDirective";
 import Relationship from "../classes/Relationship";
 import createConnectionFields from "./create-connection-fields";
@@ -77,6 +78,7 @@ import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
 import getSortableFields from "./get-sortable-fields";
 import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
+import { isString } from "../utils/utils";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -453,6 +455,22 @@ function makeAugmentedSchema(
         });
     });
 
+    function ensureNonEmptyInput(nameOrInput: string | InputTypeComposer<any>) {
+        const input = isString(nameOrInput) ? composer.getITC(nameOrInput) : nameOrInput;
+
+        if (input.getFieldNames().length === 0) {
+            const faqURL = `https://neo4j.com/docs/graphql-manual/current/troubleshooting/faqs/`;
+            input.addFields({
+                _emptyInput: {
+                    type: "Boolean",
+                    description:
+                        `Appears because this input type would be empty otherwise because this type is ` +
+                        `composed of just generated and/or relationship properties. See ${faqURL}`,
+                },
+            });
+        }
+    }
+
     interfaceRelationships.forEach((interfaceRelationship) => {
         const implementations = objectNodes.filter((n) =>
             n.interfaces?.some((i) => i.name.value === interfaceRelationship.name.value)
@@ -666,6 +684,16 @@ function makeAugmentedSchema(
             );
             interfaceDisconnectInput.setField("_on", implementationsDisconnectInput);
         }
+
+        ensureNonEmptyInput(`${interfaceRelationship.name.value}CreateInput`);
+        ensureNonEmptyInput(`${interfaceRelationship.name.value}UpdateInput`);
+        [
+            implementationsConnectInput,
+            implementationsDeleteInput,
+            implementationsDisconnectInput,
+            implementationsUpdateInput,
+            implementationsWhereInput,
+        ].forEach((c) => ensureNonEmptyInput(c));
     });
 
     if (pointInTypeDefs) {
@@ -905,6 +933,9 @@ function makeAugmentedSchema(
                 relationshipPropertyFields: relationshipFields,
             }),
         ];
+
+        ensureNonEmptyInput(`${node.name}UpdateInput`);
+        ensureNonEmptyInput(`${node.name}CreateInput`);
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({

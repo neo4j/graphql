@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { ContextBuilder } from "../../utils/test/builders/context-builder";
 import { Context } from "../../types";
-import { NodeBuilder } from "../../utils/test/builders/node-builder";
+import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import { RelationFieldBuilder } from "../../../tests/utils/builders/relation-field-builder";
+import { ContextBuilder } from "../../../tests/utils/builders/context-builder";
 import { Node } from "../../classes";
-import { RelationFieldBuilder } from "../../utils/test/builders/relation-field-builder";
 import { buildRelationStatement } from "./build-relation-statement";
 
 describe("build relation statement", () => {

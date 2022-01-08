@@ -21,8 +21,8 @@ import { gql } from "apollo-server";
 import { graphql } from "graphql";
 import { Driver, Session } from "neo4j-driver";
 import neo4j from "../neo4j";
-import { generateUniqueType } from "../../../src/utils/test/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("Empty fields on unions due to escaped labels", () => {
     let driver: Driver;

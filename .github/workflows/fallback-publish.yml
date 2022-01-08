@@ -21,7 +21,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - run: yarn build
       - name: Pack ${{ matrix.package }}
         run: npm pack
@@ -47,7 +47,7 @@ jobs:
           name: release-tarballs
       - id: get-version
         run: |
-          version=$(echo $GITHUB_REF | cut -d/ -f4)
+          version=$(echo "$GITHUB_REF" | cut -d/ -f4)
           echo "::set-output name=version::$version"
       - name: npm publish
         run: |
@@ -60,11 +60,11 @@ jobs:
           fi
 
           npm config set @neo4j:registry https://registry.npmjs.org
-          npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+          npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
 
           for tarball in *.tgz
           do
-            npm publish $tarball --tag=$tag --access=public
+            npm publish "$tarball" --tag=$tag --access=public
           done
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

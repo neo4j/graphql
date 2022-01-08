@@ -3,11 +3,14 @@ name: "Pull Request Labeler"
 on:
   pull_request_target:
     branches:
-      - master
+      - dev
 
 jobs:
   label:
+    if: "!startsWith(github.event.pull_request.head.ref, 'renovate/')"
+
     runs-on: ubuntu-latest
+
     steps:
       - uses: srvaroa/labeler@master
         env:

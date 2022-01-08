@@ -65,7 +65,7 @@ const resolvers = {
                 throw new Error(`User with username ${username} already exists!`);
             }
 
-            const [user] = await User.create({
+            const { users } = await User.create({
                 input: [
                     {
                         username,
@@ -74,7 +74,7 @@ const resolvers = {
                 ]
             });
 
-            return createJWT({ sub: user.id });
+            return createJWT({ sub: users[0].id });
         },
         signIn: async (_source, { username, password }) => {
             const [user] = await User.find({
