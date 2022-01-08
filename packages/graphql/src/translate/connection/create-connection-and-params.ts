@@ -56,7 +56,9 @@ function createConnectionAndParams({
     const sortFields: Record<keyof ConnectionSortArg, string[]> = Object.assign(
         {},
         ...(["edge", "node"] as Array<keyof ConnectionSortArg>).map((element) => ({
-            [element]: sortInput.map(({ [element]: sortField = {} }) => Object.keys(sortField)).flat(),
+            [element]: ([] as string[]).concat(
+                ...sortInput.map(({ [element]: sortField = {} }) => Object.keys(sortField))
+            ),
         }))
     );
 
