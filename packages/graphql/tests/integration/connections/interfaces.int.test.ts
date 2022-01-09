@@ -412,33 +412,6 @@ describe("Connections -> Interfaces", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
-            query Actors($name: String) {
-                actors(where: { name: $name }) {
-                    name
-                    actedInConnection(first: 2, sort: { edge: { screenTime: DESC } }) {
-                        pageInfo {
-                            hasNextPage
-                            hasPreviousPage
-                            endCursor
-                        }
-                        edges {
-                            screenTime
-                            node {
-                                title
-                                ... on Movie {
-                                    runtime
-                                }
-                                ... on Series {
-                                    episodes
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const nextQuery = `
             query Actors($name: String, $after: String) {
                 actors(where: { name: $name }) {
                     name
@@ -510,7 +483,7 @@ describe("Connections -> Interfaces", () => {
 
             const nextResult = await graphql({
                 schema: neoSchema.schema,
-                source: nextQuery,
+                source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     name: actorName,

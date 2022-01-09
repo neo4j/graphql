@@ -265,32 +265,6 @@ describe("Connections -> Unions", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
-            query($authorName: String) {
-                authors(where: { name: $authorName }) {
-                    name
-                    publicationsConnection(first: 2, sort: [{ edge: { words: ASC } }]) {
-                        pageInfo {
-                            hasNextPage
-                            hasPreviousPage
-                            endCursor
-                        }
-                        edges {
-                            words
-                            node {
-                                ... on Book {
-                                    title
-                                }
-                                ... on Journal {
-                                    subject
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const nextQuery = `
             query($authorName: String, $after: String) {
                 authors(where: { name: $authorName }) {
                     name
@@ -359,7 +333,7 @@ describe("Connections -> Unions", () => {
 
             const nextResult = await graphql({
                 schema: neoSchema.schema,
-                source: nextQuery,
+                source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
