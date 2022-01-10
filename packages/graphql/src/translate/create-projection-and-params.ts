@@ -265,7 +265,21 @@ function createProjectionAndParams({
                 ...(context.auth ? ["auth: $auth"] : []),
                 ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
             ];
-            const apocParams = Object.entries(field.args).reduce(
+
+            // Null default argument values are not passed into the resolve tree therefore these are not being passed to
+            // `apocParams` below causing a runtime error when executing.
+            const nullArgumentValues = cypherField.arguments.reduce(
+                (r, argument) => ({
+                    ...r,
+                    ...{ [argument.name.value]: null },
+                }),
+                {}
+            );
+
+            // Overwrite null arguments with those defined in resolve tree
+            const argumentsWithNullValues = { ...nullArgumentValues, ...field.args };
+
+            const apocParams = Object.entries(argumentsWithNullValues).reduce(
                 (r: { strs: string[]; params: any }, entry) => {
                     const argName = `${param}_${entry[0]}`;
 
