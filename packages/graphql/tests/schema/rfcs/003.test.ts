@@ -1,3 +1,5 @@
+/* eslint-disable eslint-comments/disable-enable-pair */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -51,7 +53,7 @@ describe("schema/rfs/003", () => {
             `;
 
             expect(() => {
-                new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
             }).toThrow(msg);
         });
 
@@ -67,7 +69,7 @@ describe("schema/rfs/003", () => {
             `;
 
             expect(() => {
-                new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
             }).toThrow(msg);
         });
 
@@ -83,7 +85,7 @@ describe("schema/rfs/003", () => {
             `;
 
             expect(() => {
-                new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
             }).toThrow(msg);
         });
     });
@@ -127,7 +129,7 @@ describe("schema/rfs/003", () => {
             `;
 
             expect(() => {
-                new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
             }).toThrow(msg);
         });
 
@@ -148,7 +150,7 @@ describe("schema/rfs/003", () => {
             `;
 
             expect(() => {
-                new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
             }).toThrow(msg);
         });
 
@@ -169,7 +171,7 @@ describe("schema/rfs/003", () => {
             `;
 
             expect(() => {
-                new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
             }).toThrow(msg);
         });
     });
