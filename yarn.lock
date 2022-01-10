@@ -9904,7 +9904,7 @@ fsevents@^1.2.7:
     "@neo4j-documentation/remote-include": ^1.0.0
     cheerio: 1.0.0-rc.10
     express: ^4.17.1
-    hyperlink: 5.0.3
+    hyperlink: 5.0.4
     npm-watch: ^0.11.0
   languageName: unknown
   linkType: soft
@@ -10603,9 +10603,9 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"hyperlink@npm:5.0.3":
-  version: 5.0.3
-  resolution: "hyperlink@npm:5.0.3"
+"hyperlink@npm:5.0.4":
+  version: 5.0.4
+  resolution: "hyperlink@npm:5.0.4"
   dependencies:
     "@munter/tap-render": ^0.2.0
     assetgraph: ^7.3.1
@@ -10618,7 +10618,7 @@ fsevents@^1.2.7:
     yargs: ^16.0.3
   bin:
     hyperlink: lib/cli.js
-  checksum: 6a9d571dece78463509e85b3b0f407b2cf848e1c704dc54c2f37062d768e955fb9ac3d26031bf787665a20f695e6193ae0d3c156310c7a2ad9282b9a2cc1a1fb
+  checksum: ee590c56158eee071597acae6238cfa224adf7a734803b3a733899c8a92abf19b1e3a5c4e36e2c6b1ebeb92a3196bc8709ce40f0dd9ce65a5a6ff98b3c6889e0
   languageName: node
   linkType: hard
 
@@ -13229,9 +13229,9 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:12.1.6":
-  version: 12.1.6
-  resolution: "lint-staged@npm:12.1.6"
+"lint-staged@npm:12.1.7":
+  version: 12.1.7
+  resolution: "lint-staged@npm:12.1.7"
   dependencies:
     cli-truncate: ^3.1.0
     colorette: ^2.0.16
@@ -13248,7 +13248,7 @@ fsevents@^1.2.7:
     yaml: ^1.10.2
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: 429584c6604f0d9dcec9a7f632c9a3046f1e1d06e0e9c017fc59d7998f1baa4f8338aaa1658517b08e39a0320252ca8fc6b194a038024f0c68ac07217b57f2bb
+  checksum: 3d0757706c8b0ca3f004bb2ffa89a9d5fc97ccdebfa4cde29a9636c661538780e194b99cbc5e4b8b89b13986187b33c97e009b09014511bbd45ee05ba557d0eb
   languageName: node
   linkType: hard
 
@@ -14419,7 +14419,7 @@ fsevents@^1.2.7:
     graphql: 15.5.0
     husky: 7.0.4
     jest: 27.4.7
-    lint-staged: 12.1.6
+    lint-staged: 12.1.7
     neo4j-driver: 4.4.0
     npm-run-all: 4.1.5
     prettier: 2.1.2
