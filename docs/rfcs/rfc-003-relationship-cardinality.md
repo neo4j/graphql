@@ -77,7 +77,7 @@ Rules:
 
 `create`, `connect`, `connectOrCreate` should throw an error is something is already connected (should this be a pre-check rather than post for performance reasons?)
 
-`disconnect`, `update` and `delete` no longer require a where argument, should have `_emptyInput` if no nested relationships.
+`disconnect`, `update` and `delete` should have `_emptyInput` if no nested relationships.
 
 #### Cardinality Checks in Cypher
 

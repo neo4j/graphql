@@ -63,7 +63,7 @@ describe("Unions", () => {
 
             type AuthorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input AuthorConnectInput {
@@ -301,7 +301,7 @@ describe("Unions", () => {
 
             type BookAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input BookAuthorAggregateInput {
@@ -323,11 +323,11 @@ describe("Unions", () => {
             }
 
             type BookAuthorAuthorEdgeAggregateSelection {
-              words: IntAggregateSelection!
+              words: IntAggregateSelectionNonNullable!
             }
 
             type BookAuthorAuthorNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input BookAuthorConnectFieldInput {
@@ -540,11 +540,11 @@ describe("Unions", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
+            type IntAggregateSelectionNonNullable {
+              average: Float!
+              max: Int!
+              min: Int!
+              sum: Int!
             }
 
             type Journal {
@@ -556,7 +556,7 @@ describe("Unions", () => {
 
             type JournalAggregateSelection {
               count: Int!
-              subject: StringAggregateSelection!
+              subject: StringAggregateSelectionNonNullable!
             }
 
             input JournalAuthorAggregateInput {
@@ -578,11 +578,11 @@ describe("Unions", () => {
             }
 
             type JournalAuthorAuthorEdgeAggregateSelection {
-              words: IntAggregateSelection!
+              words: IntAggregateSelectionNonNullable!
             }
 
             type JournalAuthorAuthorNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input JournalAuthorConnectFieldInput {
@@ -819,9 +819,9 @@ describe("Unions", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateAuthorsMutationResponse {
