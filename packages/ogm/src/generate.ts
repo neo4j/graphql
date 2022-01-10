@@ -134,7 +134,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
     const modeMap: Record<string, string> = {};
 
     options.ogm.neoSchema.nodes.forEach((node) => {
-        const pluralized = pluralize(node.name);
+        const pluralized = pluralize(node.name); // TODO: fix and test this!!
         const camelName = camelCase(pluralized);
         const upperCamel = upperFirst(camelName);
         const modelName = `${node.name}Model`;
