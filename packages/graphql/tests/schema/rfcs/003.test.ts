@@ -23,7 +23,6 @@ import { Neo4jGraphQL } from "../../../src";
 
 describe("schema/rfs/003", () => {
     const msg = "Cannot represent null for the relationship Source.targets, try using NonNull operator '!'";
-
     describe("ObjectType", () => {
         test("should not throw when using valid relationship", () => {
             const typeDefs = gql`
@@ -90,10 +89,36 @@ describe("schema/rfs/003", () => {
     });
 
     describe("InterfaceType", () => {
+        test("should not throw when using valid relationship", () => {
+            const typeDefs = gql`
+                interface SourceInterface {
+                    targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
+                    target: Target! @relationship(type: "HAS_TARGET", direction: OUT)
+                }
+
+                type Source implements SourceInterface {
+                    id: ID @id
+                    targets: [Target!]!
+                    target: Target!
+                }
+
+                type Target {
+                    id: ID @id
+                }
+            `;
+
+            expect(new Neo4jGraphQL({ typeDefs })?.schema).toBeInstanceOf(GraphQLSchema);
+        });
+
         test("If there are no relationships, then should always be empty array and not null", () => {
             const typeDefs = gql`
-                type Source {
-                    targets: [Target!] @relationship(type: "HAS_TARGET", direction: OUT) # If there are no relationships, then should always be empty array and not null
+                interface SourceInterface {
+                    targets: [Target!] @relationship(type: "HAS_TARGET", direction: OUT)
+                }
+
+                type Source implements SourceInterface {
+                    id: ID @id
+                    targets: [Target!]
                 }
 
                 type Target {
@@ -108,8 +133,13 @@ describe("schema/rfs/003", () => {
 
         test("This suggests a relationship with no target node", () => {
             const typeDefs = gql`
-                type Source {
-                    targets: [Target]! @relationship(type: "HAS_TARGET", direction: OUT) # This suggests a relationship with no target node
+                interface SourceInterface {
+                    targets: [Target]! @relationship(type: "HAS_TARGET", direction: OUT)
+                }
+
+                type Source implements SourceInterface {
+                    id: ID @id
+                    targets: [Target]!
                 }
 
                 type Target {
@@ -124,8 +154,13 @@ describe("schema/rfs/003", () => {
 
         test("This is a combination of both of the above problems", () => {
             const typeDefs = gql`
-                type Source {
-                    targets: [Target] @relationship(type: "HAS_TARGET", direction: OUT) # This is a combination of both of the above problems
+                interface SourceInterface {
+                    targets: [Target] @relationship(type: "HAS_TARGET", direction: OUT)
+                }
+
+                type Source implements SourceInterface {
+                    id: ID @id
+                    targets: [Target]
                 }
 
                 type Target {
