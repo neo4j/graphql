@@ -151,7 +151,7 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
-                        expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(`${value}${value}`);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toBe(`${value}${value}`);
                     } finally {
                         await session.close();
                     }

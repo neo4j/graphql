@@ -159,11 +159,11 @@ describe("connectorcreate with @id", () => {
         expect((gqlResult as any).data[typeActor.operations.create][typeActor.plural]).toHaveLength(1);
 
         const resultActor = (gqlResult as any).data[typeActor.operations.create][typeActor.plural][0];
-        expect(resultActor.name).toEqual("Tom Hanks");
+        expect(resultActor.name).toBe("Tom Hanks");
 
         expect(resultActor.movies).toHaveLength(1);
-        expect(resultActor.movies[0].title).toEqual(title);
+        expect(resultActor.movies[0].title).toBe(title);
 
-        expect(typeof resultActor.movies[0].id).toEqual("string");
+        expect(typeof resultActor.movies[0].id).toBe("string");
     });
 });

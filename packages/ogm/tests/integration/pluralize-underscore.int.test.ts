@@ -84,6 +84,6 @@ describe("pluralize with underscore", () => {
                 `);
 
         const result = await Task.count({ where: { string: testString } });
-        expect(result).toEqual(1);
+        expect(result).toBe(1);
     });
 });

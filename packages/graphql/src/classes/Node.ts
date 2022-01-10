@@ -184,10 +184,8 @@ class Node extends GraphElement {
     }
 
     public get plural(): string {
-        if (this.nodeDirective?.plural) {
-            return lowerFirst(this.nodeDirective.plural);
-        }
-        return pluralize(lowerFirst(this.name));
+        const pluralValue = this.nodeDirective?.plural ? this.nodeDirective.plural : pluralize(this.name);
+        return lowerFirst(pluralValue);
     }
 
     public getLabelString(context: Context): string {

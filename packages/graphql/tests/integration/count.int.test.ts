@@ -76,7 +76,7 @@ describe("count", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[randomType.operations.count]).toEqual(2);
+            expect((gqlResult.data as any)[randomType.operations.count]).toBe(2);
         } finally {
             await session.close();
         }
