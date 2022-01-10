@@ -24,6 +24,7 @@ import jsonwebtoken from "jsonwebtoken";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { generate } from "randomstring";
 import pluralize from "pluralize";
+import { lowerFirst } from "../src/utils/lower-first";
 
 /** Creates a JWT valid request with the given secret and the extraData in the JWT token */
 
@@ -48,10 +49,6 @@ export function generateUniqueType(baseName: string) {
         charset: "alphabetic",
         readable: true,
     })}${baseName}`;
-
-    function lowerFirst(str: string): string {
-        return `${str.charAt(0).toLowerCase()}${str.slice(1)}`;
-    }
 
     const plural = lowerFirst(pluralize(type));
     return {

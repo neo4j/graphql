@@ -22,6 +22,7 @@
 import { generate } from "randomstring";
 import pluralize from "pluralize";
 import { upperFirst } from "graphql-compose";
+import { lowerFirst } from "../../src/utils/lower-first";
 
 export function generateUniqueType(baseName: string) {
     const type = `${generate({
@@ -30,9 +31,6 @@ export function generateUniqueType(baseName: string) {
         readable: true,
     })}${baseName}`;
 
-    function lowerFirst(str: string): string {
-        return `${str.charAt(0).toLowerCase()}${str.slice(1)}`;
-    }
     const plural = lowerFirst(pluralize(type));
     const pascalCasePlural = upperFirst(plural);
 

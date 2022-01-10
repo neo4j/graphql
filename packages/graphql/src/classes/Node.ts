@@ -39,6 +39,7 @@ import type {
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
+import { lowerFirst } from "../utils/lower-first";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -183,10 +184,6 @@ class Node extends GraphElement {
     }
 
     public get plural(): string {
-        function lowerFirst(str: string): string {
-            return `${str.charAt(0).toLowerCase()}${str.slice(1)}`;
-        }
-
         if (this.nodeDirective?.plural) {
             return lowerFirst(this.nodeDirective.plural);
         }

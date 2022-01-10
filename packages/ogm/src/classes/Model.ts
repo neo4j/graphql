@@ -21,6 +21,7 @@ import { DocumentNode, graphql, parse, print, SelectionSetNode } from "graphql";
 import pluralize from "pluralize";
 import { Neo4jGraphQL, upperFirst } from "@neo4j/graphql";
 import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
+import { lowerFirst } from "../utils/lower-first";
 
 export interface ModelConstructor {
     name: string;
@@ -34,10 +35,6 @@ function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNod
     }
 
     return print(selectionSet);
-}
-
-function lowerFirst(str: string): string {
-    return `${str.charAt(0).toLowerCase()}${str.slice(1)}`;
 }
 
 class Model {
