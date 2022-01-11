@@ -22,7 +22,15 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
-      - run: yarn build
+      - name: Build ${{ matrix.package }}
+        run: yarn build
+        working-directory: packages/${{ matrix.package }}
+      - name: Restructure ${{ matrix.package }}/dist
+        run: |
+          mv dist dist-old
+          mv dist/src dist
+          rm -rf dist-old
+        working-directory: packages/${{ matrix.package }}
       - name: Pack ${{ matrix.package }}
         run: npm pack
         working-directory: packages/${{ matrix.package }}

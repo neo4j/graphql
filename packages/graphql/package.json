@@ -36,7 +36,7 @@
         "posttest:package-tests": "yarn run cleanup:package-tests",
         "test:package-tests": "yarn run setup:package-tests && cd ../package-tests/ && yarn run test:all",
         "cleanup:package-tests": "cd ../package-tests/ && yarn run cleanup && rimraf ./package/ && rimraf *.tgz",
-        "build": "tsc --project src/",
+        "build": "tsc --project tsconfig.production.json",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "start": "run-s build:clean watch"
