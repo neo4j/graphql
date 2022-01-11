@@ -20,14 +20,14 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "./neo4j";
-import { Neo4jGraphQL } from "../../src/classes";
-import { createJwtRequest } from "../utils/create-jwt-request";
-import { generateUniqueType } from "../utils/graphql-types";
+import neo4j from "../../neo4j";
+import { Neo4jGraphQL } from "../../../../src/classes";
+import { generateUniqueType } from "../../../utils/graphql-types";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { gql } from "apollo-server";
 
-describe("count", () => {
+describe("Aggregate -> count", () => {
     let driver: Driver;
-    const secret = "secret";
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -60,7 +60,9 @@ describe("count", () => {
 
             const query = `
                 {
-                    ${randomType.operations.count}
+                    ${randomType.operations.aggregate}{
+                      count
+                    }
                 }
             `;
 
@@ -75,18 +77,18 @@ describe("count", () => {
             }
 
             expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[randomType.operations.count]).toBe(2);
+            expect((gqlResult.data as any)[randomType.operations.aggregate].count).toBe(2);
         } finally {
             await session.close();
         }
     });
 
-    test("should movie nodes with where predicate", async () => {
+    test("should count nodes with where and or predicate", async () => {
         const session = driver.session();
+        const randomType = generateUniqueType("Movie");
 
         const typeDefs = `
-            type Movie {
+            type ${randomType.name} {
                 id: ID
             }
         `;
@@ -104,15 +106,17 @@ describe("count", () => {
         try {
             await session.run(
                 `
-                CREATE (:Movie {id: $id1})
-                CREATE (:Movie {id: $id2})
+                CREATE (:${randomType.name} {id: $id1})
+                CREATE (:${randomType.name} {id: $id2})
             `,
                 { id1, id2 }
             );
 
             const query = `
                 {
-                    moviesCount(where: { OR: [{id: "${id1}"}, {id: "${id2}"}] })
+                  ${randomType.operations.aggregate}(where: { OR: [{id: "${id1}"}, {id: "${id2}"}] }){
+                    count
+                  }
                 }
             `;
 
@@ -128,119 +132,76 @@ describe("count", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesCount).toEqual(2);
+            expect((gqlResult.data as any)[randomType.operations.aggregate].count).toEqual(2);
         } finally {
             await session.close();
         }
     });
 
-    test("should add auth where (read) to count query", async () => {
+    test("should return count aggregation with allow @auth", async () => {
         const session = driver.session();
+        const jobPlanType = generateUniqueType("JobPlan");
 
-        const typeDefs = `
-            type User {
-                id: ID
+        const typeDefs = gql`
+            type ${jobPlanType.name} {
+                id: ID! @id
+                tenantID: ID!
+                name: String!
             }
 
-            type Post {
-                id: ID
-                creator: User @relationship(type: "POSTED", direction: IN)
-            }
-
-            extend type Post @auth(rules: [{ where: { creator: { id: "$jwt.sub" } } }])
+            extend type ${jobPlanType.name}
+                @auth(
+                    rules: [
+                        { operations: [CREATE, UPDATE], bind: { tenantID: "$context.jwt.tenant_id" } }
+                        {
+                            operations: [READ, UPDATE, CONNECT, DISCONNECT, DELETE]
+                            allow: { tenantID: "$context.jwt.tenant_id" }
+                        }
+                    ]
+                )
         `;
 
-        const userId = generate({
+        const tenantID = generate({
             charset: "alphabetic",
         });
 
-        const post1 = generate({
-            charset: "alphabetic",
-        });
-
-        const post2 = generate({
-            charset: "alphabetic",
-        });
+        const secret = "secret";
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+
+        const query = `
+            query {
+                ${jobPlanType.operations.aggregate}(where: {tenantID: "${tenantID}"}) {
+                  count
+                }
+            }
+        `;
 
         try {
             await session.run(
                 `
-                    CREATE (u:User {id: $userId})
-                    CREATE (u)-[:POSTED]->(:Post {id: $post1})
-                    CREATE (u)-[:POSTED]->(:Post {id: $post2})
-                    CREATE (:Post {id: randomUUID()})
+                    CREATE (:${jobPlanType.name} {tenantID: $tenantID})
+                    CREATE (:${jobPlanType.name} {tenantID: $tenantID})
+                    CREATE (:${jobPlanType.name} {tenantID: $tenantID})
                 `,
-                { userId, post1, post2 }
+                { tenantID }
             );
 
-            const query = `
-                {
-                    postsCount
-                }
-            `;
+            const req = createJwtRequest(secret, {
+                tenant_id: tenantID,
+            });
 
-            const req = createJwtRequest(secret, { sub: userId });
-
-            const gqlResult = await graphql({
+            const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
+            expect(result.errors).toBeFalsy();
 
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any).postsCount).toEqual(2);
-        } finally {
-            await session.close();
-        }
-    });
-
-    test("should throw forbidden with invalid allow on auth (read) while counting", async () => {
-        const session = driver.session();
-
-        const typeDefs = `
-            type User {
-                id: ID
-            }
-
-            extend type User @auth(rules: [{ allow: { id: "$jwt.sub" } }])
-        `;
-
-        const userId = generate({
-            charset: "alphabetic",
-        });
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
-
-        try {
-            await session.run(
-                `
-                    CREATE (u:User {id: $userId})
-                `,
-                { userId }
-            );
-
-            const query = `
-                {
-                    usersCount
-                }
-            `;
-
-            const req = createJwtRequest(secret, { sub: "invalid" });
-
-            const gqlResult = await graphql({
-                schema: neoSchema.schema,
-                source: query,
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+            expect((result.data as any)[jobPlanType.operations.aggregate]).toEqual({
+                count: 3,
             });
-
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
         } finally {
             await session.close();
         }
