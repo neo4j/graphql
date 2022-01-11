@@ -30,7 +30,8 @@ describe("schema/rfs/003", () => {
             const typeDefs = gql`
                 type Source {
                     targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
-                    target: Target! @relationship(type: "HAS_TARGET", direction: OUT)
+                    target1: Target! @relationship(type: "HAS_TARGET", direction: OUT)
+                    target2: Target @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
                 type Target {
@@ -95,13 +96,15 @@ describe("schema/rfs/003", () => {
             const typeDefs = gql`
                 interface SourceInterface {
                     targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
-                    target: Target! @relationship(type: "HAS_TARGET", direction: OUT)
+                    target1: Target! @relationship(type: "HAS_TARGET", direction: OUT)
+                    target2: Target @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
                 type Source implements SourceInterface {
                     id: ID @id
                     targets: [Target!]!
-                    target: Target!
+                    target1: Target!
+                    target2: Target
                 }
 
                 type Target {

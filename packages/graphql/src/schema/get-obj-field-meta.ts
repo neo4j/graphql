@@ -186,14 +186,14 @@ function getObjFieldMeta({
 
                 const msg = `Cannot represent null for the relationship ${obj.name.value}.${field.name.value}, try using NonNull operator '!'`;
 
-                if (typeMeta.originalType?.kind !== "NonNullType") {
-                    throw new Error(msg);
-                }
-
-                if (typeMeta.originalType?.type.kind === "ListType") {
-                    if (typeMeta.originalType?.type.type.kind !== "NonNullType") {
-                        throw new Error(msg);
+                if (typeMeta.originalType?.kind === "NonNullType") {
+                    if (typeMeta.originalType?.type.kind === "ListType") {
+                        if (typeMeta.originalType?.type.type.kind !== "NonNullType") {
+                            throw new Error(msg);
+                        }
                     }
+                } else if (typeMeta.originalType?.kind === "ListType") {
+                    throw new Error(msg);
                 }
 
                 const relationField: RelationField = {
