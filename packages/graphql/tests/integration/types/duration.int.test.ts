@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import faker from "faker";
 import { graphql } from "graphql";
 import neo4jDriver, { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
@@ -52,12 +51,10 @@ describe("Duration", () => {
             });
 
             const id = generate({ readable: false });
-            const years = faker.random.number({ min: -6, max: 6 });
-            const months = faker.random.number({ min: -10, max: 10 });
-            const days = faker.random.number({ min: -50, max: 50 });
-            const minutes = faker.random.float();
+            const hours = 2;
+            const minutes = 30;
 
-            const duration = `P${years}Y${months}M${days}DT${minutes}M`;
+            const duration = `PT${hours}H${minutes}M`;
             const parsedDuration = parseDuration(duration);
 
             try {
@@ -94,7 +91,7 @@ describe("Duration", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; duration: any } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; duration: object } = neo4jResult.records[0].toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jDriver.isDuration(neo4jMovie.duration)).toBe(true);
