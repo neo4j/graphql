@@ -74,7 +74,7 @@ describe("Unions", () => {
 
             type GenreAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input GenreConnectWhere {
@@ -120,7 +120,7 @@ describe("Unions", () => {
               id_STARTS_WITH: ID
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
             }
@@ -134,7 +134,7 @@ describe("Unions", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieConnectInput {

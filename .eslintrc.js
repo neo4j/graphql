@@ -74,7 +74,7 @@ const baseTypeScriptRules = {
 
 module.exports = {
     root: true,
-    extends: ["airbnb/base", ...baseExtends],
+    extends: ["airbnb-base", ...baseExtends],
     env: {
         node: true,
     },

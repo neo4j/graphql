@@ -60,7 +60,7 @@ function createAggregationInput({
 }: {
     basedOnSearch: string;
     typeName: string;
-    aggregateSelections?: any;
+    aggregateSelections?: Record<string, any>;
     input: string;
 }) {
     const interfaceStrs = [`export interface ${typeName} {`];
@@ -74,8 +74,7 @@ function createAggregationInput({
             return;
         }
 
-        if (type.endsWith(`AggregateSelection`)) {
-            // if (type.endsWith(`AggregateSelectionNonNullable`) || type.endsWith(`AggregateSelectionNullable`)) { // TODO: #605 Breaking change, uncomment for 3.0
+        if (type.endsWith(`AggregateSelectionNonNullable`) || type.endsWith(`AggregateSelectionNullable`)) {
             const newTypeName = `${type.replace(`Selection`, "Input")}`;
 
             if (!aggregateSelections[type]) {

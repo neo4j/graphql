@@ -36,6 +36,6 @@
     },
     "devDependencies": {
         "cheerio": "1.0.0-rc.10",
-        "hyperlink": "4.7.0"
+        "hyperlink": "5.0.4"
     }
 }

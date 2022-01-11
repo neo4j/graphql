@@ -64,9 +64,9 @@ describe("@default directive", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelection {
-              max: DateTime
-              min: DateTime
+            type DateTimeAggregateSelectionNonNullable {
+              max: DateTime!
+              min: DateTime!
             }
 
             type DeleteInfo {
@@ -75,23 +75,23 @@ describe("@default directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelection {
-              average: Float
-              max: Float
-              min: Float
-              sum: Float
+            type FloatAggregateSelectionNonNullable {
+              average: Float!
+              max: Float!
+              min: Float!
+              sum: Float!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
             }
 
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
+            type IntAggregateSelectionNonNullable {
+              average: Float!
+              max: Int!
+              min: Int!
+              sum: Int!
             }
 
             type Mutation {
@@ -113,9 +113,9 @@ describe("@default directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -144,13 +144,13 @@ describe("@default directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              fromInterface: StringAggregateSelection!
-              id: IDAggregateSelection!
-              name: StringAggregateSelection!
-              numberOfFriends: IntAggregateSelection!
-              rating: FloatAggregateSelection!
-              toBeOverridden: StringAggregateSelection!
-              verifiedDate: DateTimeAggregateSelection!
+              fromInterface: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
+              numberOfFriends: IntAggregateSelectionNonNullable!
+              rating: FloatAggregateSelectionNonNullable!
+              toBeOverridden: StringAggregateSelectionNonNullable!
+              verifiedDate: DateTimeAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {

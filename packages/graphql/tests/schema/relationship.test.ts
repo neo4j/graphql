@@ -49,7 +49,7 @@ describe("Relationship", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNullable!
             }
 
             input ActorConnectWhere {
@@ -117,7 +117,7 @@ describe("Relationship", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
             }
@@ -135,7 +135,7 @@ describe("Relationship", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -232,7 +232,7 @@ describe("Relationship", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -330,7 +330,7 @@ describe("Relationship", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }
@@ -385,7 +385,7 @@ describe("Relationship", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNullable!
             }
 
             input ActorConnectInput {
@@ -415,7 +415,7 @@ describe("Relationship", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input ActorMoviesAggregateInput {
@@ -561,7 +561,7 @@ describe("Relationship", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
             }
@@ -579,7 +579,7 @@ describe("Relationship", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -679,7 +679,7 @@ describe("Relationship", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -781,7 +781,7 @@ describe("Relationship", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }

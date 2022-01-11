@@ -70,8 +70,8 @@ describe("@fulltext schema", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              description: StringAggregateSelection!
-              title: StringAggregateSelection!
+              description: StringAggregateSelectionNullable!
+              title: StringAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -160,7 +160,7 @@ describe("@fulltext schema", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }

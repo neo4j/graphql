@@ -56,7 +56,7 @@ describe("Time", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
             }
@@ -68,8 +68,8 @@ describe("Time", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
-              time: TimeAggregateSelection!
+              id: IDAggregateSelectionNullable!
+              time: TimeAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -144,7 +144,7 @@ describe("Time", () => {
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
 
-            type TimeAggregateSelection {
+            type TimeAggregateSelectionNullable {
               max: Time
               min: Time
             }

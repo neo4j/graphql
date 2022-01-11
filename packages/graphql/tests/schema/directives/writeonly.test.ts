@@ -75,9 +75,9 @@ describe("@writeonly directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -99,8 +99,8 @@ describe("@writeonly directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              password: StringAggregateSelection!
-              username: StringAggregateSelection!
+              password: StringAggregateSelectionNonNullable!
+              username: StringAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {
@@ -214,9 +214,9 @@ describe("@writeonly directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -238,8 +238,8 @@ describe("@writeonly directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              password: StringAggregateSelection!
-              username: StringAggregateSelection!
+              password: StringAggregateSelectionNonNullable!
+              username: StringAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {
@@ -326,7 +326,7 @@ describe("@writeonly directive", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNullable!
             }
 
             input ActorConnectWhere {
@@ -394,7 +394,7 @@ describe("@writeonly directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
             }
@@ -482,7 +482,7 @@ describe("@writeonly directive", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -572,7 +572,7 @@ describe("@writeonly directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }
