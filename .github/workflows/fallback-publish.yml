@@ -28,7 +28,7 @@ jobs:
       - name: Restructure ${{ matrix.package }}/dist
         run: |
           mv dist dist-old
-          mv dist/src dist
+          mv dist-old/src dist
           rm -rf dist-old
         working-directory: packages/${{ matrix.package }}
       - name: Pack ${{ matrix.package }}

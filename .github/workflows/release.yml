@@ -162,7 +162,7 @@ jobs:
       - name: Restructure graphql/dist
         run: |
           mv dist dist-old
-          mv dist/src dist
+          mv dist-old/src dist
           rm -rf dist-old
         working-directory: packages/graphql
       - name: Run @neo4j/graphql package tests
@@ -412,7 +412,7 @@ jobs:
       - name: Restructure ${{ matrix.package }}/dist
         run: |
           mv dist dist-old
-          mv dist/src dist
+          mv dist-old/src dist
           rm -rf dist-old
         working-directory: packages/${{ matrix.package }}
       - name: Pack ${{ matrix.package }}
