@@ -51,10 +51,13 @@ describe("Duration", () => {
             });
 
             const id = generate({ readable: false });
+            const years = 3;
+            const months = 6;
+            const days = 12;
             const hours = 2;
             const minutes = 30;
 
-            const duration = `PT${hours}H${minutes}M`;
+            const duration = `P${years}Y${months}M${days}DT${hours}H${minutes}M`;
             const parsedDuration = parseDuration(duration);
 
             try {
