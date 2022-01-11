@@ -104,10 +104,10 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
             expect(mutationResult.errors).toBeFalsy();
 
-            expect(mutationResult?.data?.updateVideos?.videos).toHaveLength(1);
-            expect(mutationResult?.data?.updateVideos?.videos[0].id).toEqual(videoID);
-            expect(mutationResult?.data?.updateVideos?.videos[0].categories).toHaveLength(1);
-            expect(mutationResult?.data?.updateVideos?.videos[0].categories[0].id).toEqual(catIDs[2]);
+            expect((mutationResult?.data as any)?.updateVideos?.videos).toHaveLength(1);
+            expect((mutationResult?.data as any)?.updateVideos?.videos[0].id).toEqual(videoID);
+            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories).toHaveLength(1);
+            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories[0].id).toEqual(catIDs[2]);
         } finally {
             await session.close();
         }
@@ -171,10 +171,10 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
             expect(mutationResult.errors).toBeFalsy();
 
-            expect(mutationResult?.data?.updateVideos?.videos).toHaveLength(1);
-            expect(mutationResult?.data?.updateVideos?.videos[0].id).toEqual(videoID);
-            expect(mutationResult?.data?.updateVideos?.videos[0].categories).toHaveLength(1);
-            expect(mutationResult?.data?.updateVideos?.videos[0].categories[0].id).toEqual(catIDs[2]);
+            expect((mutationResult?.data as any)?.updateVideos?.videos).toHaveLength(1);
+            expect((mutationResult?.data as any)?.updateVideos?.videos[0].id).toEqual(videoID);
+            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories).toHaveLength(1);
+            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories[0].id).toEqual(catIDs[2]);
         } finally {
             await session.close();
         }

@@ -262,9 +262,10 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.createActors.actors[0].actedIn).toHaveLength(2);
+            expect((gqlResult.data as any)?.createActors.actors[0].actedIn).toHaveLength(2);
             expect(
-                gqlResult.data?.createActors.actors[0].actedIn.find((actedIn) => actedIn.title === movieTitle).actors
+                (gqlResult.data as any)?.createActors.actors[0].actedIn.find((actedIn) => actedIn.title === movieTitle)
+                    .actors
             ).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 createActors: {

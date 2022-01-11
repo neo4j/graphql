@@ -151,7 +151,7 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect((gqlResult.data as any)?.updateActors.actors[0].actedIn).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {
                     actors: [
@@ -260,7 +260,7 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect((gqlResult.data as any)?.updateActors.actors[0].actedIn).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {
                     actors: [
@@ -392,12 +392,16 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect((gqlResult.data as any)?.updateActors.actors[0].actedIn).toHaveLength(2);
             expect(
-                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.__typename === "Series").actors
+                (gqlResult.data as any)?.updateActors.actors[0].actedIn.find(
+                    (actedIn) => actedIn.__typename === "Series"
+                ).actors
             ).toHaveLength(2);
             expect(
-                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.__typename === "Movie").actors
+                (gqlResult.data as any)?.updateActors.actors[0].actedIn.find(
+                    (actedIn) => actedIn.__typename === "Movie"
+                ).actors
             ).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {
@@ -539,12 +543,16 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect((gqlResult.data as any)?.updateActors.actors[0].actedIn).toHaveLength(2);
             expect(
-                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.__typename === "Series").actors
+                (gqlResult.data as any)?.updateActors.actors[0].actedIn.find(
+                    (actedIn) => actedIn.__typename === "Series"
+                ).actors
             ).toHaveLength(2);
             expect(
-                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.__typename === "Movie").actors
+                (gqlResult.data as any)?.updateActors.actors[0].actedIn.find(
+                    (actedIn) => actedIn.__typename === "Movie"
+                ).actors
             ).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {

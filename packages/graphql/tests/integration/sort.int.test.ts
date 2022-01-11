@@ -245,7 +245,7 @@ describe("sort", () => {
 
         test("should sort DESC on top level", async () => {
             const query = gql`
-                query($actorNames: [String!]!, $direction: SortDirection!) {
+                query ($actorNames: [String!]!, $direction: SortDirection!) {
                     actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
                         name
                         totalScreenTime
@@ -262,7 +262,7 @@ describe("sort", () => {
 
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlActors = graphqlResult.data?.actors;
+            const graphqlActors = (graphqlResult.data as any)?.actors;
 
             expect(graphqlActors).toHaveLength(2);
 
@@ -274,7 +274,7 @@ describe("sort", () => {
 
         test("should sort ASC on top level", async () => {
             const query = gql`
-                query($actorNames: [String!]!, $direction: SortDirection!) {
+                query ($actorNames: [String!]!, $direction: SortDirection!) {
                     actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
                         name
                         totalScreenTime
@@ -291,7 +291,7 @@ describe("sort", () => {
 
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlActors = graphqlResult.data?.actors;
+            const graphqlActors = (graphqlResult.data as any)?.actors;
 
             expect(graphqlActors).toHaveLength(2);
 
@@ -303,7 +303,7 @@ describe("sort", () => {
 
         test("should sort ASC on nested level", async () => {
             const query = gql`
-                query($title: String!, $actorNames: [String!]!, $direction: SortDirection!) {
+                query ($title: String!, $actorNames: [String!]!, $direction: SortDirection!) {
                     movies(where: { title: $title }) {
                         title
                         actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
@@ -323,12 +323,12 @@ describe("sort", () => {
 
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlMovies = graphqlResult.data?.movies;
+            const graphqlMovies = (graphqlResult.data as any)?.movies;
 
             expect(graphqlMovies).toHaveLength(1);
             expect(graphqlMovies[0].title).toBe(title1);
 
-            const graphqlActors = graphqlResult.data?.movies[0].actors;
+            const graphqlActors = (graphqlResult.data as any)?.movies[0].actors;
 
             expect(graphqlActors).toHaveLength(2);
 
@@ -340,7 +340,7 @@ describe("sort", () => {
 
         test("should sort DESC on nested level", async () => {
             const query = gql`
-                query($title: String!, $actorNames: [String!]!, $direction: SortDirection!) {
+                query ($title: String!, $actorNames: [String!]!, $direction: SortDirection!) {
                     movies(where: { title: $title }) {
                         title
                         actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
@@ -360,12 +360,12 @@ describe("sort", () => {
 
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlMovies = graphqlResult.data?.movies;
+            const graphqlMovies = (graphqlResult.data as any)?.movies;
 
             expect(graphqlMovies).toHaveLength(1);
             expect(graphqlMovies[0].title).toBe(title1);
 
-            const graphqlActors = graphqlResult.data?.movies[0].actors;
+            const graphqlActors = (graphqlResult.data as any)?.movies[0].actors;
 
             expect(graphqlActors).toHaveLength(2);
 

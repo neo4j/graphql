@@ -76,7 +76,8 @@ describe("LocalDateTime", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; localDT: string } = graphqlResult.data?.createMovies.movies[0];
+                const graphqlMovie: { id: string; localDT: string } = (graphqlResult.data as any)?.createMovies
+                    .movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toBe(id);
                 expect(parseLocalDateTime(graphqlMovie.localDT)).toStrictEqual(parsedLocalDateTime);
@@ -140,7 +141,8 @@ describe("LocalDateTime", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; localDTs: string[] } = graphqlResult.data?.createMovies.movies[0];
+                const graphqlMovie: { id: string; localDTs: string[] } = (graphqlResult.data as any)?.createMovies
+                    .movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toBe(id);
                 expect(graphqlMovie.localDTs).toHaveLength(localDTs.length);
@@ -229,7 +231,8 @@ describe("LocalDateTime", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; localDT: string } = graphqlResult.data?.updateMovies.movies[0];
+                const graphqlMovie: { id: string; localDT: string } = (graphqlResult.data as any)?.updateMovies
+                    .movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toEqual(id);
                 expect(parseLocalDateTime(graphqlMovie.localDT)).toStrictEqual(parsedLocalDateTime);
@@ -301,7 +304,7 @@ describe("LocalDateTime", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; localDT: string } = graphqlResult.data?.movies[0];
+                const graphqlMovie: { id: string; localDT: string } = (graphqlResult.data as any)?.movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toEqual(id);
                 expect(parseLocalDateTime(graphqlMovie.localDT)).toStrictEqual(parsedLocalDateTime);
@@ -402,7 +405,7 @@ describe("LocalDateTime", () => {
 
                         expect(graphqlResult.errors).toBeUndefined();
 
-                        const graphqlMovies: { id: string; localDT: string }[] = graphqlResult.data?.movies;
+                        const graphqlMovies: { id: string; localDT: string }[] = (graphqlResult.data as any)?.movies;
                         expect(graphqlMovies).toBeDefined();
 
                         /* eslint-disable jest/no-conditional-expect */
@@ -540,7 +543,7 @@ describe("LocalDateTime", () => {
 
                         expect(graphqlResult.errors).toBeUndefined();
 
-                        const graphqlMovies: { id: string; localDT: string }[] = graphqlResult.data?.movies;
+                        const graphqlMovies: { id: string; localDT: string }[] = (graphqlResult.data as any)?.movies;
                         expect(graphqlMovies).toBeDefined();
                         expect(graphqlMovies).toHaveLength(3);
 

@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(typeof result?.data?.createPost?.datetime).toBe("string");
+            expect(typeof (result?.data as any)?.createPost?.datetime).toBe("string");
 
             await session.run(`MATCH (p:Post) WHERE p.title = "${title}" DELETE p`);
         } finally {

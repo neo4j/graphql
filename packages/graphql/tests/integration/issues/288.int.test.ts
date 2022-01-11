@@ -88,7 +88,9 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
             expect(createResult.errors).toBeFalsy();
 
-            expect(createResult?.data?.createUSERS?.users).toEqual([{ USERID: userid, COMPANYID: companyid1 }]);
+            expect((createResult?.data as any)?.createUSERS?.users).toEqual([
+                { USERID: userid, COMPANYID: companyid1 },
+            ]);
 
             const updateResult = await graphql({
                 schema: neoSchema.schema,
@@ -98,7 +100,9 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
             expect(updateResult.errors).toBeFalsy();
 
-            expect(updateResult?.data?.updateUSERS?.users).toEqual([{ USERID: userid, COMPANYID: companyid2 }]);
+            expect((updateResult?.data as any)?.updateUSERS?.users).toEqual([
+                { USERID: userid, COMPANYID: companyid2 },
+            ]);
 
             await session.run(`MATCH (u:USER) WHERE u.USERID = "${userid}" DELETE u`);
         } finally {

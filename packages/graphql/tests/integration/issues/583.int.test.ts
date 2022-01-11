@@ -99,7 +99,7 @@ describe("583", () => {
 
     test("should project all interfaces of node", async () => {
         const query = gql`
-            query($actorId: ID!) {
+            query ($actorId: ID!) {
                 actors(where: { id: $actorId }) {
                     id
                     name
@@ -121,8 +121,9 @@ describe("583", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        const gqlActors: Array<{ id: string; name: string; actedIn: { title: string; awardsGiven?: number } }> =
-            gqlResult?.data?.actors;
+        const gqlActors: Array<{ id: string; name: string; actedIn: { title: string; awardsGiven?: number } }> = (
+            gqlResult?.data as any
+        )?.actors;
         expect(gqlActors[0]).toBeDefined();
         expect(gqlActors[0].actedIn).toContainEqual(movie);
         expect(gqlActors[0].actedIn).toContainEqual(series);

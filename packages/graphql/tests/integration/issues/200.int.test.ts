@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/200", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        const cats = gqlResult?.data?.createCategories.categories as any[];
+        const cats = (gqlResult?.data as any)?.createCategories.categories as any[];
 
         const one = cats.find((x) => x.name === catOne);
         expect(one).toEqual({ name: catOne, exampleImageLocations: null });

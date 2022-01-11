@@ -272,9 +272,9 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.updateMovies.movies as any[]).toHaveLength(2);
+            expect((gqlResult?.data as any)?.updateMovies.movies as any[]).toHaveLength(2);
 
-            (gqlResult?.data?.updateMovies.movies as any[]).forEach((movie) => {
+            ((gqlResult?.data as any)?.updateMovies.movies as any[]).forEach((movie) => {
                 expect([id1, id2]).toContain(movie.id);
                 expect(movie.name).toEqual(updatedName);
             });
@@ -1195,9 +1195,9 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.updateProducts.products as any[]).toHaveLength(1);
+            expect((gqlResult?.data as any)?.updateProducts.products as any[]).toHaveLength(1);
 
-            const { photos } = (gqlResult?.data?.updateProducts.products as any[])[0];
+            const { photos } = ((gqlResult?.data as any)?.updateProducts.products as any[])[0];
 
             const greenPhoto = photos.find((x) => x.id === photo0Id);
 
@@ -1313,7 +1313,7 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult?.data?.updateProducts.products as any[])[0]).toMatchObject({
+            expect(((gqlResult?.data as any)?.updateProducts.products as any[])[0]).toMatchObject({
                 id: productId,
                 photos: [{ id: photoId, name: "Green Photo", color: { id: colorId, name: "Green" } }],
             });
@@ -1414,7 +1414,7 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult?.data?.updateProducts.products as any[])[0]).toMatchObject({
+            expect(((gqlResult?.data as any)?.updateProducts.products as any[])[0]).toMatchObject({
                 id: productId,
                 photos: [{ id: photoId, name: "Green Photo", color: { id: colorId, name: "Green" } }],
             });

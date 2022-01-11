@@ -92,7 +92,7 @@ describe("Relationship properties - delete", () => {
                 variableValues: { movieTitle, actorName },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.updateMovies.movies).toEqual([
+            expect((gqlResult.data as any)?.updateMovies.movies).toEqual([
                 {
                     title: movieTitle,
                     actors: [],
@@ -180,7 +180,7 @@ describe("Relationship properties - delete", () => {
                 variableValues: { actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.updateActors.actors).toEqual([
+            expect((gqlResult.data as any)?.updateActors.actors).toEqual([
                 {
                     name: actorName,
                     actedIn: [],

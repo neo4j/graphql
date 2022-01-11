@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
         });
 
         expect(createUsersResult.errors).toBeFalsy();
-        expect(createUsersResult.data?.createUsers.users).toEqual([{ name }]);
+        expect((createUsersResult.data as any)?.createUsers.users).toEqual([{ name }]);
 
         const createMoviesResult = await graphql({
             schema: neoSchema.schema,
@@ -110,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
         });
 
         expect(createMoviesResult.errors).toBeFalsy();
-        expect(createMoviesResult.data?.createMovies.movies).toEqual([
+        expect((createMoviesResult.data as any)?.createMovies.movies).toEqual([
             { title: title1 },
             { title: title2 },
             { title: title3 },
@@ -124,10 +124,10 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
         });
 
         expect(connectResult.errors).toBeFalsy();
-        expect(connectResult.data?.updateUsers.users).toHaveLength(1);
-        expect(connectResult.data?.updateUsers.users[0].name).toEqual(name);
-        expect(connectResult.data?.updateUsers.users[0].movies).toHaveLength(2);
-        expect(connectResult.data?.updateUsers.users[0].movies).toContainEqual({ title: title2 });
-        expect(connectResult.data?.updateUsers.users[0].movies).toContainEqual({ title: title3 });
+        expect((connectResult.data as any)?.updateUsers.users).toHaveLength(1);
+        expect((connectResult.data as any)?.updateUsers.users[0].name).toEqual(name);
+        expect((connectResult.data as any)?.updateUsers.users[0].movies).toHaveLength(2);
+        expect((connectResult.data as any)?.updateUsers.users[0].movies).toContainEqual({ title: title2 });
+        expect((connectResult.data as any)?.updateUsers.users[0].movies).toContainEqual({ title: title3 });
     });
 });

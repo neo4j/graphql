@@ -76,7 +76,7 @@ describe("Time", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; time: string } = graphqlResult.data?.createMovies.movies[0];
+                const graphqlMovie: { id: string; time: string } = (graphqlResult.data as any)?.createMovies.movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toBe(id);
                 expect(parseTime(graphqlMovie.time)).toStrictEqual(parsedTime);
@@ -140,7 +140,8 @@ describe("Time", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; times: string[] } = graphqlResult.data?.createMovies.movies[0];
+                const graphqlMovie: { id: string; times: string[] } = (graphqlResult.data as any)?.createMovies
+                    .movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toBe(id);
                 expect(graphqlMovie.times).toHaveLength(times.length);
@@ -227,7 +228,7 @@ describe("Time", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; time: string } = graphqlResult.data?.updateMovies.movies[0];
+                const graphqlMovie: { id: string; time: string } = (graphqlResult.data as any)?.updateMovies.movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toEqual(id);
                 expect(parseTime(graphqlMovie.time)).toStrictEqual(parsedTime);
@@ -299,7 +300,7 @@ describe("Time", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; time: string } = graphqlResult.data?.movies[0];
+                const graphqlMovie: { id: string; time: string } = (graphqlResult.data as any)?.movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toEqual(id);
                 expect(parseTime(graphqlMovie.time)).toStrictEqual(parsedTime);
@@ -394,7 +395,7 @@ describe("Time", () => {
 
                         expect(graphqlResult.errors).toBeUndefined();
 
-                        const graphqlMovies: { id: string; time: string }[] = graphqlResult.data?.movies;
+                        const graphqlMovies: { id: string; time: string }[] = (graphqlResult.data as any)?.movies;
                         expect(graphqlMovies).toBeDefined();
 
                         /* eslint-disable jest/no-conditional-expect */
@@ -526,7 +527,7 @@ describe("Time", () => {
 
                         expect(graphqlResult.errors).toBeUndefined();
 
-                        const graphqlMovies: { id: string; time: string }[] = graphqlResult.data?.movies;
+                        const graphqlMovies: { id: string; time: string }[] = (graphqlResult.data as any)?.movies;
                         expect(graphqlMovies).toBeDefined();
                         expect(graphqlMovies).toHaveLength(3);
 
