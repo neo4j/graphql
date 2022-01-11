@@ -78,7 +78,7 @@ describe("Custom-mutations", () => {
               id: ID
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
             }
@@ -89,7 +89,7 @@ describe("Custom-mutations", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieCreateInput {

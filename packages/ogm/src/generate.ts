@@ -21,8 +21,6 @@ import { codegen } from "@graphql-codegen/core";
 import * as typescriptPlugin from "@graphql-codegen/typescript";
 import { Types } from "@graphql-codegen/plugin-helpers";
 import { Neo4jGraphQL } from "@neo4j/graphql";
-import camelCase from "camelcase";
-import pluralize from "pluralize";
 import * as fs from "fs";
 import * as graphql from "graphql";
 import prettier from "prettier";
@@ -75,8 +73,7 @@ function createAggregationInput({
             return;
         }
 
-        if (type.endsWith(`AggregateSelection`)) {
-            // if (type.endsWith(`AggregateSelectionNonNullable`) || type.endsWith(`AggregateSelectionNullable`)) { // TODO: #605 Breaking change, uncomment for 3.0
+        if (type.endsWith(`AggregateSelectionNonNullable`) || type.endsWith(`AggregateSelectionNullable`)) {
             const newTypeName = `${type.replace(`Selection`, "Input")}`;
 
             if (!aggregateSelections[type]) {
@@ -135,9 +132,6 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
     const modeMap: Record<string, string> = {};
 
     options.ogm.neoSchema.nodes.forEach((node) => {
-        const pluralized = pluralize(node.name);
-        const camelName = camelCase(pluralized);
-        const upperCamel = upperFirst(camelName);
         const modelName = `${node.name}Model`;
         const hasFulltextArg = Boolean(node.fulltextDirective);
 
@@ -175,7 +169,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     args?: any;
                     context?: any;
                     rootValue?: any;
-                }): Promise<Create${upperCamel}MutationResponse>
+                }): Promise<Create${upperFirst(node.plural)}MutationResponse>
                 public update(args: {
                     where?: ${node.name}Where;
                     update?: ${node.name}UpdateInput;
@@ -187,7 +181,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     args?: any;
                     context?: any;
                     rootValue?: any;
-                }): Promise<Update${upperCamel}MutationResponse>
+                }): Promise<Update${upperFirst(node.plural)}MutationResponse>
                 public delete(args: {
                     where?: ${node.name}Where;
                     ${node.relationFields.length ? `delete?: ${node.name}DeleteInput` : ""}
