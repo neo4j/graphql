@@ -1,0 +1,9 @@
+// allows import of package.json in production builds without polluting dist
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "rootDir": ".",
+        "outDir": "."
+    },
+    "files": ["package.json"]
+}
