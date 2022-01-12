@@ -317,6 +317,22 @@ function createProjectionAndParams({
 
         if (relationField) {
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+
+            // Fields of reference node to sort on. Sorting is done through an `apoc` call and if fields are not present
+            // sorting will fail silently.
+            const sortFields = ([] as string[]).concat(
+                ...(optionsInput?.sort ?? []).map((sortField) => Object.keys(sortField))
+            );
+
+            sortFields.forEach((sortField) => {
+                if (!Object.values(fieldFields[referenceNode.name]).find((r) => r.name === sortField)) {
+                    fieldFields[referenceNode.name] = {
+                        ...fieldFields[referenceNode.name],
+                        [sortField]: { alias: sortField, args: {}, fieldsByTypeName: {}, name: sortField },
+                    };
+                }
+            });
+
             const nodeMatchStr = `(${chainStr || varName})`;
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
