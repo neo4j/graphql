@@ -128,7 +128,7 @@ describe("count", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesCount).toEqual(2);
+            expect((gqlResult.data as any).moviesCount).toBe(2);
         } finally {
             await session.close();
         }
@@ -195,7 +195,7 @@ describe("count", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).postsCount).toEqual(2);
+            expect((gqlResult.data as any).postsCount).toBe(2);
         } finally {
             await session.close();
         }
@@ -240,7 +240,7 @@ describe("count", () => {
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }

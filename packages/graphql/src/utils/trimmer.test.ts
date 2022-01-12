@@ -29,7 +29,7 @@ describe("trimmer", () => {
 
         const result = trimmer(initial);
 
-        expect(result).toEqual("HI HI HI");
+        expect(result).toBe("HI HI HI");
     });
 
     test("should replace 2 spaces with 1", () => {
@@ -37,6 +37,6 @@ describe("trimmer", () => {
 
         const result = trimmer(initial);
 
-        expect(result).toEqual("HI HI HI");
+        expect(result).toBe("HI HI HI");
     });
 });

@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { IncomingMessage } from "http";
 import neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
-import { generateUniqueType } from "../../../../../tests/utils/graphql-types";
+import { generateUniqueType } from "../../../../utils/graphql-types";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 
 describe(`Field Level Auth Where Requests`, () => {
@@ -114,7 +114,7 @@ describe(`Field Level Auth Where Requests`, () => {
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
-        expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+        expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
     });
 
     test("authenticated query on auth field", async () => {

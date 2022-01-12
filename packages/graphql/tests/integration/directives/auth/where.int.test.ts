@@ -481,7 +481,7 @@ describe("auth/where", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
                 const nodesDeleted = (gqlResult.data as any).deleteUsers.nodesDeleted as number;
-                expect(nodesDeleted).toEqual(1);
+                expect(nodesDeleted).toBe(1);
 
                 const reQuery = await session.run(`
                     MATCH (u:User {id: "${userId}"})

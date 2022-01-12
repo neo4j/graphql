@@ -24,7 +24,7 @@ import { IncomingMessage } from "http";
 import { Socket } from "net";
 import neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
-import { generateUniqueType } from "../../../../../tests/utils/graphql-types";
+import { generateUniqueType } from "../../../../utils/graphql-types";
 
 describe(`Field Level Auth Where Requests`, () => {
     let neoSchema: Neo4jGraphQL;

@@ -169,7 +169,7 @@ describe("makeAugmentedSchema", () => {
 
             const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
 
-            expect(matchesField).not.toBeUndefined();
+            expect(matchesField).toBeDefined();
         });
     });
 
@@ -192,7 +192,7 @@ describe("makeAugmentedSchema", () => {
             const document = parse(printSchema(neoSchema.schema));
 
             // make sure the schema constructs
-            expect(document.kind).toEqual("Document");
+            expect(document.kind).toBe("Document");
         });
     });
 

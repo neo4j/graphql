@@ -77,7 +77,7 @@ describe("aggregations-top_level-auth", () => {
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -188,7 +188,7 @@ describe("aggregations-top_level-auth", () => {
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -243,7 +243,7 @@ describe("aggregations-top_level-auth", () => {
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -298,7 +298,7 @@ describe("aggregations-top_level-auth", () => {
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -353,7 +353,7 @@ describe("aggregations-top_level-auth", () => {
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -408,7 +408,7 @@ describe("aggregations-top_level-auth", () => {
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -463,7 +463,7 @@ describe("aggregations-top_level-auth", () => {
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -518,7 +518,7 @@ describe("aggregations-top_level-auth", () => {
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }

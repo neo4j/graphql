@@ -21,7 +21,7 @@ import { gql } from "apollo-server";
 import { graphql } from "graphql";
 import { Driver, Session } from "neo4j-driver";
 import neo4j from "../neo4j";
-import { generateUniqueType } from "../../../tests/utils/graphql-types";
+import { generateUniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/594", () => {

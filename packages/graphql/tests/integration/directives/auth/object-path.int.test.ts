@@ -247,7 +247,7 @@ describe("auth/object-path", () => {
             });
 
             // Since we don't have a valid JWKS Endpoint, we will always get an error validating our JWKS
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
