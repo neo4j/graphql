@@ -20,11 +20,11 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
+import { gql } from "apollo-server";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { generateUniqueType } from "../../../utils/graphql-types";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
-import { gql } from "apollo-server";
 
 describe("Aggregate -> count", () => {
     let driver: Driver;
@@ -132,7 +132,7 @@ describe("Aggregate -> count", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[randomType.operations.aggregate].count).toEqual(2);
+            expect((gqlResult.data as any)[randomType.operations.aggregate].count).toBe(2);
         } finally {
             await session.close();
         }
