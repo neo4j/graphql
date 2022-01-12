@@ -105,7 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             });
 
             expect(result.errors).toBeFalsy();
-            expect(result?.data?.users[0].uid).toEqual("user1");
+            expect(result?.data?.users[0].uid).toBe("user1");
             expect(result?.data?.users[0].demographics).toHaveLength(3);
             expect(result?.data?.users[0].demographics).toContainEqual({
                 type: "Age",

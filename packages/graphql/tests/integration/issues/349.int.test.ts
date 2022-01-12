@@ -208,7 +208,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                 contextValue: { driver: neo4j.driver("bolt://localhost:7687") },
             });
 
-            expect(gqlResult.data?.doStuff).toEqual("OK");
+            expect(gqlResult.data?.doStuff).toBe("OK");
             expect(gqlResult.errors).toBeFalsy();
         });
     });
