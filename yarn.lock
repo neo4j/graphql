@@ -2536,7 +2536,7 @@ __metadata:
     "@graphql-tools/merge": 6.2.17
     "@neo4j/graphql": ^2.5.5
     "@types/jest": 27.4.0
-    "@types/node": 14.18.5
+    "@types/node": 16.11.19
     graphql-tag: 2.12.6
     jest: 27.4.7
     jsonwebtoken: 8.5.1
@@ -2566,7 +2566,7 @@ __metadata:
     "@types/is-uuid": 1.0.0
     "@types/jest": 27.4.0
     "@types/jsonwebtoken": 8.5.6
-    "@types/node": 14.18.5
+    "@types/node": 16.11.19
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
     apollo-server: 3.6.1
@@ -2611,7 +2611,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^2.5.5
     "@types/jest": 27.4.0
-    "@types/node": 14.18.5
+    "@types/node": 16.11.19
     "@types/pluralize": 0.0.29
     camelcase: ^6.2.0
     debug: ^4.3.2
@@ -3471,10 +3471,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:14.18.5":
-  version: 14.18.5
-  resolution: "@types/node@npm:14.18.5"
-  checksum: 5ad7090e4cd1d7cd9efa4915cc8b4f69503a1d2070b1998a55fce776ae03fef6c0703d6940197af2cd31b3516b41b552d9fced92d2a0837c28b8ed8b5ca0872c
+"@types/node@npm:16.11.19":
+  version: 16.11.19
+  resolution: "@types/node@npm:16.11.19"
+  checksum: a9ba0cd1e61c8ad50f3fc9c2b37b795bf0286dacb39dcc985da90328abf0c5151dffe9932d20bc9a6a52c3ce7bfc1e5a7c2dc1416480fb84f1c2d70e25caeba0
   languageName: node
   linkType: hard
 
