@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
-describe("!", () => {
+describe("Node directive with unions", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
