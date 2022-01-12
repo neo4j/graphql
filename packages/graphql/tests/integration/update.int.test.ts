@@ -978,7 +978,7 @@ describe("update", () => {
 
             type Photo {
                 id: ID
-                color: Color! @relationship(type: "OF_COLOR", direction: OUT)
+                color: Color @relationship(type: "OF_COLOR", direction: OUT)
             }
         `;
 
@@ -1015,6 +1015,9 @@ describe("update", () => {
                     id
                     photos {
                         id
+                        color {
+                            id
+                        }
                     }
                 }
             }
@@ -1047,7 +1050,7 @@ describe("update", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult?.data?.updateProducts).toEqual({
-                products: [{ id: productId, photos: [{ id: photoId }] }],
+                products: [{ id: productId, photos: [{ id: photoId, color: null }] }],
             });
         } finally {
             await session.close();
