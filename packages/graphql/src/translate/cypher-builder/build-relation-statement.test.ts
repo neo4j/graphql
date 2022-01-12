@@ -56,7 +56,7 @@ describe("build relation statement", () => {
             context,
         });
 
-        expect(statement[0]).toEqual("(this:MyLabel)-[relationName]->(that:AnotherNode)");
+        expect(statement[0]).toBe("(this:MyLabel)-[relationName]->(that:AnotherNode)");
         expect(statement[1]).toEqual({});
     });
 
@@ -78,7 +78,7 @@ describe("build relation statement", () => {
             context,
         });
 
-        expect(statement[0]).toEqual("(this:MyLabel)<-[relationName:MyRelation]-(that:AnotherNode)");
+        expect(statement[0]).toBe("(this:MyLabel)<-[relationName:MyRelation]-(that:AnotherNode)");
         expect(statement[1]).toEqual({});
     });
 
@@ -106,7 +106,7 @@ describe("build relation statement", () => {
             context,
         });
 
-        expect(statement[0]).toEqual(
+        expect(statement[0]).toBe(
             "(this:MyLabel { name: $this_node_name })<-[relationName:MyRelation]-(that:AnotherNode { name: $that_node_name })"
         );
         expect(statement[1]).toEqual({
@@ -136,7 +136,7 @@ describe("build relation statement", () => {
             context,
         });
 
-        expect(statement[0]).toEqual(
+        expect(statement[0]).toBe(
             "(this:MyLabel)<-[relationName:MyRelation { status: $relationName_relation_status }]-(that:AnotherNode)"
         );
         expect(statement[1]).toEqual({
