@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import pluralize from "pluralize";
 import { Driver, Session, Integer } from "neo4j-driver";
 import { gql } from "apollo-server";
 import { graphql, DocumentNode } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../../tests/utils/graphql-types";
+import { generateUniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 
 describe("Create -> ConnectOrCreate", () => {
@@ -74,7 +73,7 @@ describe("Create -> ConnectOrCreate", () => {
     test("ConnectOrCreate creates new node", async () => {
         const query = gql`
             mutation {
-              create${pluralize(typeActor.name)}(
+              ${typeActor.operations.create}(
                 input: [
                   {
                     name: "Tom Hanks"
@@ -100,7 +99,7 @@ describe("Create -> ConnectOrCreate", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[`create${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.create][`${typeActor.plural}`]).toEqual([
             {
                 name: "Tom Hanks",
             },
@@ -128,7 +127,7 @@ describe("Create -> ConnectOrCreate", () => {
         await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator2", id: 2222})`);
         const query = gql`
             mutation {
-              create${pluralize(typeActor.name)}(
+              ${typeActor.operations.create}(
                 input: [
                   {
                     name: "${testActorName}"
@@ -154,7 +153,7 @@ describe("Create -> ConnectOrCreate", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[`create${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.create][`${typeActor.plural}`]).toEqual([
             {
                 name: testActorName,
             },
@@ -200,7 +199,7 @@ describe("Create -> ConnectOrCreate", () => {
         const actorName = "Tommy Hanks The Little";
         const query = gql`
             mutation {
-              create${pluralize(typeActor.name)}(
+              ${typeActor.operations.create}(
                 input: [
                   {
                     name: "${actorName}"
@@ -226,7 +225,7 @@ describe("Create -> ConnectOrCreate", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[`create${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.create][`${typeActor.plural}`]).toEqual([
             {
                 name: actorName,
             },

@@ -62,6 +62,14 @@ describe("Node", () => {
         expect(node.getLabels(defaultContext)).toEqual(["Movie"]);
     });
 
+    test("should return plural with underscores", () => {
+        const node = new NodeBuilder({
+            name: "super_movie",
+        }).instance();
+
+        expect(node.plural).toEqual("super_movies");
+    });
+
     describe("NodeDirective", () => {
         test("should return labels updated with jwt values from Context", () => {
             const node = new NodeBuilder({

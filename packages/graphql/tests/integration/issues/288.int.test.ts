@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
         const createMutation = `
             mutation {
                 createUSERS(input: { USERID: "${userid}", COMPANYID: "${companyid1}" }) {
-                    users {
+                    uSERS {
                         USERID
                         COMPANYID
                     }
@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
         const updateMutation = `
             mutation {
                 updateUSERS(where: { USERID: "${userid}" }, update: { COMPANYID: "${companyid2}" }) {
-                    users {
+                    uSERS {
                         USERID
                         COMPANYID
                     }
@@ -88,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
             expect(createResult.errors).toBeFalsy();
 
-            expect((createResult?.data as any)?.createUSERS?.users).toEqual([
+            expect((createResult?.data as any)?.createUSERS?.uSERS).toEqual([
                 { USERID: userid, COMPANYID: companyid1 },
             ]);
 
@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
             expect(updateResult.errors).toBeFalsy();
 
-            expect((updateResult?.data as any)?.updateUSERS?.users).toEqual([
+            expect((updateResult?.data as any)?.updateUSERS?.uSERS).toEqual([
                 { USERID: userid, COMPANYID: companyid2 },
             ]);
 
