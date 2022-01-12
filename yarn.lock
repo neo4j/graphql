@@ -2547,7 +2547,7 @@ __metadata:
     randomstring: 1.2.1
     semver: 7.3.5
     ts-jest: 27.1.2
-    typescript: 4.2.4
+    typescript: 4.5.4
   peerDependencies:
     graphql: ^15.0.0
     neo4j-driver: ^4.1.0
@@ -2598,7 +2598,7 @@ __metadata:
     supertest: 6.2.1
     ts-jest: 27.1.2
     ts-node: 10.4.0
-    typescript: 4.2.4
+    typescript: 4.5.4
   peerDependencies:
     graphql: ^15.0.0
     neo4j-driver: ^4.1.0
@@ -2618,7 +2618,7 @@ __metadata:
     jest: 27.4.7
     pluralize: ^8.0.0
     ts-jest: 27.1.2
-    typescript: 4.2.4
+    typescript: 4.5.4
   peerDependencies:
     neo4j-driver: ^4.1.0
   languageName: unknown
@@ -14534,7 +14534,7 @@ fsevents@^1.2.7:
     prettier: 2.1.2
     set-tz: 0.2.0
     ts-jest: 27.1.2
-    typescript: 4.2.4
+    typescript: 4.5.4
   languageName: unknown
   linkType: soft
 
@@ -19476,6 +19476,16 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
+"typescript@npm:4.5.4":
+  version: 4.5.4
+  resolution: "typescript@npm:4.5.4"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 59f3243f9cd6fe3161e6150ff6bf795fc843b4234a655dbd938a310515e0d61afd1ac942799e7415e4334255e41c2c49b7dd5d9fd38a17acd25a6779ca7e0961
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@4.2.4#~builtin<compat/typescript>":
   version: 4.2.4
   resolution: "typescript@patch:typescript@npm%3A4.2.4#~builtin<compat/typescript>::version=4.2.4&hash=493e53"
@@ -19483,6 +19493,16 @@ resolve@^2.0.0-next.3:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: bafcad6990f5d8ea9ccff09e440ce42630b2e42a5752dde5455b55c806ae43f8726a03770577d4fc6c2aa624597f796725cc6fe2c173f558a753a2f23a5198a4
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@4.5.4#~builtin<compat/typescript>":
+  version: 4.5.4
+  resolution: "typescript@patch:typescript@npm%3A4.5.4#~builtin<compat/typescript>::version=4.5.4&hash=493e53"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 2e488dde7d2c4a2fa2e79cf2470600f8ce81bc0563c276b72df8ff412d74456ae532ba824650ae936ce207440c79720ddcfaa25e3cb4477572b8534fa4e34d49
   languageName: node
   linkType: hard
 
