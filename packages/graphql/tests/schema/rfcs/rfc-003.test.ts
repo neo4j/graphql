@@ -73,10 +73,10 @@ describe("schema/rfs/003", () => {
             }).toThrow(msg);
         });
 
-        test("This is a combination of both of the above problems", () => {
+        test("should throw when ListType and not NonNullNamedType inside it", () => {
             const typeDefs = gql`
                 type Source {
-                    targets: [Target] @relationship(type: "HAS_TARGET", direction: OUT) # This is a combination of both of the above problems
+                    targets: [Target] @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
                 type Target {
@@ -156,7 +156,7 @@ describe("schema/rfs/003", () => {
             }).toThrow(msg);
         });
 
-        test("This is a combination of both of the above problems", () => {
+        test("should throw when ListType and not NonNullNamedType inside it", () => {
             const typeDefs = gql`
                 interface SourceInterface {
                     targets: [Target] @relationship(type: "HAS_TARGET", direction: OUT)
