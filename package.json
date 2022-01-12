@@ -13,7 +13,7 @@
         "examples/neo-push/*"
     ],
     "scripts": {
-        "build": "tsc -b",
+        "build": "tsc --build tsconfig.production.json",
         "lint": "eslint .",
         "test": "jest",
         "test:pr": "run-s lint test",

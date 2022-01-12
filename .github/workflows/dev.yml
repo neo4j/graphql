@@ -161,12 +161,6 @@ jobs:
       - name: Build graphql
         run: yarn build
         working-directory: packages/graphql
-      - name: Restructure graphql/dist
-        run: |
-          mv dist dist-old
-          mv dist-old/src dist
-          rm -rf dist-old
-        working-directory: packages/graphql
       - name: Run @neo4j/graphql package tests
         run: yarn --cwd packages/graphql run test:package-tests
 

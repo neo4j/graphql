@@ -22,7 +22,7 @@
         "dist/**/*.js.map"
     ],
     "scripts": {
-        "build": "tsc --project tsconfig.production.json",
+        "build": "tsc --build tsconfig.production.json",
         "test": "jest",
         "test:unit": "jest src/**/*.test.ts",
         "test:unit:watch": "jest src --watch",
