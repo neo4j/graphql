@@ -1,4 +1,3 @@
-/* eslint-disable eslint-comments/disable-enable-pair */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /*
  * Copyright (c) "Neo4j"
@@ -179,3 +178,4 @@ describe("schema/rfs/003", () => {
         });
     });
 });
+/* eslint-enable @typescript-eslint/no-unused-vars */
