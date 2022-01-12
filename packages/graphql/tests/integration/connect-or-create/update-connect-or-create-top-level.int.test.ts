@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import pluralize from "pluralize";
 import { gql } from "apollo-server";
 import { Driver, Session, Integer } from "neo4j-driver";
 import { graphql, DocumentNode } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../../tests/utils/graphql-types";
+import { generateUniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 
 describe("Update -> ConnectOrCreate Top Level", () => {
@@ -76,7 +75,7 @@ describe("Update -> ConnectOrCreate Top Level", () => {
 
         const query = gql`
             mutation {
-              update${pluralize(typeActor.name)}(
+              ${typeActor.operations.update}(
                 update: {
                     name: "Tom Hanks 2"
                 },
@@ -101,7 +100,7 @@ describe("Update -> ConnectOrCreate Top Level", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[`update${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.update][typeActor.plural]).toEqual([
             {
                 name: "Tom Hanks 2",
             },
@@ -113,8 +112,8 @@ describe("Update -> ConnectOrCreate Top Level", () => {
         `);
 
         expect(movieTitleAndId.records).toHaveLength(1);
-        expect(movieTitleAndId.records[0].toObject().title).toEqual("The Terminal");
-        expect((movieTitleAndId.records[0].toObject().id as Integer).toNumber()).toEqual(5);
+        expect(movieTitleAndId.records[0].toObject().title).toBe("The Terminal");
+        expect((movieTitleAndId.records[0].toObject().id as Integer).toNumber()).toBe(5);
 
         const actedInRelation = await session.run(`
             MATCH (:${typeMovie.name} {id: 5})<-[r:ACTED_IN]-(:${typeActor.name} {name: "Tom Hanks 2"})
@@ -122,7 +121,7 @@ describe("Update -> ConnectOrCreate Top Level", () => {
             `);
 
         expect(actedInRelation.records).toHaveLength(1);
-        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(105);
+        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(105);
     });
 
     test("Update with ConnectOrCreate on existing node", async () => {
@@ -133,7 +132,7 @@ describe("Update -> ConnectOrCreate Top Level", () => {
 
         const query = gql`
             mutation {
-              update${pluralize(typeActor.name)}(
+              ${typeActor.operations.update}(
                 update: {
                     name: "${updatedActorName}"
                 },
@@ -158,7 +157,7 @@ describe("Update -> ConnectOrCreate Top Level", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[`update${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.update][typeActor.plural]).toEqual([
             {
                 name: updatedActorName,
             },
@@ -169,21 +168,21 @@ describe("Update -> ConnectOrCreate Top Level", () => {
           RETURN COUNT(a) as count
         `);
 
-        expect(actorsWithMovieCount.records[0].toObject().count.toInt()).toEqual(1);
+        expect(actorsWithMovieCount.records[0].toObject().count.toInt()).toBe(1);
 
         const moviesWithIdCount = await session.run(`
           MATCH (m:${typeMovie.name} {id: 2222})
           RETURN COUNT(m) as count
         `);
 
-        expect(moviesWithIdCount.records[0].toObject().count.toInt()).toEqual(1);
+        expect(moviesWithIdCount.records[0].toObject().count.toInt()).toBe(1);
 
         const theTerminalMovieCount = await session.run(`
           MATCH (m:${typeMovie.name} {id: 2222, name: "The Terminal"})
           RETURN COUNT(m) as count
         `);
 
-        expect(theTerminalMovieCount.records[0].toObject().count.toInt()).toEqual(0);
+        expect(theTerminalMovieCount.records[0].toObject().count.toInt()).toBe(0);
 
         const actedInRelation = await session.run(`
             MATCH (:${typeMovie.name} {id: 2222})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${updatedActorName}"})
@@ -191,12 +190,12 @@ describe("Update -> ConnectOrCreate Top Level", () => {
             `);
 
         expect(actedInRelation.records).toHaveLength(1);
-        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(105);
+        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(105);
 
         const newIdMovieCount = await session.run(`
             MATCH (m:${typeMovie.name} {id: 22224})
             RETURN COUNT(m) as count
             `);
-        expect(newIdMovieCount.records[0].toObject().count.toInt()).toEqual(0);
+        expect(newIdMovieCount.records[0].toObject().count.toInt()).toBe(0);
     });
 });

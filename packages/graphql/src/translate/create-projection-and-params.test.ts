@@ -75,7 +75,7 @@ describe("createProjectionAndParams", () => {
 
         const result = createProjectionAndParams({ fieldsByTypeName, node, context, varName: "this" });
 
-        expect(result[0]).toEqual(`{ .title }`);
+        expect(result[0]).toBe(`{ .title }`);
         expect(result[1]).toMatchObject({});
     });
 });

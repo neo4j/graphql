@@ -18,7 +18,7 @@
  */
 
 import { FieldNode, GraphQLResolveInfo } from "graphql";
-import { SchemaComposer } from "graphql-compose";
+import { SchemaComposer, upperFirst } from "graphql-compose";
 import { execute } from "../../utils";
 import { translateUpdate } from "../../translate";
 import { Node } from "../../classes";
@@ -38,7 +38,7 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
         });
 
         const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
-            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({ camelCase: true })
+            (selection) => selection.kind === "Field" && selection.name.value === node.plural
         ) as FieldNode;
 
         const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
@@ -64,7 +64,7 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
         relationFields.connectOrCreate = `${node.name}ConnectOrCreateInput`;
     }
     return {
-        type: `Update${node.getPlural({ camelCase: false })}MutationResponse!`,
+        type: `Update${upperFirst(node.plural)}MutationResponse!`,
         resolve,
         args: {
             where: `${node.name}Where`,

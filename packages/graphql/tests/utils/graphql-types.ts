@@ -21,22 +21,28 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { generate } from "randomstring";
 import pluralize from "pluralize";
-import camelCase from "camelcase";
+import { upperFirst } from "graphql-compose";
+import { lowerFirst } from "../../src/utils/lower-first";
 
-export function generateUniqueType(baseName: string): TestType {
+export function generateUniqueType(baseName: string) {
     const type = `${generate({
+        length: 8,
         charset: "alphabetic",
         readable: true,
     })}${baseName}`;
 
-    const plural = pluralize(camelCase(type));
+    const plural = lowerFirst(pluralize(type));
+    const pascalCasePlural = upperFirst(plural);
+
     return {
         name: type,
         plural,
+        operations: {
+            create: `create${pascalCasePlural}`,
+            update: `update${pascalCasePlural}`,
+            delete: `delete${pascalCasePlural}`,
+            aggregate: `${plural}Aggregate`,
+            count: `${plural}Count`,
+        },
     };
 }
-
-export type TestType = {
-    name: string;
-    plural: string;
-};

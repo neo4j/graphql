@@ -20,11 +20,10 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import pluralize from "pluralize";
-import camelCase from "camelcase";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { createJwtRequest } from "../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../utils/create-jwt-request";
+import { generateUniqueType } from "../utils/graphql-types";
 
 describe("count", () => {
     let driver: Driver;
@@ -41,15 +40,10 @@ describe("count", () => {
     test("should count nodes", async () => {
         const session = driver.session();
 
-        const randomType = `${generate({
-            charset: "alphabetic",
-            readable: true,
-        })}Movie`;
-
-        const pluralRandomType = pluralize(camelCase(randomType));
+        const randomType = generateUniqueType("Movie");
 
         const typeDefs = `
-            type ${randomType} {
+            type ${randomType.name} {
                 id: ID
             }
         `;
@@ -59,14 +53,14 @@ describe("count", () => {
         try {
             await session.run(
                 `
-                    CREATE (:${randomType} {id: randomUUID()})
-                    CREATE (:${randomType} {id: randomUUID()})
+                    CREATE (:${randomType.name} {id: randomUUID()})
+                    CREATE (:${randomType.name} {id: randomUUID()})
                 `
             );
 
             const query = `
                 {
-                    ${pluralRandomType}Count
+                    ${randomType.operations.count}
                 }
             `;
 
@@ -82,7 +76,7 @@ describe("count", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`${pluralRandomType}Count`]).toEqual(2);
+            expect((gqlResult.data as any)[randomType.operations.count]).toBe(2);
         } finally {
             await session.close();
         }
@@ -134,7 +128,7 @@ describe("count", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesCount).toEqual(2);
+            expect((gqlResult.data as any).moviesCount).toBe(2);
         } finally {
             await session.close();
         }
@@ -201,7 +195,7 @@ describe("count", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).postsCount).toEqual(2);
+            expect((gqlResult.data as any).postsCount).toBe(2);
         } finally {
             await session.close();
         }
@@ -246,7 +240,7 @@ describe("count", () => {
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }

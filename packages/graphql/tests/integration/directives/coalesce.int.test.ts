@@ -20,10 +20,9 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import pluralize from "pluralize";
-import camelCase from "camelcase";
 import { Neo4jGraphQL } from "../../../src/classes";
 import neo4j from "../neo4j";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("@coalesce directive", () => {
     let driver: Driver;
@@ -84,13 +83,10 @@ describe("@coalesce directive", () => {
     });
 
     test("allows querying with null properties without affecting the returned result", async () => {
-        const type = `${generate({
-            charset: "alphabetic",
-        })}Movie`;
-        const pluralType = pluralize(camelCase(type));
+        const type = generateUniqueType("Movie");
 
         const typeDefs = `
-            type ${type} {
+            type ${type.name} {
                 id: ID!
                 classification: String @coalesce(value: "Unrated")
             }
@@ -102,7 +98,7 @@ describe("@coalesce directive", () => {
 
         const query = `
             query {
-                ${pluralType}(where: {classification: "Unrated"}){
+                ${type.plural}(where: {classification: "Unrated"}){
                     id
                     classification
                 }
@@ -117,7 +113,7 @@ describe("@coalesce directive", () => {
 
         try {
             await session.run(`
-                CREATE (:${type} {id: "${id}"})
+                CREATE (:${type.name} {id: "${id}"})
             `);
 
             const gqlResult = await graphql({
@@ -128,7 +124,7 @@ describe("@coalesce directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any)[pluralType][0]).toEqual({
+            expect((gqlResult.data as any)[type.plural][0]).toEqual({
                 id,
                 classification: null,
             });

@@ -61,7 +61,7 @@ describe("609", () => {
 
             type DeprecatedAggregateSelection {
               count: Int!
-              deprecatedField: StringAggregateSelection!
+              deprecatedField: StringAggregateSelectionNullable!
             }
 
             input DeprecatedCreateInput {
@@ -118,7 +118,7 @@ describe("609", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }

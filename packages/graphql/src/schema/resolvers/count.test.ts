@@ -43,7 +43,7 @@ describe("Count resolver", () => {
         }).instance();
 
         const result = countResolver({ node });
-        expect(result.type).toEqual("Int!");
+        expect(result.type).toBe("Int!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
             where: "MovieWhere",

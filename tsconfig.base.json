@@ -1,16 +1,11 @@
 {
+    "extends": "@tsconfig/node12/tsconfig.json",
     "compilerOptions": {
         "composite": true,
-        "declaration": true,
         "declarationMap": true,
-        "esModuleInterop": true,
-        "module": "commonjs",
-        "skipLibCheck": true,
         "sourceMap": true,
-        "strict": true,
-        "target": "es6",
+        "resolveJsonModule": true,
         // TODO Refactor so that noImplicitAny is no longer needed
-        "noImplicitAny": false,
-        "resolveJsonModule": true
+        "noImplicitAny": false
     }
 }

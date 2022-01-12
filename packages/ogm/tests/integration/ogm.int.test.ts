@@ -22,6 +22,7 @@ import { generate } from "randomstring";
 import gql from "graphql-tag";
 import neo4j from "./neo4j";
 import { OGM, Model } from "../../src";
+import { generateUniqueType } from "../utils";
 
 describe("OGM", () => {
     let driver: Driver;
@@ -201,13 +202,10 @@ describe("OGM", () => {
         test("should count nodes", async () => {
             const session = driver.session();
 
-            const randomType = `${generate({
-                charset: "alphabetic",
-                readable: true,
-            })}Movie`;
+            const randomType = generateUniqueType("Movie");
 
             const typeDefs = `
-                type ${randomType} {
+                type ${randomType.name} {
                     id: ID
                 }
             `;
@@ -217,16 +215,16 @@ describe("OGM", () => {
             try {
                 await session.run(
                     `
-                        CREATE (:${randomType} {id: randomUUID()})
-                        CREATE (:${randomType} {id: randomUUID()})
+                        CREATE (:${randomType.name} {id: randomUUID()})
+                        CREATE (:${randomType.name} {id: randomUUID()})
                     `
                 );
 
-                const model = ogm.model(randomType);
+                const model = ogm.model(randomType.name);
 
                 const count = await model?.count();
 
-                expect(count).toEqual(2);
+                expect(count).toBe(2);
             } finally {
                 await session.close();
             }
@@ -260,7 +258,7 @@ describe("OGM", () => {
 
                 const count = await Movie?.count({ where: { id } });
 
-                expect(count).toEqual(1);
+                expect(count).toBe(1);
             } finally {
                 await session.close();
             }
@@ -866,7 +864,7 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
-            const User = ogm.model("User") as unknown as Model;
+            const User = (ogm.model("User") as unknown) as Model;
 
             const id = generate({
                 charset: "alphabetic",

@@ -60,7 +60,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
                 }
@@ -72,8 +72,8 @@ describe("Node Directive", () => {
 
                 type TechAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelection!
-                  value: StringAggregateSelection!
+                  name: StringAggregateSelectionNullable!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input TechCreateInput {
@@ -84,11 +84,11 @@ describe("Node Directive", () => {
                 input TechOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechSort objects to sort Teches by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechSort]
                 }
 
-                \\"\\"\\"Fields to sort Teches by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
@@ -195,7 +195,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
                 }
@@ -207,8 +207,8 @@ describe("Node Directive", () => {
 
                 type TechAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelection!
-                  value: StringAggregateSelection!
+                  name: StringAggregateSelectionNullable!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input TechCreateInput {
@@ -219,11 +219,11 @@ describe("Node Directive", () => {
                 input TechOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechSort objects to sort Teches by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechSort]
                 }
 
-                \\"\\"\\"Fields to sort Teches by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
@@ -330,7 +330,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
                 }
@@ -342,8 +342,8 @@ describe("Node Directive", () => {
 
                 type TechAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelection!
-                  value: StringAggregateSelection!
+                  name: StringAggregateSelectionNullable!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input TechCreateInput {
@@ -354,11 +354,11 @@ describe("Node Directive", () => {
                 input TechOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechSort objects to sort Teches by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"Specify one or more TechSort objects to sort Technologies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechSort]
                 }
 
-                \\"\\"\\"Fields to sort Teches by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                \\"\\"\\"Fields to sort Technologies by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
@@ -465,7 +465,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
                 }
@@ -476,7 +476,7 @@ describe("Node Directive", () => {
 
                 type TechsAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelection!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input TechsCreateInput {
@@ -585,7 +585,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
                 }
@@ -609,7 +609,7 @@ describe("Node Directive", () => {
 
                 type UserAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelection!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input UserCreateInput {
@@ -619,11 +619,11 @@ describe("Node Directive", () => {
                 input UserOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"Specify one or more UserSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [UserSort]
                 }
 
-                \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+                \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
                 input UserSort {
                   value: SortDirection
                 }
@@ -705,7 +705,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
                 }
@@ -729,7 +729,7 @@ describe("Node Directive", () => {
 
                 type UserAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelection!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input UserCreateInput {
@@ -825,7 +825,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
                 }
@@ -849,7 +849,7 @@ describe("Node Directive", () => {
 
                 type UsersAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelection!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input UsersCreateInput {

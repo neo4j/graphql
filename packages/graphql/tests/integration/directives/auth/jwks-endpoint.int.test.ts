@@ -241,7 +241,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
                 },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
