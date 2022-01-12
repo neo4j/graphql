@@ -44,7 +44,7 @@ describe("schema/rfs/003", () => {
         test("If there are no relationships, then should always be empty array and not null", () => {
             const typeDefs = gql`
                 type Source {
-                    targets: [Target!] @relationship(type: "HAS_TARGET", direction: OUT) # If there are no relationships, then should always be empty array and not null
+                    targets: [Target!] @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
                 type Target {
@@ -60,7 +60,7 @@ describe("schema/rfs/003", () => {
         test("This suggests a relationship with no target node", () => {
             const typeDefs = gql`
                 type Source {
-                    targets: [Target]! @relationship(type: "HAS_TARGET", direction: OUT) # This suggests a relationship with no target node
+                    targets: [Target]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
                 type Target {
