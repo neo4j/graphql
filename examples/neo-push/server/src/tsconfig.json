@@ -6,11 +6,10 @@
         "paths": {
             "@neo4j/graphql": ["../../../../packages/graphql/src"],
             "@neo4j/graphql-ogm": ["../../../../packages/ogm/src"]
-        },
-        "target": "ES2019"
+        }
     },
     "references": [
-        { "path": "../../../../packages/graphql/src/tsconfig.json" },
-        { "path": "../../../../packages/ogm/src/tsconfig.json" }
+        { "path": "../../../../packages/graphql/tsconfig.json" },
+        { "path": "../../../../packages/ogm/tsconfig.json" }
     ]
 }

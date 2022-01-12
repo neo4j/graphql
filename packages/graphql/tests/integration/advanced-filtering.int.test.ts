@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import camelCase from "camelcase";
 import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
-import pluralize from "pluralize";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { generateUniqueType } from "../utils/graphql-types";
 
 describe("Advanced Filtering", () => {
     let driver: Driver;
@@ -43,9 +42,10 @@ describe("Advanced Filtering", () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type Movie {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -70,14 +70,14 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:Movie {property: $value})
+                            CREATE (:${randomType.name} {property: $value})
                         `,
                             { value }
                         );
 
                         const query = `
                             {
-                                movies(where: { property_IN: ["${value}", "${randomValue1}", "${randomValue2}"] }) {
+                                ${randomType.plural}(where: { property_IN: ["${value}", "${randomValue1}", "${randomValue2}"] }) {
                                     property
                                 }
                             }
@@ -94,10 +94,8 @@ describe("Advanced Filtering", () => {
                         }
 
                         expect(gqlResult.errors).toBeUndefined();
-
-                        expect((gqlResult.data as any).movies).toHaveLength(1);
-
-                        expect((gqlResult.data as any).movies[0].property).toEqual(value);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
                     } finally {
                         await session.close();
                     }
@@ -110,14 +108,10 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -132,14 +126,14 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $value})
+                            CREATE (:${randomType.name} {property: $value})
                         `,
                             { value: `${value}${value}` }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_MATCHES: "(?i)${value}.*" }) {
+                                ${randomType.plural}(where: { property_MATCHES: "(?i)${value}.*" }) {
                                     property
                                 }
                             }
@@ -156,10 +150,8 @@ describe("Advanced Filtering", () => {
                         }
 
                         expect(gqlResult.errors).toBeUndefined();
-
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
-
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(`${value}${value}`);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toBe(`${value}${value}`);
                     } finally {
                         await session.close();
                     }
@@ -172,14 +164,10 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -199,15 +187,15 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $value})
-                            CREATE (:${randomType} {property: $randomValue1})
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $randomValue1})
                         `,
                             { value, randomValue1 }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_NOT: "${randomValue1}" }) {
+                                ${randomType.plural}(where: { property_NOT: "${randomValue1}" }) {
                                     property
                                 }
                             }
@@ -225,9 +213,9 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
 
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
                     } finally {
                         await session.close();
                     }
@@ -240,14 +228,10 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -272,16 +256,16 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $value})
-                            CREATE (:${randomType} {property: $randomValue1})
-                            CREATE (:${randomType} {property: $randomValue2})
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $randomValue1})
+                            CREATE (:${randomType.name} {property: $randomValue2})
                         `,
                             { value, randomValue1, randomValue2 }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_NOT_IN: ["${randomValue1}", "${randomValue2}"] }) {
+                                ${randomType.plural}(where: { property_NOT_IN: ["${randomValue1}", "${randomValue2}"] }) {
                                     property
                                 }
                             }
@@ -299,9 +283,9 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
 
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
                     } finally {
                         await session.close();
                     }
@@ -314,14 +298,10 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -338,16 +318,16 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $superValue})
-                            CREATE (:${randomType} {property: $superValue})
-                            CREATE (:${randomType} {property: $superValue})
+                            CREATE (:${randomType.name} {property: $superValue})
+                            CREATE (:${randomType.name} {property: $superValue})
+                            CREATE (:${randomType.name} {property: $superValue})
                         `,
                             { superValue }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_CONTAINS: "${value}" }) {
+                                ${randomType.plural}(where: { property_CONTAINS: "${value}" }) {
                                     property
                                 }
                             }
@@ -365,9 +345,9 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(3);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(3);
 
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(superValue);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(superValue);
                     } finally {
                         await session.close();
                     }
@@ -380,14 +360,10 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -407,16 +383,16 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $value})
-                            CREATE (:${randomType} {property: $notValue})
-                            CREATE (:${randomType} {property: $notValue})
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $notValue})
+                            CREATE (:${randomType.name} {property: $notValue})
                         `,
                             { value, notValue }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_NOT_CONTAINS: "${notValue}" }) {
+                                ${randomType.plural}(where: { property_NOT_CONTAINS: "${notValue}" }) {
                                     property
                                 }
                             }
@@ -434,9 +410,9 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
 
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
                     } finally {
                         await session.close();
                     }
@@ -449,14 +425,10 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -473,16 +445,16 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $superValue})
-                            CREATE (:${randomType} {property: $superValue})
-                            CREATE (:${randomType} {property: $superValue})
+                            CREATE (:${randomType.name} {property: $superValue})
+                            CREATE (:${randomType.name} {property: $superValue})
+                            CREATE (:${randomType.name} {property: $superValue})
                         `,
                             { superValue }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_STARTS_WITH: "${value}" }) {
+                                ${randomType.plural}(where: { property_STARTS_WITH: "${value}" }) {
                                     property
                                 }
                             }
@@ -500,9 +472,9 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(3);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(3);
 
-                        ((gqlResult.data as any)[pluralRandomType] as any[]).forEach((x) => {
+                        ((gqlResult.data as any)[randomType.plural] as any[]).forEach((x) => {
                             expect(x.property).toEqual(superValue);
                         });
                     } finally {
@@ -517,14 +489,10 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -544,16 +512,16 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $value})
-                            CREATE (:${randomType} {property: $notValue})
-                            CREATE (:${randomType} {property: $notValue})
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $notValue})
+                            CREATE (:${randomType.name} {property: $notValue})
                         `,
                             { value, notValue }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_NOT_STARTS_WITH: "${notValue}" }) {
+                                ${randomType.plural}(where: { property_NOT_STARTS_WITH: "${notValue}" }) {
                                     property
                                 }
                             }
@@ -571,7 +539,7 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
                     } finally {
                         await session.close();
                     }
@@ -584,14 +552,10 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -613,16 +577,16 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $value})
-                            CREATE (:${randomType} {property: $notValue})
-                            CREATE (:${randomType} {property: $superValue})
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $notValue})
+                            CREATE (:${randomType.name} {property: $superValue})
                         `,
                             { value, notValue, superValue }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_ENDS_WITH: "${value}" }) {
+                                ${randomType.plural}(where: { property_ENDS_WITH: "${value}" }) {
                                     property
                                 }
                             }
@@ -640,7 +604,7 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(2);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
                     } finally {
                         await session.close();
                     }
@@ -653,14 +617,10 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -682,16 +642,16 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $value})
-                            CREATE (:${randomType} {property: $notValue})
-                            CREATE (:${randomType} {property: $superValue})
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $notValue})
+                            CREATE (:${randomType.name} {property: $superValue})
                         `,
                             { value, notValue, superValue }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_NOT_ENDS_WITH: "${value}" }) {
+                                ${randomType.plural}(where: { property_NOT_ENDS_WITH: "${value}" }) {
                                     property
                                 }
                             }
@@ -709,8 +669,8 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(notValue);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(notValue);
                     } finally {
                         await session.close();
                     }
@@ -725,14 +685,10 @@ describe("Advanced Filtering", () => {
                 ["Int", "Float"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -758,15 +714,15 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $property})
-                            CREATE (:${randomType} {property: $notProperty})
+                            CREATE (:${randomType.name} {property: $property})
+                            CREATE (:${randomType.name} {property: $notProperty})
                         `,
                             { property, notProperty }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_NOT: ${notProperty} }) {
+                                ${randomType.plural}(where: { property_NOT: ${notProperty} }) {
                                     property
                                 }
                             }
@@ -784,8 +740,8 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(property);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(property);
                     } finally {
                         await session.close();
                     }
@@ -798,14 +754,10 @@ describe("Advanced Filtering", () => {
                 ["Int", "Float"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -839,14 +791,14 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $value})
+                            CREATE (:${randomType.name} {property: $value})
                         `,
                             { value }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_IN: [${value}, ${randomValue1}, ${randomValue2}] }) {
+                                ${randomType.plural}(where: { property_IN: [${value}, ${randomValue1}, ${randomValue2}] }) {
                                     property
                                 }
                             }
@@ -864,8 +816,8 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
                     } finally {
                         await session.close();
                     }
@@ -878,14 +830,10 @@ describe("Advanced Filtering", () => {
                 ["Int", "Float"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -919,16 +867,16 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $value})
-                            CREATE (:${randomType} {property: $randomValue1})
-                            CREATE (:${randomType} {property: $randomValue2})
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $randomValue1})
+                            CREATE (:${randomType.name} {property: $randomValue2})
                         `,
                             { value, randomValue1, randomValue2 }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_NOT_IN: [${randomValue1}, ${randomValue2}] }) {
+                                ${randomType.plural}(where: { property_NOT_IN: [${randomValue1}, ${randomValue2}] }) {
                                     property
                                 }
                             }
@@ -946,8 +894,8 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
                     } finally {
                         await session.close();
                     }
@@ -960,14 +908,10 @@ describe("Advanced Filtering", () => {
                 ["Int", "Float"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -987,15 +931,15 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $value})
-                            CREATE (:${randomType} {property: $lessThanValue})
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $lessThanValue})
                         `,
                             { value, lessThanValue }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_LT: ${lessThanValue + 1} }) {
+                                ${randomType.plural}(where: { property_LT: ${lessThanValue + 1} }) {
                                     property
                                 }
                             }
@@ -1013,8 +957,8 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(lessThanValue);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(lessThanValue);
                     } finally {
                         await session.close();
                     }
@@ -1027,14 +971,10 @@ describe("Advanced Filtering", () => {
                 ["Int", "Float"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -1054,15 +994,15 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $value})
-                            CREATE (:${randomType} {property: $lessThanValue})
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $lessThanValue})
                         `,
                             { value, lessThanValue }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_LTE: ${value} }) {
+                                ${randomType.plural}(where: { property_LTE: ${value} }) {
                                     property
                                 }
                             }
@@ -1080,7 +1020,7 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(2);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
                     } finally {
                         await session.close();
                     }
@@ -1093,14 +1033,10 @@ describe("Advanced Filtering", () => {
                 ["Int", "Float"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -1120,15 +1056,15 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $value})
-                            CREATE (:${randomType} {property: $graterThanValue})
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $graterThanValue})
                         `,
                             { value, graterThanValue }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_GT: ${graterThanValue - 1} }) {
+                                ${randomType.plural}(where: { property_GT: ${graterThanValue - 1} }) {
                                     property
                                 }
                             }
@@ -1146,8 +1082,8 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(graterThanValue);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(graterThanValue);
                     } finally {
                         await session.close();
                     }
@@ -1160,14 +1096,10 @@ describe("Advanced Filtering", () => {
                 ["Int", "Float"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = `${generate({
-                        charset: "alphabetic",
-                    })}Movie`;
-
-                    const pluralRandomType = pluralize(camelCase(randomType));
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -1187,15 +1119,15 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:${randomType} {property: $value})
-                            CREATE (:${randomType} {property: $greaterThan})
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $greaterThan})
                         `,
                             { value, greaterThan }
                         );
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_GTE: ${value} }) {
+                                ${randomType.plural}(where: { property_GTE: ${value} }) {
                                     property
                                 }
                             }
@@ -1213,7 +1145,7 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(2);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
                     } finally {
                         await session.close();
                     }
@@ -1226,14 +1158,10 @@ describe("Advanced Filtering", () => {
         test("should find Movies equality equality", async () => {
             const session = driver.session();
 
-            const randomType = `${generate({
-                charset: "alphabetic",
-            })}Movie`;
-
-            const pluralRandomType = pluralize(camelCase(randomType));
+            const randomType = generateUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: Boolean
                         }
                     `;
@@ -1245,14 +1173,14 @@ describe("Advanced Filtering", () => {
             try {
                 await session.run(
                     `
-                            CREATE (:${randomType} {property: $value})
+                            CREATE (:${randomType.name} {property: $value})
                         `,
                     { value }
                 );
 
                 const query = `
                             {
-                                ${pluralRandomType}(where: { property: false }) {
+                                ${randomType.plural}(where: { property: false }) {
                                     property
                                 }
                             }
@@ -1270,7 +1198,7 @@ describe("Advanced Filtering", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
+                expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
             } finally {
                 await session.close();
             }
@@ -1279,14 +1207,10 @@ describe("Advanced Filtering", () => {
         test("should find Movies NOT boolean", async () => {
             const session = driver.session();
 
-            const randomType = `${generate({
-                charset: "alphabetic",
-            })}Movie`;
-
-            const pluralRandomType = pluralize(camelCase(randomType));
+            const randomType = generateUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType} {
+                        type ${randomType.name} {
                             property: Boolean
                         }
                     `;
@@ -1298,14 +1222,14 @@ describe("Advanced Filtering", () => {
             try {
                 await session.run(
                     `
-                            CREATE (:${randomType} {property: $value})
+                            CREATE (:${randomType.name} {property: $value})
                         `,
                     { value }
                 );
 
                 const query = `
                             {
-                                ${pluralRandomType}(where: { property_NOT: false }) {
+                                ${randomType.plural}(where: { property_NOT: false }) {
                                     property
                                 }
                             }
@@ -1323,7 +1247,7 @@ describe("Advanced Filtering", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(0);
+                expect((gqlResult.data as any)[randomType.plural]).toHaveLength(0);
             } finally {
                 await session.close();
             }
@@ -1335,24 +1259,16 @@ describe("Advanced Filtering", () => {
             test("should find using relationship equality on node", async () => {
                 const session = driver.session();
 
-                const randomType1 = `${generate({
-                    charset: "alphabetic",
-                })}Movie`;
-
-                const randomType2 = `${generate({
-                    charset: "alphabetic",
-                })}Genre`;
-
-                const pluralRandomType1 = pluralize(camelCase(randomType1));
-                const pluralRandomType2 = pluralize(camelCase(randomType2));
+                const randomType1 = generateUniqueType("Movie");
+                const randomType2 = generateUniqueType("Genre");
 
                 const typeDefs = `
-                        type ${randomType1} {
+                        type ${randomType1.name} {
                             id: ID
-                            ${pluralRandomType2}: [${randomType2}!]! @relationship(type: "IN_GENRE", direction: OUT)
+                            ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
-                        type ${randomType2} {
+                        type ${randomType2.name} {
                             id: ID
                         }
                 `;
@@ -1374,10 +1290,10 @@ describe("Advanced Filtering", () => {
                 try {
                     await session.run(
                         `
-                                CREATE (root:${randomType1} {id: $rootId})
-                                CREATE (:${randomType1} {id: $randomId})
-                                CREATE (relation:${randomType2} {id: $relationId})
-                                CREATE (:${randomType2} {id: $randomId})
+                                CREATE (root:${randomType1.name} {id: $rootId})
+                                CREATE (:${randomType1.name} {id: $randomId})
+                                CREATE (relation:${randomType2.name} {id: $relationId})
+                                CREATE (:${randomType2.name} {id: $randomId})
                                 MERGE (root)-[:IN_GENRE]->(relation)
                             `,
                         { rootId, relationId, randomId }
@@ -1385,9 +1301,9 @@ describe("Advanced Filtering", () => {
 
                     const query = `
                         {
-                            ${pluralRandomType1}(where: { ${pluralRandomType2}: { id: "${relationId}" } }) {
+                            ${randomType1.plural}(where: { ${randomType2.plural}: { id: "${relationId}" } }) {
                                 id
-                                ${pluralRandomType2} {
+                                ${randomType2.plural} {
                                     id
                                 }
                             }
@@ -1406,10 +1322,10 @@ describe("Advanced Filtering", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
-                    expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
+                    expect((gqlResult.data as any)[randomType1.plural]).toHaveLength(1);
+                    expect((gqlResult.data as any)[randomType1.plural][0]).toMatchObject({
                         id: rootId,
-                        [pluralRandomType2]: [{ id: relationId }],
+                        [randomType2.plural]: [{ id: relationId }],
                     });
                 } finally {
                     await session.close();
@@ -1629,24 +1545,16 @@ describe("Advanced Filtering", () => {
             test("should find using NOT on relationship", async () => {
                 const session = driver.session();
 
-                const randomType1 = `${generate({
-                    charset: "alphabetic",
-                })}Movie`;
-
-                const randomType2 = `${generate({
-                    charset: "alphabetic",
-                })}Genre`;
-
-                const pluralRandomType1 = pluralize(camelCase(randomType1));
-                const pluralRandomType2 = pluralize(camelCase(randomType2));
+                const randomType1 = generateUniqueType("Movie");
+                const randomType2 = generateUniqueType("Genre");
 
                 const typeDefs = `
-                        type ${randomType1} {
+                        type ${randomType1.name} {
                             id: ID
-                            ${pluralRandomType2}: [${randomType2}!]! @relationship(type: "IN_GENRE", direction: OUT)
+                            ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
-                        type ${randomType2} {
+                        type ${randomType2.name} {
                             id: ID
                         }
                 `;
@@ -1670,10 +1578,10 @@ describe("Advanced Filtering", () => {
                 try {
                     await session.run(
                         `
-                                CREATE (root1:${randomType1} {id: $rootId1})
-                                CREATE (root2:${randomType1} {id: $rootId2})
-                                CREATE (relation1:${randomType2} {id: $relationId1})
-                                CREATE (relation2:${randomType2} {id: $relationId2})
+                                CREATE (root1:${randomType1.name} {id: $rootId1})
+                                CREATE (root2:${randomType1.name} {id: $rootId2})
+                                CREATE (relation1:${randomType2.name} {id: $relationId1})
+                                CREATE (relation2:${randomType2.name} {id: $relationId2})
                                 MERGE (root1)-[:IN_GENRE]->(relation1)
                                 MERGE (root2)-[:IN_GENRE]->(relation2)
                             `,
@@ -1682,9 +1590,9 @@ describe("Advanced Filtering", () => {
 
                     const query = `
                         {
-                            ${pluralRandomType1}(where: { ${pluralRandomType2}_NOT: { id: "${relationId2}" } }) {
+                            ${randomType1.plural}(where: { ${randomType2.plural}_NOT: { id: "${relationId2}" } }) {
                                 id
-                                ${pluralRandomType2} {
+                                ${randomType2.plural} {
                                     id
                                 }
                             }
@@ -1703,10 +1611,10 @@ describe("Advanced Filtering", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
-                    expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
+                    expect((gqlResult.data as any)[randomType1.plural]).toHaveLength(1);
+                    expect((gqlResult.data as any)[randomType1.plural][0]).toMatchObject({
                         id: rootId1,
-                        [pluralRandomType2]: [{ id: relationId1 }],
+                        [randomType2.plural]: [{ id: relationId1 }],
                     });
                 } finally {
                     await session.close();
@@ -1716,24 +1624,16 @@ describe("Advanced Filtering", () => {
             test("should find using NOT on connections", async () => {
                 const session = driver.session();
 
-                const randomType1 = `${generate({
-                    charset: "alphabetic",
-                })}Movie`;
-
-                const randomType2 = `${generate({
-                    charset: "alphabetic",
-                })}Genre`;
-
-                const pluralRandomType1 = pluralize(camelCase(randomType1));
-                const pluralRandomType2 = pluralize(camelCase(randomType2));
+                const randomType1 = generateUniqueType("Movie");
+                const randomType2 = generateUniqueType("Genre");
 
                 const typeDefs = `
-                        type ${randomType1} {
+                        type ${randomType1.name} {
                             id: ID
-                            ${pluralRandomType2}: [${randomType2}!]! @relationship(type: "IN_GENRE", direction: OUT)
+                            ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
-                        type ${randomType2} {
+                        type ${randomType2.name} {
                             id: ID
                         }
                 `;
@@ -1757,17 +1657,17 @@ describe("Advanced Filtering", () => {
                 try {
                     await session.run(
                         `
-                            CREATE (root1:${randomType1} {id: $rootId1})-[:IN_GENRE]->(relation1:${randomType2} {id: $relationId1})
-                            CREATE (root2:${randomType1} {id: $rootId2})-[:IN_GENRE]->(relation2:${randomType2} {id: $relationId2})
+                            CREATE (root1:${randomType1.name} {id: $rootId1})-[:IN_GENRE]->(relation1:${randomType2.name} {id: $relationId1})
+                            CREATE (root2:${randomType1.name} {id: $rootId2})-[:IN_GENRE]->(relation2:${randomType2.name} {id: $relationId2})
                         `,
                         { rootId1, rootId2, relationId1, relationId2 }
                     );
 
                     const query = `
                         {
-                            ${pluralRandomType1}(where: { ${pluralRandomType2}Connection_NOT: { node: { id: "${relationId2}" } } }) {
+                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NOT: { node: { id: "${relationId2}" } } }) {
                                 id
-                                ${pluralRandomType2} {
+                                ${randomType2.plural} {
                                     id
                                 }
                             }
@@ -1786,10 +1686,10 @@ describe("Advanced Filtering", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
-                    expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
+                    expect((gqlResult.data as any)[randomType1.plural]).toHaveLength(1);
+                    expect((gqlResult.data as any)[randomType1.plural][0]).toMatchObject({
                         id: rootId1,
-                        [pluralRandomType2]: [{ id: relationId1 }],
+                        [randomType2.plural]: [{ id: relationId1 }],
                     });
                 } finally {
                     await session.close();
@@ -1799,24 +1699,16 @@ describe("Advanced Filtering", () => {
             test("should find using relationship properties and connections", async () => {
                 const session = driver.session();
 
-                const randomType1 = `${generate({
-                    charset: "alphabetic",
-                })}Movie`;
-
-                const randomType2 = `${generate({
-                    charset: "alphabetic",
-                })}Genre`;
-
-                const pluralRandomType1 = pluralize(camelCase(randomType1));
-                const pluralRandomType2 = pluralize(camelCase(randomType2));
+                const randomType1 = generateUniqueType("Movie");
+                const randomType2 = generateUniqueType("Genre");
 
                 const typeDefs = `
-                        type ${randomType1} {
+                        type ${randomType1.name} {
                             id: ID
-                            ${pluralRandomType2}: [${randomType2}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                            ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
                         }
 
-                        type ${randomType2} {
+                        type ${randomType2.name} {
                             id: ID
                         }
 
@@ -1847,17 +1739,17 @@ describe("Advanced Filtering", () => {
                 try {
                     await session.run(
                         `
-                            CREATE (:${randomType1} {id: $rootId1})-[:IN_GENRE {id: $actedInId}]->(:${randomType2} {id: $relationId1})
-                            CREATE (:${randomType1} {id: $rootId2})-[:IN_GENRE {id: randomUUID()}]->(:${randomType2} {id: $relationId2})
+                            CREATE (:${randomType1.name} {id: $rootId1})-[:IN_GENRE {id: $actedInId}]->(:${randomType2.name} {id: $relationId1})
+                            CREATE (:${randomType1.name} {id: $rootId2})-[:IN_GENRE {id: randomUUID()}]->(:${randomType2.name} {id: $relationId2})
                         `,
                         { rootId1, rootId2, relationId1, relationId2, actedInId }
                     );
 
                     const query = `
                         {
-                            ${pluralRandomType1}(where: { ${pluralRandomType2}Connection_NOT: { edge: { id: "${actedInId}" } } }) {
+                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NOT: { edge: { id: "${actedInId}" } } }) {
                                 id
-                                ${pluralRandomType2} {
+                                ${randomType2.plural} {
                                     id
                                 }
                             }
@@ -1876,10 +1768,10 @@ describe("Advanced Filtering", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
-                    expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
+                    expect((gqlResult.data as any)[randomType1.plural]).toHaveLength(1);
+                    expect((gqlResult.data as any)[randomType1.plural][0]).toMatchObject({
                         id: rootId2,
-                        [pluralRandomType2]: [{ id: relationId2 }],
+                        [randomType2.plural]: [{ id: relationId2 }],
                     });
                 } finally {
                     await session.close();
@@ -1890,24 +1782,16 @@ describe("Advanced Filtering", () => {
         test("should test for not null", async () => {
             const session = driver.session();
 
-            const randomType1 = `${generate({
-                charset: "alphabetic",
-            })}Movie`;
-
-            const randomType2 = `${generate({
-                charset: "alphabetic",
-            })}Genre`;
-
-            const pluralRandomType1 = pluralize(camelCase(randomType1));
-            const pluralRandomType2 = pluralize(camelCase(randomType2));
+            const randomType1 = generateUniqueType("Movie");
+            const randomType2 = generateUniqueType("Genre");
 
             const typeDefs = `
-                    type ${randomType1} {
+                    type ${randomType1.name} {
                         id: ID
-                        ${pluralRandomType2}: [${randomType2}!]! @relationship(type: "IN_GENRE", direction: OUT)
+                        ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                     }
 
-                    type ${randomType2} {
+                    type ${randomType2.name} {
                         id: ID
                     }
             `;
@@ -1929,10 +1813,10 @@ describe("Advanced Filtering", () => {
             try {
                 await session.run(
                     `
-                            CREATE (root:${randomType1} {id: $rootId})
-                            CREATE (:${randomType1} {id: $randomId})
-                            CREATE (relation:${randomType2} {id: $relationId})
-                            CREATE (:${randomType2} {id: $randomId})
+                            CREATE (root:${randomType1.name} {id: $rootId})
+                            CREATE (:${randomType1.name} {id: $randomId})
+                            CREATE (relation:${randomType2.name} {id: $relationId})
+                            CREATE (:${randomType2.name} {id: $randomId})
                             MERGE (root)-[:IN_GENRE]->(relation)
                         `,
                     { rootId, relationId, randomId }
@@ -1940,7 +1824,7 @@ describe("Advanced Filtering", () => {
 
                 const nullQuery = `
                     {
-                        ${pluralRandomType1}(where: { ${pluralRandomType2}: null }) {
+                        ${randomType1.plural}(where: { ${randomType2.plural}: null }) {
                             id
                         }
                     }
@@ -1960,8 +1844,8 @@ describe("Advanced Filtering", () => {
 
                 expect(nullResult.errors).toBeUndefined();
 
-                expect((nullResult.data as any)[pluralRandomType1]).toHaveLength(1);
-                expect((nullResult.data as any)[pluralRandomType1][0]).toMatchObject({
+                expect((nullResult.data as any)[randomType1.plural]).toHaveLength(1);
+                expect((nullResult.data as any)[randomType1.plural][0]).toMatchObject({
                     id: randomId,
                 });
 
@@ -1969,7 +1853,7 @@ describe("Advanced Filtering", () => {
 
                 const notNullQuery = `
                     {
-                        ${pluralRandomType1}(where: { ${pluralRandomType2}_NOT: null }) {
+                        ${randomType1.plural}(where: { ${randomType2.plural}_NOT: null }) {
                             id
                         }
                     }
@@ -1987,8 +1871,8 @@ describe("Advanced Filtering", () => {
 
                 expect(notNullResult.errors).toBeUndefined();
 
-                expect((notNullResult.data as any)[pluralRandomType1]).toHaveLength(1);
-                expect((notNullResult.data as any)[pluralRandomType1][0]).toMatchObject({
+                expect((notNullResult.data as any)[randomType1.plural]).toHaveLength(1);
+                expect((notNullResult.data as any)[randomType1.plural][0]).toMatchObject({
                     id: rootId,
                 });
             } finally {
@@ -2001,14 +1885,10 @@ describe("Advanced Filtering", () => {
         test("should work for existence and non-existence", async () => {
             const session = driver.session();
 
-            const randomType = `${generate({
-                readable: true,
-                charset: "alphabetic",
-            })}Movie`;
-            const pluralRandomType = pluralize(camelCase(randomType));
+            const randomType = generateUniqueType("Movie");
 
             const typeDefs = `
-                type ${randomType} {
+                type ${randomType.name} {
                     id: String!
                     optional: String
                 }
@@ -2034,8 +1914,8 @@ describe("Advanced Filtering", () => {
             try {
                 await session.run(
                     `
-                        CREATE (:${randomType} {id: $id1})
-                        CREATE (:${randomType} {id: $id2, optional: $optionalValue})
+                        CREATE (:${randomType.name} {id: $id1})
+                        CREATE (:${randomType.name} {id: $id2, optional: $optionalValue})
                     `,
                     { id1, id2, optionalValue }
                 );
@@ -2044,7 +1924,7 @@ describe("Advanced Filtering", () => {
 
                 const nullQuery = `
                     {
-                        ${pluralRandomType}(where: { optional: null }) {
+                        ${randomType.plural}(where: { optional: null }) {
                             id
                         }
                     }
@@ -2062,15 +1942,15 @@ describe("Advanced Filtering", () => {
 
                 expect(nullResult.errors).toBeUndefined();
 
-                expect((nullResult.data as any)[pluralRandomType]).toHaveLength(1);
+                expect((nullResult.data as any)[randomType.plural]).toHaveLength(1);
 
-                expect((nullResult.data as any)[pluralRandomType][0].id).toEqual(id1);
+                expect((nullResult.data as any)[randomType.plural][0].id).toEqual(id1);
 
                 // Test NOT NULL checking
 
                 const notNullQuery = `
                     {
-                        ${pluralRandomType}(where: { optional_NOT: null }) {
+                        ${randomType.plural}(where: { optional_NOT: null }) {
                             id
                         }
                     }
@@ -2088,9 +1968,9 @@ describe("Advanced Filtering", () => {
 
                 expect(notNullResult.errors).toBeUndefined();
 
-                expect((notNullResult.data as any)[pluralRandomType]).toHaveLength(1);
+                expect((notNullResult.data as any)[randomType.plural]).toHaveLength(1);
 
-                expect((notNullResult.data as any)[pluralRandomType][0].id).toEqual(id2);
+                expect((notNullResult.data as any)[randomType.plural][0].id).toEqual(id2);
             } finally {
                 await session.close();
             }

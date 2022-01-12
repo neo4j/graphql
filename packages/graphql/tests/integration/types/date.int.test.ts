@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import camelCase from "camelcase";
 import neo4jDriver, { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import pluralize from "pluralize";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("Date", () => {
     let driver: Driver;
@@ -160,14 +159,10 @@ describe("Date", () => {
         test("should find a movie (with a Date)", async () => {
             const session = driver.session();
 
-            const randomType = `${generate({
-                charset: "alphabetic",
-            })}Movie`;
-
-            const pluralRandomType = pluralize(camelCase(randomType));
+            const randomType = generateUniqueType("Movie");
 
             const typeDefs = `
-                type ${randomType} {
+                type ${randomType.name} {
                     date: Date
                 }
             `;
@@ -180,7 +175,7 @@ describe("Date", () => {
 
             const query = `
                 query {
-                    ${pluralRandomType}(where: { date: "${date.toISOString()}" }) {
+                    ${randomType.plural}(where: { date: "${date.toISOString()}" }) {
                         date
                     }
                 }
@@ -191,7 +186,7 @@ describe("Date", () => {
             try {
                 await session.run(
                     `
-                   CREATE (m:${randomType})
+                   CREATE (m:${randomType.name})
                    SET m.date = $nDate
                `,
                     { nDate }
@@ -204,7 +199,7 @@ describe("Date", () => {
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
-                expect((gqlResult.data as any)[pluralRandomType][0]).toEqual({
+                expect((gqlResult.data as any)[randomType.plural][0]).toEqual({
                     date: date.toISOString().split("T")[0],
                 });
             } finally {

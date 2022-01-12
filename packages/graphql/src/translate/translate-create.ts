@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { upperFirst } from "graphql-compose";
 import { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
@@ -32,12 +33,9 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
     let connectionParams: any;
     let interfaceParams: any;
 
-    const mutationResponse =
-        resolveTree.fieldsByTypeName[`Create${node.getPlural({ camelCase: false })}MutationResponse`];
+    const mutationResponse = resolveTree.fieldsByTypeName[`Create${upperFirst(node.plural)}MutationResponse`];
 
-    const nodeProjection = Object.values(mutationResponse).find(
-        (field) => field.name === node.getPlural({ camelCase: true })
-    );
+    const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
 
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {

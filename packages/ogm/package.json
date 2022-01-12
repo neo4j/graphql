@@ -22,7 +22,7 @@
         "dist/**/*.js.map"
     ],
     "scripts": {
-        "build": "tsc --project src/",
+        "build": "tsc --build tsconfig.production.json",
         "test": "jest",
         "test:unit": "jest src/**/*.test.ts",
         "test:unit:watch": "jest src --watch",
@@ -36,7 +36,6 @@
         "@graphql-codegen/typescript": "2.0.0",
         "@graphql-tools/merge": "6.2.17",
         "@neo4j/graphql": "^2.5.5",
-        "camelcase": "^6.2.0",
         "pluralize": "^8.0.0",
         "prettier": "2.3.2"
     },
@@ -55,6 +54,6 @@
         "randomstring": "1.2.1",
         "semver": "7.3.5",
         "ts-jest": "27.1.2",
-        "typescript": "3.9.7"
+        "typescript": "4.2.4"
     }
 }

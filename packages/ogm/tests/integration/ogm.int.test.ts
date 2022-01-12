@@ -22,6 +22,7 @@ import { generate } from "randomstring";
 import gql from "graphql-tag";
 import neo4j from "./neo4j";
 import { OGM, Model } from "../../src";
+import { generateUniqueType } from "../utils";
 
 describe("OGM", () => {
     let driver: Driver;
@@ -201,13 +202,10 @@ describe("OGM", () => {
         test("should count nodes", async () => {
             const session = driver.session();
 
-            const randomType = `${generate({
-                charset: "alphabetic",
-                readable: true,
-            })}Movie`;
+            const randomType = generateUniqueType("Movie");
 
             const typeDefs = `
-                type ${randomType} {
+                type ${randomType.name} {
                     id: ID
                 }
             `;
@@ -217,12 +215,12 @@ describe("OGM", () => {
             try {
                 await session.run(
                     `
-                        CREATE (:${randomType} {id: randomUUID()})
-                        CREATE (:${randomType} {id: randomUUID()})
+                        CREATE (:${randomType.name} {id: randomUUID()})
+                        CREATE (:${randomType.name} {id: randomUUID()})
                     `
                 );
 
-                const model = ogm.model(randomType);
+                const model = ogm.model(randomType.name);
 
                 const count = await model?.count();
 
