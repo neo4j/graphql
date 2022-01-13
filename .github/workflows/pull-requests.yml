@@ -170,13 +170,19 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable && yarn build
+        run: yarn --immutable
+      - name: Build and pack @neo4j/graphql
+        run: |
+          yarn build
+          yarn pack
+        working-directory: packages/graphql
       - name: Setup Nextjs app
         run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
       - name: Install dependencies
         run: |
-          cd packages/neo4j-graphql-nextjs
           chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
+          npm install ../graphql/package.tgz
+        working-directory: packages/neo4j-graphql-nextjs
       - name: Copy .env file
         run: cp docs/modules/ROOT/examples/code-partials/nextjs/env.example packages/neo4j-graphql-nextjs/.env.local
       - name: Create GraphQL endpoint
