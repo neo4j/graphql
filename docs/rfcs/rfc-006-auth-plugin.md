@@ -2,7 +2,7 @@
 
 ## Problem
 
-Neo4j GraphQL uses the [Node.js `crypto`](https://nodejs.org/api/crypto.html) library to decode an incoming JWT and If this usage could be extracted into a 'plugin' it would path the way for future developer tools surrounding Neo4j GraphQL such as Neo4j Desktop interoperability.
+Neo4j GraphQL uses the [Node.js `crypto`](https://nodejs.org/api/crypto.html) library to decode an incoming JWT, and If this usage could be extracted into a 'plugin' it would path the way for future developer tools surrounding Neo4j GraphQL such as Neo4j Desktop interoperability.
 
 ## Proposed Solution
 
@@ -27,7 +27,7 @@ Extract the current auth decoding functionally into a new package `@neo4j/graphq
 
 ### Versioning
 
-?
+The new package can be versioned independently from `@neo4j/graphql`, however, **note that `@neo4j/graphql` will be a dependency of `@neo4j/graphql-plugins`.**
 
 ### Abstract Class
 
@@ -43,7 +43,7 @@ abstract class Neo4jGraphQLAuth {
 
 ### Neo4j GraphQL Constructor
 
-When constructing the `Neo4jGraphQL` class you should have an option to provide the ‘plugins’ property and when inside you can provide the ‘auth’ property whose value must be an instance of `Neo4jGraphQLAuth`:
+When constructing the `Neo4jGraphQL` users should specify the property 'plugins' and when inside they can set the ‘auth’ property. The auth property must be an instance of `Neo4jGraphQLAuthPlugin`:
 
 ```js
 import { Neo4jGraphQL, Neo4jGraphQLAuthPlugin } from "@neo4j/graphql";
@@ -70,7 +70,7 @@ const neoSchema = new Neo4jGraphQL({
 
 ### Core Plugins
 
-Users are already using the existing JWT decode functionally and it has proven to work so, instead of forcing upgrading users to write their own JWT functionally, let's expose our own Auth plugin that extends the `Neo4jGraphQLAuth`. The ‘core’ auth plugin would be exported from the new library `@neo4j/graphql-plugins`:
+Users are already using the existing JWT decode functionally and it has proven to work so, instead of forcing upgrading users to write their own JWT functionally, let's expose our own `Auth` plugin that extends the `Neo4jGraphQLAuthPlugin`. The ‘core’ `Auth` plugin should be exported from the new library `@neo4j/graphql-plugins`:
 
 ```js
 import { Neo4jGraphQL } from "@neo4j/graphql";
@@ -87,7 +87,7 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
     plugins: {
-        auth: new Auth(),
+        auth: new Auth({ secret: "super-secret" }),
     },
 });
 ```
@@ -95,4 +95,4 @@ const neoSchema = new Neo4jGraphQL({
 ## Notes
 
 -   Testing would require some form of headless browser
--
+-   Requires lots of effort for migrating users
