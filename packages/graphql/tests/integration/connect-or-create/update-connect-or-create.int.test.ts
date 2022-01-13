@@ -112,8 +112,8 @@ describe("Update -> ConnectOrCreate", () => {
         `);
 
         expect(movieTitleAndId.records).toHaveLength(1);
-        expect(movieTitleAndId.records[0].toObject().title).toEqual("The Terminal");
-        expect((movieTitleAndId.records[0].toObject().id as Integer).toNumber()).toEqual(5);
+        expect(movieTitleAndId.records[0].toObject().title).toBe("The Terminal");
+        expect((movieTitleAndId.records[0].toObject().id as Integer).toNumber()).toBe(5);
 
         const actedInRelation = await session.run(`
             MATCH (:${typeMovie.name} {id: 5})<-[r:ACTED_IN]-(:${typeActor.name} {name: "Tom Hanks 2"})
@@ -121,7 +121,7 @@ describe("Update -> ConnectOrCreate", () => {
             `);
 
         expect(actedInRelation.records).toHaveLength(1);
-        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(105);
+        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(105);
     });
 
     test("Update with ConnectOrCreate on existing node", async () => {
@@ -168,21 +168,21 @@ describe("Update -> ConnectOrCreate", () => {
           RETURN COUNT(a) as count
         `);
 
-        expect(actorsWithMovieCount.records[0].toObject().count.toInt()).toEqual(1);
+        expect(actorsWithMovieCount.records[0].toObject().count.toInt()).toBe(1);
 
         const moviesWithIdCount = await session.run(`
           MATCH (m:${typeMovie.name} {id: 2222})
           RETURN COUNT(m) as count
         `);
 
-        expect(moviesWithIdCount.records[0].toObject().count.toInt()).toEqual(1);
+        expect(moviesWithIdCount.records[0].toObject().count.toInt()).toBe(1);
 
         const theTerminalMovieCount = await session.run(`
           MATCH (m:${typeMovie.name} {id: 2222, name: "The Terminal"})
           RETURN COUNT(m) as count
         `);
 
-        expect(theTerminalMovieCount.records[0].toObject().count.toInt()).toEqual(0);
+        expect(theTerminalMovieCount.records[0].toObject().count.toInt()).toBe(0);
 
         const actedInRelation = await session.run(`
             MATCH (:${typeMovie.name} {id: 2222})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${updatedActorName}"})
@@ -190,12 +190,12 @@ describe("Update -> ConnectOrCreate", () => {
             `);
 
         expect(actedInRelation.records).toHaveLength(1);
-        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(105);
+        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(105);
 
         const newIdMovieCount = await session.run(`
             MATCH (m:${typeMovie.name} {id: 22224})
             RETURN COUNT(m) as count
             `);
-        expect(newIdMovieCount.records[0].toObject().count.toInt()).toEqual(0);
+        expect(newIdMovieCount.records[0].toObject().count.toInt()).toBe(0);
     });
 });

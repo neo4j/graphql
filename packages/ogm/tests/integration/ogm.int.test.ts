@@ -224,7 +224,7 @@ describe("OGM", () => {
 
                 const count = await model?.count();
 
-                expect(count).toEqual(2);
+                expect(count).toBe(2);
             } finally {
                 await session.close();
             }
@@ -258,7 +258,7 @@ describe("OGM", () => {
 
                 const count = await Movie?.count({ where: { id } });
 
-                expect(count).toEqual(1);
+                expect(count).toBe(1);
             } finally {
                 await session.close();
             }

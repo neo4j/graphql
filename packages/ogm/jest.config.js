@@ -7,7 +7,7 @@ module.exports = {
     coverageDirectory: "<rootDir>/packages/ogm/coverage/",
     globals: {
         "ts-jest": {
-            tsconfig: "<rootDir>/packages/ogm/src/tsconfig.json",
+            tsconfig: "<rootDir>/packages/ogm/tsconfig.json",
         },
     },
 };

@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { IncomingMessage } from "http";
 import neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
-import { generateUniqueType } from "../../../../../tests/utils/graphql-types";
+import { generateUniqueType } from "../../../../utils/graphql-types";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 
 describe("Field Level Aggregations Auth", () => {
@@ -141,7 +141,7 @@ describe("Field Level Aggregations Auth", () => {
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
 
             test("rejects unauthenticated requests to actor -> movieAggregate", async () => {
@@ -158,7 +158,7 @@ describe("Field Level Aggregations Auth", () => {
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
         });
         describe(`allow requests ~ ${testCase.name}`, () => {
@@ -212,7 +212,7 @@ describe("Field Level Aggregations Auth", () => {
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
 
             test("authenticated query with wrong credentials", async () => {
@@ -230,7 +230,7 @@ describe("Field Level Aggregations Auth", () => {
                     source: query,
                     contextValue: { driver, req: invalidReq, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             });
         });
     });
