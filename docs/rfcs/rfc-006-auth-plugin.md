@@ -31,7 +31,7 @@ The new package can be versioned independently from `@neo4j/graphql`, however, *
 
 ### Abstract Class
 
-The current `@neo4j/graphql` library should expose an `abstract` `Neo4jGraphQLAuth` class where it can be extended to implement custom functionally and type-checked when provided.
+The current `@neo4j/graphql` library should expose an `abstract` `Neo4jGraphQLAuthPlugin` class where it can be extended to implement custom functionally and type-checked when provided.
 
 ```ts
 abstract class Neo4jGraphQLAuth {
