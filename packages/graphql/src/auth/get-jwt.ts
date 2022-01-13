@@ -26,8 +26,8 @@ import { DEBUG_AUTH } from "../constants";
 
 const debug = Debug(DEBUG_AUTH);
 
-async function getJWT(context: Context): Promise<JwtPayload | undefined> {
-    const jwtConfig = context.neoSchema.config ?.jwt;
+export async function getJWT(context: Context): Promise<JwtPayload | undefined> {
+    const jwtConfig = context.neoSchema.config?.jwt;
     let result: JwtPayload | undefined;
     let client: JwksClient;
 
@@ -51,7 +51,7 @@ async function getJWT(context: Context): Promise<JwtPayload | undefined> {
         return result;
     }
 
-    const authorization = (req.headers.authorization || req.headers.Authorization || req.cookies ?.token) as string;
+    const authorization = (req.headers.authorization || req.headers.Authorization || req.cookies?.token) as string;
     if (!authorization) {
         debug("Could not get .authorization, .Authorization or .cookies.token from req");
 
@@ -104,7 +104,7 @@ async function verifyJWKS(client: JwksClient, token: string): Promise<JwtPayload
     function getKey(header: JwtHeader, callback: SigningKeyCallback) {
         // Callback that returns the key the corresponding key[kid]
         client.getSigningKey(header.kid, (_err, key) => {
-            const signingKey = key ?.getPublicKey();
+            const signingKey = key?.getPublicKey();
             callback(null, signingKey);
         });
     }
@@ -118,11 +118,9 @@ async function verifyJWKS(client: JwksClient, token: string): Promise<JwtPayload
                 algorithms: ["HS256", "RS256"],
             },
             (err, decoded) => {
-                if (err) reject(err)
-                else resolve(decoded)
+                if (err) reject(err);
+                else resolve(decoded);
             }
-        )
+        );
     });
 }
-
-export default getJWT;

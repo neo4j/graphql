@@ -27,12 +27,12 @@ import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
-import { getJWT } from "../auth";
 import { DEBUG_GRAPHQL } from "../constants";
 import createAuthParam from "../translate/create-auth-param";
 import assertIndexesAndConstraints, {
     AssertIndexesAndConstraintsOptions,
 } from "./utils/asserts-indexes-and-constraints";
+import { getJWT } from "../auth/get-jwt";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -112,52 +112,55 @@ class Neo4jGraphQL {
         schema: GraphQLSchema;
         config: Neo4jGraphQLConfig;
     }): GraphQLSchema {
-        return addSchemaLevelResolver(schema, async (obj: any, _args, context: Context, resolveInfo: GraphQLResolveInfo) => {
-            const { driverConfig } = config;
+        return addSchemaLevelResolver(
+            schema,
+            async (obj: any, _args, context: Context, resolveInfo: GraphQLResolveInfo) => {
+                const { driverConfig } = config;
 
-            if (debug.enabled) {
-                const query = print(resolveInfo.operation);
+                if (debug.enabled) {
+                    const query = print(resolveInfo.operation);
 
-                debug(
-                    "%s",
-                    `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(
-                        resolveInfo.variableValues,
-                        null,
-                        2
-                    )}`
-                );
-            }
+                    debug(
+                        "%s",
+                        `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(
+                            resolveInfo.variableValues,
+                            null,
+                            2
+                        )}`
+                    );
+                }
 
-            /*
+                /*
                 Deleting this property ensures that we call this function more than once,
                 See https://github.com/ardatan/graphql-tools/issues/353#issuecomment-499569711
             */
-            // @ts-ignore: Deleting private property from object
-            delete resolveInfo.operation.__runAtMostOnce; // eslint-disable-line no-param-reassign,no-underscore-dangle
+                // @ts-ignore: Deleting private property from object
+                delete resolveInfo.operation.__runAtMostOnce; // eslint-disable-line no-param-reassign,no-underscore-dangle
 
-            if (!context?.driver) {
-                if (!this.driver) {
-                    throw new Error(
-                        "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
-                    );
+                if (!context?.driver) {
+                    if (!this.driver) {
+                        throw new Error(
+                            "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
+                        );
+                    }
+                    context.driver = this.driver;
                 }
-                context.driver = this.driver;
+
+                if (!context?.driverConfig) {
+                    context.driverConfig = driverConfig;
+                }
+
+                context.neoSchema = this;
+                if (!context.jwt) {
+                    context.jwt = await getJWT(context);
+                }
+
+                context.auth = createAuthParam({ context });
+
+                context.queryOptions = config.queryOptions;
+                return obj;
             }
-
-            if (!context?.driverConfig) {
-                context.driverConfig = driverConfig;
-            }
-
-            context.neoSchema = this;
-            if (!context.jwt) {
-                context.jwt = await getJWT(context);
-            }
-
-            context.auth = createAuthParam({ context });
-
-            context.queryOptions = config.queryOptions;
-            return obj;
-        });
+        );
     }
 
     async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
