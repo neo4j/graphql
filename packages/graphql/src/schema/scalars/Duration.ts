@@ -110,7 +110,7 @@ export const parseDuration = (value: string) => {
     };
 };
 
-const parse = (value: any) => {
+const parse = (value: string) => {
     const { months, days, seconds, nanoseconds } = parseDuration(value);
 
     return new neo4j.types.Duration(months, days, seconds, nanoseconds);
