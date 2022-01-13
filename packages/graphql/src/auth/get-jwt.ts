@@ -18,7 +18,7 @@
  */
 
 import { IncomingMessage } from "http";
-import jsonwebtoken from "jsonwebtoken";
+import jsonwebtoken, { JwtHeader, JwtPayload, SigningKeyCallback } from "jsonwebtoken";
 import { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { Context } from "../types";
@@ -26,10 +26,12 @@ import { DEBUG_AUTH } from "../constants";
 
 const debug = Debug(DEBUG_AUTH);
 
-async function getJWT(context: Context): Promise<any> {
-    const jwtConfig = context.neoSchema.config?.jwt;
-    let result;
-    let client;
+export type JwtResult = undefined | JwtPayload | string
+
+async function getJWT(context: Context): Promise<JwtResult> {
+    const jwtConfig = context.neoSchema.config ?.jwt;
+    let result: JwtResult;
+    let client: JwksClient;
 
     if (!jwtConfig) {
         debug("JWT not configured");
@@ -51,7 +53,7 @@ async function getJWT(context: Context): Promise<any> {
         return result;
     }
 
-    const authorization = (req.headers.authorization || req.headers.Authorization || req.cookies?.token) as string;
+    const authorization = (req.headers.authorization || req.headers.Authorization || req.cookies ?.token) as string;
     if (!authorization) {
         debug("Could not get .authorization, .Authorization or .cookies.token from req");
 
@@ -69,7 +71,7 @@ async function getJWT(context: Context): Promise<any> {
         if (jwtConfig.noVerify) {
             debug("Skipping verifying JWT as noVerify is not set");
 
-            result = jsonwebtoken.decode(token);
+            result = jsonwebtoken.decode(token) || undefined;
         } else if (jwtConfig.jwksEndpoint) {
             debug("Verifying JWT using OpenID Public Key Set Endpoint");
 
@@ -100,17 +102,17 @@ async function getJWT(context: Context): Promise<any> {
 }
 
 // Verifies the JWKS asynchronously, returns Promise
-async function verifyJWKS(client: JwksClient, token: string) {
-    function getKey(header, callback) {
+async function verifyJWKS(client: JwksClient, token: string): Promise<JwtResult> {
+    function getKey(header: JwtHeader, callback: SigningKeyCallback) {
         // Callback that returns the key the corresponding key[kid]
-        client.getSigningKey(header.kid, (err, key) => {
-            const signingKey = key?.getPublicKey();
+        client.getSigningKey(header.kid, (_err, key) => {
+            const signingKey = key ?.getPublicKey();
             callback(null, signingKey);
         });
     }
 
     // Returns a Promise with verification result or error
-    return new Promise((resolve, reject) =>
+    return new Promise((resolve, reject) => {
         jsonwebtoken.verify(
             token,
             getKey,
@@ -118,10 +120,11 @@ async function verifyJWKS(client: JwksClient, token: string) {
                 algorithms: ["HS256", "RS256"],
             },
             (err, decoded) => {
-                return err ? reject(err) : resolve(decoded);
+                if (err) reject(err)
+                else resolve(decoded)
             }
         )
-    );
+    });
 }
 
 export default getJWT;
