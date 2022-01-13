@@ -22,36 +22,12 @@ import { Node, Relationship } from "../classes";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import createAggregateWhereAndParams from "./create-aggregate-where-and-params";
+import { comparisonMap, negateClauseIfNOTCondition, whereRegEx, WhereRegexGroups } from "./utils";
 
 interface Res {
     clauses: string[];
     params: any;
 }
-
-const comparisonMap = {
-    NOT: "=",
-    // Numerical
-    GT: ">",
-    GTE: ">=",
-    LT: "<",
-    LTE: "<=",
-    // Distance
-    DISTANCE: "=",
-    // String
-    NOT_CONTAINS: "CONTAINS",
-    CONTAINS: "CONTAINS",
-    NOT_STARTS_WITH: "STARTS WITH",
-    STARTS_WITH: "STARTS WITH",
-    NOT_ENDS_WITH: "ENDS WITH",
-    ENDS_WITH: "ENDS WITH",
-    // Regex
-    MATCHES: "=~",
-    // Array
-    NOT_IN: "IN",
-    IN: "IN",
-    NOT_INCLUDES: "IN",
-    INCLUDES: "IN",
-};
 
 function createWhereAndParams({
     whereInput,
@@ -107,15 +83,11 @@ function createWhereAndParams({
             return res;
         }
 
-        const re = /(?<fieldName>[_A-Za-z]\w*?)(?<aggregateField>Aggregate)?(?:_(?<operator>NOT|NOT_IN|IN|NOT_INCLUDES|INCLUDES|MATCHES|NOT_CONTAINS|CONTAINS|NOT_STARTS_WITH|STARTS_WITH|NOT_ENDS_WITH|ENDS_WITH|LT|LTE|GT|GTE|DISTANCE))?$/;
+        const match = whereRegEx.exec(key);
 
-        const match = re.exec(key);
+        const { fieldName, isAggregate, isNot, operator } = match?.groups as WhereRegexGroups;
 
-        const { fieldName, aggregateField, operator } = match?.groups as {
-            fieldName: string;
-            aggregateField?: string;
-            operator?: keyof typeof comparisonMap;
-        };
+        const negateClauseIfNOT = negateClauseIfNOTCondition(Boolean(isNot));
 
         const dbFieldName = mapToDbProperty(node, fieldName);
 
@@ -127,13 +99,11 @@ function createWhereAndParams({
                 ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
                 : `${varName}.${dbFieldName}`;
 
-        const negateIfNOT = (clause: string) => (operator?.startsWith("NOT") ? `(NOT ${clause})` : clause);
-
         // Relationship Field
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
 
-        if (aggregateField) {
+        if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
             const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const relationship = context.neoSchema.relationships.find(
@@ -167,13 +137,11 @@ function createWhereAndParams({
             const relTypeStr = `[:${relationField.type}]`;
 
             if (value === null) {
-                res.clauses.push(
-                    `${operator === "NOT" ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`
-                );
+                res.clauses.push(`${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
                 return res;
             }
 
-            const predicate = operator === "NOT" ? "NONE" : "ANY";
+            const predicate = isNot ? "NONE" : "ANY";
 
             let resultStr = [
                 `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
@@ -225,14 +193,14 @@ function createWhereAndParams({
 
                 if (value === null) {
                     res.clauses.push(
-                        `${operator === "NOT" ? "" : "NOT "}EXISTS((${varName})${inStr}[:${
+                        `${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}[:${
                             connectionField.relationship.type
                         }]${outStr}(${labels}))`
                     );
                     return res;
                 }
 
-                const predicate = operator === "NOT" ? "NONE" : "ANY";
+                const predicate = isNot ? "NONE" : "ANY";
 
                 let resultStr = [
                     `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
@@ -254,7 +222,7 @@ function createWhereAndParams({
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
 
-                const whereKeySuffix = operator === "NOT" ? "_NOT" : "";
+                const whereKeySuffix = isNot ? "_NOT" : "";
                 const resolveTreeParams = recursing
                     ? {
                           [`${varName}_${context.resolveTree.name}`]: {
@@ -292,15 +260,15 @@ function createWhereAndParams({
                     break;
                 case "NOT_IN":
                 case "IN":
-                    res.clauses.push(negateIfNOT(`${property} IN ${paramPointArray}`));
+                    res.clauses.push(negateClauseIfNOT(`${property} IN ${paramPointArray}`));
                     break;
                 case "NOT_INCLUDES":
                 case "INCLUDES":
-                    res.clauses.push(negateIfNOT(`${paramPoint} IN ${property}`));
+                    res.clauses.push(negateClauseIfNOT(`${paramPoint} IN ${property}`));
                     break;
                 default:
                     res.clauses.push(
-                        negateIfNOT(`${property} = ${pointField.typeMeta.array ? paramPointArray : paramPoint}`)
+                        negateClauseIfNOT(`${property} = ${pointField.typeMeta.array ? paramPointArray : paramPoint}`)
                     );
             }
 
@@ -323,7 +291,7 @@ function createWhereAndParams({
         }
 
         if (value === null) {
-            res.clauses.push(`${varName}.${dbFieldName} IS ${operator === "NOT" ? "NOT " : ""}NULL`);
+            res.clauses.push(`${property} ${isNot ? "IS NOT NULL" : "IS NULL"}`);
             return res;
         }
 
@@ -332,10 +300,10 @@ function createWhereAndParams({
         switch (operator) {
             case "NOT_INCLUDES":
             case "INCLUDES":
-                res.clauses.push(negateIfNOT(`$${param} ${comparison} ${property}`));
+                res.clauses.push(negateClauseIfNOT(`$${param} ${comparison} ${property}`));
                 break;
             default:
-                res.clauses.push(negateIfNOT(`${property} ${comparison} $${param}`));
+                res.clauses.push(negateClauseIfNOT(`${property} ${comparison} $${param}`));
         }
 
         res.params[param] = value;
