@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import Debug from "debug";
 import { Driver } from "neo4j-driver";
 import { DocumentNode, GraphQLSchema, parse, printSchema } from "graphql";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
@@ -29,14 +28,11 @@ import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
-import { DEBUG_GRAPHQL } from "../constants";
 import assertIndexesAndConstraints, {
     AssertIndexesAndConstraintsOptions,
 } from "./utils/asserts-indexes-and-constraints";
 import { wrapResolver } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers";
-
-const debug = Debug(DEBUG_GRAPHQL);
 
 export interface Neo4jGraphQLJWT {
     jwksEndpoint?: string;
@@ -67,7 +63,6 @@ class Neo4jGraphQL {
     public config?: Neo4jGraphQLConfig;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        // const { config = {}, driver, schemaDirectives, ...schemaDefinition } = input;
         const { config = {}, driver, ...schemaDefinition } = input;
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(input.typeDefs, {
             enableRegex: config.enableRegex,
@@ -84,7 +79,10 @@ class Neo4jGraphQL {
             "Mutation.*": [wrapResolver({ driver, config, neoSchema: this })],
         };
 
-        const composedResolvers = composeResolvers(mergeResolvers([resolvers, input.resolvers]), resolversComposition);
+        // Merge generated and custom resolvers
+        const allResolvers = mergeResolvers([resolvers, input.resolvers]);
+
+        const composedResolvers = composeResolvers(allResolvers, resolversComposition);
 
         const schema = makeExecutableSchema({
             ...schemaDefinition,

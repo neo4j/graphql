@@ -28,50 +28,45 @@ import { Context } from "../../types";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
-export const wrapResolver =
-    ({ driver, config, neoSchema }: { driver?: Driver; config: Neo4jGraphQLConfig; neoSchema: Neo4jGraphQL }) =>
-    (next) =>
-    async (root, args, context: Context, info: GraphQLResolveInfo) => {
-        const { driverConfig } = config;
+export const wrapResolver = ({
+    driver,
+    config,
+    neoSchema,
+}: {
+    driver?: Driver;
+    config: Neo4jGraphQLConfig;
+    neoSchema: Neo4jGraphQL;
+}) => (next) => async (root, args, context: Context, info: GraphQLResolveInfo) => {
+    const { driverConfig } = config;
 
-        if (debug.enabled) {
-            const query = print(info.operation);
+    if (debug.enabled) {
+        const query = print(info.operation);
 
-            debug(
-                "%s",
-                `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(info.variableValues, null, 2)}`
+        debug("%s", `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(info.variableValues, null, 2)}`);
+    }
+
+    if (!context?.driver) {
+        if (!driver) {
+            throw new Error(
+                "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
             );
         }
+        context.driver = driver;
+    }
 
-        /*
-                Deleting this property ensures that we call this function more than once,
-                See https://github.com/ardatan/graphql-tools/issues/353#issuecomment-499569711
-            */
-        // @ts-ignore: Deleting private property from object
-        // delete resolveInfo.operation.__runAtMostOnce; // eslint-disable-line no-param-reassign,no-underscore-dangle
+    if (!context?.driverConfig) {
+        context.driverConfig = driverConfig;
+    }
 
-        if (!context?.driver) {
-            if (!driver) {
-                throw new Error(
-                    "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
-                );
-            }
-            context.driver = driver;
-        }
+    context.neoSchema = neoSchema;
 
-        if (!context?.driverConfig) {
-            context.driverConfig = driverConfig;
-        }
+    if (!context.jwt) {
+        context.jwt = await getJWT(context);
+    }
 
-        context.neoSchema = neoSchema;
+    context.auth = createAuthParam({ context });
 
-        if (!context.jwt) {
-            context.jwt = await getJWT(context);
-        }
+    context.queryOptions = config.queryOptions;
 
-        context.auth = createAuthParam({ context });
-
-        context.queryOptions = config.queryOptions;
-
-        return next(root, args, context, info);
-    };
+    return next(root, args, context, info);
+};
