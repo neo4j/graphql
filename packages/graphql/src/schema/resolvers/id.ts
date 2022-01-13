@@ -19,8 +19,10 @@
 
 import defaultFieldResolver from "./defaultField";
 import { isNeoInt } from "../../utils/utils";
+import { Context } from "../../../src/types";
+import { GraphQLResolveInfo } from "graphql";
 
-function id(source, args, context, info) {
+function id(source, args, context: Context, info: GraphQLResolveInfo) {
     const value = defaultFieldResolver(source, args, context, info);
 
     if (isNeoInt(value)) {
