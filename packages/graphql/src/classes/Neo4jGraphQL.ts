@@ -22,7 +22,7 @@ import { Driver } from "neo4j-driver";
 import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, printSchema, print } from "graphql";
 import { addResolversToSchema, addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
-import type { DriverConfig, CypherQueryOptions } from "../types";
+import type { DriverConfig, CypherQueryOptions, Context } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
@@ -112,7 +112,7 @@ class Neo4jGraphQL {
         schema: GraphQLSchema;
         config: Neo4jGraphQLConfig;
     }): GraphQLSchema {
-        return addSchemaLevelResolver(schema, async (obj, _args, context: any, resolveInfo: GraphQLResolveInfo) => {
+        return addSchemaLevelResolver(schema, async (obj: any, _args, context: Context, resolveInfo: GraphQLResolveInfo) => {
             const { driverConfig } = config;
 
             if (debug.enabled) {

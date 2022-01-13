@@ -26,11 +26,9 @@ import { DEBUG_AUTH } from "../constants";
 
 const debug = Debug(DEBUG_AUTH);
 
-export type JwtResult = undefined | JwtPayload | string
-
-async function getJWT(context: Context): Promise<JwtResult> {
+async function getJWT(context: Context): Promise<JwtPayload | undefined> {
     const jwtConfig = context.neoSchema.config ?.jwt;
-    let result: JwtResult;
+    let result: JwtPayload | undefined;
     let client: JwksClient;
 
     if (!jwtConfig) {
@@ -71,7 +69,7 @@ async function getJWT(context: Context): Promise<JwtResult> {
         if (jwtConfig.noVerify) {
             debug("Skipping verifying JWT as noVerify is not set");
 
-            result = jsonwebtoken.decode(token) || undefined;
+            result = jsonwebtoken.decode(token, { json: true }) || undefined;
         } else if (jwtConfig.jwksEndpoint) {
             debug("Verifying JWT using OpenID Public Key Set Endpoint");
 
@@ -102,7 +100,7 @@ async function getJWT(context: Context): Promise<JwtResult> {
 }
 
 // Verifies the JWKS asynchronously, returns Promise
-async function verifyJWKS(client: JwksClient, token: string): Promise<JwtResult> {
+async function verifyJWKS(client: JwksClient, token: string): Promise<JwtPayload | undefined> {
     function getKey(header: JwtHeader, callback: SigningKeyCallback) {
         // Callback that returns the key the corresponding key[kid]
         client.getSigningKey(header.kid, (_err, key) => {
