@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg, Context, RelationField } from "../types";
+import { GraphQLWhereArg, Context } from "../types";
 import { Node, Relationship } from "../classes";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -27,6 +27,31 @@ interface Res {
     clauses: string[];
     params: any;
 }
+
+const comparisonMap = {
+    NOT: "=",
+    // Numerical
+    GT: ">",
+    GTE: ">=",
+    LT: "<",
+    LTE: "<=",
+    // Distance
+    DISTANCE: "=",
+    // String
+    NOT_CONTAINS: "CONTAINS",
+    CONTAINS: "CONTAINS",
+    NOT_STARTS_WITH: "STARTS WITH",
+    STARTS_WITH: "STARTS WITH",
+    NOT_ENDS_WITH: "ENDS WITH",
+    ENDS_WITH: "ENDS WITH",
+    // Regex
+    MATCHES: "=~",
+    // Array
+    NOT_IN: "IN",
+    IN: "IN",
+    NOT_INCLUDES: "IN",
+    INCLUDES: "IN",
+};
 
 function createWhereAndParams({
     whereInput,
@@ -55,604 +80,7 @@ function createWhereAndParams({
             param = `${varName}_${key}`;
         }
 
-        let dbFieldName = mapToDbProperty(node, key);
-
-        const pointField = node.pointFields.find((x) => key.startsWith(x.fieldName));
-        // Comparison operations requires adding dates to durations
-        // See https://neo4j.com/developer/cypher/dates-datetimes-durations/#comparing-filtering-values
-        const durationField = node.primitiveFields.find(
-            (x) => key.startsWith(x.fieldName) && x.typeMeta.name === "Duration"
-        );
-
-        if (key.endsWith("Aggregate")) {
-            const [fieldName] = key.split("Aggregate");
-            const relationField = node.relationFields.find((x) => x.fieldName === fieldName) as RelationField;
-            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-            const relationship = (context.neoSchema.relationships.find(
-                (x) => x.properties === relationField.properties
-            ) as unknown) as Relationship;
-
-            const aggregateWhereAndParams = createAggregateWhereAndParams({
-                node: refNode,
-                chainStr: param,
-                context,
-                field: relationField,
-                varName,
-                aggregation: value,
-                relationship,
-            });
-            if (aggregateWhereAndParams[0]) {
-                res.clauses.push(aggregateWhereAndParams[0]);
-                res.params = { ...res.params, ...aggregateWhereAndParams[1] };
-            }
-
-            return res;
-        }
-
-        if (key.endsWith("_NOT")) {
-            const [fieldName] = key.split("_NOT");
-            dbFieldName = mapToDbProperty(node, fieldName);
-            const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
-            const connectionField = node.connectionFields.find((x) => fieldName === x.fieldName);
-
-            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
-                (f) => fieldName === f.fieldName
-            )?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            if (relationField) {
-                const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-                const inStr = relationField.direction === "IN" ? "<-" : "-";
-                const outStr = relationField.direction === "OUT" ? "->" : "-";
-                const relTypeStr = `[:${relationField.type}]`;
-
-                const labels = refNode.getLabelString(context);
-                if (value === null) {
-                    res.clauses.push(`EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
-
-                    return res;
-                }
-
-                let resultStr = [
-                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
-                    `AND NONE(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
-                ].join(" ");
-
-                const recurse = createWhereAndParams({
-                    whereInput: value,
-                    varName: param,
-                    chainStr: param,
-                    node: refNode,
-                    context,
-                    recursing: true,
-                });
-
-                if (recurse[0]) {
-                    resultStr += recurse[0];
-                    resultStr += ")"; // close ALL
-                    res.clauses.push(resultStr);
-                    res.params = { ...res.params, ...recurse[1] };
-                }
-
-                return res;
-            }
-
-            if (connectionField) {
-                let nodeEntries: Record<string, any> = value;
-
-                if (!connectionField?.relationship.union) {
-                    nodeEntries = { [connectionField.relationship.typeMeta.name]: value };
-                }
-
-                Object.entries(nodeEntries).forEach((entry) => {
-                    const refNode = context.neoSchema.nodes.find((x) => x.name === entry[0]) as Node;
-                    const relationship = context.neoSchema.relationships.find(
-                        (x) => x.name === connectionField.relationshipTypeName
-                    ) as Relationship;
-
-                    const thisParam = `${param}_${refNode.name}`;
-                    const relationshipVariable = `${thisParam}_${connectionField.relationshipTypeName}`;
-                    const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
-                    const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
-                    const labels = refNode.getLabelString(context);
-                    const collectedMap = `${thisParam}_map`;
-
-                    if (value === null) {
-                        res.clauses.push(
-                            `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`
-                        );
-                        return;
-                    }
-
-                    let resultStr = [
-                        `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
-                        `AND NONE(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
-                        ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
-                    ].join(" ");
-
-                    const connectionWhere = createConnectionWhereAndParams({
-                        whereInput: entry[1] as any,
-                        context,
-                        node: refNode,
-                        nodeVariable: `${collectedMap}.node`,
-                        relationship,
-                        relationshipVariable: `${collectedMap}.relationship`,
-                        parameterPrefix: `${varName}_${context.resolveTree.name}.where.${key}`,
-                    });
-
-                    resultStr += connectionWhere[0];
-                    resultStr += ")"; // close ALL
-                    res.clauses.push(resultStr);
-
-                    const resolveTreeParams = recursing
-                        ? {
-                              [`${varName}_${context.resolveTree.name}`]: {
-                                  where: { [`${connectionField.fieldName}_NOT`]: connectionWhere[1] },
-                              },
-                          }
-                        : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args };
-
-                    res.params = {
-                        ...res.params,
-                        ...resolveTreeParams,
-                    };
-                });
-
-                return res;
-            }
-
-            if (value === null) {
-                res.clauses.push(`${varName}.${dbFieldName} IS NOT NULL`);
-                return res;
-            }
-
-            if (pointField) {
-                if (pointField.typeMeta.array) {
-                    res.clauses.push(`(NOT ${varName}.${dbFieldName} = [p in $${param} | point(p)])`);
-                } else {
-                    res.clauses.push(`(NOT ${varName}.${dbFieldName} = point($${param}))`);
-                }
-            } else {
-                res.clauses.push(`(NOT ${property} = $${param})`);
-            }
-
-            res.params[param] = value;
-            return res;
-        }
-
-        if (key.endsWith("_NOT_IN")) {
-            const [fieldName] = key.split("_NOT_IN");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
-                (f) => fieldName === f.fieldName
-            )?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            if (pointField) {
-                res.clauses.push(`(NOT ${varName}.${dbFieldName} IN [p in $${param} | point(p)])`);
-                res.params[param] = value;
-            } else {
-                res.clauses.push(`(NOT ${property} IN $${param})`);
-                res.params[param] = value;
-            }
-
-            return res;
-        }
-
-        if (key.endsWith("_IN")) {
-            const [fieldName] = key.split("_IN");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
-                (f) => fieldName === f.fieldName
-            )?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            if (pointField) {
-                res.clauses.push(`${varName}.${dbFieldName} IN [p in $${param} | point(p)]`);
-                res.params[param] = value;
-            } else {
-                res.clauses.push(`${property} IN $${param}`);
-                res.params[param] = value;
-            }
-
-            return res;
-        }
-
-        if (key.endsWith("_NOT_INCLUDES")) {
-            const [fieldName] = key.split("_NOT_INCLUDES");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
-                (f) => fieldName === f.fieldName
-            )?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            if (pointField) {
-                res.clauses.push(`(NOT point($${param}) IN ${varName}.${dbFieldName})`);
-                res.params[param] = value;
-            } else {
-                res.clauses.push(`(NOT $${param} IN ${property})`);
-                res.params[param] = value;
-            }
-
-            return res;
-        }
-
-        if (key.endsWith("_INCLUDES")) {
-            const [fieldName] = key.split("_INCLUDES");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
-                (f) => fieldName === f.fieldName
-            )?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            if (pointField) {
-                res.clauses.push(`point($${param}) IN ${varName}.${dbFieldName}`);
-                res.params[param] = value;
-            } else {
-                res.clauses.push(`$${param} IN ${property}`);
-                res.params[param] = value;
-            }
-
-            return res;
-        }
-
-        const equalityRelation = node.relationFields.find((x) => key === x.fieldName);
-        if (equalityRelation) {
-            const refNode = context.neoSchema.nodes.find((x) => x.name === equalityRelation.typeMeta.name) as Node;
-            const inStr = equalityRelation.direction === "IN" ? "<-" : "-";
-            const outStr = equalityRelation.direction === "OUT" ? "->" : "-";
-            const relTypeStr = `[:${equalityRelation.type}]`;
-
-            const labels = refNode.getLabelString(context);
-
-            if (value === null) {
-                res.clauses.push(`NOT EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
-
-                return res;
-            }
-
-            let resultStr = [
-                `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
-                `AND ANY(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
-            ].join(" ");
-
-            const recurse = createWhereAndParams({
-                whereInput: value,
-                varName: param,
-                chainStr: param,
-                node: refNode,
-                context,
-                recursing: true,
-            });
-
-            if (recurse[0]) {
-                resultStr += recurse[0];
-                resultStr += ")"; // close ANY
-                res.clauses.push(resultStr);
-                res.params = { ...res.params, ...recurse[1] };
-            }
-
-            return res;
-        }
-
-        const equalityConnection = node.connectionFields?.find((x) => key === x.fieldName);
-        if (equalityConnection) {
-            let nodeEntries: Record<string, any> = value;
-
-            if (!equalityConnection?.relationship.union) {
-                nodeEntries = { [equalityConnection.relationship.typeMeta.name]: value };
-            }
-
-            Object.entries(nodeEntries).forEach((entry) => {
-                const refNode = context.neoSchema.nodes.find((x) => x.name === entry[0]) as Node;
-                const relationship = context.neoSchema.relationships.find(
-                    (x) => x.name === equalityConnection.relationshipTypeName
-                ) as Relationship;
-
-                const thisParam = `${param}_${refNode.name}`;
-                const relationshipVariable = `${thisParam}_${equalityConnection.relationshipTypeName}`;
-                const inStr = equalityConnection.relationship.direction === "IN" ? "<-" : "-";
-                const outStr = equalityConnection.relationship.direction === "OUT" ? "->" : "-";
-                const labels = refNode.getLabelString(context);
-                const collectedMap = `${thisParam}_map`;
-
-                if (value === null) {
-                    res.clauses.push(
-                        `NOT EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(${labels}))`
-                    );
-
-                    return res;
-                }
-
-                let resultStr = [
-                    `EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(${labels}))`,
-                    `AND ANY(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${equalityConnection.relationship.type}]${outStr}(${thisParam}${labels})`,
-                    ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
-                ].join(" ");
-
-                const connectionWhere = createConnectionWhereAndParams({
-                    whereInput: entry[1] as any,
-                    context,
-                    node: refNode,
-                    nodeVariable: `${collectedMap}.node`,
-                    relationship,
-                    relationshipVariable: `${collectedMap}.relationship`,
-                    parameterPrefix: `${varName}_${context.resolveTree.name}.where.${key}`,
-                });
-
-                resultStr += connectionWhere[0];
-                resultStr += ")"; // close ALL
-                res.clauses.push(resultStr);
-
-                const resolveTreeParams = recursing
-                    ? {
-                          [`${varName}_${context.resolveTree.name}`]: {
-                              where: { [equalityConnection.fieldName]: connectionWhere[1] },
-                          },
-                      }
-                    : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args };
-
-                res.params = {
-                    ...res.params,
-                    ...resolveTreeParams,
-                };
-            });
-
-            return res;
-        }
-
-        if (key.endsWith("_MATCHES")) {
-            const [fieldName] = key.split("_MATCHES");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            res.clauses.push(`${property} =~ $${param}`);
-            res.params[param] = value;
-
-            return res;
-        }
-
-        if (key.endsWith("_NOT_CONTAINS")) {
-            const [fieldName] = key.split("_NOT_CONTAINS");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            res.clauses.push(`(NOT ${property} CONTAINS $${param})`);
-            res.params[param] = value;
-
-            return res;
-        }
-
-        if (key.endsWith("_CONTAINS")) {
-            const [fieldName] = key.split("_CONTAINS");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            res.clauses.push(`${property} CONTAINS $${param}`);
-            res.params[param] = value;
-
-            return res;
-        }
-
-        if (key.endsWith("_NOT_STARTS_WITH")) {
-            const [fieldName] = key.split("_NOT_STARTS_WITH");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            res.clauses.push(`(NOT ${property} STARTS WITH $${param})`);
-            res.params[param] = value;
-
-            return res;
-        }
-
-        if (key.endsWith("_STARTS_WITH")) {
-            const [fieldName] = key.split("_STARTS_WITH");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            res.clauses.push(`${property} STARTS WITH $${param}`);
-            res.params[param] = value;
-
-            return res;
-        }
-
-        if (key.endsWith("_NOT_ENDS_WITH")) {
-            const [fieldName] = key.split("_NOT_ENDS_WITH");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            res.clauses.push(`(NOT ${property} ENDS WITH $${param})`);
-            res.params[param] = value;
-
-            return res;
-        }
-
-        if (key.endsWith("_ENDS_WITH")) {
-            const [fieldName] = key.split("_ENDS_WITH");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            res.clauses.push(`${property} ENDS WITH $${param}`);
-            res.params[param] = value;
-
-            return res;
-        }
-
-        if (key.endsWith("_LT")) {
-            const [fieldName] = key.split("_LT");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
-                (f) => fieldName === f.fieldName
-            )?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            let clause = `${property} < $${param}`;
-
-            if (pointField) {
-                clause = `distance(${varName}.${fieldName}, point($${param}.point)) < $${param}.distance`;
-            }
-
-            if (durationField) {
-                clause = `datetime() + ${property} < datetime() + $${param}`;
-            }
-
-            res.clauses.push(clause);
-            res.params[param] = value;
-
-            return res;
-        }
-
-        if (key.endsWith("_LTE")) {
-            const [fieldName] = key.split("_LTE");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
-                (f) => fieldName === f.fieldName
-            )?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            let clause = `${property} <= $${param}`;
-
-            if (pointField) {
-                clause = `distance(${varName}.${fieldName}, point($${param}.point)) <= $${param}.distance`;
-            }
-
-            if (durationField) {
-                clause = `datetime() + ${property} <= datetime() + $${param}`;
-            }
-
-            res.clauses.push(clause);
-            res.params[param] = value;
-
-            return res;
-        }
-
-        if (key.endsWith("_GT")) {
-            const [fieldName] = key.split("_GT");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
-                (f) => fieldName === f.fieldName
-            )?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            let clause = `${property} > $${param}`;
-
-            if (pointField) {
-                clause = `distance(${varName}.${fieldName}, point($${param}.point)) > $${param}.distance`;
-            }
-
-            if (durationField) {
-                clause = `datetime() + ${property} > datetime() + $${param}`;
-            }
-
-            res.clauses.push(clause);
-            res.params[param] = value;
-
-            return res;
-        }
-
-        if (key.endsWith("_GTE")) {
-            const [fieldName] = key.split("_GTE");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
-                (f) => fieldName === f.fieldName
-            )?.coalesceValue;
-            const property =
-                coalesceValue !== undefined
-                    ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
-
-            let clause = `${property} >= $${param}`;
-
-            if (pointField) {
-                clause = `distance(${varName}.${fieldName}, point($${param}.point)) >= $${param}.distance`;
-            }
-
-            if (durationField) {
-                clause = `datetime() + ${property} >= datetime() + $${param}`;
-            }
-
-            res.clauses.push(clause);
-            res.params[param] = value;
-
-            return res;
-        }
-
-        if (key.endsWith("_DISTANCE")) {
-            const [fieldName] = key.split("_DISTANCE");
-            dbFieldName = mapToDbProperty(node, fieldName);
-
-            res.clauses.push(`distance(${varName}.${dbFieldName}, point($${param}.point)) = $${param}.distance`);
-            res.params[param] = value;
-
-            return res;
-        }
+        // Recurse if using AND/OR
 
         if (["AND", "OR"].includes(key)) {
             const innerClauses: string[] = [];
@@ -679,25 +107,235 @@ function createWhereAndParams({
             return res;
         }
 
-        if (value === null) {
-            res.clauses.push(`${varName}.${dbFieldName} IS NULL`);
+        const re = /(?<fieldName>[_A-Za-z]\w*?)(?<aggregateField>Aggregate)?(?:_(?<operator>NOT|NOT_IN|IN|NOT_INCLUDES|INCLUDES|MATCHES|NOT_CONTAINS|CONTAINS|NOT_STARTS_WITH|STARTS_WITH|NOT_ENDS_WITH|ENDS_WITH|LT|LTE|GT|GTE|DISTANCE))?$/;
+
+        const match = re.exec(key);
+
+        const { fieldName, aggregateField, operator } = match?.groups as {
+            fieldName: string;
+            aggregateField?: string;
+            operator?: keyof typeof comparisonMap;
+        };
+
+        const dbFieldName = mapToDbProperty(node, fieldName);
+
+        const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find((f) => fieldName === f.fieldName)
+            ?.coalesceValue;
+
+        const property =
+            coalesceValue !== undefined
+                ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
+                : `${varName}.${dbFieldName}`;
+
+        const negateIfNOT = (clause: string) => (operator?.startsWith("NOT") ? `(NOT ${clause})` : clause);
+
+        // Relationship Field
+
+        const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
+
+        if (aggregateField) {
+            if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
+            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const relationship = context.neoSchema.relationships.find(
+                (x) => x.properties === relationField.properties
+            ) as Relationship;
+
+            const aggregateWhereAndParams = createAggregateWhereAndParams({
+                node: refNode,
+                chainStr: param,
+                context,
+                field: relationField,
+                varName,
+                aggregation: value,
+                relationship,
+            });
+            if (aggregateWhereAndParams[0]) {
+                res.clauses.push(aggregateWhereAndParams[0]);
+                res.params = { ...res.params, ...aggregateWhereAndParams[1] };
+            }
+
             return res;
         }
 
-        if (pointField) {
-            if (pointField.typeMeta.array) {
-                res.clauses.push(`${varName}.${dbFieldName} = [p in $${param} | point(p)]`);
-            } else {
-                res.clauses.push(`${varName}.${dbFieldName} = point($${param})`);
-            }
-        } else {
-            const field = [...node.primitiveFields, ...node.temporalFields].find((f) => key === f.fieldName);
-            const property =
-                field?.coalesceValue !== undefined
-                    ? `coalesce(${varName}.${field.fieldName}, ${field.coalesceValue})`
-                    : `${varName}.${dbFieldName}`;
+        if (relationField) {
+            const refNode = context.neoSchema.nodes.find((n) => n.name === relationField.typeMeta.name);
+            if (!refNode) throw new Error("Relationship filters must reference nodes");
+            const labels = refNode.getLabelString(context);
 
-            res.clauses.push(`${property} = $${param}`);
+            const inStr = relationField.direction === "IN" ? "<-" : "-";
+            const outStr = relationField.direction === "OUT" ? "->" : "-";
+            const relTypeStr = `[:${relationField.type}]`;
+
+            if (value === null) {
+                res.clauses.push(
+                    `${operator === "NOT" ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`
+                );
+                return res;
+            }
+
+            const predicate = operator === "NOT" ? "NONE" : "ANY";
+
+            let resultStr = [
+                `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                `AND ${predicate}(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
+            ].join(" ");
+
+            const recurse = createWhereAndParams({
+                whereInput: value,
+                varName: param,
+                chainStr: param,
+                node: refNode,
+                context,
+                recursing: true,
+            });
+
+            if (recurse[0]) {
+                resultStr += recurse[0];
+                resultStr += ")"; // close predicate
+                res.clauses.push(resultStr);
+                res.params = { ...res.params, ...recurse[1] };
+            }
+
+            return res;
+        }
+
+        // Connection Field
+
+        const connectionField = node.connectionFields.find((x) => x.fieldName === fieldName);
+
+        if (connectionField) {
+            let nodeEntries: Record<string, any> = value;
+
+            if (!connectionField?.relationship.union) {
+                nodeEntries = { [connectionField.relationship.typeMeta.name]: value };
+            }
+
+            Object.entries(nodeEntries).forEach((entry) => {
+                const refNode = context.neoSchema.nodes.find((x) => x.name === entry[0]) as Node;
+                const relationship = context.neoSchema.relationships.find(
+                    (x) => x.name === connectionField.relationshipTypeName
+                ) as Relationship;
+
+                const thisParam = `${param}_${refNode.name}`;
+                const relationshipVariable = `${thisParam}_${connectionField.relationshipTypeName}`;
+                const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
+                const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
+                const labels = refNode.getLabelString(context);
+                const collectedMap = `${thisParam}_map`;
+
+                if (value === null) {
+                    res.clauses.push(
+                        `${operator === "NOT" ? "" : "NOT "}EXISTS((${varName})${inStr}[:${
+                            connectionField.relationship.type
+                        }]${outStr}(${labels}))`
+                    );
+                    return res;
+                }
+
+                const predicate = operator === "NOT" ? "NONE" : "ANY";
+
+                let resultStr = [
+                    `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
+                    `AND ${predicate}(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
+                    ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+                ].join(" ");
+
+                const connectionWhere = createConnectionWhereAndParams({
+                    whereInput: entry[1] as any,
+                    context,
+                    node: refNode,
+                    nodeVariable: `${collectedMap}.node`,
+                    relationship,
+                    relationshipVariable: `${collectedMap}.relationship`,
+                    parameterPrefix: `${varName}_${context.resolveTree.name}.where.${key}`,
+                });
+
+                resultStr += connectionWhere[0];
+                resultStr += ")"; // close ALL
+                res.clauses.push(resultStr);
+
+                const whereKeySuffix = operator === "NOT" ? "_NOT" : "";
+                const resolveTreeParams = recursing
+                    ? {
+                          [`${varName}_${context.resolveTree.name}`]: {
+                              where: { [`${connectionField.fieldName}${whereKeySuffix}`]: connectionWhere[1] },
+                          },
+                      }
+                    : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args };
+
+                res.params = {
+                    ...res.params,
+                    ...resolveTreeParams,
+                };
+            });
+
+            return res;
+        }
+
+        // Point Field
+
+        const pointField = node.pointFields.find((x) => x.fieldName === fieldName);
+
+        if (pointField) {
+            const paramPoint = `point($${param})`;
+            const paramPointArray = `[p in $${param} | point(p)]`;
+
+            switch (operator) {
+                case "LT":
+                case "LTE":
+                case "GT":
+                case "GTE":
+                case "DISTANCE":
+                    res.clauses.push(
+                        `distance(${property}, point($${param}.point)) ${comparisonMap[operator]} $${param}.distance`
+                    );
+                    break;
+                case "NOT_IN":
+                case "IN":
+                    res.clauses.push(negateIfNOT(`${property} IN ${paramPointArray}`));
+                    break;
+                case "NOT_INCLUDES":
+                case "INCLUDES":
+                    res.clauses.push(negateIfNOT(`${paramPoint} IN ${property}`));
+                    break;
+                default:
+                    res.clauses.push(
+                        negateIfNOT(`${property} = ${pointField.typeMeta.array ? paramPointArray : paramPoint}`)
+                    );
+            }
+
+            res.params[param] = value;
+            return res;
+        }
+
+        // Duration Field
+
+        const durationField = node.primitiveFields.find(
+            (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
+        );
+
+        // Comparison operations requires adding dates to durations
+        // See https://neo4j.com/developer/cypher/dates-datetimes-durations/#comparing-filtering-values
+        if (durationField && operator) {
+            res.clauses.push(`datetime() + ${property} ${comparisonMap[operator]} datetime() + $${param}`);
+            res.params[param] = value;
+            return res;
+        }
+
+        if (value === null) {
+            res.clauses.push(`${varName}.${dbFieldName} IS ${operator === "NOT" ? "NOT " : ""}NULL`);
+            return res;
+        }
+
+        const comparison = operator ? comparisonMap[operator] : "=";
+
+        switch (operator) {
+            case "NOT_INCLUDES":
+            case "INCLUDES":
+                res.clauses.push(negateIfNOT(`$${param} ${comparison} ${property}`));
+                break;
+            default:
+                res.clauses.push(negateIfNOT(`${property} ${comparison} $${param}`));
         }
 
         res.params[param] = value;
