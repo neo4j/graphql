@@ -24,6 +24,7 @@ const baseRules = {
     "eslint-comments/no-unused-disable": "error", // Turn on optional rule to report eslint-disable comments having no effect
     "class-methods-use-this": "off",
     "prefer-destructuring": "off",
+    "arrow-body-style": "off",
 };
 
 const typeScriptParser = {

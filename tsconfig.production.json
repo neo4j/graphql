@@ -1,0 +1,8 @@
+{
+    "files": [],
+    "references": [
+        { "path": "./packages/graphql/src/tsconfig.production.json" },
+        { "path": "./packages/ogm/tsconfig.production.json" },
+        { "path": "./packages/introspector/tsconfig.production.json" }
+    ]
+}

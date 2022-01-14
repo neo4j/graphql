@@ -7,7 +7,7 @@ module.exports = {
     coverageDirectory: "<rootDir>/packages/introspector/coverage/",
     globals: {
         "ts-jest": {
-            tsconfig: "<rootDir>/packages/introspector/tests/tsconfig.json",
+            tsconfig: "<rootDir>/packages/introspector/tsconfig.json",
         },
     },
 };
