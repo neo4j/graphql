@@ -103,7 +103,6 @@ describe("@default directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersCount(where: UserWhere): Int!
             }
 
             enum SortDirection {
