@@ -62,7 +62,6 @@ import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import * as point from "./point";
 import {
     aggregateResolver,
-    countResolver,
     createResolver,
     cypherResolver,
     deleteResolver,
@@ -902,10 +901,6 @@ function makeAugmentedSchema(
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
                 [node.plural]: findResolver({ node }),
-            });
-
-            composer.Query.addFields({
-                [`${node.plural}Count`]: countResolver({ node }),
             });
 
             composer.Query.addFields({

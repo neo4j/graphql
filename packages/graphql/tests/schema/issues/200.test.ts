@@ -151,7 +151,6 @@ describe("200", () => {
             type Query {
               categories(options: CategoryOptions, where: CategoryWhere): [Category!]!
               categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
-              categoriesCount(where: CategoryWhere): Int!
             }
 
             enum SortDirection {

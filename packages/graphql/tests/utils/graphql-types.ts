@@ -42,7 +42,6 @@ export function generateUniqueType(baseName: string) {
             update: `update${pascalCasePlural}`,
             delete: `delete${pascalCasePlural}`,
             aggregate: `${plural}Aggregate`,
-            count: `${plural}Count`,
         },
     };
 }
