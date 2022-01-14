@@ -21,8 +21,8 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { generate } from "randomstring";
 import pluralize from "pluralize";
-import { upperFirst } from "graphql-compose";
 import { lowerFirst } from "../../src/utils/lower-first";
+import { upperFirst } from "../../src/utils/upper-first";
 
 export function generateUniqueType(baseName: string) {
     const type = `${generate({
