@@ -19,7 +19,7 @@
 
 import { GraphQLWhereArg, Context } from "../../types";
 import { GraphElement, Node } from "../../classes";
-import { whereRegEx, WhereRegexGroups, createWhereClause } from "./utils";
+import { whereRegEx, WhereRegexGroups, createWhereClause, getListPredicate } from "./utils";
 
 interface Res {
     clauses: string[];
@@ -48,7 +48,8 @@ function createElementWhereAndParams({
 
         const match = whereRegEx.exec(key);
 
-        const { fieldName, not, operator } = match?.groups as WhereRegexGroups;
+        const { fieldName, operator } = match?.groups as WhereRegexGroups;
+        const isNot = operator?.startsWith("NOT") ?? false;
 
         const coalesceValue = [...element.primitiveFields, ...element.temporalFields].find(
             (f) => fieldName === f.fieldName
@@ -94,7 +95,7 @@ function createElementWhereAndParams({
 
                 if (value === null) {
                     res.clauses.push(
-                        `${not ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${
+                        `${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${
                             relationField.typeMeta.name
                         }))`
                     );
@@ -103,9 +104,9 @@ function createElementWhereAndParams({
 
                 let resultStr = [
                     `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                    `AND ${
-                        not ? "NONE" : "ANY"
-                    }(${relatedNodeVariable} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}:${
+                    `AND ${getListPredicate(
+                        operator
+                    )}(${relatedNodeVariable} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}:${
                         relationField.typeMeta.name
                     }) | ${relatedNodeVariable}] INNER_WHERE `,
                 ].join(" ");
@@ -127,7 +128,7 @@ function createElementWhereAndParams({
         }
 
         if (value === null) {
-            res.clauses.push(`${property} ${not ? "IS NOT NULL" : "IS NULL"}`);
+            res.clauses.push(`${property} ${isNot ? "IS NOT" : "IS"} NULL`);
             return res;
         }
 
@@ -137,7 +138,7 @@ function createElementWhereAndParams({
             (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
         );
 
-        res.clauses.push(createWhereClause({ param, property, operator, isNot: !!not, pointField, durationField }));
+        res.clauses.push(createWhereClause({ param, property, operator, isNot, pointField, durationField }));
 
         res.params[key] = value;
         return res;

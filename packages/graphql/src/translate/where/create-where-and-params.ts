@@ -22,7 +22,7 @@ import { Node, Relationship } from "../../classes";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
-import { createWhereClause, whereRegEx, WhereRegexGroups } from "./utils";
+import { createWhereClause, getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
 
 interface Res {
     clauses: string[];
@@ -85,7 +85,8 @@ function createWhereAndParams({
 
         const match = whereRegEx.exec(key);
 
-        const { fieldName, isAggregate, not, operator } = match?.groups as WhereRegexGroups;
+        const { fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
+        const isNot = operator?.startsWith("NOT") ?? false;
 
         const dbFieldName = mapToDbProperty(node, fieldName);
 
@@ -125,6 +126,8 @@ function createWhereAndParams({
             return res;
         }
 
+        const listPredicate = getListPredicate(operator);
+
         if (relationField) {
             const refNode = context.neoSchema.nodes.find((n) => n.name === relationField.typeMeta.name);
             if (!refNode) throw new Error("Relationship filters must reference nodes");
@@ -135,15 +138,13 @@ function createWhereAndParams({
             const relTypeStr = `[:${relationField.type}]`;
 
             if (value === null) {
-                res.clauses.push(`${not ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
+                res.clauses.push(`${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
                 return res;
             }
 
-            const predicate = not ? "NONE" : "ANY";
-
             let resultStr = [
                 `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
-                `AND ${predicate}(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
+                `AND ${listPredicate}(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
             ].join(" ");
 
             const recurse = createWhereAndParams({
@@ -191,18 +192,16 @@ function createWhereAndParams({
 
                 if (value === null) {
                     res.clauses.push(
-                        `${not ? "" : "NOT "}EXISTS((${varName})${inStr}[:${
+                        `${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}[:${
                             connectionField.relationship.type
                         }]${outStr}(${labels}))`
                     );
                     return res;
                 }
 
-                const predicate = not ? "NONE" : "ANY";
-
                 let resultStr = [
                     `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
-                    `AND ${predicate}(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
+                    `AND ${listPredicate}(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
                     ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
                 ].join(" ");
 
@@ -220,7 +219,7 @@ function createWhereAndParams({
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
 
-                const whereKeySuffix = not ? "_NOT" : "";
+                const whereKeySuffix = isNot ? "_NOT" : "";
                 const resolveTreeParams = recursing
                     ? {
                           [`${varName}_${context.resolveTree.name}`]: {
@@ -239,7 +238,7 @@ function createWhereAndParams({
         }
 
         if (value === null) {
-            res.clauses.push(`${property} ${not ? "IS NOT NULL" : "IS NULL"}`);
+            res.clauses.push(`${property} ${isNot ? "IS NOT" : "IS"} NULL`);
             return res;
         }
 
@@ -249,7 +248,7 @@ function createWhereAndParams({
             (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
         );
 
-        res.clauses.push(createWhereClause({ param, property, operator, isNot: !!not, pointField, durationField }));
+        res.clauses.push(createWhereClause({ param, property, operator, isNot, pointField, durationField }));
 
         res.params[param] = value;
         return res;

@@ -43,13 +43,10 @@ export const comparisonMap: Record<Exclude<WhereOperator, RelationshipWhereOpera
     INCLUDES: "IN",
 };
 
-export const negateClauseIfNOTCondition = (isNot: boolean) => (clause: string) => (isNot ? `(NOT ${clause})` : clause);
-
-export const whereRegEx = /(?<fieldName>[_A-Za-z]\w*?)(?<isAggregate>Aggregate)?(?:_(?<not>NOT))?(?:_(?<operator>IN|INCLUDES|MATCHES|CONTAINS|STARTS_WITH|ENDS_WITH|LT|LTE|GT|GTE|DISTANCE|EVERY|NONE|SINGLE|SOME))?$/;
+export const whereRegEx = /(?<fieldName>[_A-Za-z]\w*?)(?<isAggregate>Aggregate)?(?:_(?<operator>NOT|NOT_IN|IN|NOT_INCLUDES|INCLUDES|MATCHES|NOT_CONTAINS|CONTAINS|NOT_STARTS_WITH|STARTS_WITH|NOT_ENDS_WITH|ENDS_WITH|LT|LTE|GT|GTE|DISTANCE|EVERY|NONE|SINGLE|SOME))?$/;
 export type WhereRegexGroups = {
     fieldName: string;
     isAggregate?: string;
-    not?: string;
     operator?: WhereOperator;
 };
 
@@ -68,7 +65,8 @@ export const createWhereClause = ({
     pointField?: PointField;
     durationField?: PrimitiveField;
 }) => {
-    const negateClauseIfNOT = negateClauseIfNOTCondition(isNot);
+    const negateClauseIfNOT = (clause: string) => (isNot ? `(NOT ${clause})` : clause);
+
     if (pointField) {
         const paramPoint = `point($${param})`;
         const paramPointArray = `[p in $${param} | point(p)]`;
@@ -104,5 +102,22 @@ export const createWhereClause = ({
             return negateClauseIfNOT(`$${param} ${comparison} ${property}`);
         default:
             return negateClauseIfNOT(`${property} ${comparison} $${param}`);
+    }
+};
+
+type ListPredicate = "ALL" | "NONE" | "SINGLE" | "ANY";
+
+export const getListPredicate = (operator?: WhereOperator): ListPredicate => {
+    switch (operator) {
+        case "EVERY":
+            return "ALL";
+        case "NOT":
+        case "NONE":
+            return "NONE";
+        case "SINGLE":
+            return "SINGLE";
+        case "SOME":
+        default:
+            return "ANY";
     }
 };
