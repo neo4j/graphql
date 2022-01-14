@@ -375,7 +375,7 @@ function createConnectAndParams({
         return { subquery: subquery.join("\n"), params };
     }
 
-    function reducer(res: Res, connect: any, index:number): Res {
+    function reducer(res: Res, connect: any, index: number): Res {
         if (parentNode.auth && !fromCreate) {
             const whereAuth = createAuthAndParams({
                 operations: "CONNECT",
