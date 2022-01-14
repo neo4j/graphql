@@ -19,7 +19,7 @@
 
 import { GraphQLWhereArg, Context } from "../../types";
 import { GraphElement, Node } from "../../classes";
-import { whereRegEx, WhereRegexGroups, createWhereClause } from "../utils";
+import { whereRegEx, WhereRegexGroups, createWhereClause } from "./utils";
 
 interface Res {
     clauses: string[];

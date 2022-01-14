@@ -1,4 +1,4 @@
-import { PointField, PrimitiveField } from "../types";
+import { PointField, PrimitiveField } from "../../types";
 
 export type NumericalWhereOperator = "GT" | "GTE" | "LT" | "LTE";
 export type SpatialWhereOperator = "DISTANCE";

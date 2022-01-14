@@ -20,7 +20,7 @@
 import { UnionTypeDefinitionNode } from "graphql/language/ast";
 import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
-import createWhereAndParams from "./create-where-and-params";
+import createWhereAndParams from "./where/create-where-and-params";
 import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
