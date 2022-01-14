@@ -159,10 +159,6 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     context?: any;
                     rootValue?: any;
                 }): Promise<${node.name}[]>
-                public count(args?: {
-                    where?: ${node.name}Where;
-                    ${hasFulltextArg ? `fulltext?: ${node.name}Fulltext;` : ""}
-                }): Promise<number>
                 public create(args: {
                     input: ${node.name}CreateInput[];
                     selectionSet?: string | DocumentNode | SelectionSetNode;

@@ -357,10 +357,8 @@ describe("Unions", () => {
             type Query {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
-              genresCount(where: GenreWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             input QueryOptions {

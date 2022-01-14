@@ -2,8 +2,8 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "rootDir": ".",
-        "outDir": ".",
-        "composite": true
+        "baseUrl": ".",
+        "outDir": "dist"
     },
-    "files": ["package.json"]
+    "include": ["package.json", "src/**/*", "tests/**/*"]
 }
