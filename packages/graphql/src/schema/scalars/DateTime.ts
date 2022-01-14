@@ -28,7 +28,7 @@ export default new GraphQLScalarType<DateTime<number>, string>({
             return new Date(outputValue).toISOString();
         }
 
-        if (isDateTime(outputValue as any)) {
+        if (isDateTime(outputValue as object)) {
             return new Date((outputValue as typeof DateTime).toString()).toISOString();
         }
 

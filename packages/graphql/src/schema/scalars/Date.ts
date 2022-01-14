@@ -28,7 +28,7 @@ export default new GraphQLScalarType<Neo4jDate<number>, string>({
             return new Date(outputValue).toISOString();
         }
 
-        if (isDate(outputValue as any)) {
+        if (isDate(outputValue as object)) {
             return new Date((outputValue as typeof Neo4jDate).toString()).toISOString().split("T")[0];
         }
 
