@@ -23,7 +23,7 @@ import { filterDocument } from "../utils";
 
 export type OGMConstructor = Neo4jGraphQLConstructor;
 
-class OGM<ModelMap = Record<string,string>> {
+class OGM<ModelMap = {}> {
     public models: Model[];
 
     checkNeo4jCompat: () => Promise<void>;
