@@ -238,7 +238,11 @@ describe("Connect Or Create", () => {
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
+              movies_EVERY: MovieWhere
+              movies_NONE: MovieWhere
               movies_NOT: MovieWhere
+              movies_SINGLE: MovieWhere
+              movies_SOME: MovieWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -732,7 +736,11 @@ describe("Connect Or Create", () => {
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
+              movies_EVERY: MovieWhere
+              movies_NONE: MovieWhere
               movies_NOT: MovieWhere
+              movies_SINGLE: MovieWhere
+              movies_SOME: MovieWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

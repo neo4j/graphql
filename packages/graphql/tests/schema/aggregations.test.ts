@@ -1175,7 +1175,11 @@ describe("Aggregations", () => {
               likesAggregate: PostLikesAggregateInput
               likesConnection: PostLikesConnectionWhere
               likesConnection_NOT: PostLikesConnectionWhere
+              likes_EVERY: UserWhere
+              likes_NONE: UserWhere
               likes_NOT: UserWhere
+              likes_SINGLE: UserWhere
+              likes_SOME: UserWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String

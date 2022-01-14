@@ -214,7 +214,11 @@ describe("Sort", () => {
               relatedToAggregate: Node1RelatedToAggregateInput
               relatedToConnection: Node1RelatedToConnectionWhere
               relatedToConnection_NOT: Node1RelatedToConnectionWhere
+              relatedTo_EVERY: Node2Where
+              relatedTo_NONE: Node2Where
               relatedTo_NOT: Node2Where
+              relatedTo_SINGLE: Node2Where
+              relatedTo_SOME: Node2Where
             }
 
             type Node2 {
@@ -371,7 +375,11 @@ describe("Sort", () => {
               relatedToAggregate: Node2RelatedToAggregateInput
               relatedToConnection: Node2RelatedToConnectionWhere
               relatedToConnection_NOT: Node2RelatedToConnectionWhere
+              relatedTo_EVERY: Node1Where
+              relatedTo_NONE: Node1Where
               relatedTo_NOT: Node1Where
+              relatedTo_SINGLE: Node1Where
+              relatedTo_SOME: Node1Where
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"

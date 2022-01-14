@@ -250,7 +250,11 @@ describe("Enums", () => {
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
+              movies_EVERY: MovieWhere
+              movies_NONE: MovieWhere
               movies_NOT: MovieWhere
+              movies_SINGLE: MovieWhere
+              movies_SOME: MovieWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -457,7 +461,11 @@ describe("Enums", () => {
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
+              actors_EVERY: ActorWhere
+              actors_NONE: ActorWhere
               actors_NOT: ActorWhere
+              actors_SINGLE: ActorWhere
+              actors_SOME: ActorWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String

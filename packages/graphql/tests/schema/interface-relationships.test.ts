@@ -1070,7 +1070,11 @@ describe("Interface Relationships", () => {
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere
+              actors_EVERY: ActorWhere
+              actors_NONE: ActorWhere
               actors_NOT: ActorWhere
+              actors_SINGLE: ActorWhere
+              actors_SOME: ActorWhere
               runtime: Int
               runtime_GT: Int
               runtime_GTE: Int
@@ -1314,7 +1318,11 @@ describe("Interface Relationships", () => {
               actorsAggregate: ProductionActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere
+              actors_EVERY: ActorWhere
+              actors_NONE: ActorWhere
               actors_NOT: ActorWhere
+              actors_SINGLE: ActorWhere
+              actors_SOME: ActorWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -1612,7 +1620,11 @@ describe("Interface Relationships", () => {
               actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere
+              actors_EVERY: ActorWhere
+              actors_NONE: ActorWhere
               actors_NOT: ActorWhere
+              actors_SINGLE: ActorWhere
+              actors_SOME: ActorWhere
               episodeCount: Int
               episodeCount_GT: Int
               episodeCount_GTE: Int
@@ -1625,7 +1637,11 @@ describe("Interface Relationships", () => {
               episodesAggregate: SeriesEpisodesAggregateInput
               episodesConnection: SeriesEpisodesConnectionWhere
               episodesConnection_NOT: SeriesEpisodesConnectionWhere
+              episodes_EVERY: EpisodeWhere
+              episodes_NONE: EpisodeWhere
               episodes_NOT: EpisodeWhere
+              episodes_SINGLE: EpisodeWhere
+              episodes_SOME: EpisodeWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -3197,7 +3213,11 @@ describe("Interface Relationships", () => {
               commentsAggregate: PostCommentsAggregateInput
               commentsConnection: PostCommentsConnectionWhere
               commentsConnection_NOT: PostCommentsConnectionWhere
+              comments_EVERY: CommentWhere
+              comments_NONE: CommentWhere
               comments_NOT: CommentWhere
+              comments_SINGLE: CommentWhere
+              comments_SOME: CommentWhere
               content: String
               content_CONTAINS: String
               content_ENDS_WITH: String

@@ -347,7 +347,11 @@ describe("Alias", () => {
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionWhere
               actedInConnection_NOT: ActorActedInConnectionWhere
+              actedIn_EVERY: MovieWhere
+              actedIn_NONE: MovieWhere
               actedIn_NOT: MovieWhere
+              actedIn_SINGLE: MovieWhere
+              actedIn_SOME: MovieWhere
               city: String
               city_CONTAINS: String
               city_ENDS_WITH: String

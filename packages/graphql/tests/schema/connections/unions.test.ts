@@ -500,7 +500,11 @@ describe("Unions", () => {
               authorAggregate: BookAuthorAggregateInput
               authorConnection: BookAuthorConnectionWhere
               authorConnection_NOT: BookAuthorConnectionWhere
+              author_EVERY: AuthorWhere
+              author_NONE: AuthorWhere
               author_NOT: AuthorWhere
+              author_SINGLE: AuthorWhere
+              author_SOME: AuthorWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -755,7 +759,11 @@ describe("Unions", () => {
               authorAggregate: JournalAuthorAggregateInput
               authorConnection: JournalAuthorConnectionWhere
               authorConnection_NOT: JournalAuthorConnectionWhere
+              author_EVERY: AuthorWhere
+              author_NONE: AuthorWhere
               author_NOT: AuthorWhere
+              author_SINGLE: AuthorWhere
+              author_SOME: AuthorWhere
               subject: String
               subject_CONTAINS: String
               subject_ENDS_WITH: String

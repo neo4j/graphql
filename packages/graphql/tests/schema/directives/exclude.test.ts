@@ -770,7 +770,11 @@ describe("@exclude directive", () => {
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
+              actors_EVERY: ActorWhere
+              actors_NONE: ActorWhere
               actors_NOT: ActorWhere
+              actors_SINGLE: ActorWhere
+              actors_SOME: ActorWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String

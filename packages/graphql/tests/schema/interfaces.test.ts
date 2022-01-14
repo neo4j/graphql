@@ -246,7 +246,11 @@ describe("Interfaces", () => {
               moviesAggregate: MovieMoviesAggregateInput
               moviesConnection: MovieNodeMoviesConnectionWhere
               moviesConnection_NOT: MovieNodeMoviesConnectionWhere
+              movies_EVERY: MovieWhere
+              movies_NONE: MovieWhere
               movies_NOT: MovieWhere
+              movies_SINGLE: MovieWhere
+              movies_SOME: MovieWhere
             }
 
             type Mutation {

@@ -318,7 +318,11 @@ input super_userWhere {
   my_friendAggregate: super_userMy_friendAggregateInput
   my_friendConnection: super_userMy_friendConnectionWhere
   my_friendConnection_NOT: super_userMy_friendConnectionWhere
+  my_friend_EVERY: super_friendWhere
+  my_friend_NONE: super_friendWhere
   my_friend_NOT: super_friendWhere
+  my_friend_SINGLE: super_friendWhere
+  my_friend_SOME: super_friendWhere
   name: String
   name_CONTAINS: String
   name_ENDS_WITH: String
