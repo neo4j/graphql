@@ -117,7 +117,7 @@ async function verifyJWKS(client: JwksClient, token: string) {
             {
                 algorithms: ["HS256", "RS256"],
             },
-            function verifyCallback(err, decoded) {
+            (err, decoded) => {
                 return err ? reject(err) : resolve(decoded);
             }
         )

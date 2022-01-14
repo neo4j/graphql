@@ -114,51 +114,6 @@ class Model {
         return (result.data as any)[this.namePluralized] as T;
     }
 
-    async count({
-        where,
-        fulltext,
-    }: {
-        where?: GraphQLWhereArg;
-        fulltext?: any;
-    } = {}): Promise<number> {
-        const argWorthy = Boolean(where || fulltext);
-
-        const argDefinitions = [
-            `${argWorthy ? "(" : ""}`,
-            `${where ? `$where: ${this.name}Where` : ""}`,
-            `${fulltext ? `$fulltext: ${this.name}Fulltext` : ""}`,
-            `${argWorthy ? ")" : ""}`,
-        ];
-
-        const argsApply = [
-            `${argWorthy ? "(" : ""}`,
-            `${where ? `where: $where` : ""}`,
-            `${fulltext ? `fulltext: $fulltext` : ""}`,
-            `${argWorthy ? ")" : ""}`,
-        ];
-
-        const query = `
-            query ${argDefinitions.join(" ")}{
-                ${this.namePluralized}Count${argsApply.join(" ")}
-            }
-        `;
-
-        const variableValues = { where };
-
-        const result = await graphql({
-            schema: this.neoSchema.schema,
-            source: query,
-            contextValue: {},
-            variableValues,
-        });
-
-        if (result.errors?.length) {
-            throw new Error(result.errors[0].message);
-        }
-
-        return (result.data as any)[`${this.namePluralized}Count`] as number;
-    }
-
     async create<T = any>({
         input,
         selectionSet,

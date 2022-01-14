@@ -92,15 +92,15 @@ describe("sort", () => {
 
                         /* eslint-disable jest/no-conditional-expect */
                         if (type === "ASC") {
-                            expect(movies[0].number).toEqual(1);
-                            expect(movies[1].number).toEqual(2);
-                            expect(movies[2].number).toEqual(3);
+                            expect(movies[0].number).toBe(1);
+                            expect(movies[1].number).toBe(2);
+                            expect(movies[2].number).toBe(3);
                         }
 
                         if (type === "DESC") {
-                            expect(movies[0].number).toEqual(3);
-                            expect(movies[1].number).toEqual(2);
-                            expect(movies[2].number).toEqual(1);
+                            expect(movies[0].number).toBe(3);
+                            expect(movies[1].number).toBe(2);
+                            expect(movies[2].number).toBe(1);
                         }
                         /* eslint-enable jest/no-conditional-expect */
                     } finally {
@@ -163,13 +163,13 @@ describe("sort", () => {
 
                         /* eslint-disable jest/no-conditional-expect */
                         if (type === "ASC") {
-                            expect(genres[0].id).toEqual("1");
-                            expect(genres[1].id).toEqual("2");
+                            expect(genres[0].id).toBe("1");
+                            expect(genres[1].id).toBe("2");
                         }
 
                         if (type === "DESC") {
-                            expect(genres[0].id).toEqual("2");
-                            expect(genres[1].id).toEqual("1");
+                            expect(genres[0].id).toBe("2");
+                            expect(genres[1].id).toBe("1");
                         }
                         /* eslint-enable jest/no-conditional-expect */
                     } finally {
@@ -267,9 +267,9 @@ describe("sort", () => {
             expect(graphqlActors).toHaveLength(2);
 
             expect(graphqlActors[0].name).toEqual(name1);
-            expect(graphqlActors[0].totalScreenTime).toEqual(2);
+            expect(graphqlActors[0].totalScreenTime).toBe(2);
             expect(graphqlActors[1].name).toEqual(name2);
-            expect(graphqlActors[1].totalScreenTime).toEqual(1);
+            expect(graphqlActors[1].totalScreenTime).toBe(1);
         });
 
         test("should sort ASC on top level", async () => {
@@ -296,9 +296,9 @@ describe("sort", () => {
             expect(graphqlActors).toHaveLength(2);
 
             expect(graphqlActors[0].name).toEqual(name2);
-            expect(graphqlActors[0].totalScreenTime).toEqual(1);
+            expect(graphqlActors[0].totalScreenTime).toBe(1);
             expect(graphqlActors[1].name).toEqual(name1);
-            expect(graphqlActors[1].totalScreenTime).toEqual(2);
+            expect(graphqlActors[1].totalScreenTime).toBe(2);
         });
 
         test("should sort ASC on nested level", async () => {
@@ -333,9 +333,9 @@ describe("sort", () => {
             expect(graphqlActors).toHaveLength(2);
 
             expect(graphqlActors[0].name).toEqual(name2);
-            expect(graphqlActors[0].totalScreenTime).toEqual(1);
+            expect(graphqlActors[0].totalScreenTime).toBe(1);
             expect(graphqlActors[1].name).toEqual(name1);
-            expect(graphqlActors[1].totalScreenTime).toEqual(2);
+            expect(graphqlActors[1].totalScreenTime).toBe(2);
         });
 
         test("should sort DESC on nested level", async () => {
@@ -370,9 +370,9 @@ describe("sort", () => {
             expect(graphqlActors).toHaveLength(2);
 
             expect(graphqlActors[0].name).toEqual(name1);
-            expect(graphqlActors[0].totalScreenTime).toEqual(2);
+            expect(graphqlActors[0].totalScreenTime).toBe(2);
             expect(graphqlActors[1].name).toEqual(name2);
-            expect(graphqlActors[1].totalScreenTime).toEqual(1);
+            expect(graphqlActors[1].totalScreenTime).toBe(1);
         });
     });
 });

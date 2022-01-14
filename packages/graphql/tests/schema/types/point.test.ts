@@ -130,7 +130,6 @@ describe("Point", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -261,7 +260,6 @@ describe("Point", () => {
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
-              machinesCount(where: MachineWhere): Int!
             }
 
             enum SortDirection {
@@ -371,7 +369,6 @@ describe("Point", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             type UpdateInfo {
@@ -474,7 +471,6 @@ describe("Point", () => {
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
-              machinesCount(where: MachineWhere): Int!
             }
 
             type UpdateInfo {

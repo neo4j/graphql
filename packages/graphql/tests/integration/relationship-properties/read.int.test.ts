@@ -120,7 +120,7 @@ describe("Relationship properties - read", () => {
 
             expect(result?.data?.movies).toHaveLength(1);
 
-            expect((result?.data as any)?.movies[0].actorsConnection.totalCount).toEqual(3);
+            expect((result?.data as any)?.movies[0].actorsConnection.totalCount).toBe(3);
             expect((result?.data as any)?.movies[0].actorsConnection.pageInfo).toEqual({ hasNextPage: false });
 
             expect((result?.data as any)?.movies[0].actorsConnection.edges).toHaveLength(3);
