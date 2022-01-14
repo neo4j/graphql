@@ -17,24 +17,22 @@
  * limitations under the License.
  */
 
-import Debug from "debug";
 import { Driver } from "neo4j-driver";
-import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, printSchema, print } from "graphql";
-import { addResolversToSchema, addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
-import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
-import type { DriverConfig, CypherQueryOptions, Context } from "../types";
+import { DocumentNode, GraphQLSchema, parse, printSchema } from "graphql";
+import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
+import { composeResolvers } from "@graphql-tools/resolvers-composition";
+import { forEachField } from "@graphql-tools/utils";
+import { mergeResolvers } from "@graphql-tools/merge";
+import type { DriverConfig, CypherQueryOptions } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
-import { DEBUG_GRAPHQL } from "../constants";
-import createAuthParam from "../translate/create-auth-param";
 import assertIndexesAndConstraints, {
     AssertIndexesAndConstraintsOptions,
 } from "./utils/asserts-indexes-and-constraints";
-import { getJWT } from "../auth/get-jwt";
-
-const debug = Debug(DEBUG_GRAPHQL);
+import { wrapResolver } from "../schema/resolvers/wrapper";
+import { defaultFieldResolver } from "../schema/resolvers";
 
 export interface Neo4jGraphQLJWT {
     jwksEndpoint?: string;
@@ -51,10 +49,9 @@ export interface Neo4jGraphQLConfig {
     queryOptions?: CypherQueryOptions;
 }
 
-export interface Neo4jGraphQLConstructor extends Omit<IExecutableSchemaDefinition, "schemaDirectives"> {
+export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
-    schemaDirectives?: Record<string, typeof SchemaDirectiveVisitor>;
 }
 
 class Neo4jGraphQL {
@@ -66,8 +63,8 @@ class Neo4jGraphQL {
     public config?: Neo4jGraphQLConfig;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, resolvers, schemaDirectives, ...schemaDefinition } = input;
-        const { nodes, relationships, schema } = makeAugmentedSchema(schemaDefinition, {
+        const { config = {}, driver, ...schemaDefinition } = input;
+        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(input.typeDefs, {
             enableRegex: config.enableRegex,
             skipValidateTypeDefs: config.skipValidateTypeDefs,
         });
@@ -76,91 +73,34 @@ class Neo4jGraphQL {
         this.config = config;
         this.nodes = nodes;
         this.relationships = relationships;
+
+        const resolversComposition = {
+            "Query.*": [wrapResolver({ driver, config, neoSchema: this })],
+            "Mutation.*": [wrapResolver({ driver, config, neoSchema: this })],
+        };
+
+        // Merge generated and custom resolvers
+        const allResolvers = mergeResolvers([resolvers, input.resolvers]);
+
+        const composedResolvers = composeResolvers(allResolvers, resolversComposition);
+
+        const schema = makeExecutableSchema({
+            ...schemaDefinition,
+            typeDefs,
+            resolvers: composedResolvers,
+        });
+
+        // Assign a default field resolver to account for aliasing of fields
+        forEachField(schema, (field) => {
+            if (!field.resolve) {
+                // eslint-disable-next-line no-param-reassign
+                field.resolve = defaultFieldResolver;
+            }
+        });
+
         this.schema = schema;
 
-        /*
-            Order must be:
-
-                addResolversToSchema -> visitSchemaDirectives -> createWrappedSchema
-
-            addResolversToSchema breaks schema directives added before it
-
-            createWrappedSchema must come last so that all requests have context prepared correctly
-        */
-        if (resolvers) {
-            if (Array.isArray(resolvers)) {
-                resolvers.forEach((r) => {
-                    this.schema = addResolversToSchema(this.schema, r);
-                });
-            } else {
-                this.schema = addResolversToSchema(this.schema, resolvers);
-            }
-        }
-
-        if (schemaDirectives) {
-            SchemaDirectiveVisitor.visitSchemaDirectives(this.schema, schemaDirectives);
-        }
-
-        this.schema = this.createWrappedSchema({ schema: this.schema, config });
         this.document = parse(printSchema(schema));
-    }
-
-    private createWrappedSchema({
-        schema,
-        config,
-    }: {
-        schema: GraphQLSchema;
-        config: Neo4jGraphQLConfig;
-    }): GraphQLSchema {
-        return addSchemaLevelResolver(
-            schema,
-            async (obj: any, _args, context: Context, resolveInfo: GraphQLResolveInfo) => {
-                const { driverConfig } = config;
-
-                if (debug.enabled) {
-                    const query = print(resolveInfo.operation);
-
-                    debug(
-                        "%s",
-                        `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(
-                            resolveInfo.variableValues,
-                            null,
-                            2
-                        )}`
-                    );
-                }
-
-                /*
-                Deleting this property ensures that we call this function more than once,
-                See https://github.com/ardatan/graphql-tools/issues/353#issuecomment-499569711
-            */
-                // @ts-ignore: Deleting private property from object
-                delete resolveInfo.operation.__runAtMostOnce; // eslint-disable-line no-param-reassign,no-underscore-dangle
-
-                if (!context?.driver) {
-                    if (!this.driver) {
-                        throw new Error(
-                            "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
-                        );
-                    }
-                    context.driver = this.driver;
-                }
-
-                if (!context?.driverConfig) {
-                    context.driverConfig = driverConfig;
-                }
-
-                context.neoSchema = this;
-                if (!context.jwt) {
-                    context.jwt = await getJWT(context);
-                }
-
-                context.auth = createAuthParam({ context });
-
-                context.queryOptions = config.queryOptions;
-                return obj;
-            }
-        );
     }
 
     async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {

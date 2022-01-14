@@ -30,7 +30,7 @@ export type DriverConfig = {
 
 export interface AuthContext {
     isAuthenticated: boolean;
-    roles?: string[];
+    roles: string[];
     jwt?: JwtPayload;
 }
 

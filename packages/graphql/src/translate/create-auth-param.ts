@@ -39,7 +39,7 @@ function createAuthParam({ context }: { context: Context }): AuthContext {
 
     // Roles added to config come from the role path or a roles array
     if (jwtConfig?.rolesPath) {
-        param.roles = dotProp.get(jwt, jwtConfig.rolesPath);
+        param.roles = dotProp.get(jwt, jwtConfig.rolesPath, []);
     } else if (jwt.roles) {
         param.roles = jwt.roles;
     }

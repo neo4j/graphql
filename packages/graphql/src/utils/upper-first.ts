@@ -17,9 +17,7 @@
  * limitations under the License.
  */
 
-/* Replace all \n with a space & replace all spaces > 1 with a single space */
-function trimmer(str: string): string {
-    return str.replace(/\n/g, " ").replace(/\s\s+/g, " ").trim();
+/* Sets first letter of the string as toUpperCase */
+export function upperFirst(str: string): string {
+    return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
 }
-
-export default trimmer;
