@@ -1228,6 +1228,10 @@ describe("generate", () => {
               title_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
               actors?: Maybe<PersonWhere>;
               actors_NOT?: Maybe<PersonWhere>;
+              actors_EVERY?: Maybe<PersonWhere>;
+              actors_SOME?: Maybe<PersonWhere>;
+              actors_NONE?: Maybe<PersonWhere>;
+              actors_SINGLE?: Maybe<PersonWhere>;
               actorsAggregate?: Maybe<MovieActorsAggregateInput>;
               actorsConnection?: Maybe<MovieActorsConnectionWhere>;
               actorsConnection_NOT?: Maybe<MovieActorsConnectionWhere>;
