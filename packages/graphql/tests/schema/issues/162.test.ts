@@ -110,13 +110,10 @@ describe("162", () => {
             type Query {
               tigerJawLevel2Part1s(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
               tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection!
-              tigerJawLevel2Part1sCount(where: TigerJawLevel2Part1Where): Int!
               tigerJawLevel2s(options: TigerJawLevel2Options, where: TigerJawLevel2Where): [TigerJawLevel2!]!
               tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection!
-              tigerJawLevel2sCount(where: TigerJawLevel2Where): Int!
               tigers(options: TigerOptions, where: TigerWhere): [Tiger!]!
               tigersAggregate(where: TigerWhere): TigerAggregateSelection!
-              tigersCount(where: TigerWhere): Int!
             }
 
             enum SortDirection {

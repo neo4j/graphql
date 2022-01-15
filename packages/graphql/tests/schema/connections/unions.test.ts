@@ -818,13 +818,10 @@ describe("Unions", () => {
             type Query {
               authors(options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
-              authorsCount(where: AuthorWhere): Int!
               books(options: BookOptions, where: BookWhere): [Book!]!
               booksAggregate(where: BookWhere): BookAggregateSelection!
-              booksCount(where: BookWhere): Int!
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
               journalsAggregate(where: JournalWhere): JournalAggregateSelection!
-              journalsCount(where: JournalWhere): Int!
             }
 
             input QueryOptions {

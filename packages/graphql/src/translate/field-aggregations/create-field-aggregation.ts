@@ -18,7 +18,6 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { upperFirst } from "graphql-compose";
 import { Node, Relationship } from "../../classes";
 import { Context, RelationField, GraphQLWhereArg } from "../../types";
 import {
@@ -37,6 +36,7 @@ import createWhereAndParams from "../where/create-where-and-params";
 import { stringifyObject } from "../utils/stringify-object";
 import { serializeParamsForApocRun, wrapInApocRunFirstColumn } from "../utils/apoc-run";
 import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-aggregation-composer";
+import { upperFirst } from "../../utils/upper-first";
 
 const subqueryNodeAlias = "n";
 const subqueryRelationAlias = "r";

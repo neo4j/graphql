@@ -73,17 +73,12 @@ describe("generate", () => {
             export type Query = {
               __typename?: \\"Query\\";
               users: Array<User>;
-              usersCount: Scalars[\\"Int\\"];
               usersAggregate: UserAggregateSelection;
             };
 
             export type QueryUsersArgs = {
               where?: Maybe<UserWhere>;
               options?: Maybe<UserOptions>;
-            };
-
-            export type QueryUsersCountArgs = {
-              where?: Maybe<UserWhere>;
             };
 
             export type QueryUsersAggregateArgs = {
@@ -223,7 +218,6 @@ describe("generate", () => {
                 context?: any;
                 rootValue?: any;
               }): Promise<User[]>;
-              public count(args?: { where?: UserWhere }): Promise<number>;
               public create(args: {
                 input: UserCreateInput[];
                 selectionSet?: string | DocumentNode | SelectionSetNode;
@@ -307,18 +301,12 @@ describe("generate", () => {
             export type Query = {
               __typename?: \\"Query\\";
               users: Array<User>;
-              usersCount: Scalars[\\"Int\\"];
               usersAggregate: UserAggregateSelection;
             };
 
             export type QueryUsersArgs = {
               where?: Maybe<UserWhere>;
               options?: Maybe<UserOptions>;
-              fulltext?: Maybe<UserFulltext>;
-            };
-
-            export type QueryUsersCountArgs = {
-              where?: Maybe<UserWhere>;
               fulltext?: Maybe<UserFulltext>;
             };
 
@@ -469,10 +457,6 @@ describe("generate", () => {
                 context?: any;
                 rootValue?: any;
               }): Promise<User[]>;
-              public count(args?: {
-                where?: UserWhere;
-                fulltext?: UserFulltext;
-              }): Promise<number>;
               public create(args: {
                 input: UserCreateInput[];
                 selectionSet?: string | DocumentNode | SelectionSetNode;
@@ -565,17 +549,12 @@ describe("generate", () => {
             export type Query = {
               __typename?: \\"Query\\";
               users: Array<User>;
-              usersCount: Scalars[\\"Int\\"];
               usersAggregate: UserAggregateSelection;
             };
 
             export type QueryUsersArgs = {
               where?: Maybe<UserWhere>;
               options?: Maybe<UserOptions>;
-            };
-
-            export type QueryUsersCountArgs = {
-              where?: Maybe<UserWhere>;
             };
 
             export type QueryUsersAggregateArgs = {
@@ -715,7 +694,6 @@ describe("generate", () => {
                 context?: any;
                 rootValue?: any;
               }): Promise<User[]>;
-              public count(args?: { where?: UserWhere }): Promise<number>;
               public create(args: {
                 input: UserCreateInput[];
                 selectionSet?: string | DocumentNode | SelectionSetNode;
@@ -805,20 +783,14 @@ describe("generate", () => {
             export type Query = {
               __typename?: \\"Query\\";
               movies: Array<Movie>;
-              moviesCount: Scalars[\\"Int\\"];
               moviesAggregate: MovieAggregateSelection;
               people: Array<Person>;
-              peopleCount: Scalars[\\"Int\\"];
               peopleAggregate: PersonAggregateSelection;
             };
 
             export type QueryMoviesArgs = {
               where?: Maybe<MovieWhere>;
               options?: Maybe<MovieOptions>;
-            };
-
-            export type QueryMoviesCountArgs = {
-              where?: Maybe<MovieWhere>;
             };
 
             export type QueryMoviesAggregateArgs = {
@@ -828,10 +800,6 @@ describe("generate", () => {
             export type QueryPeopleArgs = {
               where?: Maybe<PersonWhere>;
               options?: Maybe<PersonOptions>;
-            };
-
-            export type QueryPeopleCountArgs = {
-              where?: Maybe<PersonWhere>;
             };
 
             export type QueryPeopleAggregateArgs = {
@@ -1299,7 +1267,6 @@ describe("generate", () => {
                 context?: any;
                 rootValue?: any;
               }): Promise<Movie[]>;
-              public count(args?: { where?: MovieWhere }): Promise<number>;
               public create(args: {
                 input: MovieCreateInput[];
                 selectionSet?: string | DocumentNode | SelectionSetNode;
@@ -1353,7 +1320,6 @@ describe("generate", () => {
                 context?: any;
                 rootValue?: any;
               }): Promise<Person[]>;
-              public count(args?: { where?: PersonWhere }): Promise<number>;
               public create(args: {
                 input: PersonCreateInput[];
                 selectionSet?: string | DocumentNode | SelectionSetNode;

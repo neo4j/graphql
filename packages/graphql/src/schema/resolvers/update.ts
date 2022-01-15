@@ -18,12 +18,13 @@
  */
 
 import { FieldNode, GraphQLResolveInfo } from "graphql";
-import { SchemaComposer, upperFirst } from "graphql-compose";
+import { SchemaComposer } from "graphql-compose";
 import { execute } from "../../utils";
 import { translateUpdate } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
+import { upperFirst } from "../../utils/upper-first";
 
 export default function updateResolver({ node, schemaComposer }: { node: Node; schemaComposer: SchemaComposer }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
