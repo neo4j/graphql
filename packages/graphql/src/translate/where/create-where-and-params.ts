@@ -219,7 +219,7 @@ function createWhereAndParams({
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
 
-                const whereKeySuffix = isNot ? "_NOT" : "";
+                const whereKeySuffix = operator ? `_${operator}` : "";
                 const resolveTreeParams = recursing
                     ? {
                           [`${varName}_${context.resolveTree.name}`]: {
