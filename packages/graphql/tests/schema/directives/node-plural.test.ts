@@ -50,7 +50,6 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
-                  techsCount(where: TechWhere): Int!
                 }
 
                 enum SortDirection {
@@ -186,7 +185,6 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
-                  techsCount(where: TechWhere): Int!
                 }
 
                 enum SortDirection {
@@ -322,7 +320,6 @@ describe("Node Directive", () => {
                 type Query {
                   technologies(options: TechOptions, where: TechWhere): [Tech!]!
                   technologiesAggregate(where: TechWhere): TechAggregateSelection!
-                  technologiesCount(where: TechWhere): Int!
                 }
 
                 enum SortDirection {
@@ -458,7 +455,6 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: TechsOptions, where: TechsWhere): [Techs!]!
                   techsAggregate(where: TechsWhere): TechsAggregateSelection!
-                  techsCount(where: TechsWhere): Int!
                 }
 
                 enum SortDirection {
@@ -579,7 +575,6 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: UserOptions, where: UserWhere): [User!]!
                   techsAggregate(where: UserWhere): UserAggregateSelection!
-                  techsCount(where: UserWhere): Int!
                 }
 
                 enum SortDirection {
@@ -700,7 +695,6 @@ describe("Node Directive", () => {
                 type Query {
                   users(options: UserOptions, where: UserWhere): [User!]!
                   usersAggregate(where: UserWhere): UserAggregateSelection!
-                  usersCount(where: UserWhere): Int!
                 }
 
                 enum SortDirection {
@@ -821,7 +815,6 @@ describe("Node Directive", () => {
                 type Query {
                   users(options: UsersOptions, where: UsersWhere): [Users!]!
                   usersAggregate(where: UsersWhere): UsersAggregateSelection!
-                  usersCount(where: UsersWhere): Int!
                 }
 
                 enum SortDirection {

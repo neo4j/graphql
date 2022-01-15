@@ -147,7 +147,6 @@ describe("@fulltext schema", () => {
             type Query {
               movies(fulltext: MovieFulltext, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(fulltext: MovieFulltext, where: MovieWhere): MovieAggregateSelection!
-              moviesCount(fulltext: MovieFulltext, where: MovieWhere): Int!
             }
 
             enum SortDirection {
