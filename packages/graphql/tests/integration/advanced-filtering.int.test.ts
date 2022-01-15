@@ -1840,9 +1840,9 @@ describe("Advanced Filtering", () => {
             describe("on relationship", () => {
                 const generateQuery = (predicate: "EVERY" | "NONE" | "SINGLE" | "SOME") => `
                     query($movieIds: [ID!]!) {
-                        movies(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { flag: true } }] }) {
+                        movies(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { flag_NOT: false } }] }) {
                             id
-                            actors {
+                            actors(where: { flag_NOT: false }) {
                                 id
                                 flag
                             }
@@ -1862,7 +1862,10 @@ describe("Advanced Filtering", () => {
                     const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
 
                     expect(gqlMovies).toHaveLength(1);
-                    expect(gqlMovies[0].id).toBe(movies[0].id);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[0].id,
+                        actors: expect.arrayContaining([actors[0], actors[2]]),
+                    });
                 });
 
                 test("NONE", async () => {
@@ -1878,7 +1881,10 @@ describe("Advanced Filtering", () => {
                     const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
 
                     expect(gqlMovies).toHaveLength(1);
-                    expect(gqlMovies[0].id).toBe(movies[2].id);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[2].id,
+                        actors: [],
+                    });
                 });
 
                 test("SINGLE", async () => {
@@ -1894,7 +1900,10 @@ describe("Advanced Filtering", () => {
                     const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
 
                     expect(gqlMovies).toHaveLength(1);
-                    expect(gqlMovies[0].id).toBe(movies[1].id);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[1].id,
+                        actors: expect.arrayContaining([actors[2]]),
+                    });
                 });
 
                 test("SOME", async () => {
@@ -1916,11 +1925,11 @@ describe("Advanced Filtering", () => {
                     });
                     expect(gqlMovies).toContainEqual({
                         id: movies[1].id,
-                        actors: expect.arrayContaining([actors[1], actors[2]]),
+                        actors: expect.arrayContaining([actors[2]]),
                     });
                     expect(gqlMovies).toContainEqual({
                         id: movies[3].id,
-                        actors: expect.arrayContaining([actors[0], actors[1], actors[2]]),
+                        actors: expect.arrayContaining([actors[0], actors[2]]),
                     });
                 });
             });
@@ -1928,15 +1937,16 @@ describe("Advanced Filtering", () => {
             describe("on connection", () => {
                 const generateQuery = (predicate: "EVERY" | "NONE" | "SINGLE" | "SOME") => `
                     query($movieIds: [ID!]!) {
-                        movies(where: { AND: [{ id_IN: $movieIds }, { actorsConnection_${predicate}: { node: { flag: true } } }] }) {
+                        movies(where: { AND: [{ id_IN: $movieIds }, { actorsConnection_${predicate}: { node: { flag_NOT: false } } }] }) {
                             id
-                            actors {
+                            actors(where: {flag_NOT: false}) {
                                 id
                                 flag
                             }
                         }
                     }
                 `;
+
                 test("EVERY", async () => {
                     const gqlResult = await graphql({
                         schema,
@@ -1950,7 +1960,10 @@ describe("Advanced Filtering", () => {
                     const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
 
                     expect(gqlMovies).toHaveLength(1);
-                    expect(gqlMovies[0].id).toBe(movies[0].id);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[0].id,
+                        actors: expect.arrayContaining([actors[0], actors[2]]),
+                    });
                 });
 
                 test("NONE", async () => {
@@ -1966,7 +1979,10 @@ describe("Advanced Filtering", () => {
                     const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
 
                     expect(gqlMovies).toHaveLength(1);
-                    expect(gqlMovies[0].id).toBe(movies[2].id);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[2].id,
+                        actors: [],
+                    });
                 });
 
                 test("SINGLE", async () => {
@@ -1982,7 +1998,10 @@ describe("Advanced Filtering", () => {
                     const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
 
                     expect(gqlMovies).toHaveLength(1);
-                    expect(gqlMovies[0].id).toBe(movies[1].id);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[1].id,
+                        actors: expect.arrayContaining([actors[2]]),
+                    });
                 });
 
                 test("SOME", async () => {
@@ -2004,11 +2023,11 @@ describe("Advanced Filtering", () => {
                     });
                     expect(gqlMovies).toContainEqual({
                         id: movies[1].id,
-                        actors: expect.arrayContaining([actors[1], actors[2]]),
+                        actors: expect.arrayContaining([actors[2]]),
                     });
                     expect(gqlMovies).toContainEqual({
                         id: movies[3].id,
-                        actors: expect.arrayContaining([actors[0], actors[1], actors[2]]),
+                        actors: expect.arrayContaining([actors[0], actors[2]]),
                     });
                 });
             });
