@@ -698,73 +698,156 @@ describe("Cypher Advanced Filtering", () => {
         });
     });
 
-    test("Node and relationship properties equality", async () => {
-        const query = gql`
-            {
-                movies(where: { genresConnection: { node: { name: "some genre" } } }) {
-                    actorCount
+    describe("Connections", () => {
+        test("Node and relationship properties equality", async () => {
+            const query = gql`
+                {
+                    movies(where: { genresConnection: { node: { name: "some genre" } } }) {
+                        actorCount
+                    }
                 }
-            }
-        `;
+            `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ANY(this_genresConnection_Genre_map IN [(this)-[this_genresConnection_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_Genre:Genre)  | { node: this_genresConnection_Genre, relationship: this_genresConnection_Genre_MovieGenresRelationship } ] WHERE this_genresConnection_Genre_map.node.name = $this_movies.where.genresConnection.node.name)
-            RETURN this { .actorCount } as this"
-        `);
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:Movie)
+                WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ANY(this_genresConnection_Genre_map IN [(this)-[this_genresConnection_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_Genre:Genre)  | { node: this_genresConnection_Genre, relationship: this_genresConnection_Genre_MovieGenresRelationship } ] WHERE this_genresConnection_Genre_map.node.name = $this_movies.where.genresConnection.node.name)
+                RETURN this { .actorCount } as this"
+            `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"this_movies\\": {
-                    \\"where\\": {
-                        \\"genresConnection\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"some genre\\"
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"this_movies\\": {
+                        \\"where\\": {
+                            \\"genresConnection\\": {
+                                \\"node\\": {
+                                    \\"name\\": \\"some genre\\"
+                                }
                             }
                         }
                     }
-                }
-            }"
-        `);
-    });
-
-    test("Node and relationship properties NOT", async () => {
-        const query = gql`
-            {
-                movies(where: { genresConnection_NOT: { node: { name: "some genre" } } }) {
-                    actorCount
-                }
-            }
-        `;
-
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
+                }"
+            `);
         });
 
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND NONE(this_genresConnection_NOT_Genre_map IN [(this)-[this_genresConnection_NOT_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_NOT_Genre:Genre)  | { node: this_genresConnection_NOT_Genre, relationship: this_genresConnection_NOT_Genre_MovieGenresRelationship } ] WHERE this_genresConnection_NOT_Genre_map.node.name = $this_movies.where.genresConnection_NOT.node.name)
-            RETURN this { .actorCount } as this"
-        `);
+        test("Node and relationship properties NOT", async () => {
+            const query = gql`
+                {
+                    movies(where: { genresConnection_NOT: { node: { name: "some genre" } } }) {
+                        actorCount
+                    }
+                }
+            `;
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"this_movies\\": {
-                    \\"where\\": {
-                        \\"genresConnection_NOT\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"some genre\\"
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:Movie)
+                WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND NONE(this_genresConnection_NOT_Genre_map IN [(this)-[this_genresConnection_NOT_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_NOT_Genre:Genre)  | { node: this_genresConnection_NOT_Genre, relationship: this_genresConnection_NOT_Genre_MovieGenresRelationship } ] WHERE this_genresConnection_NOT_Genre_map.node.name = $this_movies.where.genresConnection_NOT.node.name)
+                RETURN this { .actorCount } as this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"this_movies\\": {
+                        \\"where\\": {
+                            \\"genresConnection_NOT\\": {
+                                \\"node\\": {
+                                    \\"name\\": \\"some genre\\"
+                                }
                             }
                         }
                     }
-                }
-            }"
-        `);
+                }"
+            `);
+        });
+
+        describe("List Predicates", () => {
+            const generateQueryAndSnapShots = (operator: "EVERY" | "NONE" | "SINGLE" | "SOME") => {
+                const getListPredicate = () => {
+                    switch (operator) {
+                        case "EVERY":
+                            return "ALL";
+                        case "NONE":
+                            return "NONE";
+                        case "SINGLE":
+                            return "SINGLE";
+                        case "SOME":
+                        default:
+                            return "ANY";
+                    }
+                };
+                const query = gql`
+                    {
+                        movies(where: { genresConnection_${operator}: { node: { name: "some genre" } } }) {
+                            actorCount
+                        }
+                    }
+                `;
+                const cypher = `
+                    "MATCH (this:Movie)
+                    WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ${getListPredicate()}(this_genresConnection_${operator}_Genre_map IN [(this)-[this_genresConnection_${operator}_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_${operator}_Genre:Genre)  | { node: this_genresConnection_${operator}_Genre, relationship: this_genresConnection_${operator}_Genre_MovieGenresRelationship } ] WHERE this_genresConnection_${operator}_Genre_map.node.name = $this_movies.where.genresConnection_${operator}.node.name)
+                    RETURN this { .actorCount } as this"
+                `;
+
+                const params = `
+                    "{
+                        \\"this_movies\\": {
+                            \\"where\\": {
+                                \\"genresConnection_${operator}\\": {
+                                    \\"node\\": {
+                                        \\"name\\": \\"some genre\\"
+                                    }
+                                }
+                            }
+                        }
+                    }"
+                `;
+                return { query, cypher, params };
+            };
+            test("EVERY", async () => {
+                const { query, cypher, params } = generateQueryAndSnapShots("EVERY");
+
+                const req = createJwtRequest("secret", {});
+                const result = await translateQuery(neoSchema, query, { req });
+
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(cypher);
+                expect(formatParams(result.params)).toMatchInlineSnapshot(params);
+            });
+            test("NONE", async () => {
+                const { query, cypher, params } = generateQueryAndSnapShots("NONE");
+
+                const req = createJwtRequest("secret", {});
+                const result = await translateQuery(neoSchema, query, { req });
+
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(cypher);
+                expect(formatParams(result.params)).toMatchInlineSnapshot(params);
+            });
+            test("SINGLE", async () => {
+                const { query, cypher, params } = generateQueryAndSnapShots("SINGLE");
+
+                const req = createJwtRequest("secret", {});
+                const result = await translateQuery(neoSchema, query, { req });
+
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(cypher);
+                expect(formatParams(result.params)).toMatchInlineSnapshot(params);
+            });
+            test("SOME", async () => {
+                const { query, cypher, params } = generateQueryAndSnapShots("SOME");
+
+                const req = createJwtRequest("secret", {});
+                const result = await translateQuery(neoSchema, query, { req });
+
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(cypher);
+                expect(formatParams(result.params)).toMatchInlineSnapshot(params);
+            });
+        });
     });
 });
