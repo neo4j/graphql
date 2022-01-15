@@ -173,6 +173,7 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more TigerJawLevel2Sort objects to sort TigerJawLevel2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -271,6 +272,7 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Part1Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more TigerJawLevel2Part1Sort objects to sort TigerJawLevel2Part1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -479,6 +481,7 @@ describe("162", () => {
             }
 
             input TigerOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more TigerSort objects to sort Tigers by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"

@@ -62,6 +62,7 @@ describe("200", () => {
             }
 
             input CategoryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more CategorySort objects to sort Categories by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"

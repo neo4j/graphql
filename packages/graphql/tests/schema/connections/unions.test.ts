@@ -88,6 +88,7 @@ describe("Unions", () => {
             }
 
             input AuthorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -473,6 +474,7 @@ describe("Unions", () => {
             }
 
             input BookOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -728,6 +730,7 @@ describe("Unions", () => {
             }
 
             input JournalOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -808,6 +811,7 @@ describe("Unions", () => {
             }
 
             input QueryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }

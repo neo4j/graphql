@@ -178,6 +178,7 @@ describe("generate", () => {
               sort?: Maybe<Array<Maybe<UserSort>>>;
               limit?: Maybe<Scalars[\\"Int\\"]>;
               offset?: Maybe<Scalars[\\"Int\\"]>;
+              distinct?: Maybe<Scalars[\\"Boolean\\"]>;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
@@ -419,6 +420,7 @@ describe("generate", () => {
               sort?: Maybe<Array<Maybe<UserSort>>>;
               limit?: Maybe<Scalars[\\"Int\\"]>;
               offset?: Maybe<Scalars[\\"Int\\"]>;
+              distinct?: Maybe<Scalars[\\"Boolean\\"]>;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
@@ -670,6 +672,7 @@ describe("generate", () => {
               sort?: Maybe<Array<Maybe<UserSort>>>;
               limit?: Maybe<Scalars[\\"Int\\"]>;
               offset?: Maybe<Scalars[\\"Int\\"]>;
+              distinct?: Maybe<Scalars[\\"Boolean\\"]>;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
@@ -1197,6 +1200,7 @@ describe("generate", () => {
               sort?: Maybe<Array<Maybe<MovieSort>>>;
               limit?: Maybe<Scalars[\\"Int\\"]>;
               offset?: Maybe<Scalars[\\"Int\\"]>;
+              distinct?: Maybe<Scalars[\\"Boolean\\"]>;
             };
 
             export type MovieRelationInput = {
@@ -1246,6 +1250,7 @@ describe("generate", () => {
               sort?: Maybe<Array<Maybe<PersonSort>>>;
               limit?: Maybe<Scalars[\\"Int\\"]>;
               offset?: Maybe<Scalars[\\"Int\\"]>;
+              distinct?: Maybe<Scalars[\\"Boolean\\"]>;
             };
 
             /** Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object. */

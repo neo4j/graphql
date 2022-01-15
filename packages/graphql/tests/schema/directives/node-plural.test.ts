@@ -82,6 +82,7 @@ describe("Node Directive", () => {
                 }
 
                 input TechOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -217,6 +218,7 @@ describe("Node Directive", () => {
                 }
 
                 input TechOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -352,6 +354,7 @@ describe("Node Directive", () => {
                 }
 
                 input TechOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"Specify one or more TechSort objects to sort Technologies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -484,6 +487,7 @@ describe("Node Directive", () => {
                 }
 
                 input TechsOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"Specify one or more TechsSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -617,6 +621,7 @@ describe("Node Directive", () => {
                 }
 
                 input UserOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"Specify one or more UserSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -737,6 +742,7 @@ describe("Node Directive", () => {
                 }
 
                 input UserOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -857,6 +863,7 @@ describe("Node Directive", () => {
                 }
 
                 input UsersOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"Specify one or more UsersSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"

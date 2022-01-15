@@ -69,6 +69,7 @@ describe("609", () => {
             }
 
             input DeprecatedOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more DeprecatedSort objects to sort Deprecateds by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"

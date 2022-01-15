@@ -170,6 +170,7 @@ describe("Aggregations", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -1116,6 +1117,7 @@ describe("Aggregations", () => {
             }
 
             input PostOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -1280,6 +1282,7 @@ describe("Aggregations", () => {
             }
 
             input UserOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"

@@ -112,6 +112,7 @@ describe("Sort", () => {
             }
 
             input Node1Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more Node1Sort objects to sort Node1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -257,6 +258,7 @@ describe("Sort", () => {
             }
 
             input Node2Options {
+              distinct: Boolean
               limit: Int
               offset: Int
             }

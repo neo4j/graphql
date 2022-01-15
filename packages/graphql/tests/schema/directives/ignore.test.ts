@@ -131,6 +131,7 @@ describe("@ignore directive", () => {
             }
 
             input UserOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"

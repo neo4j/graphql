@@ -86,6 +86,7 @@ describe("Unions", () => {
             }
 
             input GenreOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -155,6 +156,7 @@ describe("Unions", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -364,6 +366,7 @@ describe("Unions", () => {
             }
 
             input QueryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }

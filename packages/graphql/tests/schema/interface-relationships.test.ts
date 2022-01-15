@@ -177,6 +177,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -265,6 +266,7 @@ describe("Interface Relationships", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -380,6 +382,7 @@ describe("Interface Relationships", () => {
             }
 
             input QueryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }
@@ -401,6 +404,7 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -649,6 +653,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -752,6 +757,7 @@ describe("Interface Relationships", () => {
             }
 
             input EpisodeOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -1041,6 +1047,7 @@ describe("Interface Relationships", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -1343,6 +1350,7 @@ describe("Interface Relationships", () => {
             }
 
             input QueryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }
@@ -1581,6 +1589,7 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -1979,6 +1988,7 @@ describe("Interface Relationships", () => {
             }
 
             input QueryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }
@@ -2118,6 +2128,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more Type1Interface1Sort objects to sort Type1Interface1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -2187,6 +2198,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface2Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more Type1Interface2Sort objects to sort Type1Interface2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -2218,6 +2230,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more Type1Sort objects to sort Type1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -2313,6 +2326,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -2364,6 +2378,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface2Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more Type2Interface2Sort objects to sort Type2Interface2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -2554,6 +2569,7 @@ describe("Interface Relationships", () => {
             }
 
             input CommentOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more CommentSort objects to sort Comments by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -3156,6 +3172,7 @@ describe("Interface Relationships", () => {
             }
 
             input PostOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -3238,6 +3255,7 @@ describe("Interface Relationships", () => {
             }
 
             input QueryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }
@@ -3368,6 +3386,7 @@ describe("Interface Relationships", () => {
             }
 
             input UserOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"

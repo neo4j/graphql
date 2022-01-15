@@ -192,6 +192,7 @@ describe("connect or create with id", () => {
             }
 
             input ActorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -283,6 +284,7 @@ describe("connect or create with id", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -617,6 +619,7 @@ describe("connect or create with id", () => {
             }
 
             input PostOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
@@ -776,6 +779,7 @@ describe("connect or create with id", () => {
             }
 
             input UserOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"

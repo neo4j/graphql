@@ -135,6 +135,7 @@ function makeAugmentedSchema(
         fields: {
             offset: "Int",
             limit: "Int",
+            distinct: "Boolean",
         },
     });
 
@@ -738,12 +739,13 @@ function makeAugmentedSchema(
                     },
                     limit: "Int",
                     offset: "Int",
+                    distinct: "Boolean",
                 },
             });
         } else {
             composer.createInputTC({
                 name: `${node.name}Options`,
-                fields: { limit: "Int", offset: "Int" },
+                fields: { limit: "Int", offset: "Int", distinct: "Boolean", },
             });
         }
 
