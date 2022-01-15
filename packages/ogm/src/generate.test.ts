@@ -1235,6 +1235,10 @@ describe("generate", () => {
               actorsAggregate?: Maybe<MovieActorsAggregateInput>;
               actorsConnection?: Maybe<MovieActorsConnectionWhere>;
               actorsConnection_NOT?: Maybe<MovieActorsConnectionWhere>;
+              actorsConnection_EVERY?: Maybe<MovieActorsConnectionWhere>;
+              actorsConnection_SOME?: Maybe<MovieActorsConnectionWhere>;
+              actorsConnection_NONE?: Maybe<MovieActorsConnectionWhere>;
+              actorsConnection_SINGLE?: Maybe<MovieActorsConnectionWhere>;
             };
 
             export type PersonConnectWhere = {
