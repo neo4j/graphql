@@ -1254,7 +1254,7 @@ describe("Advanced Filtering", () => {
         });
     });
 
-    describe("Relationship Filtering", () => {
+    describe("Relationship/Connection Filtering", () => {
         describe("equality", () => {
             test("should find using relationship equality on node", async () => {
                 const session = driver.session();
@@ -1809,18 +1809,6 @@ describe("Advanced Filtering", () => {
                     .map((_, i) => ({ id: generate(), flag: i % 2 === 0 })),
             ];
 
-            const generateQuery = (predicate: "EVERY" | "NONE" | "SINGLE" | "SOME") => `
-                query($movieIds: [ID!]!) {
-                    movies(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { flag: true } }] }) {
-                        id
-                        actors {
-                            id
-                            flag
-                        }
-                    }
-                }
-            `;
-
             beforeAll(async () => {
                 const session = driver.session();
                 await session.run(
@@ -1849,78 +1837,179 @@ describe("Advanced Filtering", () => {
                 await session.close();
             });
 
-            test("EVERY", async () => {
-                const gqlResult = await graphql({
-                    schema,
-                    source: generateQuery("EVERY"),
-                    contextValue: { driver },
-                    variableValues: { movieIds: movies.map(({ id }) => id) },
+            describe("on relationship", () => {
+                const generateQuery = (predicate: "EVERY" | "NONE" | "SINGLE" | "SOME") => `
+                    query($movieIds: [ID!]!) {
+                        movies(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { flag: true } }] }) {
+                            id
+                            actors {
+                                id
+                                flag
+                            }
+                        }
+                    }
+                `;
+                test("EVERY", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("EVERY"),
+                        contextValue: { driver },
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(1);
+                    expect(gqlMovies[0].id).toBe(movies[0].id);
                 });
 
-                expect(gqlResult.errors).toBeUndefined();
+                test("NONE", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("NONE"),
+                        contextValue: { driver },
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
 
-                const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+                    expect(gqlResult.errors).toBeUndefined();
 
-                expect(gqlMovies).toHaveLength(1);
-                expect(gqlMovies[0].id).toBe(movies[0].id);
+                    const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(1);
+                    expect(gqlMovies[0].id).toBe(movies[2].id);
+                });
+
+                test("SINGLE", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("SINGLE"),
+                        contextValue: { driver },
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(1);
+                    expect(gqlMovies[0].id).toBe(movies[1].id);
+                });
+
+                test("SOME", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("SOME"),
+                        contextValue: { driver },
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(3);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[0].id,
+                        actors: expect.arrayContaining([actors[0], actors[2]]),
+                    });
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[1].id,
+                        actors: expect.arrayContaining([actors[1], actors[2]]),
+                    });
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[3].id,
+                        actors: expect.arrayContaining([actors[0], actors[1], actors[2]]),
+                    });
+                });
             });
 
-            test("NONE", async () => {
-                const gqlResult = await graphql({
-                    schema,
-                    source: generateQuery("NONE"),
-                    contextValue: { driver },
-                    variableValues: { movieIds: movies.map(({ id }) => id) },
+            describe("on connection", () => {
+                const generateQuery = (predicate: "EVERY" | "NONE" | "SINGLE" | "SOME") => `
+                    query($movieIds: [ID!]!) {
+                        movies(where: { AND: [{ id_IN: $movieIds }, { actorsConnection_${predicate}: { node: { flag: true } } }] }) {
+                            id
+                            actors {
+                                id
+                                flag
+                            }
+                        }
+                    }
+                `;
+                test("EVERY", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("EVERY"),
+                        contextValue: { driver },
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(1);
+                    expect(gqlMovies[0].id).toBe(movies[0].id);
                 });
 
-                expect(gqlResult.errors).toBeUndefined();
+                test("NONE", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("NONE"),
+                        contextValue: { driver },
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
 
-                const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+                    expect(gqlResult.errors).toBeUndefined();
 
-                expect(gqlMovies).toHaveLength(1);
-                expect(gqlMovies[0].id).toBe(movies[2].id);
-            });
+                    const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
 
-            test("SINGLE", async () => {
-                const gqlResult = await graphql({
-                    schema,
-                    source: generateQuery("SINGLE"),
-                    contextValue: { driver },
-                    variableValues: { movieIds: movies.map(({ id }) => id) },
+                    expect(gqlMovies).toHaveLength(1);
+                    expect(gqlMovies[0].id).toBe(movies[2].id);
                 });
 
-                expect(gqlResult.errors).toBeUndefined();
+                test("SINGLE", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("SINGLE"),
+                        contextValue: { driver },
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
 
-                const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+                    expect(gqlResult.errors).toBeUndefined();
 
-                expect(gqlMovies).toHaveLength(1);
-                expect(gqlMovies[0].id).toBe(movies[1].id);
-            });
+                    const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
 
-            test("SOME", async () => {
-                const gqlResult = await graphql({
-                    schema,
-                    source: generateQuery("SOME"),
-                    contextValue: { driver },
-                    variableValues: { movieIds: movies.map(({ id }) => id) },
+                    expect(gqlMovies).toHaveLength(1);
+                    expect(gqlMovies[0].id).toBe(movies[1].id);
                 });
 
-                expect(gqlResult.errors).toBeUndefined();
+                test("SOME", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("SOME"),
+                        contextValue: { driver },
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
 
-                const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+                    expect(gqlResult.errors).toBeUndefined();
 
-                expect(gqlMovies).toHaveLength(3);
-                expect(gqlMovies).toContainEqual({
-                    id: movies[0].id,
-                    actors: expect.arrayContaining([actors[0], actors[2]]),
-                });
-                expect(gqlMovies).toContainEqual({
-                    id: movies[1].id,
-                    actors: expect.arrayContaining([actors[1], actors[2]]),
-                });
-                expect(gqlMovies).toContainEqual({
-                    id: movies[3].id,
-                    actors: expect.arrayContaining([actors[0], actors[1], actors[2]]),
+                    const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(3);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[0].id,
+                        actors: expect.arrayContaining([actors[0], actors[2]]),
+                    });
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[1].id,
+                        actors: expect.arrayContaining([actors[1], actors[2]]),
+                    });
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[3].id,
+                        actors: expect.arrayContaining([actors[0], actors[1], actors[2]]),
+                    });
                 });
             });
         });
