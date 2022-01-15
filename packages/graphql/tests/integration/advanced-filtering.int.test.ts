@@ -1779,6 +1779,152 @@ describe("Advanced Filtering", () => {
             });
         });
 
+        describe("List Predicates", () => {
+            const testLabel = generate({ charset: "alphabetic" });
+
+            const typeDefs = `
+                type Movie {
+                    id: ID! @id
+                    budget: Int!
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+
+                type Actor {
+                    id: ID! @id
+                    flag: Boolean!
+                    actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+            `;
+
+            const { schema } = new Neo4jGraphQL({ typeDefs, driver });
+
+            const movies = [
+                ...Array(4)
+                    .fill(null)
+                    .map((_, i) => ({ id: generate(), budget: (i + 1) ** 2 })),
+            ];
+            const actors = [
+                ...Array(4)
+                    .fill(null)
+                    .map((_, i) => ({ id: generate(), flag: i % 2 === 0 })),
+            ];
+
+            const generateQuery = (predicate: "EVERY" | "NONE" | "SINGLE" | "SOME") => `
+                query($movieIds: [ID!]!) {
+                    movies(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { flag: true } }] }) {
+                        id
+                        actors {
+                            id
+                            flag
+                        }
+                    }
+                }
+            `;
+
+            beforeAll(async () => {
+                const session = driver.session();
+                await session.run(
+                    `
+                    CREATE (m1:Movie:${testLabel}) SET m1 = $movies[0]
+                    CREATE (m2:Movie:${testLabel}) SET m2 = $movies[1]
+                    CREATE (m3:Movie:${testLabel}) SET m3 = $movies[2]
+                    CREATE (m4:Movie:${testLabel}) SET m4 = $movies[3]
+                    CREATE (a1:Actor:${testLabel}) SET a1 = $actors[0]
+                    CREATE (a2:Actor:${testLabel}) SET a2 = $actors[1]
+                    CREATE (a3:Actor:${testLabel}) SET a3 = $actors[2]
+                    CREATE (a4:Actor:${testLabel}) SET a4 = $actors[3]
+                    MERGE (a1)-[:ACTED_IN]->(m1)<-[:ACTED_IN]-(a3)
+                    MERGE (a2)-[:ACTED_IN]->(m2)<-[:ACTED_IN]-(a3)
+                    MERGE (a2)-[:ACTED_IN]->(m3)<-[:ACTED_IN]-(a4)
+                    MERGE (a1)-[:ACTED_IN]->(m4)<-[:ACTED_IN]-(a2)
+                    MERGE (a3)-[:ACTED_IN]->(m4)
+                `,
+                    { movies, actors }
+                );
+            });
+
+            afterAll(async () => {
+                const session = driver.session();
+                await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
+                await session.close();
+            });
+
+            test("EVERY", async () => {
+                const gqlResult = await graphql({
+                    schema,
+                    source: generateQuery("EVERY"),
+                    contextValue: { driver },
+                    variableValues: { movieIds: movies.map(({ id }) => id) },
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+
+                expect(gqlMovies).toHaveLength(1);
+                expect(gqlMovies[0].id).toBe(movies[0].id);
+            });
+
+            test("NONE", async () => {
+                const gqlResult = await graphql({
+                    schema,
+                    source: generateQuery("NONE"),
+                    contextValue: { driver },
+                    variableValues: { movieIds: movies.map(({ id }) => id) },
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+
+                expect(gqlMovies).toHaveLength(1);
+                expect(gqlMovies[0].id).toBe(movies[2].id);
+            });
+
+            test("SINGLE", async () => {
+                const gqlResult = await graphql({
+                    schema,
+                    source: generateQuery("SINGLE"),
+                    contextValue: { driver },
+                    variableValues: { movieIds: movies.map(({ id }) => id) },
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+
+                expect(gqlMovies).toHaveLength(1);
+                expect(gqlMovies[0].id).toBe(movies[1].id);
+            });
+
+            test("SOME", async () => {
+                const gqlResult = await graphql({
+                    schema,
+                    source: generateQuery("SOME"),
+                    contextValue: { driver },
+                    variableValues: { movieIds: movies.map(({ id }) => id) },
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const gqlMovies: { id: string; actors: { id: string; flag: boolean }[] }[] = gqlResult.data?.movies;
+
+                expect(gqlMovies).toHaveLength(3);
+                expect(gqlMovies).toContainEqual({
+                    id: movies[0].id,
+                    actors: expect.arrayContaining([actors[0], actors[2]]),
+                });
+                expect(gqlMovies).toContainEqual({
+                    id: movies[1].id,
+                    actors: expect.arrayContaining([actors[1], actors[2]]),
+                });
+                expect(gqlMovies).toContainEqual({
+                    id: movies[3].id,
+                    actors: expect.arrayContaining([actors[0], actors[1], actors[2]]),
+                });
+            });
+        });
+
         test("should test for not null", async () => {
             const session = driver.session();
 
