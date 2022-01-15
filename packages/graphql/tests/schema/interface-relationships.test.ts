@@ -201,7 +201,11 @@ describe("Interface Relationships", () => {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
               actedInConnection: ActorActedInConnectionWhere
+              actedInConnection_EVERY: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere
               actedInConnection_NOT: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -673,7 +677,11 @@ describe("Interface Relationships", () => {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
               actedInConnection: ActorActedInConnectionWhere
+              actedInConnection_EVERY: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere
               actedInConnection_NOT: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -1069,7 +1077,11 @@ describe("Interface Relationships", () => {
               actors: ActorWhere
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere
+              actorsConnection_EVERY: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere
               actors_EVERY: ActorWhere
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere
@@ -1317,7 +1329,11 @@ describe("Interface Relationships", () => {
               actors: ActorWhere
               actorsAggregate: ProductionActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere
+              actorsConnection_EVERY: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere
               actors_EVERY: ActorWhere
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere
@@ -1619,7 +1635,11 @@ describe("Interface Relationships", () => {
               actors: ActorWhere
               actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere
+              actorsConnection_EVERY: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere
               actors_EVERY: ActorWhere
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere
@@ -1636,7 +1656,11 @@ describe("Interface Relationships", () => {
               episodes: EpisodeWhere
               episodesAggregate: SeriesEpisodesAggregateInput
               episodesConnection: SeriesEpisodesConnectionWhere
+              episodesConnection_EVERY: SeriesEpisodesConnectionWhere
+              episodesConnection_NONE: SeriesEpisodesConnectionWhere
               episodesConnection_NOT: SeriesEpisodesConnectionWhere
+              episodesConnection_SINGLE: SeriesEpisodesConnectionWhere
+              episodesConnection_SOME: SeriesEpisodesConnectionWhere
               episodes_EVERY: EpisodeWhere
               episodes_NONE: EpisodeWhere
               episodes_NOT: EpisodeWhere
@@ -1905,7 +1929,11 @@ describe("Interface Relationships", () => {
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
               interface2Connection: Interface1Interface2ConnectionWhere
+              interface2Connection_EVERY: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere
               interface2Connection_NOT: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere
             }
 
             interface Interface2 {
@@ -2186,7 +2214,11 @@ describe("Interface Relationships", () => {
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
               interface2Connection: Interface1Interface2ConnectionWhere
+              interface2Connection_EVERY: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere
               interface2Connection_NOT: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere
             }
 
             type Type1Interface2 implements Interface2 {
@@ -2268,7 +2300,11 @@ describe("Interface Relationships", () => {
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
               interface1Connection: Type1Interface1ConnectionWhere
+              interface1Connection_EVERY: Type1Interface1ConnectionWhere
+              interface1Connection_NONE: Type1Interface1ConnectionWhere
               interface1Connection_NOT: Type1Interface1ConnectionWhere
+              interface1Connection_SINGLE: Type1Interface1ConnectionWhere
+              interface1Connection_SOME: Type1Interface1ConnectionWhere
             }
 
             type Type2Interface1 implements Interface1 {
@@ -2363,7 +2399,11 @@ describe("Interface Relationships", () => {
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
               interface2Connection: Interface1Interface2ConnectionWhere
+              interface2Connection_EVERY: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere
               interface2Connection_NOT: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere
             }
 
             type Type2Interface2 implements Interface2 {
@@ -3212,7 +3252,11 @@ describe("Interface Relationships", () => {
               comments: CommentWhere
               commentsAggregate: PostCommentsAggregateInput
               commentsConnection: PostCommentsConnectionWhere
+              commentsConnection_EVERY: PostCommentsConnectionWhere
+              commentsConnection_NONE: PostCommentsConnectionWhere
               commentsConnection_NOT: PostCommentsConnectionWhere
+              commentsConnection_SINGLE: PostCommentsConnectionWhere
+              commentsConnection_SOME: PostCommentsConnectionWhere
               comments_EVERY: CommentWhere
               comments_NONE: CommentWhere
               comments_NOT: CommentWhere
@@ -3414,7 +3458,11 @@ describe("Interface Relationships", () => {
               AND: [UserWhere!]
               OR: [UserWhere!]
               contentConnection: UserContentConnectionWhere
+              contentConnection_EVERY: UserContentConnectionWhere
+              contentConnection_NONE: UserContentConnectionWhere
               contentConnection_NOT: UserContentConnectionWhere
+              contentConnection_SINGLE: UserContentConnectionWhere
+              contentConnection_SOME: UserContentConnectionWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID

@@ -331,7 +331,11 @@ describe("Connect Or Create", () => {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
               actedInConnection: ActorActedInConnectionWhere
+              actedInConnection_EVERY: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere
               actedInConnection_NOT: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

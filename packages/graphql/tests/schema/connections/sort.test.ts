@@ -213,7 +213,11 @@ describe("Sort", () => {
               relatedTo: Node2Where
               relatedToAggregate: Node1RelatedToAggregateInput
               relatedToConnection: Node1RelatedToConnectionWhere
+              relatedToConnection_EVERY: Node1RelatedToConnectionWhere
+              relatedToConnection_NONE: Node1RelatedToConnectionWhere
               relatedToConnection_NOT: Node1RelatedToConnectionWhere
+              relatedToConnection_SINGLE: Node1RelatedToConnectionWhere
+              relatedToConnection_SOME: Node1RelatedToConnectionWhere
               relatedTo_EVERY: Node2Where
               relatedTo_NONE: Node2Where
               relatedTo_NOT: Node2Where
@@ -374,7 +378,11 @@ describe("Sort", () => {
               relatedTo: Node1Where
               relatedToAggregate: Node2RelatedToAggregateInput
               relatedToConnection: Node2RelatedToConnectionWhere
+              relatedToConnection_EVERY: Node2RelatedToConnectionWhere
+              relatedToConnection_NONE: Node2RelatedToConnectionWhere
               relatedToConnection_NOT: Node2RelatedToConnectionWhere
+              relatedToConnection_SINGLE: Node2RelatedToConnectionWhere
+              relatedToConnection_SOME: Node2RelatedToConnectionWhere
               relatedTo_EVERY: Node1Where
               relatedTo_NONE: Node1Where
               relatedTo_NOT: Node1Where

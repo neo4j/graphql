@@ -245,7 +245,11 @@ describe("Interfaces", () => {
               movies: MovieWhere
               moviesAggregate: MovieMoviesAggregateInput
               moviesConnection: MovieNodeMoviesConnectionWhere
+              moviesConnection_EVERY: MovieNodeMoviesConnectionWhere
+              moviesConnection_NONE: MovieNodeMoviesConnectionWhere
               moviesConnection_NOT: MovieNodeMoviesConnectionWhere
+              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              moviesConnection_SOME: MovieNodeMoviesConnectionWhere
               movies_EVERY: MovieWhere
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere

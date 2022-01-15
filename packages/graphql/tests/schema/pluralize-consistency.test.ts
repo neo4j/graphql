@@ -317,7 +317,11 @@ input super_userWhere {
   my_friend: super_friendWhere
   my_friendAggregate: super_userMy_friendAggregateInput
   my_friendConnection: super_userMy_friendConnectionWhere
+  my_friendConnection_EVERY: super_userMy_friendConnectionWhere
+  my_friendConnection_NONE: super_userMy_friendConnectionWhere
   my_friendConnection_NOT: super_userMy_friendConnectionWhere
+  my_friendConnection_SINGLE: super_userMy_friendConnectionWhere
+  my_friendConnection_SOME: super_userMy_friendConnectionWhere
   my_friend_EVERY: super_friendWhere
   my_friend_NONE: super_friendWhere
   my_friend_NOT: super_friendWhere

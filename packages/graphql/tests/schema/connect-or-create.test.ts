@@ -237,7 +237,11 @@ describe("Connect Or Create", () => {
               movies: MovieWhere
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
+              moviesConnection_EVERY: ActorMoviesConnectionWhere
+              moviesConnection_NONE: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
+              moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              moviesConnection_SOME: ActorMoviesConnectionWhere
               movies_EVERY: MovieWhere
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere
@@ -735,7 +739,11 @@ describe("Connect Or Create", () => {
               movies: MovieWhere
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
+              moviesConnection_EVERY: ActorMoviesConnectionWhere
+              moviesConnection_NONE: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
+              moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              moviesConnection_SOME: ActorMoviesConnectionWhere
               movies_EVERY: MovieWhere
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere

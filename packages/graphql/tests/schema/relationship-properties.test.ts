@@ -306,7 +306,11 @@ describe("Relationship-properties", () => {
               movies: MovieWhere
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
+              moviesConnection_EVERY: ActorMoviesConnectionWhere
+              moviesConnection_NONE: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
+              moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              moviesConnection_SOME: ActorMoviesConnectionWhere
               movies_EVERY: MovieWhere
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere
@@ -565,7 +569,11 @@ describe("Relationship-properties", () => {
               actors: ActorWhere
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
+              actorsConnection_EVERY: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere
               actors_EVERY: ActorWhere
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere
@@ -947,7 +955,11 @@ describe("Relationship-properties", () => {
               movies: MovieWhere
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
+              moviesConnection_EVERY: ActorMoviesConnectionWhere
+              moviesConnection_NONE: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
+              moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              moviesConnection_SOME: ActorMoviesConnectionWhere
               movies_EVERY: MovieWhere
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere
@@ -1234,7 +1246,11 @@ describe("Relationship-properties", () => {
               actors: ActorWhere
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
+              actorsConnection_EVERY: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere
               actors_EVERY: ActorWhere
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere
@@ -1567,7 +1583,11 @@ describe("Relationship-properties", () => {
               movies: MovieWhere
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
+              moviesConnection_EVERY: ActorMoviesConnectionWhere
+              moviesConnection_NONE: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
+              moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              moviesConnection_SOME: ActorMoviesConnectionWhere
               movies_EVERY: MovieWhere
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere
@@ -1817,7 +1837,11 @@ describe("Relationship-properties", () => {
               actors: ActorWhere
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
+              actorsConnection_EVERY: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere
               actors_EVERY: ActorWhere
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere

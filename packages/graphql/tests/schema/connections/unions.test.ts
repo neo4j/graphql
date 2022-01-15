@@ -289,7 +289,11 @@ describe("Unions", () => {
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
               publicationsConnection: AuthorPublicationsConnectionWhere
+              publicationsConnection_EVERY: AuthorPublicationsConnectionWhere
+              publicationsConnection_NONE: AuthorPublicationsConnectionWhere
               publicationsConnection_NOT: AuthorPublicationsConnectionWhere
+              publicationsConnection_SINGLE: AuthorPublicationsConnectionWhere
+              publicationsConnection_SOME: AuthorPublicationsConnectionWhere
             }
 
             type Book {
@@ -499,7 +503,11 @@ describe("Unions", () => {
               author: AuthorWhere
               authorAggregate: BookAuthorAggregateInput
               authorConnection: BookAuthorConnectionWhere
+              authorConnection_EVERY: BookAuthorConnectionWhere
+              authorConnection_NONE: BookAuthorConnectionWhere
               authorConnection_NOT: BookAuthorConnectionWhere
+              authorConnection_SINGLE: BookAuthorConnectionWhere
+              authorConnection_SOME: BookAuthorConnectionWhere
               author_EVERY: AuthorWhere
               author_NONE: AuthorWhere
               author_NOT: AuthorWhere
@@ -758,7 +766,11 @@ describe("Unions", () => {
               author: AuthorWhere
               authorAggregate: JournalAuthorAggregateInput
               authorConnection: JournalAuthorConnectionWhere
+              authorConnection_EVERY: JournalAuthorConnectionWhere
+              authorConnection_NONE: JournalAuthorConnectionWhere
               authorConnection_NOT: JournalAuthorConnectionWhere
+              authorConnection_SINGLE: JournalAuthorConnectionWhere
+              authorConnection_SOME: JournalAuthorConnectionWhere
               author_EVERY: AuthorWhere
               author_NONE: AuthorWhere
               author_NOT: AuthorWhere

@@ -519,7 +519,11 @@ describe("@writeonly directive", () => {
               actors: ActorWhere
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
+              actorsConnection_EVERY: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere
               actors_EVERY: ActorWhere
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere
