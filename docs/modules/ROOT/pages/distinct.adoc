@@ -1,0 +1,64 @@
+[[distinct]]
+= Distinct
+
+Retrieving unique node properties can be achieved by setting the `distinct` option to `true` when querying for data.
+
+Using the following example type definition:
+
+[source, graphql, indent=0]
+----
+type Movie {
+    title: String!
+    runtime: Int!
+}
+----
+
+You would fetch the unique `runtime` from `Movie` nodes by executing:
+
+[source, graphql, indent=0]
+----
+query {
+    movies(options: {
+        distinct: true
+    }) {
+        runtime
+    }
+}
+----
+
+The following queries would fetch the runtime value of all movies. If more than one movie have the same runtime duplicate values will be returned:
+
+[source, graphql, indent=0]
+----
+query {
+    movies {
+        runtime
+    }
+}
+----
+----
+query {
+    movies(options: {
+        distinct: false
+    }) {
+        runtime
+    }
+}
+----
+
+Additionally, say there was a relationship between the `Movie` and an `Actor` type, distinct option can also be applied when fetching the `actors` field:
+
+[source, graphql, indent=0]
+----
+query {
+    movies {
+        title
+        runtime
+        actors(options: {
+            distinct: true
+        }) {
+            surname
+        }
+    }
+}
+----
