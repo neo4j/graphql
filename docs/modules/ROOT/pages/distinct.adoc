@@ -13,7 +13,7 @@ type Movie {
 }
 ----
 
-You would fetch the unique `runtime` from `Movie` nodes by executing:
+You would fetch the unique `runtime` values from `Movie` nodes by executing:
 
 [source, graphql, indent=0]
 ----
@@ -36,6 +36,7 @@ query {
     }
 }
 ----
+[source, graphql, indent=0]
 ----
 query {
     movies(options: {
@@ -46,7 +47,7 @@ query {
 }
 ----
 
-Additionally, say there was a relationship between the `Movie` and an `Actor` type, distinct option can also be applied when fetching the `actors` field:
+Additionally, say there was a relationship between the `Movie` and an `Actor` type, distinct option can also be set when fetching the `actors` field:
 
 [source, graphql, indent=0]
 ----

@@ -324,6 +324,7 @@ function createProjectionAndParams({
             const labels = referenceNode?.getLabelString(context);
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
+            const isDistinctQuery = optionsInput && isArray && optionsInput.distinct;
 
             if (relationField.interface) {
                 if (!res.meta.interfaceFields) {
@@ -467,6 +468,7 @@ function createProjectionAndParams({
             const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
             const innerStr = `${pathStr}  ${whereStr} | ${param} ${projectionStr}`;
             let nestedQuery: string;
+            let nestedVal: string;
 
             if (optionsInput) {
                 const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
@@ -485,12 +487,17 @@ function createProjectionAndParams({
                         ];
                     }, []);
 
-                    nestedQuery = `${key}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
-                } else {
-                    nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${offsetLimit}${
-                        !isArray ? ")" : ""
-                    }`;
+                    nestedVal = `apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])`;
                 }
+                else {
+                    nestedVal = `[ ${innerStr} ]`;
+                }
+                
+                if (isDistinctQuery)
+                    nestedQuery = `${key}: apoc.coll.toSet(${nestedVal})${offsetLimit}`;
+                else
+                    nestedQuery = `${key}: ${!isArray ? "head(" : ""}${nestedVal}${offsetLimit}${!isArray ? ")" : ""}`;
+
             } else {
                 nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
             }
