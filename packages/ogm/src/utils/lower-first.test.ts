@@ -17,9 +17,17 @@
  * limitations under the License.
  */
 
-/* Replace all \n with a space & replace all spaces > 1 with a single space */
-function trimmer(str: string): string {
-    return str.replace(/\n/g, " ").replace(/\s\s+/g, " ").trim();
-}
+import { lowerFirst } from "./lower-first";
 
-export default trimmer;
+describe("lowerFirst", () => {
+    test("should replace first letter with uppercase", () => {
+        const result = lowerFirst("SuperUser");
+
+        expect(result).toBe("superUser");
+    });
+    test("should keep first letter if is already uppercase", () => {
+        const result = lowerFirst("user");
+
+        expect(result).toBe("user");
+    });
+});
