@@ -240,3 +240,21 @@ query {
     }
 }
 ----
+
+== Cardinality
+
+Neo4j GraphQL enforces that relationships defined as 'many' so given this example: 
+
+[source, graphql, indent=0]
+----
+type User {
+    name: String!
+    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+}
+
+type Post {
+    name: String!
+}
+----
+
+the relationship at `User.posts` is considered a many relationship. Relationships such as the one above should always be of type NonNullListType and NonNullNamedType meaning both the array and the type inside of it should have a `!`.
