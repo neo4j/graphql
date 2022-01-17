@@ -23,7 +23,8 @@ import { GraphQLSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("schema/rfs/003", () => {
-    const msg = "Cannot represent null for the relationship Source.targets, try using NonNull operator '!'";
+    const msg = `List type relationship fields must be non-nullable and have non-nullable entries, please change type of Source.targets to [Target!]!`;
+
     describe("ObjectType", () => {
         test("should not throw when using valid relationship", () => {
             const typeDefs = gql`

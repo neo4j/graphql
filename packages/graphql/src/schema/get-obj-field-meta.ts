@@ -184,7 +184,7 @@ function getObjFieldMeta({
                     throw new Error("@alias directive cannot be used on relationship fields");
                 }
 
-                const msg = `Cannot represent null for the relationship ${obj.name.value}.${field.name.value}, try using NonNull operator '!'`;
+                const msg = `List type relationship fields must be non-nullable and have non-nullable entries, please change type of ${obj.name.value}.${field.name.value} to [${baseField.typeMeta.name}!]!`;
 
                 if (typeMeta.originalType?.kind === "NonNullType") {
                     if (typeMeta.originalType?.type.kind === "ListType") {
