@@ -43,490 +43,490 @@ describe("162", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
-
-            type CreateInfo {
-              bookmark: String
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
-            type CreateTigerJawLevel2Part1sMutationResponse {
-              info: CreateInfo!
-              tigerJawLevel2Part1s: [TigerJawLevel2Part1!]!
-            }
-
-            type CreateTigerJawLevel2sMutationResponse {
-              info: CreateInfo!
-              tigerJawLevel2s: [TigerJawLevel2!]!
-            }
-
-            type CreateTigersMutationResponse {
-              info: CreateInfo!
-              tigers: [Tiger!]!
-            }
-
-            type DeleteInfo {
-              bookmark: String
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
-            type IntAggregateSelectionNullable {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
-            type Mutation {
-              createTigerJawLevel2Part1s(input: [TigerJawLevel2Part1CreateInput!]!): CreateTigerJawLevel2Part1sMutationResponse!
-              createTigerJawLevel2s(input: [TigerJawLevel2CreateInput!]!): CreateTigerJawLevel2sMutationResponse!
-              createTigers(input: [TigerCreateInput!]!): CreateTigersMutationResponse!
-              deleteTigerJawLevel2Part1s(delete: TigerJawLevel2Part1DeleteInput, where: TigerJawLevel2Part1Where): DeleteInfo!
-              deleteTigerJawLevel2s(delete: TigerJawLevel2DeleteInput, where: TigerJawLevel2Where): DeleteInfo!
-              deleteTigers(where: TigerWhere): DeleteInfo!
-              updateTigerJawLevel2Part1s(connect: TigerJawLevel2Part1ConnectInput, create: TigerJawLevel2Part1RelationInput, delete: TigerJawLevel2Part1DeleteInput, disconnect: TigerJawLevel2Part1DisconnectInput, update: TigerJawLevel2Part1UpdateInput, where: TigerJawLevel2Part1Where): UpdateTigerJawLevel2Part1sMutationResponse!
-              updateTigerJawLevel2s(connect: TigerJawLevel2ConnectInput, create: TigerJawLevel2RelationInput, delete: TigerJawLevel2DeleteInput, disconnect: TigerJawLevel2DisconnectInput, update: TigerJawLevel2UpdateInput, where: TigerJawLevel2Where): UpdateTigerJawLevel2sMutationResponse!
-              updateTigers(update: TigerUpdateInput, where: TigerWhere): UpdateTigersMutationResponse!
-            }
-
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
-
-            type Query {
-              tigerJawLevel2Part1s(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
-              tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection!
-              tigerJawLevel2s(options: TigerJawLevel2Options, where: TigerJawLevel2Where): [TigerJawLevel2!]!
-              tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection!
-              tigers(options: TigerOptions, where: TigerWhere): [Tiger!]!
-              tigersAggregate(where: TigerWhere): TigerAggregateSelection!
-            }
-
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
-
-            type Tiger {
-              x: Int
-            }
-
-            type TigerAggregateSelection {
-              count: Int!
-              x: IntAggregateSelectionNullable!
-            }
-
-            input TigerConnectWhere {
-              node: TigerWhere!
-            }
-
-            input TigerCreateInput {
-              x: Int
-            }
-
-            type TigerJawLevel2 {
-              id: ID
-              part1(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1
-              part1Aggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
-              part1Connection(after: String, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
-            }
-
-            type TigerJawLevel2AggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
-            }
-
-            input TigerJawLevel2ConnectInput {
-              part1: TigerJawLevel2Part1ConnectFieldInput
-            }
-
-            input TigerJawLevel2CreateInput {
-              id: ID
-              part1: TigerJawLevel2Part1FieldInput
-            }
-
-            input TigerJawLevel2DeleteInput {
-              part1: TigerJawLevel2Part1DeleteFieldInput
-            }
-
-            input TigerJawLevel2DisconnectInput {
-              part1: TigerJawLevel2Part1DisconnectFieldInput
-            }
-
-            input TigerJawLevel2Options {
-              limit: Int
-              offset: Int
-              \\"\\"\\"Specify one or more TigerJawLevel2Sort objects to sort TigerJawLevel2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [TigerJawLevel2Sort]
-            }
-
-            type TigerJawLevel2Part1 {
-              id: ID
-              tiger(options: TigerOptions, where: TigerWhere): Tiger
-              tigerAggregate(where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection
-              tigerConnection(after: String, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
-            }
-
-            input TigerJawLevel2Part1AggregateInput {
-              AND: [TigerJawLevel2Part1AggregateInput!]
-              OR: [TigerJawLevel2Part1AggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: TigerJawLevel2Part1NodeAggregationWhereInput
-            }
-
-            type TigerJawLevel2Part1AggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
-            }
-
-            input TigerJawLevel2Part1ConnectFieldInput {
-              connect: TigerJawLevel2Part1ConnectInput
-              where: TigerJawLevel2Part1ConnectWhere
-            }
-
-            input TigerJawLevel2Part1ConnectInput {
-              tiger: TigerJawLevel2Part1TigerConnectFieldInput
-            }
-
-            input TigerJawLevel2Part1ConnectWhere {
-              node: TigerJawLevel2Part1Where!
-            }
-
-            type TigerJawLevel2Part1Connection {
-              edges: [TigerJawLevel2Part1Relationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input TigerJawLevel2Part1ConnectionSort {
-              node: TigerJawLevel2Part1Sort
-            }
-
-            input TigerJawLevel2Part1ConnectionWhere {
-              AND: [TigerJawLevel2Part1ConnectionWhere!]
-              OR: [TigerJawLevel2Part1ConnectionWhere!]
-              node: TigerJawLevel2Part1Where
-              node_NOT: TigerJawLevel2Part1Where
-            }
-
-            input TigerJawLevel2Part1CreateFieldInput {
-              node: TigerJawLevel2Part1CreateInput!
-            }
-
-            input TigerJawLevel2Part1CreateInput {
-              id: ID
-              tiger: TigerJawLevel2Part1TigerFieldInput
-            }
-
-            input TigerJawLevel2Part1DeleteFieldInput {
-              delete: TigerJawLevel2Part1DeleteInput
-              where: TigerJawLevel2Part1ConnectionWhere
-            }
-
-            input TigerJawLevel2Part1DeleteInput {
-              tiger: TigerJawLevel2Part1TigerDeleteFieldInput
-            }
-
-            input TigerJawLevel2Part1DisconnectFieldInput {
-              disconnect: TigerJawLevel2Part1DisconnectInput
-              where: TigerJawLevel2Part1ConnectionWhere
-            }
-
-            input TigerJawLevel2Part1DisconnectInput {
-              tiger: TigerJawLevel2Part1TigerDisconnectFieldInput
-            }
-
-            input TigerJawLevel2Part1FieldInput {
-              connect: TigerJawLevel2Part1ConnectFieldInput
-              create: TigerJawLevel2Part1CreateFieldInput
-            }
-
-            input TigerJawLevel2Part1NodeAggregationWhereInput {
-              AND: [TigerJawLevel2Part1NodeAggregationWhereInput!]
-              OR: [TigerJawLevel2Part1NodeAggregationWhereInput!]
-              id_EQUAL: ID
-            }
-
-            input TigerJawLevel2Part1Options {
-              limit: Int
-              offset: Int
-              \\"\\"\\"Specify one or more TigerJawLevel2Part1Sort objects to sort TigerJawLevel2Part1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [TigerJawLevel2Part1Sort]
-            }
-
-            input TigerJawLevel2Part1RelationInput {
-              tiger: TigerJawLevel2Part1TigerCreateFieldInput
-            }
-
-            type TigerJawLevel2Part1Relationship {
-              cursor: String!
-              node: TigerJawLevel2Part1!
-            }
-
-            \\"\\"\\"Fields to sort TigerJawLevel2Part1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Part1Sort object.\\"\\"\\"
-            input TigerJawLevel2Part1Sort {
-              id: SortDirection
-            }
-
-            input TigerJawLevel2Part1TigerAggregateInput {
-              AND: [TigerJawLevel2Part1TigerAggregateInput!]
-              OR: [TigerJawLevel2Part1TigerAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: TigerJawLevel2Part1TigerNodeAggregationWhereInput
-            }
-
-            input TigerJawLevel2Part1TigerConnectFieldInput {
-              where: TigerConnectWhere
-            }
-
-            type TigerJawLevel2Part1TigerConnection {
-              edges: [TigerJawLevel2Part1TigerRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input TigerJawLevel2Part1TigerConnectionSort {
-              node: TigerSort
-            }
-
-            input TigerJawLevel2Part1TigerConnectionWhere {
-              AND: [TigerJawLevel2Part1TigerConnectionWhere!]
-              OR: [TigerJawLevel2Part1TigerConnectionWhere!]
-              node: TigerWhere
-              node_NOT: TigerWhere
-            }
-
-            input TigerJawLevel2Part1TigerCreateFieldInput {
-              node: TigerCreateInput!
-            }
-
-            input TigerJawLevel2Part1TigerDeleteFieldInput {
-              where: TigerJawLevel2Part1TigerConnectionWhere
-            }
-
-            input TigerJawLevel2Part1TigerDisconnectFieldInput {
-              where: TigerJawLevel2Part1TigerConnectionWhere
-            }
-
-            input TigerJawLevel2Part1TigerFieldInput {
-              connect: TigerJawLevel2Part1TigerConnectFieldInput
-              create: TigerJawLevel2Part1TigerCreateFieldInput
-            }
-
-            input TigerJawLevel2Part1TigerNodeAggregationWhereInput {
-              AND: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
-              OR: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
-              x_AVERAGE_EQUAL: Float
-              x_AVERAGE_GT: Float
-              x_AVERAGE_GTE: Float
-              x_AVERAGE_LT: Float
-              x_AVERAGE_LTE: Float
-              x_EQUAL: Int
-              x_GT: Int
-              x_GTE: Int
-              x_LT: Int
-              x_LTE: Int
-              x_MAX_EQUAL: Int
-              x_MAX_GT: Int
-              x_MAX_GTE: Int
-              x_MAX_LT: Int
-              x_MAX_LTE: Int
-              x_MIN_EQUAL: Int
-              x_MIN_GT: Int
-              x_MIN_GTE: Int
-              x_MIN_LT: Int
-              x_MIN_LTE: Int
-              x_SUM_EQUAL: Int
-              x_SUM_GT: Int
-              x_SUM_GTE: Int
-              x_SUM_LT: Int
-              x_SUM_LTE: Int
-            }
-
-            type TigerJawLevel2Part1TigerRelationship {
-              cursor: String!
-              node: Tiger!
-            }
-
-            type TigerJawLevel2Part1TigerTigerAggregationSelection {
-              count: Int!
-              node: TigerJawLevel2Part1TigerTigerNodeAggregateSelection
-            }
-
-            type TigerJawLevel2Part1TigerTigerNodeAggregateSelection {
-              x: IntAggregateSelectionNullable!
-            }
-
-            input TigerJawLevel2Part1TigerUpdateConnectionInput {
-              node: TigerUpdateInput
-            }
-
-            input TigerJawLevel2Part1TigerUpdateFieldInput {
-              connect: TigerJawLevel2Part1TigerConnectFieldInput
-              create: TigerJawLevel2Part1TigerCreateFieldInput
-              delete: TigerJawLevel2Part1TigerDeleteFieldInput
-              disconnect: TigerJawLevel2Part1TigerDisconnectFieldInput
-              update: TigerJawLevel2Part1TigerUpdateConnectionInput
-              where: TigerJawLevel2Part1TigerConnectionWhere
-            }
-
-            input TigerJawLevel2Part1UpdateConnectionInput {
-              node: TigerJawLevel2Part1UpdateInput
-            }
-
-            input TigerJawLevel2Part1UpdateFieldInput {
-              connect: TigerJawLevel2Part1ConnectFieldInput
-              create: TigerJawLevel2Part1CreateFieldInput
-              delete: TigerJawLevel2Part1DeleteFieldInput
-              disconnect: TigerJawLevel2Part1DisconnectFieldInput
-              update: TigerJawLevel2Part1UpdateConnectionInput
-              where: TigerJawLevel2Part1ConnectionWhere
-            }
-
-            input TigerJawLevel2Part1UpdateInput {
-              id: ID
-              tiger: TigerJawLevel2Part1TigerUpdateFieldInput
-            }
-
-            input TigerJawLevel2Part1Where {
-              AND: [TigerJawLevel2Part1Where!]
-              OR: [TigerJawLevel2Part1Where!]
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
-              id_STARTS_WITH: ID
-              tiger: TigerWhere
-              tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
-              tigerConnection: TigerJawLevel2Part1TigerConnectionWhere
-              tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere
-              tiger_NOT: TigerWhere
-            }
-
-            input TigerJawLevel2RelationInput {
-              part1: TigerJawLevel2Part1CreateFieldInput
-            }
-
-            \\"\\"\\"Fields to sort TigerJawLevel2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Sort object.\\"\\"\\"
-            input TigerJawLevel2Sort {
-              id: SortDirection
-            }
-
-            type TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection {
-              count: Int!
-              node: TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection
-            }
-
-            type TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
-            }
-
-            input TigerJawLevel2UpdateInput {
-              id: ID
-              part1: TigerJawLevel2Part1UpdateFieldInput
-            }
-
-            input TigerJawLevel2Where {
-              AND: [TigerJawLevel2Where!]
-              OR: [TigerJawLevel2Where!]
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
-              id_STARTS_WITH: ID
-              part1: TigerJawLevel2Part1Where
-              part1Aggregate: TigerJawLevel2Part1AggregateInput
-              part1Connection: TigerJawLevel2Part1ConnectionWhere
-              part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere
-              part1_NOT: TigerJawLevel2Part1Where
-            }
-
-            input TigerOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"Specify one or more TigerSort objects to sort Tigers by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [TigerSort]
-            }
-
-            \\"\\"\\"Fields to sort Tigers by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerSort object.\\"\\"\\"
-            input TigerSort {
-              x: SortDirection
-            }
-
-            input TigerUpdateInput {
-              x: Int
-            }
-
-            input TigerWhere {
-              AND: [TigerWhere!]
-              OR: [TigerWhere!]
-              x: Int
-              x_GT: Int
-              x_GTE: Int
-              x_IN: [Int]
-              x_LT: Int
-              x_LTE: Int
-              x_NOT: Int
-              x_NOT_IN: [Int]
-            }
-
-            type UpdateInfo {
-              bookmark: String
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type UpdateTigerJawLevel2Part1sMutationResponse {
-              info: UpdateInfo!
-              tigerJawLevel2Part1s: [TigerJawLevel2Part1!]!
-            }
-
-            type UpdateTigerJawLevel2sMutationResponse {
-              info: UpdateInfo!
-              tigerJawLevel2s: [TigerJawLevel2!]!
-            }
-
-            type UpdateTigersMutationResponse {
-              info: UpdateInfo!
-              tigers: [Tiger!]!
-            }
-            "
-        `);
+"schema {
+  query: Query
+  mutation: Mutation
+}
+
+type CreateInfo {
+  bookmark: String
+  nodesCreated: Int!
+  relationshipsCreated: Int!
+}
+
+type CreateTigerJawLevel2Part1sMutationResponse {
+  info: CreateInfo!
+  tigerJawLevel2Part1s: [TigerJawLevel2Part1!]!
+}
+
+type CreateTigerJawLevel2sMutationResponse {
+  info: CreateInfo!
+  tigerJawLevel2s: [TigerJawLevel2!]!
+}
+
+type CreateTigersMutationResponse {
+  info: CreateInfo!
+  tigers: [Tiger!]!
+}
+
+type DeleteInfo {
+  bookmark: String
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
+
+type IDAggregateSelectionNullable {
+  longest: ID
+  shortest: ID
+}
+
+type IntAggregateSelectionNullable {
+  average: Float
+  max: Int
+  min: Int
+  sum: Int
+}
+
+type Mutation {
+  createTigerJawLevel2Part1s(input: [TigerJawLevel2Part1CreateInput!]!): CreateTigerJawLevel2Part1sMutationResponse!
+  createTigerJawLevel2s(input: [TigerJawLevel2CreateInput!]!): CreateTigerJawLevel2sMutationResponse!
+  createTigers(input: [TigerCreateInput!]!): CreateTigersMutationResponse!
+  deleteTigerJawLevel2Part1s(delete: TigerJawLevel2Part1DeleteInput, where: TigerJawLevel2Part1Where): DeleteInfo!
+  deleteTigerJawLevel2s(delete: TigerJawLevel2DeleteInput, where: TigerJawLevel2Where): DeleteInfo!
+  deleteTigers(where: TigerWhere): DeleteInfo!
+  updateTigerJawLevel2Part1s(connect: TigerJawLevel2Part1ConnectInput, create: TigerJawLevel2Part1RelationInput, delete: TigerJawLevel2Part1DeleteInput, disconnect: TigerJawLevel2Part1DisconnectInput, update: TigerJawLevel2Part1UpdateInput, where: TigerJawLevel2Part1Where): UpdateTigerJawLevel2Part1sMutationResponse!
+  updateTigerJawLevel2s(connect: TigerJawLevel2ConnectInput, create: TigerJawLevel2RelationInput, delete: TigerJawLevel2DeleteInput, disconnect: TigerJawLevel2DisconnectInput, update: TigerJawLevel2UpdateInput, where: TigerJawLevel2Where): UpdateTigerJawLevel2sMutationResponse!
+  updateTigers(update: TigerUpdateInput, where: TigerWhere): UpdateTigersMutationResponse!
+}
+
+\\"\\"\\"Pagination information (Relay)\\"\\"\\"
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+type Query {
+  tigerJawLevel2Part1s(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
+  tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection!
+  tigerJawLevel2s(options: TigerJawLevel2Options, where: TigerJawLevel2Where): [TigerJawLevel2!]!
+  tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection!
+  tigers(options: TigerOptions, where: TigerWhere): [Tiger!]!
+  tigersAggregate(where: TigerWhere): TigerAggregateSelection!
+}
+
+enum SortDirection {
+  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+  ASC
+  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+  DESC
+}
+
+type Tiger {
+  x: Int
+}
+
+type TigerAggregateSelection {
+  count: Int!
+  x: IntAggregateSelectionNullable!
+}
+
+input TigerConnectWhere {
+  node: TigerWhere!
+}
+
+input TigerCreateInput {
+  x: Int
+}
+
+type TigerJawLevel2 {
+  id: ID
+  part1(directed: Boolean, options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1
+  part1Aggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
+  part1Connection(after: String, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
+}
+
+type TigerJawLevel2AggregateSelection {
+  count: Int!
+  id: IDAggregateSelectionNullable!
+}
+
+input TigerJawLevel2ConnectInput {
+  part1: TigerJawLevel2Part1ConnectFieldInput
+}
+
+input TigerJawLevel2CreateInput {
+  id: ID
+  part1: TigerJawLevel2Part1FieldInput
+}
+
+input TigerJawLevel2DeleteInput {
+  part1: TigerJawLevel2Part1DeleteFieldInput
+}
+
+input TigerJawLevel2DisconnectInput {
+  part1: TigerJawLevel2Part1DisconnectFieldInput
+}
+
+input TigerJawLevel2Options {
+  limit: Int
+  offset: Int
+  \\"\\"\\"Specify one or more TigerJawLevel2Sort objects to sort TigerJawLevel2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+  sort: [TigerJawLevel2Sort]
+}
+
+type TigerJawLevel2Part1 {
+  id: ID
+  tiger(directed: Boolean, options: TigerOptions, where: TigerWhere): Tiger
+  tigerAggregate(where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection
+  tigerConnection(after: String, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
+}
+
+input TigerJawLevel2Part1AggregateInput {
+  AND: [TigerJawLevel2Part1AggregateInput!]
+  OR: [TigerJawLevel2Part1AggregateInput!]
+  count: Int
+  count_GT: Int
+  count_GTE: Int
+  count_LT: Int
+  count_LTE: Int
+  node: TigerJawLevel2Part1NodeAggregationWhereInput
+}
+
+type TigerJawLevel2Part1AggregateSelection {
+  count: Int!
+  id: IDAggregateSelectionNullable!
+}
+
+input TigerJawLevel2Part1ConnectFieldInput {
+  connect: TigerJawLevel2Part1ConnectInput
+  where: TigerJawLevel2Part1ConnectWhere
+}
+
+input TigerJawLevel2Part1ConnectInput {
+  tiger: TigerJawLevel2Part1TigerConnectFieldInput
+}
+
+input TigerJawLevel2Part1ConnectWhere {
+  node: TigerJawLevel2Part1Where!
+}
+
+type TigerJawLevel2Part1Connection {
+  edges: [TigerJawLevel2Part1Relationship!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input TigerJawLevel2Part1ConnectionSort {
+  node: TigerJawLevel2Part1Sort
+}
+
+input TigerJawLevel2Part1ConnectionWhere {
+  AND: [TigerJawLevel2Part1ConnectionWhere!]
+  OR: [TigerJawLevel2Part1ConnectionWhere!]
+  node: TigerJawLevel2Part1Where
+  node_NOT: TigerJawLevel2Part1Where
+}
+
+input TigerJawLevel2Part1CreateFieldInput {
+  node: TigerJawLevel2Part1CreateInput!
+}
+
+input TigerJawLevel2Part1CreateInput {
+  id: ID
+  tiger: TigerJawLevel2Part1TigerFieldInput
+}
+
+input TigerJawLevel2Part1DeleteFieldInput {
+  delete: TigerJawLevel2Part1DeleteInput
+  where: TigerJawLevel2Part1ConnectionWhere
+}
+
+input TigerJawLevel2Part1DeleteInput {
+  tiger: TigerJawLevel2Part1TigerDeleteFieldInput
+}
+
+input TigerJawLevel2Part1DisconnectFieldInput {
+  disconnect: TigerJawLevel2Part1DisconnectInput
+  where: TigerJawLevel2Part1ConnectionWhere
+}
+
+input TigerJawLevel2Part1DisconnectInput {
+  tiger: TigerJawLevel2Part1TigerDisconnectFieldInput
+}
+
+input TigerJawLevel2Part1FieldInput {
+  connect: TigerJawLevel2Part1ConnectFieldInput
+  create: TigerJawLevel2Part1CreateFieldInput
+}
+
+input TigerJawLevel2Part1NodeAggregationWhereInput {
+  AND: [TigerJawLevel2Part1NodeAggregationWhereInput!]
+  OR: [TigerJawLevel2Part1NodeAggregationWhereInput!]
+  id_EQUAL: ID
+}
+
+input TigerJawLevel2Part1Options {
+  limit: Int
+  offset: Int
+  \\"\\"\\"Specify one or more TigerJawLevel2Part1Sort objects to sort TigerJawLevel2Part1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+  sort: [TigerJawLevel2Part1Sort]
+}
+
+input TigerJawLevel2Part1RelationInput {
+  tiger: TigerJawLevel2Part1TigerCreateFieldInput
+}
+
+type TigerJawLevel2Part1Relationship {
+  cursor: String!
+  node: TigerJawLevel2Part1!
+}
+
+\\"\\"\\"Fields to sort TigerJawLevel2Part1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Part1Sort object.\\"\\"\\"
+input TigerJawLevel2Part1Sort {
+  id: SortDirection
+}
+
+input TigerJawLevel2Part1TigerAggregateInput {
+  AND: [TigerJawLevel2Part1TigerAggregateInput!]
+  OR: [TigerJawLevel2Part1TigerAggregateInput!]
+  count: Int
+  count_GT: Int
+  count_GTE: Int
+  count_LT: Int
+  count_LTE: Int
+  node: TigerJawLevel2Part1TigerNodeAggregationWhereInput
+}
+
+input TigerJawLevel2Part1TigerConnectFieldInput {
+  where: TigerConnectWhere
+}
+
+type TigerJawLevel2Part1TigerConnection {
+  edges: [TigerJawLevel2Part1TigerRelationship!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input TigerJawLevel2Part1TigerConnectionSort {
+  node: TigerSort
+}
+
+input TigerJawLevel2Part1TigerConnectionWhere {
+  AND: [TigerJawLevel2Part1TigerConnectionWhere!]
+  OR: [TigerJawLevel2Part1TigerConnectionWhere!]
+  node: TigerWhere
+  node_NOT: TigerWhere
+}
+
+input TigerJawLevel2Part1TigerCreateFieldInput {
+  node: TigerCreateInput!
+}
+
+input TigerJawLevel2Part1TigerDeleteFieldInput {
+  where: TigerJawLevel2Part1TigerConnectionWhere
+}
+
+input TigerJawLevel2Part1TigerDisconnectFieldInput {
+  where: TigerJawLevel2Part1TigerConnectionWhere
+}
+
+input TigerJawLevel2Part1TigerFieldInput {
+  connect: TigerJawLevel2Part1TigerConnectFieldInput
+  create: TigerJawLevel2Part1TigerCreateFieldInput
+}
+
+input TigerJawLevel2Part1TigerNodeAggregationWhereInput {
+  AND: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
+  OR: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
+  x_AVERAGE_EQUAL: Float
+  x_AVERAGE_GT: Float
+  x_AVERAGE_GTE: Float
+  x_AVERAGE_LT: Float
+  x_AVERAGE_LTE: Float
+  x_EQUAL: Int
+  x_GT: Int
+  x_GTE: Int
+  x_LT: Int
+  x_LTE: Int
+  x_MAX_EQUAL: Int
+  x_MAX_GT: Int
+  x_MAX_GTE: Int
+  x_MAX_LT: Int
+  x_MAX_LTE: Int
+  x_MIN_EQUAL: Int
+  x_MIN_GT: Int
+  x_MIN_GTE: Int
+  x_MIN_LT: Int
+  x_MIN_LTE: Int
+  x_SUM_EQUAL: Int
+  x_SUM_GT: Int
+  x_SUM_GTE: Int
+  x_SUM_LT: Int
+  x_SUM_LTE: Int
+}
+
+type TigerJawLevel2Part1TigerRelationship {
+  cursor: String!
+  node: Tiger!
+}
+
+type TigerJawLevel2Part1TigerTigerAggregationSelection {
+  count: Int!
+  node: TigerJawLevel2Part1TigerTigerNodeAggregateSelection
+}
+
+type TigerJawLevel2Part1TigerTigerNodeAggregateSelection {
+  x: IntAggregateSelectionNullable!
+}
+
+input TigerJawLevel2Part1TigerUpdateConnectionInput {
+  node: TigerUpdateInput
+}
+
+input TigerJawLevel2Part1TigerUpdateFieldInput {
+  connect: TigerJawLevel2Part1TigerConnectFieldInput
+  create: TigerJawLevel2Part1TigerCreateFieldInput
+  delete: TigerJawLevel2Part1TigerDeleteFieldInput
+  disconnect: TigerJawLevel2Part1TigerDisconnectFieldInput
+  update: TigerJawLevel2Part1TigerUpdateConnectionInput
+  where: TigerJawLevel2Part1TigerConnectionWhere
+}
+
+input TigerJawLevel2Part1UpdateConnectionInput {
+  node: TigerJawLevel2Part1UpdateInput
+}
+
+input TigerJawLevel2Part1UpdateFieldInput {
+  connect: TigerJawLevel2Part1ConnectFieldInput
+  create: TigerJawLevel2Part1CreateFieldInput
+  delete: TigerJawLevel2Part1DeleteFieldInput
+  disconnect: TigerJawLevel2Part1DisconnectFieldInput
+  update: TigerJawLevel2Part1UpdateConnectionInput
+  where: TigerJawLevel2Part1ConnectionWhere
+}
+
+input TigerJawLevel2Part1UpdateInput {
+  id: ID
+  tiger: TigerJawLevel2Part1TigerUpdateFieldInput
+}
+
+input TigerJawLevel2Part1Where {
+  AND: [TigerJawLevel2Part1Where!]
+  OR: [TigerJawLevel2Part1Where!]
+  id: ID
+  id_CONTAINS: ID
+  id_ENDS_WITH: ID
+  id_IN: [ID]
+  id_NOT: ID
+  id_NOT_CONTAINS: ID
+  id_NOT_ENDS_WITH: ID
+  id_NOT_IN: [ID]
+  id_NOT_STARTS_WITH: ID
+  id_STARTS_WITH: ID
+  tiger: TigerWhere
+  tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
+  tigerConnection: TigerJawLevel2Part1TigerConnectionWhere
+  tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere
+  tiger_NOT: TigerWhere
+}
+
+input TigerJawLevel2RelationInput {
+  part1: TigerJawLevel2Part1CreateFieldInput
+}
+
+\\"\\"\\"Fields to sort TigerJawLevel2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Sort object.\\"\\"\\"
+input TigerJawLevel2Sort {
+  id: SortDirection
+}
+
+type TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection {
+  count: Int!
+  node: TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection
+}
+
+type TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection {
+  id: IDAggregateSelectionNullable!
+}
+
+input TigerJawLevel2UpdateInput {
+  id: ID
+  part1: TigerJawLevel2Part1UpdateFieldInput
+}
+
+input TigerJawLevel2Where {
+  AND: [TigerJawLevel2Where!]
+  OR: [TigerJawLevel2Where!]
+  id: ID
+  id_CONTAINS: ID
+  id_ENDS_WITH: ID
+  id_IN: [ID]
+  id_NOT: ID
+  id_NOT_CONTAINS: ID
+  id_NOT_ENDS_WITH: ID
+  id_NOT_IN: [ID]
+  id_NOT_STARTS_WITH: ID
+  id_STARTS_WITH: ID
+  part1: TigerJawLevel2Part1Where
+  part1Aggregate: TigerJawLevel2Part1AggregateInput
+  part1Connection: TigerJawLevel2Part1ConnectionWhere
+  part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere
+  part1_NOT: TigerJawLevel2Part1Where
+}
+
+input TigerOptions {
+  limit: Int
+  offset: Int
+  \\"\\"\\"Specify one or more TigerSort objects to sort Tigers by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+  sort: [TigerSort]
+}
+
+\\"\\"\\"Fields to sort Tigers by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerSort object.\\"\\"\\"
+input TigerSort {
+  x: SortDirection
+}
+
+input TigerUpdateInput {
+  x: Int
+}
+
+input TigerWhere {
+  AND: [TigerWhere!]
+  OR: [TigerWhere!]
+  x: Int
+  x_GT: Int
+  x_GTE: Int
+  x_IN: [Int]
+  x_LT: Int
+  x_LTE: Int
+  x_NOT: Int
+  x_NOT_IN: [Int]
+}
+
+type UpdateInfo {
+  bookmark: String
+  nodesCreated: Int!
+  nodesDeleted: Int!
+  relationshipsCreated: Int!
+  relationshipsDeleted: Int!
+}
+
+type UpdateTigerJawLevel2Part1sMutationResponse {
+  info: UpdateInfo!
+  tigerJawLevel2Part1s: [TigerJawLevel2Part1!]!
+}
+
+type UpdateTigerJawLevel2sMutationResponse {
+  info: UpdateInfo!
+  tigerJawLevel2s: [TigerJawLevel2!]!
+}
+
+type UpdateTigersMutationResponse {
+  info: UpdateInfo!
+  tigers: [Tiger!]!
+}
+"
+`);
     });
 });
