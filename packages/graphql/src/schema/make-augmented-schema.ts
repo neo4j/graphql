@@ -32,6 +32,7 @@ import {
     InterfaceTypeDefinitionNode,
     Kind,
     NamedTypeNode,
+    NameNode,
     ObjectTypeDefinitionNode,
     parse,
     print,
@@ -43,13 +44,12 @@ import {
     InputTypeComposerFieldConfigAsObjectDefinition,
     ObjectTypeComposer,
     SchemaComposer,
-    upperFirst,
 } from "graphql-compose";
 import { Exclude, Node } from "../classes";
 import { NodeDirective } from "../classes/NodeDirective";
 import Relationship from "../classes/Relationship";
 import * as constants from "../constants";
-import { Auth, FullText, PrimitiveField } from "../types";
+import { Auth, BaseField, FullText, PrimitiveField } from "../types";
 import { isString } from "../utils/utils";
 import createConnectionFields from "./create-connection-fields";
 import createRelationshipFields from "./create-relationship-fields";
@@ -75,6 +75,7 @@ import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-co
 import { validateDocument } from "./validation";
 import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import { upperFirst } from "../utils/upper-first";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -376,9 +377,9 @@ function makeAugmentedSchema(
 
         relationshipFields.set(relationship.name.value, relFields);
 
-        const objectComposeFields = objectFieldsToComposeFields(
-            Object.values(relFields).reduce((acc, x) => [...acc, ...x], [])
-        );
+        const baseFields: BaseField[][] = Object.values(relFields);
+
+        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
 
         const propertiesInterface = composer.createInterfaceTC({
             name: relationship.name.value,
@@ -490,9 +491,8 @@ function makeAugmentedSchema(
             );
         }
 
-        const objectComposeFields = objectFieldsToComposeFields(
-            Object.values(interfaceFields).reduce((acc, x) => [...acc, ...x], [])
-        );
+        const baseFields: BaseField[][] = Object.values(interfaceFields);
+        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
 
         const composeInterface = composer.createInterfaceTC({
             name: interfaceRelationship.name.value,
@@ -975,9 +975,8 @@ function makeAugmentedSchema(
     interfaces.forEach((inter) => {
         const objectFields = getObjFieldMeta({ obj: inter, scalars, enums, interfaces, unions, objects: objectNodes });
 
-        const objectComposeFields = objectFieldsToComposeFields(
-            Object.values(objectFields).reduce((acc, x) => [...acc, ...x], [])
-        );
+        const baseFields: BaseField[][] = Object.values(objectFields);
+        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
 
         composer.createInterfaceTC({
             name: inter.name.value,
@@ -995,8 +994,12 @@ function makeAugmentedSchema(
 
     const generatedTypeDefs = composer.toSDL();
     let parsedDoc = parse(generatedTypeDefs);
-    // @ts-ignore
-    const documentNames = parsedDoc.definitions.filter((x) => "name" in x).map((x) => x.name.value);
+
+    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & {name: NameNode} {
+      return "name" in x
+    }
+
+    const documentNames = parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value);
 
     const generatedResolvers = {
         ...Object.entries(composer.getResolveMethods()).reduce((res, [key, value]) => {

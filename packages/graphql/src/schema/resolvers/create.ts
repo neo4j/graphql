@@ -18,12 +18,12 @@
  */
 
 import { FieldNode, GraphQLResolveInfo } from "graphql";
-import { upperFirst } from "graphql-compose";
 import { execute } from "../../utils";
 import { translateCreate } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
+import { upperFirst } from "../../utils/upper-first";
 
 export default function createResolver({ node }: { node: Node }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {

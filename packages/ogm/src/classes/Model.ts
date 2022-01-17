@@ -19,8 +19,9 @@
 
 import { DocumentNode, graphql, parse, print, SelectionSetNode } from "graphql";
 import pluralize from "pluralize";
-import { Neo4jGraphQL, upperFirst } from "@neo4j/graphql";
+import { Neo4jGraphQL } from "@neo4j/graphql";
 import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
+import { upperFirst } from "../utils/upper-first";
 import { lowerFirst } from "../utils/lower-first";
 
 export interface ModelConstructor {
