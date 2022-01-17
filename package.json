@@ -14,7 +14,7 @@
     ],
     "scripts": {
         "build": "tsc --build tsconfig.production.json",
-        "lint": "eslint .",
+        "lint": "eslint --cache .",
         "test": "jest",
         "test:pr": "run-s lint test",
         "neo-push": "concurrently \"yarn workspace neo-push-server start\" \"yarn workspace neo-push-client start\"",
