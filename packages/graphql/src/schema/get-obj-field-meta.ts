@@ -50,6 +50,7 @@ import {
     PointField,
     TimeStampOperations,
     ConnectionField,
+    IgnoredField,
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
@@ -68,7 +69,7 @@ export interface ObjectFields {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    ignoredFields: BaseField[];
+    ignoredFields: IgnoredField[];
 }
 
 function getObjFieldMeta({
@@ -118,6 +119,7 @@ function getObjFieldMeta({
             const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
+            const ignoreDirective = directives.find((x) => x.name.value === "ignore");
 
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
@@ -357,11 +359,17 @@ function getObjFieldMeta({
                     ...baseField,
                 };
                 res.objectFields.push(objectField);
-            } else if (
-                field.directives?.some((d) => d.name.value === "ignore") ||
-                interfaceField?.directives?.some((d) => d.name.value === "ignore")
-            ) {
-                res.ignoredFields.push(baseField);
+            } else if (ignoreDirective) {
+                // `@ignore(require: [String!])`
+                // Create a set from array of argument `require`
+                const requiredFields = Array.from(
+                    new Set(
+                        (ignoreDirective?.arguments?.find((arg) => arg.name.value === "require")
+                            ?.value as ListValueNode)?.values.map((v) => (v as StringValueNode).value) ?? []
+                    )
+                );
+
+                res.ignoredFields.push({ ...baseField, requiredFields });
             } else {
                 // eslint-disable-next-line no-lonely-if
                 if (["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeMeta.name)) {

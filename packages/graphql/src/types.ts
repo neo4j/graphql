@@ -170,6 +170,10 @@ export interface UnionField extends BaseField {
     nodes?: string[];
 }
 
+export interface IgnoredField extends BaseField {
+    requiredFields: string[];
+}
+
 export interface InterfaceField extends BaseField {
     implementations?: string[];
 }

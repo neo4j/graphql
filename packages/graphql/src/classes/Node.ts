@@ -32,9 +32,9 @@ import type {
     TemporalField,
     PointField,
     Auth,
-    BaseField,
     Context,
     FullText,
+    IgnoredField,
 } from "../types";
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
@@ -56,7 +56,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    ignoredFields: BaseField[];
+    ignoredFields: IgnoredField[];
     auth?: Auth;
     fulltextDirective?: FullText;
     exclude?: Exclude;
