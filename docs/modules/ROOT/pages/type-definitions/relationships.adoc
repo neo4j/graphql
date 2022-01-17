@@ -243,7 +243,7 @@ query {
 
 == Cardinality
 
-Neo4j GraphQL enforces that relationships defined as 'many' so given this example: 
+The Neo4j GraphQL Library has type definition requirements for "many" relationships, so given this example: 
 
 [source, graphql, indent=0]
 ----
