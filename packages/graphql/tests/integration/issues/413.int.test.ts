@@ -36,7 +36,8 @@ describe("413", () => {
         await driver.close();
     });
 
-    test("should recreate issue and return correct count", async () => {
+    // NOTE: this test was updated to use aggregate instead of count
+    test("should recreate issue and return correct count as an aggregation", async () => {
         const session = driver.session();
 
         const typeDefs = gql`
@@ -68,7 +69,9 @@ describe("413", () => {
 
         const query = `
             query {
-                jobPlansCount(where: {tenantID: "${tenantID}"})
+                jobPlansAggregate(where: {tenantID: "${tenantID}"}) {
+                  count
+                }
             }
         `;
 
@@ -95,7 +98,7 @@ describe("413", () => {
             expect(result.errors).toBeFalsy();
 
             expect(result.data as any).toEqual({
-                jobPlansCount: 3,
+                jobPlansAggregate: {count: 3},
             });
         } finally {
             await session.close();

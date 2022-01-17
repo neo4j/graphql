@@ -515,24 +515,4 @@ describe("Label in Node directive", () => {
             }"
         `);
     });
-
-    test("Count movies with custom label", async () => {
-        const query = gql`
-            {
-                moviesCount
-            }
-        `;
-
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`)
-            RETURN count(this)"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-    });
 });

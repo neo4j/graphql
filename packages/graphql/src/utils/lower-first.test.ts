@@ -17,12 +17,17 @@
  * limitations under the License.
  */
 
-export { default as createResolver } from "./create";
-export { default as cypherResolver } from "./cypher";
-export { default as defaultFieldResolver } from "./defaultField";
-export { default as deleteResolver } from "./delete";
-export { default as findResolver } from "./read";
-export { default as updateResolver } from "./update";
-export { default as aggregateResolver } from "./aggregate";
-export { default as numericalResolver } from "./numerical";
-export { default as idResolver } from "./id";
+import { lowerFirst } from "./lower-first";
+
+describe("lowerFirst", () => {
+    test("should replace first letter with uppercase", () => {
+        const result = lowerFirst("SuperUser");
+
+        expect(result).toBe("superUser");
+    });
+    test("should keep first letter if is already uppercase", () => {
+        const result = lowerFirst("user");
+
+        expect(result).toBe("user");
+    });
+});

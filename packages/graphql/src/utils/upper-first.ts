@@ -17,12 +17,7 @@
  * limitations under the License.
  */
 
-export { default as createResolver } from "./create";
-export { default as cypherResolver } from "./cypher";
-export { default as defaultFieldResolver } from "./defaultField";
-export { default as deleteResolver } from "./delete";
-export { default as findResolver } from "./read";
-export { default as updateResolver } from "./update";
-export { default as aggregateResolver } from "./aggregate";
-export { default as numericalResolver } from "./numerical";
-export { default as idResolver } from "./id";
+/* Sets first letter of the string as toUpperCase */
+export function upperFirst(str: string): string {
+    return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
+}

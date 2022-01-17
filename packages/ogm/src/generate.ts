@@ -20,12 +20,13 @@
 import { codegen } from "@graphql-codegen/core";
 import * as typescriptPlugin from "@graphql-codegen/typescript";
 import { Types } from "@graphql-codegen/plugin-helpers";
-import { upperFirst, Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQL } from "@neo4j/graphql";
 import * as fs from "fs";
 import * as graphql from "graphql";
 import prettier from "prettier";
 import { OGM } from "./index";
 import { getReferenceNode } from "./utils";
+import { upperFirst } from "./utils/upper-first";
 
 export interface IGenerateOptions {
     /**
@@ -158,10 +159,6 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     context?: any;
                     rootValue?: any;
                 }): Promise<${node.name}[]>
-                public count(args?: {
-                    where?: ${node.name}Where;
-                    ${hasFulltextArg ? `fulltext?: ${node.name}Fulltext;` : ""}
-                }): Promise<number>
                 public create(args: {
                     input: ${node.name}CreateInput[];
                     selectionSet?: string | DocumentNode | SelectionSetNode;

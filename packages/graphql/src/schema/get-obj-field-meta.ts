@@ -31,7 +31,6 @@ import {
     StringValueNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import { upperFirst } from "graphql-compose";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getAliasMeta from "./get-alias-meta";
@@ -55,6 +54,7 @@ import {
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
 import getUniqueMeta from "./parse/get-unique-meta";
+import { upperFirst } from "../utils/upper-first";
 
 export interface ObjectFields {
     relationFields: RelationField[];

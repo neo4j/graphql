@@ -70,20 +70,4 @@ describe("pluralize with underscore", () => {
         const result = await Task.find({ where: { string: testString } });
         expect(result).toEqual([{ string: testString }]);
     });
-
-    test("counts super_task", async () => {
-        const ogm = new OGM({ typeDefs, driver });
-        const Task = ogm.model(taskType.name);
-
-        const testString = generate({
-            charset: "alphabetic",
-        });
-
-        await session.run(`
-                    CREATE (:${taskType.name} {string: "${testString}"})
-                `);
-
-        const result = await Task.count({ where: { string: testString } });
-        expect(result).toBe(1);
-    });
 });
