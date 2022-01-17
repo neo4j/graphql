@@ -20,7 +20,7 @@
 import Debug from "debug";
 import { GraphQLResolveInfo, print } from "graphql";
 import { Driver } from "neo4j-driver";
-import { getJWT } from "../../../src/auth/get-jwt";
+import { getJWT } from "../../auth/get-jwt";
 import { Neo4jGraphQL, Neo4jGraphQLConfig } from "../../classes";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
