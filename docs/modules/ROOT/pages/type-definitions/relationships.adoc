@@ -257,4 +257,4 @@ type Post {
 }
 ----
 
-the relationship at `User.posts` is considered a many relationship. Relationships such as the one above should always be of type NonNullListType and NonNullNamedType meaning both the array and the type inside of it should have a `!`.
+The relationship at `User.posts` is considered a "many" relationship. Relationships such as the one above should always be of type `NonNullListType` and `NonNullNamedType`, meaning both the array and the type inside of it should have a `!`.
