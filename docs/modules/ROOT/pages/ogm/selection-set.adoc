@@ -78,7 +78,7 @@ const typeDefs = `
     type Movie {
         id: ID
         name: String
-        genres: [Genre]! @relationship(type: "IN_GENRE", direction: OUT)
+        genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
         customCypher: String! @cypher(statement: "RETURN someCustomData")
     }
 
