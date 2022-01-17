@@ -326,9 +326,9 @@ function createProjectionAndParams({
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
-            if(field.args.directed===false){
-                inStr="-"
-                outStr="-"
+            if(field.args.directed === false) {
+                inStr = "-"
+                outStr = "-"
             }
 
             if (relationField.interface) {
