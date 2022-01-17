@@ -18,7 +18,6 @@
  */
 
 const fetch = require("node-fetch");
-// eslint-disable-next-line import/no-unresolved
 const { getIntrospectionQuery, buildClientSchema, printSchema } = require("graphql");
 const server = require("./server");
 

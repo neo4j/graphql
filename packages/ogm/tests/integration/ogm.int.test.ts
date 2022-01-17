@@ -22,7 +22,6 @@ import { generate } from "randomstring";
 import gql from "graphql-tag";
 import neo4j from "./neo4j";
 import { OGM, Model } from "../../src";
-import { generateUniqueType } from "../utils";
 
 describe("OGM", () => {
     let driver: Driver;
