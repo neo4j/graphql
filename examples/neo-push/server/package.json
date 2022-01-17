@@ -40,7 +40,7 @@
         "randomstring": "1.1.5",
         "ts-jest": "26.4.4",
         "ts-node": "9.1.1",
-        "tsconfig-paths": "^3.9.0",
+        "tsconfig-paths": "3.9.0",
         "typescript": "4.2.4"
     }
 }
