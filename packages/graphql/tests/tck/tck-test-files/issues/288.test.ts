@@ -51,7 +51,7 @@ describe("#288", () => {
         const query = gql`
             mutation {
                 createUSERS(input: { USERID: "userid", COMPANYID: "companyid" }) {
-                    users {
+                    uSERS {
                         USERID
                         COMPANYID
                     }
@@ -87,7 +87,7 @@ describe("#288", () => {
         const query = gql`
             mutation {
                 updateUSERS(where: { USERID: "userid" }, update: { COMPANYID: "companyid2" }) {
-                    users {
+                    uSERS {
                         USERID
                         COMPANYID
                     }

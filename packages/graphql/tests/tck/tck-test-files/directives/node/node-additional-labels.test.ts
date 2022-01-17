@@ -207,24 +207,4 @@ describe("Node directive with additionalLabels", () => {
             }"
         `);
     });
-
-    test("Count movies with additional labels", async () => {
-        const query = gql`
-            {
-                moviesCount
-            }
-        `;
-
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`:\`Multimedia\`)
-            RETURN count(this)"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-    });
 });

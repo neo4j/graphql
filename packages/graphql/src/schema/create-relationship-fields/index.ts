@@ -1,16 +1,11 @@
-import {
-    InputTypeComposer,
-    InterfaceTypeComposer,
-    ObjectTypeComposer,
-    SchemaComposer,
-    upperFirst,
-} from "graphql-compose";
+import { InputTypeComposer, InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { Node } from "../../classes";
 import { WHERE_AGGREGATION_AVERAGE_TYPES, WHERE_AGGREGATION_OPERATORS, WHERE_AGGREGATION_TYPES } from "../../constants";
 import { BaseField, RelationField } from "../../types";
 import { ObjectFields } from "../get-obj-field-meta";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
+import { upperFirst } from "../../utils/upper-first";
 
 function createRelationshipFields({
     relationshipFields,

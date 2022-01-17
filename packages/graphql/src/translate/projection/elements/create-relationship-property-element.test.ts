@@ -135,7 +135,7 @@ describe("createRelationshipPropertyElement", () => {
 
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
 
-        expect(element).toEqual("int: this.int");
+        expect(element).toBe("int: this.int");
     });
 
     test("returns an element for a datetime property", () => {
@@ -148,7 +148,7 @@ describe("createRelationshipPropertyElement", () => {
 
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
 
-        expect(element).toEqual(
+        expect(element).toBe(
             'datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time")'
         );
     });

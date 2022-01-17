@@ -28,10 +28,10 @@ export type DriverConfig = {
     bookmarks?: string | string[];
 };
 
-interface AuthContext {
+export interface AuthContext {
     isAuthenticated: boolean;
-    roles: [string];
-    jwt: JwtPayload;
+    roles: string[];
+    jwt?: JwtPayload;
 }
 
 export interface Context {

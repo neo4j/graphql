@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import pluralize from "pluralize";
 import { gql } from "apollo-server";
 import { Driver, Session, Integer } from "neo4j-driver";
 import { graphql, DocumentNode } from "graphql";
@@ -54,7 +53,7 @@ describe("Update -> ConnectOrCreate", () => {
 
         query = gql`
             mutation {
-              update${pluralize(typeMovie.name)}(
+              ${typeMovie.operations.update}(
                 update: {
                     title: "Forrest Gump 2"
                     genres: {
@@ -102,7 +101,7 @@ describe("Update -> ConnectOrCreate", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
 
-        expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+        expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
 
     test("update with ConnectOrCreate auth", async () => {
@@ -120,6 +119,6 @@ describe("Update -> ConnectOrCreate", () => {
           MATCH (m:${typeGenre.name} {name: "Horror"})
           RETURN COUNT(m) as count
         `);
-        expect((genreCount.records[0].toObject().count as Integer).toNumber()).toEqual(1);
+        expect((genreCount.records[0].toObject().count as Integer).toNumber()).toBe(1);
     });
 });

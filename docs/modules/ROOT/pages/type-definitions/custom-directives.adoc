@@ -1,0 +1,86 @@
+[[type-definitions-custom-directives]]
+= Custom Directives
+
+As of `@graphql-tools` version 8, the mechanism for defining and applying
+custom directives has changed significantly, and this is reflected in the
+Neo4j GraphQL Library.
+
+It comes highly recommended to read and follow the
+https://www.graphql-tools.com/docs/schema-directives[`@graphql-tools` documentation on schema directives]
+for comprehensive documentation on this feature.
+
+== Example
+
+This example will work towards the implementation of a field directive to
+uppercase field values, with the following definition:
+
+[source, graphql, indent=0]
+----
+directive @uppercase on FIELD_DEFINITION
+----
+
+As per the `@graphql-tools` documentation, a function will be created which
+returns both the definition and the transformer which provides the behaviour:
+
+[source, typescript, indent=0]
+----
+function upperDirective(directiveName: string) {
+    return {
+        upperDirectiveTypeDefs: `directive @${directiveName} on FIELD_DEFINITION`,
+        upperDirectiveTransformer: (schema: GraphQLSchema) =>
+            mapSchema(schema, {
+                [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
+                    const fieldDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
+                    if (fieldDirective) {
+                        const { resolve = defaultFieldResolver } = fieldConfig;
+                        fieldConfig.resolve = async (source, args, context, info) => {
+                            const result = await resolve(source, args, context, info);
+                            if (typeof result === "string") {
+                                return result.toUpperCase();
+                            }
+                            return result;
+                        };
+                    }
+                    return fieldConfig;
+                },
+            }),
+    };
+}
+----
+
+On calling the function, the type definition and the transformer will be
+returned for the directive:
+
+[source, typescript, indent=0]
+----
+const { upperDirectiveTypeDefs, upperDirectiveTransformer } = upperDirective("uppercase");
+----
+
+On construction of a `Neo4jGraphQL` instance, the directive definition can be
+passed into the `typeDefs` array alongside the rest of the type definitions:
+
+[source, typescript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs: [
+        upperDirectiveTypeDefs,
+        gql`
+            type Movie {
+                name: String @uppercase
+            }
+        `,
+    ],
+    driver,
+});
+----
+
+Finally, the Neo4j GraphQL schema must be transformed using the transformer
+returned from the directive function:
+
+[source, typescript, indent=0]
+----
+const schema = upperDirectiveTransformer(neoSchema.schema);
+----
+
+This `schema` object is an instance of a `GraphQLSchema` which can be used in
+any GraphQL tools, such as in Apollo Server.

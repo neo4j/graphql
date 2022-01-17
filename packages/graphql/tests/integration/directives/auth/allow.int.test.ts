@@ -75,7 +75,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -121,7 +121,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -178,7 +178,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -239,7 +239,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -298,7 +298,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -361,7 +361,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -434,7 +434,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -483,7 +483,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -532,7 +532,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -591,7 +591,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -652,7 +652,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -700,7 +700,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -766,7 +766,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -827,7 +827,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -909,7 +909,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -971,7 +971,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -1052,7 +1052,7 @@ describe("auth/allow", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }

@@ -22,7 +22,7 @@
         "dist/**/*.js.map"
     ],
     "scripts": {
-        "build": "tsc --project src/",
+        "build": "tsc --build tsconfig.production.json",
         "test": "jest",
         "test:unit": "jest src/**/*.test.ts",
         "test:unit:watch": "jest src --watch",
@@ -34,9 +34,8 @@
         "@graphql-codegen/core": "2.0.0",
         "@graphql-codegen/plugin-helpers": "2.0.0",
         "@graphql-codegen/typescript": "2.0.0",
-        "@graphql-tools/merge": "6.2.17",
+        "@graphql-tools/merge": "^8.2.1",
         "@neo4j/graphql": "^2.5.5",
-        "camelcase": "^6.2.0",
         "pluralize": "^8.0.0",
         "prettier": "2.3.2"
     },
@@ -45,16 +44,16 @@
         "neo4j-driver": "^4.1.0"
     },
     "devDependencies": {
-        "@types/jest": "26.0.8",
-        "@types/node": "14.0.27",
+        "@types/jest": "27.4.0",
+        "@types/node": "14.18.6",
         "graphql-tag": "2.12.6",
-        "jest": "26.2.2",
+        "jest": "27.4.7",
         "jsonwebtoken": "8.5.1",
-        "libnpmsearch": "3.1.0",
+        "libnpmsearch": "4.0.0",
         "npm-run-all": "4.1.5",
-        "randomstring": "1.1.5",
+        "randomstring": "1.2.1",
         "semver": "7.3.5",
-        "ts-jest": "26.1.4",
-        "typescript": "3.9.7"
+        "ts-jest": "27.1.3",
+        "typescript": "4.2.4"
     }
 }

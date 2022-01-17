@@ -51,7 +51,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
             scalar BigInt
 
-            type BigIntAggregateSelection {
+            type BigIntAggregateSelectionNullable {
               average: BigInt
               max: BigInt
               min: BigInt
@@ -72,7 +72,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelection {
+            type DateTimeAggregateSelectionNullable {
               max: DateTime
               min: DateTime
             }
@@ -86,24 +86,24 @@ describe("Aggregations", () => {
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
             scalar Duration
 
-            type DurationAggregateSelection {
+            type DurationAggregateSelectionNullable {
               max: Duration
               min: Duration
             }
 
-            type FloatAggregateSelection {
+            type FloatAggregateSelectionNullable {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelection {
+            type IntAggregateSelectionNullable {
               average: Float
               max: Int
               min: Int
@@ -113,7 +113,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
             scalar LocalDateTime
 
-            type LocalDateTimeAggregateSelection {
+            type LocalDateTimeAggregateSelectionNullable {
               max: LocalDateTime
               min: LocalDateTime
             }
@@ -121,7 +121,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A local time, represented as a time string without timezone information\\"\\"\\"
             scalar LocalTime
 
-            type LocalTimeAggregateSelection {
+            type LocalTimeAggregateSelectionNullable {
               max: LocalTime
               min: LocalTime
             }
@@ -142,17 +142,17 @@ describe("Aggregations", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              createdAt: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
-              imdbRating: FloatAggregateSelection!
-              isbn: StringAggregateSelection!
-              screenTime: DurationAggregateSelection!
-              someBigInt: BigIntAggregateSelection!
-              someInt: IntAggregateSelection!
-              someLocalDateTime: LocalDateTimeAggregateSelection!
-              someLocalTime: LocalTimeAggregateSelection!
-              someTime: TimeAggregateSelection!
-              title: StringAggregateSelection!
+              createdAt: DateTimeAggregateSelectionNullable!
+              id: IDAggregateSelectionNullable!
+              imdbRating: FloatAggregateSelectionNullable!
+              isbn: StringAggregateSelectionNonNullable!
+              screenTime: DurationAggregateSelectionNullable!
+              someBigInt: BigIntAggregateSelectionNullable!
+              someInt: IntAggregateSelectionNullable!
+              someLocalDateTime: LocalDateTimeAggregateSelectionNullable!
+              someLocalTime: LocalTimeAggregateSelectionNullable!
+              someTime: TimeAggregateSelectionNullable!
+              title: StringAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -313,7 +313,6 @@ describe("Aggregations", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -323,7 +322,12 @@ describe("Aggregations", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
+
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }
@@ -331,7 +335,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
 
-            type TimeAggregateSelection {
+            type TimeAggregateSelectionNullable {
               max: Time
               min: Time
             }
@@ -397,7 +401,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
             scalar BigInt
 
-            type BigIntAggregateSelection {
+            type BigIntAggregateSelectionNullable {
               average: BigInt
               max: BigInt
               min: BigInt
@@ -423,7 +427,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelection {
+            type DateTimeAggregateSelectionNullable {
               max: DateTime
               min: DateTime
             }
@@ -437,24 +441,24 @@ describe("Aggregations", () => {
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
             scalar Duration
 
-            type DurationAggregateSelection {
+            type DurationAggregateSelectionNullable {
               max: Duration
               min: Duration
             }
 
-            type FloatAggregateSelection {
+            type FloatAggregateSelectionNullable {
               average: Float
               max: Float
               min: Float
               sum: Float
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
             }
 
-            type IntAggregateSelection {
+            type IntAggregateSelectionNullable {
               average: Float
               max: Int
               min: Int
@@ -605,7 +609,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
             scalar LocalDateTime
 
-            type LocalDateTimeAggregateSelection {
+            type LocalDateTimeAggregateSelectionNullable {
               max: LocalDateTime
               min: LocalDateTime
             }
@@ -613,7 +617,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A local time, represented as a time string without timezone information\\"\\"\\"
             scalar LocalTime
 
-            type LocalTimeAggregateSelection {
+            type LocalTimeAggregateSelectionNullable {
               max: LocalTime
               min: LocalTime
             }
@@ -644,7 +648,7 @@ describe("Aggregations", () => {
 
             type PostAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNullable!
             }
 
             input PostConnectInput {
@@ -1138,29 +1142,29 @@ describe("Aggregations", () => {
             }
 
             type PostUserLikesEdgeAggregateSelection {
-              someBigInt: BigIntAggregateSelection!
-              someDateTime: DateTimeAggregateSelection!
-              someDuration: DurationAggregateSelection!
-              someFloat: FloatAggregateSelection!
-              someId: IDAggregateSelection!
-              someInt: IntAggregateSelection!
-              someLocalDateTime: LocalDateTimeAggregateSelection!
-              someLocalTime: LocalTimeAggregateSelection!
-              someString: StringAggregateSelection!
-              someTime: TimeAggregateSelection!
+              someBigInt: BigIntAggregateSelectionNullable!
+              someDateTime: DateTimeAggregateSelectionNullable!
+              someDuration: DurationAggregateSelectionNullable!
+              someFloat: FloatAggregateSelectionNullable!
+              someId: IDAggregateSelectionNullable!
+              someInt: IntAggregateSelectionNullable!
+              someLocalDateTime: LocalDateTimeAggregateSelectionNullable!
+              someLocalTime: LocalTimeAggregateSelectionNullable!
+              someString: StringAggregateSelectionNullable!
+              someTime: TimeAggregateSelectionNullable!
             }
 
             type PostUserLikesNodeAggregateSelection {
-              someBigInt: BigIntAggregateSelection!
-              someDateTime: DateTimeAggregateSelection!
-              someDuration: DurationAggregateSelection!
-              someFloat: FloatAggregateSelection!
-              someId: IDAggregateSelection!
-              someInt: IntAggregateSelection!
-              someLocalDateTime: LocalDateTimeAggregateSelection!
-              someLocalTime: LocalTimeAggregateSelection!
-              someString: StringAggregateSelection!
-              someTime: TimeAggregateSelection!
+              someBigInt: BigIntAggregateSelectionNullable!
+              someDateTime: DateTimeAggregateSelectionNullable!
+              someDuration: DurationAggregateSelectionNullable!
+              someFloat: FloatAggregateSelectionNullable!
+              someId: IDAggregateSelectionNullable!
+              someInt: IntAggregateSelectionNullable!
+              someLocalDateTime: LocalDateTimeAggregateSelectionNullable!
+              someLocalTime: LocalTimeAggregateSelectionNullable!
+              someString: StringAggregateSelectionNullable!
+              someTime: TimeAggregateSelectionNullable!
             }
 
             input PostWhere {
@@ -1186,10 +1190,8 @@ describe("Aggregations", () => {
             type Query {
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsCount(where: PostWhere): Int!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersCount(where: UserWhere): Int!
             }
 
             enum SortDirection {
@@ -1199,7 +1201,7 @@ describe("Aggregations", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }
@@ -1207,7 +1209,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
 
-            type TimeAggregateSelection {
+            type TimeAggregateSelectionNullable {
               max: Time
               min: Time
             }
@@ -1245,16 +1247,16 @@ describe("Aggregations", () => {
 
             type UserAggregateSelection {
               count: Int!
-              someBigInt: BigIntAggregateSelection!
-              someDateTime: DateTimeAggregateSelection!
-              someDuration: DurationAggregateSelection!
-              someFloat: FloatAggregateSelection!
-              someId: IDAggregateSelection!
-              someInt: IntAggregateSelection!
-              someLocalDateTime: LocalDateTimeAggregateSelection!
-              someLocalTime: LocalTimeAggregateSelection!
-              someString: StringAggregateSelection!
-              someTime: TimeAggregateSelection!
+              someBigInt: BigIntAggregateSelectionNullable!
+              someDateTime: DateTimeAggregateSelectionNullable!
+              someDuration: DurationAggregateSelectionNullable!
+              someFloat: FloatAggregateSelectionNullable!
+              someId: IDAggregateSelectionNullable!
+              someInt: IntAggregateSelectionNullable!
+              someLocalDateTime: LocalDateTimeAggregateSelectionNullable!
+              someLocalTime: LocalTimeAggregateSelectionNullable!
+              someString: StringAggregateSelectionNullable!
+              someTime: TimeAggregateSelectionNullable!
             }
 
             input UserConnectWhere {

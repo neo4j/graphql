@@ -26,14 +26,15 @@ import neo4j from "neo4j-driver";
 const DURATION_REGEX = /^(?<negated>-?)P(?!$)(?:(?:(?<yearUnit>-?\d+(?:\.\d+(?=Y$))?)Y)?(?:(?<monthUnit>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<dayUnit>-?\d+(?:\.\d+(?=D$))?)D)?(?:T(?=-?\d)(?:(?<hourUnit>-?\d+(?:\.\d+(?=H$))?)H)?(?:(?<minuteUnit>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<secondUnit>-?\d+(?:\.\d+(?=S$))?)S)?)?|(?<weekUnit>-?\d+(?:\.\d+)?)W|(?<yearDT>\d{4})(?<dateDelimiter>-?)(?<monthDT>[0]\d|1[0-2])\k<dateDelimiter>(?<dayDT>\d{2})T(?<hourDT>[01]\d|2[0-3])(?<timeDelimiter>(?:(?<=-\w+?):)|(?<=^-?\w+))(?<minuteDT>[0-5]\d)\k<timeDelimiter>(?<secondDT>[0-5]\d(?:\.\d+)?))$/;
 
 // Normalized components per https://neo4j.com/docs/cypher-manual/current/syntax/operators/#cypher-ordering
-const MONTHS_PER_YEAR = 12;
-const DAYS_PER_YEAR = 365.2425;
-const DAYS_PER_MONTH = DAYS_PER_YEAR / MONTHS_PER_YEAR;
-const DAYS_PER_WEEK = 7;
-const HOURS_PER_DAY = 24;
-const MINUTES_PER_HOUR = 60;
-const SECONDS_PER_MINUTE = 60;
-const SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+export const MONTHS_PER_YEAR = 12;
+export const DAYS_PER_YEAR = 365.2425;
+export const DAYS_PER_MONTH = DAYS_PER_YEAR / MONTHS_PER_YEAR;
+export const DAYS_PER_WEEK = 7;
+export const HOURS_PER_DAY = 24;
+export const MINUTES_PER_HOUR = 60;
+export const SECONDS_PER_MINUTE = 60;
+export const SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+export const NANOSECONDS_PER_SECOND = 1000000000;
 
 export const parseDuration = (value: string) => {
     const match = DURATION_REGEX.exec(value);
@@ -73,10 +74,10 @@ export const parseDuration = (value: string) => {
     const seconds = +secondUnit + +secondDT;
 
     // Splits a component into a whole part and remainder
-    const splitComponent = (component: number): [number, number] => [
-        Math.trunc(component),
-        +(component % 1).toPrecision(9),
-    ];
+    const splitComponent = (component: number): [number, number] => {
+        const a = parseFloat(component.toFixed(9));
+        return [Math.trunc(a), a % 1];
+    };
 
     // Calculate months based off of months and years
     const [wholeMonths, remainderMonths] = splitComponent(months + years * MONTHS_PER_YEAR);
@@ -94,7 +95,7 @@ export const parseDuration = (value: string) => {
     );
 
     // Calculate nanoseconds based off of remainder of seconds
-    const wholeNanoseconds = +remainderSeconds.toFixed(9) * 1000000000;
+    const wholeNanoseconds = +remainderSeconds.toFixed(9) * NANOSECONDS_PER_SECOND;
 
     // Whether total duration is negative
     const coefficient = negated ? -1 : 1;
@@ -109,7 +110,7 @@ export const parseDuration = (value: string) => {
     };
 };
 
-const parse = (value: any) => {
+const parse = (value: string) => {
     const { months, days, seconds, nanoseconds } = parseDuration(value);
 
     return new neo4j.types.Duration(months, days, seconds, nanoseconds);

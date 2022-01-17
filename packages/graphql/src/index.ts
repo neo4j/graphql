@@ -17,9 +17,6 @@
  * limitations under the License.
  */
 
-import { upperFirst } from "graphql-compose";
-
-export { upperFirst };
 export {
     DriverConfig,
     GraphQLOptionsArg,
