@@ -7102,10 +7102,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:14.1.0":
-  version: 14.1.0
-  resolution: "dotenv@npm:14.1.0"
-  checksum: 9e7afe54688c6ddd270797766b1f51421cc1d38cce5a470750537d598cc1719e1b6effcb35022fccd949f2da701b5f186d4c0da44a72fb3a8bd1e2513159a9d2
+"dotenv@npm:14.2.0":
+  version: 14.2.0
+  resolution: "dotenv@npm:14.2.0"
+  checksum: 85a0e44918ef49e64c278f757dab50a156b9a6ca67f708876fd81d265e575e35b67387fc681d910df99368d6c1edca66cd546edeb0f7db3b499cb876c999233e
   languageName: node
   linkType: hard
 
@@ -13255,7 +13255,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.9.1
     "@typescript-eslint/parser": 5.9.1
     concurrently: 7.0.0
-    dotenv: 14.1.0
+    dotenv: 14.2.0
     eslint: 8.7.0
     eslint-config-airbnb-typescript: 16.1.0
     eslint-config-prettier: 8.3.0
