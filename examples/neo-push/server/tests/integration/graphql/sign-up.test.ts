@@ -45,8 +45,8 @@ describe("signUp", () => {
                 { id, email, password }
             );
 
-            const response = await apolloServer.mutate({
-                mutation,
+            const response = await apolloServer.executeOperation({
+                query: mutation,
                 variables: {
                     email,
                     password,
@@ -77,8 +77,8 @@ describe("signUp", () => {
             charset: "alphabetic",
         });
 
-        const response = await apolloServer.mutate({
-            mutation,
+        const response = await apolloServer.executeOperation({
+            query: mutation,
             variables: {
                 email,
                 password,
@@ -90,7 +90,7 @@ describe("signUp", () => {
         }
 
         try {
-            const JWT = response.data.signUp;
+            const JWT = (response.data as any).signUp;
 
             const decoded = await decodeJWT(JWT);
 

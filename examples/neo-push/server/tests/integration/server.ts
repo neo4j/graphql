@@ -1,5 +1,4 @@
 import { ApolloServer } from "apollo-server-express";
-import { createTestClient } from "apollo-server-testing";
 import { OGM } from "@neo4j/graphql-ogm";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { typeDefs, resolvers } from "../../src/gql";
@@ -27,9 +26,7 @@ function server(driver, context = {}) {
         context: () => ({ ...context, driver, ogm } as Context),
     });
 
-    const client = createTestClient(apolloServer);
-
-    return client;
+    return apolloServer;
 }
 
 export default server;

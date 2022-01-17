@@ -62,13 +62,13 @@ describe("comment-custom", () => {
 
                 const apolloServer = server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.comments[0].canDelete).toEqual(true);
+                expect((response.data as any).comments[0].canDelete).toEqual(true);
             } finally {
                 await session.close();
             }
@@ -117,13 +117,13 @@ describe("comment-custom", () => {
 
                 const apolloServer = server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.comments[0].canDelete).toEqual(true);
+                expect((response.data as any).comments[0].canDelete).toEqual(true);
             } finally {
                 await session.close();
             }
@@ -171,13 +171,13 @@ describe("comment-custom", () => {
 
                 const apolloServer = server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.comments[0].canDelete).toEqual(true);
+                expect((response.data as any).comments[0].canDelete).toEqual(true);
             } finally {
                 await session.close();
             }
@@ -229,13 +229,13 @@ describe("comment-custom", () => {
 
                 const apolloServer = server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.comments[0].canDelete).toEqual(false);
+                expect((response.data as any).comments[0].canDelete).toEqual(false);
             } finally {
                 await session.close();
             }

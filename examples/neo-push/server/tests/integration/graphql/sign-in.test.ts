@@ -32,8 +32,8 @@ describe("signIn", () => {
             charset: "alphabetic",
         });
 
-        const response = await apolloServer.mutate({
-            mutation,
+        const response = await apolloServer.executeOperation({
+            query: mutation,
             variables: {
                 email,
                 password,
@@ -73,8 +73,8 @@ describe("signIn", () => {
                 { id, email, password: await hashPassword(password) }
             );
 
-            const response = await apolloServer.mutate({
-                mutation,
+            const response = await apolloServer.executeOperation({
+                query: mutation,
                 variables: {
                     email,
                     password: "invalid",
@@ -118,8 +118,8 @@ describe("signIn", () => {
                 { id, email, password: await hashPassword(password) }
             );
 
-            const response = await apolloServer.mutate({
-                mutation,
+            const response = await apolloServer.executeOperation({
+                query: mutation,
                 variables: {
                     email,
                     password,
@@ -130,7 +130,7 @@ describe("signIn", () => {
                 throw new Error(response.errors[0].message);
             }
 
-            const JWT = response.data.signIn;
+            const JWT = (response.data as any).signIn;
 
             const decoded = await decodeJWT(JWT);
 
