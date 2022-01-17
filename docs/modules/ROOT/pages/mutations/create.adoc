@@ -8,13 +8,13 @@ Using the following type definitions for these examples:
 type Post {
     id: ID! @id
     content: String!
-    creator: User @relationship(type: "HAS_POST", direction: IN)
+    creator: User! @relationship(type: "HAS_POST", direction: IN)
 }
 
 type User {
     id: ID! @id
     name: String
-    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
 }
 ----
 

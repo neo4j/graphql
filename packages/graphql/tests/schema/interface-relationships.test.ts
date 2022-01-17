@@ -2428,21 +2428,21 @@ describe("Interface Relationships", () => {
             interface Content {
                 id: ID
                 content: String
-                creator: User @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             type Comment implements Content {
                 id: ID
                 content: String
-                creator: User
-                post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+                creator: User!
+                post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
             }
 
             type Post implements Content {
                 id: ID
                 content: String
-                creator: User
-                comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+                creator: User!
+                comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 
             type User {
@@ -2463,11 +2463,11 @@ describe("Interface Relationships", () => {
 
             type Comment implements Content {
               content: String
-              creator(options: UserOptions, where: UserWhere): User
+              creator(options: UserOptions, where: UserWhere): User!
               creatorAggregate(where: UserWhere): CommentUserCreatorAggregationSelection
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
-              post(options: PostOptions, where: PostWhere): Post
+              post(options: PostOptions, where: PostWhere): Post!
               postAggregate(where: PostWhere): CommentPostPostAggregationSelection
               postConnection(after: String, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
             }
@@ -2719,7 +2719,7 @@ describe("Interface Relationships", () => {
 
             interface Content {
               content: String
-              creator(options: UserOptions, where: UserWhere): User
+              creator(options: UserOptions, where: UserWhere): User!
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
             }
@@ -2958,11 +2958,11 @@ describe("Interface Relationships", () => {
             }
 
             type Post implements Content {
-              comments(options: CommentOptions, where: CommentWhere): [Comment]
+              comments(options: CommentOptions, where: CommentWhere): [Comment!]!
               commentsAggregate(where: CommentWhere): PostCommentCommentsAggregationSelection
               commentsConnection(after: String, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
               content: String
-              creator(options: UserOptions, where: UserWhere): User
+              creator(options: UserOptions, where: UserWhere): User!
               creatorAggregate(where: UserWhere): PostUserCreatorAggregationSelection
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID

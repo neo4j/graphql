@@ -31,12 +31,12 @@ describe("162", () => {
 
             type TigerJawLevel2 {
                 id: ID
-                part1: TigerJawLevel2Part1 @relationship(type: "REL1", direction: OUT)
+                part1: TigerJawLevel2Part1! @relationship(type: "REL1", direction: OUT)
             }
 
             type TigerJawLevel2Part1 {
                 id: ID
-                tiger: Tiger @relationship(type: "REL2", direction: OUT)
+                tiger: Tiger! @relationship(type: "REL2", direction: OUT)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -142,7 +142,7 @@ describe("162", () => {
 
             type TigerJawLevel2 {
               id: ID
-              part1(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1
+              part1(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1!
               part1Aggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
               part1Connection(after: String, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
             }
@@ -178,7 +178,7 @@ describe("162", () => {
 
             type TigerJawLevel2Part1 {
               id: ID
-              tiger(options: TigerOptions, where: TigerWhere): Tiger
+              tiger(options: TigerOptions, where: TigerWhere): Tiger!
               tigerAggregate(where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection
               tigerConnection(after: String, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
             }

@@ -133,7 +133,7 @@ describe("@id directive", () => {
             type Movie {
                 id: ID! @id
                 name: String!
-                genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
+                genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
             }
         `;
 

@@ -45,7 +45,7 @@ describe("aggregations-where-node-datetime", () => {
           
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -112,7 +112,7 @@ describe("aggregations-where-node-datetime", () => {
           
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -181,7 +181,7 @@ describe("aggregations-where-node-datetime", () => {
           
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -248,7 +248,7 @@ describe("aggregations-where-node-datetime", () => {
           
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -317,7 +317,7 @@ describe("aggregations-where-node-datetime", () => {
           
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 

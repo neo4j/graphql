@@ -40,7 +40,7 @@ describe("Empty fields on unions due to escaped labels", () => {
 
             type Blog @node(label: "${typeBlog.name}") {
                 title: String
-                posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
             type Post @node(label: "${typePost.name}") {
@@ -49,7 +49,7 @@ describe("Empty fields on unions due to escaped labels", () => {
 
             type User @node(label: "${typeUser.name}") {
                 name: String
-                content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+                content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
         `;
 

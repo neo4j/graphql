@@ -536,7 +536,7 @@ describe("@exclude directive", () => {
 
             type Movie {
                 title: String
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -609,7 +609,7 @@ describe("@exclude directive", () => {
             }
 
             type Movie {
-              actors(options: ActorOptions, where: ActorWhere): [Actor]
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String

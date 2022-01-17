@@ -32,7 +32,7 @@ describe("#402", () => {
         typeDefs = gql`
             type Event {
                 id: ID!
-                area: Area @relationship(type: "HAPPENS_IN", direction: OUT)
+                area: Area! @relationship(type: "HAPPENS_IN", direction: OUT)
             }
 
             type Area {

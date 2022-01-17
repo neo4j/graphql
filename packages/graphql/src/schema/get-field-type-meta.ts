@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { FieldDefinitionNode, InputValueDefinitionNode, ListTypeNode, TypeNode } from "graphql";
+import { ListTypeNode, TypeNode } from "graphql";
 import { TypeMeta } from "../types";
 
 function getName(type: TypeNode): string {
@@ -43,17 +43,17 @@ function getPrettyName(type: TypeNode): string {
     return result;
 }
 
-function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode): TypeMeta {
-    const name = getName(field.type);
-    const pretty = getPrettyName(field.type);
+function getFieldTypeMeta(typeNode: TypeNode): TypeMeta {
+    const name = getName(typeNode);
+    const pretty = getPrettyName(typeNode);
     const array = /\[.+\]/g.test(pretty);
-    const required = field.type.kind === "NonNullType";
+    const required = typeNode.kind === "NonNullType";
 
     // Things to do with the T inside the Array [T]
     let arrayTypePretty = "";
     let arrayTypeRequired = false;
     if (array) {
-        const listNode = field.type as ListTypeNode;
+        const listNode = typeNode as ListTypeNode;
         const isMatrix = listNode.type.kind === "ListType" && listNode.type.type.kind === "ListType";
 
         if (isMatrix) {
@@ -63,14 +63,6 @@ function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode)
         arrayTypePretty = getPrettyName(listNode.type);
         arrayTypeRequired = arrayTypePretty.includes("!");
     }
-
-    const baseMeta = {
-        name,
-        array,
-        required,
-        pretty,
-        arrayTypePretty,
-    };
 
     const isPoint = ["Point", "CartesianPoint"].includes(name);
     let type = name;
@@ -83,8 +75,11 @@ function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode)
         inputPretty = `[${type}${arrayTypeRequired ? "!" : ""}]`;
     }
 
-    return {
-        ...baseMeta,
+    const meta: TypeMeta = {
+        name,
+        array,
+        required,
+        pretty,
         input: {
             where: { type, pretty: inputPretty },
             create: {
@@ -96,7 +91,10 @@ function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode)
                 pretty: inputPretty,
             },
         },
+        originalType: typeNode,
     };
+
+    return meta;
 }
 
 export default getFieldTypeMeta;

@@ -313,7 +313,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -389,7 +389,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -501,7 +501,7 @@ describe("auth/is-authenticated", () => {
                 type User {
                     id: ID
                     name: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post @auth(rules: [{

@@ -373,7 +373,7 @@ describe("Aggregations", () => {
 
             type Post {
                 title: String
-                likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {
@@ -640,7 +640,7 @@ describe("Aggregations", () => {
             }
 
             type Post {
-              likes(options: UserOptions, where: UserWhere): [User]
+              likes(options: UserOptions, where: UserWhere): [User!]!
               likesAggregate(where: UserWhere): PostUserLikesAggregationSelection
               likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String
