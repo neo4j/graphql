@@ -33,7 +33,7 @@ function parseExcludeDirective(excludeDirective: DirectiveNode | undefined | nul
 
     const operations = excludeDirective.arguments?.find((a) => a.name.value === "operations") as ArgumentNode;
 
-    const argumentValue = valueFromASTUntyped(operations.value) as [string];
+    const argumentValue = valueFromASTUntyped(operations.value) as string[];
 
     const result = argumentValue.map((val: string) => val.toLowerCase());
 
