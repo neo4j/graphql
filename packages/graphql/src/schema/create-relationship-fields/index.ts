@@ -232,7 +232,7 @@ function createRelationshipFields({
                     [rel.fieldName]: {
                         type: rel.typeMeta.pretty,
                         args: {
-                            // directed: "Boolean",
+                            directed: "Boolean",
                             options: "QueryOptions",
                             where: `${rel.typeMeta.name}Where`,
                         },

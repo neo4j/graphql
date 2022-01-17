@@ -85,7 +85,7 @@ describe("Connect Or Create", () => {
             }
 
             type Actor {
-              actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
+              actedIn(directed: Boolean, options: QueryOptions, where: ProductionWhere): [Production!]!
               actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }

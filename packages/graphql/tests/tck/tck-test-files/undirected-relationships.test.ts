@@ -28,7 +28,7 @@ describe("Undirected relationships", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
-    beforeAll(() => {
+    test("query with directed and undirected relationships", async () => {
         typeDefs = gql`
             type User {
                 name: String!
@@ -38,11 +38,8 @@ describe("Undirected relationships", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } }
+            config: { jwt: { secret } }
         });
-    });
-
-    test("query with directed and undirected relationships", async () => {
         const query = gql`
             query {
                 users {
@@ -65,6 +62,57 @@ describe("Undirected relationships", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
 "MATCH (this:User)
 RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | this_friends { .name } ], directedFriends: [ (this)-[:FRIENDS_WITH]->(this_directedFriends:User)   | this_directedFriends { .name } ] } as this"
+`);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("undirected with unions", async () => {
+        typeDefs = gql`
+            union Content = Blog | Post
+
+            type Blog {
+                title: String
+                posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+            }
+
+            type Post {
+                content: String
+            }
+
+            type User {
+                name: String
+                content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: { jwt: { secret } }
+        });
+        const query = gql`
+            query Users {
+                users {
+                    content(directed: false) {
+                        ... on Blog {
+                            title
+                        }
+                        ... on Post {
+                            content
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+"MATCH (this:User)
+RETURN this { content:  [this_content IN [(this)-[:HAS_CONTENT]-(this_content) WHERE (\\"Blog\\" IN labels(this_content)) OR (\\"Post\\" IN labels(this_content)) | head( [ this_content IN [this_content] WHERE (\\"Blog\\" IN labels(this_content)) | this_content { __resolveType: \\"Blog\\",  .title } ] + [ this_content IN [this_content] WHERE (\\"Post\\" IN labels(this_content)) | this_content { __resolveType: \\"Post\\",  .content } ] ) ] WHERE this_content IS NOT NULL]  } as this"
 `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
