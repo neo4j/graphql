@@ -31,6 +31,7 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
+import { buildRelationStatement } from "./cypher-builder/build-relation-statement";
 
 interface Res {
     projection: string[];
@@ -318,12 +319,17 @@ function createProjectionAndParams({
         if (relationField) {
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const nodeMatchStr = `(${chainStr || varName})`;
-            const inStr = relationField.direction === "IN" ? "<-" : "-";
+            let inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
-            const outStr = relationField.direction === "OUT" ? "->" : "-";
+            let outStr = relationField.direction === "OUT" ? "->" : "-";
             const labels = referenceNode?.getLabelString(context);
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
+
+            if(field.args.directed===false){
+                inStr="-"
+                outStr="-"
+            }
 
             if (relationField.interface) {
                 if (!res.meta.interfaceFields) {
