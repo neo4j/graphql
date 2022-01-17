@@ -6,7 +6,7 @@ Neo4j GraphQL uses the [Node.js `crypto`](https://nodejs.org/api/crypto.html) li
 
 ## Proposed Solution
 
-Extract the current auth decoding functionally into a new package `@neo4j/graphql-plugins`, this package would be deployed independently to NPM.
+Extract the current auth decoding functionally into a new package `@neo4j/graphql-plugin-auth`, this package would be deployed independently to NPM.
 
 ### Monorepo Packages Structure:
 
@@ -20,14 +20,14 @@ Extract the current auth decoding functionally into a new package `@neo4j/graphq
     ║
     ╠══ introspector - @neo4j/introspector
     ║
-    ╠══ plugins - @neo4j/graphql-plugins
+    ╠══ plugins - @neo4j/graphql-plugin-auth
     ║
     ╚══ package-tests
 ```
 
 ### Versioning
 
-The new package can be versioned independently from `@neo4j/graphql`, however, **note that `@neo4j/graphql` will be a dependency of `@neo4j/graphql-plugins`.**
+The new package can be versioned independently from `@neo4j/graphql`, however, **note that `@neo4j/graphql` will be a dependency of `@neo4j/graphql-plugin-auth`.**
 
 ### Abstract Class
 
@@ -70,11 +70,11 @@ const neoSchema = new Neo4jGraphQL({
 
 ### Core Plugins
 
-Users are already using the existing JWT decode functionally and it has proven to work so, instead of forcing upgrading users to write their own JWT functionally, let's expose our own `Auth` plugin that extends the `Neo4jGraphQLAuthPlugin`. The ‘core’ `Auth` plugin should be exported from the new library `@neo4j/graphql-plugins`:
+Users are already using the existing JWT decode functionally and it has proven to work so, instead of forcing upgrading users to write their own JWT functionally, let's expose our own `Auth` plugin that extends the `Neo4jGraphQLAuthPlugin`. The ‘core’ `Auth` plugin should be exported from the new library `@neo4j/graphql-plugin-auth`:
 
 ```js
 import { Neo4jGraphQL } from "@neo4j/graphql";
-import { Auth } from "@neo4j/graphql-plugins";
+import { Auth } from "@neo4j/graphql-plugin-auth";
 
 const typeDefs = `
     type User @auth(rules: [{ isAuthenticated: true }]) {
