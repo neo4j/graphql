@@ -22,6 +22,7 @@ import createAuthAndParams from "./create-auth-and-params";
 import { Neo4jGraphQL } from "../classes";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 
 describe("createAuthAndParams", () => {
     describe("operations", () => {
@@ -124,15 +125,7 @@ describe("createAuthAndParams", () => {
 
             const node = new NodeBuilder({
                 name: "Movie",
-                relationFields: [],
-                cypherFields: [],
-                enumFields: [],
-                scalarFields: [],
                 primitiveFields: [idField],
-                temporalFields: [],
-                interfaceFields: [],
-                objectFields: [],
-                pointFields: [],
                 auth: {
                     rules: [
                         {
@@ -149,20 +142,15 @@ describe("createAuthAndParams", () => {
                 },
             }).instance();
 
-            // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
-                nodes: [node],
-            };
-
             const sub = generate({
                 charset: "alphabetic",
             });
 
-            // @ts-ignore
-            const context: Context = { neoSchema };
-            context.jwt = {
-                sub,
-            };
+            const context = new ContextBuilder({
+                jwt: {
+                    sub,
+                },
+            }).instance();
 
             const result = createAuthAndParams({
                 context,
@@ -172,7 +160,7 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                    ((ANY(r IN [\"admin\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR ((ANY(r IN [\"member\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_where1_id)))
+                    ((ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR ((ANY(r IN ["member"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_where1_id)))
                 `)
             );
 
