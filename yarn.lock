@@ -12200,9 +12200,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:12.1.7":
-  version: 12.1.7
-  resolution: "lint-staged@npm:12.1.7"
+"lint-staged@npm:12.2.0":
+  version: 12.2.0
+  resolution: "lint-staged@npm:12.2.0"
   dependencies:
     cli-truncate: ^3.1.0
     colorette: ^2.0.16
@@ -12219,7 +12219,7 @@ __metadata:
     yaml: ^1.10.2
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: 3d0757706c8b0ca3f004bb2ffa89a9d5fc97ccdebfa4cde29a9636c661538780e194b99cbc5e4b8b89b13986187b33c97e009b09014511bbd45ee05ba557d0eb
+  checksum: 940cb0f1d56dcd5a69fafc6c2e5ea946805ecc0c65403828a7612851d33e52947e1a6523579a18bed6f9e781e1362bf17c89aeecf8ec28e3a9ccd1dea6efbe78
   languageName: node
   linkType: hard
 
@@ -13329,7 +13329,7 @@ __metadata:
     graphql: 15.5.0
     husky: 7.0.4
     jest: 27.4.7
-    lint-staged: 12.1.7
+    lint-staged: 12.2.0
     neo4j-driver: 4.4.0
     npm-run-all: 4.1.5
     prettier: 2.1.2
