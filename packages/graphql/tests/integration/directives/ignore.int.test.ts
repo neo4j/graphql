@@ -17,74 +17,106 @@
  * limitations under the License.
  */
 
-import { Driver, Session } from "neo4j-driver";
+import { Driver } from "neo4j-driver";
 import faker from "faker";
 import { graphql } from "graphql";
+import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
+const testLabel = generate({ charset: "alphabetic" });
 describe("@ignore directive", () => {
     let driver: Driver;
-    let session: Session;
-    let neoSchema: Neo4jGraphQL;
+
+    const typeDefs = `
+        type User {
+            id: ID!
+            firstName: String!
+            lastName: String!
+            fullName: String @ignore(require: ["firstName", "lastName"])
+        }
+    `;
+
+    const user = {
+        id: generate(),
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+    };
+
+    const fullName = ({ firstName, lastName }) => `${firstName} ${lastName}`;
+
+    const resolvers = {
+        User: { fullName },
+    };
+
+    const { schema } = new Neo4jGraphQL({ typeDefs, resolvers });
 
     beforeAll(async () => {
         driver = await neo4j();
-        const typeDefs = `
-            type User {
-                username: String!
-                customField: String! @ignore
-            }
-        `;
-        const resolvers = { User: { customField: () => "Some custom value" } };
-        neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
-    });
-
-    beforeEach(() => {
-        session = driver.session();
-    });
-
-    afterEach(async () => {
+        const session = driver.session();
+        await session.run(
+            `
+            CREATE (user:User:${testLabel}) SET user = $user
+        `,
+            { user }
+        );
         await session.close();
     });
 
     afterAll(async () => {
+        const session = driver.session();
+        await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
+        await session.close();
         await driver.close();
     });
 
     test("removes a field from all but its object type, and resolves with a custom resolver", async () => {
-        const username = faker.internet.userName();
-
-        await session.run(`
-            CALL {
-                CREATE (u:User)
-                SET u.username = "${username}"
-                RETURN u
-            }
-
-            RETURN u
-        `);
-
-        const usersQuery = `
-            query Users($username: String!) {
-                users(where: { username: $username }) {
-                    username
-                    customField
+        const source = `
+            query Users($userId: ID!) {
+                users(where: { id: $userId }) {
+                    id
+                    firstName
+                    lastName
+                    fullName
                 }
             }
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
-            source: usersQuery,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-            variableValues: { username },
+            schema,
+            source,
+            contextValue: { driver },
+            variableValues: { userId: user.id },
         });
 
         expect(gqlResult.errors).toBeFalsy();
         expect((gqlResult.data as any).users[0]).toEqual({
-            username,
-            customField: "Some custom value",
+            ...user,
+            fullName: fullName(user),
+        });
+    });
+
+    test("resolves field with custom resolver without required fields in selection set", async () => {
+        const source = `
+            query Users($userId: ID!) {
+                users(where: { id: $userId }) {
+                    id
+                    fullName
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema,
+            source,
+            contextValue: { driver },
+            variableValues: { userId: user.id },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect((gqlResult.data as any).users[0]).toEqual({
+            id: user.id,
+            fullName: fullName(user),
         });
     });
 });
