@@ -26,9 +26,14 @@ function createInterfaceProjectionAndParams({
     let globalParams = {};
     let params: { args?: any } = {};
 
-    const inStr = field.direction === "IN" ? "<-" : "-";
+    let inStr = field.direction === "IN" ? "<-" : "-";
     const relTypeStr = `[:${field.type}]`;
-    const outStr = field.direction === "OUT" ? "->" : "-";
+    let outStr = field.direction === "OUT" ? "->" : "-";
+
+    if (resolveTree.args.directed === false) {
+        inStr = "-";
+        outStr = "-";
+    }
 
     const whereInput = resolveTree.args.where as InterfaceWhereArg;
 

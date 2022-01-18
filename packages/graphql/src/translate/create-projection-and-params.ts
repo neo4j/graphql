@@ -31,7 +31,6 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
-import { buildRelationStatement } from "./cypher-builder/build-relation-statement";
 
 interface Res {
     projection: string[];
@@ -326,9 +325,9 @@ function createProjectionAndParams({
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
-            if(field.args.directed === false) {
-                inStr = "-"
-                outStr = "-"
+            if (field.args.directed === false) {
+                inStr = "-";
+                outStr = "-";
             }
 
             if (relationField.interface) {

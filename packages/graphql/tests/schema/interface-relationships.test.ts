@@ -87,7 +87,7 @@ describe("Interface Relationships", () => {
             }
 
             type Actor {
-              actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
+              actedIn(directed: Boolean, options: QueryOptions, where: ProductionWhere): [Production!]!
               actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -514,1164 +514,1164 @@ describe("Interface Relationships", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
-
-interface ActedIn {
-  screenTime: Int!
-}
-
-input ActedInCreateInput {
-  screenTime: Int!
-}
-
-input ActedInSort {
-  screenTime: SortDirection
-}
-
-input ActedInUpdateInput {
-  screenTime: Int
-}
-
-input ActedInWhere {
-  AND: [ActedInWhere!]
-  OR: [ActedInWhere!]
-  screenTime: Int
-  screenTime_GT: Int
-  screenTime_GTE: Int
-  screenTime_IN: [Int]
-  screenTime_LT: Int
-  screenTime_LTE: Int
-  screenTime_NOT: Int
-  screenTime_NOT_IN: [Int]
-}
-
-type Actor {
-  actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-  actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
-  name: String!
-}
-
-input ActorActedInConnectFieldInput {
-  connect: ProductionConnectInput
-  edge: ActedInCreateInput!
-  where: ProductionConnectWhere
-}
-
-type ActorActedInConnection {
-  edges: [ActorActedInRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-input ActorActedInConnectionSort {
-  edge: ActedInSort
-}
-
-input ActorActedInConnectionWhere {
-  AND: [ActorActedInConnectionWhere!]
-  OR: [ActorActedInConnectionWhere!]
-  edge: ActedInWhere
-  edge_NOT: ActedInWhere
-  node: ProductionWhere
-  node_NOT: ProductionWhere
-}
-
-input ActorActedInCreateFieldInput {
-  edge: ActedInCreateInput!
-  node: ProductionCreateInput!
-}
-
-input ActorActedInDeleteFieldInput {
-  delete: ProductionDeleteInput
-  where: ActorActedInConnectionWhere
-}
-
-input ActorActedInDisconnectFieldInput {
-  disconnect: ProductionDisconnectInput
-  where: ActorActedInConnectionWhere
-}
-
-input ActorActedInFieldInput {
-  connect: [ActorActedInConnectFieldInput!]
-  create: [ActorActedInCreateFieldInput!]
-}
-
-type ActorActedInRelationship implements ActedIn {
-  cursor: String!
-  node: Production!
-  screenTime: Int!
-}
-
-input ActorActedInUpdateConnectionInput {
-  edge: ActedInUpdateInput
-  node: ProductionUpdateInput
-}
-
-input ActorActedInUpdateFieldInput {
-  connect: [ActorActedInConnectFieldInput!]
-  create: [ActorActedInCreateFieldInput!]
-  delete: [ActorActedInDeleteFieldInput!]
-  disconnect: [ActorActedInDisconnectFieldInput!]
-  update: ActorActedInUpdateConnectionInput
-  where: ActorActedInConnectionWhere
-}
-
-type ActorAggregateSelection {
-  count: Int!
-  name: StringAggregateSelectionNonNullable!
-}
-
-input ActorConnectInput {
-  actedIn: [ActorActedInConnectFieldInput!]
-}
-
-input ActorConnectWhere {
-  node: ActorWhere!
-}
-
-input ActorCreateInput {
-  actedIn: ActorActedInFieldInput
-  name: String!
-}
-
-input ActorDeleteInput {
-  actedIn: [ActorActedInDeleteFieldInput!]
-}
-
-input ActorDisconnectInput {
-  actedIn: [ActorActedInDisconnectFieldInput!]
-}
-
-input ActorOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-  sort: [ActorSort]
-}
-
-input ActorRelationInput {
-  actedIn: [ActorActedInCreateFieldInput!]
-}
-
-\\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
-input ActorSort {
-  name: SortDirection
-}
-
-input ActorUpdateInput {
-  actedIn: [ActorActedInUpdateFieldInput!]
-  name: String
-}
-
-input ActorWhere {
-  AND: [ActorWhere!]
-  OR: [ActorWhere!]
-  actedInConnection: ActorActedInConnectionWhere
-  actedInConnection_NOT: ActorActedInConnectionWhere
-  name: String
-  name_CONTAINS: String
-  name_ENDS_WITH: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_CONTAINS: String
-  name_NOT_ENDS_WITH: String
-  name_NOT_IN: [String]
-  name_NOT_STARTS_WITH: String
-  name_STARTS_WITH: String
-}
-
-type CreateActorsMutationResponse {
-  actors: [Actor!]!
-  info: CreateInfo!
-}
-
-type CreateEpisodesMutationResponse {
-  episodes: [Episode!]!
-  info: CreateInfo!
-}
-
-type CreateInfo {
-  bookmark: String
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
-
-type CreateMoviesMutationResponse {
-  info: CreateInfo!
-  movies: [Movie!]!
-}
-
-type CreateSeriesMutationResponse {
-  info: CreateInfo!
-  series: [Series!]!
-}
-
-type DeleteInfo {
-  bookmark: String
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
-
-type Episode {
-  runtime: Int!
-  series(directed: Boolean, options: SeriesOptions, where: SeriesWhere): Series!
-  seriesAggregate(where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection
-  seriesConnection(after: String, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
-}
-
-type EpisodeAggregateSelection {
-  count: Int!
-  runtime: IntAggregateSelectionNonNullable!
-}
-
-input EpisodeConnectInput {
-  series: EpisodeSeriesConnectFieldInput
-}
-
-input EpisodeConnectWhere {
-  node: EpisodeWhere!
-}
-
-input EpisodeCreateInput {
-  runtime: Int!
-  series: EpisodeSeriesFieldInput
-}
-
-input EpisodeDeleteInput {
-  series: EpisodeSeriesDeleteFieldInput
-}
-
-input EpisodeDisconnectInput {
-  series: EpisodeSeriesDisconnectFieldInput
-}
-
-input EpisodeOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-  sort: [EpisodeSort]
-}
-
-input EpisodeRelationInput {
-  series: EpisodeSeriesCreateFieldInput
-}
-
-input EpisodeSeriesAggregateInput {
-  AND: [EpisodeSeriesAggregateInput!]
-  OR: [EpisodeSeriesAggregateInput!]
-  count: Int
-  count_GT: Int
-  count_GTE: Int
-  count_LT: Int
-  count_LTE: Int
-  node: EpisodeSeriesNodeAggregationWhereInput
-}
-
-input EpisodeSeriesConnectFieldInput {
-  connect: SeriesConnectInput
-  where: SeriesConnectWhere
-}
-
-type EpisodeSeriesConnection {
-  edges: [EpisodeSeriesRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-input EpisodeSeriesConnectionSort {
-  node: SeriesSort
-}
-
-input EpisodeSeriesConnectionWhere {
-  AND: [EpisodeSeriesConnectionWhere!]
-  OR: [EpisodeSeriesConnectionWhere!]
-  node: SeriesWhere
-  node_NOT: SeriesWhere
-}
-
-input EpisodeSeriesCreateFieldInput {
-  node: SeriesCreateInput!
-}
-
-input EpisodeSeriesDeleteFieldInput {
-  delete: SeriesDeleteInput
-  where: EpisodeSeriesConnectionWhere
-}
-
-input EpisodeSeriesDisconnectFieldInput {
-  disconnect: SeriesDisconnectInput
-  where: EpisodeSeriesConnectionWhere
-}
-
-input EpisodeSeriesFieldInput {
-  connect: EpisodeSeriesConnectFieldInput
-  create: EpisodeSeriesCreateFieldInput
-}
-
-input EpisodeSeriesNodeAggregationWhereInput {
-  AND: [EpisodeSeriesNodeAggregationWhereInput!]
-  OR: [EpisodeSeriesNodeAggregationWhereInput!]
-  episodeCount_AVERAGE_EQUAL: Float
-  episodeCount_AVERAGE_GT: Float
-  episodeCount_AVERAGE_GTE: Float
-  episodeCount_AVERAGE_LT: Float
-  episodeCount_AVERAGE_LTE: Float
-  episodeCount_EQUAL: Int
-  episodeCount_GT: Int
-  episodeCount_GTE: Int
-  episodeCount_LT: Int
-  episodeCount_LTE: Int
-  episodeCount_MAX_EQUAL: Int
-  episodeCount_MAX_GT: Int
-  episodeCount_MAX_GTE: Int
-  episodeCount_MAX_LT: Int
-  episodeCount_MAX_LTE: Int
-  episodeCount_MIN_EQUAL: Int
-  episodeCount_MIN_GT: Int
-  episodeCount_MIN_GTE: Int
-  episodeCount_MIN_LT: Int
-  episodeCount_MIN_LTE: Int
-  episodeCount_SUM_EQUAL: Int
-  episodeCount_SUM_GT: Int
-  episodeCount_SUM_GTE: Int
-  episodeCount_SUM_LT: Int
-  episodeCount_SUM_LTE: Int
-  title_AVERAGE_EQUAL: Float
-  title_AVERAGE_GT: Float
-  title_AVERAGE_GTE: Float
-  title_AVERAGE_LT: Float
-  title_AVERAGE_LTE: Float
-  title_EQUAL: String
-  title_GT: Int
-  title_GTE: Int
-  title_LONGEST_EQUAL: Int
-  title_LONGEST_GT: Int
-  title_LONGEST_GTE: Int
-  title_LONGEST_LT: Int
-  title_LONGEST_LTE: Int
-  title_LT: Int
-  title_LTE: Int
-  title_SHORTEST_EQUAL: Int
-  title_SHORTEST_GT: Int
-  title_SHORTEST_GTE: Int
-  title_SHORTEST_LT: Int
-  title_SHORTEST_LTE: Int
-}
-
-type EpisodeSeriesRelationship {
-  cursor: String!
-  node: Series!
-}
-
-type EpisodeSeriesSeriesAggregationSelection {
-  count: Int!
-  node: EpisodeSeriesSeriesNodeAggregateSelection
-}
-
-type EpisodeSeriesSeriesNodeAggregateSelection {
-  episodeCount: IntAggregateSelectionNonNullable!
-  title: StringAggregateSelectionNonNullable!
-}
-
-input EpisodeSeriesUpdateConnectionInput {
-  node: SeriesUpdateInput
-}
-
-input EpisodeSeriesUpdateFieldInput {
-  connect: EpisodeSeriesConnectFieldInput
-  create: EpisodeSeriesCreateFieldInput
-  delete: EpisodeSeriesDeleteFieldInput
-  disconnect: EpisodeSeriesDisconnectFieldInput
-  update: EpisodeSeriesUpdateConnectionInput
-  where: EpisodeSeriesConnectionWhere
-}
-
-\\"\\"\\"Fields to sort Episodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one EpisodeSort object.\\"\\"\\"
-input EpisodeSort {
-  runtime: SortDirection
-}
-
-input EpisodeUpdateInput {
-  runtime: Int
-  series: EpisodeSeriesUpdateFieldInput
-}
-
-input EpisodeWhere {
-  AND: [EpisodeWhere!]
-  OR: [EpisodeWhere!]
-  runtime: Int
-  runtime_GT: Int
-  runtime_GTE: Int
-  runtime_IN: [Int]
-  runtime_LT: Int
-  runtime_LTE: Int
-  runtime_NOT: Int
-  runtime_NOT_IN: [Int]
-  series: SeriesWhere
-  seriesAggregate: EpisodeSeriesAggregateInput
-  seriesConnection: EpisodeSeriesConnectionWhere
-  seriesConnection_NOT: EpisodeSeriesConnectionWhere
-  series_NOT: SeriesWhere
-}
-
-type IntAggregateSelectionNonNullable {
-  average: Float!
-  max: Int!
-  min: Int!
-  sum: Int!
-}
-
-type Movie implements Production {
-  actors(directed: Boolean, options: ActorOptions, where: ActorWhere): [Actor!]!
-  actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-  actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
-  runtime: Int!
-  title: String!
-}
-
-type MovieActorActorsAggregationSelection {
-  count: Int!
-  edge: MovieActorActorsEdgeAggregateSelection
-  node: MovieActorActorsNodeAggregateSelection
-}
-
-type MovieActorActorsEdgeAggregateSelection {
-  screenTime: IntAggregateSelectionNonNullable!
-}
-
-type MovieActorActorsNodeAggregateSelection {
-  name: StringAggregateSelectionNonNullable!
-}
-
-input MovieActorsAggregateInput {
-  AND: [MovieActorsAggregateInput!]
-  OR: [MovieActorsAggregateInput!]
-  count: Int
-  count_GT: Int
-  count_GTE: Int
-  count_LT: Int
-  count_LTE: Int
-  edge: MovieActorsEdgeAggregationWhereInput
-  node: MovieActorsNodeAggregationWhereInput
-}
-
-input MovieActorsEdgeAggregationWhereInput {
-  AND: [MovieActorsEdgeAggregationWhereInput!]
-  OR: [MovieActorsEdgeAggregationWhereInput!]
-  screenTime_AVERAGE_EQUAL: Float
-  screenTime_AVERAGE_GT: Float
-  screenTime_AVERAGE_GTE: Float
-  screenTime_AVERAGE_LT: Float
-  screenTime_AVERAGE_LTE: Float
-  screenTime_EQUAL: Int
-  screenTime_GT: Int
-  screenTime_GTE: Int
-  screenTime_LT: Int
-  screenTime_LTE: Int
-  screenTime_MAX_EQUAL: Int
-  screenTime_MAX_GT: Int
-  screenTime_MAX_GTE: Int
-  screenTime_MAX_LT: Int
-  screenTime_MAX_LTE: Int
-  screenTime_MIN_EQUAL: Int
-  screenTime_MIN_GT: Int
-  screenTime_MIN_GTE: Int
-  screenTime_MIN_LT: Int
-  screenTime_MIN_LTE: Int
-  screenTime_SUM_EQUAL: Int
-  screenTime_SUM_GT: Int
-  screenTime_SUM_GTE: Int
-  screenTime_SUM_LT: Int
-  screenTime_SUM_LTE: Int
-}
-
-input MovieActorsNodeAggregationWhereInput {
-  AND: [MovieActorsNodeAggregationWhereInput!]
-  OR: [MovieActorsNodeAggregationWhereInput!]
-  name_AVERAGE_EQUAL: Float
-  name_AVERAGE_GT: Float
-  name_AVERAGE_GTE: Float
-  name_AVERAGE_LT: Float
-  name_AVERAGE_LTE: Float
-  name_EQUAL: String
-  name_GT: Int
-  name_GTE: Int
-  name_LONGEST_EQUAL: Int
-  name_LONGEST_GT: Int
-  name_LONGEST_GTE: Int
-  name_LONGEST_LT: Int
-  name_LONGEST_LTE: Int
-  name_LT: Int
-  name_LTE: Int
-  name_SHORTEST_EQUAL: Int
-  name_SHORTEST_GT: Int
-  name_SHORTEST_GTE: Int
-  name_SHORTEST_LT: Int
-  name_SHORTEST_LTE: Int
-}
-
-type MovieAggregateSelection {
-  count: Int!
-  runtime: IntAggregateSelectionNonNullable!
-  title: StringAggregateSelectionNonNullable!
-}
-
-input MovieConnectInput {
-  actors: [ProductionActorsConnectFieldInput!]
-}
-
-input MovieCreateInput {
-  actors: ProductionActorsFieldInput
-  runtime: Int!
-  title: String!
-}
-
-input MovieDeleteInput {
-  actors: [ProductionActorsDeleteFieldInput!]
-}
-
-input MovieDisconnectInput {
-  actors: [ProductionActorsDisconnectFieldInput!]
-}
-
-input MovieOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-  sort: [MovieSort]
-}
-
-input MovieRelationInput {
-  actors: [ProductionActorsCreateFieldInput!]
-}
-
-\\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
-input MovieSort {
-  runtime: SortDirection
-  title: SortDirection
-}
-
-input MovieUpdateInput {
-  actors: [ProductionActorsUpdateFieldInput!]
-  runtime: Int
-  title: String
-}
-
-input MovieWhere {
-  AND: [MovieWhere!]
-  OR: [MovieWhere!]
-  actors: ActorWhere
-  actorsAggregate: MovieActorsAggregateInput
-  actorsConnection: ProductionActorsConnectionWhere
-  actorsConnection_NOT: ProductionActorsConnectionWhere
-  actors_NOT: ActorWhere
-  runtime: Int
-  runtime_GT: Int
-  runtime_GTE: Int
-  runtime_IN: [Int]
-  runtime_LT: Int
-  runtime_LTE: Int
-  runtime_NOT: Int
-  runtime_NOT_IN: [Int]
-  title: String
-  title_CONTAINS: String
-  title_ENDS_WITH: String
-  title_IN: [String]
-  title_NOT: String
-  title_NOT_CONTAINS: String
-  title_NOT_ENDS_WITH: String
-  title_NOT_IN: [String]
-  title_NOT_STARTS_WITH: String
-  title_STARTS_WITH: String
-}
-
-type Mutation {
-  createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
-  createEpisodes(input: [EpisodeCreateInput!]!): CreateEpisodesMutationResponse!
-  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-  createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
-  deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
-  deleteEpisodes(delete: EpisodeDeleteInput, where: EpisodeWhere): DeleteInfo!
-  deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-  deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
-  updateActors(connect: ActorConnectInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-  updateEpisodes(connect: EpisodeConnectInput, create: EpisodeRelationInput, delete: EpisodeDeleteInput, disconnect: EpisodeDisconnectInput, update: EpisodeUpdateInput, where: EpisodeWhere): UpdateEpisodesMutationResponse!
-  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-  updateSeries(connect: SeriesConnectInput, create: SeriesRelationInput, delete: SeriesDeleteInput, disconnect: SeriesDisconnectInput, update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
-}
-
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
-
-interface Production {
-  actors(directed: Boolean, options: ActorOptions, where: ActorWhere): [Actor!]!
-  actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
-  title: String!
-}
-
-input ProductionActorsAggregateInput {
-  AND: [ProductionActorsAggregateInput!]
-  OR: [ProductionActorsAggregateInput!]
-  count: Int
-  count_GT: Int
-  count_GTE: Int
-  count_LT: Int
-  count_LTE: Int
-  edge: ProductionActorsEdgeAggregationWhereInput
-  node: ProductionActorsNodeAggregationWhereInput
-}
-
-input ProductionActorsConnectFieldInput {
-  connect: [ActorConnectInput!]
-  edge: ActedInCreateInput!
-  where: ActorConnectWhere
-}
-
-type ProductionActorsConnection {
-  edges: [ProductionActorsRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-input ProductionActorsConnectionSort {
-  edge: ActedInSort
-  node: ActorSort
-}
-
-input ProductionActorsConnectionWhere {
-  AND: [ProductionActorsConnectionWhere!]
-  OR: [ProductionActorsConnectionWhere!]
-  edge: ActedInWhere
-  edge_NOT: ActedInWhere
-  node: ActorWhere
-  node_NOT: ActorWhere
-}
-
-input ProductionActorsCreateFieldInput {
-  edge: ActedInCreateInput!
-  node: ActorCreateInput!
-}
-
-input ProductionActorsDeleteFieldInput {
-  delete: ActorDeleteInput
-  where: ProductionActorsConnectionWhere
-}
-
-input ProductionActorsDisconnectFieldInput {
-  disconnect: ActorDisconnectInput
-  where: ProductionActorsConnectionWhere
-}
-
-input ProductionActorsEdgeAggregationWhereInput {
-  AND: [ProductionActorsEdgeAggregationWhereInput!]
-  OR: [ProductionActorsEdgeAggregationWhereInput!]
-  screenTime_AVERAGE_EQUAL: Float
-  screenTime_AVERAGE_GT: Float
-  screenTime_AVERAGE_GTE: Float
-  screenTime_AVERAGE_LT: Float
-  screenTime_AVERAGE_LTE: Float
-  screenTime_EQUAL: Int
-  screenTime_GT: Int
-  screenTime_GTE: Int
-  screenTime_LT: Int
-  screenTime_LTE: Int
-  screenTime_MAX_EQUAL: Int
-  screenTime_MAX_GT: Int
-  screenTime_MAX_GTE: Int
-  screenTime_MAX_LT: Int
-  screenTime_MAX_LTE: Int
-  screenTime_MIN_EQUAL: Int
-  screenTime_MIN_GT: Int
-  screenTime_MIN_GTE: Int
-  screenTime_MIN_LT: Int
-  screenTime_MIN_LTE: Int
-  screenTime_SUM_EQUAL: Int
-  screenTime_SUM_GT: Int
-  screenTime_SUM_GTE: Int
-  screenTime_SUM_LT: Int
-  screenTime_SUM_LTE: Int
-}
-
-input ProductionActorsFieldInput {
-  connect: [ProductionActorsConnectFieldInput!]
-  create: [ProductionActorsCreateFieldInput!]
-}
-
-input ProductionActorsNodeAggregationWhereInput {
-  AND: [ProductionActorsNodeAggregationWhereInput!]
-  OR: [ProductionActorsNodeAggregationWhereInput!]
-  name_AVERAGE_EQUAL: Float
-  name_AVERAGE_GT: Float
-  name_AVERAGE_GTE: Float
-  name_AVERAGE_LT: Float
-  name_AVERAGE_LTE: Float
-  name_EQUAL: String
-  name_GT: Int
-  name_GTE: Int
-  name_LONGEST_EQUAL: Int
-  name_LONGEST_GT: Int
-  name_LONGEST_GTE: Int
-  name_LONGEST_LT: Int
-  name_LONGEST_LTE: Int
-  name_LT: Int
-  name_LTE: Int
-  name_SHORTEST_EQUAL: Int
-  name_SHORTEST_GT: Int
-  name_SHORTEST_GTE: Int
-  name_SHORTEST_LT: Int
-  name_SHORTEST_LTE: Int
-}
-
-type ProductionActorsRelationship implements ActedIn {
-  cursor: String!
-  node: Actor!
-  screenTime: Int!
-}
-
-input ProductionActorsUpdateConnectionInput {
-  edge: ActedInUpdateInput
-  node: ActorUpdateInput
-}
-
-input ProductionActorsUpdateFieldInput {
-  connect: [ProductionActorsConnectFieldInput!]
-  create: [ProductionActorsCreateFieldInput!]
-  delete: [ProductionActorsDeleteFieldInput!]
-  disconnect: [ProductionActorsDisconnectFieldInput!]
-  update: ProductionActorsUpdateConnectionInput
-  where: ProductionActorsConnectionWhere
-}
-
-input ProductionConnectInput {
-  _on: ProductionImplementationsConnectInput
-  actors: [ProductionActorsConnectFieldInput!]
-}
-
-input ProductionConnectWhere {
-  node: ProductionWhere!
-}
-
-input ProductionCreateInput {
-  Movie: MovieCreateInput
-  Series: SeriesCreateInput
-}
-
-input ProductionDeleteInput {
-  _on: ProductionImplementationsDeleteInput
-  actors: [ProductionActorsDeleteFieldInput!]
-}
-
-input ProductionDisconnectInput {
-  _on: ProductionImplementationsDisconnectInput
-  actors: [ProductionActorsDisconnectFieldInput!]
-}
-
-input ProductionImplementationsConnectInput {
-  Movie: [MovieConnectInput!]
-  Series: [SeriesConnectInput!]
-}
-
-input ProductionImplementationsDeleteInput {
-  Movie: [MovieDeleteInput!]
-  Series: [SeriesDeleteInput!]
-}
-
-input ProductionImplementationsDisconnectInput {
-  Movie: [MovieDisconnectInput!]
-  Series: [SeriesDisconnectInput!]
-}
-
-input ProductionImplementationsUpdateInput {
-  Movie: MovieUpdateInput
-  Series: SeriesUpdateInput
-}
-
-input ProductionImplementationsWhere {
-  Movie: MovieWhere
-  Series: SeriesWhere
-}
-
-input ProductionUpdateInput {
-  _on: ProductionImplementationsUpdateInput
-  actors: [ProductionActorsUpdateFieldInput!]
-  title: String
-}
-
-input ProductionWhere {
-  _on: ProductionImplementationsWhere
-  actors: ActorWhere
-  actorsAggregate: ProductionActorsAggregateInput
-  actorsConnection: ProductionActorsConnectionWhere
-  actorsConnection_NOT: ProductionActorsConnectionWhere
-  actors_NOT: ActorWhere
-  title: String
-  title_CONTAINS: String
-  title_ENDS_WITH: String
-  title_IN: [String]
-  title_NOT: String
-  title_NOT_CONTAINS: String
-  title_NOT_ENDS_WITH: String
-  title_NOT_IN: [String]
-  title_NOT_STARTS_WITH: String
-  title_STARTS_WITH: String
-}
-
-type Query {
-  actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-  episodes(options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
-  episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection!
-  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-  series(options: SeriesOptions, where: SeriesWhere): [Series!]!
-  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-}
-
-input QueryOptions {
-  limit: Int
-  offset: Int
-}
-
-type Series implements Production {
-  actors(directed: Boolean, options: ActorOptions, where: ActorWhere): [Actor!]!
-  actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection
-  actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
-  episodeCount: Int!
-  episodes(directed: Boolean, options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
-  episodesAggregate(where: EpisodeWhere): SeriesEpisodeEpisodesAggregationSelection
-  episodesConnection(after: String, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
-  title: String!
-}
-
-type SeriesActorActorsAggregationSelection {
-  count: Int!
-  edge: SeriesActorActorsEdgeAggregateSelection
-  node: SeriesActorActorsNodeAggregateSelection
-}
-
-type SeriesActorActorsEdgeAggregateSelection {
-  screenTime: IntAggregateSelectionNonNullable!
-}
-
-type SeriesActorActorsNodeAggregateSelection {
-  name: StringAggregateSelectionNonNullable!
-}
-
-input SeriesActorsAggregateInput {
-  AND: [SeriesActorsAggregateInput!]
-  OR: [SeriesActorsAggregateInput!]
-  count: Int
-  count_GT: Int
-  count_GTE: Int
-  count_LT: Int
-  count_LTE: Int
-  edge: SeriesActorsEdgeAggregationWhereInput
-  node: SeriesActorsNodeAggregationWhereInput
-}
-
-input SeriesActorsEdgeAggregationWhereInput {
-  AND: [SeriesActorsEdgeAggregationWhereInput!]
-  OR: [SeriesActorsEdgeAggregationWhereInput!]
-  screenTime_AVERAGE_EQUAL: Float
-  screenTime_AVERAGE_GT: Float
-  screenTime_AVERAGE_GTE: Float
-  screenTime_AVERAGE_LT: Float
-  screenTime_AVERAGE_LTE: Float
-  screenTime_EQUAL: Int
-  screenTime_GT: Int
-  screenTime_GTE: Int
-  screenTime_LT: Int
-  screenTime_LTE: Int
-  screenTime_MAX_EQUAL: Int
-  screenTime_MAX_GT: Int
-  screenTime_MAX_GTE: Int
-  screenTime_MAX_LT: Int
-  screenTime_MAX_LTE: Int
-  screenTime_MIN_EQUAL: Int
-  screenTime_MIN_GT: Int
-  screenTime_MIN_GTE: Int
-  screenTime_MIN_LT: Int
-  screenTime_MIN_LTE: Int
-  screenTime_SUM_EQUAL: Int
-  screenTime_SUM_GT: Int
-  screenTime_SUM_GTE: Int
-  screenTime_SUM_LT: Int
-  screenTime_SUM_LTE: Int
-}
-
-input SeriesActorsNodeAggregationWhereInput {
-  AND: [SeriesActorsNodeAggregationWhereInput!]
-  OR: [SeriesActorsNodeAggregationWhereInput!]
-  name_AVERAGE_EQUAL: Float
-  name_AVERAGE_GT: Float
-  name_AVERAGE_GTE: Float
-  name_AVERAGE_LT: Float
-  name_AVERAGE_LTE: Float
-  name_EQUAL: String
-  name_GT: Int
-  name_GTE: Int
-  name_LONGEST_EQUAL: Int
-  name_LONGEST_GT: Int
-  name_LONGEST_GTE: Int
-  name_LONGEST_LT: Int
-  name_LONGEST_LTE: Int
-  name_LT: Int
-  name_LTE: Int
-  name_SHORTEST_EQUAL: Int
-  name_SHORTEST_GT: Int
-  name_SHORTEST_GTE: Int
-  name_SHORTEST_LT: Int
-  name_SHORTEST_LTE: Int
-}
-
-type SeriesAggregateSelection {
-  count: Int!
-  episodeCount: IntAggregateSelectionNonNullable!
-  title: StringAggregateSelectionNonNullable!
-}
-
-input SeriesConnectInput {
-  actors: [ProductionActorsConnectFieldInput!]
-  episodes: [SeriesEpisodesConnectFieldInput!]
-}
-
-input SeriesConnectWhere {
-  node: SeriesWhere!
-}
-
-input SeriesCreateInput {
-  actors: ProductionActorsFieldInput
-  episodeCount: Int!
-  episodes: SeriesEpisodesFieldInput
-  title: String!
-}
-
-input SeriesDeleteInput {
-  actors: [ProductionActorsDeleteFieldInput!]
-  episodes: [SeriesEpisodesDeleteFieldInput!]
-}
-
-input SeriesDisconnectInput {
-  actors: [ProductionActorsDisconnectFieldInput!]
-  episodes: [SeriesEpisodesDisconnectFieldInput!]
-}
-
-type SeriesEpisodeEpisodesAggregationSelection {
-  count: Int!
-  node: SeriesEpisodeEpisodesNodeAggregateSelection
-}
-
-type SeriesEpisodeEpisodesNodeAggregateSelection {
-  runtime: IntAggregateSelectionNonNullable!
-}
-
-input SeriesEpisodesAggregateInput {
-  AND: [SeriesEpisodesAggregateInput!]
-  OR: [SeriesEpisodesAggregateInput!]
-  count: Int
-  count_GT: Int
-  count_GTE: Int
-  count_LT: Int
-  count_LTE: Int
-  node: SeriesEpisodesNodeAggregationWhereInput
-}
-
-input SeriesEpisodesConnectFieldInput {
-  connect: [EpisodeConnectInput!]
-  where: EpisodeConnectWhere
-}
-
-type SeriesEpisodesConnection {
-  edges: [SeriesEpisodesRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-input SeriesEpisodesConnectionSort {
-  node: EpisodeSort
-}
-
-input SeriesEpisodesConnectionWhere {
-  AND: [SeriesEpisodesConnectionWhere!]
-  OR: [SeriesEpisodesConnectionWhere!]
-  node: EpisodeWhere
-  node_NOT: EpisodeWhere
-}
-
-input SeriesEpisodesCreateFieldInput {
-  node: EpisodeCreateInput!
-}
-
-input SeriesEpisodesDeleteFieldInput {
-  delete: EpisodeDeleteInput
-  where: SeriesEpisodesConnectionWhere
-}
-
-input SeriesEpisodesDisconnectFieldInput {
-  disconnect: EpisodeDisconnectInput
-  where: SeriesEpisodesConnectionWhere
-}
-
-input SeriesEpisodesFieldInput {
-  connect: [SeriesEpisodesConnectFieldInput!]
-  create: [SeriesEpisodesCreateFieldInput!]
-}
-
-input SeriesEpisodesNodeAggregationWhereInput {
-  AND: [SeriesEpisodesNodeAggregationWhereInput!]
-  OR: [SeriesEpisodesNodeAggregationWhereInput!]
-  runtime_AVERAGE_EQUAL: Float
-  runtime_AVERAGE_GT: Float
-  runtime_AVERAGE_GTE: Float
-  runtime_AVERAGE_LT: Float
-  runtime_AVERAGE_LTE: Float
-  runtime_EQUAL: Int
-  runtime_GT: Int
-  runtime_GTE: Int
-  runtime_LT: Int
-  runtime_LTE: Int
-  runtime_MAX_EQUAL: Int
-  runtime_MAX_GT: Int
-  runtime_MAX_GTE: Int
-  runtime_MAX_LT: Int
-  runtime_MAX_LTE: Int
-  runtime_MIN_EQUAL: Int
-  runtime_MIN_GT: Int
-  runtime_MIN_GTE: Int
-  runtime_MIN_LT: Int
-  runtime_MIN_LTE: Int
-  runtime_SUM_EQUAL: Int
-  runtime_SUM_GT: Int
-  runtime_SUM_GTE: Int
-  runtime_SUM_LT: Int
-  runtime_SUM_LTE: Int
-}
-
-type SeriesEpisodesRelationship {
-  cursor: String!
-  node: Episode!
-}
-
-input SeriesEpisodesUpdateConnectionInput {
-  node: EpisodeUpdateInput
-}
-
-input SeriesEpisodesUpdateFieldInput {
-  connect: [SeriesEpisodesConnectFieldInput!]
-  create: [SeriesEpisodesCreateFieldInput!]
-  delete: [SeriesEpisodesDeleteFieldInput!]
-  disconnect: [SeriesEpisodesDisconnectFieldInput!]
-  update: SeriesEpisodesUpdateConnectionInput
-  where: SeriesEpisodesConnectionWhere
-}
-
-input SeriesOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-  sort: [SeriesSort]
-}
-
-input SeriesRelationInput {
-  actors: [ProductionActorsCreateFieldInput!]
-  episodes: [SeriesEpisodesCreateFieldInput!]
-}
-
-\\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"
-input SeriesSort {
-  episodeCount: SortDirection
-  title: SortDirection
-}
-
-input SeriesUpdateInput {
-  actors: [ProductionActorsUpdateFieldInput!]
-  episodeCount: Int
-  episodes: [SeriesEpisodesUpdateFieldInput!]
-  title: String
-}
-
-input SeriesWhere {
-  AND: [SeriesWhere!]
-  OR: [SeriesWhere!]
-  actors: ActorWhere
-  actorsAggregate: SeriesActorsAggregateInput
-  actorsConnection: ProductionActorsConnectionWhere
-  actorsConnection_NOT: ProductionActorsConnectionWhere
-  actors_NOT: ActorWhere
-  episodeCount: Int
-  episodeCount_GT: Int
-  episodeCount_GTE: Int
-  episodeCount_IN: [Int]
-  episodeCount_LT: Int
-  episodeCount_LTE: Int
-  episodeCount_NOT: Int
-  episodeCount_NOT_IN: [Int]
-  episodes: EpisodeWhere
-  episodesAggregate: SeriesEpisodesAggregateInput
-  episodesConnection: SeriesEpisodesConnectionWhere
-  episodesConnection_NOT: SeriesEpisodesConnectionWhere
-  episodes_NOT: EpisodeWhere
-  title: String
-  title_CONTAINS: String
-  title_ENDS_WITH: String
-  title_IN: [String]
-  title_NOT: String
-  title_NOT_CONTAINS: String
-  title_NOT_ENDS_WITH: String
-  title_NOT_IN: [String]
-  title_NOT_STARTS_WITH: String
-  title_STARTS_WITH: String
-}
-
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
-
-type StringAggregateSelectionNonNullable {
-  longest: String!
-  shortest: String!
-}
-
-type UpdateActorsMutationResponse {
-  actors: [Actor!]!
-  info: UpdateInfo!
-}
-
-type UpdateEpisodesMutationResponse {
-  episodes: [Episode!]!
-  info: UpdateInfo!
-}
-
-type UpdateInfo {
-  bookmark: String
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
-
-type UpdateMoviesMutationResponse {
-  info: UpdateInfo!
-  movies: [Movie!]!
-}
-
-type UpdateSeriesMutationResponse {
-  info: UpdateInfo!
-  series: [Series!]!
-}
-"
-`);
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            interface ActedIn {
+              screenTime: Int!
+            }
+
+            input ActedInCreateInput {
+              screenTime: Int!
+            }
+
+            input ActedInSort {
+              screenTime: SortDirection
+            }
+
+            input ActedInUpdateInput {
+              screenTime: Int
+            }
+
+            input ActedInWhere {
+              AND: [ActedInWhere!]
+              OR: [ActedInWhere!]
+              screenTime: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_IN: [Int]
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_NOT: Int
+              screenTime_NOT_IN: [Int]
+            }
+
+            type Actor {
+              actedIn(directed: Boolean, options: QueryOptions, where: ProductionWhere): [Production!]!
+              actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              name: String!
+            }
+
+            input ActorActedInConnectFieldInput {
+              connect: ProductionConnectInput
+              edge: ActedInCreateInput!
+              where: ProductionConnectWhere
+            }
+
+            type ActorActedInConnection {
+              edges: [ActorActedInRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ActorActedInConnectionSort {
+              edge: ActedInSort
+            }
+
+            input ActorActedInConnectionWhere {
+              AND: [ActorActedInConnectionWhere!]
+              OR: [ActorActedInConnectionWhere!]
+              edge: ActedInWhere
+              edge_NOT: ActedInWhere
+              node: ProductionWhere
+              node_NOT: ProductionWhere
+            }
+
+            input ActorActedInCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ProductionCreateInput!
+            }
+
+            input ActorActedInDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: ActorActedInConnectionWhere
+            }
+
+            input ActorActedInDisconnectFieldInput {
+              disconnect: ProductionDisconnectInput
+              where: ActorActedInConnectionWhere
+            }
+
+            input ActorActedInFieldInput {
+              connect: [ActorActedInConnectFieldInput!]
+              create: [ActorActedInCreateFieldInput!]
+            }
+
+            type ActorActedInRelationship implements ActedIn {
+              cursor: String!
+              node: Production!
+              screenTime: Int!
+            }
+
+            input ActorActedInUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ProductionUpdateInput
+            }
+
+            input ActorActedInUpdateFieldInput {
+              connect: [ActorActedInConnectFieldInput!]
+              create: [ActorActedInCreateFieldInput!]
+              delete: [ActorActedInDeleteFieldInput!]
+              disconnect: [ActorActedInDisconnectFieldInput!]
+              update: ActorActedInUpdateConnectionInput
+              where: ActorActedInConnectionWhere
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNonNullable!
+            }
+
+            input ActorConnectInput {
+              actedIn: [ActorActedInConnectFieldInput!]
+            }
+
+            input ActorConnectWhere {
+              node: ActorWhere!
+            }
+
+            input ActorCreateInput {
+              actedIn: ActorActedInFieldInput
+              name: String!
+            }
+
+            input ActorDeleteInput {
+              actedIn: [ActorActedInDeleteFieldInput!]
+            }
+
+            input ActorDisconnectInput {
+              actedIn: [ActorActedInDisconnectFieldInput!]
+            }
+
+            input ActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [ActorSort]
+            }
+
+            input ActorRelationInput {
+              actedIn: [ActorActedInCreateFieldInput!]
+            }
+
+            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            input ActorSort {
+              name: SortDirection
+            }
+
+            input ActorUpdateInput {
+              actedIn: [ActorActedInUpdateFieldInput!]
+              name: String
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              OR: [ActorWhere!]
+              actedInConnection: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String
+              name_NOT_CONTAINS: String
+              name_NOT_ENDS_WITH: String
+              name_NOT_IN: [String]
+              name_NOT_STARTS_WITH: String
+              name_STARTS_WITH: String
+            }
+
+            type CreateActorsMutationResponse {
+              actors: [Actor!]!
+              info: CreateInfo!
+            }
+
+            type CreateEpisodesMutationResponse {
+              episodes: [Episode!]!
+              info: CreateInfo!
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            type CreateSeriesMutationResponse {
+              info: CreateInfo!
+              series: [Series!]!
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type Episode {
+              runtime: Int!
+              series(directed: Boolean, options: SeriesOptions, where: SeriesWhere): Series!
+              seriesAggregate(where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection
+              seriesConnection(after: String, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
+            }
+
+            type EpisodeAggregateSelection {
+              count: Int!
+              runtime: IntAggregateSelectionNonNullable!
+            }
+
+            input EpisodeConnectInput {
+              series: EpisodeSeriesConnectFieldInput
+            }
+
+            input EpisodeConnectWhere {
+              node: EpisodeWhere!
+            }
+
+            input EpisodeCreateInput {
+              runtime: Int!
+              series: EpisodeSeriesFieldInput
+            }
+
+            input EpisodeDeleteInput {
+              series: EpisodeSeriesDeleteFieldInput
+            }
+
+            input EpisodeDisconnectInput {
+              series: EpisodeSeriesDisconnectFieldInput
+            }
+
+            input EpisodeOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [EpisodeSort]
+            }
+
+            input EpisodeRelationInput {
+              series: EpisodeSeriesCreateFieldInput
+            }
+
+            input EpisodeSeriesAggregateInput {
+              AND: [EpisodeSeriesAggregateInput!]
+              OR: [EpisodeSeriesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: EpisodeSeriesNodeAggregationWhereInput
+            }
+
+            input EpisodeSeriesConnectFieldInput {
+              connect: SeriesConnectInput
+              where: SeriesConnectWhere
+            }
+
+            type EpisodeSeriesConnection {
+              edges: [EpisodeSeriesRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input EpisodeSeriesConnectionSort {
+              node: SeriesSort
+            }
+
+            input EpisodeSeriesConnectionWhere {
+              AND: [EpisodeSeriesConnectionWhere!]
+              OR: [EpisodeSeriesConnectionWhere!]
+              node: SeriesWhere
+              node_NOT: SeriesWhere
+            }
+
+            input EpisodeSeriesCreateFieldInput {
+              node: SeriesCreateInput!
+            }
+
+            input EpisodeSeriesDeleteFieldInput {
+              delete: SeriesDeleteInput
+              where: EpisodeSeriesConnectionWhere
+            }
+
+            input EpisodeSeriesDisconnectFieldInput {
+              disconnect: SeriesDisconnectInput
+              where: EpisodeSeriesConnectionWhere
+            }
+
+            input EpisodeSeriesFieldInput {
+              connect: EpisodeSeriesConnectFieldInput
+              create: EpisodeSeriesCreateFieldInput
+            }
+
+            input EpisodeSeriesNodeAggregationWhereInput {
+              AND: [EpisodeSeriesNodeAggregationWhereInput!]
+              OR: [EpisodeSeriesNodeAggregationWhereInput!]
+              episodeCount_AVERAGE_EQUAL: Float
+              episodeCount_AVERAGE_GT: Float
+              episodeCount_AVERAGE_GTE: Float
+              episodeCount_AVERAGE_LT: Float
+              episodeCount_AVERAGE_LTE: Float
+              episodeCount_EQUAL: Int
+              episodeCount_GT: Int
+              episodeCount_GTE: Int
+              episodeCount_LT: Int
+              episodeCount_LTE: Int
+              episodeCount_MAX_EQUAL: Int
+              episodeCount_MAX_GT: Int
+              episodeCount_MAX_GTE: Int
+              episodeCount_MAX_LT: Int
+              episodeCount_MAX_LTE: Int
+              episodeCount_MIN_EQUAL: Int
+              episodeCount_MIN_GT: Int
+              episodeCount_MIN_GTE: Int
+              episodeCount_MIN_LT: Int
+              episodeCount_MIN_LTE: Int
+              episodeCount_SUM_EQUAL: Int
+              episodeCount_SUM_GT: Int
+              episodeCount_SUM_GTE: Int
+              episodeCount_SUM_LT: Int
+              episodeCount_SUM_LTE: Int
+              title_AVERAGE_EQUAL: Float
+              title_AVERAGE_GT: Float
+              title_AVERAGE_GTE: Float
+              title_AVERAGE_LT: Float
+              title_AVERAGE_LTE: Float
+              title_EQUAL: String
+              title_GT: Int
+              title_GTE: Int
+              title_LONGEST_EQUAL: Int
+              title_LONGEST_GT: Int
+              title_LONGEST_GTE: Int
+              title_LONGEST_LT: Int
+              title_LONGEST_LTE: Int
+              title_LT: Int
+              title_LTE: Int
+              title_SHORTEST_EQUAL: Int
+              title_SHORTEST_GT: Int
+              title_SHORTEST_GTE: Int
+              title_SHORTEST_LT: Int
+              title_SHORTEST_LTE: Int
+            }
+
+            type EpisodeSeriesRelationship {
+              cursor: String!
+              node: Series!
+            }
+
+            type EpisodeSeriesSeriesAggregationSelection {
+              count: Int!
+              node: EpisodeSeriesSeriesNodeAggregateSelection
+            }
+
+            type EpisodeSeriesSeriesNodeAggregateSelection {
+              episodeCount: IntAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
+            }
+
+            input EpisodeSeriesUpdateConnectionInput {
+              node: SeriesUpdateInput
+            }
+
+            input EpisodeSeriesUpdateFieldInput {
+              connect: EpisodeSeriesConnectFieldInput
+              create: EpisodeSeriesCreateFieldInput
+              delete: EpisodeSeriesDeleteFieldInput
+              disconnect: EpisodeSeriesDisconnectFieldInput
+              update: EpisodeSeriesUpdateConnectionInput
+              where: EpisodeSeriesConnectionWhere
+            }
+
+            \\"\\"\\"Fields to sort Episodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one EpisodeSort object.\\"\\"\\"
+            input EpisodeSort {
+              runtime: SortDirection
+            }
+
+            input EpisodeUpdateInput {
+              runtime: Int
+              series: EpisodeSeriesUpdateFieldInput
+            }
+
+            input EpisodeWhere {
+              AND: [EpisodeWhere!]
+              OR: [EpisodeWhere!]
+              runtime: Int
+              runtime_GT: Int
+              runtime_GTE: Int
+              runtime_IN: [Int]
+              runtime_LT: Int
+              runtime_LTE: Int
+              runtime_NOT: Int
+              runtime_NOT_IN: [Int]
+              series: SeriesWhere
+              seriesAggregate: EpisodeSeriesAggregateInput
+              seriesConnection: EpisodeSeriesConnectionWhere
+              seriesConnection_NOT: EpisodeSeriesConnectionWhere
+              series_NOT: SeriesWhere
+            }
+
+            type IntAggregateSelectionNonNullable {
+              average: Float!
+              max: Int!
+              min: Int!
+              sum: Int!
+            }
+
+            type Movie implements Production {
+              actors(directed: Boolean, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              runtime: Int!
+              title: String!
+            }
+
+            type MovieActorActorsAggregationSelection {
+              count: Int!
+              edge: MovieActorActorsEdgeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
+            type MovieActorActorsEdgeAggregateSelection {
+              screenTime: IntAggregateSelectionNonNullable!
+            }
+
+            type MovieActorActorsNodeAggregateSelection {
+              name: StringAggregateSelectionNonNullable!
+            }
+
+            input MovieActorsAggregateInput {
+              AND: [MovieActorsAggregateInput!]
+              OR: [MovieActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: MovieActorsEdgeAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
+            input MovieActorsEdgeAggregationWhereInput {
+              AND: [MovieActorsEdgeAggregationWhereInput!]
+              OR: [MovieActorsEdgeAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
+            }
+
+            input MovieActorsNodeAggregationWhereInput {
+              AND: [MovieActorsNodeAggregationWhereInput!]
+              OR: [MovieActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              runtime: IntAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
+            }
+
+            input MovieConnectInput {
+              actors: [ProductionActorsConnectFieldInput!]
+            }
+
+            input MovieCreateInput {
+              actors: ProductionActorsFieldInput
+              runtime: Int!
+              title: String!
+            }
+
+            input MovieDeleteInput {
+              actors: [ProductionActorsDeleteFieldInput!]
+            }
+
+            input MovieDisconnectInput {
+              actors: [ProductionActorsDisconnectFieldInput!]
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [MovieSort]
+            }
+
+            input MovieRelationInput {
+              actors: [ProductionActorsCreateFieldInput!]
+            }
+
+            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            input MovieSort {
+              runtime: SortDirection
+              title: SortDirection
+            }
+
+            input MovieUpdateInput {
+              actors: [ProductionActorsUpdateFieldInput!]
+              runtime: Int
+              title: String
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              OR: [MovieWhere!]
+              actors: ActorWhere
+              actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere
+              actors_NOT: ActorWhere
+              runtime: Int
+              runtime_GT: Int
+              runtime_GTE: Int
+              runtime_IN: [Int]
+              runtime_LT: Int
+              runtime_LTE: Int
+              runtime_NOT: Int
+              runtime_NOT_IN: [Int]
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String
+              title_NOT_CONTAINS: String
+              title_NOT_ENDS_WITH: String
+              title_NOT_IN: [String]
+              title_NOT_STARTS_WITH: String
+              title_STARTS_WITH: String
+            }
+
+            type Mutation {
+              createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+              createEpisodes(input: [EpisodeCreateInput!]!): CreateEpisodesMutationResponse!
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
+              deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
+              deleteEpisodes(delete: EpisodeDeleteInput, where: EpisodeWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+              deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
+              updateActors(connect: ActorConnectInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateEpisodes(connect: EpisodeConnectInput, create: EpisodeRelationInput, delete: EpisodeDeleteInput, disconnect: EpisodeDisconnectInput, update: EpisodeUpdateInput, where: EpisodeWhere): UpdateEpisodesMutationResponse!
+              updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateSeries(connect: SeriesConnectInput, create: SeriesRelationInput, delete: SeriesDeleteInput, disconnect: SeriesDisconnectInput, update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            interface Production {
+              actors(directed: Boolean, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              title: String!
+            }
+
+            input ProductionActorsAggregateInput {
+              AND: [ProductionActorsAggregateInput!]
+              OR: [ProductionActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: ProductionActorsEdgeAggregationWhereInput
+              node: ProductionActorsNodeAggregationWhereInput
+            }
+
+            input ProductionActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ActedInCreateInput!
+              where: ActorConnectWhere
+            }
+
+            type ProductionActorsConnection {
+              edges: [ProductionActorsRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ProductionActorsConnectionSort {
+              edge: ActedInSort
+              node: ActorSort
+            }
+
+            input ProductionActorsConnectionWhere {
+              AND: [ProductionActorsConnectionWhere!]
+              OR: [ProductionActorsConnectionWhere!]
+              edge: ActedInWhere
+              edge_NOT: ActedInWhere
+              node: ActorWhere
+              node_NOT: ActorWhere
+            }
+
+            input ProductionActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
+            }
+
+            input ProductionActorsDeleteFieldInput {
+              delete: ActorDeleteInput
+              where: ProductionActorsConnectionWhere
+            }
+
+            input ProductionActorsDisconnectFieldInput {
+              disconnect: ActorDisconnectInput
+              where: ProductionActorsConnectionWhere
+            }
+
+            input ProductionActorsEdgeAggregationWhereInput {
+              AND: [ProductionActorsEdgeAggregationWhereInput!]
+              OR: [ProductionActorsEdgeAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
+            }
+
+            input ProductionActorsFieldInput {
+              connect: [ProductionActorsConnectFieldInput!]
+              create: [ProductionActorsCreateFieldInput!]
+            }
+
+            input ProductionActorsNodeAggregationWhereInput {
+              AND: [ProductionActorsNodeAggregationWhereInput!]
+              OR: [ProductionActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
+            }
+
+            type ProductionActorsRelationship implements ActedIn {
+              cursor: String!
+              node: Actor!
+              screenTime: Int!
+            }
+
+            input ProductionActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input ProductionActorsUpdateFieldInput {
+              connect: [ProductionActorsConnectFieldInput!]
+              create: [ProductionActorsCreateFieldInput!]
+              delete: [ProductionActorsDeleteFieldInput!]
+              disconnect: [ProductionActorsDisconnectFieldInput!]
+              update: ProductionActorsUpdateConnectionInput
+              where: ProductionActorsConnectionWhere
+            }
+
+            input ProductionConnectInput {
+              _on: ProductionImplementationsConnectInput
+              actors: [ProductionActorsConnectFieldInput!]
+            }
+
+            input ProductionConnectWhere {
+              node: ProductionWhere!
+            }
+
+            input ProductionCreateInput {
+              Movie: MovieCreateInput
+              Series: SeriesCreateInput
+            }
+
+            input ProductionDeleteInput {
+              _on: ProductionImplementationsDeleteInput
+              actors: [ProductionActorsDeleteFieldInput!]
+            }
+
+            input ProductionDisconnectInput {
+              _on: ProductionImplementationsDisconnectInput
+              actors: [ProductionActorsDisconnectFieldInput!]
+            }
+
+            input ProductionImplementationsConnectInput {
+              Movie: [MovieConnectInput!]
+              Series: [SeriesConnectInput!]
+            }
+
+            input ProductionImplementationsDeleteInput {
+              Movie: [MovieDeleteInput!]
+              Series: [SeriesDeleteInput!]
+            }
+
+            input ProductionImplementationsDisconnectInput {
+              Movie: [MovieDisconnectInput!]
+              Series: [SeriesDisconnectInput!]
+            }
+
+            input ProductionImplementationsUpdateInput {
+              Movie: MovieUpdateInput
+              Series: SeriesUpdateInput
+            }
+
+            input ProductionImplementationsWhere {
+              Movie: MovieWhere
+              Series: SeriesWhere
+            }
+
+            input ProductionUpdateInput {
+              _on: ProductionImplementationsUpdateInput
+              actors: [ProductionActorsUpdateFieldInput!]
+              title: String
+            }
+
+            input ProductionWhere {
+              _on: ProductionImplementationsWhere
+              actors: ActorWhere
+              actorsAggregate: ProductionActorsAggregateInput
+              actorsConnection: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere
+              actors_NOT: ActorWhere
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String
+              title_NOT_CONTAINS: String
+              title_NOT_ENDS_WITH: String
+              title_NOT_IN: [String]
+              title_NOT_STARTS_WITH: String
+              title_STARTS_WITH: String
+            }
+
+            type Query {
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              episodes(options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
+              episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection!
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+            }
+
+            input QueryOptions {
+              limit: Int
+              offset: Int
+            }
+
+            type Series implements Production {
+              actors(directed: Boolean, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection
+              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              episodeCount: Int!
+              episodes(directed: Boolean, options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
+              episodesAggregate(where: EpisodeWhere): SeriesEpisodeEpisodesAggregationSelection
+              episodesConnection(after: String, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
+              title: String!
+            }
+
+            type SeriesActorActorsAggregationSelection {
+              count: Int!
+              edge: SeriesActorActorsEdgeAggregateSelection
+              node: SeriesActorActorsNodeAggregateSelection
+            }
+
+            type SeriesActorActorsEdgeAggregateSelection {
+              screenTime: IntAggregateSelectionNonNullable!
+            }
+
+            type SeriesActorActorsNodeAggregateSelection {
+              name: StringAggregateSelectionNonNullable!
+            }
+
+            input SeriesActorsAggregateInput {
+              AND: [SeriesActorsAggregateInput!]
+              OR: [SeriesActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: SeriesActorsEdgeAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
+            input SeriesActorsEdgeAggregationWhereInput {
+              AND: [SeriesActorsEdgeAggregationWhereInput!]
+              OR: [SeriesActorsEdgeAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
+            }
+
+            input SeriesActorsNodeAggregationWhereInput {
+              AND: [SeriesActorsNodeAggregationWhereInput!]
+              OR: [SeriesActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
+            }
+
+            type SeriesAggregateSelection {
+              count: Int!
+              episodeCount: IntAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
+            }
+
+            input SeriesConnectInput {
+              actors: [ProductionActorsConnectFieldInput!]
+              episodes: [SeriesEpisodesConnectFieldInput!]
+            }
+
+            input SeriesConnectWhere {
+              node: SeriesWhere!
+            }
+
+            input SeriesCreateInput {
+              actors: ProductionActorsFieldInput
+              episodeCount: Int!
+              episodes: SeriesEpisodesFieldInput
+              title: String!
+            }
+
+            input SeriesDeleteInput {
+              actors: [ProductionActorsDeleteFieldInput!]
+              episodes: [SeriesEpisodesDeleteFieldInput!]
+            }
+
+            input SeriesDisconnectInput {
+              actors: [ProductionActorsDisconnectFieldInput!]
+              episodes: [SeriesEpisodesDisconnectFieldInput!]
+            }
+
+            type SeriesEpisodeEpisodesAggregationSelection {
+              count: Int!
+              node: SeriesEpisodeEpisodesNodeAggregateSelection
+            }
+
+            type SeriesEpisodeEpisodesNodeAggregateSelection {
+              runtime: IntAggregateSelectionNonNullable!
+            }
+
+            input SeriesEpisodesAggregateInput {
+              AND: [SeriesEpisodesAggregateInput!]
+              OR: [SeriesEpisodesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: SeriesEpisodesNodeAggregationWhereInput
+            }
+
+            input SeriesEpisodesConnectFieldInput {
+              connect: [EpisodeConnectInput!]
+              where: EpisodeConnectWhere
+            }
+
+            type SeriesEpisodesConnection {
+              edges: [SeriesEpisodesRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input SeriesEpisodesConnectionSort {
+              node: EpisodeSort
+            }
+
+            input SeriesEpisodesConnectionWhere {
+              AND: [SeriesEpisodesConnectionWhere!]
+              OR: [SeriesEpisodesConnectionWhere!]
+              node: EpisodeWhere
+              node_NOT: EpisodeWhere
+            }
+
+            input SeriesEpisodesCreateFieldInput {
+              node: EpisodeCreateInput!
+            }
+
+            input SeriesEpisodesDeleteFieldInput {
+              delete: EpisodeDeleteInput
+              where: SeriesEpisodesConnectionWhere
+            }
+
+            input SeriesEpisodesDisconnectFieldInput {
+              disconnect: EpisodeDisconnectInput
+              where: SeriesEpisodesConnectionWhere
+            }
+
+            input SeriesEpisodesFieldInput {
+              connect: [SeriesEpisodesConnectFieldInput!]
+              create: [SeriesEpisodesCreateFieldInput!]
+            }
+
+            input SeriesEpisodesNodeAggregationWhereInput {
+              AND: [SeriesEpisodesNodeAggregationWhereInput!]
+              OR: [SeriesEpisodesNodeAggregationWhereInput!]
+              runtime_AVERAGE_EQUAL: Float
+              runtime_AVERAGE_GT: Float
+              runtime_AVERAGE_GTE: Float
+              runtime_AVERAGE_LT: Float
+              runtime_AVERAGE_LTE: Float
+              runtime_EQUAL: Int
+              runtime_GT: Int
+              runtime_GTE: Int
+              runtime_LT: Int
+              runtime_LTE: Int
+              runtime_MAX_EQUAL: Int
+              runtime_MAX_GT: Int
+              runtime_MAX_GTE: Int
+              runtime_MAX_LT: Int
+              runtime_MAX_LTE: Int
+              runtime_MIN_EQUAL: Int
+              runtime_MIN_GT: Int
+              runtime_MIN_GTE: Int
+              runtime_MIN_LT: Int
+              runtime_MIN_LTE: Int
+              runtime_SUM_EQUAL: Int
+              runtime_SUM_GT: Int
+              runtime_SUM_GTE: Int
+              runtime_SUM_LT: Int
+              runtime_SUM_LTE: Int
+            }
+
+            type SeriesEpisodesRelationship {
+              cursor: String!
+              node: Episode!
+            }
+
+            input SeriesEpisodesUpdateConnectionInput {
+              node: EpisodeUpdateInput
+            }
+
+            input SeriesEpisodesUpdateFieldInput {
+              connect: [SeriesEpisodesConnectFieldInput!]
+              create: [SeriesEpisodesCreateFieldInput!]
+              delete: [SeriesEpisodesDeleteFieldInput!]
+              disconnect: [SeriesEpisodesDisconnectFieldInput!]
+              update: SeriesEpisodesUpdateConnectionInput
+              where: SeriesEpisodesConnectionWhere
+            }
+
+            input SeriesOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [SeriesSort]
+            }
+
+            input SeriesRelationInput {
+              actors: [ProductionActorsCreateFieldInput!]
+              episodes: [SeriesEpisodesCreateFieldInput!]
+            }
+
+            \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"
+            input SeriesSort {
+              episodeCount: SortDirection
+              title: SortDirection
+            }
+
+            input SeriesUpdateInput {
+              actors: [ProductionActorsUpdateFieldInput!]
+              episodeCount: Int
+              episodes: [SeriesEpisodesUpdateFieldInput!]
+              title: String
+            }
+
+            input SeriesWhere {
+              AND: [SeriesWhere!]
+              OR: [SeriesWhere!]
+              actors: ActorWhere
+              actorsAggregate: SeriesActorsAggregateInput
+              actorsConnection: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere
+              actors_NOT: ActorWhere
+              episodeCount: Int
+              episodeCount_GT: Int
+              episodeCount_GTE: Int
+              episodeCount_IN: [Int]
+              episodeCount_LT: Int
+              episodeCount_LTE: Int
+              episodeCount_NOT: Int
+              episodeCount_NOT_IN: [Int]
+              episodes: EpisodeWhere
+              episodesAggregate: SeriesEpisodesAggregateInput
+              episodesConnection: SeriesEpisodesConnectionWhere
+              episodesConnection_NOT: SeriesEpisodesConnectionWhere
+              episodes_NOT: EpisodeWhere
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String
+              title_NOT_CONTAINS: String
+              title_NOT_ENDS_WITH: String
+              title_NOT_IN: [String]
+              title_NOT_STARTS_WITH: String
+              title_STARTS_WITH: String
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
+
+            type UpdateActorsMutationResponse {
+              actors: [Actor!]!
+              info: UpdateInfo!
+            }
+
+            type UpdateEpisodesMutationResponse {
+              episodes: [Episode!]!
+              info: UpdateInfo!
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }
+
+            type UpdateSeriesMutationResponse {
+              info: UpdateInfo!
+              series: [Series!]!
+            }
+            "
+        `);
     });
 
     test("Interface Relationships - nested interface relationships", () => {
@@ -1757,7 +1757,7 @@ type UpdateSeriesMutationResponse {
 
             interface Interface1 {
               field1: String!
-              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
+              interface2(directed: Boolean, options: QueryOptions, where: Interface2Where): [Interface2!]!
               interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -1985,7 +1985,7 @@ type UpdateSeriesMutationResponse {
 
             type Type1 {
               field1: String!
-              interface1(options: QueryOptions, where: Interface1Where): [Interface1!]!
+              interface1(directed: Boolean, options: QueryOptions, where: Interface1Where): [Interface1!]!
               interface1Connection(where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
@@ -2013,7 +2013,7 @@ type UpdateSeriesMutationResponse {
 
             type Type1Interface1 implements Interface1 {
               field1: String!
-              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
+              interface2(directed: Boolean, options: QueryOptions, where: Interface2Where): [Interface2!]!
               interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -2245,7 +2245,7 @@ type UpdateSeriesMutationResponse {
 
             type Type2Interface1 implements Interface1 {
               field1: String!
-              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
+              interface2(directed: Boolean, options: QueryOptions, where: Interface2Where): [Interface2!]!
               interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -2456,952 +2456,952 @@ type UpdateSeriesMutationResponse {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
-
-type Comment implements Content {
-  content: String
-  creator(directed: Boolean, options: UserOptions, where: UserWhere): User
-  creatorAggregate(where: UserWhere): CommentUserCreatorAggregationSelection
-  creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
-  id: ID
-  post(directed: Boolean, options: PostOptions, where: PostWhere): Post
-  postAggregate(where: PostWhere): CommentPostPostAggregationSelection
-  postConnection(after: String, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
-}
-
-type CommentAggregateSelection {
-  content: StringAggregateSelectionNullable!
-  count: Int!
-  id: IDAggregateSelectionNullable!
-}
-
-input CommentConnectInput {
-  creator: ContentCreatorConnectFieldInput
-  post: CommentPostConnectFieldInput
-}
-
-input CommentConnectWhere {
-  node: CommentWhere!
-}
-
-input CommentCreateInput {
-  content: String
-  creator: ContentCreatorFieldInput
-  id: ID
-  post: CommentPostFieldInput
-}
-
-input CommentCreatorAggregateInput {
-  AND: [CommentCreatorAggregateInput!]
-  OR: [CommentCreatorAggregateInput!]
-  count: Int
-  count_GT: Int
-  count_GTE: Int
-  count_LT: Int
-  count_LTE: Int
-  node: CommentCreatorNodeAggregationWhereInput
-}
-
-input CommentCreatorNodeAggregationWhereInput {
-  AND: [CommentCreatorNodeAggregationWhereInput!]
-  OR: [CommentCreatorNodeAggregationWhereInput!]
-  id_EQUAL: ID
-  name_AVERAGE_EQUAL: Float
-  name_AVERAGE_GT: Float
-  name_AVERAGE_GTE: Float
-  name_AVERAGE_LT: Float
-  name_AVERAGE_LTE: Float
-  name_EQUAL: String
-  name_GT: Int
-  name_GTE: Int
-  name_LONGEST_EQUAL: Int
-  name_LONGEST_GT: Int
-  name_LONGEST_GTE: Int
-  name_LONGEST_LT: Int
-  name_LONGEST_LTE: Int
-  name_LT: Int
-  name_LTE: Int
-  name_SHORTEST_EQUAL: Int
-  name_SHORTEST_GT: Int
-  name_SHORTEST_GTE: Int
-  name_SHORTEST_LT: Int
-  name_SHORTEST_LTE: Int
-}
-
-input CommentDeleteInput {
-  creator: ContentCreatorDeleteFieldInput
-  post: CommentPostDeleteFieldInput
-}
-
-input CommentDisconnectInput {
-  creator: ContentCreatorDisconnectFieldInput
-  post: CommentPostDisconnectFieldInput
-}
-
-input CommentOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"Specify one or more CommentSort objects to sort Comments by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-  sort: [CommentSort]
-}
-
-input CommentPostAggregateInput {
-  AND: [CommentPostAggregateInput!]
-  OR: [CommentPostAggregateInput!]
-  count: Int
-  count_GT: Int
-  count_GTE: Int
-  count_LT: Int
-  count_LTE: Int
-  node: CommentPostNodeAggregationWhereInput
-}
-
-input CommentPostConnectFieldInput {
-  connect: PostConnectInput
-  where: PostConnectWhere
-}
-
-type CommentPostConnection {
-  edges: [CommentPostRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-input CommentPostConnectionSort {
-  node: PostSort
-}
-
-input CommentPostConnectionWhere {
-  AND: [CommentPostConnectionWhere!]
-  OR: [CommentPostConnectionWhere!]
-  node: PostWhere
-  node_NOT: PostWhere
-}
-
-input CommentPostCreateFieldInput {
-  node: PostCreateInput!
-}
-
-input CommentPostDeleteFieldInput {
-  delete: PostDeleteInput
-  where: CommentPostConnectionWhere
-}
-
-input CommentPostDisconnectFieldInput {
-  disconnect: PostDisconnectInput
-  where: CommentPostConnectionWhere
-}
-
-input CommentPostFieldInput {
-  connect: CommentPostConnectFieldInput
-  create: CommentPostCreateFieldInput
-}
-
-input CommentPostNodeAggregationWhereInput {
-  AND: [CommentPostNodeAggregationWhereInput!]
-  OR: [CommentPostNodeAggregationWhereInput!]
-  content_AVERAGE_EQUAL: Float
-  content_AVERAGE_GT: Float
-  content_AVERAGE_GTE: Float
-  content_AVERAGE_LT: Float
-  content_AVERAGE_LTE: Float
-  content_EQUAL: String
-  content_GT: Int
-  content_GTE: Int
-  content_LONGEST_EQUAL: Int
-  content_LONGEST_GT: Int
-  content_LONGEST_GTE: Int
-  content_LONGEST_LT: Int
-  content_LONGEST_LTE: Int
-  content_LT: Int
-  content_LTE: Int
-  content_SHORTEST_EQUAL: Int
-  content_SHORTEST_GT: Int
-  content_SHORTEST_GTE: Int
-  content_SHORTEST_LT: Int
-  content_SHORTEST_LTE: Int
-  id_EQUAL: ID
-}
-
-type CommentPostPostAggregationSelection {
-  count: Int!
-  node: CommentPostPostNodeAggregateSelection
-}
-
-type CommentPostPostNodeAggregateSelection {
-  content: StringAggregateSelectionNullable!
-  id: IDAggregateSelectionNullable!
-}
-
-type CommentPostRelationship {
-  cursor: String!
-  node: Post!
-}
-
-input CommentPostUpdateConnectionInput {
-  node: PostUpdateInput
-}
-
-input CommentPostUpdateFieldInput {
-  connect: CommentPostConnectFieldInput
-  create: CommentPostCreateFieldInput
-  delete: CommentPostDeleteFieldInput
-  disconnect: CommentPostDisconnectFieldInput
-  update: CommentPostUpdateConnectionInput
-  where: CommentPostConnectionWhere
-}
-
-input CommentRelationInput {
-  creator: ContentCreatorCreateFieldInput
-  post: CommentPostCreateFieldInput
-}
-
-\\"\\"\\"Fields to sort Comments by. The order in which sorts are applied is not guaranteed when specifying many fields in one CommentSort object.\\"\\"\\"
-input CommentSort {
-  content: SortDirection
-  id: SortDirection
-}
-
-input CommentUpdateInput {
-  content: String
-  creator: ContentCreatorUpdateFieldInput
-  id: ID
-  post: CommentPostUpdateFieldInput
-}
-
-type CommentUserCreatorAggregationSelection {
-  count: Int!
-  node: CommentUserCreatorNodeAggregateSelection
-}
-
-type CommentUserCreatorNodeAggregateSelection {
-  id: IDAggregateSelectionNullable!
-  name: StringAggregateSelectionNullable!
-}
-
-input CommentWhere {
-  AND: [CommentWhere!]
-  OR: [CommentWhere!]
-  content: String
-  content_CONTAINS: String
-  content_ENDS_WITH: String
-  content_IN: [String]
-  content_NOT: String
-  content_NOT_CONTAINS: String
-  content_NOT_ENDS_WITH: String
-  content_NOT_IN: [String]
-  content_NOT_STARTS_WITH: String
-  content_STARTS_WITH: String
-  creator: UserWhere
-  creatorAggregate: CommentCreatorAggregateInput
-  creatorConnection: ContentCreatorConnectionWhere
-  creatorConnection_NOT: ContentCreatorConnectionWhere
-  creator_NOT: UserWhere
-  id: ID
-  id_CONTAINS: ID
-  id_ENDS_WITH: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_CONTAINS: ID
-  id_NOT_ENDS_WITH: ID
-  id_NOT_IN: [ID]
-  id_NOT_STARTS_WITH: ID
-  id_STARTS_WITH: ID
-  post: PostWhere
-  postAggregate: CommentPostAggregateInput
-  postConnection: CommentPostConnectionWhere
-  postConnection_NOT: CommentPostConnectionWhere
-  post_NOT: PostWhere
-}
-
-interface Content {
-  content: String
-  creator(directed: Boolean, options: UserOptions, where: UserWhere): User
-  creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
-  id: ID
-}
-
-input ContentConnectInput {
-  _on: ContentImplementationsConnectInput
-  creator: ContentCreatorConnectFieldInput
-}
-
-input ContentConnectWhere {
-  node: ContentWhere!
-}
-
-input ContentCreateInput {
-  Comment: CommentCreateInput
-  Post: PostCreateInput
-}
-
-input ContentCreatorAggregateInput {
-  AND: [ContentCreatorAggregateInput!]
-  OR: [ContentCreatorAggregateInput!]
-  count: Int
-  count_GT: Int
-  count_GTE: Int
-  count_LT: Int
-  count_LTE: Int
-  node: ContentCreatorNodeAggregationWhereInput
-}
-
-input ContentCreatorConnectFieldInput {
-  connect: UserConnectInput
-  where: UserConnectWhere
-}
-
-type ContentCreatorConnection {
-  edges: [ContentCreatorRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-input ContentCreatorConnectionSort {
-  node: UserSort
-}
-
-input ContentCreatorConnectionWhere {
-  AND: [ContentCreatorConnectionWhere!]
-  OR: [ContentCreatorConnectionWhere!]
-  node: UserWhere
-  node_NOT: UserWhere
-}
-
-input ContentCreatorCreateFieldInput {
-  node: UserCreateInput!
-}
-
-input ContentCreatorDeleteFieldInput {
-  delete: UserDeleteInput
-  where: ContentCreatorConnectionWhere
-}
-
-input ContentCreatorDisconnectFieldInput {
-  disconnect: UserDisconnectInput
-  where: ContentCreatorConnectionWhere
-}
-
-input ContentCreatorFieldInput {
-  connect: ContentCreatorConnectFieldInput
-  create: ContentCreatorCreateFieldInput
-}
-
-input ContentCreatorNodeAggregationWhereInput {
-  AND: [ContentCreatorNodeAggregationWhereInput!]
-  OR: [ContentCreatorNodeAggregationWhereInput!]
-  id_EQUAL: ID
-  name_AVERAGE_EQUAL: Float
-  name_AVERAGE_GT: Float
-  name_AVERAGE_GTE: Float
-  name_AVERAGE_LT: Float
-  name_AVERAGE_LTE: Float
-  name_EQUAL: String
-  name_GT: Int
-  name_GTE: Int
-  name_LONGEST_EQUAL: Int
-  name_LONGEST_GT: Int
-  name_LONGEST_GTE: Int
-  name_LONGEST_LT: Int
-  name_LONGEST_LTE: Int
-  name_LT: Int
-  name_LTE: Int
-  name_SHORTEST_EQUAL: Int
-  name_SHORTEST_GT: Int
-  name_SHORTEST_GTE: Int
-  name_SHORTEST_LT: Int
-  name_SHORTEST_LTE: Int
-}
-
-type ContentCreatorRelationship {
-  cursor: String!
-  node: User!
-}
-
-input ContentCreatorUpdateConnectionInput {
-  node: UserUpdateInput
-}
-
-input ContentCreatorUpdateFieldInput {
-  connect: ContentCreatorConnectFieldInput
-  create: ContentCreatorCreateFieldInput
-  delete: ContentCreatorDeleteFieldInput
-  disconnect: ContentCreatorDisconnectFieldInput
-  update: ContentCreatorUpdateConnectionInput
-  where: ContentCreatorConnectionWhere
-}
-
-input ContentDeleteInput {
-  _on: ContentImplementationsDeleteInput
-  creator: ContentCreatorDeleteFieldInput
-}
-
-input ContentDisconnectInput {
-  _on: ContentImplementationsDisconnectInput
-  creator: ContentCreatorDisconnectFieldInput
-}
-
-input ContentImplementationsConnectInput {
-  Comment: [CommentConnectInput!]
-  Post: [PostConnectInput!]
-}
-
-input ContentImplementationsDeleteInput {
-  Comment: [CommentDeleteInput!]
-  Post: [PostDeleteInput!]
-}
-
-input ContentImplementationsDisconnectInput {
-  Comment: [CommentDisconnectInput!]
-  Post: [PostDisconnectInput!]
-}
-
-input ContentImplementationsUpdateInput {
-  Comment: CommentUpdateInput
-  Post: PostUpdateInput
-}
-
-input ContentImplementationsWhere {
-  Comment: CommentWhere
-  Post: PostWhere
-}
-
-input ContentUpdateInput {
-  _on: ContentImplementationsUpdateInput
-  content: String
-  creator: ContentCreatorUpdateFieldInput
-  id: ID
-}
-
-input ContentWhere {
-  _on: ContentImplementationsWhere
-  content: String
-  content_CONTAINS: String
-  content_ENDS_WITH: String
-  content_IN: [String]
-  content_NOT: String
-  content_NOT_CONTAINS: String
-  content_NOT_ENDS_WITH: String
-  content_NOT_IN: [String]
-  content_NOT_STARTS_WITH: String
-  content_STARTS_WITH: String
-  creator: UserWhere
-  creatorAggregate: ContentCreatorAggregateInput
-  creatorConnection: ContentCreatorConnectionWhere
-  creatorConnection_NOT: ContentCreatorConnectionWhere
-  creator_NOT: UserWhere
-  id: ID
-  id_CONTAINS: ID
-  id_ENDS_WITH: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_CONTAINS: ID
-  id_NOT_ENDS_WITH: ID
-  id_NOT_IN: [ID]
-  id_NOT_STARTS_WITH: ID
-  id_STARTS_WITH: ID
-}
-
-type CreateCommentsMutationResponse {
-  comments: [Comment!]!
-  info: CreateInfo!
-}
-
-type CreateInfo {
-  bookmark: String
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
-
-type CreatePostsMutationResponse {
-  info: CreateInfo!
-  posts: [Post!]!
-}
-
-type CreateUsersMutationResponse {
-  info: CreateInfo!
-  users: [User!]!
-}
-
-type DeleteInfo {
-  bookmark: String
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
-
-type IDAggregateSelectionNullable {
-  longest: ID
-  shortest: ID
-}
-
-type Mutation {
-  createComments(input: [CommentCreateInput!]!): CreateCommentsMutationResponse!
-  createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
-  createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
-  deleteComments(delete: CommentDeleteInput, where: CommentWhere): DeleteInfo!
-  deletePosts(delete: PostDeleteInput, where: PostWhere): DeleteInfo!
-  deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
-  updateComments(connect: CommentConnectInput, create: CommentRelationInput, delete: CommentDeleteInput, disconnect: CommentDisconnectInput, update: CommentUpdateInput, where: CommentWhere): UpdateCommentsMutationResponse!
-  updatePosts(connect: PostConnectInput, create: PostRelationInput, delete: PostDeleteInput, disconnect: PostDisconnectInput, update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
-  updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
-}
-
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
-
-type Post implements Content {
-  comments(directed: Boolean, options: CommentOptions, where: CommentWhere): [Comment]
-  commentsAggregate(where: CommentWhere): PostCommentCommentsAggregationSelection
-  commentsConnection(after: String, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
-  content: String
-  creator(directed: Boolean, options: UserOptions, where: UserWhere): User
-  creatorAggregate(where: UserWhere): PostUserCreatorAggregationSelection
-  creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
-  id: ID
-}
-
-type PostAggregateSelection {
-  content: StringAggregateSelectionNullable!
-  count: Int!
-  id: IDAggregateSelectionNullable!
-}
-
-type PostCommentCommentsAggregationSelection {
-  count: Int!
-  node: PostCommentCommentsNodeAggregateSelection
-}
-
-type PostCommentCommentsNodeAggregateSelection {
-  content: StringAggregateSelectionNullable!
-  id: IDAggregateSelectionNullable!
-}
-
-input PostCommentsAggregateInput {
-  AND: [PostCommentsAggregateInput!]
-  OR: [PostCommentsAggregateInput!]
-  count: Int
-  count_GT: Int
-  count_GTE: Int
-  count_LT: Int
-  count_LTE: Int
-  node: PostCommentsNodeAggregationWhereInput
-}
-
-input PostCommentsConnectFieldInput {
-  connect: [CommentConnectInput!]
-  where: CommentConnectWhere
-}
-
-type PostCommentsConnection {
-  edges: [PostCommentsRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-input PostCommentsConnectionSort {
-  node: CommentSort
-}
-
-input PostCommentsConnectionWhere {
-  AND: [PostCommentsConnectionWhere!]
-  OR: [PostCommentsConnectionWhere!]
-  node: CommentWhere
-  node_NOT: CommentWhere
-}
-
-input PostCommentsCreateFieldInput {
-  node: CommentCreateInput!
-}
-
-input PostCommentsDeleteFieldInput {
-  delete: CommentDeleteInput
-  where: PostCommentsConnectionWhere
-}
-
-input PostCommentsDisconnectFieldInput {
-  disconnect: CommentDisconnectInput
-  where: PostCommentsConnectionWhere
-}
-
-input PostCommentsFieldInput {
-  connect: [PostCommentsConnectFieldInput!]
-  create: [PostCommentsCreateFieldInput!]
-}
-
-input PostCommentsNodeAggregationWhereInput {
-  AND: [PostCommentsNodeAggregationWhereInput!]
-  OR: [PostCommentsNodeAggregationWhereInput!]
-  content_AVERAGE_EQUAL: Float
-  content_AVERAGE_GT: Float
-  content_AVERAGE_GTE: Float
-  content_AVERAGE_LT: Float
-  content_AVERAGE_LTE: Float
-  content_EQUAL: String
-  content_GT: Int
-  content_GTE: Int
-  content_LONGEST_EQUAL: Int
-  content_LONGEST_GT: Int
-  content_LONGEST_GTE: Int
-  content_LONGEST_LT: Int
-  content_LONGEST_LTE: Int
-  content_LT: Int
-  content_LTE: Int
-  content_SHORTEST_EQUAL: Int
-  content_SHORTEST_GT: Int
-  content_SHORTEST_GTE: Int
-  content_SHORTEST_LT: Int
-  content_SHORTEST_LTE: Int
-  id_EQUAL: ID
-}
-
-type PostCommentsRelationship {
-  cursor: String!
-  node: Comment!
-}
-
-input PostCommentsUpdateConnectionInput {
-  node: CommentUpdateInput
-}
-
-input PostCommentsUpdateFieldInput {
-  connect: [PostCommentsConnectFieldInput!]
-  create: [PostCommentsCreateFieldInput!]
-  delete: [PostCommentsDeleteFieldInput!]
-  disconnect: [PostCommentsDisconnectFieldInput!]
-  update: PostCommentsUpdateConnectionInput
-  where: PostCommentsConnectionWhere
-}
-
-input PostConnectInput {
-  comments: [PostCommentsConnectFieldInput!]
-  creator: ContentCreatorConnectFieldInput
-}
-
-input PostConnectWhere {
-  node: PostWhere!
-}
-
-input PostCreateInput {
-  comments: PostCommentsFieldInput
-  content: String
-  creator: ContentCreatorFieldInput
-  id: ID
-}
-
-input PostCreatorAggregateInput {
-  AND: [PostCreatorAggregateInput!]
-  OR: [PostCreatorAggregateInput!]
-  count: Int
-  count_GT: Int
-  count_GTE: Int
-  count_LT: Int
-  count_LTE: Int
-  node: PostCreatorNodeAggregationWhereInput
-}
-
-input PostCreatorNodeAggregationWhereInput {
-  AND: [PostCreatorNodeAggregationWhereInput!]
-  OR: [PostCreatorNodeAggregationWhereInput!]
-  id_EQUAL: ID
-  name_AVERAGE_EQUAL: Float
-  name_AVERAGE_GT: Float
-  name_AVERAGE_GTE: Float
-  name_AVERAGE_LT: Float
-  name_AVERAGE_LTE: Float
-  name_EQUAL: String
-  name_GT: Int
-  name_GTE: Int
-  name_LONGEST_EQUAL: Int
-  name_LONGEST_GT: Int
-  name_LONGEST_GTE: Int
-  name_LONGEST_LT: Int
-  name_LONGEST_LTE: Int
-  name_LT: Int
-  name_LTE: Int
-  name_SHORTEST_EQUAL: Int
-  name_SHORTEST_GT: Int
-  name_SHORTEST_GTE: Int
-  name_SHORTEST_LT: Int
-  name_SHORTEST_LTE: Int
-}
-
-input PostDeleteInput {
-  comments: [PostCommentsDeleteFieldInput!]
-  creator: ContentCreatorDeleteFieldInput
-}
-
-input PostDisconnectInput {
-  comments: [PostCommentsDisconnectFieldInput!]
-  creator: ContentCreatorDisconnectFieldInput
-}
-
-input PostOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-  sort: [PostSort]
-}
-
-input PostRelationInput {
-  comments: [PostCommentsCreateFieldInput!]
-  creator: ContentCreatorCreateFieldInput
-}
-
-\\"\\"\\"Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.\\"\\"\\"
-input PostSort {
-  content: SortDirection
-  id: SortDirection
-}
-
-input PostUpdateInput {
-  comments: [PostCommentsUpdateFieldInput!]
-  content: String
-  creator: ContentCreatorUpdateFieldInput
-  id: ID
-}
-
-type PostUserCreatorAggregationSelection {
-  count: Int!
-  node: PostUserCreatorNodeAggregateSelection
-}
-
-type PostUserCreatorNodeAggregateSelection {
-  id: IDAggregateSelectionNullable!
-  name: StringAggregateSelectionNullable!
-}
-
-input PostWhere {
-  AND: [PostWhere!]
-  OR: [PostWhere!]
-  comments: CommentWhere
-  commentsAggregate: PostCommentsAggregateInput
-  commentsConnection: PostCommentsConnectionWhere
-  commentsConnection_NOT: PostCommentsConnectionWhere
-  comments_NOT: CommentWhere
-  content: String
-  content_CONTAINS: String
-  content_ENDS_WITH: String
-  content_IN: [String]
-  content_NOT: String
-  content_NOT_CONTAINS: String
-  content_NOT_ENDS_WITH: String
-  content_NOT_IN: [String]
-  content_NOT_STARTS_WITH: String
-  content_STARTS_WITH: String
-  creator: UserWhere
-  creatorAggregate: PostCreatorAggregateInput
-  creatorConnection: ContentCreatorConnectionWhere
-  creatorConnection_NOT: ContentCreatorConnectionWhere
-  creator_NOT: UserWhere
-  id: ID
-  id_CONTAINS: ID
-  id_ENDS_WITH: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_CONTAINS: ID
-  id_NOT_ENDS_WITH: ID
-  id_NOT_IN: [ID]
-  id_NOT_STARTS_WITH: ID
-  id_STARTS_WITH: ID
-}
-
-type Query {
-  comments(options: CommentOptions, where: CommentWhere): [Comment!]!
-  commentsAggregate(where: CommentWhere): CommentAggregateSelection!
-  posts(options: PostOptions, where: PostWhere): [Post!]!
-  postsAggregate(where: PostWhere): PostAggregateSelection!
-  users(options: UserOptions, where: UserWhere): [User!]!
-  usersAggregate(where: UserWhere): UserAggregateSelection!
-}
-
-input QueryOptions {
-  limit: Int
-  offset: Int
-}
-
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
-
-type StringAggregateSelectionNullable {
-  longest: String
-  shortest: String
-}
-
-type UpdateCommentsMutationResponse {
-  comments: [Comment!]!
-  info: UpdateInfo!
-}
-
-type UpdateInfo {
-  bookmark: String
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
-
-type UpdatePostsMutationResponse {
-  info: UpdateInfo!
-  posts: [Post!]!
-}
-
-type UpdateUsersMutationResponse {
-  info: UpdateInfo!
-  users: [User!]!
-}
-
-type User {
-  content(options: QueryOptions, where: ContentWhere): [Content!]!
-  contentConnection(where: UserContentConnectionWhere): UserContentConnection!
-  id: ID
-  name: String
-}
-
-type UserAggregateSelection {
-  count: Int!
-  id: IDAggregateSelectionNullable!
-  name: StringAggregateSelectionNullable!
-}
-
-input UserConnectInput {
-  content: [UserContentConnectFieldInput!]
-}
-
-input UserConnectWhere {
-  node: UserWhere!
-}
-
-input UserContentConnectFieldInput {
-  connect: ContentConnectInput
-  where: ContentConnectWhere
-}
-
-type UserContentConnection {
-  edges: [UserContentRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-input UserContentConnectionWhere {
-  AND: [UserContentConnectionWhere!]
-  OR: [UserContentConnectionWhere!]
-  node: ContentWhere
-  node_NOT: ContentWhere
-}
-
-input UserContentCreateFieldInput {
-  node: ContentCreateInput!
-}
-
-input UserContentDeleteFieldInput {
-  delete: ContentDeleteInput
-  where: UserContentConnectionWhere
-}
-
-input UserContentDisconnectFieldInput {
-  disconnect: ContentDisconnectInput
-  where: UserContentConnectionWhere
-}
-
-input UserContentFieldInput {
-  connect: [UserContentConnectFieldInput!]
-  create: [UserContentCreateFieldInput!]
-}
-
-type UserContentRelationship {
-  cursor: String!
-  node: Content!
-}
-
-input UserContentUpdateConnectionInput {
-  node: ContentUpdateInput
-}
-
-input UserContentUpdateFieldInput {
-  connect: [UserContentConnectFieldInput!]
-  create: [UserContentCreateFieldInput!]
-  delete: [UserContentDeleteFieldInput!]
-  disconnect: [UserContentDisconnectFieldInput!]
-  update: UserContentUpdateConnectionInput
-  where: UserContentConnectionWhere
-}
-
-input UserCreateInput {
-  content: UserContentFieldInput
-  id: ID
-  name: String
-}
-
-input UserDeleteInput {
-  content: [UserContentDeleteFieldInput!]
-}
-
-input UserDisconnectInput {
-  content: [UserContentDisconnectFieldInput!]
-}
-
-input UserOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-  sort: [UserSort]
-}
-
-input UserRelationInput {
-  content: [UserContentCreateFieldInput!]
-}
-
-\\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
-input UserSort {
-  id: SortDirection
-  name: SortDirection
-}
-
-input UserUpdateInput {
-  content: [UserContentUpdateFieldInput!]
-  id: ID
-  name: String
-}
-
-input UserWhere {
-  AND: [UserWhere!]
-  OR: [UserWhere!]
-  contentConnection: UserContentConnectionWhere
-  contentConnection_NOT: UserContentConnectionWhere
-  id: ID
-  id_CONTAINS: ID
-  id_ENDS_WITH: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_CONTAINS: ID
-  id_NOT_ENDS_WITH: ID
-  id_NOT_IN: [ID]
-  id_NOT_STARTS_WITH: ID
-  id_STARTS_WITH: ID
-  name: String
-  name_CONTAINS: String
-  name_ENDS_WITH: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_CONTAINS: String
-  name_NOT_ENDS_WITH: String
-  name_NOT_IN: [String]
-  name_NOT_STARTS_WITH: String
-  name_STARTS_WITH: String
-}
-"
-`);
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            type Comment implements Content {
+              content: String
+              creator(directed: Boolean, options: UserOptions, where: UserWhere): User
+              creatorAggregate(where: UserWhere): CommentUserCreatorAggregationSelection
+              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              id: ID
+              post(directed: Boolean, options: PostOptions, where: PostWhere): Post
+              postAggregate(where: PostWhere): CommentPostPostAggregationSelection
+              postConnection(after: String, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
+            }
+
+            type CommentAggregateSelection {
+              content: StringAggregateSelectionNullable!
+              count: Int!
+              id: IDAggregateSelectionNullable!
+            }
+
+            input CommentConnectInput {
+              creator: ContentCreatorConnectFieldInput
+              post: CommentPostConnectFieldInput
+            }
+
+            input CommentConnectWhere {
+              node: CommentWhere!
+            }
+
+            input CommentCreateInput {
+              content: String
+              creator: ContentCreatorFieldInput
+              id: ID
+              post: CommentPostFieldInput
+            }
+
+            input CommentCreatorAggregateInput {
+              AND: [CommentCreatorAggregateInput!]
+              OR: [CommentCreatorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: CommentCreatorNodeAggregationWhereInput
+            }
+
+            input CommentCreatorNodeAggregationWhereInput {
+              AND: [CommentCreatorNodeAggregationWhereInput!]
+              OR: [CommentCreatorNodeAggregationWhereInput!]
+              id_EQUAL: ID
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
+            }
+
+            input CommentDeleteInput {
+              creator: ContentCreatorDeleteFieldInput
+              post: CommentPostDeleteFieldInput
+            }
+
+            input CommentDisconnectInput {
+              creator: ContentCreatorDisconnectFieldInput
+              post: CommentPostDisconnectFieldInput
+            }
+
+            input CommentOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more CommentSort objects to sort Comments by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [CommentSort]
+            }
+
+            input CommentPostAggregateInput {
+              AND: [CommentPostAggregateInput!]
+              OR: [CommentPostAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: CommentPostNodeAggregationWhereInput
+            }
+
+            input CommentPostConnectFieldInput {
+              connect: PostConnectInput
+              where: PostConnectWhere
+            }
+
+            type CommentPostConnection {
+              edges: [CommentPostRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input CommentPostConnectionSort {
+              node: PostSort
+            }
+
+            input CommentPostConnectionWhere {
+              AND: [CommentPostConnectionWhere!]
+              OR: [CommentPostConnectionWhere!]
+              node: PostWhere
+              node_NOT: PostWhere
+            }
+
+            input CommentPostCreateFieldInput {
+              node: PostCreateInput!
+            }
+
+            input CommentPostDeleteFieldInput {
+              delete: PostDeleteInput
+              where: CommentPostConnectionWhere
+            }
+
+            input CommentPostDisconnectFieldInput {
+              disconnect: PostDisconnectInput
+              where: CommentPostConnectionWhere
+            }
+
+            input CommentPostFieldInput {
+              connect: CommentPostConnectFieldInput
+              create: CommentPostCreateFieldInput
+            }
+
+            input CommentPostNodeAggregationWhereInput {
+              AND: [CommentPostNodeAggregationWhereInput!]
+              OR: [CommentPostNodeAggregationWhereInput!]
+              content_AVERAGE_EQUAL: Float
+              content_AVERAGE_GT: Float
+              content_AVERAGE_GTE: Float
+              content_AVERAGE_LT: Float
+              content_AVERAGE_LTE: Float
+              content_EQUAL: String
+              content_GT: Int
+              content_GTE: Int
+              content_LONGEST_EQUAL: Int
+              content_LONGEST_GT: Int
+              content_LONGEST_GTE: Int
+              content_LONGEST_LT: Int
+              content_LONGEST_LTE: Int
+              content_LT: Int
+              content_LTE: Int
+              content_SHORTEST_EQUAL: Int
+              content_SHORTEST_GT: Int
+              content_SHORTEST_GTE: Int
+              content_SHORTEST_LT: Int
+              content_SHORTEST_LTE: Int
+              id_EQUAL: ID
+            }
+
+            type CommentPostPostAggregationSelection {
+              count: Int!
+              node: CommentPostPostNodeAggregateSelection
+            }
+
+            type CommentPostPostNodeAggregateSelection {
+              content: StringAggregateSelectionNullable!
+              id: IDAggregateSelectionNullable!
+            }
+
+            type CommentPostRelationship {
+              cursor: String!
+              node: Post!
+            }
+
+            input CommentPostUpdateConnectionInput {
+              node: PostUpdateInput
+            }
+
+            input CommentPostUpdateFieldInput {
+              connect: CommentPostConnectFieldInput
+              create: CommentPostCreateFieldInput
+              delete: CommentPostDeleteFieldInput
+              disconnect: CommentPostDisconnectFieldInput
+              update: CommentPostUpdateConnectionInput
+              where: CommentPostConnectionWhere
+            }
+
+            input CommentRelationInput {
+              creator: ContentCreatorCreateFieldInput
+              post: CommentPostCreateFieldInput
+            }
+
+            \\"\\"\\"Fields to sort Comments by. The order in which sorts are applied is not guaranteed when specifying many fields in one CommentSort object.\\"\\"\\"
+            input CommentSort {
+              content: SortDirection
+              id: SortDirection
+            }
+
+            input CommentUpdateInput {
+              content: String
+              creator: ContentCreatorUpdateFieldInput
+              id: ID
+              post: CommentPostUpdateFieldInput
+            }
+
+            type CommentUserCreatorAggregationSelection {
+              count: Int!
+              node: CommentUserCreatorNodeAggregateSelection
+            }
+
+            type CommentUserCreatorNodeAggregateSelection {
+              id: IDAggregateSelectionNullable!
+              name: StringAggregateSelectionNullable!
+            }
+
+            input CommentWhere {
+              AND: [CommentWhere!]
+              OR: [CommentWhere!]
+              content: String
+              content_CONTAINS: String
+              content_ENDS_WITH: String
+              content_IN: [String]
+              content_NOT: String
+              content_NOT_CONTAINS: String
+              content_NOT_ENDS_WITH: String
+              content_NOT_IN: [String]
+              content_NOT_STARTS_WITH: String
+              content_STARTS_WITH: String
+              creator: UserWhere
+              creatorAggregate: CommentCreatorAggregateInput
+              creatorConnection: ContentCreatorConnectionWhere
+              creatorConnection_NOT: ContentCreatorConnectionWhere
+              creator_NOT: UserWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+              post: PostWhere
+              postAggregate: CommentPostAggregateInput
+              postConnection: CommentPostConnectionWhere
+              postConnection_NOT: CommentPostConnectionWhere
+              post_NOT: PostWhere
+            }
+
+            interface Content {
+              content: String
+              creator(directed: Boolean, options: UserOptions, where: UserWhere): User
+              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              id: ID
+            }
+
+            input ContentConnectInput {
+              _on: ContentImplementationsConnectInput
+              creator: ContentCreatorConnectFieldInput
+            }
+
+            input ContentConnectWhere {
+              node: ContentWhere!
+            }
+
+            input ContentCreateInput {
+              Comment: CommentCreateInput
+              Post: PostCreateInput
+            }
+
+            input ContentCreatorAggregateInput {
+              AND: [ContentCreatorAggregateInput!]
+              OR: [ContentCreatorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: ContentCreatorNodeAggregationWhereInput
+            }
+
+            input ContentCreatorConnectFieldInput {
+              connect: UserConnectInput
+              where: UserConnectWhere
+            }
+
+            type ContentCreatorConnection {
+              edges: [ContentCreatorRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ContentCreatorConnectionSort {
+              node: UserSort
+            }
+
+            input ContentCreatorConnectionWhere {
+              AND: [ContentCreatorConnectionWhere!]
+              OR: [ContentCreatorConnectionWhere!]
+              node: UserWhere
+              node_NOT: UserWhere
+            }
+
+            input ContentCreatorCreateFieldInput {
+              node: UserCreateInput!
+            }
+
+            input ContentCreatorDeleteFieldInput {
+              delete: UserDeleteInput
+              where: ContentCreatorConnectionWhere
+            }
+
+            input ContentCreatorDisconnectFieldInput {
+              disconnect: UserDisconnectInput
+              where: ContentCreatorConnectionWhere
+            }
+
+            input ContentCreatorFieldInput {
+              connect: ContentCreatorConnectFieldInput
+              create: ContentCreatorCreateFieldInput
+            }
+
+            input ContentCreatorNodeAggregationWhereInput {
+              AND: [ContentCreatorNodeAggregationWhereInput!]
+              OR: [ContentCreatorNodeAggregationWhereInput!]
+              id_EQUAL: ID
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
+            }
+
+            type ContentCreatorRelationship {
+              cursor: String!
+              node: User!
+            }
+
+            input ContentCreatorUpdateConnectionInput {
+              node: UserUpdateInput
+            }
+
+            input ContentCreatorUpdateFieldInput {
+              connect: ContentCreatorConnectFieldInput
+              create: ContentCreatorCreateFieldInput
+              delete: ContentCreatorDeleteFieldInput
+              disconnect: ContentCreatorDisconnectFieldInput
+              update: ContentCreatorUpdateConnectionInput
+              where: ContentCreatorConnectionWhere
+            }
+
+            input ContentDeleteInput {
+              _on: ContentImplementationsDeleteInput
+              creator: ContentCreatorDeleteFieldInput
+            }
+
+            input ContentDisconnectInput {
+              _on: ContentImplementationsDisconnectInput
+              creator: ContentCreatorDisconnectFieldInput
+            }
+
+            input ContentImplementationsConnectInput {
+              Comment: [CommentConnectInput!]
+              Post: [PostConnectInput!]
+            }
+
+            input ContentImplementationsDeleteInput {
+              Comment: [CommentDeleteInput!]
+              Post: [PostDeleteInput!]
+            }
+
+            input ContentImplementationsDisconnectInput {
+              Comment: [CommentDisconnectInput!]
+              Post: [PostDisconnectInput!]
+            }
+
+            input ContentImplementationsUpdateInput {
+              Comment: CommentUpdateInput
+              Post: PostUpdateInput
+            }
+
+            input ContentImplementationsWhere {
+              Comment: CommentWhere
+              Post: PostWhere
+            }
+
+            input ContentUpdateInput {
+              _on: ContentImplementationsUpdateInput
+              content: String
+              creator: ContentCreatorUpdateFieldInput
+              id: ID
+            }
+
+            input ContentWhere {
+              _on: ContentImplementationsWhere
+              content: String
+              content_CONTAINS: String
+              content_ENDS_WITH: String
+              content_IN: [String]
+              content_NOT: String
+              content_NOT_CONTAINS: String
+              content_NOT_ENDS_WITH: String
+              content_NOT_IN: [String]
+              content_NOT_STARTS_WITH: String
+              content_STARTS_WITH: String
+              creator: UserWhere
+              creatorAggregate: ContentCreatorAggregateInput
+              creatorConnection: ContentCreatorConnectionWhere
+              creatorConnection_NOT: ContentCreatorConnectionWhere
+              creator_NOT: UserWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+            }
+
+            type CreateCommentsMutationResponse {
+              comments: [Comment!]!
+              info: CreateInfo!
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreatePostsMutationResponse {
+              info: CreateInfo!
+              posts: [Post!]!
+            }
+
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [User!]!
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type IDAggregateSelectionNullable {
+              longest: ID
+              shortest: ID
+            }
+
+            type Mutation {
+              createComments(input: [CommentCreateInput!]!): CreateCommentsMutationResponse!
+              createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deleteComments(delete: CommentDeleteInput, where: CommentWhere): DeleteInfo!
+              deletePosts(delete: PostDeleteInput, where: PostWhere): DeleteInfo!
+              deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
+              updateComments(connect: CommentConnectInput, create: CommentRelationInput, delete: CommentDeleteInput, disconnect: CommentDisconnectInput, update: CommentUpdateInput, where: CommentWhere): UpdateCommentsMutationResponse!
+              updatePosts(connect: PostConnectInput, create: PostRelationInput, delete: PostDeleteInput, disconnect: PostDisconnectInput, update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
+              updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Post implements Content {
+              comments(directed: Boolean, options: CommentOptions, where: CommentWhere): [Comment]
+              commentsAggregate(where: CommentWhere): PostCommentCommentsAggregationSelection
+              commentsConnection(after: String, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
+              content: String
+              creator(directed: Boolean, options: UserOptions, where: UserWhere): User
+              creatorAggregate(where: UserWhere): PostUserCreatorAggregationSelection
+              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              id: ID
+            }
+
+            type PostAggregateSelection {
+              content: StringAggregateSelectionNullable!
+              count: Int!
+              id: IDAggregateSelectionNullable!
+            }
+
+            type PostCommentCommentsAggregationSelection {
+              count: Int!
+              node: PostCommentCommentsNodeAggregateSelection
+            }
+
+            type PostCommentCommentsNodeAggregateSelection {
+              content: StringAggregateSelectionNullable!
+              id: IDAggregateSelectionNullable!
+            }
+
+            input PostCommentsAggregateInput {
+              AND: [PostCommentsAggregateInput!]
+              OR: [PostCommentsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: PostCommentsNodeAggregationWhereInput
+            }
+
+            input PostCommentsConnectFieldInput {
+              connect: [CommentConnectInput!]
+              where: CommentConnectWhere
+            }
+
+            type PostCommentsConnection {
+              edges: [PostCommentsRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input PostCommentsConnectionSort {
+              node: CommentSort
+            }
+
+            input PostCommentsConnectionWhere {
+              AND: [PostCommentsConnectionWhere!]
+              OR: [PostCommentsConnectionWhere!]
+              node: CommentWhere
+              node_NOT: CommentWhere
+            }
+
+            input PostCommentsCreateFieldInput {
+              node: CommentCreateInput!
+            }
+
+            input PostCommentsDeleteFieldInput {
+              delete: CommentDeleteInput
+              where: PostCommentsConnectionWhere
+            }
+
+            input PostCommentsDisconnectFieldInput {
+              disconnect: CommentDisconnectInput
+              where: PostCommentsConnectionWhere
+            }
+
+            input PostCommentsFieldInput {
+              connect: [PostCommentsConnectFieldInput!]
+              create: [PostCommentsCreateFieldInput!]
+            }
+
+            input PostCommentsNodeAggregationWhereInput {
+              AND: [PostCommentsNodeAggregationWhereInput!]
+              OR: [PostCommentsNodeAggregationWhereInput!]
+              content_AVERAGE_EQUAL: Float
+              content_AVERAGE_GT: Float
+              content_AVERAGE_GTE: Float
+              content_AVERAGE_LT: Float
+              content_AVERAGE_LTE: Float
+              content_EQUAL: String
+              content_GT: Int
+              content_GTE: Int
+              content_LONGEST_EQUAL: Int
+              content_LONGEST_GT: Int
+              content_LONGEST_GTE: Int
+              content_LONGEST_LT: Int
+              content_LONGEST_LTE: Int
+              content_LT: Int
+              content_LTE: Int
+              content_SHORTEST_EQUAL: Int
+              content_SHORTEST_GT: Int
+              content_SHORTEST_GTE: Int
+              content_SHORTEST_LT: Int
+              content_SHORTEST_LTE: Int
+              id_EQUAL: ID
+            }
+
+            type PostCommentsRelationship {
+              cursor: String!
+              node: Comment!
+            }
+
+            input PostCommentsUpdateConnectionInput {
+              node: CommentUpdateInput
+            }
+
+            input PostCommentsUpdateFieldInput {
+              connect: [PostCommentsConnectFieldInput!]
+              create: [PostCommentsCreateFieldInput!]
+              delete: [PostCommentsDeleteFieldInput!]
+              disconnect: [PostCommentsDisconnectFieldInput!]
+              update: PostCommentsUpdateConnectionInput
+              where: PostCommentsConnectionWhere
+            }
+
+            input PostConnectInput {
+              comments: [PostCommentsConnectFieldInput!]
+              creator: ContentCreatorConnectFieldInput
+            }
+
+            input PostConnectWhere {
+              node: PostWhere!
+            }
+
+            input PostCreateInput {
+              comments: PostCommentsFieldInput
+              content: String
+              creator: ContentCreatorFieldInput
+              id: ID
+            }
+
+            input PostCreatorAggregateInput {
+              AND: [PostCreatorAggregateInput!]
+              OR: [PostCreatorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: PostCreatorNodeAggregationWhereInput
+            }
+
+            input PostCreatorNodeAggregationWhereInput {
+              AND: [PostCreatorNodeAggregationWhereInput!]
+              OR: [PostCreatorNodeAggregationWhereInput!]
+              id_EQUAL: ID
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
+            }
+
+            input PostDeleteInput {
+              comments: [PostCommentsDeleteFieldInput!]
+              creator: ContentCreatorDeleteFieldInput
+            }
+
+            input PostDisconnectInput {
+              comments: [PostCommentsDisconnectFieldInput!]
+              creator: ContentCreatorDisconnectFieldInput
+            }
+
+            input PostOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [PostSort]
+            }
+
+            input PostRelationInput {
+              comments: [PostCommentsCreateFieldInput!]
+              creator: ContentCreatorCreateFieldInput
+            }
+
+            \\"\\"\\"Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.\\"\\"\\"
+            input PostSort {
+              content: SortDirection
+              id: SortDirection
+            }
+
+            input PostUpdateInput {
+              comments: [PostCommentsUpdateFieldInput!]
+              content: String
+              creator: ContentCreatorUpdateFieldInput
+              id: ID
+            }
+
+            type PostUserCreatorAggregationSelection {
+              count: Int!
+              node: PostUserCreatorNodeAggregateSelection
+            }
+
+            type PostUserCreatorNodeAggregateSelection {
+              id: IDAggregateSelectionNullable!
+              name: StringAggregateSelectionNullable!
+            }
+
+            input PostWhere {
+              AND: [PostWhere!]
+              OR: [PostWhere!]
+              comments: CommentWhere
+              commentsAggregate: PostCommentsAggregateInput
+              commentsConnection: PostCommentsConnectionWhere
+              commentsConnection_NOT: PostCommentsConnectionWhere
+              comments_NOT: CommentWhere
+              content: String
+              content_CONTAINS: String
+              content_ENDS_WITH: String
+              content_IN: [String]
+              content_NOT: String
+              content_NOT_CONTAINS: String
+              content_NOT_ENDS_WITH: String
+              content_NOT_IN: [String]
+              content_NOT_STARTS_WITH: String
+              content_STARTS_WITH: String
+              creator: UserWhere
+              creatorAggregate: PostCreatorAggregateInput
+              creatorConnection: ContentCreatorConnectionWhere
+              creatorConnection_NOT: ContentCreatorConnectionWhere
+              creator_NOT: UserWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+            }
+
+            type Query {
+              comments(options: CommentOptions, where: CommentWhere): [Comment!]!
+              commentsAggregate(where: CommentWhere): CommentAggregateSelection!
+              posts(options: PostOptions, where: PostWhere): [Post!]!
+              postsAggregate(where: PostWhere): PostAggregateSelection!
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+            }
+
+            input QueryOptions {
+              limit: Int
+              offset: Int
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
+            }
+
+            type UpdateCommentsMutationResponse {
+              comments: [Comment!]!
+              info: UpdateInfo!
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdatePostsMutationResponse {
+              info: UpdateInfo!
+              posts: [Post!]!
+            }
+
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [User!]!
+            }
+
+            type User {
+              content(directed: Boolean, options: QueryOptions, where: ContentWhere): [Content!]!
+              contentConnection(where: UserContentConnectionWhere): UserContentConnection!
+              id: ID
+              name: String
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
+              name: StringAggregateSelectionNullable!
+            }
+
+            input UserConnectInput {
+              content: [UserContentConnectFieldInput!]
+            }
+
+            input UserConnectWhere {
+              node: UserWhere!
+            }
+
+            input UserContentConnectFieldInput {
+              connect: ContentConnectInput
+              where: ContentConnectWhere
+            }
+
+            type UserContentConnection {
+              edges: [UserContentRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input UserContentConnectionWhere {
+              AND: [UserContentConnectionWhere!]
+              OR: [UserContentConnectionWhere!]
+              node: ContentWhere
+              node_NOT: ContentWhere
+            }
+
+            input UserContentCreateFieldInput {
+              node: ContentCreateInput!
+            }
+
+            input UserContentDeleteFieldInput {
+              delete: ContentDeleteInput
+              where: UserContentConnectionWhere
+            }
+
+            input UserContentDisconnectFieldInput {
+              disconnect: ContentDisconnectInput
+              where: UserContentConnectionWhere
+            }
+
+            input UserContentFieldInput {
+              connect: [UserContentConnectFieldInput!]
+              create: [UserContentCreateFieldInput!]
+            }
+
+            type UserContentRelationship {
+              cursor: String!
+              node: Content!
+            }
+
+            input UserContentUpdateConnectionInput {
+              node: ContentUpdateInput
+            }
+
+            input UserContentUpdateFieldInput {
+              connect: [UserContentConnectFieldInput!]
+              create: [UserContentCreateFieldInput!]
+              delete: [UserContentDeleteFieldInput!]
+              disconnect: [UserContentDisconnectFieldInput!]
+              update: UserContentUpdateConnectionInput
+              where: UserContentConnectionWhere
+            }
+
+            input UserCreateInput {
+              content: UserContentFieldInput
+              id: ID
+              name: String
+            }
+
+            input UserDeleteInput {
+              content: [UserContentDeleteFieldInput!]
+            }
+
+            input UserDisconnectInput {
+              content: [UserContentDisconnectFieldInput!]
+            }
+
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [UserSort]
+            }
+
+            input UserRelationInput {
+              content: [UserContentCreateFieldInput!]
+            }
+
+            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            input UserSort {
+              id: SortDirection
+              name: SortDirection
+            }
+
+            input UserUpdateInput {
+              content: [UserContentUpdateFieldInput!]
+              id: ID
+              name: String
+            }
+
+            input UserWhere {
+              AND: [UserWhere!]
+              OR: [UserWhere!]
+              contentConnection: UserContentConnectionWhere
+              contentConnection_NOT: UserContentConnectionWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String
+              name_NOT_CONTAINS: String
+              name_NOT_ENDS_WITH: String
+              name_NOT_IN: [String]
+              name_NOT_STARTS_WITH: String
+              name_STARTS_WITH: String
+            }
+            "
+        `);
     });
 });

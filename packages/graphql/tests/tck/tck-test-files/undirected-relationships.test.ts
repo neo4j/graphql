@@ -38,7 +38,7 @@ describe("Undirected relationships", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { jwt: { secret } }
+            config: { jwt: { secret } },
         });
         const query = gql`
             query {
@@ -56,7 +56,7 @@ describe("Undirected relationships", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -88,7 +88,7 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | t
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { jwt: { secret } }
+            config: { jwt: { secret } },
         });
         const query = gql`
             query Users {
@@ -107,7 +107,7 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | t
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -149,7 +149,7 @@ RETURN this { content:  [this_content IN [(this)-[:HAS_CONTENT]-(this_content) W
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { jwt: { secret } }
+            config: { jwt: { secret } },
         });
         const query = gql`
             query Actors {
@@ -163,7 +163,7 @@ RETURN this { content:  [this_content IN [(this)-[:HAS_CONTENT]-(this_content) W
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
