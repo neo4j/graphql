@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLError, GraphQLScalarType } from "graphql";
+import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
 import neo4j, { Date as Neo4jDate, isDate } from "neo4j-driver";
 
 export default new GraphQLScalarType({
@@ -40,5 +40,12 @@ export default new GraphQLScalarType({
         }
 
         return neo4j.types.Date.fromStandardDate(new Date(inputValue));
+    },
+    parseLiteral(ast: ValueNode) {
+        if (ast.kind !== Kind.STRING) {
+            throw new GraphQLError("Date cannot represent non string value.");
+        }
+
+        return neo4j.types.Date.fromStandardDate(new Date(ast.value));
     },
 });
