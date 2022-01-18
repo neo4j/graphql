@@ -218,10 +218,14 @@ describe("Sort", () => {
               relatedToConnection_NOT: Node1RelatedToConnectionWhere
               relatedToConnection_SINGLE: Node1RelatedToConnectionWhere
               relatedToConnection_SOME: Node1RelatedToConnectionWhere
+              \\"\\"\\"Return Node1s where all of the related Node2s match this filter\\"\\"\\"
               relatedTo_ALL: Node2Where
+              \\"\\"\\"Return Node1s where none of the related Node2s match this filter\\"\\"\\"
               relatedTo_NONE: Node2Where
               relatedTo_NOT: Node2Where
+              \\"\\"\\"Return Node1s where one of the related Node2s match this filter\\"\\"\\"
               relatedTo_SINGLE: Node2Where
+              \\"\\"\\"Return Node1s where some of the related Node2s match this filter\\"\\"\\"
               relatedTo_SOME: Node2Where
             }
 
@@ -383,10 +387,14 @@ describe("Sort", () => {
               relatedToConnection_NOT: Node2RelatedToConnectionWhere
               relatedToConnection_SINGLE: Node2RelatedToConnectionWhere
               relatedToConnection_SOME: Node2RelatedToConnectionWhere
+              \\"\\"\\"Return Node2s where all of the related Node1s match this filter\\"\\"\\"
               relatedTo_ALL: Node1Where
+              \\"\\"\\"Return Node2s where none of the related Node1s match this filter\\"\\"\\"
               relatedTo_NONE: Node1Where
               relatedTo_NOT: Node1Where
+              \\"\\"\\"Return Node2s where one of the related Node1s match this filter\\"\\"\\"
               relatedTo_SINGLE: Node1Where
+              \\"\\"\\"Return Node2s where some of the related Node1s match this filter\\"\\"\\"
               relatedTo_SOME: Node1Where
             }
 

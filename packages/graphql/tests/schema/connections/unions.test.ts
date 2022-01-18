@@ -508,10 +508,14 @@ describe("Unions", () => {
               authorConnection_NOT: BookAuthorConnectionWhere
               authorConnection_SINGLE: BookAuthorConnectionWhere
               authorConnection_SOME: BookAuthorConnectionWhere
+              \\"\\"\\"Return Books where all of the related Authors match this filter\\"\\"\\"
               author_ALL: AuthorWhere
+              \\"\\"\\"Return Books where none of the related Authors match this filter\\"\\"\\"
               author_NONE: AuthorWhere
               author_NOT: AuthorWhere
+              \\"\\"\\"Return Books where one of the related Authors match this filter\\"\\"\\"
               author_SINGLE: AuthorWhere
+              \\"\\"\\"Return Books where some of the related Authors match this filter\\"\\"\\"
               author_SOME: AuthorWhere
               title: String
               title_CONTAINS: String
@@ -771,10 +775,14 @@ describe("Unions", () => {
               authorConnection_NOT: JournalAuthorConnectionWhere
               authorConnection_SINGLE: JournalAuthorConnectionWhere
               authorConnection_SOME: JournalAuthorConnectionWhere
+              \\"\\"\\"Return Journals where all of the related Authors match this filter\\"\\"\\"
               author_ALL: AuthorWhere
+              \\"\\"\\"Return Journals where none of the related Authors match this filter\\"\\"\\"
               author_NONE: AuthorWhere
               author_NOT: AuthorWhere
+              \\"\\"\\"Return Journals where one of the related Authors match this filter\\"\\"\\"
               author_SINGLE: AuthorWhere
+              \\"\\"\\"Return Journals where some of the related Authors match this filter\\"\\"\\"
               author_SOME: AuthorWhere
               subject: String
               subject_CONTAINS: String

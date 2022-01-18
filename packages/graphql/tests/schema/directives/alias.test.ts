@@ -351,10 +351,14 @@ describe("Alias", () => {
               actedInConnection_NOT: ActorActedInConnectionWhere
               actedInConnection_SINGLE: ActorActedInConnectionWhere
               actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
               actedIn_ALL: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
               actedIn_NONE: MovieWhere
               actedIn_NOT: MovieWhere
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
               actedIn_SINGLE: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               actedIn_SOME: MovieWhere
               city: String
               city_CONTAINS: String

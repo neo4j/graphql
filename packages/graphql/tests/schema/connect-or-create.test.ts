@@ -242,10 +242,14 @@ describe("Connect Or Create", () => {
               moviesConnection_NOT: ActorMoviesConnectionWhere
               moviesConnection_SINGLE: ActorMoviesConnectionWhere
               moviesConnection_SOME: ActorMoviesConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
               movies_ALL: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
               name: String
               name_CONTAINS: String
@@ -742,10 +746,14 @@ describe("Connect Or Create", () => {
               moviesConnection_NOT: ActorMoviesConnectionWhere
               moviesConnection_SINGLE: ActorMoviesConnectionWhere
               moviesConnection_SOME: ActorMoviesConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
               movies_ALL: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
               name: String
               name_CONTAINS: String

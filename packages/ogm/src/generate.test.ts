@@ -1196,11 +1196,15 @@ describe("generate", () => {
               title_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
               actors?: Maybe<PersonWhere>;
               actors_NOT?: Maybe<PersonWhere>;
-              actors_ALL?: Maybe<PersonWhere>;
-              actors_NONE?: Maybe<PersonWhere>;
-              actors_SINGLE?: Maybe<PersonWhere>;
-              actors_SOME?: Maybe<PersonWhere>;
               actorsAggregate?: Maybe<MovieActorsAggregateInput>;
+              /** Return Movies where all of the related People match this filter */
+              actors_ALL?: Maybe<PersonWhere>;
+              /** Return Movies where none of the related People match this filter */
+              actors_NONE?: Maybe<PersonWhere>;
+              /** Return Movies where one of the related People match this filter */
+              actors_SINGLE?: Maybe<PersonWhere>;
+              /** Return Movies where some of the related People match this filter */
+              actors_SOME?: Maybe<PersonWhere>;
               actorsConnection?: Maybe<MovieActorsConnectionWhere>;
               actorsConnection_NOT?: Maybe<MovieActorsConnectionWhere>;
               actorsConnection_ALL?: Maybe<MovieActorsConnectionWhere>;

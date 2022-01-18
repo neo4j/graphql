@@ -1178,10 +1178,14 @@ describe("Aggregations", () => {
               likesConnection_NOT: PostLikesConnectionWhere
               likesConnection_SINGLE: PostLikesConnectionWhere
               likesConnection_SOME: PostLikesConnectionWhere
+              \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
               likes_ALL: UserWhere
+              \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
               likes_NONE: UserWhere
               likes_NOT: UserWhere
+              \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
               likes_SINGLE: UserWhere
+              \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
               likes_SOME: UserWhere
               title: String
               title_CONTAINS: String

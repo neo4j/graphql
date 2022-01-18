@@ -1079,10 +1079,14 @@ describe("Interface Relationships", () => {
               actorsConnection_NOT: ProductionActorsConnectionWhere
               actorsConnection_SINGLE: ProductionActorsConnectionWhere
               actorsConnection_SOME: ProductionActorsConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
               runtime: Int
               runtime_GT: Int
@@ -1331,10 +1335,14 @@ describe("Interface Relationships", () => {
               actorsConnection_NOT: ProductionActorsConnectionWhere
               actorsConnection_SINGLE: ProductionActorsConnectionWhere
               actorsConnection_SOME: ProductionActorsConnectionWhere
+              \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere
+              \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere
+              \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
               title: String
               title_CONTAINS: String
@@ -1633,10 +1641,14 @@ describe("Interface Relationships", () => {
               actorsConnection_NOT: ProductionActorsConnectionWhere
               actorsConnection_SINGLE: ProductionActorsConnectionWhere
               actorsConnection_SOME: ProductionActorsConnectionWhere
+              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere
+              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere
+              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
               episodeCount: Int
               episodeCount_GT: Int
@@ -1654,10 +1666,14 @@ describe("Interface Relationships", () => {
               episodesConnection_NOT: SeriesEpisodesConnectionWhere
               episodesConnection_SINGLE: SeriesEpisodesConnectionWhere
               episodesConnection_SOME: SeriesEpisodesConnectionWhere
+              \\"\\"\\"Return Series where all of the related Episodes match this filter\\"\\"\\"
               episodes_ALL: EpisodeWhere
+              \\"\\"\\"Return Series where none of the related Episodes match this filter\\"\\"\\"
               episodes_NONE: EpisodeWhere
               episodes_NOT: EpisodeWhere
+              \\"\\"\\"Return Series where one of the related Episodes match this filter\\"\\"\\"
               episodes_SINGLE: EpisodeWhere
+              \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
               episodes_SOME: EpisodeWhere
               title: String
               title_CONTAINS: String
@@ -3245,10 +3261,14 @@ describe("Interface Relationships", () => {
               commentsConnection_NOT: PostCommentsConnectionWhere
               commentsConnection_SINGLE: PostCommentsConnectionWhere
               commentsConnection_SOME: PostCommentsConnectionWhere
+              \\"\\"\\"Return Posts where all of the related Comments match this filter\\"\\"\\"
               comments_ALL: CommentWhere
+              \\"\\"\\"Return Posts where none of the related Comments match this filter\\"\\"\\"
               comments_NONE: CommentWhere
               comments_NOT: CommentWhere
+              \\"\\"\\"Return Posts where one of the related Comments match this filter\\"\\"\\"
               comments_SINGLE: CommentWhere
+              \\"\\"\\"Return Posts where some of the related Comments match this filter\\"\\"\\"
               comments_SOME: CommentWhere
               content: String
               content_CONTAINS: String

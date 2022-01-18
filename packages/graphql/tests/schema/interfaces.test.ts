@@ -250,10 +250,14 @@ describe("Interfaces", () => {
               moviesConnection_NOT: MovieNodeMoviesConnectionWhere
               moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
               moviesConnection_SOME: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Movies match this filter\\"\\"\\"
               movies_ALL: MovieWhere
+              \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere
+              \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
+              \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
             }
 
