@@ -1838,7 +1838,7 @@ describe("Advanced Filtering", () => {
             });
 
             describe("on relationship", () => {
-                const generateQuery = (predicate: "EVERY" | "NONE" | "SINGLE" | "SOME") => `
+                const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => `
                     query($movieIds: [ID!]!) {
                         movies(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { flag_NOT: false } }] }) {
                             id
@@ -1849,10 +1849,10 @@ describe("Advanced Filtering", () => {
                         }
                     }
                 `;
-                test("EVERY", async () => {
+                test("ALL", async () => {
                     const gqlResult = await graphql({
                         schema,
-                        source: generateQuery("EVERY"),
+                        source: generateQuery("ALL"),
                         contextValue: { driver },
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
@@ -1935,7 +1935,7 @@ describe("Advanced Filtering", () => {
             });
 
             describe("on connection", () => {
-                const generateQuery = (predicate: "EVERY" | "NONE" | "SINGLE" | "SOME") => `
+                const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => `
                     query($movieIds: [ID!]!) {
                         movies(where: { AND: [{ id_IN: $movieIds }, { actorsConnection_${predicate}: { node: { flag_NOT: false } } }] }) {
                             id
@@ -1947,10 +1947,10 @@ describe("Advanced Filtering", () => {
                     }
                 `;
 
-                test("EVERY", async () => {
+                test("ALL", async () => {
                     const gqlResult = await graphql({
                         schema,
-                        source: generateQuery("EVERY"),
+                        source: generateQuery("ALL"),
                         contextValue: { driver },
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });

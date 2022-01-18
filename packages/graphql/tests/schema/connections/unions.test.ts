@@ -289,7 +289,7 @@ describe("Unions", () => {
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
               publicationsConnection: AuthorPublicationsConnectionWhere
-              publicationsConnection_EVERY: AuthorPublicationsConnectionWhere
+              publicationsConnection_ALL: AuthorPublicationsConnectionWhere
               publicationsConnection_NONE: AuthorPublicationsConnectionWhere
               publicationsConnection_NOT: AuthorPublicationsConnectionWhere
               publicationsConnection_SINGLE: AuthorPublicationsConnectionWhere
@@ -503,12 +503,12 @@ describe("Unions", () => {
               author: AuthorWhere
               authorAggregate: BookAuthorAggregateInput
               authorConnection: BookAuthorConnectionWhere
-              authorConnection_EVERY: BookAuthorConnectionWhere
+              authorConnection_ALL: BookAuthorConnectionWhere
               authorConnection_NONE: BookAuthorConnectionWhere
               authorConnection_NOT: BookAuthorConnectionWhere
               authorConnection_SINGLE: BookAuthorConnectionWhere
               authorConnection_SOME: BookAuthorConnectionWhere
-              author_EVERY: AuthorWhere
+              author_ALL: AuthorWhere
               author_NONE: AuthorWhere
               author_NOT: AuthorWhere
               author_SINGLE: AuthorWhere
@@ -766,12 +766,12 @@ describe("Unions", () => {
               author: AuthorWhere
               authorAggregate: JournalAuthorAggregateInput
               authorConnection: JournalAuthorConnectionWhere
-              authorConnection_EVERY: JournalAuthorConnectionWhere
+              authorConnection_ALL: JournalAuthorConnectionWhere
               authorConnection_NONE: JournalAuthorConnectionWhere
               authorConnection_NOT: JournalAuthorConnectionWhere
               authorConnection_SINGLE: JournalAuthorConnectionWhere
               authorConnection_SOME: JournalAuthorConnectionWhere
-              author_EVERY: AuthorWhere
+              author_ALL: AuthorWhere
               author_NONE: AuthorWhere
               author_NOT: AuthorWhere
               author_SINGLE: AuthorWhere

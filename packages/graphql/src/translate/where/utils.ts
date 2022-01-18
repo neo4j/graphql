@@ -5,7 +5,7 @@ export type SpatialWhereOperator = "DISTANCE";
 export type StringWhereOperator = "CONTAINS" | "STARTS_WITH" | "ENDS_WITH";
 export type RegexWhereOperator = "MATCHES";
 export type ArrayWhereOperator = "IN" | "INCLUDES";
-export type RelationshipWhereOperator = "EVERY" | "NONE" | "SINGLE" | "SOME";
+export type RelationshipWhereOperator = "ALL" | "NONE" | "SINGLE" | "SOME";
 
 export type WhereOperator =
     | "NOT"
@@ -43,7 +43,7 @@ export const comparisonMap: Record<Exclude<WhereOperator, RelationshipWhereOpera
     INCLUDES: "IN",
 };
 
-export const whereRegEx = /(?<fieldName>[_A-Za-z]\w*?)(?<isAggregate>Aggregate)?(?:_(?<operator>NOT|NOT_IN|IN|NOT_INCLUDES|INCLUDES|MATCHES|NOT_CONTAINS|CONTAINS|NOT_STARTS_WITH|STARTS_WITH|NOT_ENDS_WITH|ENDS_WITH|LT|LTE|GT|GTE|DISTANCE|EVERY|NONE|SINGLE|SOME))?$/;
+export const whereRegEx = /(?<fieldName>[_A-Za-z]\w*?)(?<isAggregate>Aggregate)?(?:_(?<operator>NOT|NOT_IN|IN|NOT_INCLUDES|INCLUDES|MATCHES|NOT_CONTAINS|CONTAINS|NOT_STARTS_WITH|STARTS_WITH|NOT_ENDS_WITH|ENDS_WITH|LT|LTE|GT|GTE|DISTANCE|ALL|NONE|SINGLE|SOME))?$/;
 export type WhereRegexGroups = {
     fieldName: string;
     isAggregate?: string;
@@ -109,7 +109,7 @@ type ListPredicate = "ALL" | "NONE" | "SINGLE" | "ANY";
 
 export const getListPredicate = (operator?: WhereOperator): ListPredicate => {
     switch (operator) {
-        case "EVERY":
+        case "ALL":
             return "ALL";
         case "NOT":
         case "NONE":

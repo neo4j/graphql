@@ -218,12 +218,12 @@ describe("connect or create with id", () => {
               movies: MovieWhere
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
-              moviesConnection_EVERY: ActorMoviesConnectionWhere
+              moviesConnection_ALL: ActorMoviesConnectionWhere
               moviesConnection_NONE: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
               moviesConnection_SINGLE: ActorMoviesConnectionWhere
               moviesConnection_SOME: ActorMoviesConnectionWhere
-              movies_EVERY: MovieWhere
+              movies_ALL: MovieWhere
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere
               movies_SINGLE: MovieWhere
@@ -964,12 +964,12 @@ describe("connect or create with id", () => {
               posts: PostWhere
               postsAggregate: UserPostsAggregateInput
               postsConnection: UserPostsConnectionWhere
-              postsConnection_EVERY: UserPostsConnectionWhere
+              postsConnection_ALL: UserPostsConnectionWhere
               postsConnection_NONE: UserPostsConnectionWhere
               postsConnection_NOT: UserPostsConnectionWhere
               postsConnection_SINGLE: UserPostsConnectionWhere
               postsConnection_SOME: UserPostsConnectionWhere
-              posts_EVERY: PostWhere
+              posts_ALL: PostWhere
               posts_NONE: PostWhere
               posts_NOT: PostWhere
               posts_SINGLE: PostWhere

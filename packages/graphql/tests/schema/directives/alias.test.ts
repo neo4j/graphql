@@ -346,12 +346,12 @@ describe("Alias", () => {
               actedIn: MovieWhere
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionWhere
-              actedInConnection_EVERY: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere
               actedInConnection_NONE: ActorActedInConnectionWhere
               actedInConnection_NOT: ActorActedInConnectionWhere
               actedInConnection_SINGLE: ActorActedInConnectionWhere
               actedInConnection_SOME: ActorActedInConnectionWhere
-              actedIn_EVERY: MovieWhere
+              actedIn_ALL: MovieWhere
               actedIn_NONE: MovieWhere
               actedIn_NOT: MovieWhere
               actedIn_SINGLE: MovieWhere

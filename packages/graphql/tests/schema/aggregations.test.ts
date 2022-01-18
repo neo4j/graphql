@@ -1173,12 +1173,12 @@ describe("Aggregations", () => {
               likes: UserWhere
               likesAggregate: PostLikesAggregateInput
               likesConnection: PostLikesConnectionWhere
-              likesConnection_EVERY: PostLikesConnectionWhere
+              likesConnection_ALL: PostLikesConnectionWhere
               likesConnection_NONE: PostLikesConnectionWhere
               likesConnection_NOT: PostLikesConnectionWhere
               likesConnection_SINGLE: PostLikesConnectionWhere
               likesConnection_SOME: PostLikesConnectionWhere
-              likes_EVERY: UserWhere
+              likes_ALL: UserWhere
               likes_NONE: UserWhere
               likes_NOT: UserWhere
               likes_SINGLE: UserWhere

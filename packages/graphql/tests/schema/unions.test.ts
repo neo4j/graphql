@@ -334,7 +334,7 @@ describe("Unions", () => {
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               searchConnection: MovieSearchConnectionWhere
-              searchConnection_EVERY: MovieSearchConnectionWhere
+              searchConnection_ALL: MovieSearchConnectionWhere
               searchConnection_NONE: MovieSearchConnectionWhere
               searchConnection_NOT: MovieSearchConnectionWhere
               searchConnection_SINGLE: MovieSearchConnectionWhere

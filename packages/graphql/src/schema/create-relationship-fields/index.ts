@@ -636,10 +636,10 @@ function createRelationshipFields({
                 [`${rel.fieldName}_NOT`]: `${n.name}Where`,
                 ...(rel.typeMeta.array
                     ? {
-                          [`${rel.fieldName}_EVERY`]: `${n.name}Where`,
-                          [`${rel.fieldName}_SOME`]: `${n.name}Where`,
+                          [`${rel.fieldName}_ALL`]: `${n.name}Where`,
                           [`${rel.fieldName}_NONE`]: `${n.name}Where`,
                           [`${rel.fieldName}_SINGLE`]: `${n.name}Where`,
+                          [`${rel.fieldName}_SOME`]: `${n.name}Where`,
                       }
                     : {}),
                 [`${rel.fieldName}Aggregate`]: whereAggregateInput,

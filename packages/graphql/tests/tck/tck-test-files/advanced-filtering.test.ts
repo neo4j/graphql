@@ -625,10 +625,10 @@ describe("Cypher Advanced Filtering", () => {
         });
 
         describe("List Predicates", () => {
-            const generateQueryAndSnapShots = (operator: "EVERY" | "NONE" | "SINGLE" | "SOME") => {
+            const generateQueryAndSnapShots = (operator: "ALL" | "NONE" | "SINGLE" | "SOME") => {
                 const getListPredicate = () => {
                     switch (operator) {
-                        case "EVERY":
+                        case "ALL":
                             return "ALL";
                         case "NONE":
                             return "NONE";
@@ -659,8 +659,8 @@ describe("Cypher Advanced Filtering", () => {
                 `;
                 return { query, cypher, params };
             };
-            test("EVERY", async () => {
-                const { query, cypher, params } = generateQueryAndSnapShots("EVERY");
+            test("ALL", async () => {
+                const { query, cypher, params } = generateQueryAndSnapShots("ALL");
 
                 const req = createJwtRequest("secret", {});
                 const result = await translateQuery(neoSchema, query, { req });
@@ -770,10 +770,10 @@ describe("Cypher Advanced Filtering", () => {
         });
 
         describe("List Predicates", () => {
-            const generateQueryAndSnapShots = (operator: "EVERY" | "NONE" | "SINGLE" | "SOME") => {
+            const generateQueryAndSnapShots = (operator: "ALL" | "NONE" | "SINGLE" | "SOME") => {
                 const getListPredicate = () => {
                     switch (operator) {
-                        case "EVERY":
+                        case "ALL":
                             return "ALL";
                         case "NONE":
                             return "NONE";
@@ -812,8 +812,8 @@ describe("Cypher Advanced Filtering", () => {
                 `;
                 return { query, cypher, params };
             };
-            test("EVERY", async () => {
-                const { query, cypher, params } = generateQueryAndSnapShots("EVERY");
+            test("ALL", async () => {
+                const { query, cypher, params } = generateQueryAndSnapShots("ALL");
 
                 const req = createJwtRequest("secret", {});
                 const result = await translateQuery(neoSchema, query, { req });

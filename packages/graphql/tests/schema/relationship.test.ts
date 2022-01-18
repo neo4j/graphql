@@ -275,12 +275,12 @@ describe("Relationship", () => {
               actors: ActorWhere
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
-              actorsConnection_EVERY: MovieActorsConnectionWhere
+              actorsConnection_ALL: MovieActorsConnectionWhere
               actorsConnection_NONE: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
               actorsConnection_SINGLE: MovieActorsConnectionWhere
               actorsConnection_SOME: MovieActorsConnectionWhere
-              actors_EVERY: ActorWhere
+              actors_ALL: ActorWhere
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere
               actors_SINGLE: ActorWhere
@@ -520,12 +520,12 @@ describe("Relationship", () => {
               movies: MovieWhere
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
-              moviesConnection_EVERY: ActorMoviesConnectionWhere
+              moviesConnection_ALL: ActorMoviesConnectionWhere
               moviesConnection_NONE: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
               moviesConnection_SINGLE: ActorMoviesConnectionWhere
               moviesConnection_SOME: ActorMoviesConnectionWhere
-              movies_EVERY: MovieWhere
+              movies_ALL: MovieWhere
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere
               movies_SINGLE: MovieWhere
@@ -733,12 +733,12 @@ describe("Relationship", () => {
               actors: ActorWhere
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
-              actorsConnection_EVERY: MovieActorsConnectionWhere
+              actorsConnection_ALL: MovieActorsConnectionWhere
               actorsConnection_NONE: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
               actorsConnection_SINGLE: MovieActorsConnectionWhere
               actorsConnection_SOME: MovieActorsConnectionWhere
-              actors_EVERY: ActorWhere
+              actors_ALL: ActorWhere
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere
               actors_SINGLE: ActorWhere

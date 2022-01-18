@@ -65,10 +65,10 @@ function createConnectionFields({
             [`${connectionField.fieldName}_NOT`]: connectionWhere,
             ...(connectionField.relationship.typeMeta.array
                 ? {
-                      [`${connectionField.fieldName}_EVERY`]: connectionWhere,
-                      [`${connectionField.fieldName}_SOME`]: connectionWhere,
+                      [`${connectionField.fieldName}_ALL`]: connectionWhere,
                       [`${connectionField.fieldName}_NONE`]: connectionWhere,
                       [`${connectionField.fieldName}_SINGLE`]: connectionWhere,
+                      [`${connectionField.fieldName}_SOME`]: connectionWhere,
                   }
                 : {}),
         });
