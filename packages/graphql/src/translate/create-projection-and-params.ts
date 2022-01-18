@@ -623,11 +623,12 @@ function createProjectionAndParams({
         // Map over the implemented interfaces of the node and extract the names
         .map((implementedInterface) => implementedInterface.name.value)
         // Combine the fields of the interfaces...
-        .reduce(
-            (prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }),
+        .reduce((prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }), {
             // with the fields of the node
-            nodeFields
-        );
+            ...nodeFields,
+            // and any required fields for custom resolvers
+            ...getRequiredFields({ node, resolveTree }),
+        });
 
     const { projection, params, meta } = Object.entries(fields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
@@ -639,3 +640,37 @@ function createProjectionAndParams({
 }
 
 export default createProjectionAndParams;
+
+const getRequiredFields = ({
+    node,
+    resolveTree,
+}: {
+    node: Node;
+    resolveTree: ResolveTree;
+}): Record<string, ResolveTree> => {
+    const nodeFields = resolveTree.fieldsByTypeName[node.name];
+
+    return Array.from(
+        // Create set to remove duplicate fields required across different `@ignore` fields
+        new Set(
+            node.ignoredFields
+                // Filter any that have required fields
+                .filter((f) => f.requiredFields?.length)
+                // Filter those ignored fields that exist in selection set
+                .filter((ignoredField) => Object.values(nodeFields).find((f) => f.name === ignoredField.fieldName))
+                // Extract required fields
+                .map((f) => f.requiredFields)
+                .flat()
+        )
+    ).reduce(
+        (acc, requiredField) => ({
+            ...acc,
+            // If required field does not exist in selection set
+            ...(!Object.values(nodeFields).find((nodeField) => nodeField.name === requiredField)
+                ? // Generate a new field to project
+                  generateProjectionField({ name: requiredField })
+                : {}),
+        }),
+        {}
+    );
+};
