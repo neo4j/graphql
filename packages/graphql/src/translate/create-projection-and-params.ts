@@ -31,6 +31,7 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
+import { generateProjectionField } from "./utils/generate-projection-field";
 
 interface Res {
     projection: string[];
@@ -145,7 +146,7 @@ function createProjectionAndParams({
 
         const whereInput = field.args.where as GraphQLWhereArg;
         const optionsInput = field.args.options as GraphQLOptionsArg;
-        const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
+        const fieldFields = field.fieldsByTypeName;
         const cypherField = node.cypherFields.find((x) => x.fieldName === field.name);
         const relationField = node.relationFields.find((x) => x.fieldName === field.name);
         const connectionField = node.connectionFields.find((x) => x.fieldName === field.name);
@@ -318,21 +319,6 @@ function createProjectionAndParams({
         if (relationField) {
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
-            // Fields of reference node to sort on. Sorting is done through an `apoc` call and if fields are not present
-            // sorting will fail silently.
-            const sortFields = ([] as string[]).concat(
-                ...(optionsInput?.sort ?? []).map((sortField) => Object.keys(sortField))
-            );
-
-            sortFields.forEach((sortField) => {
-                if (!Object.values(fieldFields[referenceNode.name]).find((r) => r.name === sortField)) {
-                    fieldFields[referenceNode.name] = {
-                        ...fieldFields[referenceNode.name],
-                        [sortField]: { alias: sortField, args: {}, fieldsByTypeName: {}, name: sortField },
-                    };
-                }
-            });
-
             const nodeMatchStr = `(${chainStr || varName})`;
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
@@ -457,9 +443,32 @@ function createProjectionAndParams({
                 return res;
             }
 
+            // Fields of reference node to sort on. Sorting is done through an `apoc` call and if fields are not present
+            // sorting will fail silently.
+
+            const sortFieldNames = (optionsInput?.sort ?? []).map(Object.keys).flat();
+
+            // Iterate over fields name in sort argument
+            const relationshipFieldsByTypeName = sortFieldNames.reduce(
+                (acc, sortFieldName) => ({
+                    ...acc,
+                    [referenceNode.name]: {
+                        ...acc[referenceNode.name],
+                        // If fieldname is not found in fields of selection set
+                        ...(!Object.values(fieldFields[referenceNode.name]).find(
+                            (fieldField) => fieldField.name === sortFieldName
+                        ) // generate a basic resolve tree
+                            ? generateProjectionField({ name: sortFieldName })
+                            : {}),
+                    },
+                }),
+                // and add it to existing fields for projection
+                fieldFields
+            );
+
             let projectionStr = "";
             const recurse = createProjectionAndParams({
-                fieldsByTypeName: fieldFields,
+                fieldsByTypeName: relationshipFieldsByTypeName,
                 node: referenceNode || node,
                 context,
                 varName: `${varName}_${key}`,

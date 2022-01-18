@@ -25,10 +25,10 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
+import { generateProjectionField } from "./utils/generate-projection-field";
 
 function translateRead({ node, context }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
-    const { fieldsByTypeName } = resolveTree;
     const varName = "this";
 
     let matchAndWhereStr = "";
@@ -41,21 +41,6 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     let offsetStr = "";
     let sortStr = "";
 
-    // Fields of reference node to sort on. Since sorting is done on projection, if field is not selected
-    // sort will fail silently
-    const sortFields = ([] as string[]).concat(
-        ...(optionsInput?.sort ?? []).map((sortField) => Object.keys(sortField))
-    );
-
-    sortFields.forEach((sortField) => {
-        if (!Object.values(fieldsByTypeName[node.name]).find((r) => r.name === sortField)) {
-            fieldsByTypeName[node.name] = {
-                ...fieldsByTypeName[node.name],
-                [sortField]: { alias: sortField, args: {}, fieldsByTypeName: {}, name: sortField },
-            };
-        }
-    });
-
     let cypherParams: { [k: string]: any } = {};
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
@@ -63,6 +48,29 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });
     matchAndWhereStr = topLevelMatch[0];
     cypherParams = { ...cypherParams, ...topLevelMatch[1] };
+
+    // Fields of reference node to sort on. Since sorting is done on projection, if field is not selected
+    // sort will fail silently
+
+    const sortFieldNames = (optionsInput?.sort ?? []).map(Object.keys).flat();
+
+    // Iterate over fields name in sort argument
+    const fieldsByTypeName = sortFieldNames.reduce(
+        (acc, sortFieldName) => ({
+            ...acc,
+            [node.name]: {
+                ...acc[node.name],
+                // If fieldname is not found in fields of selection set
+                ...(!Object.values(resolveTree.fieldsByTypeName[node.name]).find(
+                    (field) => field.name === sortFieldName
+                ) // generate a basic resolve tree
+                    ? generateProjectionField({ name: sortFieldName })
+                    : {}),
+            },
+        }),
+        // and add it to existing fields for projection
+        resolveTree.fieldsByTypeName
+    );
 
     const projection = createProjectionAndParams({
         node,
