@@ -38,6 +38,6 @@ type Plane {
 
 ```gql
 type Deck {
-    cards: [Card!]! @relationship(type: "HAS_HARD", direction: OUT, validation: { EQUAL: 52 })
+    cards: [Card!]! @relationship(type: "HAS_CARD", direction: OUT, validation: { EQUAL: 52 })
 }
 ```
