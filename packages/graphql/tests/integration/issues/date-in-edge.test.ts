@@ -46,13 +46,13 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
 
             type Movie {
                 title: String!
-                actors: [Actor]! @relationship(type: "ACTOR", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTOR", direction: OUT)
             }
 
             type Actor {
                 name: String!
                 birthday: DateTime!
-                movie: Movie @relationship(type: "ACTOR", direction: IN)
+                movie: Movie! @relationship(type: "ACTOR", direction: IN)
             }
         `;
 

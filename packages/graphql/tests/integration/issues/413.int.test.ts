@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("413", () => {
     let driver: Driver;
@@ -36,7 +36,8 @@ describe("413", () => {
         await driver.close();
     });
 
-    test("should recreate issue and return correct count", async () => {
+    // NOTE: this test was updated to use aggregate instead of count
+    test("should recreate issue and return correct count as an aggregation", async () => {
         const session = driver.session();
 
         const typeDefs = gql`
@@ -68,7 +69,9 @@ describe("413", () => {
 
         const query = `
             query {
-                jobPlansCount(where: {tenantID: "${tenantID}"})
+                jobPlansAggregate(where: {tenantID: "${tenantID}"}) {
+                  count
+                }
             }
         `;
 
@@ -95,7 +98,7 @@ describe("413", () => {
             expect(result.errors).toBeFalsy();
 
             expect(result.data as any).toEqual({
-                jobPlansCount: 3,
+                jobPlansAggregate: {count: 3},
             });
         } finally {
             await session.close();

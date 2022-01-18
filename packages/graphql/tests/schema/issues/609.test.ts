@@ -108,7 +108,6 @@ describe("609", () => {
             type Query {
               deprecateds(options: DeprecatedOptions, where: DeprecatedWhere): [Deprecated!]!
               deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
-              deprecatedsCount(where: DeprecatedWhere): Int!
             }
 
             enum SortDirection {

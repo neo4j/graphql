@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("cypher", () => {
     let driver: Driver;
@@ -50,12 +50,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Query {
@@ -120,12 +120,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Query {
@@ -190,12 +190,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor @auth(rules: [{operations: [READ], roles: ["admin"]}]) {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Query {
@@ -241,7 +241,7 @@ describe("cypher", () => {
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
-                    expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                    expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
                 } finally {
                     await session.close();
                 }
@@ -267,12 +267,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Query {
@@ -356,18 +356,18 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
-                        directors: [Director] @relationship(type: "DIRECTED", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                        directors: [Director!]! @relationship(type: "DIRECTED", direction: IN)
                     }
 
                     type Actor {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Director {
                         name: String!
-                        movies: [Movie] @relationship(type: "DIRECTED", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
                     }
 
                     type Query {
@@ -457,12 +457,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Mutation {
@@ -527,12 +527,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Mutation {
@@ -597,12 +597,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor @auth(rules: [{operations: [READ], roles: ["admin"]}]) {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Mutation {
@@ -644,7 +644,7 @@ describe("cypher", () => {
                         variableValues: { title: movieTitle },
                     });
 
-                    expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                    expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
                 } finally {
                     await session.close();
                 }
@@ -669,7 +669,7 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Member {
                         id: ID!
-                        gender: Gender @relationship(type: "HAS_GENDER", direction: OUT)
+                        gender: Gender! @relationship(type: "HAS_GENDER", direction: OUT)
                     }
 
                     type Gender {

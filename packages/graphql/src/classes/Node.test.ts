@@ -51,7 +51,7 @@ describe("Node", () => {
             name: "Movie",
         }).instance();
 
-        expect(node.getLabelString(defaultContext)).toEqual(":Movie");
+        expect(node.getLabelString(defaultContext)).toBe(":Movie");
     });
 
     test("should return labels from node name", () => {
@@ -67,7 +67,7 @@ describe("Node", () => {
             name: "super_movie",
         }).instance();
 
-        expect(node.plural).toEqual("super_movies");
+        expect(node.plural).toBe("super_movies");
     });
 
     describe("NodeDirective", () => {
@@ -93,7 +93,7 @@ describe("Node", () => {
             const labelString = node.getLabelString(context);
 
             expect(labels).toEqual(["Movie"]);
-            expect(labelString).toEqual(":`Movie`");
+            expect(labelString).toBe(":`Movie`");
         });
 
         test("should return labels updated with context values from Context", () => {
@@ -115,7 +115,7 @@ describe("Node", () => {
             const labelString = node.getLabelString(context);
 
             expect(labels).toEqual(["Movie"]);
-            expect(labelString).toEqual(":`Movie`");
+            expect(labelString).toBe(":`Movie`");
         });
 
         test("should return additional labels updated with jwt values from Context", () => {
@@ -141,7 +141,7 @@ describe("Node", () => {
             const labelString = node.getLabelString(context);
 
             expect(labels).toEqual(["Film", "Movie"]);
-            expect(labelString).toEqual(":`Film`:`Movie`");
+            expect(labelString).toBe(":`Film`:`Movie`");
         });
     });
 });

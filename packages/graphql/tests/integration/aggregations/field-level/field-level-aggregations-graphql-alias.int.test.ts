@@ -21,7 +21,7 @@ import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType } from "../../../../tests/utils/graphql-types";
+import { generateUniqueType } from "../../../utils/graphql-types";
 
 describe("Field Level Aggregations Graphql alias", () => {
     let driver: Driver;
@@ -39,14 +39,14 @@ describe("Field Level Aggregations Graphql alias", () => {
         typeDefs = `
         type ${typeMovie.name} {
             title: String
-            ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
+            ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
         }
 
         type ${typeActor.name} {
             name: String
             age: Int
             born: DateTime
-            ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
+            ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
         }
 
         interface ActedIn {

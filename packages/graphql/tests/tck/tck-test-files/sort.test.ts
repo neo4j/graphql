@@ -33,7 +33,7 @@ describe("Cypher sort tests", () => {
             type Movie {
                 id: ID
                 title: String
-                genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
+                genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 totalGenres: Int!
                     @cypher(
                         statement: """

@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../../tests/utils/graphql-types";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("assertIndexesAndConstraints/fulltext", () => {
     let driver: Driver;
@@ -135,8 +135,8 @@ describe("assertIndexesAndConstraints/fulltext", () => {
             };
 
             expect(record.name).toEqual(indexName);
-            expect(record.type).toEqual("FULLTEXT");
-            expect(record.entityType).toEqual("NODE");
+            expect(record.type).toBe("FULLTEXT");
+            expect(record.entityType).toBe("NODE");
             expect(record.labelsOrTypes).toEqual([type.name]);
             expect(record.properties).toEqual(["title"]);
 
@@ -281,8 +281,8 @@ describe("assertIndexesAndConstraints/fulltext", () => {
             };
 
             expect(record.name).toEqual(indexName);
-            expect(record.type).toEqual("FULLTEXT");
-            expect(record.entityType).toEqual("NODE");
+            expect(record.type).toBe("FULLTEXT");
+            expect(record.entityType).toBe("NODE");
             expect(record.labelsOrTypes).toEqual([label]);
             expect(record.properties).toEqual(["title"]);
 
@@ -377,8 +377,8 @@ describe("assertIndexesAndConstraints/fulltext", () => {
             };
 
             expect(record.name).toEqual(indexName);
-            expect(record.type).toEqual("FULLTEXT");
-            expect(record.entityType).toEqual("NODE");
+            expect(record.type).toBe("FULLTEXT");
+            expect(record.entityType).toBe("NODE");
             expect(record.labelsOrTypes).toEqual([label]);
             expect(record.properties).toEqual(["newTitle"]);
 

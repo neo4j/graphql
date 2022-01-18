@@ -135,7 +135,7 @@ describe("auth/allow-unauthenticated", () => {
             });
 
             // Check that a Forbidden error have been throwed
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             expect(gqlResult.errors as any[]).toHaveLength(1);
 
             // Check if returned data is what we really want
@@ -188,7 +188,7 @@ describe("auth/allow-unauthenticated", () => {
             });
 
             // Check that a Forbidden error have been throwed
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             expect(gqlResult.errors as any[]).toHaveLength(1);
 
             // Check if returned data is what we really want
@@ -388,7 +388,7 @@ describe("auth/allow-unauthenticated", () => {
             });
 
             // Check that a Forbidden error have been throwed
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             expect(gqlResult.errors as any[]).toHaveLength(1);
 
             // Check if returned data is what we really want
