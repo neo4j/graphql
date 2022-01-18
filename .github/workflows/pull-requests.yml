@@ -64,6 +64,7 @@ jobs:
 
     outputs:
       typescript: ${{ steps.filter.outputs.typescript }}
+      typescript_files: ${{ steps.filter.outputs.typescript_files }}
 
     steps:
       - uses: actions/checkout@v2
@@ -73,7 +74,7 @@ jobs:
           list-files: shell
           filters: |
             typescript:
-              - added|modified: '*.ts'
+              - added|modified: 'packages/**/*.ts'
 
   license-header-check:
     needs: typescript-changes
@@ -86,15 +87,8 @@ jobs:
       - uses: actions/setup-go@v2
       - name: Install addlicense
         run: go install github.com/google/addlicense@latest
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          list-files: shell
-          filters: |
-            typescript:
-              - added|modified: '*.ts'
       - name: Run addlicense
-        run: addlicense -f ./addlicense -check ${{ steps.filter.outputs.typescript_files }}
+        run: addlicense -f ./addlicense -check ${{ needs.typescript-changes.outputs.typescript_files }}
 
   unit-tests:
     needs:
