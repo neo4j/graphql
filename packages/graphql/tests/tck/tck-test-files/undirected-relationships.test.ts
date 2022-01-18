@@ -117,4 +117,70 @@ RETURN this { content:  [this_content IN [(this)-[:HAS_CONTENT]-(this_content) W
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
+
+    test("undirected with interfaces", async () => {
+        typeDefs = gql`
+            interface Production {
+                title: String!
+                actors: [Actor!]!
+            }
+
+            type Movie implements Production {
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                runtime: Int!
+            }
+
+            type Series implements Production {
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                episodes: Int!
+            }
+
+            interface ActedIn @relationshipProperties {
+                role: String!
+            }
+
+            type Actor {
+                name: String!
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: { jwt: { secret } }
+        });
+        const query = gql`
+            query Actors {
+                actors {
+                    actedIn(directed: false) {
+                        title
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+"MATCH (this:Actor)
+WITH this
+CALL {
+WITH this
+MATCH (this)-[:ACTED_IN]-(this_Movie:Movie)
+RETURN { __resolveType: \\"Movie\\", title: this_Movie.title } AS actedIn
+UNION
+WITH this
+MATCH (this)-[:ACTED_IN]-(this_Series:Series)
+RETURN { __resolveType: \\"Series\\", title: this_Series.title } AS actedIn
+}
+RETURN this { actedIn: collect(actedIn) } as this"
+`);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
 });
