@@ -276,10 +276,7 @@ function createProjectionAndParams({
                 {}
             );
 
-            // Overwrite null arguments with those defined in resolve tree
-            const argumentsWithNullValues = { ...nullArgumentValues, ...field.args };
-
-            const apocParams = Object.entries(argumentsWithNullValues).reduce(
+            const apocParams = Object.entries({ ...nullArgumentValues, ...field.args }).reduce(
                 (r: { strs: string[]; params: any }, entry) => {
                     const argName = `${param}_${entry[0]}`;
 
