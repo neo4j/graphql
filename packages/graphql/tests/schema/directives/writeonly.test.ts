@@ -306,7 +306,7 @@ describe("@writeonly directive", () => {
 
             type Movie {
                 id: ID
-                actors: [Actor]! @writeonly @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @writeonly @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });

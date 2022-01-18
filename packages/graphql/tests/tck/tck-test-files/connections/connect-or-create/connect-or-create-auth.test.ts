@@ -31,7 +31,7 @@ describe("connectOrCreate", () => {
         return gql`
         type Movie {
             title: String
-            genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
+            genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
         }
 
         type Genre @auth(rules: [{ operations: ${operations}, roles: ["admin"] }]) {

@@ -44,7 +44,7 @@ describe("aggregations-where-edge-float", () => {
           
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {
@@ -113,7 +113,7 @@ describe("aggregations-where-edge-float", () => {
           
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {
@@ -183,7 +183,7 @@ describe("aggregations-where-edge-float", () => {
           
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {
@@ -252,7 +252,7 @@ describe("aggregations-where-edge-float", () => {
           
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {
@@ -322,7 +322,7 @@ describe("aggregations-where-edge-float", () => {
           
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {

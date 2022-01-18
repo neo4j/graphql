@@ -265,7 +265,18 @@ function createProjectionAndParams({
                 ...(context.auth ? ["auth: $auth"] : []),
                 ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
             ];
-            const apocParams = Object.entries(field.args).reduce(
+
+            // Null default argument values are not passed into the resolve tree therefore these are not being passed to
+            // `apocParams` below causing a runtime error when executing.
+            const nullArgumentValues = cypherField.arguments.reduce(
+                (r, argument) => ({
+                    ...r,
+                    ...{ [argument.name.value]: null },
+                }),
+                {}
+            );
+
+            const apocParams = Object.entries({ ...nullArgumentValues, ...field.args }).reduce(
                 (r: { strs: string[]; params: any }, entry) => {
                     const argName = `${param}_${entry[0]}`;
 
@@ -339,7 +350,9 @@ function createProjectionAndParams({
                     offsetLimitStr = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
                 }
 
-                res.projection.push(`${f.alias}: collect(${f.alias})${offsetLimitStr}`);
+                res.projection.push(
+                    `${f.alias}: ${!isArray ? "head(" : ""}collect(${f.alias})${offsetLimitStr}${!isArray ? ")" : ""}`
+                );
 
                 return res;
             }

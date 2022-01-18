@@ -19,8 +19,6 @@
 
 import camelCase from "camelcase";
 import {
-    printSchema,
-    parse,
     ObjectTypeDefinitionNode,
     NamedTypeNode,
     ListTypeNode,
@@ -42,12 +40,12 @@ describe("makeAugmentedSchema", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -125,7 +123,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw cannot have auth directive on a relationship", () => {
         const typeDefs = gql`
             type Movie {
-                movie: Movie @relationship(type: "NODE", direction: OUT) @auth(rules: [{ operations: [CREATE] }])
+                movie: Movie! @relationship(type: "NODE", direction: OUT) @auth(rules: [{ operations: [CREATE] }])
             }
         `;
 
@@ -184,7 +182,7 @@ describe("makeAugmentedSchema", () => {
                 }
 
                 type Query {
-                    movies: [Movie] @cypher(statement: "")
+                    movies: [Movie!]! @cypher(statement: "")
                 }
             `;
 
@@ -200,7 +198,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw error if @auth is used on relationship properties interface", () => {
         const typeDefs = gql`
             type Movie {
-                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type Actor {
@@ -220,7 +218,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw error if @cypher is used on relationship properties interface", () => {
         const typeDefs = gql`
             type Movie {
-                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type Actor {
@@ -238,7 +236,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw error if @auth is used on relationship property", () => {
         const typeDefs = gql`
             type Movie {
-                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type Actor {
@@ -256,7 +254,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw error if @relationship is used on relationship property", () => {
         const typeDefs = gql`
             type Movie {
-                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type Actor {
@@ -264,7 +262,7 @@ describe("makeAugmentedSchema", () => {
             }
 
             interface ActedIn {
-                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
 
@@ -276,7 +274,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw error if @cypher is used on relationship property", () => {
         const typeDefs = gql`
             type Movie {
-                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type Actor {
@@ -299,7 +297,7 @@ describe("makeAugmentedSchema", () => {
                     const typeDefs = gql`
                         type Movie {
                             id: ID
-                            actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                            actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
 
                         interface ActedIn {
@@ -320,7 +318,7 @@ describe("makeAugmentedSchema", () => {
                     const typeDefs = gql`
                         type Movie {
                             id: ID
-                            actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                            actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
 
                         interface ActedIn {
@@ -344,7 +342,7 @@ describe("makeAugmentedSchema", () => {
         test("should throw error if @unique is used on relationship property", () => {
             const typeDefs = gql`
                 type Movie {
-                    actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                    actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 }
 
                 type Actor {
@@ -386,7 +384,7 @@ describe("makeAugmentedSchema", () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
-                    actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT) @unique
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT) @unique
                 }
 
                 type Actor {
