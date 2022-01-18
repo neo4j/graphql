@@ -517,10 +517,13 @@ describe("Cypher Auth Where", () => {
             CALL apoc.do.when(this_posts0 IS NOT NULL, \\"
             SET this_posts0.id = $this_update_posts0_id
             WITH this, this_posts0
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
-                        apoc.cypher.runFirstColumn('MATCH p=(this_posts0)<-[:HAS_POST]-(:User)
-            RETURN count(nodes(p)) = 1', { this_posts0: this_posts0 }, false)
-                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
+            CALL {
+            	WITH this_posts0
+            	MATCH p=(this_posts0)<-[:HAS_POST]-(:User)
+            	WITH count(nodes(p)) AS c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_posts0_creator_User_unique_ignored
+            }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id})
             YIELD value as _

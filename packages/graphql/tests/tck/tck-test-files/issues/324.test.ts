@@ -116,26 +116,35 @@ describe("#324", () => {
             	RETURN count(*)
             }
             WITH this, this_car0, this_car0_manufacturer0
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
-                        apoc.cypher.runFirstColumn('MATCH p=(this_car0_manufacturer0)-[:LOGO]->(:Logo)
-            RETURN count(nodes(p)) = 1', { this_car0_manufacturer0: this_car0_manufacturer0 }, false)
-                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDManufacturer.logo required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
+            CALL {
+            	WITH this_car0_manufacturer0
+            	MATCH p=(this_car0_manufacturer0)-[:LOGO]->(:Logo)
+            	WITH count(nodes(p)) AS c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDManufacturer.logo required', [0])
+            	RETURN c AS this_car0_manufacturer0_logo_Logo_unique_ignored
+            }
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_car0:this_car0, updatePeople: $updatePeople, this_car0_manufacturer0:this_car0_manufacturer0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
             YIELD value as _
             WITH this, this_car0
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
-                        apoc.cypher.runFirstColumn('MATCH p=(this_car0)-[:MANUFACTURER]->(:Manufacturer)
-            RETURN count(nodes(p)) = 1', { this_car0: this_car0 }, false)
-                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDCar.manufacturer required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
+            CALL {
+            	WITH this_car0
+            	MATCH p=(this_car0)-[:MANUFACTURER]->(:Manufacturer)
+            	WITH count(nodes(p)) AS c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDCar.manufacturer required', [0])
+            	RETURN c AS this_car0_manufacturer_Manufacturer_unique_ignored
+            }
             RETURN count(*)
             \\", \\"\\", {this:this, updatePeople: $updatePeople, this_car0:this_car0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
             YIELD value as _
             WITH this
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
-                        apoc.cypher.runFirstColumn('MATCH p=(this)-[:CAR]->(:Car)
-            RETURN count(nodes(p)) = 1', { this: this }, false)
-                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDPerson.car required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
+            CALL {
+            	WITH this
+            	MATCH p=(this)-[:CAR]->(:Car)
+            	WITH count(nodes(p)) AS c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPerson.car required', [0])
+            	RETURN c AS this_car_Car_unique_ignored
+            }
             RETURN this { .identifier } AS this"
         `);
 

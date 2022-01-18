@@ -35,23 +35,20 @@ function createRelationshipValidationString({
         const outStr = field.direction === "OUT" ? "->" : "-";
         const relTypeStr = `[:${field.type}]`;
 
-        const pathMatchStr = `MATCH p=(${varName})${inStr}${relTypeStr}${outStr}(${toNode.getLabelString(context)})`;
-        const countNodesStr = `count(nodes(p))`;
-        const relationshipLength = 1;
-        const comparisonOperator = `=`;
-        const comparison = `${countNodesStr} ${comparisonOperator} ${relationshipLength}`;
-        const apocRunFirstCol = `
-            apoc.cypher.runFirstColumn('${pathMatchStr}\nRETURN ${comparison}', { ${varName}: ${varName} }, false)
-        `;
+        const subQuery = [
+            `CALL {`,
+            `\tWITH ${varName}`,
+            `\tMATCH p=(${varName})${inStr}${relTypeStr}${outStr}(${toNode.getLabelString(context)})`,
+            `\tWITH count(nodes(p)) AS c`,
+            `\tCALL apoc.util.validate(NOT(c = 1), '${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} required', [0])`,
+            `\tRETURN c AS ${varName}_${field.fieldName}_${toNode.name}_unique_ignored`,
+            `}`,
+        ].join("\n");
 
-        return `apoc.util.validatePredicate(NOT(${apocRunFirstCol}), '${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} required', [0])`;
+        return subQuery;
     });
 
-    relationshipValidationStr = `CALL apoc.util.validate(NOT(${nonNullPredicates.join(
-        " AND "
-    )}), '${RELATIONSHIP_REQUIREMENT_PREFIX}', [0])`;
-
-    return relationshipValidationStr;
+    return nonNullPredicates.join("\n");
 }
 
 export default createRelationshipValidationString;

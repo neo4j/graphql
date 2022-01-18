@@ -138,10 +138,13 @@ describe("Cypher Auth Allow", () => {
             CALL apoc.util.validate(NOT(EXISTS((this0_posts0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_posts0_node_auth_bind0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0)-[:HAS_POST]->(this0_posts0_node)
             WITH this0, this0_posts0_node
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
-                        apoc.cypher.runFirstColumn('MATCH p=(this0_posts0_node)<-[:HAS_POST]-(:User)
-            RETURN count(nodes(p)) = 1', { this0_posts0_node: this0_posts0_node }, false)
-                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
+            CALL {
+            	WITH this0_posts0_node
+            	MATCH p=(this0_posts0_node)<-[:HAS_POST]-(:User)
+            	WITH count(nodes(p)) AS c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this0_posts0_node_creator_User_unique_ignored
+            }
             WITH this0
             CALL apoc.util.validate(NOT(this0.id IS NOT NULL AND this0.id = $this0_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
@@ -238,10 +241,13 @@ describe("Cypher Auth Allow", () => {
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_posts0:this_posts0, updateUsers: $updateUsers, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id})
             YIELD value as _
             WITH this, this_posts0
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
-                        apoc.cypher.runFirstColumn('MATCH p=(this_posts0)<-[:HAS_POST]-(:User)
-            RETURN count(nodes(p)) = 1', { this_posts0: this_posts0 }, false)
-                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
+            CALL {
+            	WITH this_posts0
+            	MATCH p=(this_posts0)<-[:HAS_POST]-(:User)
+            	WITH count(nodes(p)) AS c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_posts0_creator_User_unique_ignored
+            }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id})
             YIELD value as _
@@ -332,10 +338,13 @@ describe("Cypher Auth Allow", () => {
             	RETURN count(*)
             }
             WITH this
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
-                        apoc.cypher.runFirstColumn('MATCH p=(this)<-[:HAS_POST]-(:User)
-            RETURN count(nodes(p)) = 1', { this: this }, false)
-                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
+            CALL {
+            	WITH this
+            	MATCH p=(this)<-[:HAS_POST]-(:User)
+            	WITH count(nodes(p)) AS c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_creator_User_unique_ignored
+            }
             RETURN this { .id } AS this"
         `);
 
@@ -381,10 +390,13 @@ describe("Cypher Auth Allow", () => {
             RETURN count(*)
             }
             WITH this
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
-                        apoc.cypher.runFirstColumn('MATCH p=(this)<-[:HAS_POST]-(:User)
-            RETURN count(nodes(p)) = 1', { this: this }, false)
-                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
+            CALL {
+            	WITH this
+            	MATCH p=(this)<-[:HAS_POST]-(:User)
+            	WITH count(nodes(p)) AS c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_creator_User_unique_ignored
+            }
             RETURN this { .id } AS this"
         `);
 
