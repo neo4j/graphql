@@ -132,7 +132,6 @@ describe("Bigint", () => {
             type Query {
               files(options: FileOptions, where: FileWhere): [File!]!
               filesAggregate(where: FileWhere): FileAggregateSelection!
-              filesCount(where: FileWhere): Int!
             }
 
             enum SortDirection {

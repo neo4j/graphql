@@ -353,7 +353,9 @@ function createProjectionAndParams({
                     offsetLimitStr = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
                 }
 
-                res.projection.push(`${f.alias}: collect(${f.alias})${offsetLimitStr}`);
+                res.projection.push(
+                    `${f.alias}: ${!isArray ? "head(" : ""}collect(${f.alias})${offsetLimitStr}${!isArray ? ")" : ""}`
+                );
 
                 return res;
             }

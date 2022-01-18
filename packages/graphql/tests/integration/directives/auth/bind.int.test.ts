@@ -73,7 +73,7 @@ describe("auth/bind", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -85,12 +85,12 @@ describe("auth/bind", () => {
             const typeDefs = `
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type Post @auth(rules: [{ operations: [CREATE], bind: { id: "$jwt.sub" } }])
@@ -133,7 +133,7 @@ describe("auth/bind", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -145,7 +145,7 @@ describe("auth/bind", () => {
             const typeDefs = `
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type User {
@@ -196,7 +196,7 @@ describe("auth/bind", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -244,7 +244,7 @@ describe("auth/bind", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -256,12 +256,12 @@ describe("auth/bind", () => {
             const typeDefs = `
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type Post @auth(rules: [{ operations: [UPDATE], bind: { creator: { id: "$jwt.sub" } } }])
@@ -312,7 +312,7 @@ describe("auth/bind", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -363,7 +363,7 @@ describe("auth/bind", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -381,7 +381,7 @@ describe("auth/bind", () => {
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 extend type Post @auth(rules: [{ operations: [CONNECT], bind: { creator: { id: "$jwt.sub" } } }])
@@ -427,7 +427,7 @@ describe("auth/bind", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -445,7 +445,7 @@ describe("auth/bind", () => {
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 extend type Post @auth(rules: [{ operations: [DISCONNECT], bind: { creator: { id: "$jwt.sub" } } }])
@@ -491,7 +491,7 @@ describe("auth/bind", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }

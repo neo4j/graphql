@@ -115,7 +115,7 @@ type User {
 
 type Post {
     content: String
-    likes: [User] @relationship(type: "LIKES", direction: IN)
+    likes: [User!]! @relationship(type: "LIKES", direction: IN)
 }
 ----
 
@@ -143,7 +143,7 @@ type Passenger {
 
 type Flight {
     code: String
-    passengers: [Passenger] @relationship(type: "FLYING_ON", direction: IN)
+    passengers: [Passenger!]! @relationship(type: "FLYING_ON", direction: IN)
 }
 ----
 
@@ -166,7 +166,7 @@ Given the schema:
 ----
 type Movie {
     title: String
-    actors: [Person] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+    actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
 }
 
 type Person {

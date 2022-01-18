@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams, setTestEnvVars, unsetTestEnvVars } from "../utils/tck-test-utils";
 
 describe("Cypher Advanced Filtering", () => {
@@ -36,12 +36,12 @@ describe("Cypher Advanced Filtering", () => {
                 title: String
                 actorCount: Int
                 budget: BigInt
-                genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
+                genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
             }
 
             type Genre {
                 name: String
-                movies: [Movie] @relationship(type: "IN_GENRE", direction: IN)
+                movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN)
             }
         `;
 

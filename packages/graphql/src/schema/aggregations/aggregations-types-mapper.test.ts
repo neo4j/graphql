@@ -35,7 +35,7 @@ describe("AggregationTypesMapper", () => {
             nullable: false,
         });
 
-        expect(aggregationType?.getTypeName()).toEqual("StringAggregateSelectionNonNullable");
+        expect(aggregationType?.getTypeName()).toBe("StringAggregateSelectionNonNullable");
         expect(composer.get(aggregationType?.getTypeName())).toBeTruthy();
     });
 
@@ -47,7 +47,7 @@ describe("AggregationTypesMapper", () => {
             nullable: false,
         });
 
-        expect(aggregationType?.getTypeName()).toEqual("StringAggregateSelectionNonNullable");
+        expect(aggregationType?.getTypeName()).toBe("StringAggregateSelectionNonNullable");
         expect(composer.get(aggregationType?.getTypeName())).toBeTruthy();
         expect(beforeType).toEqual(aggregationType);
     });
@@ -58,7 +58,7 @@ describe("AggregationTypesMapper", () => {
             nullable: true,
         });
 
-        expect(aggregationType?.getTypeName()).toEqual("StringAggregateSelectionNullable");
+        expect(aggregationType?.getTypeName()).toBe("StringAggregateSelectionNullable");
         expect(composer.get(aggregationType?.getTypeName())).toBeTruthy();
     });
 

@@ -23,6 +23,7 @@ import { translateCreate } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
+import { upperFirst } from "../../utils/upper-first";
 
 export default function createResolver({ node }: { node: Node }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
@@ -38,7 +39,7 @@ export default function createResolver({ node }: { node: Node }) {
         });
 
         const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
-            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({ camelCase: true })
+            (selection) => selection.kind === "Field" && selection.name.value === node.plural
         ) as FieldNode;
 
         const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
@@ -53,7 +54,7 @@ export default function createResolver({ node }: { node: Node }) {
     }
 
     return {
-        type: `Create${node.getPlural({ camelCase: false })}MutationResponse!`,
+        type: `Create${upperFirst(node.plural)}MutationResponse!`,
         resolve,
         args: { input: `[${node.name}CreateInput!]!` },
     };

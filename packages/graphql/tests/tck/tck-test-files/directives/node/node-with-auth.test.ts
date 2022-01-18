@@ -33,7 +33,7 @@ describe("Node Directive", () => {
             type Post @node(label: "Comment") {
                 id: ID
                 content: String
-                creator: User @relationship(type: "HAS_POST", direction: IN)
+                creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
             extend type Post @auth(rules: [{ operations: [DELETE], roles: ["admin"] }])
@@ -41,7 +41,7 @@ describe("Node Directive", () => {
             type User @node(label: "Person") {
                 id: ID
                 name: String
-                posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
             extend type User

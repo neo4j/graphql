@@ -27,7 +27,7 @@ describe("Interfaces", () => {
         const typeDefs = gql`
             interface MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
                 id: ID
-                movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
+                movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
                     @cypher(
                         statement: """
@@ -40,7 +40,7 @@ describe("Interfaces", () => {
             type Movie implements MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
                 id: ID
                 nodes: [MovieNode]
-                movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
+                movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
                     @cypher(
                         statement: """
@@ -84,7 +84,7 @@ describe("Interfaces", () => {
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
-              movies(options: MovieOptions, where: MovieWhere): [Movie]
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
               nodes: [MovieNode]
@@ -145,7 +145,7 @@ describe("Interfaces", () => {
             interface MovieNode {
               customQuery: [Movie]
               id: ID
-              movies: [Movie]
+              movies: [Movie!]!
               moviesConnection: MovieNodeMoviesConnection!
             }
 
@@ -266,7 +266,6 @@ describe("Interfaces", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {

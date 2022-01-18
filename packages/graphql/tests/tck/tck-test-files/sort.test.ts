@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher sort tests", () => {
@@ -33,7 +33,7 @@ describe("Cypher sort tests", () => {
             type Movie {
                 id: ID
                 title: String
-                genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
+                genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 totalGenres: Int!
                     @cypher(
                         statement: """

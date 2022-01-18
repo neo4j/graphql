@@ -86,7 +86,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -121,7 +121,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -159,7 +159,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -201,7 +201,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -241,7 +241,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -283,7 +283,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -323,7 +323,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -344,7 +344,7 @@ describe("auth/roles", () => {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -394,7 +394,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -407,20 +407,20 @@ describe("auth/roles", () => {
                 type Comment {
                     id: String
                     content: String
-                    post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+                    post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
                 type Post {
                     id: String
                     content: String
-                    creator: User @relationship(type: "HAS_POST", direction: OUT)
-                    comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
+                    comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
                 type User {
                     id: ID
                     name: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -483,7 +483,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -504,7 +504,7 @@ describe("auth/roles", () => {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -554,7 +554,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -567,20 +567,20 @@ describe("auth/roles", () => {
                 type Comment {
                     id: String
                     content: String
-                    post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+                    post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
                 type Post {
                     id: String
                     content: String
-                    creator: User @relationship(type: "HAS_POST", direction: OUT)
-                    comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
+                    comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
                 type User {
                     id: ID
                     name: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -642,7 +642,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -682,7 +682,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -695,7 +695,7 @@ describe("auth/roles", () => {
                 type User {
                     id: ID
                     name: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post @auth(rules: [{
@@ -737,7 +737,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -778,7 +778,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -817,7 +817,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -860,7 +860,7 @@ describe("auth/roles", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }

@@ -50,7 +50,6 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
-                  techsCount(where: TechWhere): Int!
                 }
 
                 enum SortDirection {
@@ -84,11 +83,11 @@ describe("Node Directive", () => {
                 input TechOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechSort objects to sort Teches by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechSort]
                 }
 
-                \\"\\"\\"Fields to sort Teches by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
@@ -185,7 +184,6 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
-                  techsCount(where: TechWhere): Int!
                 }
 
                 enum SortDirection {
@@ -219,11 +217,11 @@ describe("Node Directive", () => {
                 input TechOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechSort objects to sort Teches by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechSort]
                 }
 
-                \\"\\"\\"Fields to sort Teches by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
@@ -320,7 +318,6 @@ describe("Node Directive", () => {
                 type Query {
                   technologies(options: TechOptions, where: TechWhere): [Tech!]!
                   technologiesAggregate(where: TechWhere): TechAggregateSelection!
-                  technologiesCount(where: TechWhere): Int!
                 }
 
                 enum SortDirection {
@@ -354,11 +351,11 @@ describe("Node Directive", () => {
                 input TechOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechSort objects to sort Teches by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"Specify one or more TechSort objects to sort Technologies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechSort]
                 }
 
-                \\"\\"\\"Fields to sort Teches by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                \\"\\"\\"Fields to sort Technologies by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
@@ -455,7 +452,6 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: TechsOptions, where: TechsWhere): [Techs!]!
                   techsAggregate(where: TechsWhere): TechsAggregateSelection!
-                  techsCount(where: TechsWhere): Int!
                 }
 
                 enum SortDirection {
@@ -575,7 +571,6 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: UserOptions, where: UserWhere): [User!]!
                   techsAggregate(where: UserWhere): UserAggregateSelection!
-                  techsCount(where: UserWhere): Int!
                 }
 
                 enum SortDirection {
@@ -619,11 +614,11 @@ describe("Node Directive", () => {
                 input UserOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"Specify one or more UserSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [UserSort]
                 }
 
-                \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+                \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
                 input UserSort {
                   value: SortDirection
                 }
@@ -695,7 +690,6 @@ describe("Node Directive", () => {
                 type Query {
                   users(options: UserOptions, where: UserWhere): [User!]!
                   usersAggregate(where: UserWhere): UserAggregateSelection!
-                  usersCount(where: UserWhere): Int!
                 }
 
                 enum SortDirection {
@@ -815,7 +809,6 @@ describe("Node Directive", () => {
                 type Query {
                   users(options: UsersOptions, where: UsersWhere): [Users!]!
                   usersAggregate(where: UsersWhere): UsersAggregateSelection!
-                  usersCount(where: UsersWhere): Int!
                 }
 
                 enum SortDirection {

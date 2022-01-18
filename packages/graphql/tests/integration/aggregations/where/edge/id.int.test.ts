@@ -44,7 +44,7 @@ describe("aggregations-where-edge-id", () => {
           
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {

@@ -31,6 +31,7 @@ import createSetRelationshipPropertiesAndParams from "./create-set-relationship-
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
+import { upperFirst } from "../utils/upper-first";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
@@ -60,12 +61,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const interfaceStrs: string[] = [];
     let updateArgs = {};
 
-    const mutationResponse =
-        resolveTree.fieldsByTypeName[`Update${node.getPlural({ camelCase: false })}MutationResponse`];
+    const mutationResponse = resolveTree.fieldsByTypeName[`Update${upperFirst(node.plural)}MutationResponse`];
 
-    const nodeProjection = Object.values(mutationResponse).find(
-        (field) => field.name === node.getPlural({ camelCase: true })
-    );
+    const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
 
     if (updateInput) {
         const updateAndParams = createUpdateAndParams({
