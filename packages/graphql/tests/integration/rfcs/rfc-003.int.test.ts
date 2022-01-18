@@ -71,7 +71,7 @@ describe("integration/rfs/003", () => {
             });
 
             expect(result.errors).toBeTruthy();
-            expect((result.errors as any[])[0].message).toEqual("Movie.director required");
+            expect((result.errors as any[])[0].message).toBe("Movie.director required");
         });
 
         test("should throw error when updating a node (top level) without a (single) relationship", async () => {
@@ -116,7 +116,7 @@ describe("integration/rfs/003", () => {
                 });
 
                 expect(result.errors).toBeTruthy();
-                expect((result.errors as any[])[0].message).toEqual("Movie.director required");
+                expect((result.errors as any[])[0].message).toBe("Movie.director required");
             } finally {
                 await session.close();
             }

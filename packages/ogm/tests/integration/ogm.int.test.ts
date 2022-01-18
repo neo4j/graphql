@@ -350,7 +350,7 @@ describe("OGM", () => {
                 },
             ];
 
-            const Product = ogm.model("Product");
+            const Product = ogm.model("Product") as Model;
 
             const { products } = await Product?.create({
                 input: [

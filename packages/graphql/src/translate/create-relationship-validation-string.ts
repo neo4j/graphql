@@ -11,8 +11,6 @@ function createRelationshipValidationString({
     context: Context;
     varName: string;
 }): string {
-    let relationshipValidationStr = "";
-
     const nonNullRelationFields = node.relationFields.filter((field) => {
         if (field.typeMeta.array) {
             return false;
@@ -25,12 +23,11 @@ function createRelationshipValidationString({
     });
 
     if (!nonNullRelationFields.length) {
-        return relationshipValidationStr;
+        return "";
     }
 
     const nonNullPredicates = nonNullRelationFields.map((field) => {
         const toNode = context.neoSchema.nodes.find((n) => n.name === field.typeMeta.name) as Node;
-
         const inStr = field.direction === "IN" ? "<-" : "-";
         const outStr = field.direction === "OUT" ? "->" : "-";
         const relTypeStr = `[:${field.type}]`;

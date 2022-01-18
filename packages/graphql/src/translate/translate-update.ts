@@ -24,7 +24,7 @@ import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { AUTH_FORBIDDEN_ERROR, RELATIONSHIP_REQUIREMENT_PREFIX } from "../constants";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
