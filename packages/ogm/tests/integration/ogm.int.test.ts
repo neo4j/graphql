@@ -362,13 +362,13 @@ describe("OGM", () => {
                             create: [
                                 {
                                     node: {
-                                        ...photos[1],
+                                        ...photos[0],
                                         color: { connect: { where: { node: { id: colors[0].id } } } },
                                     },
                                 },
                                 {
                                     node: {
-                                        ...photos[2],
+                                        ...photos[1],
                                         color: { connect: { where: { node: { id: colors[1].id } } } },
                                     },
                                 },
