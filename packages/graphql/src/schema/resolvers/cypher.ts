@@ -76,7 +76,7 @@ export default function cypherResolver({
 
         if (referenceNode) {
             const recurse = createProjectionAndParams({
-                fieldsByTypeName: resolveTree.fieldsByTypeName,
+                resolveTree,
                 node: referenceNode,
                 context,
                 varName: `this`,
@@ -125,7 +125,7 @@ export default function cypherResolver({
 
                     if (resolveTree.fieldsByTypeName[node.name]) {
                         const [str, p, meta] = createProjectionAndParams({
-                            fieldsByTypeName: resolveTree.fieldsByTypeName,
+                            resolveTree,
                             node,
                             context,
                             varName: "this",

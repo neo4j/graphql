@@ -74,7 +74,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
         const projection = createProjectionAndParams({
             node,
             context,
-            fieldsByTypeName: nodeProjection.fieldsByTypeName,
+            resolveTree: nodeProjection,
             varName: "REPLACE_ME",
         });
         if (projection[2]?.authValidateStrs?.length) {

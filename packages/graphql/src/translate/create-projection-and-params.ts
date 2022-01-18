@@ -18,7 +18,7 @@
  */
 
 import { UnionTypeDefinitionNode } from "graphql/language/ast";
-import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
+import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
@@ -118,7 +118,7 @@ function createNodeWhereAndParams({
 }
 
 function createProjectionAndParams({
-    fieldsByTypeName,
+    resolveTree,
     node,
     context,
     chainStr,
@@ -127,7 +127,7 @@ function createProjectionAndParams({
     resolveType,
     inRelationshipProjection,
 }: {
-    fieldsByTypeName: FieldsByTypeName;
+    resolveTree: ResolveTree;
     node: Node;
     context: Context;
     chainStr?: string;
@@ -197,7 +197,7 @@ function createProjectionAndParams({
 
             if (referenceNode) {
                 const recurse = createProjectionAndParams({
-                    fieldsByTypeName: fieldFields,
+                    resolveTree: field,
                     node: referenceNode || node,
                     context,
                     varName: `${varName}_${key}`,
@@ -232,7 +232,7 @@ function createProjectionAndParams({
 
                         if (fieldFields[refNode.name]) {
                             const [str, p, meta] = createProjectionAndParams({
-                                fieldsByTypeName: fieldFields,
+                                resolveTree: field,
                                 node: refNode,
                                 context,
                                 varName: `${varName}_${key}`,
@@ -390,7 +390,7 @@ function createProjectionAndParams({
 
                     if (hasFields) {
                         const recurse = createProjectionAndParams({
-                            fieldsByTypeName: field.fieldsByTypeName,
+                            resolveTree: field,
                             node: refNode,
                             context,
                             varName: param,
@@ -443,32 +443,9 @@ function createProjectionAndParams({
                 return res;
             }
 
-            // Fields of reference node to sort on. Sorting is done through an `apoc` call and if fields are not present
-            // sorting will fail silently.
-
-            const sortFieldNames = (optionsInput?.sort ?? []).map(Object.keys).flat();
-
-            // Iterate over fields name in sort argument
-            const relationshipFieldsByTypeName = sortFieldNames.reduce(
-                (acc, sortFieldName) => ({
-                    ...acc,
-                    [referenceNode.name]: {
-                        ...acc[referenceNode.name],
-                        // If fieldname is not found in fields of selection set
-                        ...(!Object.values(fieldFields[referenceNode.name]).find(
-                            (fieldField) => fieldField.name === sortFieldName
-                        ) // generate a basic resolve tree
-                            ? generateProjectionField({ name: sortFieldName })
-                            : {}),
-                    },
-                }),
-                // and add it to existing fields for projection
-                fieldFields
-            );
-
             let projectionStr = "";
             const recurse = createProjectionAndParams({
-                fieldsByTypeName: relationshipFieldsByTypeName,
+                resolveTree: field,
                 node: referenceNode || node,
                 context,
                 varName: `${varName}_${key}`,
@@ -609,17 +586,36 @@ function createProjectionAndParams({
         return res;
     }
 
+    // Fields of reference node to sort on. Since sorting is done on projection, if field is not selected
+    // sort will fail silently
+
+    const sortFieldNames = ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat();
+
+    // Iterate over fields name in sort argument
+    const nodeFields = sortFieldNames.reduce(
+        (acc, sortFieldName) => ({
+            ...acc,
+            // If fieldname is not found in fields of selection set
+            ...(!Object.values(resolveTree.fieldsByTypeName[node.name]).find((field) => field.name === sortFieldName)
+                ? // generate a basic resolve tree
+                  generateProjectionField({ name: sortFieldName })
+                : {}),
+        }),
+        // and add it to existing fields for projection
+        resolveTree.fieldsByTypeName[node.name]
+    );
+
     // Include fields of implemented interfaces to allow for fragments on interfaces
     // cf. https://github.com/neo4j/graphql/issues/476
 
-    const fields = (node.interfaces ?? [])
+    const fields = node.interfaces
         // Map over the implemented interfaces of the node and extract the names
         .map((implementedInterface) => implementedInterface.name.value)
         // Combine the fields of the interfaces...
         .reduce(
-            (prevFields, interfaceName) => ({ ...prevFields, ...fieldsByTypeName[interfaceName] }),
+            (prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }),
             // with the fields of the node
-            fieldsByTypeName[node.name]
+            nodeFields
         );
 
     const { projection, params, meta } = Object.entries(fields).reduce(reducer, {

@@ -336,7 +336,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         const projection = createProjectionAndParams({
             node,
             context,
-            fieldsByTypeName: nodeProjection.fieldsByTypeName,
+            resolveTree: nodeProjection,
             varName,
         });
         [projStr] = projection;

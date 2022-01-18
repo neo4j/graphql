@@ -122,7 +122,7 @@ function createConnectionAndParams({
                     };
 
                     const nodeProjectionAndParams = createProjectionAndParams({
-                        fieldsByTypeName: nodeFieldsByTypeName,
+                        resolveTree: { ...node, fieldsByTypeName: nodeFieldsByTypeName },
                         node: n,
                         context,
                         varName: relatedNodeVariable,
@@ -256,7 +256,9 @@ function createConnectionAndParams({
 
         if (sortInput && sortInput.length) {
             const sort = sortInput.map((s) =>
-                Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`).join(", ")
+                Object.entries(s.edge || [])
+                    .map(([f, direction]) => `edge.${f} ${direction}`)
+                    .join(", ")
             );
             subqueryCypher.push(`WITH edge ORDER BY ${sort.join(", ")}`);
         }
@@ -350,7 +352,7 @@ function createConnectionAndParams({
 
         if (node) {
             const nodeProjectionAndParams = createProjectionAndParams({
-                fieldsByTypeName: node?.fieldsByTypeName,
+                resolveTree: node,
                 node: relatedNode,
                 context,
                 varName: relatedNodeVariable,
