@@ -32,7 +32,7 @@ describe("Undirected relationships", () => {
         typeDefs = gql`
             type User {
                 name: String!
-                friends: [User!] @relationship(type: "FRIENDS_WITH", direction: OUT)
+                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
             }
         `;
 
@@ -73,7 +73,7 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | t
 
             type Blog {
                 title: String
-                posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
             type Post {
@@ -82,7 +82,7 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | t
 
             type User {
                 name: String
-                content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+                content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
         `;
 

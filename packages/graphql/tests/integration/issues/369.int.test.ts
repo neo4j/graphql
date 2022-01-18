@@ -41,8 +41,8 @@ describe("369", () => {
         const typeDefs = gql`
             type Dato {
                 uuid: ID
-                dependeTo: [Dato] @relationship(type: "DEPENDE", direction: OUT, properties: "Depende")
-                dependeFrom: [Dato] @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
+                dependeTo: [Dato!]! @relationship(type: "DEPENDE", direction: OUT, properties: "Depende")
+                dependeFrom: [Dato!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
             }
 
             interface Depende {
@@ -125,8 +125,8 @@ describe("369", () => {
         const typeDefs = gql`
             type Dato {
                 uuid: ID
-                dependeTo: [Dato] @relationship(type: "DEPENDE", direction: OUT, properties: "Depende")
-                dependeFrom: [Dato] @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
+                dependeTo: [Dato!]! @relationship(type: "DEPENDE", direction: OUT, properties: "Depende")
+                dependeFrom: [Dato!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
             }
 
             interface Depende {

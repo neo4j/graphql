@@ -35,14 +35,14 @@ describe("Cypher Auth Where", () => {
             type User {
                 id: ID
                 name: String
-                posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
-                content: [Search] @relationship(type: "HAS_POST", direction: OUT) # something to test unions
+                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                content: [Search!]! @relationship(type: "HAS_POST", direction: OUT) # something to test unions
             }
 
             type Post {
                 id: ID
                 content: String
-                creator: User @relationship(type: "HAS_POST", direction: IN)
+                creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
             extend type User

@@ -9,7 +9,7 @@ union Content = Blog | Post
 
 type Blog {
     title: String
-    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
 }
 
 type Post {
@@ -18,7 +18,7 @@ type Post {
 
 type User {
     name: String
-    content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+    content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
 }
 ----
 

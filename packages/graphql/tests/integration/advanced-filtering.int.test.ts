@@ -1265,7 +1265,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type ${randomType1.name} {
                             id: ID
-                            ${randomType2.plural}: [${randomType2.name}] @relationship(type: "IN_GENRE", direction: OUT)
+                            ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
                         type ${randomType2.name} {
@@ -1337,7 +1337,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type Movie {
                             id: ID
-                            genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
+                            genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
                         type Genre {
@@ -1401,7 +1401,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type Movie {
                             id: ID
-                            genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                            genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
                         }
 
                         type Genre {
@@ -1473,7 +1473,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type Movie {
                             id: ID
-                            genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                            genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
                         }
 
                         type Genre {
@@ -1551,7 +1551,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type ${randomType1.name} {
                             id: ID
-                            ${randomType2.plural}: [${randomType2.name}] @relationship(type: "IN_GENRE", direction: OUT)
+                            ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
                         type ${randomType2.name} {
@@ -1630,7 +1630,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type ${randomType1.name} {
                             id: ID
-                            ${randomType2.plural}: [${randomType2.name}] @relationship(type: "IN_GENRE", direction: OUT)
+                            ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
                         type ${randomType2.name} {
@@ -1705,7 +1705,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type ${randomType1.name} {
                             id: ID
-                            ${randomType2.plural}: [${randomType2.name}] @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                            ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
                         }
 
                         type ${randomType2.name} {
@@ -1788,7 +1788,7 @@ describe("Advanced Filtering", () => {
             const typeDefs = `
                     type ${randomType1.name} {
                         id: ID
-                        ${randomType2.plural}: [${randomType2.name}] @relationship(type: "IN_GENRE", direction: OUT)
+                        ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                     }
 
                     type ${randomType2.name} {

@@ -33,7 +33,7 @@ describe("Unions", () => {
 
             type Movie {
                 id: ID
-                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
                 searchNoDirective: Search
             }
         `;
@@ -123,7 +123,7 @@ describe("Unions", () => {
 
             type Movie {
               id: ID
-              search(directed: Boolean, options: QueryOptions, where: SearchWhere): [Search]
+              search(directed: Boolean, options: QueryOptions, where: SearchWhere): [Search!]!
               searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
               searchNoDirective: Search
             }

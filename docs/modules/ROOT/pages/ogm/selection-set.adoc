@@ -39,7 +39,7 @@ When using the OGM, you do not have to provide a selection set by default. Doing
 type Movie {
     id: ID
     name: String
-    genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
+    genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
     customCypher: String! @cypher(statement: "RETURN someCustomData")
 }
 
@@ -78,7 +78,7 @@ const typeDefs = `
     type Movie {
         id: ID
         name: String
-        genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
+        genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
         customCypher: String! @cypher(statement: "RETURN someCustomData")
     }
 
@@ -124,7 +124,7 @@ const typeDefs = `
     type Movie {
         id: ID
         name: String
-        genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
+        genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
         customCypher: String! @cypher(statement: "RETURN someCustomData")
     }
 

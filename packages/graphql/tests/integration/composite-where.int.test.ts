@@ -45,7 +45,7 @@ describe("composite-where", () => {
 
                 type Movie {
                     id: ID!
-                    actors: [Actor] @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 }
 
                 interface ActedIn {
@@ -127,7 +127,7 @@ describe("composite-where", () => {
 
                 type Movie {
                     id: ID!
-                    actors: [Actor] @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 }
 
                 interface ActedIn {

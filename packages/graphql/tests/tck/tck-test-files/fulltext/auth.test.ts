@@ -30,7 +30,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                 @auth(rules: [{ where: { director: { id: "$jwt.sub" } } }]) {
                 title: String
-                director: [Person] @relationship(type: "DIRECTED", direction: IN)
+                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Person {
@@ -87,7 +87,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                 @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }]) {
                 title: String
-                director: [Person] @relationship(type: "DIRECTED", direction: IN)
+                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Person {

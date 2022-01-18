@@ -26,7 +26,7 @@ import { numericalResolver, idResolver } from "./resolvers";
 
 export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
     return args.reduce((res, arg) => {
-        const meta = getFieldTypeMeta(arg);
+        const meta = getFieldTypeMeta(arg.type);
 
         return {
             ...res,
