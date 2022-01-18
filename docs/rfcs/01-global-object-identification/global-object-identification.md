@@ -38,7 +38,15 @@ So the main solution needed is twofold:
 
 #### Implementation of the `Node` interface
 
-In <https://github.com/neo4j/graphql/pull/285>, there was talk of using the `@node` directive for this purpose. However, it now has other purposes, which means that using this would mean the directive plus an argument within, at which point it is less boilerplate to explicity add `implements Node` and the necessary `id` field to the type definition. So a `Movie` type with global object identification should be defined using:
+In order to specify that a type should implement the `Node` interface, the `@node` directive should be used with a `Boolean` `global` argument. For instance, taking the following type definition:
+
+```graphql
+type Movie @node(global: true) {
+    title: String!
+}
+```
+
+Would output the following type in the schema:
 
 ```graphql
 type Movie implements Node {
@@ -46,6 +54,25 @@ type Movie implements Node {
     title: String!
 }
 ```
+
+Note that the `Node` interface has been implemented and the `id` field has been added. Conversely, if an `id` field already exists on a type when `@node(global: true)` is specified, an error should be thrown to help people avoid overwriting access to a database property with the computed `id` field. For instance:
+
+```graphql
+type Movie @node(global: true) {
+    id: ID!
+    title: String!
+}
+```
+
+Should throw an error which reads something along the lines of:
+
+```
+Type `Movie` already has a field `id`. Either remove it, or if you need access to this property, consider using the `@alias` directive to access it via another field.
+```
+
+Errors should also be thrown for types with `@node(global: true)` added in the following circumstances:
+
+- There are no field with either `@id` or `@unique` in the type
 
 #### Type-specific ID
 
@@ -103,3 +130,7 @@ type Query {
 ```
 
 For each ID in the `ids` input field, execute the same intructions as above, returning the result in the same array position as the input argument.
+
+## Risks
+
+- It needs to be figured out how this will work for types with additional labels (`additionalLabels` argument of the `@node` directive. Unique node property constraints do not work over multiple labels, so there will not be 100% confidence of uniqueness. Should only the "main" label be used for the `node` query field?
