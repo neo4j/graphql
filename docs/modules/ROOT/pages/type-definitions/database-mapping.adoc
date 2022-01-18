@@ -31,7 +31,7 @@ type User {
 type User {
     id: ID! @id
     username: String! @alias(property: "dbUserName")
-    livesIn: [City] @relationship(direction: OUT, type: "LIVES_IN", properties: "UserLivesInProperties")
+    livesIn: [City!]! @relationship(direction: OUT, type: "LIVES_IN", properties: "UserLivesInProperties")
 }
 
 type City {

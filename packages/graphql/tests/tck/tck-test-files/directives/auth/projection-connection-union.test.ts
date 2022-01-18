@@ -32,13 +32,13 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
         typeDefs = gql`
             type Post {
                 content: String
-                creator: User @relationship(type: "HAS_POST", direction: IN)
+                creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
             type User {
                 id: ID
                 name: String
-                content: [Content] @relationship(type: "PUBLISHED", direction: OUT)
+                content: [Content!]! @relationship(type: "PUBLISHED", direction: OUT)
             }
 
             union Content = Post

@@ -19,7 +19,7 @@ const neoSchema = new Neo4jGraphQL({
 [[api-reference-neo4jgraphql-input]]
 === Input
 
-Accepts all of the options from https://github.com/ardatan/graphql-tools/blob/%40graphql-tools/schema%407.1.5/website/docs/generate-schema.md#makeexecutableschemaoptions[`makeExecutableSchema`], plus the additional arguments below:
+Accepts all of the options from https://www.graphql-tools.com/docs/generate-schema#makeexecutableschemaoptions[`makeExecutableSchema`], plus the additional arguments below:
 
 |===
 |Name and Type |Description

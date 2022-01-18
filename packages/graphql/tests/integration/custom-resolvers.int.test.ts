@@ -426,7 +426,7 @@ describe("Custom Resolvers", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult.data as any).test).toEqual(`${id}${id}`);
+                expect((gqlResult.data as any).test).toBe(`${id}${id}`);
             } finally {
                 await session.close();
             }
@@ -467,7 +467,7 @@ describe("Custom Resolvers", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult.data as any).status).toEqual("COMPLETED");
+                expect((gqlResult.data as any).status).toBe("COMPLETED");
             } finally {
                 await session.close();
             }

@@ -99,9 +99,9 @@ describe("execute", () => {
 
                 expect(executeResult.records).toEqual([{ title }]);
                 // @ts-ignore
-                expect(driver._userAgent).toEqual(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
+                expect(driver._userAgent).toBe(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
                 // @ts-ignore
-                expect(driver._config.userAgent).toEqual(
+                expect(driver._config.userAgent).toBe(
                     `${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`
                 );
             })
@@ -175,9 +175,9 @@ describe("execute", () => {
 
             expect(executeResult.records).toEqual([{ title }]);
             // @ts-ignore
-            expect(driver._userAgent).toEqual(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
+            expect(driver._userAgent).toBe(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
             // @ts-ignore
-            expect(driver._config.userAgent).toEqual(
+            expect(driver._config.userAgent).toBe(
                 `${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`
             );
         });
@@ -263,9 +263,9 @@ describe("execute", () => {
 
             expect(executeResult.records).toEqual([{ title }]);
             // @ts-ignore
-            expect(driver._userAgent).toEqual(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
+            expect(driver._userAgent).toBe(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
             // @ts-ignore
-            expect(driver._config.userAgent).toEqual(
+            expect(driver._config.userAgent).toBe(
                 `${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`
             );
         });
