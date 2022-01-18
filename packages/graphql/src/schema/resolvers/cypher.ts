@@ -164,10 +164,7 @@ export default function cypherResolver({
             {}
         );
 
-        // Overwrite null arguments with those defined in resolve tree
-        const argumentsWithNullValues = { ...nullArgumentValues, ...resolveTree.args };
-
-        const apocParams = Object.entries(argumentsWithNullValues).reduce(
+        const apocParams = Object.entries({ ...nullArgumentValues, ...resolveTree.args }).reduce(
             (r: { strs: string[]; params: any }, entry) => ({
                 strs: [...r.strs, `${entry[0]}: $${entry[0]}`],
                 params: { ...r.params, [entry[0]]: entry[1] },
