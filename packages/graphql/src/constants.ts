@@ -37,6 +37,7 @@ export const REQUIRED_APOC_PROCEDURES = ["apoc.util.validate", "apoc.do.when", "
 export const DEBUG_AUTH = `${DEBUG_PREFIX}:auth`;
 export const DEBUG_GRAPHQL = `${DEBUG_PREFIX}:graphql`;
 export const DEBUG_EXECUTE = `${DEBUG_PREFIX}:execute`;
+export const RELATIONSHIP_REQUIREMENT_PREFIX = "@neo4j/graphql/RELATIONSHIP-REQUIRED";
 
 export const RESERVED_TYPE_NAMES = [
     {

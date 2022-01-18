@@ -39,17 +39,17 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
         const user = generateUniqueType("User");
 
         const typeDefs = gql`
-        type ${user.name} {
-            name: String!
-            friends: [${user.name}!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
-        }
+            type ${user.name} {
+                name: String!
+                friends: [${user.name}!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
+            }
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const query = `
             mutation {
-                ${user.operations.create}(input: { name: "Ford" }) {
+                ${user.operations.create}(input: { name: "Ford", friends: { create: { node: { name: "Jane" } } } }) {
                     info {
                         nodesCreated
                     }
@@ -67,7 +67,7 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
         expect(gqlResult.data).toEqual({
             [user.operations.create]: {
                 info: {
-                    nodesCreated: 1,
+                    nodesCreated: 2,
                 },
             },
         });

@@ -58,14 +58,15 @@ describe("Relationship properties - delete", () => {
 
         const session = driver.session();
         const movieTitle = generate({ charset: "alphabetic" });
-        const actorName = generate({ charset: "alphabetic" });
+        const actorName1 = generate({ charset: "alphabetic" });
+        const actorName2 = generate({ charset: "alphabetic" });
         const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
 
         const source = `
-            mutation($movieTitle: String!, $actorName: String!) {
+            mutation($movieTitle: String!, $actorName1: String!) {
                 updateMovies(
                     where: { title: $movieTitle }
-                    delete: { actors: { where: { node: { name: $actorName } } } }
+                    delete: { actors: { where: { node: { name: $actorName1 } } } }
                 ) {
                     movies {
                         title
@@ -80,31 +81,33 @@ describe("Relationship properties - delete", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {title:$movieTitle})<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName})
+                    CREATE (m:Movie {title:$movieTitle})
+                    CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName1})
+                    CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName2})
                 `,
-                { movieTitle, screenTime, actorName }
+                { movieTitle, screenTime, actorName1, actorName2 }
             );
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                variableValues: { movieTitle, actorName },
+                variableValues: { movieTitle, actorName1 },
             });
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.updateMovies.movies).toEqual([
                 {
                     title: movieTitle,
-                    actors: [],
+                    actors: [{ name: actorName2 }],
                 },
             ]);
 
             const cypher = `
-                MATCH (a:Actor {name: $actorName})
+                MATCH (a:Actor {name: $actorName1})
                 RETURN a
             `;
 
-            const neo4jResult = await session.run(cypher, { movieTitle, screenTime, actorName });
+            const neo4jResult = await session.run(cypher, { movieTitle, screenTime, actorName1 });
             expect(neo4jResult.records).toHaveLength(0);
         } finally {
             await session.close();

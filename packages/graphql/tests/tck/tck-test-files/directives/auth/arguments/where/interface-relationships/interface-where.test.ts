@@ -322,6 +322,11 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:Post)
             WHERE EXISTS((this)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)
             SET this.content = $this_update_content
+            WITH this
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
+                        apoc.cypher.runFirstColumn('MATCH p=(this)<-[:HAS_CONTENT]-(:User)
+            RETURN count(nodes(p)) = 1', { this: this }, false)
+                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this { .id } AS this"
         `);
 
@@ -353,6 +358,11 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:Post)
             WHERE this.content = $this_content AND EXISTS((this)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)
             SET this.content = $this_update_content
+            WITH this
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
+                        apoc.cypher.runFirstColumn('MATCH p=(this)<-[:HAS_CONTENT]-(:User)
+            RETURN count(nodes(p)) = 1', { this: this }, false)
+                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this { .id } AS this"
         `);
 
@@ -391,6 +401,11 @@ describe("Cypher Auth Where", () => {
             WHERE EXISTS((this_content0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_auth_where0_creator_id)
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
             SET this_content0.id = $this_update_content0_id
+            WITH this, this_content0
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
+                        apoc.cypher.runFirstColumn('MATCH p=(this_content0)<-[:HAS_CONTENT]-(:User)
+            RETURN count(nodes(p)) = 1', { this_content0: this_content0 }, false)
+                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
             YIELD value as _
@@ -401,6 +416,11 @@ describe("Cypher Auth Where", () => {
             WHERE EXISTS((this_content0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_auth_where0_creator_id)
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
             SET this_content0.id = $this_update_content0_id
+            WITH this, this_content0
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
+                        apoc.cypher.runFirstColumn('MATCH p=(this_content0)<-[:HAS_CONTENT]-(:User)
+            RETURN count(nodes(p)) = 1', { this_content0: this_content0 }, false)
+                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
             YIELD value as _

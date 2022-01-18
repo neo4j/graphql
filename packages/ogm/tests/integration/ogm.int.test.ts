@@ -338,13 +338,6 @@ describe("OGM", () => {
                     id: generate({
                         charset: "alphabetic",
                     }),
-                    description: "Outdoor photo",
-                    url: "outdoor.png",
-                },
-                {
-                    id: generate({
-                        charset: "alphabetic",
-                    }),
                     description: "Green photo",
                     url: "g.png",
                 },
@@ -367,7 +360,6 @@ describe("OGM", () => {
                         colors: { create: colors.map((x) => ({ node: x })) },
                         photos: {
                             create: [
-                                { node: photos[0] },
                                 {
                                     node: {
                                         ...photos[1],
@@ -796,7 +788,7 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
-            const User = ogm.model("User") as unknown as Model;
+            const User = (ogm.model("User") as unknown) as Model;
 
             const id = generate({
                 charset: "alphabetic",

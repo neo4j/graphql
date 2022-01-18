@@ -478,9 +478,19 @@ describe("Cypher Auth Roles", () => {
             	)
             	RETURN count(*)
             }
+            WITH this, this_post0
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
+                        apoc.cypher.runFirstColumn('MATCH p=(this_post0)-[:HAS_POST]->(:User)
+            RETURN count(nodes(p)) = 1', { this_post0: this_post0 }, false)
+                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN count(*)
             \\", \\"\\", {this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth,this_post0_creator0_connect0_node_id:$this_post0_creator0_connect0_node_id})
             YIELD value as _
+            WITH this
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
+                        apoc.cypher.runFirstColumn('MATCH p=(this)<-[:HAS_COMMENT]-(:Post)
+            RETURN count(nodes(p)) = 1', { this: this }, false)
+                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this { .content } AS this"
         `);
 
@@ -620,9 +630,19 @@ describe("Cypher Auth Roles", () => {
             )
             RETURN count(*)
             }
+            WITH this, this_post0
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
+                        apoc.cypher.runFirstColumn('MATCH p=(this_post0)-[:HAS_POST]->(:User)
+            RETURN count(nodes(p)) = 1', { this_post0: this_post0 }, false)
+                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN count(*)
             \\", \\"\\", {this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth})
             YIELD value as _
+            WITH this
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(
+                        apoc.cypher.runFirstColumn('MATCH p=(this)<-[:HAS_COMMENT]-(:Post)
+            RETURN count(nodes(p)) = 1', { this: this }, false)
+                    ), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this { .content } AS this"
         `);
 

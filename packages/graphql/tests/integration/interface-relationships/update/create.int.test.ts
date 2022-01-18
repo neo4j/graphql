@@ -114,7 +114,7 @@ describe("interface relationships", () => {
                             }
                             {
                                 edge: { screenTime: $seriesScreenTime }
-                                node: { Series: { title: $seriesTitle } }
+                                node: { Series: { title: $seriesTitle, episodes: { create: [{ node: { runtime: 123 } }] } } }
                             }
                         ]
                     }
@@ -231,7 +231,7 @@ describe("interface relationships", () => {
                                     }
                                 }
                             }
-                            { edge: { screenTime: $seriesScreenTime }, node: { Series: { title: $seriesTitle } } }
+                            { edge: { screenTime: $seriesScreenTime }, node: { Series: { title: $seriesTitle, episodes: { create: [{ node: { runtime: 123 } }] }} } }
                         ]
                     }
                 ) {
