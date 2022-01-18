@@ -89,7 +89,7 @@
         "semver": "^7.3.5"
     },
     "peerDependencies": {
-        "graphql": "^16.0.0",
+        "graphql": "^15.0.0 || ^16.0.0",
         "neo4j-driver": "^4.1.0"
     }
 }

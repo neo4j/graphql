@@ -18,13 +18,13 @@
  */
 
 import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
-import { int, Integer, isInt } from "neo4j-driver";
+import { int, isInt } from "neo4j-driver";
 
-export default new GraphQLScalarType<Integer, string>({
+export default new GraphQLScalarType({
     name: "BigInt",
     description:
         "A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.",
-    serialize(outputValue) {
+    serialize(outputValue: any) {
         if (isInt(outputValue)) {
             return outputValue.toString(10);
         }

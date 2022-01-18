@@ -106,6 +106,9 @@ jobs:
           - graphql
           - ogm
           - introspector
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
@@ -117,6 +120,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn upgrade --exact graphql@${{ matrix.graphql-version }}
       - name: Run packages/${{ matrix.package }} unit tests
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
@@ -237,6 +242,9 @@ jobs:
           - 4.3.2
           - 4.3
           - 4.4
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
@@ -259,6 +267,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn upgrade --exact graphql@${{ matrix.graphql-version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --coverage

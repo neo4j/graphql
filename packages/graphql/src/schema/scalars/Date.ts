@@ -20,10 +20,10 @@
 import { GraphQLError, GraphQLScalarType } from "graphql";
 import neo4j, { Date as Neo4jDate, isDate } from "neo4j-driver";
 
-export default new GraphQLScalarType<Neo4jDate<number>, string>({
+export default new GraphQLScalarType({
     name: "Date",
     description: "A date, represented as a 'yyyy-mm-dd' string",
-    serialize: (outputValue) => {
+    serialize: (outputValue: any) => {
         if (typeof outputValue === "string") {
             return new Date(outputValue).toISOString();
         }
