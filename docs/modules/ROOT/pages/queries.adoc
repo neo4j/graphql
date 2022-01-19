@@ -22,6 +22,7 @@ type User {
     id: ID! @id
     name: String!
     posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "PostedAt")
+    friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
 }
 
 interface PostedAt {
@@ -81,6 +82,32 @@ query {
     }
 }
 ----
+
+=== Undirected Queries
+
+All xref:type-definitions/relationships.adoc[relationships] are created with a _direction_ from one **node** to another.
+By default, all queries follow the direction defined in the relationship, however, in some cases we may need to query for
+all related nodes, regardless of the direction of the query. This can be achieved with the argument `directed: false`.
+
+For example, the following query:
+
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        name
+        friends: friends(directed: false) {
+            name
+        }
+    }
+}
+----
+
+Will return all user friends, regardless on the direction of the relationship `"FRIENDS_WITH"`.
+
+Note that _undirected relationships_ are only supported in queries.
+
 
 [[queries-aggregate]]
 == Aggregate
