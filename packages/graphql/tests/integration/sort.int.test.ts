@@ -214,7 +214,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const gqlMovies: Array<{ id: string; numberOfActors: number }> = gqlResult.data?.movies;
+                    const gqlMovies: Array<{ id: string; numberOfActors: number }> = (gqlResult.data as any)?.movies;
 
                     expect(gqlMovies[0].id).toBe(movies[0].id);
                     expect(gqlMovies[0].numberOfActors).toBe(1);
@@ -226,7 +226,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const gqlMovies: Array<{ id: string; numberOfActors: number }> = gqlResult.data?.movies;
+                    const gqlMovies: Array<{ id: string; numberOfActors: number }> = (gqlResult.data as any)?.movies;
 
                     expect(gqlMovies[0].id).toBe(movies[1].id);
                     expect(gqlMovies[0].numberOfActors).toBe(2);
