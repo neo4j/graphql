@@ -121,5 +121,57 @@ describe("integration/rfs/003", () => {
                 await session.close();
             }
         });
+
+        test("should throw error when deleting a non null (single) relationship", async () => {
+            const session = driver.session();
+
+            const typeDefs = gql`
+                type Director {
+                    id: ID!
+                }
+
+                type Movie {
+                    id: ID!
+                    director: Director! @relationship(type: "DIRECTED", direction: IN)
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const directorId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                mutation {
+                    updateMovies(where: {id: "${movieId}"}, delete: { director: { where: { node: {  id: "${directorId}" } } } }) {
+                        info {
+                            nodesCreated
+                        }
+                    }
+                }
+            `;
+
+            try {
+                await session.run(`
+                    CREATE (:Movie {id: "${movieId}"})<-[:DIRECTED]-(:Director {id: "${directorId}"})
+                `);
+
+                const result = await graphql({
+                    schema: neoSchema.schema,
+                    source: mutation,
+                    contextValue: { driver },
+                });
+
+                expect(result.errors).toBeTruthy();
+                expect((result.errors as any[])[0].message).toBe("Movie.director required");
+            } finally {
+                await session.close();
+            }
+        });
     });
 });
