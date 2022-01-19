@@ -80,6 +80,9 @@ jobs:
     needs: typescript-changes
     if: ${{ needs.typescript-changes.outputs.typescript == 'true' }}
 
+    env:
+      GO111MODULE: on
+
     runs-on: ubuntu-latest
 
     steps:
