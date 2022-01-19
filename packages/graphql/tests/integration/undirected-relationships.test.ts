@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import neo4j from "./neo4j";
@@ -27,9 +27,18 @@ import { generateUniqueType } from "../utils/graphql-types";
 
 describe("undirected relationships", () => {
     let driver: Driver;
+    let session: Session;
 
     beforeAll(async () => {
         driver = await neo4j();
+    });
+
+    beforeEach(() => {
+        session = driver.session();
+    });
+
+    afterEach(async () => {
+        await session.close();
     });
 
     afterAll(async () => {
@@ -37,7 +46,6 @@ describe("undirected relationships", () => {
     });
 
     test("query for an undirected relationship", async () => {
-        const session = driver.session();
         const userType = generateUniqueType("User");
         const typeDefs = gql`
             type ${userType.name} {
@@ -56,41 +64,87 @@ describe("undirected relationships", () => {
                     friends: friends(directed: false) {
                         name
                     }
-                    directedFriends: friends {
+                    directedFriends: friends(directed: true) {
                         name
                     }
                 }
             }
         `;
-        try {
-            await session.run(`
+        await session.run(`
                 CREATE (a:${userType.name} {name: "Arthur"})
                 CREATE (b:${userType.name} {name: "Ford"})
                 CREATE (a)-[:FRIENDS_WITH]->(b)
             `);
-            const gqlResult = await graphql({
-                schema: neoSchema.schema,
-                source: getQuerySource(query),
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-            });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: getQuerySource(query),
+            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+        });
 
-            expect(gqlResult.errors).toBeUndefined();
-            expect(gqlResult.data).toEqual({
-                [userType.plural]: [
-                    {
-                        name: "Ford",
-                        directedFriends: [],
-                        // The real treasure we made along the way
-                        friends: [
-                            {
-                                name: "Arthur",
-                            },
-                        ],
+        expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.data).toEqual({
+            [userType.plural]: [
+                {
+                    name: "Ford",
+                    directedFriends: [],
+                    // The real treasure we made along the way
+                    friends: [
+                        {
+                            name: "Arthur",
+                        },
+                    ],
+                },
+            ],
+        });
+    });
+
+    test("query for an undirected relationship on single relationship", async () => {
+        const userType = generateUniqueType("User");
+        const typeDefs = gql`
+            type ${userType.name} {
+                name: String!
+                friend: ${userType.name} @relationship(type: "FRIENDS_WITH", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+        const query = gql`
+            query {
+                ${userType.plural}(where: {name: "Ford"}) {
+                    name
+                    friend: friend(directed: false) {
+                        name
+                    }
+                    directedFriend: friend(directed: true) {
+                        name
+                    }
+                }
+            }
+        `;
+        await session.run(`
+                CREATE (a:${userType.name} {name: "Arthur"})
+                CREATE (b:${userType.name} {name: "Ford"})
+                CREATE (a)-[:FRIENDS_WITH]->(b)
+            `);
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: getQuerySource(query),
+            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.data).toEqual({
+            [userType.plural]: [
+                {
+                    name: "Ford",
+                    directedFriend: null,
+                    friend: {
+                        name: "Arthur",
                     },
-                ],
-            });
-        } finally {
-            await session.close();
-        }
+                },
+            ],
+        });
     });
 });
