@@ -144,7 +144,7 @@ function createInterfaceProjectionAndParams({
         }
 
         const recurse = createProjectionAndParams({
-            fieldsByTypeName: resolveTree.fieldsByTypeName,
+            resolveTree,
             node: refNode,
             context,
             varName: param,
