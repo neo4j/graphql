@@ -42,7 +42,7 @@ describe("433", () => {
             # Cannot use 'type Node'
             type Movie {
                 title: String
-                actors: [Person] @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Person {

@@ -65,7 +65,6 @@ describe("@writeonly directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersCount(where: UserWhere): Int!
             }
 
             enum SortDirection {
@@ -75,9 +74,9 @@ describe("@writeonly directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -99,8 +98,8 @@ describe("@writeonly directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              password: StringAggregateSelection!
-              username: StringAggregateSelection!
+              password: StringAggregateSelectionNonNullable!
+              username: StringAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {
@@ -201,7 +200,6 @@ describe("@writeonly directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersCount(where: UserWhere): Int!
             }
 
             enum SortDirection {
@@ -211,9 +209,9 @@ describe("@writeonly directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -235,8 +233,8 @@ describe("@writeonly directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              password: StringAggregateSelection!
-              username: StringAggregateSelection!
+              password: StringAggregateSelectionNonNullable!
+              username: StringAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {
@@ -302,285 +300,283 @@ describe("@writeonly directive", () => {
 
             type Movie {
                 id: ID
-                actors: [Actor]! @writeonly @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @writeonly @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-          "schema {
-            query: Query
-            mutation: Mutation
-          }
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-          type Actor {
-            name: String
-          }
+            type Actor {
+              name: String
+            }
 
-          type ActorAggregateSelection {
-            count: Int!
-            name: StringAggregateSelection!
-          }
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNullable!
+            }
 
-          input ActorConnectWhere {
-            node: ActorWhere!
-          }
+            input ActorConnectWhere {
+              node: ActorWhere!
+            }
 
-          input ActorCreateInput {
-            name: String
-          }
+            input ActorCreateInput {
+              name: String
+            }
 
-          input ActorOptions {
-            limit: Int
-            offset: Int
-            \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-            sort: [ActorSort]
-          }
+            input ActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [ActorSort]
+            }
 
-          \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
-          input ActorSort {
-            name: SortDirection
-          }
+            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            input ActorSort {
+              name: SortDirection
+            }
 
-          input ActorUpdateInput {
-            name: String
-          }
+            input ActorUpdateInput {
+              name: String
+            }
 
-          input ActorWhere {
-            AND: [ActorWhere!]
-            OR: [ActorWhere!]
-            name: String
-            name_CONTAINS: String
-            name_ENDS_WITH: String
-            name_IN: [String]
-            name_NOT: String
-            name_NOT_CONTAINS: String
-            name_NOT_ENDS_WITH: String
-            name_NOT_IN: [String]
-            name_NOT_STARTS_WITH: String
-            name_STARTS_WITH: String
-          }
+            input ActorWhere {
+              AND: [ActorWhere!]
+              OR: [ActorWhere!]
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String
+              name_NOT_CONTAINS: String
+              name_NOT_ENDS_WITH: String
+              name_NOT_IN: [String]
+              name_NOT_STARTS_WITH: String
+              name_STARTS_WITH: String
+            }
 
-          type CreateActorsMutationResponse {
-            actors: [Actor!]!
-            info: CreateInfo!
-          }
+            type CreateActorsMutationResponse {
+              actors: [Actor!]!
+              info: CreateInfo!
+            }
 
-          type CreateInfo {
-            bookmark: String
-            nodesCreated: Int!
-            relationshipsCreated: Int!
-          }
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-          type CreateMoviesMutationResponse {
-            info: CreateInfo!
-            movies: [Movie!]!
-          }
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
 
-          type DeleteInfo {
-            bookmark: String
-            nodesDeleted: Int!
-            relationshipsDeleted: Int!
-          }
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-          type IDAggregateSelection {
-            longest: ID
-            shortest: ID
-          }
+            type IDAggregateSelectionNullable {
+              longest: ID
+              shortest: ID
+            }
 
-          type Movie {
-            id: ID
-          }
+            type Movie {
+              id: ID
+            }
 
-          input MovieActorsAggregateInput {
-            AND: [MovieActorsAggregateInput!]
-            OR: [MovieActorsAggregateInput!]
-            count: Int
-            count_GT: Int
-            count_GTE: Int
-            count_LT: Int
-            count_LTE: Int
-            node: MovieActorsNodeAggregationWhereInput
-          }
+            input MovieActorsAggregateInput {
+              AND: [MovieActorsAggregateInput!]
+              OR: [MovieActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: MovieActorsNodeAggregationWhereInput
+            }
 
-          input MovieActorsConnectFieldInput {
-            where: ActorConnectWhere
-          }
+            input MovieActorsConnectFieldInput {
+              where: ActorConnectWhere
+            }
 
-          input MovieActorsConnectionWhere {
-            AND: [MovieActorsConnectionWhere!]
-            OR: [MovieActorsConnectionWhere!]
-            node: ActorWhere
-            node_NOT: ActorWhere
-          }
+            input MovieActorsConnectionWhere {
+              AND: [MovieActorsConnectionWhere!]
+              OR: [MovieActorsConnectionWhere!]
+              node: ActorWhere
+              node_NOT: ActorWhere
+            }
 
-          input MovieActorsCreateFieldInput {
-            node: ActorCreateInput!
-          }
+            input MovieActorsCreateFieldInput {
+              node: ActorCreateInput!
+            }
 
-          input MovieActorsDeleteFieldInput {
-            where: MovieActorsConnectionWhere
-          }
+            input MovieActorsDeleteFieldInput {
+              where: MovieActorsConnectionWhere
+            }
 
-          input MovieActorsDisconnectFieldInput {
-            where: MovieActorsConnectionWhere
-          }
+            input MovieActorsDisconnectFieldInput {
+              where: MovieActorsConnectionWhere
+            }
 
-          input MovieActorsFieldInput {
-            connect: [MovieActorsConnectFieldInput!]
-            create: [MovieActorsCreateFieldInput!]
-          }
+            input MovieActorsFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
+            }
 
-          input MovieActorsNodeAggregationWhereInput {
-            AND: [MovieActorsNodeAggregationWhereInput!]
-            OR: [MovieActorsNodeAggregationWhereInput!]
-            name_AVERAGE_EQUAL: Float
-            name_AVERAGE_GT: Float
-            name_AVERAGE_GTE: Float
-            name_AVERAGE_LT: Float
-            name_AVERAGE_LTE: Float
-            name_EQUAL: String
-            name_GT: Int
-            name_GTE: Int
-            name_LONGEST_EQUAL: Int
-            name_LONGEST_GT: Int
-            name_LONGEST_GTE: Int
-            name_LONGEST_LT: Int
-            name_LONGEST_LTE: Int
-            name_LT: Int
-            name_LTE: Int
-            name_SHORTEST_EQUAL: Int
-            name_SHORTEST_GT: Int
-            name_SHORTEST_GTE: Int
-            name_SHORTEST_LT: Int
-            name_SHORTEST_LTE: Int
-          }
+            input MovieActorsNodeAggregationWhereInput {
+              AND: [MovieActorsNodeAggregationWhereInput!]
+              OR: [MovieActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
+            }
 
-          input MovieActorsUpdateConnectionInput {
-            node: ActorUpdateInput
-          }
+            input MovieActorsUpdateConnectionInput {
+              node: ActorUpdateInput
+            }
 
-          input MovieActorsUpdateFieldInput {
-            connect: [MovieActorsConnectFieldInput!]
-            create: [MovieActorsCreateFieldInput!]
-            delete: [MovieActorsDeleteFieldInput!]
-            disconnect: [MovieActorsDisconnectFieldInput!]
-            update: MovieActorsUpdateConnectionInput
-            where: MovieActorsConnectionWhere
-          }
+            input MovieActorsUpdateFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
+              delete: [MovieActorsDeleteFieldInput!]
+              disconnect: [MovieActorsDisconnectFieldInput!]
+              update: MovieActorsUpdateConnectionInput
+              where: MovieActorsConnectionWhere
+            }
 
-          type MovieAggregateSelection {
-            count: Int!
-            id: IDAggregateSelection!
-          }
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
+            }
 
-          input MovieConnectInput {
-            actors: [MovieActorsConnectFieldInput!]
-          }
+            input MovieConnectInput {
+              actors: [MovieActorsConnectFieldInput!]
+            }
 
-          input MovieCreateInput {
-            actors: MovieActorsFieldInput
-            id: ID
-          }
+            input MovieCreateInput {
+              actors: MovieActorsFieldInput
+              id: ID
+            }
 
-          input MovieDeleteInput {
-            actors: [MovieActorsDeleteFieldInput!]
-          }
+            input MovieDeleteInput {
+              actors: [MovieActorsDeleteFieldInput!]
+            }
 
-          input MovieDisconnectInput {
-            actors: [MovieActorsDisconnectFieldInput!]
-          }
+            input MovieDisconnectInput {
+              actors: [MovieActorsDisconnectFieldInput!]
+            }
 
-          input MovieOptions {
-            limit: Int
-            offset: Int
-            \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-            sort: [MovieSort]
-          }
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [MovieSort]
+            }
 
-          input MovieRelationInput {
-            actors: [MovieActorsCreateFieldInput!]
-          }
+            input MovieRelationInput {
+              actors: [MovieActorsCreateFieldInput!]
+            }
 
-          \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
-          input MovieSort {
-            id: SortDirection
-          }
+            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            input MovieSort {
+              id: SortDirection
+            }
 
-          input MovieUpdateInput {
-            actors: [MovieActorsUpdateFieldInput!]
-            id: ID
-          }
+            input MovieUpdateInput {
+              actors: [MovieActorsUpdateFieldInput!]
+              id: ID
+            }
 
-          input MovieWhere {
-            AND: [MovieWhere!]
-            OR: [MovieWhere!]
-            actors: ActorWhere
-            actorsAggregate: MovieActorsAggregateInput
-            actorsConnection: MovieActorsConnectionWhere
-            actorsConnection_NOT: MovieActorsConnectionWhere
-            actors_NOT: ActorWhere
-            id: ID
-            id_CONTAINS: ID
-            id_ENDS_WITH: ID
-            id_IN: [ID]
-            id_NOT: ID
-            id_NOT_CONTAINS: ID
-            id_NOT_ENDS_WITH: ID
-            id_NOT_IN: [ID]
-            id_NOT_STARTS_WITH: ID
-            id_STARTS_WITH: ID
-          }
+            input MovieWhere {
+              AND: [MovieWhere!]
+              OR: [MovieWhere!]
+              actors: ActorWhere
+              actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionWhere
+              actorsConnection_NOT: MovieActorsConnectionWhere
+              actors_NOT: ActorWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+            }
 
-          type Mutation {
-            createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
-            createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-            deleteActors(where: ActorWhere): DeleteInfo!
-            deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-            updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-            updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-          }
+            type Mutation {
+              createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              deleteActors(where: ActorWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
 
-          type Query {
-            actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-            actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-            actorsCount(where: ActorWhere): Int!
-            movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-            moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-            moviesCount(where: MovieWhere): Int!
-          }
+            type Query {
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+            }
 
-          enum SortDirection {
-            \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-            ASC
-            \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-            DESC
-          }
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-          type StringAggregateSelection {
-            longest: String
-            shortest: String
-          }
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
+            }
 
-          type UpdateActorsMutationResponse {
-            actors: [Actor!]!
-            info: UpdateInfo!
-          }
+            type UpdateActorsMutationResponse {
+              actors: [Actor!]!
+              info: UpdateInfo!
+            }
 
-          type UpdateInfo {
-            bookmark: String
-            nodesCreated: Int!
-            nodesDeleted: Int!
-            relationshipsCreated: Int!
-            relationshipsDeleted: Int!
-          }
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-          type UpdateMoviesMutationResponse {
-            info: UpdateInfo!
-            movies: [Movie!]!
-          }
-          "
-      `);
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }
+            "
+        `);
     });
 });

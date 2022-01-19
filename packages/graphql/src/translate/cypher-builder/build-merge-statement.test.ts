@@ -45,7 +45,7 @@ describe("build merge statement", () => {
                 context,
             });
 
-            expect(statement[0]).toEqual("MERGE (this:MyLabel)");
+            expect(statement[0]).toBe("MERGE (this:MyLabel)");
             expect(statement[1]).toEqual({});
         });
 
@@ -90,7 +90,7 @@ describe("build merge statement", () => {
                 context,
             });
 
-            expect(statement[0]).toEqual("MERGE (this)-[this_relationship_that]->(that)");
+            expect(statement[0]).toBe("MERGE (this)-[this_relationship_that]->(that)");
             expect(statement[1]).toEqual({});
         });
 

@@ -70,8 +70,8 @@ describe("@fulltext schema", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              description: StringAggregateSelection!
-              title: StringAggregateSelection!
+              description: StringAggregateSelectionNullable!
+              title: StringAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -146,7 +146,6 @@ describe("@fulltext schema", () => {
             type Query {
               movies(fulltext: MovieFulltext, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(fulltext: MovieFulltext, where: MovieWhere): MovieAggregateSelection!
-              moviesCount(fulltext: MovieFulltext, where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -156,7 +155,7 @@ describe("@fulltext schema", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }

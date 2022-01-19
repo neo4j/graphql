@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../../tests/utils/graphql-types";
+import { generateUniqueType } from "../../utils/graphql-types";
 import { parseLegacyConstraint } from "../../../src/classes/utils/asserts-indexes-and-constraints";
 
 describe("assertIndexesAndConstraints/unique", () => {
@@ -168,7 +168,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         });
 
         expect(errorResult.errors).toHaveLength(1);
-        expect(errorResult.errors?.[0].message).toEqual("Constraint validation failed");
+        expect(errorResult.errors?.[0].message).toBe("Constraint validation failed");
     });
 
     describe("@unique", () => {

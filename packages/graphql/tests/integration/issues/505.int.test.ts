@@ -31,9 +31,9 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         type User {
             id: ID!
             authId: String
-            workspaces: [Workspace!] @relationship(type: "MEMBER_OF", direction: OUT)
-            adminOf: [Workspace!] @relationship(type: "HAS_ADMIN", direction: IN)
-            createdPages: [Page!] @relationship(type: "CREATED_PAGE", direction: OUT)
+            workspaces: [Workspace!]! @relationship(type: "MEMBER_OF", direction: OUT)
+            adminOf: [Workspace!]! @relationship(type: "HAS_ADMIN", direction: IN)
+            createdPages: [Page!]! @relationship(type: "CREATED_PAGE", direction: OUT)
         }
 
         type Workspace
@@ -48,9 +48,9 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             @exclude(operations: [CREATE, UPDATE]) {
             id: ID!
             name: String!
-            members: [User!] @relationship(type: "MEMBER_OF", direction: IN)
-            admins: [User!] @relationship(type: "HAS_ADMIN", direction: OUT)
-            pages: [Page!] @relationship(type: "HAS_PAGE", direction: OUT)
+            members: [User!]! @relationship(type: "MEMBER_OF", direction: IN)
+            admins: [User!]! @relationship(type: "HAS_ADMIN", direction: OUT)
+            pages: [Page!]! @relationship(type: "HAS_PAGE", direction: OUT)
         }
 
         type Page

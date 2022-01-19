@@ -29,7 +29,7 @@ describe("Unions", () => {
 
             type Author {
                 name: String!
-                publications: [Publication] @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
+                publications: [Publication!]! @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
             }
 
             type Book {
@@ -57,13 +57,13 @@ describe("Unions", () => {
 
             type Author {
               name: String!
-              publications(options: QueryOptions, where: PublicationWhere): [Publication]
+              publications(options: QueryOptions, where: PublicationWhere): [Publication!]!
               publicationsConnection(sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
             type AuthorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input AuthorConnectInput {
@@ -301,7 +301,7 @@ describe("Unions", () => {
 
             type BookAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input BookAuthorAggregateInput {
@@ -323,11 +323,11 @@ describe("Unions", () => {
             }
 
             type BookAuthorAuthorEdgeAggregateSelection {
-              words: IntAggregateSelection!
+              words: IntAggregateSelectionNonNullable!
             }
 
             type BookAuthorAuthorNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input BookAuthorConnectFieldInput {
@@ -540,11 +540,11 @@ describe("Unions", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
+            type IntAggregateSelectionNonNullable {
+              average: Float!
+              max: Int!
+              min: Int!
+              sum: Int!
             }
 
             type Journal {
@@ -556,7 +556,7 @@ describe("Unions", () => {
 
             type JournalAggregateSelection {
               count: Int!
-              subject: StringAggregateSelection!
+              subject: StringAggregateSelectionNonNullable!
             }
 
             input JournalAuthorAggregateInput {
@@ -578,11 +578,11 @@ describe("Unions", () => {
             }
 
             type JournalAuthorAuthorEdgeAggregateSelection {
-              words: IntAggregateSelection!
+              words: IntAggregateSelectionNonNullable!
             }
 
             type JournalAuthorAuthorNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input JournalAuthorConnectFieldInput {
@@ -798,13 +798,10 @@ describe("Unions", () => {
             type Query {
               authors(options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
-              authorsCount(where: AuthorWhere): Int!
               books(options: BookOptions, where: BookWhere): [Book!]!
               booksAggregate(where: BookWhere): BookAggregateSelection!
-              booksCount(where: BookWhere): Int!
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
               journalsAggregate(where: JournalWhere): JournalAggregateSelection!
-              journalsCount(where: JournalWhere): Int!
             }
 
             input QueryOptions {
@@ -819,9 +816,9 @@ describe("Unions", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateAuthorsMutationResponse {

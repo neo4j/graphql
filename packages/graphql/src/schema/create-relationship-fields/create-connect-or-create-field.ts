@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { SchemaComposer, upperFirst, InputTypeComposer } from "graphql-compose";
+import { SchemaComposer, InputTypeComposer } from "graphql-compose";
 import { Node } from "../../classes";
 import { RelationField } from "../../types";
+import { upperFirst } from "../../utils/upper-first";
 
 export function createConnectOrCreateField({
     node,

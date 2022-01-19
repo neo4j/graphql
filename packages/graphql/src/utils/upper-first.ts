@@ -16,4 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { default as getJWT } from "./get-jwt";
+
+/* Sets first letter of the string as toUpperCase */
+export function upperFirst(str: string): string {
+    return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
+}

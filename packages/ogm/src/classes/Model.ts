@@ -19,9 +19,10 @@
 
 import { DocumentNode, graphql, parse, print, SelectionSetNode } from "graphql";
 import pluralize from "pluralize";
-import camelCase from "camelcase";
-import { Neo4jGraphQL, upperFirst } from "@neo4j/graphql";
+import { Neo4jGraphQL } from "@neo4j/graphql";
 import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
+import { upperFirst } from "../utils/upper-first";
+import { lowerFirst } from "../utils/lower-first";
 
 export interface ModelConstructor {
     name: string;
@@ -39,19 +40,13 @@ function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNod
 
 class Model {
     public name: string;
-
     private namePluralized: string;
-
-    private camelCaseName: string;
-
     private neoSchema: Neo4jGraphQL;
-
     protected selectionSet: string;
 
     constructor(input: ModelConstructor) {
         this.name = input.name;
-        this.namePluralized = pluralize(input.name);
-        this.camelCaseName = camelCase(this.namePluralized);
+        this.namePluralized = lowerFirst(pluralize(input.name));
         this.neoSchema = input.neoSchema;
         this.selectionSet = input.selectionSet;
     }
@@ -99,7 +94,7 @@ class Model {
 
         const query = `
             query ${argDefinitions.join(" ")}{
-                ${this.camelCaseName}${argsApply.join(" ")} ${selection}
+                ${this.namePluralized}${argsApply.join(" ")} ${selection}
             }
         `;
 
@@ -111,47 +106,7 @@ class Model {
             throw new Error(result.errors[0].message);
         }
 
-        return (result.data as any)[this.camelCaseName] as T;
-    }
-
-    async count({
-        where,
-        fulltext,
-    }: {
-        where?: GraphQLWhereArg;
-        fulltext?: any;
-    } = {}): Promise<number> {
-        const argWorthy = Boolean(where || fulltext);
-
-        const argDefinitions = [
-            `${argWorthy ? "(" : ""}`,
-            `${where ? `$where: ${this.name}Where` : ""}`,
-            `${fulltext ? `$fulltext: ${this.name}Fulltext` : ""}`,
-            `${argWorthy ? ")" : ""}`,
-        ];
-
-        const argsApply = [
-            `${argWorthy ? "(" : ""}`,
-            `${where ? `where: $where` : ""}`,
-            `${fulltext ? `fulltext: $fulltext` : ""}`,
-            `${argWorthy ? ")" : ""}`,
-        ];
-
-        const query = `
-            query ${argDefinitions.join(" ")}{
-                ${this.camelCaseName}Count${argsApply.join(" ")}
-            }
-        `;
-
-        const variableValues = { where };
-
-        const result = await graphql(this.neoSchema.schema, query, null, {}, variableValues);
-
-        if (result.errors?.length) {
-            throw new Error(result.errors[0].message);
-        }
-
-        return (result.data as any)[`${this.camelCaseName}Count`] as number;
+        return (result.data as any)[this.namePluralized] as T;
     }
 
     async create<T = any>({
@@ -175,7 +130,7 @@ class Model {
         } else {
             selection = `
                {
-                   ${this.camelCaseName}
+                   ${this.namePluralized}
                    ${printSelectionSet(selectionSet || this.selectionSet)}
                }
            `;
@@ -230,7 +185,7 @@ class Model {
         } else {
             selection = `
                {
-                   ${this.camelCaseName}
+                   ${this.namePluralized}
                    ${printSelectionSet(selectionSet || this.selectionSet)}
                }
            `;
@@ -337,7 +292,7 @@ class Model {
         context?: any;
         rootValue?: any;
     }): Promise<T> {
-        const queryName = `${pluralize(camelCase(this.name))}Aggregate`;
+        const queryName = `${this.namePluralized}Aggregate`;
         const selections: string[] = [];
         const argWorthy = Boolean(where || fulltext);
 

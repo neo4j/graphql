@@ -1,10 +1,12 @@
 {
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
+        "rootDir": ".",
         "outDir": "../dist"
     },
     "exclude": ["**/*.test.ts"],
     "references": [
-        { "path": "../" } // for package.json import
+        // allows for the import of package.json without it being bundled into dist
+        { "path": "../tsconfig.package.json" }
     ]
 }

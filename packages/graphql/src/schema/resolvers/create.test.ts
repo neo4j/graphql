@@ -27,7 +27,7 @@ describe("Create resolver", () => {
         }).instance();
 
         const result = createResolver({ node });
-        expect(result.type).toEqual("CreateMoviesMutationResponse!");
+        expect(result.type).toBe("CreateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
             input: "[MovieCreateInput!]!",
