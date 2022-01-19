@@ -90,7 +90,6 @@ describe("Cypher directive", () => {
             type Movie {
                 id: ID
                 title: String
-                actedIn: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 actors: [Actor]
                     @cypher(
                         statement: """
@@ -355,49 +354,6 @@ describe("Cypher directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_movieOrTVShow_title\\": \\"some title\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
-                }
-            }"
-        `);
-    });
-
-    test("Nested Connection", async () => {
-        const query = gql`
-            {
-                actors {
-                    movies {
-                        actedInConnection {
-                            totalCount
-                        }
-                    }
-                }
-            }
-        `;
-
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            RETURN this { movies: [this_movies IN apoc.cypher.runFirstColumn(\\"MATCH (m:Movie {title: $title})
-            RETURN m\\", {this: this, auth: $auth, title: $this_movies_title}, true) | this_movies { actedInConnection: apoc.cypher.runFirstColumn(\\"CALL {
-            WITH this_movies
-            MATCH (this_movies)<-[this_movies_acted_in_relationship:ACTED_IN]-(this_movies_actor:Actor)
-            WITH collect({  }) AS edges
-            RETURN { totalCount: size(edges) } AS actedInConnection
-            } RETURN actedInConnection\\", { this_movies: this_movies, auth: $auth }, false) }] } as this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"this_movies_title\\": null,
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],
