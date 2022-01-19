@@ -717,7 +717,7 @@ describe("Interface Relationships", () => {
 
             type Episode {
               runtime: Int!
-              series(directed: Boolean, options: SeriesOptions, where: SeriesWhere): Series!
+              series(directed: Boolean = true, options: SeriesOptions, where: SeriesWhere): Series!
               seriesAggregate(where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection
               seriesConnection(after: String, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
             }
@@ -925,7 +925,7 @@ describe("Interface Relationships", () => {
             }
 
             type Movie implements Production {
-              actors(directed: Boolean, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               runtime: Int!
@@ -1112,7 +1112,7 @@ describe("Interface Relationships", () => {
             }
 
             interface Production {
-              actors(directed: Boolean, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               title: String!
             }
@@ -1341,11 +1341,11 @@ describe("Interface Relationships", () => {
             }
 
             type Series implements Production {
-              actors(directed: Boolean, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodeCount: Int!
-              episodes(directed: Boolean, options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
+              episodes(directed: Boolean = true, options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
               episodesAggregate(where: EpisodeWhere): SeriesEpisodeEpisodesAggregationSelection
               episodesConnection(after: String, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
               title: String!
@@ -2463,11 +2463,11 @@ describe("Interface Relationships", () => {
 
             type Comment implements Content {
               content: String
-              creator(directed: Boolean, options: UserOptions, where: UserWhere): User!
+              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
               creatorAggregate(where: UserWhere): CommentUserCreatorAggregationSelection
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
-              post(directed: Boolean, options: PostOptions, where: PostWhere): Post!
+              post(directed: Boolean = true, options: PostOptions, where: PostWhere): Post!
               postAggregate(where: PostWhere): CommentPostPostAggregationSelection
               postConnection(after: String, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
             }
@@ -2719,7 +2719,7 @@ describe("Interface Relationships", () => {
 
             interface Content {
               content: String
-              creator(directed: Boolean, options: UserOptions, where: UserWhere): User!
+              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
             }
@@ -2958,11 +2958,11 @@ describe("Interface Relationships", () => {
             }
 
             type Post implements Content {
-              comments(directed: Boolean, options: CommentOptions, where: CommentWhere): [Comment!]!
+              comments(directed: Boolean = true, options: CommentOptions, where: CommentWhere): [Comment!]!
               commentsAggregate(where: CommentWhere): PostCommentCommentsAggregationSelection
               commentsConnection(after: String, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
               content: String
-              creator(directed: Boolean, options: UserOptions, where: UserWhere): User!
+              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
               creatorAggregate(where: UserWhere): PostUserCreatorAggregationSelection
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID

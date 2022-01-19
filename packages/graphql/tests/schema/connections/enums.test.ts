@@ -79,7 +79,7 @@ describe("Enums", () => {
             }
 
             type Actor {
-              movies(directed: Boolean, options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
@@ -286,7 +286,7 @@ describe("Enums", () => {
             }
 
             type Movie {
-              actors(directed: Boolean, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
