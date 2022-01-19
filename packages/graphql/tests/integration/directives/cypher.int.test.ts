@@ -24,6 +24,7 @@ import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
 
+const testLabel = generate({ charset: "alphabetic" });
 describe("cypher", () => {
     let driver: Driver;
 
