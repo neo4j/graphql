@@ -87,7 +87,7 @@ describe("Interface Relationships", () => {
             }
 
             type Actor {
-              actedIn(directed: Boolean, options: QueryOptions, where: ProductionWhere): [Production!]!
+              actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
               actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -549,7 +549,7 @@ describe("Interface Relationships", () => {
             }
 
             type Actor {
-              actedIn(directed: Boolean, options: QueryOptions, where: ProductionWhere): [Production!]!
+              actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
               actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -1757,7 +1757,7 @@ describe("Interface Relationships", () => {
 
             interface Interface1 {
               field1: String!
-              interface2(directed: Boolean, options: QueryOptions, where: Interface2Where): [Interface2!]!
+              interface2(directed: Boolean = true, options: QueryOptions, where: Interface2Where): [Interface2!]!
               interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -1985,7 +1985,7 @@ describe("Interface Relationships", () => {
 
             type Type1 {
               field1: String!
-              interface1(directed: Boolean, options: QueryOptions, where: Interface1Where): [Interface1!]!
+              interface1(directed: Boolean = true, options: QueryOptions, where: Interface1Where): [Interface1!]!
               interface1Connection(where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
@@ -2013,7 +2013,7 @@ describe("Interface Relationships", () => {
 
             type Type1Interface1 implements Interface1 {
               field1: String!
-              interface2(directed: Boolean, options: QueryOptions, where: Interface2Where): [Interface2!]!
+              interface2(directed: Boolean = true, options: QueryOptions, where: Interface2Where): [Interface2!]!
               interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -2245,7 +2245,7 @@ describe("Interface Relationships", () => {
 
             type Type2Interface1 implements Interface1 {
               field1: String!
-              interface2(directed: Boolean, options: QueryOptions, where: Interface2Where): [Interface2!]!
+              interface2(directed: Boolean = true, options: QueryOptions, where: Interface2Where): [Interface2!]!
               interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -3263,7 +3263,7 @@ describe("Interface Relationships", () => {
             }
 
             type User {
-              content(directed: Boolean, options: QueryOptions, where: ContentWhere): [Content!]!
+              content(directed: Boolean = true, options: QueryOptions, where: ContentWhere): [Content!]!
               contentConnection(where: UserContentConnectionWhere): UserContentConnection!
               id: ID
               name: String

@@ -97,7 +97,7 @@ function createRelationshipFields({
                     [rel.fieldName]: {
                         type: rel.typeMeta.pretty,
                         args: {
-                            directed: "Boolean",
+                            directed: { type: "Boolean", defaultValue: true },
                             options: "QueryOptions",
                             where: `${rel.typeMeta.name}Where`,
                         },
@@ -251,7 +251,7 @@ function createRelationshipFields({
                     [rel.fieldName]: {
                         type: rel.typeMeta.pretty,
                         args: {
-                            directed: "Boolean",
+                            directed: { type: "Boolean", defaultValue: true },
                             options: "QueryOptions",
                             where: `${rel.typeMeta.name}Where`,
                         },

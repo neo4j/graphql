@@ -57,7 +57,7 @@ describe("Unions", () => {
 
             type Author {
               name: String!
-              publications(directed: Boolean, options: QueryOptions, where: PublicationWhere): [Publication!]!
+              publications(directed: Boolean = true, options: QueryOptions, where: PublicationWhere): [Publication!]!
               publicationsConnection(sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
