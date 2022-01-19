@@ -8,11 +8,11 @@ We currently have no mechanism to release critical bug fixes whilst we are worki
 
 Bug fixes which are to be released as hotfixes should be implemented and released as follows:
 
-- Create a new bug fix branch from `master`
-- Implement the bug fix
-- Create a PR to merge the bug fix branch into `master`
-- Once the branch has been merged, create a release branch (`release/<major>.<minor>.<patch>`) off `master`
-- This will trigger the release pipeline which will test, build and release the hotfix
+1. Create a new bug fix branch from `master`
+2. Implement the bug fix
+3. Create a PR to merge the bug fix branch into `master`
+4. Once the branch has been merged, create a release branch (`release/<major>.<minor>.<patch>`) off `master`
+5. This will trigger the release pipeline which will test, build and release the hotfix
 
 ## Risks
 
