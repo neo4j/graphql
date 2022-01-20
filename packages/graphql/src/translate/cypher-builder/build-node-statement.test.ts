@@ -88,6 +88,6 @@ describe("build node statement", () => {
                 context,
                 varName: "",
             });
-        }).toThrowError(Neo4jGraphQLCypherBuilderError);
+        }).toThrow(Neo4jGraphQLCypherBuilderError);
     });
 });
