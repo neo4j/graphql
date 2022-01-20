@@ -24,7 +24,7 @@ export default new GraphQLScalarType({
     name: "BigInt",
     description:
         "A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.",
-    serialize(outputValue: any) {
+    serialize(outputValue: unknown) {
         if (isInt(outputValue)) {
             return outputValue.toString(10);
         }
@@ -39,7 +39,7 @@ export default new GraphQLScalarType({
 
         throw new GraphQLError(`BigInt cannot represent value: ${outputValue}`);
     },
-    parseValue(inputValue) {
+    parseValue(inputValue: unknown) {
         if (typeof inputValue !== "string") {
             throw new GraphQLError(
                 "BigInt values are not JSON serializable. Please pass as a string in variables, or inline in the GraphQL query."

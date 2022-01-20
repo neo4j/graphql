@@ -23,7 +23,7 @@ import neo4j, { Date as Neo4jDate, isDate } from "neo4j-driver";
 export default new GraphQLScalarType({
     name: "Date",
     description: "A date, represented as a 'yyyy-mm-dd' string",
-    serialize: (outputValue: any) => {
+    serialize: (outputValue: unknown) => {
         if (typeof outputValue === "string") {
             return new Date(outputValue).toISOString();
         }
@@ -34,7 +34,7 @@ export default new GraphQLScalarType({
 
         throw new GraphQLError(`Date cannot represent value: ${outputValue}`);
     },
-    parseValue: (inputValue) => {
+    parseValue: (inputValue: unknown) => {
         if (typeof inputValue !== "string") {
             throw new GraphQLError(`Date cannot represent non string value: ${inputValue}`);
         }
