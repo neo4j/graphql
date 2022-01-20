@@ -21,10 +21,10 @@ import { Context, RelationField } from "../../types";
 import { Node } from "../../classes";
 import { CypherStatement } from "../types";
 import { buildNodeStatement } from "./build-node-statement";
-import { joinStatements } from "../utils/join-statements";
 import { serializeParameters, padLeft } from "./utils";
+import { joinStatements } from "./join-statements";
 
-type TargetNode =
+type NodeOptions =
     | {
           varName: string;
           node?: Node;
@@ -42,35 +42,35 @@ type TargetRelation = {
     parameters?: Record<string, any>;
 };
 
-export function buildRelationStatement({
-    leftNode,
-    rightNode,
+export function buildRelationshipStatement({
+    sourceNode,
+    targetNode,
     context,
-    relation,
+    relationship,
     directed = true,
 }: {
-    leftNode: TargetNode;
-    rightNode: TargetNode;
-    relation: TargetRelation;
+    sourceNode: NodeOptions;
+    targetNode: NodeOptions;
+    relationship: TargetRelation;
     context: Context;
     directed?: boolean;
 }): CypherStatement {
-    const relationStatement = getRelationSubStatement(relation, directed);
+    const relationshipStatement = getRelationshipSubStatement(relationship, directed);
 
-    const leftNodeStatement = buildNodeStatement({
+    const sourceNodeStatement = buildNodeStatement({
         context,
-        ...leftNode,
+        ...sourceNode,
     });
 
-    const rightNodeStatement = buildNodeStatement({
+    const targetNodeStatement = buildNodeStatement({
         context,
-        ...rightNode,
+        ...targetNode,
     });
 
-    return joinStatements([leftNodeStatement, relationStatement, rightNodeStatement], "");
+    return joinStatements([sourceNodeStatement, relationshipStatement, targetNodeStatement], "");
 }
 
-function getRelationSubStatement(
+function getRelationshipSubStatement(
     { relationField, varName = "", parameters }: TargetRelation,
     directed: boolean
 ): CypherStatement {
@@ -81,15 +81,15 @@ function getRelationSubStatement(
         rightConnection = "-";
     }
 
-    const relationLabel = relationField.type ? `:${relationField.type}` : "";
+    const relationshipLabel = relationField.type ? `:${relationField.type}` : "";
 
     const [relParamsQuery, relParams] = serializeRelationParameters(varName, parameters);
 
-    const relTypeStr = `[${varName || ""}${relationLabel}${padLeft(relParamsQuery)}]`;
+    const relTypeStr = `[${varName || ""}${relationshipLabel}${padLeft(relParamsQuery)}]`;
 
     return [`${leftConnection}${relTypeStr}${rightConnection}`, relParams];
 }
 
 function serializeRelationParameters(varName: string, parameters: Record<string, any> | undefined): CypherStatement {
-    return serializeParameters(`${varName}_relation`, parameters);
+    return serializeParameters(`${varName}_relationship`, parameters);
 }
