@@ -168,7 +168,7 @@ type Subscription {
 }
 ```
 
-API code
+**API code**
 
 ```js
 const express = require("express");
