@@ -127,7 +127,7 @@ RETURN u { .name, .email } AS u
 
 Once again because we produce a single Cypher statement and that Cypher statement could be 100's of lines in length, for example nested mutations, then making a plugin that can both read that Cypher and then deterministically publish events based on that Cypher is in my opinion not a production worthy solution! The only place you can guarantee something happened is from within the database itself, that's of course if you don't want to ask your users, or have the library, to poll for changes causing all sorts of complexity problems!
 
-You can use a APOC method called [`jsonParams`](https://neo4j.com/labs/apoc/4.2/overview/apoc.load/apoc.load.jsonParams/) that enables you to make a HTTP call to a given endpoint for within Cypher. Below I use hooks and then inside the custom Cypher I use the APOC method to trigger a callback to my GraphQL API. The endpoint that is triggered on that callback simply publishes to my PubSub instance feeding any GraphQL subscribers.
+You can use a APOC method called [`jsonParams`](https://neo4j.com/labs/apoc/4.2/overview/apoc.load/apoc.load.jsonParams/) that enables you to make a HTTP call to a given endpoint for within Cypher. Below I use a Hook and then inside the custom Cypher I use the APOC method to trigger a callback to my GraphQL API. The endpoint that is triggered on that callback simply publishes to my PubSub instance feeding any GraphQL subscribers.
 
 **typeDefs**
 
