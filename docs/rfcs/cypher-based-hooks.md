@@ -136,7 +136,7 @@ type User
     @post(
         cypher: """
         WITH
-        'HTTP://MY_PUBSUB_AGGREGATION_API/subscription-callback/'+ apoc.text.urlencode(this.id) AS callback
+        'http://MY_PUBSUB_API/subscription-callback/'+ apoc.text.urlencode(this.id) AS callback
         {} AS headers,
         "" AS payload,
         "" AS path
@@ -198,3 +198,11 @@ app.post("/subscription-callback/:id", (req, res) => {
 });
 app.listen();
 ```
+
+## Extending
+
+Finally, I would like to point out that our `@auth` directive cannot cover all complexities related to auth and that Cypher Hooks would enable users to enforce sophisticated auth patterns before or after a Cypher operation.
+
+## Out of scope
+
+1. Filtering on `post`
