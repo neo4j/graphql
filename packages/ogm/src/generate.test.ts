@@ -208,7 +208,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface UserAggregateInput {
+            export interface UserAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInput;
             }
@@ -249,7 +249,7 @@ describe("generate", () => {
               public aggregate(args: {
                 where?: UserWhere;
 
-                aggregate: UserAggregateInput;
+                aggregate: UserAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
@@ -454,7 +454,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface UserAggregateInput {
+            export interface UserAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInput;
             }
@@ -498,7 +498,7 @@ describe("generate", () => {
               public aggregate(args: {
                 where?: UserWhere;
                 fulltext?: UserFulltext;
-                aggregate: UserAggregateInput;
+                aggregate: UserAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
@@ -700,7 +700,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface UserAggregateInput {
+            export interface UserAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInput;
             }
@@ -741,7 +741,7 @@ describe("generate", () => {
               public aggregate(args: {
                 where?: UserWhere;
 
-                aggregate: UserAggregateInput;
+                aggregate: UserAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
@@ -1276,7 +1276,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface MovieAggregateInput {
+            export interface MovieAggregateSelectionInput {
               count?: boolean;
               title?: StringAggregateInput;
             }
@@ -1320,7 +1320,7 @@ describe("generate", () => {
               public aggregate(args: {
                 where?: MovieWhere;
 
-                aggregate: MovieAggregateInput;
+                aggregate: MovieAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<MovieAggregateSelection>;
@@ -1330,7 +1330,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface PersonAggregateInput {
+            export interface PersonAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInput;
             }
@@ -1371,7 +1371,7 @@ describe("generate", () => {
               public aggregate(args: {
                 where?: PersonWhere;
 
-                aggregate: PersonAggregateInput;
+                aggregate: PersonAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<PersonAggregateSelection>;
