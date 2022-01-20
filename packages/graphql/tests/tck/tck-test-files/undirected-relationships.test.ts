@@ -183,4 +183,50 @@ RETURN this { actedIn: collect(actedIn) } as this"
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
+
+    test("nested undirected relationship", async () => {
+        typeDefs = gql`
+            type Foo {
+                id: ID @unique
+                Name: String
+                Age: Int
+                DrinksAt: Bar @relationship(type: "DRINKS_AT", direction: OUT)
+            }
+
+            type Bar {
+                id: ID @unique
+                Adress: String
+                Customers: [Foo!]! @relationship(type: "DRINKS_AT", direction: IN)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: { jwt: { secret } },
+        });
+        const query = gql`
+            query Query {
+                foos {
+                    DrinksAt {
+                        id
+                        Customers(directed: false) {
+                            Name
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+"MATCH (this:Foo)
+RETURN this { DrinksAt: head([ (this)-[:DRINKS_AT]->(this_DrinksAt:Bar)   | this_DrinksAt { .id, Customers: [ (this_DrinksAt)-[:DRINKS_AT]-(this_DrinksAt_Customers:Foo)   | this_DrinksAt_Customers { .Name } ] } ]) } as this"
+`);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
 });
