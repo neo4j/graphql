@@ -30,6 +30,9 @@ jobs:
         package:
           - graphql
           - ogm
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
@@ -41,6 +44,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run packages/${{ matrix.package }} unit tests
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
@@ -58,6 +63,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -66,6 +77,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run TCK tests
         run: yarn --cwd packages/graphql run test:tck --coverage
       - name: Upload coverage to Codecov
@@ -115,6 +128,12 @@ jobs:
         ports:
           - 7687:7687
 
+    strategy:
+      matrix:
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -133,6 +152,7 @@ jobs:
       - name: Install dependencies
         run: |
           chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
+          npm install graphql@${{ matrix.graphql-version }}
           npm install ../graphql/package.tgz
         working-directory: packages/neo4j-graphql-nextjs
       - name: Copy .env file
@@ -185,6 +205,9 @@ jobs:
           - 4.3.2
           - 4.3
           - 4.4
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
@@ -207,6 +230,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --coverage
