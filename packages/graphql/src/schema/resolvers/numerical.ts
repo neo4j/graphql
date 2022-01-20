@@ -18,13 +18,13 @@
  */
 
 import { GraphQLResolveInfo } from "graphql";
+import { isInt } from "neo4j-driver";
 import defaultFieldResolver from "./defaultField";
-import { isNeoInt } from "../../utils/utils";
 
 function numerical(source, args, context, info: GraphQLResolveInfo) {
     const value = defaultFieldResolver(source, args, context, info);
 
-    if (isNeoInt(value)) {
+    if (isInt(value)) {
         return value.toNumber();
     }
 
