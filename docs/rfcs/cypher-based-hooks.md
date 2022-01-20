@@ -2,9 +2,11 @@
 
 ## Problem
 
-Due to the fact that Neo4j GraphQL generates a single Cypher statement, it’s difficult for users to ‘inject’ custom logic before or after an interaction with either a node or relationship. Injecting custom logic is common for example: ‘Audit Logs’ - Users may want to efficiently store a trail of events produced by their API consumers.
+Due to the fact that Neo4j GraphQL generates a single Cypher statement, it’s difficult for users to ‘inject’ custom logic before or after an interaction with either a node or relationship. Injecting custom logic is common, and for example: ‘Audit Logs’ - Users may want to efficiently store a trail of events produced by their API consumers.
 
 Not only is it difficult for users to inject custom logic but the logic that they do inject can never be 100% deterministic, and this is because, again, we generate a single Cypher statement! All the interactions with the database happen in one transaction, defined in one statement, and so any hook or plugin made will always execute outside of that transaction.
+
+I believe, demonstrated in this RFC, we could use Cypher Hooks to not only; enforce and create patterns, validate properties, extend authentication, but also enable sophisticated patterns such as subscriptions.
 
 ## Proposed Solution
 
