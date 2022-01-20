@@ -4,6 +4,7 @@ on:
   pull_request_target:
     branches:
       - dev
+      - master
     paths:
       - "docs/modules/ROOT/**"
     types:
