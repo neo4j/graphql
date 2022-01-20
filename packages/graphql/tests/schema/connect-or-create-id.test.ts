@@ -46,7 +46,7 @@ describe("connect or create with id", () => {
 
             type Actor {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -471,7 +471,7 @@ describe("connect or create with id", () => {
               content: String!
               createdAt: DateTime!
               creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
-              creatorAggregate(where: UserWhere): PostUserCreatorAggregationSelection
+              creatorAggregate(directed: Boolean = true, where: UserWhere): PostUserCreatorAggregationSelection
               creatorConnection(after: String, first: Int, sort: [PostCreatorConnectionSort!], where: PostCreatorConnectionWhere): PostCreatorConnection!
               id: ID!
             }
@@ -743,7 +743,7 @@ describe("connect or create with id", () => {
               id: ID!
               name: String!
               posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): UserPostPostsAggregationSelection
+              postsAggregate(directed: Boolean = true, where: PostWhere): UserPostPostsAggregationSelection
               postsConnection(after: String, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
             }
 

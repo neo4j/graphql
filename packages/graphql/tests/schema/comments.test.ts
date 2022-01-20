@@ -349,7 +349,7 @@ describe("Comments", () => {
                 type Movie {
                   \\"\\"\\"Actors in Movie\\"\\"\\"
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
+                  actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }

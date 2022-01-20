@@ -46,7 +46,7 @@ describe("Connect Or Create", () => {
 
             type Actor {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -479,7 +479,7 @@ describe("Connect Or Create", () => {
 
             type Actor {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
