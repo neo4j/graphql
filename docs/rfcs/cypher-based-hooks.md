@@ -31,7 +31,7 @@ directive @post(
 
 #### Audit Logs
 
-This is a real-world example! Most applications will at some point want to store a trail of events, and given that we have established that we don’t have a deterministic way of knowing if a node or relationship has been updated... The only logical and safe way would be to use a Cypher Hook. Given the schema below, there is a user and an audit node declared, with a relationship between them. The Audit node is excluded from upserts and only created in the Hook.
+This is a real-world example! Most applications will at some point want to store a trail of events, and given that we have established that we don’t have a deterministic way of knowing if a node or relationship has been updated... The only logical and safe way would be to use a Cypher Hook. Given the schema below, there is a user and an audit node declared, with a relationship between them. The audit node is excluded from upserts and only created in the Hook.
 
 ```gql
 type User
@@ -65,11 +65,11 @@ Notice two things:
 1. The usage of `this` in the hook
 2. The usage of the `$jwt` and implies `$context` variables.
 
-GIven that a user goes and preforms a GraphQL update mutation:
+Given that a user goes and preforms a GraphQL update mutation:
 
 ```gql
 mutation {
-    createUsers(input: [{ name: "cat", email: "cat@cat.com" }]) {
+    updateUsers(where: { name: "cat" }, update: { email: "cat@cat.com" }) {
         users {
             name
             email
@@ -80,10 +80,10 @@ mutation {
 
 The cypher produced using APOC would be along the lines of:
 
-```
+```gql
 CALL {
-    CREATE (u:User)
-    SET u.name = "cat"
+    MATCH (u:User)
+    WHERE u.name = "cat"
     SET u.email = "cat@cat.com"
     CALL apoc.cypher.runFirstColumn("
         CREATE (this)-[:HAS_AUDIT]->(a:Audit)
@@ -101,10 +101,10 @@ RETURN u { .name, .email } AS u
 
 If we can get it to work without APOC even better:
 
-```
+```gql
 CALL {
-    CREATE (u:User)
-    SET u.name = "cat"
+    MATCH (u:User)
+    WHERE u.name = "cat"
     SET u.email = "cat@cat.com"
     CALL {
         WITH u AS this
@@ -122,14 +122,6 @@ CALL {
 RETURN u { .name, .email } AS u
 ```
 
-## Risks
+#### Subscriptions
 
-What risks might cause us to go over the appetite described above?
-
-## Out of Scope
-
-What are we definitely not going to implement in this solution?
-
-```
-
-```
+#### Extending Auth
