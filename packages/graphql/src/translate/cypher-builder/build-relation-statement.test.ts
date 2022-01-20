@@ -38,6 +38,7 @@ describe("build relation statement", () => {
             name: "AnotherNode",
         }).instance();
     });
+
     test("simple relation", () => {
         const relationField = new RelationFieldBuilder().instance();
         const statement = buildRelationStatement({
@@ -142,5 +143,28 @@ describe("build relation statement", () => {
         expect(statement[1]).toEqual({
             relationName_relation_status: "frenemies",
         });
+    });
+
+    test("undirected relationship", () => {
+        const relationField = new RelationFieldBuilder().instance();
+        const statement = buildRelationStatement({
+            leftNode: {
+                node: nodeA,
+                varName: "this",
+            },
+            rightNode: {
+                node: nodeB,
+                varName: "that",
+            },
+            relation: {
+                relationField,
+                varName: "relationName",
+            },
+            context,
+            directed: false,
+        });
+
+        expect(statement[0]).toBe("(this:MyLabel)-[relationName]-(that:AnotherNode)");
+        expect(statement[1]).toEqual({});
     });
 });

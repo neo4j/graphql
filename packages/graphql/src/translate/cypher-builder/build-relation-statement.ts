@@ -24,14 +24,20 @@ import { buildNodeStatement } from "./build-node-statement";
 import { joinStatements } from "../utils/join-statements";
 import { serializeParameters, padLeft } from "./utils";
 
-type TargetNode = {
-    varName: string;
-    node?: Node;
-    parameters?: Record<string, any>;
-};
+type TargetNode =
+    | {
+          varName: string;
+          node?: Node;
+          parameters?: Record<string, any>;
+      }
+    | {
+          varName?: string;
+          node: Node;
+          parameters?: Record<string, any>;
+      };
 
 type TargetRelation = {
-    varName: string;
+    varName?: string;
     relationField: RelationField;
     parameters?: Record<string, any>;
 };
@@ -41,13 +47,15 @@ export function buildRelationStatement({
     rightNode,
     context,
     relation,
+    directed = true,
 }: {
     leftNode: TargetNode;
     rightNode: TargetNode;
     relation: TargetRelation;
     context: Context;
+    directed?: boolean;
 }): CypherStatement {
-    const relationStatement = getRelationSubStatement(relation);
+    const relationStatement = getRelationSubStatement(relation, directed);
 
     const leftNodeStatement = buildNodeStatement({
         context,
@@ -62,9 +70,17 @@ export function buildRelationStatement({
     return joinStatements([leftNodeStatement, relationStatement, rightNodeStatement], "");
 }
 
-function getRelationSubStatement({ relationField, varName, parameters }: TargetRelation): CypherStatement {
-    const leftConnection = relationField.direction === "IN" ? "<-" : "-";
-    const rightConnection = relationField.direction === "OUT" ? "->" : "-";
+function getRelationSubStatement(
+    { relationField, varName = "", parameters }: TargetRelation,
+    directed: boolean
+): CypherStatement {
+    let leftConnection = relationField.direction === "IN" ? "<-" : "-";
+    let rightConnection = relationField.direction === "OUT" ? "->" : "-";
+    if (directed === false) {
+        leftConnection = "-";
+        rightConnection = "-";
+    }
+
     const relationLabel = relationField.type ? `:${relationField.type}` : "";
 
     const [relParamsQuery, relParams] = serializeRelationParameters(varName, parameters);
