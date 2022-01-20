@@ -6,7 +6,7 @@ Due to the fact that Neo4j GraphQL generates a single Cypher statement, it’s d
 
 Not only is it difficult for users to inject custom logic but the logic that they do inject can never be 100% deterministic, and this is because, again, we generate a single Cypher statement! All the interactions with the database happen in one transaction, defined in one statement, and so any hook or plugin made will always execute outside of that transaction.
 
-I believe, demonstrated in this RFC, we could use Cypher Hooks to not only; enforce and create patterns, validate properties, extend authentication, but also enable sophisticated patterns such as subscriptions.
+I believe, demonstrated in this RFC, we could use Cypher Hooks to not only; enforce and create relationships, validate properties, extend authentication, but also enable sophisticated patterns such as subscriptions.
 
 ## Proposed Solution
 
@@ -31,7 +31,7 @@ directive @post(
 
 #### Audit Logs
 
-This is a real-world example! Most applications will at some point want to store a trail of events, and given that we have established that we don’t have a deterministic way of knowing if a node or relationship has been updated the only logical and safe way would be to use a Cypher hook. Given the schema below, there is a User and an Audit node declared, with a relationship between them. The Audit node is excluded from upserts and only created in the Hook.
+This is a real-world example! Most applications will at some point want to store a trail of events, and given that we have established that we don’t have a deterministic way of knowing if a node or relationship has been updated... The only logical and safe way would be to use a Cypher Hook. Given the schema below, there is a user and an audit node declared, with a relationship between them. The Audit node is excluded from upserts and only created in the Hook.
 
 ```gql
 type User
@@ -49,6 +49,7 @@ type User
     ) {
     name: String!
     email: String!
+    audits: [Audit!]! @relationship(type: "HAS_AUDIT", direction: OUT) @readonly
 }
 
 type Audit @exclude(operations: [CREATE, UPDATE, DELETE, CONNECT, DISCONNECT]) {
@@ -67,13 +68,58 @@ Notice two things:
 GIven that a user goes and preforms a GraphQL update mutation:
 
 ```gql
-
+mutation {
+    createUsers(input: [{ name: "cat", email: "cat@cat.com" }]) {
+        users {
+            name
+            email
+        }
+    }
+}
 ```
 
-The cypher produced would be along the lines of:
+The cypher produced using APOC would be along the lines of:
 
 ```
+CALL {
+    CREATE (u:User)
+    SET u.name = "cat"
+    SET u.email = "cat@cat.com"
+    CALL apoc.cypher.runFirstColumn("
+        CREATE (this)-[:HAS_AUDIT]->(a:Audit)
+        SET a += {
+            id: randomUUID(),
+            createdAt: datetime(),
+            msg: 'User updated',
+            jwt: $auth.jwt.sub
+        }
+    ", { this: u, $auth: auth }, false)
+    RETURN u
+}
+RETURN u { .name, .email } AS u
+```
 
+If we can get it to work without APOC even better:
+
+```
+CALL {
+    CREATE (u:User)
+    SET u.name = "cat"
+    SET u.email = "cat@cat.com"
+    CALL {
+        WITH u AS this
+        CREATE (this)-[:HAS_AUDIT]->(a:Audit)
+        SET a += {
+            id: randomUUID(),
+            createdAt: datetime(),
+            msg: 'User updated',
+            jwt: $auth.jwt.sub
+        }
+        RETURN count(*)
+    }
+    RETURN u
+}
+RETURN u { .name, .email } AS u
 ```
 
 ## Risks
