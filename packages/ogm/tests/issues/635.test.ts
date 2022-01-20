@@ -222,16 +222,16 @@ describe("issues/635", () => {
             noWrite: true,
         })) as string;
 
-        expect(generated.includes(`export type CompanyClockSettingsAggregateInput`)).toEqual(true);
-        expect(generated.includes(`export interface CompanyClockSettingsAggregateInput`)).toEqual(false);
-        expect(generated.includes(`export interface CompanyClockSettingsAggregateSelectionInput`)).toEqual(true);
+        expect(generated.includes(`export type CompanyClockSettingsAggregateInput`)).toBe(true);
+        expect(generated.includes(`export interface CompanyClockSettingsAggregateInput`)).toBe(false);
+        expect(generated.includes(`export interface CompanyClockSettingsAggregateSelectionInput`)).toBe(true);
 
-        expect(generated.includes(`export type CompanyFeaturesAggregateInput`)).toEqual(true);
-        expect(generated.includes(`export interface CompanyFeaturesAggregateInput`)).toEqual(false);
-        expect(generated.includes(`export interface CompanyFeaturesAggregateSelectionInput`)).toEqual(true);
+        expect(generated.includes(`export type CompanyFeaturesAggregateInput`)).toBe(true);
+        expect(generated.includes(`export interface CompanyFeaturesAggregateInput`)).toBe(false);
+        expect(generated.includes(`export interface CompanyFeaturesAggregateSelectionInput`)).toBe(true);
 
-        expect(generated.includes(`export type CompanyIntegrationsAggregateInput`)).toEqual(true);
-        expect(generated.includes(`export interface CompanyIntegrationsAggregateInput`)).toEqual(false);
-        expect(generated.includes(`export interface CompanyIntegrationsAggregateSelectionInput`)).toEqual(true);
+        expect(generated.includes(`export type CompanyIntegrationsAggregateInput`)).toBe(true);
+        expect(generated.includes(`export interface CompanyIntegrationsAggregateInput`)).toBe(false);
+        expect(generated.includes(`export interface CompanyIntegrationsAggregateSelectionInput`)).toBe(true);
     });
 });
