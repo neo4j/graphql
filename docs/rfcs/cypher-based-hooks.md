@@ -27,9 +27,9 @@ directive @post(
 ) on OBJECT
 ```
 
-### Usage Examples
+## Usage Examples
 
-#### Audit Logs
+### Audit Logs
 
 This is a real-world example! Most applications will at some point want to store a trail of events, and given that we have established that we don’t have a deterministic way of knowing if a node or relationship has been updated... The only logical and safe way would be to use a Cypher Hook. Given the schema below, there is a user and an audit node declared, with a relationship between them. The audit node is excluded from upserts and only created in the Hook.
 
@@ -123,7 +123,7 @@ CALL {
 RETURN u { .name, .email } AS u
 ```
 
-#### Subscriptions
+### Subscriptions
 
 Once again because we produce a single Cypher statement and that Cypher statement could be 100's of lines in length, for example nested mutations, then making a plugin that can both read that Cypher and then deterministically publish events based on that Cypher is in my opinion not a production worthy solution! The only place you can guarantee something happened is from within the database itself, that's of course if you don't want to ask your users, or have the library, to poll for changes causing all sorts of complexity problems!
 
@@ -241,7 +241,7 @@ RETURN u { .name, .email } AS u
 
 Triggering a HTTP call to our server and feeding the subscribers.
 
-## Extending Auth
+### Extending Auth
 
 Finally, I would like to point out that our `@auth` directive cannot cover all complexities related to auth and that Cypher Hooks would enable users to enforce sophisticated auth patterns before or after a Cypher operation.
 
