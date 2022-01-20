@@ -73,7 +73,7 @@ type User {
 
 ### Connection and Aggregations
 
-The same argument could be used on `Connection` and `Aggregate` queries.
+The same argument could be used on `Connection` and nested `Aggregate` queries.
 
 For `Aggregate`:
 
