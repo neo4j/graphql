@@ -133,6 +133,8 @@ describe("build merge statement", () => {
 
         test("throws if missing relation data", () => {
             const relationField = new RelationFieldBuilder().instance();
+            /* eslint-disable @typescript-eslint/no-unsafe-argument */
+            // This test is intended to check for unsafe arguments
             expect(() => {
                 buildMergeStatement({
                     sourceNode: {
@@ -168,6 +170,7 @@ describe("build merge statement", () => {
                     context,
                 } as any);
             }).toThrow(Neo4jGraphQLCypherBuilderError);
+            /* eslint-enable @typescript-eslint/no-unsafe-argument */
         });
     });
 });
