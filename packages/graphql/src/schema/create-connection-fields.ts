@@ -70,8 +70,10 @@ function createConnectionFields({
             sort?: any;
             first?: any;
             after?: any;
+            directed?: any;
         } = {
             where: connectionWhere,
+            directed: { type: "Boolean", defaultValue: true },
         };
 
         if (connectionField.relationship.properties) {

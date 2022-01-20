@@ -128,7 +128,7 @@ describe("Unions", () => {
             type Movie {
               id: ID
               search(directed: Boolean = true, options: QueryOptions, where: SearchWhere): [Search!]!
-              searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
+              searchConnection(directed: Boolean = true, where: MovieSearchConnectionWhere): MovieSearchConnection!
               searchNoDirective: Search
             }
 
