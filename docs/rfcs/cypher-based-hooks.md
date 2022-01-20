@@ -248,3 +248,7 @@ Finally, I would like to point out that our `@auth` directive cannot cover all c
 ## Out of scope
 
 1. Filtering on `post`
+
+## Notes
+
+Actually, creating a Hook system for top-level operations like updating a user property is quite straightforward, the complexity starts to arise when you talk about the nested operations such as connect and disconnect - surely subscribers would want to know if a relationship was upserted too? The great thing about using Cypher hooks is that users don't need to navigate their way through the resolve info to find if a connection has happened because we can append the custom logic just after the connection statement.
