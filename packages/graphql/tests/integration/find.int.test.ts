@@ -195,7 +195,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.movies.forEach((e: { id: string }) => {
+            (result?.data as any)?.movies.forEach((e: { id: string }) => {
                 expect([id1, id2, id3].includes(e.id)).toBeTruthy();
             });
         } finally {
@@ -260,7 +260,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.movies.forEach((e: { id: string; title: string }) => {
+            (result?.data as any)?.movies.forEach((e: { id: string; title: string }) => {
                 expect([id1, id2, id3].includes(e.id)).toBeTruthy();
                 expect(e.title).toEqual(title);
             });
@@ -352,7 +352,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.movies.forEach((movie: { id: string; title: string; actors: { id: string }[] }) => {
+            (result?.data as any)?.movies.forEach((movie: { id: string; title: string; actors: { id: string }[] }) => {
                 expect([movieId1, movieId2, movieId3].includes(movie.id)).toBeTruthy();
 
                 let expected: any;
@@ -490,7 +490,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.movies.forEach((movie: { id: string; actors: { id: string }[] }) => {
+            (result?.data as any)?.movies.forEach((movie: { id: string; actors: { id: string }[] }) => {
                 expect([movieId1, movieId2, movieId3].includes(movie.id)).toBeTruthy();
 
                 movie.actors.forEach((actor) => {
