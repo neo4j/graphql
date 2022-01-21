@@ -1,4 +1,4 @@
-name: "Hotfix (Library and OGM)"
+name: "Hotfix Release (Library and OGM)"
 
 on:
   push:
@@ -30,9 +30,6 @@ jobs:
         package:
           - graphql
           - ogm
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
@@ -44,8 +41,6 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run packages/${{ matrix.package }} unit tests
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
@@ -63,12 +58,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
-
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -77,8 +66,6 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run TCK tests
         run: yarn --cwd packages/graphql run test:tck --coverage
       - name: Upload coverage to Codecov
@@ -128,12 +115,6 @@ jobs:
         ports:
           - 7687:7687
 
-    strategy:
-      matrix:
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
-
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -141,20 +122,13 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
-      - name: Build and pack @neo4j/graphql
-        run: |
-          yarn build
-          yarn pack
-        working-directory: packages/graphql
+        run: yarn && yarn build
       - name: Setup Nextjs app
         run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
       - name: Install dependencies
         run: |
+          cd packages/neo4j-graphql-nextjs
           chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
-          npm install ../graphql/package.tgz
-          npm install graphql@${{ matrix.graphql-version }}
-        working-directory: packages/neo4j-graphql-nextjs
       - name: Copy .env file
         run: cp docs/modules/ROOT/examples/code-partials/nextjs/env.example packages/neo4j-graphql-nextjs/.env.local
       - name: Create GraphQL endpoint
@@ -182,9 +156,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
-      - name: Build graphql
-        run: yarn build
-        working-directory: packages/graphql
+      - run: yarn build
       - name: Run @neo4j/graphql package tests
         run: yarn --cwd packages/graphql run test:package-tests
 
@@ -205,9 +177,6 @@ jobs:
           - 4.3.2
           - 4.3
           - 4.4
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
@@ -230,8 +199,6 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --coverage
@@ -403,7 +370,7 @@ jobs:
     steps:
       - name: Send Slack notification of upcoming release
         id: slack-notification
-        uses: slackapi/slack-github-action@v1.17.0
+        uses: slackapi/slack-github-action@v1.14.0
         with:
           payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
         env:
@@ -431,9 +398,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
-      - name: Build ${{ matrix.package }}
-        run: yarn build
-        working-directory: packages/${{ matrix.package }}
+      - run: yarn build --verbose
       - name: Pack ${{ matrix.package }}
         run: npm pack
         working-directory: packages/${{ matrix.package }}
@@ -589,9 +554,8 @@ jobs:
     steps:
       - name: Send Slack announcement of release
         id: slack-announcement
-        uses: slackapi/slack-github-action@v1.17.0
+        uses: slackapi/slack-github-action@v1.14.0
         with:
           payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASE_ANNOUNCEMENT_WEBHOOK_URL }}
-          
