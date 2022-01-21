@@ -91,7 +91,6 @@ all related nodes, regardless of the direction of the query. This can be achieve
 
 For example, the following query:
 
-
 [source, graphql, indent=0]
 ----
 query {
@@ -105,6 +104,23 @@ query {
 ----
 
 Will return all user friends, regardless on the direction of the relationship `"FRIENDS_WITH"`.
+
+Undirected relationships can also be used in the same fashion with connections:
+
+[source, graphql, indent=0]
+----
+query Query {
+  users {
+    friendsConnection(directed: false) {
+      edges {
+        node {
+          name
+        }
+      }
+    }
+  }
+}
+----
 
 Note that _undirected relationships_ are only supported in queries.
 
