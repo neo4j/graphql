@@ -21,6 +21,7 @@ import { buildNodeStatement } from "./build-node-statement";
 import { Context } from "../../types";
 import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
 import { ContextBuilder } from "../../../tests/utils/builders/context-builder";
+import { Neo4jGraphQLCypherBuilderError } from "../../classes/Error";
 
 describe("build node statement", () => {
     let context: Context;
@@ -68,5 +69,25 @@ describe("build node statement", () => {
             this_node_name: "User",
             this_node_age: 34,
         });
+    });
+
+    test("build node statement with labels and no varName", () => {
+        const node = new NodeBuilder({ name: "TestLabel" }).instance();
+        const statement = buildNodeStatement({
+            node,
+            context,
+        });
+
+        expect(statement[0]).toBe("(:TestLabel)");
+        expect(statement[1]).toEqual({});
+    });
+
+    test("should throw if called with empty varName and no node", () => {
+        expect(() => {
+            buildNodeStatement({
+                context,
+                varName: "",
+            });
+        }).toThrow(Neo4jGraphQLCypherBuilderError);
     });
 });
