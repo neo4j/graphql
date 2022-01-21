@@ -122,7 +122,7 @@ function createConnectionAndParams({
                     };
 
                     const nodeProjectionAndParams = createProjectionAndParams({
-                        fieldsByTypeName: nodeFieldsByTypeName,
+                        resolveTree: { ...node, fieldsByTypeName: nodeFieldsByTypeName },
                         node: n,
                         context,
                         varName: relatedNodeVariable,
@@ -352,7 +352,7 @@ function createConnectionAndParams({
 
         if (node) {
             const nodeProjectionAndParams = createProjectionAndParams({
-                fieldsByTypeName: node?.fieldsByTypeName,
+                resolveTree: node,
                 node: relatedNode,
                 context,
                 varName: relatedNodeVariable,

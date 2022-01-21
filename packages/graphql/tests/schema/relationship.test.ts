@@ -31,7 +31,7 @@ describe("Relationship", () => {
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -49,7 +49,7 @@ describe("Relationship", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNullable!
             }
 
             input ActorConnectWhere {
@@ -113,13 +113,13 @@ describe("Relationship", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
             }
 
             type Movie {
-              actors(options: ActorOptions, where: ActorWhere): [Actor]!
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
@@ -131,7 +131,7 @@ describe("Relationship", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -228,7 +228,7 @@ describe("Relationship", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -309,10 +309,8 @@ describe("Relationship", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -322,7 +320,7 @@ describe("Relationship", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }
@@ -357,7 +355,7 @@ describe("Relationship", () => {
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN|ACTING_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN|ACTING_IN", direction: IN)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -376,8 +374,8 @@ describe("Relationship", () => {
 
           type ActorAggregateSelection {
             count: Int!
-            id: IDAggregateSelection!
-            name: StringAggregateSelection!
+            id: IDAggregateSelectionNonNullable!
+            name: StringAggregateSelectionNullable!
           }
 
           input ActorConnectOrCreateWhere {
@@ -460,13 +458,18 @@ describe("Relationship", () => {
             relationshipsDeleted: Int!
           }
 
-          type IDAggregateSelection {
+          type IDAggregateSelectionNonNullable {
+            longest: ID!
+            shortest: ID!
+          }
+
+          type IDAggregateSelectionNullable {
             longest: ID
             shortest: ID
           }
 
           type Movie {
-            actors(options: ActorOptions, where: ActorWhere): [Actor]!
+            actors(options: ActorOptions, where: ActorWhere): [Actor!]!
             actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
             actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
             id: ID
@@ -478,8 +481,8 @@ describe("Relationship", () => {
           }
 
           type MovieActorActorsNodeAggregateSelection {
-            id: IDAggregateSelection!
-            name: StringAggregateSelection!
+            id: IDAggregateSelectionNonNullable!
+            name: StringAggregateSelectionNullable!
           }
 
           input MovieActorsAggregateInput {
@@ -607,7 +610,7 @@ describe("Relationship", () => {
 
           type MovieAggregateSelection {
             count: Int!
-            id: IDAggregateSelection!
+            id: IDAggregateSelectionNullable!
           }
 
           input MovieConnectInput {
@@ -692,10 +695,8 @@ describe("Relationship", () => {
           type Query {
             actors(options: ActorOptions, where: ActorWhere): [Actor!]!
             actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-            actorsCount(where: ActorWhere): Int!
             movies(options: MovieOptions, where: MovieWhere): [Movie!]!
             moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-            moviesCount(where: MovieWhere): Int!
           }
 
           enum SortDirection {
@@ -705,7 +706,7 @@ describe("Relationship", () => {
             DESC
           }
 
-          type StringAggregateSelection {
+          type StringAggregateSelectionNullable {
             longest: String
             shortest: String
           }
@@ -735,12 +736,12 @@ describe("Relationship", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -753,7 +754,7 @@ describe("Relationship", () => {
           }
 
           type Actor {
-            movies(options: MovieOptions, where: MovieWhere): [Movie]
+            movies(options: MovieOptions, where: MovieWhere): [Movie!]!
             moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
             moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
             name: String
@@ -761,7 +762,7 @@ describe("Relationship", () => {
 
           type ActorAggregateSelection {
             count: Int!
-            name: StringAggregateSelection!
+            name: StringAggregateSelectionNullable!
           }
 
           input ActorConnectInput {
@@ -791,7 +792,7 @@ describe("Relationship", () => {
           }
 
           type ActorMovieMoviesNodeAggregateSelection {
-            id: IDAggregateSelection!
+            id: IDAggregateSelectionNullable!
           }
 
           input ActorMoviesAggregateInput {
@@ -933,13 +934,13 @@ describe("Relationship", () => {
             relationshipsDeleted: Int!
           }
 
-          type IDAggregateSelection {
+          type IDAggregateSelectionNullable {
             longest: ID
             shortest: ID
           }
 
           type Movie {
-            actors(options: ActorOptions, where: ActorWhere): [Actor]!
+            actors(options: ActorOptions, where: ActorWhere): [Actor!]!
             actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
             actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
             id: ID
@@ -951,7 +952,7 @@ describe("Relationship", () => {
           }
 
           type MovieActorActorsNodeAggregateSelection {
-            name: StringAggregateSelection!
+            name: StringAggregateSelectionNullable!
           }
 
           input MovieActorsAggregateInput {
@@ -1051,7 +1052,7 @@ describe("Relationship", () => {
 
           type MovieAggregateSelection {
             count: Int!
-            id: IDAggregateSelection!
+            id: IDAggregateSelectionNullable!
           }
 
           input MovieConnectInput {
@@ -1136,10 +1137,8 @@ describe("Relationship", () => {
           type Query {
             actors(options: ActorOptions, where: ActorWhere): [Actor!]!
             actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-            actorsCount(where: ActorWhere): Int!
             movies(options: MovieOptions, where: MovieWhere): [Movie!]!
             moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-            moviesCount(where: MovieWhere): Int!
           }
 
           enum SortDirection {
@@ -1149,7 +1148,7 @@ describe("Relationship", () => {
             DESC
           }
 
-          type StringAggregateSelection {
+          type StringAggregateSelectionNullable {
             longest: String
             shortest: String
           }
@@ -1179,12 +1178,12 @@ describe("Relationship", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN|ACTING_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN|ACTING_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                currentActors: [Actor]! @relationship(type: "ACTING_IN", direction: IN)
+                currentActors: [Actor!]! @relationship(type: "ACTING_IN", direction: IN)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -1197,7 +1196,7 @@ describe("Relationship", () => {
           }
 
           type Actor {
-            movies(options: MovieOptions, where: MovieWhere): [Movie]
+            movies(options: MovieOptions, where: MovieWhere): [Movie!]!
             moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
             moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
             name: String
@@ -1205,7 +1204,7 @@ describe("Relationship", () => {
 
           type ActorAggregateSelection {
             count: Int!
-            name: StringAggregateSelection!
+            name: StringAggregateSelectionNullable!
           }
 
           input ActorConnectInput {
@@ -1235,7 +1234,7 @@ describe("Relationship", () => {
           }
 
           type ActorMovieMoviesNodeAggregateSelection {
-            id: IDAggregateSelection!
+            id: IDAggregateSelectionNullable!
           }
 
           input ActorMoviesAggregateInput {
@@ -1395,13 +1394,13 @@ describe("Relationship", () => {
             relationshipsDeleted: Int!
           }
 
-          type IDAggregateSelection {
+          type IDAggregateSelectionNullable {
             longest: ID
             shortest: ID
           }
 
           type Movie {
-            currentActors(options: ActorOptions, where: ActorWhere): [Actor]!
+            currentActors(options: ActorOptions, where: ActorWhere): [Actor!]!
             currentActorsAggregate(where: ActorWhere): MovieActorCurrentActorsAggregationSelection
             currentActorsConnection(after: String, first: Int, sort: [MovieCurrentActorsConnectionSort!], where: MovieCurrentActorsConnectionWhere): MovieCurrentActorsConnection!
             id: ID
@@ -1413,12 +1412,12 @@ describe("Relationship", () => {
           }
 
           type MovieActorCurrentActorsNodeAggregateSelection {
-            name: StringAggregateSelection!
+            name: StringAggregateSelectionNullable!
           }
 
           type MovieAggregateSelection {
             count: Int!
-            id: IDAggregateSelection!
+            id: IDAggregateSelectionNullable!
           }
 
           input MovieConnectInput {
@@ -1598,10 +1597,8 @@ describe("Relationship", () => {
           type Query {
             actors(options: ActorOptions, where: ActorWhere): [Actor!]!
             actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-            actorsCount(where: ActorWhere): Int!
             movies(options: MovieOptions, where: MovieWhere): [Movie!]!
             moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-            moviesCount(where: MovieWhere): Int!
           }
 
           enum SortDirection {
@@ -1611,7 +1608,7 @@ describe("Relationship", () => {
             DESC
           }
 
-          type StringAggregateSelection {
+          type StringAggregateSelectionNullable {
             longest: String
             shortest: String
           }
@@ -1676,7 +1673,7 @@ describe("Relationship", () => {
 
           type ActorAggregateSelection {
             count: Int!
-            name: StringAggregateSelection!
+            name: StringAggregateSelectionNullable!
           }
 
           input ActorConnectInput {
@@ -1706,7 +1703,7 @@ describe("Relationship", () => {
           }
 
           type ActorMovieMoviesNodeAggregateSelection {
-            id: IDAggregateSelection!
+            id: IDAggregateSelectionNullable!
           }
 
           input ActorMoviesAggregateInput {
@@ -1862,7 +1859,7 @@ describe("Relationship", () => {
 
           type DirectorAggregateSelection {
             count: Int!
-            name: StringAggregateSelection!
+            name: StringAggregateSelectionNullable!
           }
 
           input DirectorConnectInput {
@@ -1968,7 +1965,7 @@ describe("Relationship", () => {
           }
 
           type DirectorMovieDirectedNodeAggregateSelection {
-            id: IDAggregateSelection!
+            id: IDAggregateSelectionNullable!
           }
 
           input DirectorOptions {
@@ -2012,7 +2009,7 @@ describe("Relationship", () => {
             name_STARTS_WITH: String
           }
 
-          type IDAggregateSelection {
+          type IDAggregateSelectionNullable {
             longest: ID
             shortest: ID
           }
@@ -2035,7 +2032,7 @@ describe("Relationship", () => {
           }
 
           type MovieActorActorsNodeAggregateSelection {
-            name: StringAggregateSelection!
+            name: StringAggregateSelectionNullable!
           }
 
           input MovieActorsAggregateInput {
@@ -2135,7 +2132,7 @@ describe("Relationship", () => {
 
           type MovieAggregateSelection {
             count: Int!
-            id: IDAggregateSelection!
+            id: IDAggregateSelectionNullable!
           }
 
           input MovieConnectInput {
@@ -2209,7 +2206,7 @@ describe("Relationship", () => {
           }
 
           type MovieDirectorDirectorNodeAggregateSelection {
-            name: StringAggregateSelection!
+            name: StringAggregateSelectionNullable!
           }
 
           input MovieDirectorDisconnectFieldInput {
@@ -2527,13 +2524,10 @@ describe("Relationship", () => {
           type Query {
             actors(options: ActorOptions, where: ActorWhere): [Actor!]!
             actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-            actorsCount(where: ActorWhere): Int!
             directors(options: DirectorOptions, where: DirectorWhere): [Director!]!
             directorsAggregate(where: DirectorWhere): DirectorAggregateSelection!
-            directorsCount(where: DirectorWhere): Int!
             movies(options: MovieOptions, where: MovieWhere): [Movie!]!
             moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-            moviesCount(where: MovieWhere): Int!
           }
 
           input QueryOptions {
@@ -2548,7 +2542,7 @@ describe("Relationship", () => {
             DESC
           }
 
-          type StringAggregateSelection {
+          type StringAggregateSelectionNullable {
             longest: String
             shortest: String
           }

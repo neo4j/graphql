@@ -27,12 +27,12 @@ describe("Enums", () => {
         const typeDefs = gql`
             type Actor {
                 name: String!
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type Movie {
                 title: String!
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             enum RoleType {
@@ -66,7 +66,7 @@ describe("Enums", () => {
             }
 
             type Actor {
-              movies(options: MovieOptions, where: MovieWhere): [Movie]
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
@@ -74,7 +74,7 @@ describe("Enums", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input ActorConnectInput {
@@ -104,7 +104,7 @@ describe("Enums", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input ActorMoviesAggregateInput {
@@ -286,7 +286,7 @@ describe("Enums", () => {
             }
 
             type Movie {
-              actors(options: ActorOptions, where: ActorWhere): [Actor]!
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
@@ -298,7 +298,7 @@ describe("Enums", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -418,7 +418,7 @@ describe("Enums", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectInput {
@@ -503,10 +503,8 @@ describe("Enums", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             enum RoleType {
@@ -521,9 +519,9 @@ describe("Enums", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

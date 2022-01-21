@@ -83,7 +83,7 @@ describe("Sort", () => {
 
             type Node1AggregateSelection {
               count: Int!
-              property: StringAggregateSelection!
+              property: StringAggregateSelectionNonNullable!
             }
 
             input Node1ConnectInput {
@@ -253,7 +253,7 @@ describe("Sort", () => {
             }
 
             type Node2Node1RelatedToNodeAggregateSelection {
-              property: StringAggregateSelection!
+              property: StringAggregateSelectionNonNullable!
             }
 
             input Node2Options {
@@ -385,10 +385,8 @@ describe("Sort", () => {
             type Query {
               node1s(options: Node1Options, where: Node1Where): [Node1!]!
               node1sAggregate(where: Node1Where): Node1AggregateSelection!
-              node1sCount(where: Node1Where): Int!
               node2s(options: Node2Options, where: Node2Where): [Node2!]!
               node2sAggregate(where: Node2Where): Node2AggregateSelection!
-              node2sCount(where: Node2Where): Int!
             }
 
             enum SortDirection {
@@ -398,9 +396,9 @@ describe("Sort", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {

@@ -61,7 +61,7 @@ describe("609", () => {
 
             type DeprecatedAggregateSelection {
               count: Int!
-              deprecatedField: StringAggregateSelection!
+              deprecatedField: StringAggregateSelectionNullable!
             }
 
             input DeprecatedCreateInput {
@@ -108,7 +108,6 @@ describe("609", () => {
             type Query {
               deprecateds(options: DeprecatedOptions, where: DeprecatedWhere): [Deprecated!]!
               deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
-              deprecatedsCount(where: DeprecatedWhere): Int!
             }
 
             enum SortDirection {
@@ -118,7 +117,7 @@ describe("609", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }

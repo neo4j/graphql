@@ -1,10 +1,4 @@
-import {
-    InputTypeComposer,
-    InterfaceTypeComposer,
-    ObjectTypeComposer,
-    SchemaComposer,
-    upperFirst,
-} from "graphql-compose";
+import { InputTypeComposer, InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { Node } from "../../classes";
 import {
     RELATIONSHIP_TYPE_FIELD,
@@ -16,6 +10,7 @@ import { BaseField, RelationField } from "../../types";
 import { ObjectFields } from "../get-obj-field-meta";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
+import { upperFirst } from "../../utils/upper-first";
 
 function createRelationshipFields({
     relationshipFields,
@@ -162,6 +157,7 @@ function createRelationshipFields({
                             options: "QueryOptions",
                             where: `${rel.typeMeta.name}Where`,
                         },
+                        description: rel.description,
                     },
                 });
             }
@@ -315,6 +311,7 @@ function createRelationshipFields({
                             options: "QueryOptions",
                             where: `${rel.typeMeta.name}Where`,
                         },
+                        description: rel.description,
                     },
                 });
             }
@@ -739,6 +736,7 @@ function createRelationshipFields({
                         where: `${rel.typeMeta.name}Where`,
                         options: `${rel.typeMeta.name}Options`,
                     },
+                    description: rel.description,
                 },
             });
 

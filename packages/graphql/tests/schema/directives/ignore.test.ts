@@ -63,9 +63,9 @@ describe("@ignore directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
             }
 
             type Mutation {
@@ -77,7 +77,6 @@ describe("@ignore directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersCount(where: UserWhere): Int!
             }
 
             enum SortDirection {
@@ -87,9 +86,9 @@ describe("@ignore directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -115,9 +114,9 @@ describe("@ignore directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
-              password: StringAggregateSelection!
-              username: StringAggregateSelection!
+              id: IDAggregateSelectionNonNullable!
+              password: StringAggregateSelectionNonNullable!
+              username: StringAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {

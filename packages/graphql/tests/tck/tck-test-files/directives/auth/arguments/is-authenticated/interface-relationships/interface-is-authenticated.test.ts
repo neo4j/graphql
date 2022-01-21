@@ -56,7 +56,7 @@ describe("Cypher Auth isAuthenticated", () => {
                 id: ID
                 name: String
                 password: String
-                content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+                content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
 
             extend type User

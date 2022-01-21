@@ -42,9 +42,10 @@ describe("Advanced Filtering", () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
+                    const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
-                        type Movie {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -69,14 +70,14 @@ describe("Advanced Filtering", () => {
                     try {
                         await session.run(
                             `
-                            CREATE (:Movie {property: $value})
+                            CREATE (:${randomType.name} {property: $value})
                         `,
                             { value }
                         );
 
                         const query = `
                             {
-                                movies(where: { property_IN: ["${value}", "${randomValue1}", "${randomValue2}"] }) {
+                                ${randomType.plural}(where: { property_IN: ["${value}", "${randomValue1}", "${randomValue2}"] }) {
                                     property
                                 }
                             }
@@ -93,10 +94,8 @@ describe("Advanced Filtering", () => {
                         }
 
                         expect(gqlResult.errors).toBeUndefined();
-
-                        expect((gqlResult.data as any).movies).toHaveLength(1);
-
-                        expect((gqlResult.data as any).movies[0].property).toEqual(value);
+                        expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
+                        expect((gqlResult.data as any)[randomType.plural][0].property).toBe(value);
                     } finally {
                         await session.close();
                     }
@@ -154,7 +153,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[typeMovie.plural]).toHaveLength(1);
 
-                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toEqual(`${value}${value}`);
+                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toBe(`${value}${value}`);
                     } finally {
                         await session.close();
                     }
@@ -218,7 +217,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[typeMovie.plural]).toHaveLength(1);
 
-                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toEqual(value);
+                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toBe(value);
                     } finally {
                         await session.close();
                     }
@@ -288,7 +287,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[typeMovie.plural]).toHaveLength(1);
 
-                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toEqual(value);
+                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toBe(value);
                     } finally {
                         await session.close();
                     }
@@ -350,7 +349,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[typeMovie.plural]).toHaveLength(3);
 
-                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toEqual(superValue);
+                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toBe(superValue);
                     } finally {
                         await session.close();
                     }
@@ -415,7 +414,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[typeMovie.plural]).toHaveLength(1);
 
-                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toEqual(value);
+                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toBe(value);
                     } finally {
                         await session.close();
                     }
@@ -478,7 +477,7 @@ describe("Advanced Filtering", () => {
                         expect((gqlResult.data as any)[typeMovie.plural]).toHaveLength(3);
 
                         ((gqlResult.data as any)[typeMovie.plural] as any[]).forEach((x) => {
-                            expect(x.property).toEqual(superValue);
+                            expect(x.property).toBe(superValue);
                         });
                     } finally {
                         await session.close();
@@ -673,7 +672,7 @@ describe("Advanced Filtering", () => {
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[typeMovie.plural]).toHaveLength(1);
-                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toEqual(notValue);
+                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toBe(notValue);
                     } finally {
                         await session.close();
                     }
@@ -744,7 +743,7 @@ describe("Advanced Filtering", () => {
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[typeMovie.plural]).toHaveLength(1);
-                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toEqual(property);
+                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toBe(property);
                     } finally {
                         await session.close();
                     }
@@ -820,7 +819,7 @@ describe("Advanced Filtering", () => {
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[typeMovie.plural]).toHaveLength(1);
-                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toEqual(value);
+                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toBe(value);
                     } finally {
                         await session.close();
                     }
@@ -898,7 +897,7 @@ describe("Advanced Filtering", () => {
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[typeMovie.plural]).toHaveLength(1);
-                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toEqual(value);
+                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toBe(value);
                     } finally {
                         await session.close();
                     }
@@ -961,7 +960,7 @@ describe("Advanced Filtering", () => {
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[typeMovie.plural]).toHaveLength(1);
-                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toEqual(lessThanValue);
+                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toBe(lessThanValue);
                     } finally {
                         await session.close();
                     }
@@ -1086,7 +1085,7 @@ describe("Advanced Filtering", () => {
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[typeMovie.plural]).toHaveLength(1);
-                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toEqual(graterThanValue);
+                        expect((gqlResult.data as any)[typeMovie.plural][0].property).toBe(graterThanValue);
                     } finally {
                         await session.close();
                     }
@@ -1268,7 +1267,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type ${typeMovie.name} {
                             id: ID
-                            ${typeGenre.plural}: [${typeGenre.name}] @relationship(type: "IN_GENRE", direction: OUT)
+                            ${typeGenre.plural}: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
                         type ${typeGenre.name} {
@@ -1340,7 +1339,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type Movie {
                             id: ID
-                            genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
+                            genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
                         type Genre {
@@ -1404,7 +1403,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type Movie {
                             id: ID
-                            genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                            genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
                         }
 
                         type Genre {
@@ -1476,7 +1475,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type Movie {
                             id: ID
-                            genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                            genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
                         }
 
                         type Genre {
@@ -1554,7 +1553,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type ${typeMovie.name} {
                             id: ID
-                            ${typeGenre.plural}: [${typeGenre.name}] @relationship(type: "IN_GENRE", direction: OUT)
+                            ${typeGenre.plural}: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
                         type ${typeGenre.name} {
@@ -1633,7 +1632,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type ${typeMovie.name} {
                             id: ID
-                            ${typeGenre.plural}: [${typeGenre.name}] @relationship(type: "IN_GENRE", direction: OUT)
+                            ${typeGenre.plural}: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
                         type ${typeGenre.name} {
@@ -1708,7 +1707,7 @@ describe("Advanced Filtering", () => {
                 const typeDefs = `
                         type ${typeMovie.name} {
                             id: ID
-                            ${typeGenre.plural}: [${typeGenre.name}] @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                            ${typeGenre.plural}: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
                         }
 
                         type ${typeGenre.name} {
@@ -1791,7 +1790,7 @@ describe("Advanced Filtering", () => {
             const typeDefs = `
                     type ${typeMovie.name} {
                         id: ID
-                        ${typeGenre.plural}: [${typeGenre.name}] @relationship(type: "IN_GENRE", direction: OUT)
+                        ${typeGenre.plural}: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                     }
 
                     type ${typeGenre.name} {
@@ -1947,7 +1946,7 @@ describe("Advanced Filtering", () => {
 
                 expect((nullResult.data as any)[typeMovie.plural]).toHaveLength(1);
 
-                expect((nullResult.data as any)[typeMovie.plural][0].id).toEqual(id1);
+                expect((nullResult.data as any)[typeMovie.plural][0].id).toBe(id1);
 
                 // Test NOT NULL checking
 
@@ -1973,7 +1972,7 @@ describe("Advanced Filtering", () => {
 
                 expect((notNullResult.data as any)[typeMovie.plural]).toHaveLength(1);
 
-                expect((notNullResult.data as any)[typeMovie.plural][0].id).toEqual(id2);
+                expect((notNullResult.data as any)[typeMovie.plural][0].id).toBe(id2);
             } finally {
                 await session.close();
             }

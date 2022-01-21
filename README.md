@@ -15,7 +15,14 @@
 
 ## Contributing
 
-Want to contribute to `@neo4j/graphql`? See our [contributing guide](./docs/markdown/CONTRIBUTING.md) and [development guide](./docs/markdown/DEVELOPING.md) to get started!
+The default branch for this repository is `dev`, which contains changes for the next
+release. This is what you should base your work on if you want to make changes.
+
+Want to check out the code from the last release? Checkout `master` instead, which
+is only ever merged into on releases.
+
+Want to contribute to `@neo4j/graphql`? See our [contributing guide](./CONTRIBUTING.md)
+and [development guide](./docs/contributing/DEVELOPING.md) to get started!
 
 ## Links
 
@@ -25,14 +32,20 @@ Want to contribute to `@neo4j/graphql`? See our [contributing guide](./docs/mark
 
 ## Navigating
 
-This is a TypeScript Monorepo managed with [Yarn Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/). To learn more on how to; setup, test and contribute to Neo4j GraphQL then please visit the [Contributing Guide](./CONTRIBUTING.md).
+This is a TypeScript Monorepo managed with [Yarn Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
+To learn more on how to; setup, test and contribute to Neo4j GraphQL then please
+visit the [Contributing Guide](./CONTRIBUTING.md).
 
-1. [`@neo4j/graphql`](./packages/graphql) - Familiar GraphQL generation, for usage with an API such as [Apollo Server](https://www.apollographql.com/docs/apollo-server/)
-2. [`@neo4j/graphql-ogm`](./packages/ogm) - Use GraphQL Type Definitions to drive interactions with the database
+1. [`@neo4j/graphql`](./packages/graphql) - Familiar GraphQL generation, for usage
+with an API such as [Apollo Server](https://www.apollographql.com/docs/apollo-server/)
+2. [`@neo4j/graphql-ogm`](./packages/ogm) - Use GraphQL Type Definitions to drive
+interactions with the database
 
 ## Media
 
-Blogs, talks and other content surrounding Neo4j GraphQL. Sign up for [NODES 2021](https://neo4j.brand.live/c/2021nodes-live) to view even more Neo4j GraphQL content.
+Blogs, talks and other content surrounding Neo4j GraphQL. Sign up for
+[NODES 2021](https://neo4j.brand.live/c/2021nodes-live) to view even more Neo4j
+GraphQL content.
 
 1. [Neo4j and GraphQL The Past, Present and Future](https://youtu.be/sZ-eBznM71M)
 2. [Securing Your Graph With Neo4j GraphQL](https://medium.com/neo4j/securing-your-graph-with-neo4j-graphql-91a2d7b08631)
@@ -45,6 +58,8 @@ Blogs, talks and other content surrounding Neo4j GraphQL. Sign up for [NODES 202
 
 Love this project and want to work on it full-time? We're hiring!
 
-We're currently looking for backend, full-stack and DevOps engineers to join the GraphQL Team at Neo4j.
+We're currently looking for backend, full-stack and DevOps engineers to join the
+GraphQL Team at Neo4j.
 
-Search for "GraphQL Team" at https://neo4j.com/careers/ or [drop us an email](mailto:team-graphql@neo4j.com) if you're interested.
+Search for "GraphQL Team" at <https://neo4j.com/careers/> or
+[drop us an email](mailto:team-graphql@neo4j.com) if you're interested.

@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/556 - Input Object type Articl
         expect(result.errors).toBeFalsy();
 
         expect(result.data?.createUser556s.user556s).toHaveLength(1);
-        expect(result.data?.createUser556s.user556s[0].name).toEqual("Darrell");
+        expect(result.data?.createUser556s.user556s[0].name).toBe("Darrell");
         expect(result.data?.createUser556s.user556s[0].things).toHaveLength(2);
         await session.close();
     });

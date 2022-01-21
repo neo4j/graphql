@@ -282,7 +282,7 @@ describe("Connect Or Create", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input ActorConnectInput {
@@ -378,8 +378,8 @@ describe("Connect Or Create", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              isan: StringAggregateSelection!
-              title: StringAggregateSelection!
+              isan: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectOrCreateWhere {
@@ -472,13 +472,10 @@ describe("Connect Or Create", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesCount(where: SeriesWhere): Int!
             }
 
             input QueryOptions {
@@ -493,8 +490,8 @@ describe("Connect Or Create", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              isan: StringAggregateSelection!
-              title: StringAggregateSelection!
+              isan: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input SeriesConnectOrCreateWhere {
@@ -564,9 +561,9 @@ describe("Connect Or Create", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

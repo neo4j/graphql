@@ -35,7 +35,7 @@ describe("build node statement", () => {
             context,
         });
 
-        expect(statement[0]).toEqual("(this)");
+        expect(statement[0]).toBe("(this)");
         expect(statement[1]).toEqual({});
     });
 
@@ -47,7 +47,7 @@ describe("build node statement", () => {
             node,
         });
 
-        expect(statement[0]).toEqual("(this:TestLabel)");
+        expect(statement[0]).toBe("(this:TestLabel)");
         expect(statement[1]).toEqual({});
     });
 
@@ -63,7 +63,7 @@ describe("build node statement", () => {
             },
         });
 
-        expect(statement[0]).toEqual(`(this:TestLabel { name: $this_node_name, age: $this_node_age })`);
+        expect(statement[0]).toBe(`(this:TestLabel { name: $this_node_name, age: $this_node_age })`);
         expect(statement[1]).toEqual({
             this_node_name: "User",
             this_node_age: 34,

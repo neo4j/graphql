@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { parse } from "graphql";
+import { DirectiveNode, parse } from "graphql";
 import parseNodeDirective from "./parse-node-directive";
 import { NodeDirective } from "../classes/NodeDirective";
 
@@ -29,8 +29,7 @@ describe("parseNodeDirective", () => {
             }
         `;
 
-        // @ts-ignore
-        const directive = parse(typeDefs).definitions[0].directives[0];
+        const directive = (parse(typeDefs) as any).definitions[0].directives[0] as DirectiveNode | undefined;
         expect(() => parseNodeDirective(directive)).toThrow(
             "Undefined or incorrect directive passed into parseNodeDirective function"
         );
@@ -43,8 +42,7 @@ describe("parseNodeDirective", () => {
             }
         `;
 
-        // @ts-ignore
-        const directive = parse(typeDefs).definitions[0].directives[0];
+        const directive = (parse(typeDefs) as any).definitions[0].directives[0] as DirectiveNode | undefined;
         const expected = new NodeDirective({ label: "MyLabel" });
 
         expect(parseNodeDirective(directive)).toMatchObject(expected);
@@ -57,8 +55,7 @@ describe("parseNodeDirective", () => {
             }
         `;
 
-        // @ts-ignore
-        const directive = parse(typeDefs).definitions[0].directives[0];
+        const directive = (parse(typeDefs) as any).definitions[0].directives[0] as DirectiveNode | undefined;
         const expected = new NodeDirective({ additionalLabels: ["Label", "AnotherLabel"] });
 
         expect(parseNodeDirective(directive)).toMatchObject(expected);
@@ -71,8 +68,7 @@ describe("parseNodeDirective", () => {
             }
         `;
 
-        // @ts-ignore
-        const directive = parse(typeDefs).definitions[0].directives[0];
+        const directive = (parse(typeDefs) as any).definitions[0].directives[0] as DirectiveNode | undefined;
         const expected = new NodeDirective({ label: "MyLabel", additionalLabels: ["Label", "AnotherLabel"] });
 
         expect(parseNodeDirective(directive)).toMatchObject(expected);
@@ -85,8 +81,7 @@ describe("parseNodeDirective", () => {
             }
         `;
 
-        // @ts-ignore
-        const directive = parse(typeDefs).definitions[0].directives[0];
+        const directive = (parse(typeDefs) as any).definitions[0].directives[0] as DirectiveNode | undefined;
         const expected = new NodeDirective({ plural: "testTypes" });
 
         expect(parseNodeDirective(directive)).toMatchObject(expected);

@@ -56,9 +56,9 @@ describe("Autogenerate", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
             }
 
             type Movie {
@@ -68,8 +68,8 @@ describe("Autogenerate", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
-              name: StringAggregateSelection!
+              id: IDAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieCreateInput {
@@ -127,7 +127,6 @@ describe("Autogenerate", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -137,9 +136,9 @@ describe("Autogenerate", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {

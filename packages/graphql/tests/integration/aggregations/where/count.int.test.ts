@@ -44,7 +44,7 @@ describe("aggregations-where-count", () => {
 
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -107,7 +107,7 @@ describe("aggregations-where-count", () => {
 
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -170,7 +170,7 @@ describe("aggregations-where-count", () => {
 
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -237,7 +237,7 @@ describe("aggregations-where-count", () => {
 
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -301,7 +301,7 @@ describe("aggregations-where-count", () => {
 
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 

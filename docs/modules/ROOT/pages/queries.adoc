@@ -82,31 +82,6 @@ query {
 }
 ----
 
-[[queries-count]]
-== Count
-
-Count queries accepts a `where` argument for xref::filtering.adoc[Filtering] data.
-
-=== Counting all User nodes
-
-The following Query will count all User nodes:
-
-[source, graphql, indent=0]
-----
-query {
-    usersCount
-}
-----
-
-=== Counting User nodes where name starts with "J"
-
-[source, graphql, indent=0]
-----
-query {
-    usersCount(where: { name_STARTS_WITH: "J" })
-}
-----
-
 [[queries-aggregate]]
 == Aggregate
 
