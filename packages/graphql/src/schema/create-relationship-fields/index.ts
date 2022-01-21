@@ -656,14 +656,6 @@ function createRelationshipFields({
                     {}
                 )
             );
-
-            // Deprecate existing filters
-            whereInput.setFieldDirectiveByName(rel.fieldName, "deprecated", {
-                reason: `Use \`${rel.fieldName}_SOME\` instead.`,
-            });
-            whereInput.setFieldDirectiveByName(`${rel.fieldName}_NOT`, "deprecated", {
-                reason: `Use \`${rel.fieldName}_NONE\` instead.`,
-            });
         }
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;
