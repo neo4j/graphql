@@ -1806,10 +1806,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-antora/antora-add-notes@npm:^0.1.6":
-  version: 0.1.6
-  resolution: "@neo4j-antora/antora-add-notes@npm:0.1.6"
-  checksum: 88bf4c81772915eeb479ed7cd56341678b5ef3988c9c4235c469513e0af16d492eb3c6b3e815788643eb57d7fb5834bcc65caeac142266a0b0adedc53c32b3dd
+"@neo4j-antora/antora-add-notes@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@neo4j-antora/antora-add-notes@npm:0.3.0"
+  checksum: 761d20787eabbead2160355078006797563e36437e2549d6d211efc191197f6584a739da92e04e5ad9fd2a6a3547a28e3c4f6053d49b94f39701006af2c99725
   languageName: node
   linkType: hard
 
@@ -8407,7 +8407,7 @@ __metadata:
   dependencies:
     "@antora/cli": ^2.3.3
     "@antora/site-generator-default": ^2.3.3
-    "@neo4j-antora/antora-add-notes": ^0.1.6
+    "@neo4j-antora/antora-add-notes": ^0.3.0
     "@neo4j-documentation/macros": ^1.0.0
     "@neo4j-documentation/remote-include": ^1.0.0
     cheerio: 1.0.0-rc.10
