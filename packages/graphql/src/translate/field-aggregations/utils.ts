@@ -52,9 +52,7 @@ export function getReferenceRelation(context: Context, connectionField: Connecti
 }
 
 export function getFieldByName(name: string, fields: Record<string, ResolveTree>): ResolveTree | undefined {
-    return Object.values(fields).find((tree) => {
-        return tree.name === name;
-    });
+    return Object.values(fields).find((tree) => tree.name === name);
 }
 
 export function serializeAuthParamsForApocRun(auth: AggregationAuth): Record<string, string> {

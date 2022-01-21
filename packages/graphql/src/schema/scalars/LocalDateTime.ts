@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
+import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
 import neo4j from "neo4j-driver";
 
 // Matching YYYY-MM-DDTHH:MM:SS(.sss+)
-const LOCAL_DATE_TIME_REGEX = /^(?<year>\d{4})-(?<month>[0]\d|1[0-2])-(?<day>[0-2]\d|3[01])T(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d+))?$/;
+const LOCAL_DATE_TIME_REGEX =
+    /^(?<year>\d{4})-(?<month>[0]\d|1[0-2])-(?<day>[0-2]\d|3[01])T(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d+))?$/;
 
 export const parseLocalDateTime = (value: any) => {
     if (typeof value !== "string") {
@@ -64,7 +65,7 @@ const parse = (value: any) => {
 export default new GraphQLScalarType({
     name: "LocalDateTime",
     description: "A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'",
-    serialize: (value: any) => {
+    serialize: (value: unknown) => {
         if (typeof value !== "string" && !(value instanceof neo4j.types.LocalDateTime)) {
             throw new TypeError(`Value must be of type string: ${value}`);
         }
@@ -77,10 +78,10 @@ export default new GraphQLScalarType({
 
         return stringifiedValue;
     },
-    parseValue: (value) => {
+    parseValue: (value: unknown) => {
         return parse(value);
     },
-    parseLiteral: (ast) => {
+    parseLiteral: (ast: ValueNode) => {
         if (ast.kind !== Kind.STRING) {
             throw new GraphQLError(`Only strings can be validated as LocalDateTime, but received: ${ast.kind}`);
         }

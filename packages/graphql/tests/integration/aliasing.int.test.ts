@@ -101,7 +101,7 @@ describe("Aliasing", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult?.data?.movies[0]).toEqual({
+        expect((gqlResult?.data as any)?.movies[0]).toEqual({
             aliased: id,
             budget,
             boxOffice,
@@ -127,7 +127,7 @@ describe("Aliasing", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult?.data?.movies[0]).toEqual({
+        expect((gqlResult?.data as any)?.movies[0]).toEqual({
             id,
             aliased: budget,
             boxOffice,
@@ -153,7 +153,7 @@ describe("Aliasing", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult?.data?.movies[0]).toEqual({
+        expect((gqlResult?.data as any)?.movies[0]).toEqual({
             id,
             budget,
             aliased: boxOffice,

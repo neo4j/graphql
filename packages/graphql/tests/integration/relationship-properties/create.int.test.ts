@@ -98,7 +98,7 @@ describe("Relationship properties - create", () => {
             variableValues: { movieTitle, actorName, screenTime },
         });
         expect(result.errors).toBeFalsy();
-        expect(result.data?.createMovies.movies).toEqual([
+        expect((result.data as any)?.createMovies.movies).toEqual([
             {
                 title: movieTitle,
                 actorsConnection: { edges: [{ screenTime, node: { name: actorName } }] },
@@ -183,7 +183,7 @@ describe("Relationship properties - create", () => {
             variableValues: { movieTitle, actorName, words },
         });
         expect(result.errors).toBeFalsy();
-        expect(result.data?.createActors.actors).toEqual([
+        expect((result.data as any)?.createActors.actors).toEqual([
             {
                 name: actorName,
                 publications: [{ title: movieTitle }],
