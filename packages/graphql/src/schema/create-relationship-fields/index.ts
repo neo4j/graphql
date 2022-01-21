@@ -1,4 +1,5 @@
 import { InputTypeComposer, InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import pluralize from "pluralize";
 import { Node } from "../../classes";
 import { WHERE_AGGREGATION_AVERAGE_TYPES, WHERE_AGGREGATION_OPERATORS, WHERE_AGGREGATION_TYPES } from "../../constants";
 import { BaseField, RelationField } from "../../types";
@@ -6,7 +7,6 @@ import { ObjectFields } from "../get-obj-field-meta";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
-import pluralize from "pluralize";
 
 function createRelationshipFields({
     relationshipFields,
@@ -648,6 +648,7 @@ function createRelationshipFields({
                         ...acc,
                         [`${rel.fieldName}_${filter}`]: {
                             type: `${n.name}Where`,
+                            // e.g. "Return Movies where all of the related Actors match this filter"
                             description: `Return ${pluralize(sourceName)} where ${
                                 filter !== "SINGLE" ? filter.toLowerCase() : "one"
                             } of the related ${pluralize(rel.typeMeta.name)} match this filter`,
