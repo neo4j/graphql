@@ -27,7 +27,7 @@ describe("Interfaces", () => {
         const typeDefs = gql`
             interface MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
                 id: ID
-                movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
+                movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
                     @cypher(
                         statement: """
@@ -40,7 +40,7 @@ describe("Interfaces", () => {
             type Movie implements MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
                 id: ID
                 nodes: [MovieNode]
-                movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
+                movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
                     @cypher(
                         statement: """
@@ -84,7 +84,7 @@ describe("Interfaces", () => {
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
-              movies(options: MovieOptions, where: MovieWhere): [Movie]
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
               nodes: [MovieNode]
@@ -145,7 +145,7 @@ describe("Interfaces", () => {
             interface MovieNode {
               customQuery: [Movie]
               id: ID
-              movies: [Movie]
+              movies: [Movie!]!
               moviesConnection: MovieNodeMoviesConnection!
             }
 
@@ -211,7 +211,9 @@ describe("Interfaces", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MovieSort]
             }
 
@@ -219,7 +221,9 @@ describe("Interfaces", () => {
               movies: [MovieNodeMoviesCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               id: SortDirection
             }
@@ -298,8 +302,7 @@ describe("Interfaces", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 });

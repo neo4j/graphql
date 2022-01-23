@@ -25,7 +25,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
     test("should compile type defs with no errors", () => {
         const typeDefs = gql`
             type Journalist {
-                articles: [Article]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle")
+                articles: [Article!]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle")
             }
 
             interface HasArticle @relationshipProperties {
@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
             type Article {
                 id: ID! @id
                 blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
-                images: [Image!] @relationship(type: "HAS_IMAGE", direction: OUT)
+                images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
             }
 
             interface HasBlock @relationshipProperties {
@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
             }
 
             type PDFImage implements Image {
-                featuredIn: [Article!] @relationship(type: "HAS_IMAGE", direction: IN)
+                featuredIn: [Article!]! @relationship(type: "HAS_IMAGE", direction: IN)
                 url: String!
             }
         `;

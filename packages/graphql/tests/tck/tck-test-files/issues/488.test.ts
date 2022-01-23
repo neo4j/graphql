@@ -32,7 +32,7 @@ describe("#488", () => {
         typeDefs = gql`
             type Journalist {
                 name: String!
-                keywords: [Keyword]! @relationship(type: "HAS_KEYWORD", direction: OUT)
+                keywords: [Keyword!]! @relationship(type: "HAS_KEYWORD", direction: OUT)
             }
 
             union Keyword = Emoji | Hashtag | Text

@@ -36,12 +36,12 @@ describe("Cypher Advanced Filtering", () => {
                 title: String
                 actorCount: Int
                 budget: BigInt
-                genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
+                genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
             }
 
             type Genre {
                 name: String
-                movies: [Movie] @relationship(type: "IN_GENRE", direction: IN)
+                movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN)
             }
         `;
 

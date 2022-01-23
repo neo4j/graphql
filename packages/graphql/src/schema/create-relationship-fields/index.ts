@@ -82,6 +82,7 @@ function createRelationshipFields({
                             options: "QueryOptions",
                             where: `${rel.typeMeta.name}Where`,
                         },
+                        description: rel.description,
                     },
                 });
             }
@@ -235,6 +236,7 @@ function createRelationshipFields({
                             options: "QueryOptions",
                             where: `${rel.typeMeta.name}Where`,
                         },
+                        description: rel.description,
                     },
                 });
             }
@@ -699,6 +701,7 @@ function createRelationshipFields({
                         where: `${rel.typeMeta.name}Where`,
                         options: `${rel.typeMeta.name}Options`,
                     },
+                    description: rel.description,
                 },
             });
 

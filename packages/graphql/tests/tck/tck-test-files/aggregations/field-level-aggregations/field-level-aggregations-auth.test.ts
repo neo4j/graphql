@@ -32,13 +32,13 @@ describe("Field Level Aggregations", () => {
         typeDefs = gql`
             type Movie @auth(rules: [{ isAuthenticated: true }]) {
                 title: String
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Actor {
                 name: String
                 age: Int
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 

@@ -37,7 +37,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         const typeDefs = gql`
             type ${typeMovie.name} {
                 title: String!
-                actors: [${typePerson.name}] @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${typePerson.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type ${typePerson.name} {

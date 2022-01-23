@@ -30,14 +30,14 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
         type User {
             client_id: String
             uid: String
-            demographics: [UserDemographics] @relationship(type: "HAS_DEMOGRAPHIC", direction: OUT)
+            demographics: [UserDemographics!]! @relationship(type: "HAS_DEMOGRAPHIC", direction: OUT)
         }
 
         type UserDemographics {
             client_id: String
             type: String
             value: String
-            users: [User] @relationship(type: "HAS_DEMOGRAPHIC", direction: IN)
+            users: [User!]! @relationship(type: "HAS_DEMOGRAPHIC", direction: IN)
         }
     `;
 
@@ -105,17 +105,17 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             });
 
             expect(result.errors).toBeFalsy();
-            expect(result?.data?.users[0].uid).toBe("user1");
-            expect(result?.data?.users[0].demographics).toHaveLength(3);
-            expect(result?.data?.users[0].demographics).toContainEqual({
+            expect((result?.data as any)?.users[0].uid).toBe("user1");
+            expect((result?.data as any)?.users[0].demographics).toHaveLength(3);
+            expect((result?.data as any)?.users[0].demographics).toContainEqual({
                 type: "Age",
                 value: "50+",
             });
-            expect(result?.data?.users[0].demographics).toContainEqual({
+            expect((result?.data as any)?.users[0].demographics).toContainEqual({
                 type: "Gender",
                 value: "Female",
             });
-            expect(result?.data?.users[0].demographics).toContainEqual({
+            expect((result?.data as any)?.users[0].demographics).toContainEqual({
                 type: "State",
                 value: "VIC",
             });
@@ -158,30 +158,30 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
 
             expect(result?.data?.users).toHaveLength(2);
 
-            expect(result?.data?.users.filter((u) => u.uid === "user1")[0].demographics).toHaveLength(3);
-            expect(result?.data?.users.filter((u) => u.uid === "user1")[0].demographics).toContainEqual({
+            expect((result?.data as any)?.users.filter((u) => u.uid === "user1")[0].demographics).toHaveLength(3);
+            expect((result?.data as any)?.users.filter((u) => u.uid === "user1")[0].demographics).toContainEqual({
                 type: "Gender",
                 value: "Female",
             });
-            expect(result?.data?.users.filter((u) => u.uid === "user1")[0].demographics).toContainEqual({
+            expect((result?.data as any)?.users.filter((u) => u.uid === "user1")[0].demographics).toContainEqual({
                 type: "State",
                 value: "VIC",
             });
-            expect(result?.data?.users.filter((u) => u.uid === "user1")[0].demographics).toContainEqual({
+            expect((result?.data as any)?.users.filter((u) => u.uid === "user1")[0].demographics).toContainEqual({
                 type: "Age",
                 value: "50+",
             });
 
-            expect(result?.data?.users.filter((u) => u.uid === "user2")[0].demographics).toHaveLength(3);
-            expect(result?.data?.users.filter((u) => u.uid === "user2")[0].demographics).toContainEqual({
+            expect((result?.data as any)?.users.filter((u) => u.uid === "user2")[0].demographics).toHaveLength(3);
+            expect((result?.data as any)?.users.filter((u) => u.uid === "user2")[0].demographics).toContainEqual({
                 type: "Gender",
                 value: "Male",
             });
-            expect(result?.data?.users.filter((u) => u.uid === "user2")[0].demographics).toContainEqual({
+            expect((result?.data as any)?.users.filter((u) => u.uid === "user2")[0].demographics).toContainEqual({
                 type: "State",
                 value: "VIC",
             });
-            expect(result?.data?.users.filter((u) => u.uid === "user2")[0].demographics).toContainEqual({
+            expect((result?.data as any)?.users.filter((u) => u.uid === "user2")[0].demographics).toContainEqual({
                 type: "Age",
                 value: "50+",
             });

@@ -29,7 +29,7 @@ describe("Unions", () => {
 
             type Author {
                 name: String!
-                publications: [Publication] @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
+                publications: [Publication!]! @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
             }
 
             type Book {
@@ -57,7 +57,7 @@ describe("Unions", () => {
 
             type Author {
               name: String!
-              publications(options: QueryOptions, where: PublicationWhere): [Publication]
+              publications(options: QueryOptions, where: PublicationWhere): [Publication!]!
               publicationsConnection(sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
@@ -90,7 +90,9 @@ describe("Unions", () => {
             input AuthorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [AuthorSort]
             }
 
@@ -265,7 +267,9 @@ describe("Unions", () => {
               publications: AuthorPublicationsCreateFieldInput
             }
 
-            \\"\\"\\"Fields to sort Authors by. The order in which sorts are applied is not guaranteed when specifying many fields in one AuthorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Authors by. The order in which sorts are applied is not guaranteed when specifying many fields in one AuthorSort object.
+            \\"\\"\\"
             input AuthorSort {
               name: SortDirection
             }
@@ -479,7 +483,9 @@ describe("Unions", () => {
             input BookOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [BookSort]
             }
 
@@ -487,7 +493,9 @@ describe("Unions", () => {
               author: [BookAuthorCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Books by. The order in which sorts are applied is not guaranteed when specifying many fields in one BookSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Books by. The order in which sorts are applied is not guaranteed when specifying many fields in one BookSort object.
+            \\"\\"\\"
             input BookSort {
               title: SortDirection
             }
@@ -746,7 +754,9 @@ describe("Unions", () => {
             input JournalOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [JournalSort]
             }
 
@@ -754,7 +764,9 @@ describe("Unions", () => {
               author: [JournalAuthorCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Journals by. The order in which sorts are applied is not guaranteed when specifying many fields in one JournalSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Journals by. The order in which sorts are applied is not guaranteed when specifying many fields in one JournalSort object.
+            \\"\\"\\"
             input JournalSort {
               subject: SortDirection
             }
@@ -899,8 +911,7 @@ describe("Unions", () => {
               words_LTE: Int
               words_NOT: Int
               words_NOT_IN: [Int]
-            }
-            "
+            }"
         `);
     });
 });

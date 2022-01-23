@@ -241,7 +241,7 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors.actors[0].actedIn[0].actors).toHaveLength(2);
+            expect((gqlResult.data as any)?.updateActors.actors[0].actedIn[0].actors).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {
                     actors: [
@@ -340,7 +340,7 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors.actors[0].actedIn[0].actors).toHaveLength(2);
+            expect((gqlResult.data as any)?.updateActors.actors[0].actedIn[0].actors).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {
                     actors: [

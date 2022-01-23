@@ -40,13 +40,13 @@ describe("find", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: IN)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -95,13 +95,13 @@ describe("find", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: IN)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -148,13 +148,13 @@ describe("find", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: IN)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -195,7 +195,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.movies.forEach((e: { id: string }) => {
+            (result?.data as any)?.movies.forEach((e: { id: string }) => {
                 expect([id1, id2, id3].includes(e.id)).toBeTruthy();
             });
         } finally {
@@ -209,13 +209,13 @@ describe("find", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: IN)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -260,7 +260,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.movies.forEach((e: { id: string; title: string }) => {
+            (result?.data as any)?.movies.forEach((e: { id: string; title: string }) => {
                 expect([id1, id2, id3].includes(e.id)).toBeTruthy();
                 expect(e.title).toEqual(title);
             });
@@ -275,12 +275,12 @@ describe("find", () => {
         const typeDefs = `
             type Actor {
                 id: ID!
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: IN)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie {
                 id: ID!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -352,7 +352,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.movies.forEach((movie: { id: string; title: string; actors: { id: string }[] }) => {
+            (result?.data as any)?.movies.forEach((movie: { id: string; title: string; actors: { id: string }[] }) => {
                 expect([movieId1, movieId2, movieId3].includes(movie.id)).toBeTruthy();
 
                 let expected: any;
@@ -418,7 +418,7 @@ describe("find", () => {
 
             type Movie {
                 id: ID!
-                actors(actorIds: [ID]): [Actor] @cypher(
+                actors(actorIds: [ID]): [Actor!]! @cypher(
                    statement:  """
                    MATCH (a:Actor)
                    WHERE a.id IN $actorIds
@@ -490,7 +490,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.movies.forEach((movie: { id: string; actors: { id: string }[] }) => {
+            (result?.data as any)?.movies.forEach((movie: { id: string; actors: { id: string }[] }) => {
                 expect([movieId1, movieId2, movieId3].includes(movie.id)).toBeTruthy();
 
                 movie.actors.forEach((actor) => {
@@ -508,14 +508,14 @@ describe("find", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: IN)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT)
-                mainActor: Actor @relationship(type: "MAIN_ACTOR", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+                mainActor: Actor! @relationship(type: "MAIN_ACTOR", direction: OUT)
             }
         `;
 

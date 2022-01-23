@@ -85,10 +85,10 @@ describe("info", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(typeof gqlResult?.data?.createMovies.info.bookmark).toBe("string");
-            expect(gqlResult?.data?.createMovies.info.nodesCreated).toBe(2);
-            expect(gqlResult?.data?.createMovies.info.relationshipsCreated).toBe(1);
-            expect(gqlResult?.data?.createMovies.movies).toEqual([{ title, actors: [{ name }] }]);
+            expect(typeof (gqlResult?.data as any)?.createMovies.info.bookmark).toBe("string");
+            expect((gqlResult?.data as any)?.createMovies.info.nodesCreated).toBe(2);
+            expect((gqlResult?.data as any)?.createMovies.info.relationshipsCreated).toBe(1);
+            expect((gqlResult?.data as any)?.createMovies.movies).toEqual([{ title, actors: [{ name }] }]);
         } finally {
             await session.close();
         }
@@ -127,7 +127,7 @@ describe("info", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(typeof gqlResult?.data?.deleteMovies.bookmark).toBe("string");
+            expect(typeof (gqlResult?.data as any)?.deleteMovies.bookmark).toBe("string");
         } finally {
             await session.close();
         }
@@ -171,7 +171,7 @@ describe("info", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(typeof gqlResult?.data?.updateMovies.info.bookmark).toBe("string");
+            expect(typeof (gqlResult?.data as any)?.updateMovies.info.bookmark).toBe("string");
         } finally {
             await session.close();
         }

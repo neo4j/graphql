@@ -38,7 +38,7 @@ describe("Node directive with unions", () => {
 
             type Movie @node(label: "Film") {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
