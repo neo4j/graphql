@@ -119,4 +119,30 @@ describe("@ignore directive", () => {
             fullName: fullName(user),
         });
     });
+
+    test("resolves field with custom resolver with required field(s) aliased in selection set", async () => {
+        const source = `
+            query Users($userId: ID!) {
+                users(where: { id: $userId }) {
+                    id
+                    f: firstName
+                    fullName
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema,
+            source,
+            contextValue: { driver },
+            variableValues: { userId: user.id },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect((gqlResult.data as any).users[0]).toEqual({
+            id: user.id,
+            f: user.firstName,
+            fullName: fullName(user),
+        });
+    });
 });

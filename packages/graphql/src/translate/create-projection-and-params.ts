@@ -666,7 +666,11 @@ const getRequiredFields = ({
         (acc, requiredField) => ({
             ...acc,
             // If required field does not exist in selection set
-            ...(!Object.values(nodeFields).find((nodeField) => nodeField.name === requiredField)
+            ...(!Object.values(nodeFields).find((nodeField) => nodeField.name === requiredField) ||
+            // or does exist but is aliased.
+            Object.values(nodeFields).find(
+                (nodeField) => nodeField.name === requiredField && nodeField.alias !== requiredField
+            )
                 ? // Generate a new field to project
                   generateProjectionField({ name: requiredField })
                 : {}),
