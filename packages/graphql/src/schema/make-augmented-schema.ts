@@ -287,8 +287,13 @@ function makeAugmentedSchema(
             .flat()
             .find(
                 (requiredField) =>
-                    // TODO: Add cypher fields that return these values.
-                    ![...nodeFields.primitiveFields, ...nodeFields.enumFields, ...nodeFields.temporalFields]
+                    ![
+                        ...nodeFields.primitiveFields,
+                        ...nodeFields.scalarFields,
+                        ...nodeFields.enumFields,
+                        ...nodeFields.temporalFields,
+                        ...nodeFields.cypherFields.filter((field) => field.isScalar || field.isEnum),
+                    ]
                         .map((x) => x.fieldName)
                         .includes(requiredField)
             );
@@ -1015,8 +1020,8 @@ function makeAugmentedSchema(
     const generatedTypeDefs = composer.toSDL();
     let parsedDoc = parse(generatedTypeDefs);
 
-    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & {name: NameNode} {
-      return "name" in x
+    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
+        return "name" in x;
     }
 
     const documentNames = parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value);
