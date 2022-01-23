@@ -36,6 +36,7 @@ import getCypherMeta from "./get-cypher-meta";
 import getAliasMeta from "./get-alias-meta";
 import getAuth from "./get-auth";
 import getRelationshipMeta from "./get-relationship-meta";
+import { SCALAR_TYPES } from "../constants";
 import {
     RelationField,
     CypherField,
@@ -297,6 +298,8 @@ function getObjFieldMeta({
                 const cypherField: CypherField = {
                     ...baseField,
                     ...cypherMeta,
+                    isEnum: !!fieldEnum,
+                    isScalar: !!fieldScalar || SCALAR_TYPES.includes(typeMeta.name),
                 };
                 res.cypherFields.push(cypherField);
             } else if (fieldScalar) {
@@ -364,8 +367,10 @@ function getObjFieldMeta({
                 // Create a set from array of argument `require`
                 const requiredFields = Array.from(
                     new Set(
-                        (ignoreDirective?.arguments?.find((arg) => arg.name.value === "require")
-                            ?.value as ListValueNode)?.values.map((v) => (v as StringValueNode).value) ?? []
+                        (
+                            ignoreDirective?.arguments?.find((arg) => arg.name.value === "require")
+                                ?.value as ListValueNode
+                        )?.values.map((v) => (v as StringValueNode).value) ?? []
                     )
                 );
 

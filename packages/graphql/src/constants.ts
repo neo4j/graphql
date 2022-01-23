@@ -41,18 +41,15 @@ export const DEBUG_EXECUTE = `${DEBUG_PREFIX}:execute`;
 export const RESERVED_TYPE_NAMES = [
     {
         regex: /^PageInfo$/,
-        error:
-            "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.",
+        error: "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.",
     },
     {
         regex: /^.+Connection$/,
-        error:
-            'Type or Interface with name ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.',
+        error: 'Type or Interface with name ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.',
     },
     {
         regex: /^Node$/,
-        error:
-            "Type or Interface with name `Node` reserved to support Relay. See https://relay.dev/graphql/ for more information.",
+        error: "Type or Interface with name `Node` reserved to support Relay. See https://relay.dev/graphql/ for more information.",
     },
 ];
 
@@ -60,6 +57,21 @@ export const RESERVED_TYPE_NAMES = [
 export const RESERVED_INTERFACE_FIELDS = [
     ["node", "Interface field name 'node' reserved to support relay See https://relay.dev/graphql/"],
     ["cursor", "Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"],
+];
+
+export const SCALAR_TYPES = [
+    "Boolean",
+    "ID",
+    "String",
+    "Int",
+    "BigInt",
+    "Float",
+    "DateTime",
+    "LocalDateTime",
+    "Time",
+    "LocalTime",
+    "Date",
+    "Duration",
 ];
 
 export const WHERE_AGGREGATION_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
