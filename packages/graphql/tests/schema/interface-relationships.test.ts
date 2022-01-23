@@ -179,7 +179,9 @@ describe("Interface Relationships", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [ActorSort]
             }
 
@@ -187,7 +189,9 @@ describe("Interface Relationships", () => {
               actedIn: [ActorActedInCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -267,11 +271,15 @@ describe("Interface Relationships", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MovieSort]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               runtime: SortDirection
               title: SortDirection
@@ -400,11 +408,15 @@ describe("Interface Relationships", () => {
             input SeriesOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [SeriesSort]
             }
 
-            \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+            \\"\\"\\"
             input SeriesSort {
               episodes: SortDirection
               title: SortDirection
@@ -471,8 +483,7 @@ describe("Interface Relationships", () => {
             type UpdateSeriesMutationResponse {
               info: UpdateInfo!
               series: [Series!]!
-            }
-            "
+            }"
         `);
     });
 
@@ -648,7 +659,9 @@ describe("Interface Relationships", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [ActorSort]
             }
 
@@ -656,7 +669,9 @@ describe("Interface Relationships", () => {
               actedIn: [ActorActedInCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -751,7 +766,9 @@ describe("Interface Relationships", () => {
             input EpisodeOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [EpisodeSort]
             }
 
@@ -889,7 +906,9 @@ describe("Interface Relationships", () => {
               where: EpisodeSeriesConnectionWhere
             }
 
-            \\"\\"\\"Fields to sort Episodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one EpisodeSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Episodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one EpisodeSort object.
+            \\"\\"\\"
             input EpisodeSort {
               runtime: SortDirection
             }
@@ -1040,7 +1059,9 @@ describe("Interface Relationships", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MovieSort]
             }
 
@@ -1048,7 +1069,9 @@ describe("Interface Relationships", () => {
               actors: [ProductionActorsCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               runtime: SortDirection
               title: SortDirection
@@ -1576,7 +1599,9 @@ describe("Interface Relationships", () => {
             input SeriesOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [SeriesSort]
             }
 
@@ -1585,7 +1610,9 @@ describe("Interface Relationships", () => {
               episodes: [SeriesEpisodesCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+            \\"\\"\\"
             input SeriesSort {
               episodeCount: SortDirection
               title: SortDirection
@@ -1669,8 +1696,7 @@ describe("Interface Relationships", () => {
             type UpdateSeriesMutationResponse {
               info: UpdateInfo!
               series: [Series!]!
-            }
-            "
+            }"
         `);
     });
 
@@ -2108,7 +2134,9 @@ describe("Interface Relationships", () => {
             input Type1Interface1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type1Interface1Sort objects to sort Type1Interface1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more Type1Interface1Sort objects to sort Type1Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [Type1Interface1Sort]
             }
 
@@ -2121,7 +2149,9 @@ describe("Interface Relationships", () => {
               node: Interface1!
             }
 
-            \\"\\"\\"Fields to sort Type1Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface1Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Type1Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface1Sort object.
+            \\"\\"\\"
             input Type1Interface1Sort {
               field1: SortDirection
             }
@@ -2177,11 +2207,15 @@ describe("Interface Relationships", () => {
             input Type1Interface2Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type1Interface2Sort objects to sort Type1Interface2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more Type1Interface2Sort objects to sort Type1Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [Type1Interface2Sort]
             }
 
-            \\"\\"\\"Fields to sort Type1Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface2Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Type1Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface2Sort object.
+            \\"\\"\\"
             input Type1Interface2Sort {
               field2: SortDirection
             }
@@ -2208,7 +2242,9 @@ describe("Interface Relationships", () => {
             input Type1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type1Sort objects to sort Type1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more Type1Sort objects to sort Type1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [Type1Sort]
             }
 
@@ -2216,7 +2252,9 @@ describe("Interface Relationships", () => {
               interface1: [Type1Interface1CreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Type1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Type1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Sort object.
+            \\"\\"\\"
             input Type1Sort {
               field1: SortDirection
             }
@@ -2303,7 +2341,9 @@ describe("Interface Relationships", () => {
             input Type2Interface1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [Type2Interface1Sort]
             }
 
@@ -2311,7 +2351,9 @@ describe("Interface Relationships", () => {
               interface2: [Type2Interface1Interface2CreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Type2Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface1Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Type2Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface1Sort object.
+            \\"\\"\\"
             input Type2Interface1Sort {
               field1: SortDirection
             }
@@ -2354,11 +2396,15 @@ describe("Interface Relationships", () => {
             input Type2Interface2Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type2Interface2Sort objects to sort Type2Interface2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more Type2Interface2Sort objects to sort Type2Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [Type2Interface2Sort]
             }
 
-            \\"\\"\\"Fields to sort Type2Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface2Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Type2Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface2Sort object.
+            \\"\\"\\"
             input Type2Interface2Sort {
               field2: SortDirection
             }
@@ -2413,8 +2459,7 @@ describe("Interface Relationships", () => {
             type UpdateType2Interface2sMutationResponse {
               info: UpdateInfo!
               type2Interface2s: [Type2Interface2!]!
-            }
-            "
+            }"
         `);
 
         // expect(() => {
@@ -2544,7 +2589,9 @@ describe("Interface Relationships", () => {
             input CommentOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more CommentSort objects to sort Comments by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more CommentSort objects to sort Comments by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [CommentSort]
             }
 
@@ -2659,7 +2706,9 @@ describe("Interface Relationships", () => {
               post: CommentPostCreateFieldInput
             }
 
-            \\"\\"\\"Fields to sort Comments by. The order in which sorts are applied is not guaranteed when specifying many fields in one CommentSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Comments by. The order in which sorts are applied is not guaranteed when specifying many fields in one CommentSort object.
+            \\"\\"\\"
             input CommentSort {
               content: SortDirection
               id: SortDirection
@@ -3146,7 +3195,9 @@ describe("Interface Relationships", () => {
             input PostOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [PostSort]
             }
 
@@ -3155,7 +3206,9 @@ describe("Interface Relationships", () => {
               creator: ContentCreatorCreateFieldInput
             }
 
-            \\"\\"\\"Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.
+            \\"\\"\\"
             input PostSort {
               content: SortDirection
               id: SortDirection
@@ -3355,7 +3408,9 @@ describe("Interface Relationships", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [UserSort]
             }
 
@@ -3363,7 +3418,9 @@ describe("Interface Relationships", () => {
               content: [UserContentCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
             input UserSort {
               id: SortDirection
               name: SortDirection
@@ -3400,8 +3457,7 @@ describe("Interface Relationships", () => {
               name_NOT_IN: [String]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
-            }
-            "
+            }"
         `);
     });
 });

@@ -219,11 +219,11 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
 
             expect(mutationResult.errors).toBeFalsy();
 
-            expect(mutationResult?.data?.createUsers?.users[0].id).toEqual(userID);
-            expect(mutationResult?.data?.createUsers?.users[0].friends).toHaveLength(3);
-            expect(mutationResult?.data?.createUsers?.users[0].posts).toHaveLength(3);
+            expect((mutationResult?.data as any)?.createUsers?.users[0].id).toEqual(userID);
+            expect((mutationResult?.data as any)?.createUsers?.users[0].friends).toHaveLength(3);
+            expect((mutationResult?.data as any)?.createUsers?.users[0].posts).toHaveLength(3);
 
-            mutationResult?.data?.createUsers?.users[0].friends.forEach((friend) => {
+            (mutationResult?.data as any)?.createUsers?.users[0].friends.forEach((friend) => {
                 expect(friend.posts).toHaveLength(3);
             });
 

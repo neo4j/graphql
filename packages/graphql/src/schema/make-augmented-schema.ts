@@ -30,6 +30,7 @@ import {
     GraphQLString,
     InputObjectTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
+    Kind,
     NamedTypeNode,
     NameNode,
     ObjectTypeDefinitionNode,
@@ -204,7 +205,7 @@ function makeAugmentedSchema(
     Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
 
     if (extraDefinitions.length) {
-        composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
+        composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
     const nodes = objectNodes.map((definition) => {

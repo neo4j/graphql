@@ -59,7 +59,7 @@ function createAggregationInput({
 }: {
     basedOnSearch: string;
     typeName: string;
-    aggregateSelections?: any;
+    aggregateSelections?: Record<string, any>;
     input: string;
 }) {
     const interfaceStrs = [`export interface ${typeName} {`];

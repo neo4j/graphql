@@ -21,9 +21,9 @@ import { RelationField, Context } from "../../types";
 import { buildMergeStatement } from "../cypher-builder/build-merge-statement";
 import { CypherStatement } from "../types";
 import { Node } from "../../classes";
-import { joinStatements } from "../utils/join-statements";
 import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
+import { joinStatements } from "../cypher-builder/join-statements";
 
 type CreateOrConnectInput = {
     where?: {
@@ -120,7 +120,7 @@ function mergeRelatedNode({
     const whereNodeParameters = input.where?.node;
     const onCreateNode = input.onCreate?.node;
     return buildMergeStatement({
-        leftNode: {
+        sourceNode: {
             node: refNode,
             varName: baseName,
             parameters: whereNodeParameters,
@@ -145,13 +145,13 @@ function mergeRelation({
 }): CypherStatement {
     const onCreateEdge = input.onCreate?.edge;
     return buildMergeStatement({
-        leftNode: {
+        sourceNode: {
             varName: parentVar,
         },
-        rightNode: {
+        targetNode: {
             varName: baseName,
         },
-        relation: {
+        relationship: {
             relationField,
             onCreate: onCreateEdge,
         },
