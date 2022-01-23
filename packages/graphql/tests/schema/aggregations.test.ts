@@ -1185,7 +1185,7 @@ describe("Aggregations", () => {
             input PostWhere {
               AND: [PostWhere!]
               OR: [PostWhere!]
-              likes: UserWhere
+              likes: UserWhere @deprecated(reason: \\"Use \`likes_SOME\` instead.\\")
               likesAggregate: PostLikesAggregateInput
               likesConnection: PostLikesConnectionWhere
               likesConnection_ALL: PostLikesConnectionWhere
@@ -1197,7 +1197,7 @@ describe("Aggregations", () => {
               likes_ALL: UserWhere
               \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
               likes_NONE: UserWhere
-              likes_NOT: UserWhere
+              likes_NOT: UserWhere @deprecated(reason: \\"Use \`likes_NONE\` instead.\\")
               \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
               likes_SINGLE: UserWhere
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"

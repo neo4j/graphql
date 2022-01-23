@@ -1094,7 +1094,7 @@ describe("Interface Relationships", () => {
             input MovieWhere {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
-              actors: ActorWhere
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere
               actorsConnection_ALL: ProductionActorsConnectionWhere
@@ -1106,7 +1106,7 @@ describe("Interface Relationships", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -1350,7 +1350,7 @@ describe("Interface Relationships", () => {
 
             input ProductionWhere {
               _on: ProductionImplementationsWhere
-              actors: ActorWhere
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: ProductionActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere
               actorsConnection_ALL: ProductionActorsConnectionWhere
@@ -1362,7 +1362,7 @@ describe("Interface Relationships", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
@@ -1660,7 +1660,7 @@ describe("Interface Relationships", () => {
             input SeriesWhere {
               AND: [SeriesWhere!]
               OR: [SeriesWhere!]
-              actors: ActorWhere
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere
               actorsConnection_ALL: ProductionActorsConnectionWhere
@@ -1672,7 +1672,7 @@ describe("Interface Relationships", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
@@ -1685,7 +1685,7 @@ describe("Interface Relationships", () => {
               episodeCount_LTE: Int
               episodeCount_NOT: Int
               episodeCount_NOT_IN: [Int]
-              episodes: EpisodeWhere
+              episodes: EpisodeWhere @deprecated(reason: \\"Use \`episodes_SOME\` instead.\\")
               episodesAggregate: SeriesEpisodesAggregateInput
               episodesConnection: SeriesEpisodesConnectionWhere
               episodesConnection_ALL: SeriesEpisodesConnectionWhere
@@ -1697,7 +1697,7 @@ describe("Interface Relationships", () => {
               episodes_ALL: EpisodeWhere
               \\"\\"\\"Return Series where none of the related Episodes match this filter\\"\\"\\"
               episodes_NONE: EpisodeWhere
-              episodes_NOT: EpisodeWhere
+              episodes_NOT: EpisodeWhere @deprecated(reason: \\"Use \`episodes_NONE\` instead.\\")
               \\"\\"\\"Return Series where one of the related Episodes match this filter\\"\\"\\"
               episodes_SINGLE: EpisodeWhere
               \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
@@ -3306,7 +3306,7 @@ describe("Interface Relationships", () => {
             input PostWhere {
               AND: [PostWhere!]
               OR: [PostWhere!]
-              comments: CommentWhere
+              comments: CommentWhere @deprecated(reason: \\"Use \`comments_SOME\` instead.\\")
               commentsAggregate: PostCommentsAggregateInput
               commentsConnection: PostCommentsConnectionWhere
               commentsConnection_ALL: PostCommentsConnectionWhere
@@ -3318,7 +3318,7 @@ describe("Interface Relationships", () => {
               comments_ALL: CommentWhere
               \\"\\"\\"Return Posts where none of the related Comments match this filter\\"\\"\\"
               comments_NONE: CommentWhere
-              comments_NOT: CommentWhere
+              comments_NOT: CommentWhere @deprecated(reason: \\"Use \`comments_NONE\` instead.\\")
               \\"\\"\\"Return Posts where one of the related Comments match this filter\\"\\"\\"
               comments_SINGLE: CommentWhere
               \\"\\"\\"Return Posts where some of the related Comments match this filter\\"\\"\\"

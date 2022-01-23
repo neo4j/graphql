@@ -508,7 +508,7 @@ describe("Unions", () => {
             input BookWhere {
               AND: [BookWhere!]
               OR: [BookWhere!]
-              author: AuthorWhere
+              author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: BookAuthorAggregateInput
               authorConnection: BookAuthorConnectionWhere
               authorConnection_ALL: BookAuthorConnectionWhere
@@ -520,7 +520,7 @@ describe("Unions", () => {
               author_ALL: AuthorWhere
               \\"\\"\\"Return Books where none of the related Authors match this filter\\"\\"\\"
               author_NONE: AuthorWhere
-              author_NOT: AuthorWhere
+              author_NOT: AuthorWhere @deprecated(reason: \\"Use \`author_NONE\` instead.\\")
               \\"\\"\\"Return Books where one of the related Authors match this filter\\"\\"\\"
               author_SINGLE: AuthorWhere
               \\"\\"\\"Return Books where some of the related Authors match this filter\\"\\"\\"
@@ -779,7 +779,7 @@ describe("Unions", () => {
             input JournalWhere {
               AND: [JournalWhere!]
               OR: [JournalWhere!]
-              author: AuthorWhere
+              author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: JournalAuthorAggregateInput
               authorConnection: JournalAuthorConnectionWhere
               authorConnection_ALL: JournalAuthorConnectionWhere
@@ -791,7 +791,7 @@ describe("Unions", () => {
               author_ALL: AuthorWhere
               \\"\\"\\"Return Journals where none of the related Authors match this filter\\"\\"\\"
               author_NONE: AuthorWhere
-              author_NOT: AuthorWhere
+              author_NOT: AuthorWhere @deprecated(reason: \\"Use \`author_NONE\` instead.\\")
               \\"\\"\\"Return Journals where one of the related Authors match this filter\\"\\"\\"
               author_SINGLE: AuthorWhere
               \\"\\"\\"Return Journals where some of the related Authors match this filter\\"\\"\\"

@@ -505,7 +505,7 @@ describe("Comments", () => {
                 input MovieWhere {
                   AND: [MovieWhere!]
                   OR: [MovieWhere!]
-                  actors: ActorWhere
+                  actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsAggregate: MovieActorsAggregateInput
                   actorsConnection: MovieActorsConnectionWhere
                   actorsConnection_ALL: MovieActorsConnectionWhere
@@ -517,7 +517,7 @@ describe("Comments", () => {
                   actors_ALL: ActorWhere
                   \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
                   actors_NONE: ActorWhere
-                  actors_NOT: ActorWhere
+                  actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"

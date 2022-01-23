@@ -214,7 +214,7 @@ describe("Sort", () => {
               property_NOT_IN: [String]
               property_NOT_STARTS_WITH: String
               property_STARTS_WITH: String
-              relatedTo: Node2Where
+              relatedTo: Node2Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
               relatedToAggregate: Node1RelatedToAggregateInput
               relatedToConnection: Node1RelatedToConnectionWhere
               relatedToConnection_ALL: Node1RelatedToConnectionWhere
@@ -226,7 +226,7 @@ describe("Sort", () => {
               relatedTo_ALL: Node2Where
               \\"\\"\\"Return Node1s where none of the related Node2s match this filter\\"\\"\\"
               relatedTo_NONE: Node2Where
-              relatedTo_NOT: Node2Where
+              relatedTo_NOT: Node2Where @deprecated(reason: \\"Use \`relatedTo_NONE\` instead.\\")
               \\"\\"\\"Return Node1s where one of the related Node2s match this filter\\"\\"\\"
               relatedTo_SINGLE: Node2Where
               \\"\\"\\"Return Node1s where some of the related Node2s match this filter\\"\\"\\"
@@ -383,7 +383,7 @@ describe("Sort", () => {
             input Node2Where {
               AND: [Node2Where!]
               OR: [Node2Where!]
-              relatedTo: Node1Where
+              relatedTo: Node1Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
               relatedToAggregate: Node2RelatedToAggregateInput
               relatedToConnection: Node2RelatedToConnectionWhere
               relatedToConnection_ALL: Node2RelatedToConnectionWhere
@@ -395,7 +395,7 @@ describe("Sort", () => {
               relatedTo_ALL: Node1Where
               \\"\\"\\"Return Node2s where none of the related Node1s match this filter\\"\\"\\"
               relatedTo_NONE: Node1Where
-              relatedTo_NOT: Node1Where
+              relatedTo_NOT: Node1Where @deprecated(reason: \\"Use \`relatedTo_NONE\` instead.\\")
               \\"\\"\\"Return Node2s where one of the related Node1s match this filter\\"\\"\\"
               relatedTo_SINGLE: Node1Where
               \\"\\"\\"Return Node2s where some of the related Node1s match this filter\\"\\"\\"
