@@ -442,7 +442,7 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  merge-master-tag-push:
+  merge-tag-push:
     needs:
       - bump-version
       - npm-publish
