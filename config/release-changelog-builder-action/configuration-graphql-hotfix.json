@@ -19,5 +19,5 @@
     "tag_resolver": {
         "method": "sort"
     },
-    "base_branches": ["dev"]
+    "base_branches": ["master"]
 }
