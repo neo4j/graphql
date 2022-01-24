@@ -55,30 +55,28 @@ describe("200", () => {
               name: StringAggregateSelectionNonNullable!
             }
 
+            type CategoryConnection {
+              edges: [CategoryEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input CategoryCreateInput {
               description: String! = \\"\\"
               exampleImageLocations: [String!]
               name: String!
             }
 
+            type CategoryEdge {
+              cursor: String!
+              node: Category!
+            }
+
             input CategoryOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more CategorySort objects to sort Categories by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more CategorySort objects to sort Categories by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [CategorySort]
-            }
-
-            type CategoryRootConnection {
-              edges: [CategoryRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type CategoryRootEdge {
-              cursor: String!
-              node: Category!
             }
 
             \\"\\"\\"Fields to sort Categories by. The order in which sorts are applied is not guaranteed when specifying many fields in one CategorySort object.\\"\\"\\"
@@ -172,7 +170,7 @@ describe("200", () => {
             type Query {
               categories(options: CategoryOptions, where: CategoryWhere): [Category!]!
               categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
-              categoriesConnection(after: String, before: String, first: Int, last: Int, sort: [CategorySort], where: CategoryWhere): CategoryRootConnection!
+              categoriesConnection(after: String, first: Int, sort: [CategorySort], where: CategoryWhere): CategoryConnection!
             }
 
             enum SortDirection {
@@ -198,7 +196,8 @@ describe("200", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }"
+            }
+            "
         `);
     });
 });

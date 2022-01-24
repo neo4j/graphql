@@ -135,6 +135,12 @@ describe("Comments", () => {
               id: IDAggregateSelectionNullable!
             }
 
+            type MovieConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input MovieCreateInput {
               actorCount: Int
               averageRating: Float
@@ -144,24 +150,16 @@ describe("Comments", () => {
               isActive: Boolean
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [MovieSort]
-            }
-
-            type MovieRootConnection {
-              edges: [MovieRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type MovieRootEdge {
-              cursor: String!
-              node: Movie!
             }
 
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
@@ -238,7 +236,7 @@ describe("Comments", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
             }
 
             enum SortDirection {
@@ -259,7 +257,8 @@ describe("Comments", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }"
+            }
+            "
         `);
     });
 
@@ -298,28 +297,26 @@ describe("Comments", () => {
                   node: ActorWhere!
                 }
 
+                type ActorConnection {
+                  edges: [ActorEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input ActorCreateInput {
                   name: String
+                }
+
+                type ActorEdge {
+                  cursor: String!
+                  node: Actor!
                 }
 
                 input ActorOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"
-                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
+                  \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [ActorSort]
-                }
-
-                type ActorRootConnection {
-                  edges: [ActorRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type ActorRootEdge {
-                  cursor: String!
-                  node: Actor!
                 }
 
                 \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
@@ -491,6 +488,12 @@ describe("Comments", () => {
                   actors: [MovieActorsConnectFieldInput!]
                 }
 
+                type MovieConnection {
+                  edges: [MovieEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   id: ID
@@ -504,28 +507,20 @@ describe("Comments", () => {
                   actors: [MovieActorsDisconnectFieldInput!]
                 }
 
+                type MovieEdge {
+                  cursor: String!
+                  node: Movie!
+                }
+
                 input MovieOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
+                  \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [MovieSort]
                 }
 
                 input MovieRelationInput {
                   actors: [MovieActorsCreateFieldInput!]
-                }
-
-                type MovieRootConnection {
-                  edges: [MovieRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type MovieRootEdge {
-                  cursor: String!
-                  node: Movie!
                 }
 
                 \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
@@ -578,10 +573,10 @@ describe("Comments", () => {
                 type Query {
                   actors(options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                  actorsConnection(after: String, before: String, first: Int, last: Int, sort: [ActorSort], where: ActorWhere): ActorRootConnection!
+                  actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
                 }
 
                 enum SortDirection {
@@ -612,7 +607,8 @@ describe("Comments", () => {
                 type UpdateMoviesMutationResponse {
                   info: UpdateInfo!
                   movies: [Movie!]!
-                }"
+                }
+                "
             `);
         });
 
@@ -758,6 +754,12 @@ describe("Comments", () => {
                   actedIn: [ActorActedInConnectFieldInput!]
                 }
 
+                type ActorConnection {
+                  edges: [ActorEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input ActorCreateInput {
                   actedIn: ActorActedInFieldInput
                   name: String!
@@ -771,28 +773,20 @@ describe("Comments", () => {
                   actedIn: [ActorActedInDisconnectFieldInput!]
                 }
 
+                type ActorEdge {
+                  cursor: String!
+                  node: Actor!
+                }
+
                 input ActorOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"
-                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
+                  \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [ActorSort]
                 }
 
                 input ActorRelationInput {
                   actedIn: [ActorActedInCreateFieldInput!]
-                }
-
-                type ActorRootConnection {
-                  edges: [ActorRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type ActorRootEdge {
-                  cursor: String!
-                  node: Actor!
                 }
 
                 \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
@@ -867,29 +861,27 @@ describe("Comments", () => {
                   title: StringAggregateSelectionNonNullable!
                 }
 
+                type MovieConnection {
+                  edges: [MovieEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input MovieCreateInput {
                   runtime: Int!
                   title: String!
                 }
 
+                type MovieEdge {
+                  cursor: String!
+                  node: Movie!
+                }
+
                 input MovieOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
+                  \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [MovieSort]
-                }
-
-                type MovieRootConnection {
-                  edges: [MovieRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type MovieRootEdge {
-                  cursor: String!
-                  node: Movie!
                 }
 
                 \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
@@ -991,13 +983,13 @@ describe("Comments", () => {
                 type Query {
                   actors(options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                  actorsConnection(after: String, before: String, first: Int, last: Int, sort: [ActorSort], where: ActorWhere): ActorRootConnection!
+                  actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-                  seriesConnection(after: String, before: String, first: Int, last: Int, sort: [SeriesSort], where: SeriesWhere): SeriesRootConnection!
+                  seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
                 }
 
                 input QueryOptions {
@@ -1016,29 +1008,27 @@ describe("Comments", () => {
                   title: StringAggregateSelectionNonNullable!
                 }
 
+                type SeriesConnection {
+                  edges: [SeriesEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input SeriesCreateInput {
                   episodes: Int!
                   title: String!
                 }
 
+                type SeriesEdge {
+                  cursor: String!
+                  node: Series!
+                }
+
                 input SeriesOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"
-                  Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
+                  \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [SeriesSort]
-                }
-
-                type SeriesRootConnection {
-                  edges: [SeriesRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type SeriesRootEdge {
-                  cursor: String!
-                  node: Series!
                 }
 
                 \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"
@@ -1108,7 +1098,8 @@ describe("Comments", () => {
                 type UpdateSeriesMutationResponse {
                   info: UpdateInfo!
                   series: [Series!]!
-                }"
+                }
+                "
             `);
         });
 
@@ -1170,8 +1161,19 @@ describe("Comments", () => {
                   node: GenreWhere!
                 }
 
+                type GenreConnection {
+                  edges: [GenreEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input GenreCreateInput {
                   id: ID
+                }
+
+                type GenreEdge {
+                  cursor: String!
+                  node: Genre!
                 }
 
                 input GenreOptions {
@@ -1179,17 +1181,6 @@ describe("Comments", () => {
                   offset: Int
                   \\"\\"\\"Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [GenreSort]
-                }
-
-                type GenreRootConnection {
-                  edges: [GenreRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type GenreRootEdge {
-                  cursor: String!
-                  node: Genre!
                 }
 
                 \\"\\"\\"Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.\\"\\"\\"
@@ -1241,6 +1232,12 @@ describe("Comments", () => {
                   node: MovieWhere!
                 }
 
+                type MovieConnection {
+                  edges: [MovieEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input MovieCreateInput {
                   id: ID
                   search: MovieSearchCreateInput
@@ -1254,6 +1251,11 @@ describe("Comments", () => {
                   search: MovieSearchDisconnectInput
                 }
 
+                type MovieEdge {
+                  cursor: String!
+                  node: Movie!
+                }
+
                 input MovieOptions {
                   limit: Int
                   offset: Int
@@ -1263,17 +1265,6 @@ describe("Comments", () => {
 
                 input MovieRelationInput {
                   search: MovieSearchCreateFieldInput
-                }
-
-                type MovieRootConnection {
-                  edges: [MovieRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type MovieRootEdge {
-                  cursor: String!
-                  node: Movie!
                 }
 
                 input MovieSearchConnectInput {
@@ -1468,10 +1459,10 @@ describe("Comments", () => {
                 type Query {
                   genres(options: GenreOptions, where: GenreWhere): [Genre!]!
                   genresAggregate(where: GenreWhere): GenreAggregateSelection!
-                  genresConnection(after: String, before: String, first: Int, last: Int, sort: [GenreSort], where: GenreWhere): GenreRootConnection!
+                  genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenreConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
                 }
 
                 input QueryOptions {

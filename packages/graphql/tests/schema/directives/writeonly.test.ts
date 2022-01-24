@@ -73,7 +73,7 @@ describe("@writeonly directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, before: String, first: Int, last: Int, sort: [UserSort], where: UserWhere): UserRootConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
             }
 
             enum SortDirection {
@@ -111,29 +111,27 @@ describe("@writeonly directive", () => {
               username: StringAggregateSelectionNonNullable!
             }
 
+            type UserConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input UserCreateInput {
               password: String!
               username: String!
             }
 
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
+
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [UserSort]
-            }
-
-            type UserRootConnection {
-              edges: [UserRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type UserRootEdge {
-              cursor: String!
-              node: User!
             }
 
             \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
@@ -170,7 +168,8 @@ describe("@writeonly directive", () => {
               username_NOT_IN: [String]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
-            }"
+            }
+            "
         `);
     });
 
@@ -229,7 +228,7 @@ describe("@writeonly directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, before: String, first: Int, last: Int, sort: [UserSort], where: UserWhere): UserRootConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
             }
 
             enum SortDirection {
@@ -267,9 +266,20 @@ describe("@writeonly directive", () => {
               username: StringAggregateSelectionNonNullable!
             }
 
+            type UserConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input UserCreateInput {
               password: String!
               username: String!
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
             }
 
             interface UserInterface {
@@ -279,21 +289,8 @@ describe("@writeonly directive", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [UserSort]
-            }
-
-            type UserRootConnection {
-              edges: [UserRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type UserRootEdge {
-              cursor: String!
-              node: User!
             }
 
             \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
@@ -330,7 +327,8 @@ describe("@writeonly directive", () => {
               username_NOT_IN: [String]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
-            }"
+            }
+            "
         `);
     });
 
@@ -367,28 +365,26 @@ describe("@writeonly directive", () => {
               node: ActorWhere!
             }
 
+            type ActorConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input ActorCreateInput {
               name: String
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
             }
 
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [ActorSort]
-            }
-
-            type ActorRootConnection {
-              edges: [ActorRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type ActorRootEdge {
-              cursor: String!
-              node: Actor!
             }
 
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
@@ -532,6 +528,12 @@ describe("@writeonly directive", () => {
               actors: [MovieActorsConnectFieldInput!]
             }
 
+            type MovieConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input MovieCreateInput {
               actors: MovieActorsFieldInput
               id: ID
@@ -545,28 +547,20 @@ describe("@writeonly directive", () => {
               actors: [MovieActorsDisconnectFieldInput!]
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [MovieSort]
             }
 
             input MovieRelationInput {
               actors: [MovieActorsCreateFieldInput!]
-            }
-
-            type MovieRootConnection {
-              edges: [MovieRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type MovieRootEdge {
-              cursor: String!
-              node: Movie!
             }
 
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
@@ -619,10 +613,10 @@ describe("@writeonly directive", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, before: String, first: Int, last: Int, sort: [ActorSort], where: ActorWhere): ActorRootConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
             }
 
             enum SortDirection {
@@ -653,7 +647,8 @@ describe("@writeonly directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }"
+            }
+            "
         `);
     });
 });

@@ -98,6 +98,12 @@ describe("Enums", () => {
               node: ActorWhere!
             }
 
+            type ActorConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input ActorCreateInput {
               movies: ActorMoviesFieldInput
               name: String!
@@ -109,6 +115,11 @@ describe("Enums", () => {
 
             input ActorDisconnectInput {
               movies: [ActorMoviesDisconnectFieldInput!]
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
             }
 
             type ActorMovieMoviesAggregationSelection {
@@ -225,25 +236,12 @@ describe("Enums", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [ActorSort]
             }
 
             input ActorRelationInput {
               movies: [ActorMoviesCreateFieldInput!]
-            }
-
-            type ActorRootConnection {
-              edges: [ActorRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type ActorRootEdge {
-              cursor: String!
-              node: Actor!
             }
 
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
@@ -429,6 +427,12 @@ describe("Enums", () => {
               node: MovieWhere!
             }
 
+            type MovieConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input MovieCreateInput {
               actors: MovieActorsFieldInput
               title: String!
@@ -442,28 +446,20 @@ describe("Enums", () => {
               actors: [MovieActorsDisconnectFieldInput!]
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [MovieSort]
             }
 
             input MovieRelationInput {
               actors: [MovieActorsCreateFieldInput!]
-            }
-
-            type MovieRootConnection {
-              edges: [MovieRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type MovieRootEdge {
-              cursor: String!
-              node: Movie!
             }
 
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
@@ -516,10 +512,10 @@ describe("Enums", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, before: String, first: Int, last: Int, sort: [ActorSort], where: ActorWhere): ActorRootConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
             }
 
             enum RoleType {
@@ -555,7 +551,8 @@ describe("Enums", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }"
+            }
+            "
         `);
     });
 });

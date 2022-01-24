@@ -74,6 +74,12 @@ describe("Unions", () => {
               node: AuthorWhere!
             }
 
+            type AuthorConnection {
+              edges: [AuthorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input AuthorCreateInput {
               name: String!
               publications: AuthorPublicationsCreateInput
@@ -87,12 +93,15 @@ describe("Unions", () => {
               publications: AuthorPublicationsDisconnectInput
             }
 
+            type AuthorEdge {
+              cursor: String!
+              node: Author!
+            }
+
             input AuthorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [AuthorSort]
             }
 
@@ -265,17 +274,6 @@ describe("Unions", () => {
 
             input AuthorRelationInput {
               publications: AuthorPublicationsCreateFieldInput
-            }
-
-            type AuthorRootConnection {
-              edges: [AuthorRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type AuthorRootEdge {
-              cursor: String!
-              node: Author!
             }
 
             \\"\\"\\"Fields to sort Authors by. The order in which sorts are applied is not guaranteed when specifying many fields in one AuthorSort object.\\"\\"\\"
@@ -472,6 +470,12 @@ describe("Unions", () => {
               node: BookWhere!
             }
 
+            type BookConnection {
+              edges: [BookEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input BookCreateInput {
               author: BookAuthorFieldInput
               title: String!
@@ -485,28 +489,20 @@ describe("Unions", () => {
               author: [BookAuthorDisconnectFieldInput!]
             }
 
+            type BookEdge {
+              cursor: String!
+              node: Book!
+            }
+
             input BookOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [BookSort]
             }
-            
+
             input BookRelationInput {
               author: [BookAuthorCreateFieldInput!]
-            }
-
-            type BookRootConnection {
-              edges: [BookRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type BookRootEdge {
-              cursor: String!
-              node: Book!
             }
 
             \\"\\"\\"Fields to sort Books by. The order in which sorts are applied is not guaranteed when specifying many fields in one BookSort object.\\"\\"\\"
@@ -740,6 +736,12 @@ describe("Unions", () => {
               node: JournalWhere!
             }
 
+            type JournalConnection {
+              edges: [JournalEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input JournalCreateInput {
               author: JournalAuthorFieldInput
               subject: String!
@@ -753,28 +755,20 @@ describe("Unions", () => {
               author: [JournalAuthorDisconnectFieldInput!]
             }
 
+            type JournalEdge {
+              cursor: String!
+              node: Journal!
+            }
+
             input JournalOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [JournalSort]
             }
 
             input JournalRelationInput {
               author: [JournalAuthorCreateFieldInput!]
-            }
-
-            type JournalRootConnection {
-              edges: [JournalRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type JournalRootEdge {
-              cursor: String!
-              node: Journal!
             }
 
             \\"\\"\\"Fields to sort Journals by. The order in which sorts are applied is not guaranteed when specifying many fields in one JournalSort object.\\"\\"\\"
@@ -837,13 +831,13 @@ describe("Unions", () => {
             type Query {
               authors(options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
-              authorsConnection(after: String, before: String, first: Int, last: Int, sort: [AuthorSort], where: AuthorWhere): AuthorRootConnection!
+              authorsConnection(after: String, first: Int, sort: [AuthorSort], where: AuthorWhere): AuthorConnection!
               books(options: BookOptions, where: BookWhere): [Book!]!
               booksAggregate(where: BookWhere): BookAggregateSelection!
-              booksConnection(after: String, before: String, first: Int, last: Int, sort: [BookSort], where: BookWhere): BookRootConnection!
+              booksConnection(after: String, first: Int, sort: [BookSort], where: BookWhere): BookConnection!
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
               journalsAggregate(where: JournalWhere): JournalAggregateSelection!
-              journalsConnection(after: String, before: String, first: Int, last: Int, sort: [JournalSort], where: JournalWhere): JournalRootConnection!
+              journalsConnection(after: String, first: Int, sort: [JournalSort], where: JournalWhere): JournalConnection!
             }
 
             input QueryOptions {
@@ -913,7 +907,8 @@ describe("Unions", () => {
               words_LTE: Int
               words_NOT: Int
               words_NOT_IN: [Int]
-            }"
+            }
+            "
         `);
     });
 });

@@ -63,28 +63,26 @@ describe("Point", () => {
               count: Int!
             }
 
+            type MovieConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input MovieCreateInput {
               filmedAt: PointInput!
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
             }
 
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [MovieSort]
-            }
-
-            type MovieRootConnection {
-              edges: [MovieRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type MovieRootEdge {
-              cursor: String!
-              node: Movie!
             }
 
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
@@ -147,7 +145,7 @@ describe("Point", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
             }
 
             enum SortDirection {
@@ -168,7 +166,8 @@ describe("Point", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }"
+            }
+            "
         `);
     });
 
@@ -231,28 +230,26 @@ describe("Point", () => {
               count: Int!
             }
 
+            type MachineConnection {
+              edges: [MachineEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input MachineCreateInput {
               partLocation: CartesianPointInput!
+            }
+
+            type MachineEdge {
+              cursor: String!
+              node: Machine!
             }
 
             input MachineOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more MachineSort objects to sort Machines by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more MachineSort objects to sort Machines by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [MachineSort]
-            }
-
-            type MachineRootConnection {
-              edges: [MachineRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type MachineRootEdge {
-              cursor: String!
-              node: Machine!
             }
 
             \\"\\"\\"Fields to sort Machines by. The order in which sorts are applied is not guaranteed when specifying many fields in one MachineSort object.\\"\\"\\"
@@ -295,7 +292,7 @@ describe("Point", () => {
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
-              machinesConnection(after: String, before: String, first: Int, last: Int, sort: [MachineSort], where: MachineWhere): MachineRootConnection!
+              machinesConnection(after: String, first: Int, sort: [MachineSort], where: MachineWhere): MachineConnection!
             }
 
             enum SortDirection {
@@ -316,7 +313,8 @@ describe("Point", () => {
             type UpdateMachinesMutationResponse {
               info: UpdateInfo!
               machines: [Machine!]!
-            }"
+            }
+            "
         `);
     });
 
@@ -360,24 +358,24 @@ describe("Point", () => {
               count: Int!
             }
 
+            type MovieConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input MovieCreateInput {
               filmedAt: [PointInput!]!
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
             }
 
             input MovieOptions {
               limit: Int
               offset: Int
-            }
-            
-            type MovieRootConnection {
-              edges: [MovieRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type MovieRootEdge {
-              cursor: String!
-              node: Movie!
             }
 
             input MovieUpdateInput {
@@ -398,7 +396,7 @@ describe("Point", () => {
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
-            
+
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
             type PageInfo {
               endCursor: String
@@ -424,7 +422,7 @@ describe("Point", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, before: String, first: Int, last: Int, where: MovieWhere): MovieRootConnection!
+              moviesConnection(after: String, first: Int, where: MovieWhere): MovieConnection!
             }
 
             type UpdateInfo {
@@ -438,7 +436,8 @@ describe("Point", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }"
+            }
+            "
         `);
     });
 
@@ -496,24 +495,24 @@ describe("Point", () => {
               count: Int!
             }
 
+            type MachineConnection {
+              edges: [MachineEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input MachineCreateInput {
               partLocations: [CartesianPointInput!]!
+            }
+
+            type MachineEdge {
+              cursor: String!
+              node: Machine!
             }
 
             input MachineOptions {
               limit: Int
               offset: Int
-            }
-
-            type MachineRootConnection {
-              edges: [MachineRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type MachineRootEdge {
-              cursor: String!
-              node: Machine!
             }
 
             input MachineUpdateInput {
@@ -534,7 +533,7 @@ describe("Point", () => {
               deleteMachines(where: MachineWhere): DeleteInfo!
               updateMachines(update: MachineUpdateInput, where: MachineWhere): UpdateMachinesMutationResponse!
             }
-            
+
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
             type PageInfo {
               endCursor: String
@@ -546,7 +545,7 @@ describe("Point", () => {
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
-              machinesConnection(after: String, before: String, first: Int, last: Int, where: MachineWhere): MachineRootConnection!
+              machinesConnection(after: String, first: Int, where: MachineWhere): MachineConnection!
             }
 
             type UpdateInfo {
@@ -560,7 +559,8 @@ describe("Point", () => {
             type UpdateMachinesMutationResponse {
               info: UpdateInfo!
               machines: [Machine!]!
-            }"
+            }
+            "
         `);
     });
 });

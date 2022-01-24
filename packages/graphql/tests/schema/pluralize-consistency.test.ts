@@ -85,10 +85,10 @@ describe("Pluralize consistency", () => {
             type Query {
               super_friends(options: super_friendOptions, where: super_friendWhere): [super_friend!]!
               super_friendsAggregate(where: super_friendWhere): super_friendAggregateSelection!
-              super_friendsConnection(after: String, before: String, first: Int, last: Int, sort: [super_friendSort], where: super_friendWhere): super_friendRootConnection!
+              super_friendsConnection(after: String, first: Int, sort: [super_friendSort], where: super_friendWhere): super_friendConnection!
               super_users(options: super_userOptions, where: super_userWhere): [super_user!]!
               super_usersAggregate(where: super_userWhere): super_userAggregateSelection!
-              super_usersConnection(after: String, before: String, first: Int, last: Int, sort: [super_userSort], where: super_userWhere): super_userRootConnection!
+              super_usersConnection(after: String, first: Int, sort: [super_userSort], where: super_userWhere): super_userConnection!
             }
 
             enum SortDirection {
@@ -134,28 +134,26 @@ describe("Pluralize consistency", () => {
               node: super_friendWhere!
             }
 
+            type super_friendConnection {
+              edges: [super_friendEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input super_friendCreateInput {
               name: String!
+            }
+
+            type super_friendEdge {
+              cursor: String!
+              node: super_friend!
             }
 
             input super_friendOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more super_friendSort objects to sort Super_friends by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more super_friendSort objects to sort Super_friends by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [super_friendSort]
-            }
-
-            type super_friendRootConnection {
-              edges: [super_friendRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type super_friendRootEdge {
-              cursor: String!
-              node: super_friend!
             }
 
             \\"\\"\\"Fields to sort Super_friends by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_friendSort object.\\"\\"\\"
@@ -198,6 +196,12 @@ describe("Pluralize consistency", () => {
               my_friend: [super_userMy_friendConnectFieldInput!]
             }
 
+            type super_userConnection {
+              edges: [super_userEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input super_userCreateInput {
               my_friend: super_userMy_friendFieldInput
               name: String!
@@ -209,6 +213,11 @@ describe("Pluralize consistency", () => {
 
             input super_userDisconnectInput {
               my_friend: [super_userMy_friendDisconnectFieldInput!]
+            }
+
+            type super_userEdge {
+              cursor: String!
+              node: super_user!
             }
 
             input super_userMy_friendAggregateInput {
@@ -306,25 +315,12 @@ describe("Pluralize consistency", () => {
             input super_userOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more super_userSort objects to sort Super_users by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more super_userSort objects to sort Super_users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [super_userSort]
             }
 
             input super_userRelationInput {
               my_friend: [super_userMy_friendCreateFieldInput!]
-            }
-
-            type super_userRootConnection {
-              edges: [super_userRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type super_userRootEdge {
-              cursor: String!
-              node: super_user!
             }
 
             \\"\\"\\"Fields to sort Super_users by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_userSort object.\\"\\"\\"
@@ -364,7 +360,8 @@ describe("Pluralize consistency", () => {
 
             type super_usersuper_friendMy_friendNodeAggregateSelection {
               name: StringAggregateSelectionNonNullable!
-            }"
+            }
+            "
         `);
     });
 });

@@ -48,9 +48,7 @@ describe("Aggregations", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"
-            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
-            \\"\\"\\"
+            \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
             scalar BigInt
 
             type BigIntAggregateSelectionNullable {
@@ -120,9 +118,7 @@ describe("Aggregations", () => {
               min: LocalDateTime
             }
 
-            \\"\\"\\"
-            A local time, represented as a time string without timezone information
-            \\"\\"\\"
+            \\"\\"\\"A local time, represented as a time string without timezone information\\"\\"\\"
             scalar LocalTime
 
             type LocalTimeAggregateSelectionNullable {
@@ -159,6 +155,12 @@ describe("Aggregations", () => {
               title: StringAggregateSelectionNullable!
             }
 
+            type MovieConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input MovieCreateInput {
               createdAt: DateTime
               id: ID
@@ -173,24 +175,16 @@ describe("Aggregations", () => {
               title: String
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [MovieSort]
-            }
-
-            type MovieRootConnection {
-              edges: [MovieRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type MovieRootEdge {
-              cursor: String!
-              node: Movie!
             }
 
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
@@ -338,7 +332,7 @@ describe("Aggregations", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
             }
 
             enum SortDirection {
@@ -377,7 +371,8 @@ describe("Aggregations", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }"
+            }
+            "
         `);
     });
 
@@ -423,9 +418,7 @@ describe("Aggregations", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"
-            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
-            \\"\\"\\"
+            \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
             scalar BigInt
 
             type BigIntAggregateSelectionNullable {
@@ -641,9 +634,7 @@ describe("Aggregations", () => {
               min: LocalDateTime
             }
 
-            \\"\\"\\"
-            A local time, represented as a time string without timezone information
-            \\"\\"\\"
+            \\"\\"\\"A local time, represented as a time string without timezone information\\"\\"\\"
             scalar LocalTime
 
             type LocalTimeAggregateSelectionNullable {
@@ -684,6 +675,12 @@ describe("Aggregations", () => {
               likes: [PostLikesConnectFieldInput!]
             }
 
+            type PostConnection {
+              edges: [PostEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input PostCreateInput {
               likes: PostLikesFieldInput
               title: String
@@ -695,6 +692,11 @@ describe("Aggregations", () => {
 
             input PostDisconnectInput {
               likes: [PostLikesDisconnectFieldInput!]
+            }
+
+            type PostEdge {
+              cursor: String!
+              node: Post!
             }
 
             input PostLikesAggregateInput {
@@ -1146,25 +1148,12 @@ describe("Aggregations", () => {
             input PostOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [PostSort]
             }
 
             input PostRelationInput {
               likes: [PostLikesCreateFieldInput!]
-            }
-
-            type PostRootConnection {
-              edges: [PostRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type PostRootEdge {
-              cursor: String!
-              node: Post!
             }
 
             \\"\\"\\"Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.\\"\\"\\"
@@ -1232,10 +1221,10 @@ describe("Aggregations", () => {
             type Query {
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsConnection(after: String, before: String, first: Int, last: Int, sort: [PostSort], where: PostWhere): PostRootConnection!
+              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, before: String, first: Int, last: Int, sort: [UserSort], where: UserWhere): UserRootConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
             }
 
             enum SortDirection {
@@ -1307,6 +1296,12 @@ describe("Aggregations", () => {
               node: UserWhere!
             }
 
+            type UserConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input UserCreateInput {
               someBigInt: BigInt
               someDateTime: DateTime
@@ -1320,24 +1315,16 @@ describe("Aggregations", () => {
               someTime: Time
             }
 
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
+
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [UserSort]
-            }
-
-            type UserRootConnection {
-              edges: [UserRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type UserRootEdge {
-              cursor: String!
-              node: User!
             }
 
             \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
@@ -1454,7 +1441,8 @@ describe("Aggregations", () => {
               someTime_LTE: Time
               someTime_NOT: Time
               someTime_NOT_IN: [Time]
-            }"
+            }
+            "
         `);
     });
 });

@@ -48,7 +48,7 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
         });
 
         const { totalCount, edges } = executeResult.records[0].this;
-        console.log(JSON.stringify(edges, null, 2));
+
         const connection = createConnectionWithEdgeProperties({
             selectionSet: resolveTree,
             source: { edges },
@@ -63,7 +63,7 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
     }
 
     const rootEdge = composer.createObjectTC({
-        name: `${node.name}RootEdge`,
+        name: `${node.name}Edge`,
         fields: {
             cursor: "String!",
             node: `${node.name}!`,
@@ -71,7 +71,7 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
     });
 
     const rootConnection = composer.createObjectTC({
-        name: `${node.name}RootConnection`,
+        name: `${node.name}Connection`,
         fields: {
             totalCount: "Int!",
             pageInfo: "PageInfo!",
@@ -91,9 +91,7 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
         resolve,
         args: {
             first: "Int",
-            last: "Int",
             after: "String",
-            before: "String",
             where: `${node.name}Where`,
             ...(sortArg ? { sort: sortArg.List } : {}),
             ...(node.fulltextDirective ? { fulltext: `${node.name}Fulltext` } : {}),

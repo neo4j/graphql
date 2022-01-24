@@ -85,7 +85,7 @@ describe("@ignore directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, before: String, first: Int, last: Int, sort: [UserSort], where: UserWhere): UserRootConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
             }
 
             enum SortDirection {
@@ -128,10 +128,21 @@ describe("@ignore directive", () => {
               username: StringAggregateSelectionNonNullable!
             }
 
+            type UserConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input UserCreateInput {
               id: ID!
               password: String!
               username: String!
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
             }
 
             interface UserInterface {
@@ -141,21 +152,8 @@ describe("@ignore directive", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [UserSort]
-            }
-
-            type UserRootConnection {
-              edges: [UserRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type UserRootEdge {
-              cursor: String!
-              node: User!
             }
 
             \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
@@ -204,7 +202,8 @@ describe("@ignore directive", () => {
               username_NOT_IN: [String]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
-            }"
+            }
+            "
         `);
     });
 });

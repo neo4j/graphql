@@ -64,28 +64,26 @@ describe("609", () => {
               deprecatedField: StringAggregateSelectionNullable!
             }
 
+            type DeprecatedConnection {
+              edges: [DeprecatedEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input DeprecatedCreateInput {
               deprecatedField: String
+            }
+
+            type DeprecatedEdge {
+              cursor: String!
+              node: Deprecated!
             }
 
             input DeprecatedOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more DeprecatedSort objects to sort Deprecateds by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more DeprecatedSort objects to sort Deprecateds by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [DeprecatedSort]
-            }
-
-            type DeprecatedRootConnection {
-              edges: [DeprecatedRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type DeprecatedRootEdge {
-              cursor: String!
-              node: Deprecated!
             }
 
             \\"\\"\\"Fields to sort Deprecateds by. The order in which sorts are applied is not guaranteed when specifying many fields in one DeprecatedSort object.\\"\\"\\"
@@ -129,7 +127,7 @@ describe("609", () => {
             type Query {
               deprecateds(options: DeprecatedOptions, where: DeprecatedWhere): [Deprecated!]!
               deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
-              deprecatedsConnection(after: String, before: String, first: Int, last: Int, sort: [DeprecatedSort], where: DeprecatedWhere): DeprecatedRootConnection!
+              deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort], where: DeprecatedWhere): DeprecatedConnection!
             }
 
             enum SortDirection {
@@ -155,7 +153,8 @@ describe("609", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }"
+            }
+            "
         `);
     });
 });

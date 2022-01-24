@@ -77,7 +77,7 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
-                  techsConnection(after: String, before: String, first: Int, last: Int, sort: [TechSort], where: TechWhere): TechRootConnection!
+                  techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechConnection!
                 }
 
                 enum SortDirection {
@@ -103,29 +103,27 @@ describe("Node Directive", () => {
                   value: StringAggregateSelectionNullable!
                 }
 
+                type TechConnection {
+                  edges: [TechEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input TechCreateInput {
                   name: String
                   value: String
                 }
 
+                type TechEdge {
+                  cursor: String!
+                  node: Tech!
+                }
+
                 input TechOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"
-                  Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
+                  \\"\\"\\"Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechSort]
-                }
-
-                type TechRootConnection {
-                  edges: [TechRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type TechRootEdge {
-                  cursor: String!
-                  node: Tech!
                 }
 
                 \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
@@ -175,7 +173,8 @@ describe("Node Directive", () => {
                 type UpdateTechsMutationResponse {
                   info: UpdateInfo!
                   techs: [Tech!]!
-                }"
+                }
+                "
             `);
         });
 
@@ -232,7 +231,7 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
-                  techsConnection(after: String, before: String, first: Int, last: Int, sort: [TechSort], where: TechWhere): TechRootConnection!
+                  techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechConnection!
                 }
 
                 enum SortDirection {
@@ -258,29 +257,27 @@ describe("Node Directive", () => {
                   value: StringAggregateSelectionNullable!
                 }
 
+                type TechConnection {
+                  edges: [TechEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input TechCreateInput {
                   name: String
                   value: String
                 }
 
+                type TechEdge {
+                  cursor: String!
+                  node: Tech!
+                }
+
                 input TechOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"
-                  Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
+                  \\"\\"\\"Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechSort]
-                }
-
-                type TechRootConnection {
-                  edges: [TechRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type TechRootEdge {
-                  cursor: String!
-                  node: Tech!
                 }
 
                 \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
@@ -330,7 +327,8 @@ describe("Node Directive", () => {
                 type UpdateTechsMutationResponse {
                   info: UpdateInfo!
                   techs: [Tech!]!
-                }"
+                }
+                "
             `);
         });
 
@@ -387,7 +385,7 @@ describe("Node Directive", () => {
                 type Query {
                   technologies(options: TechOptions, where: TechWhere): [Tech!]!
                   technologiesAggregate(where: TechWhere): TechAggregateSelection!
-                  technologiesConnection(after: String, before: String, first: Int, last: Int, sort: [TechSort], where: TechWhere): TechRootConnection!
+                  technologiesConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechConnection!
                 }
 
                 enum SortDirection {
@@ -413,29 +411,27 @@ describe("Node Directive", () => {
                   value: StringAggregateSelectionNullable!
                 }
 
+                type TechConnection {
+                  edges: [TechEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input TechCreateInput {
                   name: String
                   value: String
                 }
 
+                type TechEdge {
+                  cursor: String!
+                  node: Tech!
+                }
+
                 input TechOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"
-                  Specify one or more TechSort objects to sort Technologies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
+                  \\"\\"\\"Specify one or more TechSort objects to sort Technologies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechSort]
-                }
-
-                type TechRootConnection {
-                  edges: [TechRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type TechRootEdge {
-                  cursor: String!
-                  node: Tech!
                 }
 
                 \\"\\"\\"Fields to sort Technologies by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
@@ -485,7 +481,8 @@ describe("Node Directive", () => {
                 type UpdateTechnologiesMutationResponse {
                   info: UpdateInfo!
                   technologies: [Tech!]!
-                }"
+                }
+                "
             `);
         });
 
@@ -542,7 +539,7 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: TechsOptions, where: TechsWhere): [Techs!]!
                   techsAggregate(where: TechsWhere): TechsAggregateSelection!
-                  techsConnection(after: String, before: String, first: Int, last: Int, sort: [TechsSort], where: TechsWhere): TechsRootConnection!
+                  techsConnection(after: String, first: Int, sort: [TechsSort], where: TechsWhere): TechsConnection!
                 }
 
                 enum SortDirection {
@@ -566,28 +563,26 @@ describe("Node Directive", () => {
                   value: StringAggregateSelectionNullable!
                 }
 
+                type TechsConnection {
+                  edges: [TechsEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input TechsCreateInput {
                   value: String
+                }
+
+                type TechsEdge {
+                  cursor: String!
+                  node: Techs!
                 }
 
                 input TechsOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"
-                  Specify one or more TechsSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
+                  \\"\\"\\"Specify one or more TechsSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechsSort]
-                }
-
-                type TechsRootConnection {
-                  edges: [TechsRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type TechsRootEdge {
-                  cursor: String!
-                  node: Techs!
                 }
 
                 \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechsSort object.\\"\\"\\"
@@ -625,7 +620,8 @@ describe("Node Directive", () => {
                 type UpdateTechsMutationResponse {
                   info: UpdateInfo!
                   techs: [Techs!]!
-                }"
+                }
+                "
             `);
         });
 
@@ -682,7 +678,7 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: UserOptions, where: UserWhere): [User!]!
                   techsAggregate(where: UserWhere): UserAggregateSelection!
-                  techsConnection(after: String, before: String, first: Int, last: Int, sort: [UserSort], where: UserWhere): UserRootConnection!
+                  techsConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
                 }
 
                 enum SortDirection {
@@ -719,28 +715,26 @@ describe("Node Directive", () => {
                   value: StringAggregateSelectionNullable!
                 }
 
+                type UserConnection {
+                  edges: [UserEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input UserCreateInput {
                   value: String
+                }
+
+                type UserEdge {
+                  cursor: String!
+                  node: User!
                 }
 
                 input UserOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"
-                  Specify one or more UserSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
+                  \\"\\"\\"Specify one or more UserSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [UserSort]
-                }
-
-                type UserRootConnection {
-                  edges: [UserRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type UserRootEdge {
-                  cursor: String!
-                  node: User!
                 }
 
                 \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
@@ -765,7 +759,8 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
-                }"
+                }
+                "
             `);
         });
 
@@ -822,7 +817,7 @@ describe("Node Directive", () => {
                 type Query {
                   users(options: UserOptions, where: UserWhere): [User!]!
                   usersAggregate(where: UserWhere): UserAggregateSelection!
-                  usersConnection(after: String, before: String, first: Int, last: Int, sort: [UserSort], where: UserWhere): UserRootConnection!
+                  usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
                 }
 
                 enum SortDirection {
@@ -859,28 +854,26 @@ describe("Node Directive", () => {
                   value: StringAggregateSelectionNullable!
                 }
 
+                type UserConnection {
+                  edges: [UserEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input UserCreateInput {
                   value: String
+                }
+
+                type UserEdge {
+                  cursor: String!
+                  node: User!
                 }
 
                 input UserOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"
-                  Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
+                  \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [UserSort]
-                }
-
-                type UserRootConnection {
-                  edges: [UserRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type UserRootEdge {
-                  cursor: String!
-                  node: User!
                 }
 
                 \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
@@ -905,7 +898,8 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
-                }"
+                }
+                "
             `);
         });
 
@@ -962,7 +956,7 @@ describe("Node Directive", () => {
                 type Query {
                   users(options: UsersOptions, where: UsersWhere): [Users!]!
                   usersAggregate(where: UsersWhere): UsersAggregateSelection!
-                  usersConnection(after: String, before: String, first: Int, last: Int, sort: [UsersSort], where: UsersWhere): UsersRootConnection!
+                  usersConnection(after: String, first: Int, sort: [UsersSort], where: UsersWhere): UsersConnection!
                 }
 
                 enum SortDirection {
@@ -999,28 +993,26 @@ describe("Node Directive", () => {
                   value: StringAggregateSelectionNullable!
                 }
 
+                type UsersConnection {
+                  edges: [UsersEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input UsersCreateInput {
                   value: String
+                }
+
+                type UsersEdge {
+                  cursor: String!
+                  node: Users!
                 }
 
                 input UsersOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"
-                  Specify one or more UsersSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
+                  \\"\\"\\"Specify one or more UsersSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [UsersSort]
-                }
-
-                type UsersRootConnection {
-                  edges: [UsersRootEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type UsersRootEdge {
-                  cursor: String!
-                  node: Users!
                 }
 
                 \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UsersSort object.\\"\\"\\"
@@ -1045,7 +1037,8 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
-                }"
+                }
+                "
             `);
         });
     });

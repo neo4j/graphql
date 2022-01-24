@@ -94,6 +94,12 @@ describe("Sort", () => {
               node: Node1Where!
             }
 
+            type Node1Connection {
+              edges: [Node1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input Node1CreateInput {
               property: String!
               relatedTo: Node1RelatedToFieldInput
@@ -107,6 +113,11 @@ describe("Sort", () => {
               relatedTo: [Node1RelatedToDisconnectFieldInput!]
             }
 
+            type Node1Edge {
+              cursor: String!
+              node: Node1!
+            }
+
             type Node1Node2RelatedToAggregationSelection {
               count: Int!
             }
@@ -114,9 +125,7 @@ describe("Sort", () => {
             input Node1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more Node1Sort objects to sort Node1s by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more Node1Sort objects to sort Node1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [Node1Sort]
             }
 
@@ -189,17 +198,6 @@ describe("Sort", () => {
               relatedTo: [Node1RelatedToCreateFieldInput!]
             }
 
-            type Node1RootConnection {
-              edges: [Node1RootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Node1RootEdge {
-              cursor: String!
-              node: Node1!
-            }
-
             \\"\\"\\"Fields to sort Node1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Node1Sort object.\\"\\"\\"
             input Node1Sort {
               property: SortDirection
@@ -248,6 +246,12 @@ describe("Sort", () => {
               node: Node2Where!
             }
 
+            type Node2Connection {
+              edges: [Node2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input Node2CreateInput {
               relatedTo: Node2RelatedToFieldInput
             }
@@ -258,6 +262,11 @@ describe("Sort", () => {
 
             input Node2DisconnectInput {
               relatedTo: [Node2RelatedToDisconnectFieldInput!]
+            }
+
+            type Node2Edge {
+              cursor: String!
+              node: Node2!
             }
 
             type Node2Node1RelatedToAggregationSelection {
@@ -372,17 +381,6 @@ describe("Sort", () => {
             input Node2RelationInput {
               relatedTo: [Node2RelatedToCreateFieldInput!]
             }
-            
-            type Node2RootConnection {
-              edges: [Node2RootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Node2RootEdge {
-              cursor: String!
-              node: Node2!
-            }
 
             input Node2UpdateInput {
               relatedTo: [Node2RelatedToUpdateFieldInput!]
@@ -409,10 +407,10 @@ describe("Sort", () => {
             type Query {
               node1s(options: Node1Options, where: Node1Where): [Node1!]!
               node1sAggregate(where: Node1Where): Node1AggregateSelection!
-              node1sConnection(after: String, before: String, first: Int, last: Int, sort: [Node1Sort], where: Node1Where): Node1RootConnection!
+              node1sConnection(after: String, first: Int, sort: [Node1Sort], where: Node1Where): Node1Connection!
               node2s(options: Node2Options, where: Node2Where): [Node2!]!
               node2sAggregate(where: Node2Where): Node2AggregateSelection!
-              node2sConnection(after: String, before: String, first: Int, last: Int, where: Node2Where): Node2RootConnection!
+              node2sConnection(after: String, first: Int, where: Node2Where): Node2Connection!
             }
 
             enum SortDirection {
@@ -443,7 +441,8 @@ describe("Sort", () => {
             type UpdateNode2sMutationResponse {
               info: UpdateInfo!
               node2s: [Node2!]!
-            }"
+            }
+            "
         `);
     });
 });

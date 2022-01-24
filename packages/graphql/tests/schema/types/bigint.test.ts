@@ -39,9 +39,7 @@ describe("Bigint", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"
-            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
-            \\"\\"\\"
+            \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
             scalar BigInt
 
             type BigIntAggregateSelectionNonNullable {
@@ -79,29 +77,27 @@ describe("Bigint", () => {
               size: BigIntAggregateSelectionNonNullable!
             }
 
+            type FileConnection {
+              edges: [FileEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input FileCreateInput {
               name: String!
               size: BigInt!
             }
 
+            type FileEdge {
+              cursor: String!
+              node: File!
+            }
+
             input FileOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [FileSort]
-            }
-
-            type FileRootConnection {
-              edges: [FileRootEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type FileRootEdge {
-              cursor: String!
-              node: File!
             }
 
             \\"\\"\\"Fields to sort Files by. The order in which sorts are applied is not guaranteed when specifying many fields in one FileSort object.\\"\\"\\"
@@ -155,7 +151,7 @@ describe("Bigint", () => {
             type Query {
               files(options: FileOptions, where: FileWhere): [File!]!
               filesAggregate(where: FileWhere): FileAggregateSelection!
-              filesConnection(after: String, before: String, first: Int, last: Int, sort: [FileSort], where: FileWhere): FileRootConnection!
+              filesConnection(after: String, first: Int, sort: [FileSort], where: FileWhere): FileConnection!
             }
 
             enum SortDirection {
@@ -181,7 +177,8 @@ describe("Bigint", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }"
+            }
+            "
         `);
     });
 });
