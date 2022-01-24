@@ -597,25 +597,6 @@ function createProjectionAndParams({
         return res;
     }
 
-    // Fields of reference node to sort on. Since sorting is done on projection, if field is not selected
-    // sort will fail silently
-
-    const sortFieldNames = ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat();
-
-    // Iterate over fields name in sort argument
-    const nodeFields = sortFieldNames.reduce(
-        (acc, sortFieldName) => ({
-            ...acc,
-            // If fieldname is not found in fields of selection set
-            ...(!Object.values(resolveTree.fieldsByTypeName[node.name]).find((field) => field.name === sortFieldName)
-                ? // generate a basic resolve tree
-                  generateProjectionField({ name: sortFieldName })
-                : {}),
-        }),
-        // and add it to existing fields for projection
-        resolveTree.fieldsByTypeName[node.name]
-    );
-
     // Include fields of implemented interfaces to allow for fragments on interfaces
     // cf. https://github.com/neo4j/graphql/issues/476
 
@@ -623,11 +604,12 @@ function createProjectionAndParams({
         // Map over the implemented interfaces of the node and extract the names
         .map((implementedInterface) => implementedInterface.name.value)
         // Combine the fields of the interfaces...
-        .reduce(
-            (prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }),
+        .reduce((prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }), {
             // with the fields of the node
-            nodeFields
-        );
+            ...resolveTree.fieldsByTypeName[node.name],
+            // and fields to sort on
+            ...generateSortFields({ node, resolveTree }),
+        });
 
     const { projection, params, meta } = Object.entries(fields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
@@ -639,3 +621,29 @@ function createProjectionAndParams({
 }
 
 export default createProjectionAndParams;
+
+// Fields of reference node to sort on. Since sorting is done on projection, if field is not selected or is and aliased
+// sort will fail silently
+const generateSortFields = ({
+    node,
+    resolveTree,
+}: {
+    node: Node;
+    resolveTree: ResolveTree;
+}): Record<string, ResolveTree> => {
+    const nodeFields = resolveTree.fieldsByTypeName[node.name];
+
+    const sortFieldNames = ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat();
+
+    return Array.from(new Set(sortFieldNames)).reduce(
+        (acc, sortFieldName) => ({
+            ...acc,
+            // If fieldname is not found in fields of selection set
+            ...(!Object.values(nodeFields).find((field) => field.name === sortFieldName)
+                ? // generate a basic resolve tree
+                  generateProjectionField({ name: sortFieldName })
+                : {}),
+        }),
+        {}
+    );
+};
