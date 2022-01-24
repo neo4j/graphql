@@ -41,18 +41,15 @@ export const DEBUG_EXECUTE = `${DEBUG_PREFIX}:execute`;
 export const RESERVED_TYPE_NAMES = [
     {
         regex: /^PageInfo$/,
-        error:
-            "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.",
+        error: "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.",
     },
     {
         regex: /^.+Connection$/,
-        error:
-            'Type or Interface with name ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.',
+        error: 'Type or Interface with name ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.',
     },
     {
         regex: /^Node$/,
-        error:
-            "Type or Interface with name `Node` reserved to support Relay. See https://relay.dev/graphql/ for more information.",
+        error: "Type or Interface with name `Node` reserved to support Relay. See https://relay.dev/graphql/ for more information.",
     },
 ];
 
@@ -82,3 +79,10 @@ export const WHERE_AGGREGATION_TYPES = [
     "Time",
     "Duration",
 ];
+
+export enum RelationshipQueryDirectionOptions {
+    DEFAULT_DIRECTED = "DEFAULT_DIRECTED",
+    DEFAULT_UNDIRECTED = "DEFAULT_UNDIRECTED",
+    DIRECTED_ONLY = "DIRECTED_ONLY",
+    UNDIRECTED_ONLY = "UNDIRECTED_ONLY",
+}
