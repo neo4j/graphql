@@ -279,7 +279,7 @@ function makeAugmentedSchema(
             objects: objectNodes,
         });
 
-        // Ensure that all required fields are returning either a primitive value or an enum
+        // Ensure that all required fields are returning either a scalar type or an enum
 
         const violativeRequiredField = nodeFields.ignoredFields
             .filter((f) => f.requiredFields.length)
