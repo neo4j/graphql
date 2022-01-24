@@ -47,5 +47,8 @@
         "webpack": "5.10.3",
         "webpack-cli": "4.5.0",
         "webpack-dev-server": "3.11.0"
+    },
+    "devDependencies": {
+        "@tsconfig/create-react-app": "^1.0.2"
     }
 }
