@@ -1827,19 +1827,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@^2.5.5, @neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@^2.5.6, @neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
-    "@graphql-codegen/core": ^2.4.0
-    "@graphql-codegen/plugin-helpers": ^2.3.2
-    "@graphql-codegen/typescript": ^2.4.2
-    "@graphql-tools/merge": ^8.2.1
-    "@neo4j/graphql": ^2.5.5
-    "@types/jest": 27.4.0
-    "@types/node": 14.18.9
-    graphql-tag: 2.12.6
-    jest: 27.4.7
+    "@graphql-codegen/core": 2.0.0
+    "@graphql-codegen/plugin-helpers": 2.0.0
+    "@graphql-codegen/typescript": 2.0.0
+    "@graphql-tools/merge": 6.2.14
+    "@neo4j/graphql": ^2.5.6
+    "@types/jest": 26.0.8
+    "@types/node": 14.0.27
+    camelcase: ^6.2.0
+    graphql-tag: 2.11.0
+    jest: 26.2.2
     jsonwebtoken: 8.5.1
     libnpmsearch: 4.0.0
     npm-run-all: 4.1.5
@@ -1855,7 +1856,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@^2.5.5, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^2.5.6, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -1911,9 +1912,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
-    "@neo4j/graphql": ^2.5.5
-    "@types/jest": 27.4.0
-    "@types/node": 14.18.9
+    "@neo4j/graphql": ^2.5.6
+    "@types/jest": 26.0.8
+    "@types/node": 14.0.27
     "@types/pluralize": 0.0.29
     camelcase: ^6.2.0
     debug: ^4.3.2
@@ -2161,7 +2162,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node12@npm:1.0.9, @tsconfig/node12@npm:^1.0.7":
+"@tsconfig/node12@npm:^1.0.7, @tsconfig/node12@npm:^1.0.9":
   version: 1.0.9
   resolution: "@tsconfig/node12@npm:1.0.9"
   checksum: a01b2400ab3582b86b589c6d31dcd0c0656f333adecde85d6d7d4086adb059808b82692380bb169546d189bf771ae21d02544a75b57bd6da4a5dd95f8567bec9
@@ -12160,9 +12161,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "migration@workspace:examples/migration"
   dependencies:
-    "@neo4j/graphql": ^2.5.5
-    apollo-server: ^3.6.1
-    graphql: ^16.2.0
+    "@neo4j/graphql": ^2.5.6
+    apollo-server: ^2.23.0
+    graphql: ^15.0.0
     neo4j-driver: ^4.2.0
   languageName: unknown
   linkType: soft
@@ -12560,8 +12561,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "neo-push-server@workspace:examples/neo-push/server"
   dependencies:
-    "@neo4j/graphql": ^2.5.5
-    "@neo4j/graphql-ogm": ^2.5.5
+    "@neo4j/graphql": ^2.5.6
+    "@neo4j/graphql-ogm": ^2.5.6
     "@types/bcrypt": 3.0.0
     "@types/debug": 4.1.5
     "@types/dotenv": 8.2.0
@@ -12637,15 +12638,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "neo4j-graphql@workspace:."
   dependencies:
-    "@tsconfig/node12": 1.0.9
-    "@typescript-eslint/eslint-plugin": 5.10.0
-    "@typescript-eslint/parser": 5.10.0
-    concurrently: 7.0.0
-    dotenv: 14.2.0
-    eslint: 8.7.0
-    eslint-config-airbnb-typescript: 16.1.0
-    eslint-config-prettier: 8.3.0
-    eslint-import-resolver-typescript: 2.5.0
+    "@tsconfig/node12": ^1.0.9
+    "@typescript-eslint/eslint-plugin": 4.1.1
+    "@typescript-eslint/parser": 4.15.1
+    concurrently: 6.0.0
+    dotenv: ^10.0.0
+    eslint: 7.9.0
+    eslint-config-airbnb-typescript: 10.0.0
+    eslint-config-prettier: 6.11.0
+    eslint-import-resolver-typescript: ^2.4.0
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.25.4
     eslint-plugin-jest: 26.0.0
