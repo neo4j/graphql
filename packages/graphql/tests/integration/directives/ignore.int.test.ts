@@ -18,7 +18,6 @@
  */
 
 import { Driver } from "neo4j-driver";
-import faker from "faker";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
@@ -48,8 +47,8 @@ describe("@ignore directive", () => {
 
         const user = {
             id: generate(),
-            firstName: faker.name.firstName(),
-            lastName: faker.name.lastName(),
+            firstName: generate({ charset: "alphabetic" }),
+            lastName: generate({ charset: "alphabetic" }),
         };
 
         const fullName = ({ firstName, lastName }) => `${firstName} ${lastName}`;
@@ -157,8 +156,8 @@ describe("@ignore directive", () => {
     describe("Cypher fields", () => {
         const user = {
             id: generate(),
-            firstName: faker.name.firstName(),
-            lastName: faker.name.lastName(),
+            firstName: generate({ charset: "alphabetic" }),
+            lastName: generate({ charset: "alphabetic" }),
         };
 
         const typeDefs = `
