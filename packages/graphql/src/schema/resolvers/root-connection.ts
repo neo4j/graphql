@@ -70,7 +70,7 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
 
             const connection = createConnectionWithEdgeProperties({
                 selectionSet: resolveTree,
-                source: { edges },
+                source: { edges: record.edges },
                 args: resolveTree.args,
                 totalCount,
             });
