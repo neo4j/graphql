@@ -32,8 +32,8 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
         const context = _context as Context;
         const resolveTree = getNeo4jResolveTree(info);
 
-        const edgeTree = resolveTree.fieldsByTypeName[`${node.name}RootConnection`].edges;
-        const nodeTree = edgeTree.fieldsByTypeName[`${node.name}RootEdge`].node;
+        const edgeTree = resolveTree.fieldsByTypeName[`${node.name}Connection`].edges;
+        const nodeTree = edgeTree.fieldsByTypeName[`${node.name}Edge`].node;
 
         context.resolveTree = { ...nodeTree, args: resolveTree.args };
         context.isRootConnectionField = true;
