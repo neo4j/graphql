@@ -639,7 +639,9 @@ const generateSortFields = ({
         (acc, sortFieldName) => ({
             ...acc,
             // If fieldname is not found in fields of selection set
-            ...(!Object.values(nodeFields).find((field) => field.name === sortFieldName)
+            ...(!Object.values(nodeFields).find((field) => field.name === sortFieldName) ||
+            // or does exist but is aliased
+            Object.values(nodeFields).find((field) => field.name === sortFieldName && field.alias !== sortFieldName)
                 ? // generate a basic resolve tree
                   generateProjectionField({ name: sortFieldName })
                 : {}),
