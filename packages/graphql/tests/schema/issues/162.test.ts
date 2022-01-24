@@ -175,7 +175,9 @@ describe("162", () => {
             input TigerJawLevel2Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more TigerJawLevel2Sort objects to sort TigerJawLevel2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more TigerJawLevel2Sort objects to sort TigerJawLevel2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [TigerJawLevel2Sort]
             }
 
@@ -273,7 +275,9 @@ describe("162", () => {
             input TigerJawLevel2Part1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more TigerJawLevel2Part1Sort objects to sort TigerJawLevel2Part1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more TigerJawLevel2Part1Sort objects to sort TigerJawLevel2Part1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [TigerJawLevel2Part1Sort]
             }
 
@@ -503,7 +507,9 @@ describe("162", () => {
             input TigerOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more TigerSort objects to sort Tigers by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more TigerSort objects to sort Tigers by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [TigerSort]
             }
             
@@ -518,7 +524,9 @@ describe("162", () => {
               node: Tiger!
             }
 
-            \\"\\"\\"Fields to sort Tigers by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Tigers by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerSort object.
+            \\"\\"\\"
             input TigerSort {
               x: SortDirection
             }
@@ -561,8 +569,7 @@ describe("162", () => {
             type UpdateTigersMutationResponse {
               info: UpdateInfo!
               tigers: [Tiger!]!
-            }
-            "
+            }"
         `);
     });
 });

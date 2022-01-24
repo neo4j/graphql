@@ -125,7 +125,9 @@ describe("@readonly directive", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [UserSort]
             }
 
@@ -173,8 +175,7 @@ describe("@readonly directive", () => {
               username_NOT_IN: [String]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
-            }
-            "
+            }"
         `);
     });
 
@@ -290,7 +291,9 @@ describe("@readonly directive", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [UserSort]
             }
 
@@ -338,8 +341,7 @@ describe("@readonly directive", () => {
               username_NOT_IN: [String]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
-            }
-            "
+            }"
         `);
     });
 });

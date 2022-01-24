@@ -70,7 +70,9 @@ describe("Point", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MovieSort]
             }
 
@@ -166,8 +168,7 @@ describe("Point", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
@@ -237,7 +238,9 @@ describe("Point", () => {
             input MachineOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MachineSort objects to sort Machines by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MachineSort objects to sort Machines by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MachineSort]
             }
 
@@ -313,8 +316,7 @@ describe("Point", () => {
             type UpdateMachinesMutationResponse {
               info: UpdateInfo!
               machines: [Machine!]!
-            }
-            "
+            }"
         `);
     });
 
@@ -436,8 +438,7 @@ describe("Point", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
@@ -559,8 +560,7 @@ describe("Point", () => {
             type UpdateMachinesMutationResponse {
               info: UpdateInfo!
               machines: [Machine!]!
-            }
-            "
+            }"
         `);
     });
 });

@@ -61,7 +61,9 @@ describe("Localtime", () => {
               shortest: ID
             }
 
-            \\"\\"\\"A local time, represented as a time string without timezone information\\"\\"\\"
+            \\"\\"\\"
+            A local time, represented as a time string without timezone information
+            \\"\\"\\"
             scalar LocalTime
 
             type LocalTimeAggregateSelectionNullable {
@@ -88,7 +90,9 @@ describe("Localtime", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MovieSort]
             }
 
@@ -175,8 +179,7 @@ describe("Localtime", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 });

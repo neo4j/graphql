@@ -119,7 +119,9 @@ describe("@writeonly directive", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [UserSort]
             }
 
@@ -168,8 +170,7 @@ describe("@writeonly directive", () => {
               username_NOT_IN: [String]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
-            }
-            "
+            }"
         `);
     });
 
@@ -278,7 +279,9 @@ describe("@writeonly directive", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [UserSort]
             }
 
@@ -327,8 +330,7 @@ describe("@writeonly directive", () => {
               username_NOT_IN: [String]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
-            }
-            "
+            }"
         `);
     });
 
@@ -372,7 +374,9 @@ describe("@writeonly directive", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [ActorSort]
             }
 
@@ -544,7 +548,9 @@ describe("@writeonly directive", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MovieSort]
             }
 
@@ -647,8 +653,7 @@ describe("@writeonly directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 });

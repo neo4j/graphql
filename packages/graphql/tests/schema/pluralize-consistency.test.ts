@@ -141,7 +141,9 @@ describe("Pluralize consistency", () => {
             input super_friendOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more super_friendSort objects to sort Super_friends by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more super_friendSort objects to sort Super_friends by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [super_friendSort]
             }
 
@@ -304,7 +306,9 @@ describe("Pluralize consistency", () => {
             input super_userOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more super_userSort objects to sort Super_users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more super_userSort objects to sort Super_users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [super_userSort]
             }
 
@@ -360,8 +364,7 @@ describe("Pluralize consistency", () => {
 
             type super_usersuper_friendMy_friendNodeAggregateSelection {
               name: StringAggregateSelectionNonNullable!
-            }
-            "
+            }"
         `);
     });
 });

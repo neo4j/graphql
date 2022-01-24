@@ -48,7 +48,9 @@ describe("Aggregations", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
+            \\"\\"\\"
+            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
+            \\"\\"\\"
             scalar BigInt
 
             type BigIntAggregateSelectionNullable {
@@ -118,7 +120,9 @@ describe("Aggregations", () => {
               min: LocalDateTime
             }
 
-            \\"\\"\\"A local time, represented as a time string without timezone information\\"\\"\\"
+            \\"\\"\\"
+            A local time, represented as a time string without timezone information
+            \\"\\"\\"
             scalar LocalTime
 
             type LocalTimeAggregateSelectionNullable {
@@ -172,7 +176,9 @@ describe("Aggregations", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MovieSort]
             }
 
@@ -371,8 +377,7 @@ describe("Aggregations", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
@@ -418,7 +423,9 @@ describe("Aggregations", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
+            \\"\\"\\"
+            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
+            \\"\\"\\"
             scalar BigInt
 
             type BigIntAggregateSelectionNullable {
@@ -634,7 +641,9 @@ describe("Aggregations", () => {
               min: LocalDateTime
             }
 
-            \\"\\"\\"A local time, represented as a time string without timezone information\\"\\"\\"
+            \\"\\"\\"
+            A local time, represented as a time string without timezone information
+            \\"\\"\\"
             scalar LocalTime
 
             type LocalTimeAggregateSelectionNullable {
@@ -1137,7 +1146,9 @@ describe("Aggregations", () => {
             input PostOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [PostSort]
             }
 
@@ -1312,7 +1323,9 @@ describe("Aggregations", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [UserSort]
             }
 
@@ -1441,8 +1454,7 @@ describe("Aggregations", () => {
               someTime_LTE: Time
               someTime_NOT: Time
               someTime_NOT_IN: [Time]
-            }
-            "
+            }"
         `);
     });
 });

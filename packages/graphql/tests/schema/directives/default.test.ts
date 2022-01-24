@@ -180,7 +180,9 @@ describe("@default directive", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [UserSort]
             }
 
@@ -287,8 +289,7 @@ describe("@default directive", () => {
               verifiedDate_NOT: DateTime
               verifiedDate_NOT_IN: [DateTime]
               verified_NOT: Boolean
-            }
-            "
+            }"
         `);
     });
 });

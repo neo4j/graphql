@@ -39,7 +39,9 @@ describe("Bigint", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
+            \\"\\"\\"
+            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
+            \\"\\"\\"
             scalar BigInt
 
             type BigIntAggregateSelectionNonNullable {
@@ -85,7 +87,9 @@ describe("Bigint", () => {
             input FileOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [FileSort]
             }
 
@@ -177,8 +181,7 @@ describe("Bigint", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }
-            "
+            }"
         `);
     });
 });

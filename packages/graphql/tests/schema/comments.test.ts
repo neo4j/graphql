@@ -147,7 +147,9 @@ describe("Comments", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MovieSort]
             }
 
@@ -257,8 +259,7 @@ describe("Comments", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
@@ -304,7 +305,9 @@ describe("Comments", () => {
                 input ActorOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"
+                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
                   sort: [ActorSort]
                 }
 
@@ -504,7 +507,9 @@ describe("Comments", () => {
                 input MovieOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"
+                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
                   sort: [MovieSort]
                 }
 
@@ -607,8 +612,7 @@ describe("Comments", () => {
                 type UpdateMoviesMutationResponse {
                   info: UpdateInfo!
                   movies: [Movie!]!
-                }
-                "
+                }"
             `);
         });
 
@@ -770,7 +774,9 @@ describe("Comments", () => {
                 input ActorOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"
+                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
                   sort: [ActorSort]
                 }
 
@@ -869,7 +875,9 @@ describe("Comments", () => {
                 input MovieOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"
+                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
                   sort: [MovieSort]
                 }
 
@@ -1016,7 +1024,9 @@ describe("Comments", () => {
                 input SeriesOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"
+                  Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
                   sort: [SeriesSort]
                 }
 
@@ -1098,8 +1108,7 @@ describe("Comments", () => {
                 type UpdateSeriesMutationResponse {
                   info: UpdateInfo!
                   series: [Series!]!
-                }
-                "
+                }"
             `);
         });
 

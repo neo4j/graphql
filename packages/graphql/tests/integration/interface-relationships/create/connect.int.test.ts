@@ -150,7 +150,7 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.createActors.actors[0].actedIn[0].actors).toHaveLength(2);
+            expect((gqlResult.data as any)?.createActors.actors[0].actedIn[0].actors).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 createActors: {
                     actors: [
@@ -257,11 +257,13 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.createActors.actors[0].actedIn).toHaveLength(2);
+            expect((gqlResult.data as any)?.createActors.actors[0].actedIn).toHaveLength(2);
             expect(
-                gqlResult.data?.createActors.actors[0].actedIn.find((actedIn) => actedIn.__typename === "Movie").actors
+                (gqlResult.data as any)?.createActors.actors[0].actedIn.find(
+                    (actedIn) => actedIn.__typename === "Movie"
+                ).actors
             ).toHaveLength(2);
-            expect(gqlResult.data?.createActors.actors[0].actedIn).toHaveLength(2);
+            expect((gqlResult.data as any)?.createActors.actors[0].actedIn).toHaveLength(2);
 
             expect(gqlResult.data).toEqual({
                 createActors: {

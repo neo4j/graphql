@@ -90,7 +90,9 @@ describe("Unions", () => {
             input AuthorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [AuthorSort]
             }
 
@@ -486,7 +488,9 @@ describe("Unions", () => {
             input BookOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [BookSort]
             }
             
@@ -752,7 +756,9 @@ describe("Unions", () => {
             input JournalOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [JournalSort]
             }
 
@@ -907,8 +913,7 @@ describe("Unions", () => {
               words_LTE: Int
               words_NOT: Int
               words_NOT_IN: [Int]
-            }
-            "
+            }"
         `);
     });
 });

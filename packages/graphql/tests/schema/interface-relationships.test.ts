@@ -179,7 +179,9 @@ describe("Interface Relationships", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [ActorSort]
             }
 
@@ -278,7 +280,9 @@ describe("Interface Relationships", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MovieSort]
             }
 
@@ -425,7 +429,9 @@ describe("Interface Relationships", () => {
             input SeriesOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [SeriesSort]
             }
 
@@ -507,8 +513,7 @@ describe("Interface Relationships", () => {
             type UpdateSeriesMutationResponse {
               info: UpdateInfo!
               series: [Series!]!
-            }
-            "
+            }"
         `);
     });
 
@@ -684,7 +689,9 @@ describe("Interface Relationships", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [ActorSort]
             }
 
@@ -798,7 +805,9 @@ describe("Interface Relationships", () => {
             input EpisodeOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [EpisodeSort]
             }
 
@@ -947,7 +956,9 @@ describe("Interface Relationships", () => {
               where: EpisodeSeriesConnectionWhere
             }
 
-            \\"\\"\\"Fields to sort Episodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one EpisodeSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Episodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one EpisodeSort object.
+            \\"\\"\\"
             input EpisodeSort {
               runtime: SortDirection
             }
@@ -1098,7 +1109,9 @@ describe("Interface Relationships", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MovieSort]
             }
 
@@ -1649,7 +1662,9 @@ describe("Interface Relationships", () => {
             input SeriesOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [SeriesSort]
             }
 
@@ -1753,8 +1768,7 @@ describe("Interface Relationships", () => {
             type UpdateSeriesMutationResponse {
               info: UpdateInfo!
               series: [Series!]!
-            }
-            "
+            }"
         `);
     });
 
@@ -2197,7 +2211,9 @@ describe("Interface Relationships", () => {
             input Type1Interface1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type1Interface1Sort objects to sort Type1Interface1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more Type1Interface1Sort objects to sort Type1Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [Type1Interface1Sort]
             }
 
@@ -2277,7 +2293,9 @@ describe("Interface Relationships", () => {
             input Type1Interface2Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type1Interface2Sort objects to sort Type1Interface2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more Type1Interface2Sort objects to sort Type1Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [Type1Interface2Sort]
             }
 
@@ -2319,7 +2337,9 @@ describe("Interface Relationships", () => {
             input Type1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type1Sort objects to sort Type1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more Type1Sort objects to sort Type1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [Type1Sort]
             }
 
@@ -2425,7 +2445,9 @@ describe("Interface Relationships", () => {
             input Type2Interface1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [Type2Interface1Sort]
             }
 
@@ -2487,7 +2509,9 @@ describe("Interface Relationships", () => {
             input Type2Interface2Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type2Interface2Sort objects to sort Type2Interface2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more Type2Interface2Sort objects to sort Type2Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [Type2Interface2Sort]
             }
 
@@ -2557,8 +2581,7 @@ describe("Interface Relationships", () => {
             type UpdateType2Interface2sMutationResponse {
               info: UpdateInfo!
               type2Interface2s: [Type2Interface2!]!
-            }
-            "
+            }"
         `);
 
         // expect(() => {
@@ -2688,7 +2711,9 @@ describe("Interface Relationships", () => {
             input CommentOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more CommentSort objects to sort Comments by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more CommentSort objects to sort Comments by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [CommentSort]
             }
 
@@ -3301,7 +3326,9 @@ describe("Interface Relationships", () => {
             input PostOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [PostSort]
             }
 
@@ -3524,7 +3551,9 @@ describe("Interface Relationships", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [UserSort]
             }
 
@@ -3580,8 +3609,7 @@ describe("Interface Relationships", () => {
               name_NOT_IN: [String]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
-            }
-            "
+            }"
         `);
     });
 });
