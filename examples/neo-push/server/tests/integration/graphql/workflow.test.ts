@@ -75,20 +75,18 @@ describe("workflow", () => {
             const apolloServer = server(driver, { req });
 
             const mutate = async (str) => {
-                const response = await apolloServer.mutate({
-                    mutation: str,
+                const response = await apolloServer.executeOperation({
+                    query: str,
                 });
 
                 if (response.errors) {
                     throw new Error(response.errors[0].message);
                 }
 
-                return response;
+                return response.data as any;
             };
 
-            const {
-                data: { createBlogs },
-            } = await mutate(gql`
+            const { createBlogs } = await mutate(gql`
                     mutation {
                         createBlogs(
                             input: [
@@ -112,9 +110,7 @@ describe("workflow", () => {
             expect(createBlogs.blogs[0].name).toEqual(blog.initialName);
             blog.id = createBlogs.blogs[0].id;
 
-            const {
-                data: { updateBlogs },
-            } = await mutate(gql`
+            const { updateBlogs } = await mutate(gql`
                     mutation {
                         updateBlogs(where: { id: "${blog.id}" }, update: { name: "${blog.updatedName}" }) {
                             blogs {
@@ -126,9 +122,7 @@ describe("workflow", () => {
             `);
             expect(updateBlogs.blogs[0].name).toEqual(blog.updatedName);
 
-            const {
-                data: { createPosts },
-            } = await mutate(gql`
+            const { createPosts } = await mutate(gql`
                     mutation {
                         createPosts(
                             input: [
@@ -158,9 +152,7 @@ describe("workflow", () => {
             expect(createPosts.posts[0].title).toEqual(post.initialTitle);
             post.id = createPosts.posts[0].id;
 
-            const {
-                data: { updatePosts },
-            } = await mutate(gql`
+            const { updatePosts } = await mutate(gql`
                     mutation {
                         updatePosts(where: { id: "${post.id}" }, update: { title: "${post.updatedTitle}" }) {
                             posts {
@@ -172,9 +164,7 @@ describe("workflow", () => {
             `);
             expect(updatePosts.posts[0].title).toEqual(post.updatedTitle);
 
-            const {
-                data: { createComments },
-            } = await mutate(gql`
+            const { createComments } = await mutate(gql`
                     mutation {
                         createComments(
                             input: [
@@ -203,9 +193,7 @@ describe("workflow", () => {
             expect(createComments.comments[0].content).toEqual(comment.initialContent);
             comment.id = createComments.comments[0].id;
 
-            const {
-                data: { updateComments },
-            } = await mutate(gql`
+            const { updateComments } = await mutate(gql`
                     mutation {
                         updateComments(where: { id: "${comment.id}" }, update: { content: "${comment.updatedContent}" }) {
                             comments {
@@ -217,7 +205,7 @@ describe("workflow", () => {
             `);
             expect(updateComments.comments[0].content).toEqual(comment.updatedContent);
 
-            const deleted = await mutate(gql`
+            const { deleteBlogs } = await mutate(gql`
                 mutation {
                     deleteBlogs(
                         where: { id: "${blog.id}" },
@@ -237,8 +225,7 @@ describe("workflow", () => {
                 }
             `);
 
-            expect(deleted.errors).toBeUndefined();
-            expect(deleted.data.deleteBlogs.nodesDeleted).toEqual(3);
+            expect(deleteBlogs.nodesDeleted).toEqual(3);
         } finally {
             await session.close();
         }

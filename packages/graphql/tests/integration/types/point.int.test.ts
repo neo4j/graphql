@@ -409,10 +409,15 @@ describe("Point", () => {
             schema: neoSchema.schema,
             source: photographsInQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-            variableValues: [
-                { longitude, latitude },
-                { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
-            ],
+            variableValues: {
+                locations: [
+                    { longitude, latitude },
+                    {
+                        longitude: parseFloat(faker.address.longitude()),
+                        latitude: parseFloat(faker.address.latitude()),
+                    },
+                ],
+            },
         });
 
         expect(inResult.errors).toBeFalsy();
@@ -447,10 +452,18 @@ describe("Point", () => {
             schema: neoSchema.schema,
             source: photographsNotInQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-            variableValues: [
-                { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
-                { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
-            ],
+            variableValues: {
+                locations: [
+                    {
+                        longitude: parseFloat(faker.address.longitude()),
+                        latitude: parseFloat(faker.address.latitude()),
+                    },
+                    {
+                        longitude: parseFloat(faker.address.longitude()),
+                        latitude: parseFloat(faker.address.latitude()),
+                    },
+                ],
+            },
         });
 
         expect(notInResult.errors).toBeFalsy();

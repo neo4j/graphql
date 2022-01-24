@@ -121,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
         });
 
         expect(createBSResult.errors).toBeFalsy();
-        expect(createBSResult.data?.createBS.bS).toEqual([{ name: b1 }, { name: b2 }]);
+        expect((createBSResult.data as any)?.createBS.bS).toEqual([{ name: b1 }, { name: b2 }]);
 
         const createASResult = await graphql({
             schema: neoSchema.schema,
@@ -131,12 +131,12 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
         });
 
         expect(createASResult.errors).toBeFalsy();
-        expect(createASResult.data?.createAS.aS).toHaveLength(1);
-        expect(createASResult.data?.createAS.aS[0].name).toEqual(a);
-        expect(createASResult.data?.createAS.aS[0].rel_b).toHaveLength(2);
-        expect(createASResult.data?.createAS.aS[0].rel_b).toContainEqual({ name: b1 });
-        expect(createASResult.data?.createAS.aS[0].rel_b).toContainEqual({ name: b2 });
-        expect(createASResult.data?.createAS.aS[0].rel_c).toEqual([{ name: c }]);
+        expect((createASResult.data as any)?.createAS.aS).toHaveLength(1);
+        expect((createASResult.data as any)?.createAS.aS[0].name).toEqual(a);
+        expect((createASResult.data as any)?.createAS.aS[0].rel_b).toHaveLength(2);
+        expect((createASResult.data as any)?.createAS.aS[0].rel_b).toContainEqual({ name: b1 });
+        expect((createASResult.data as any)?.createAS.aS[0].rel_b).toContainEqual({ name: b2 });
+        expect((createASResult.data as any)?.createAS.aS[0].rel_c).toEqual([{ name: c }]);
 
         const asResult = await graphql({
             schema: neoSchema.schema,
@@ -146,12 +146,12 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
         });
 
         expect(asResult.errors).toBeFalsy();
-        expect(asResult.data?.aS).toHaveLength(1);
-        expect(asResult.data?.aS[0].name).toEqual(a);
-        expect(asResult.data?.aS[0].rel_b).toHaveLength(2);
-        expect(asResult.data?.aS[0].rel_b).toContainEqual({ name: b1 });
-        expect(asResult.data?.aS[0].rel_b).toContainEqual({ name: b2 });
-        expect(asResult.data?.aS[0].rel_c).toHaveLength(1);
-        expect(asResult.data?.aS[0].rel_c[0].name).toEqual(c);
+        expect((asResult.data as any)?.aS).toHaveLength(1);
+        expect((asResult.data as any)?.aS[0].name).toEqual(a);
+        expect((asResult.data as any)?.aS[0].rel_b).toHaveLength(2);
+        expect((asResult.data as any)?.aS[0].rel_b).toContainEqual({ name: b1 });
+        expect((asResult.data as any)?.aS[0].rel_b).toContainEqual({ name: b2 });
+        expect((asResult.data as any)?.aS[0].rel_c).toHaveLength(1);
+        expect((asResult.data as any)?.aS[0].rel_c[0].name).toEqual(c);
     });
 });

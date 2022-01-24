@@ -174,7 +174,7 @@ describe("interface relationships", () => {
                     ],
                 },
             });
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect((gqlResult.data as any)?.updateActors.actors[0].actedIn).toHaveLength(2);
         } finally {
             await session.close();
         }
@@ -297,7 +297,8 @@ describe("interface relationships", () => {
                 },
             });
             expect(
-                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.title === movieTitle).actors
+                (gqlResult.data as any)?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.title === movieTitle)
+                    .actors
             ).toHaveLength(2);
         } finally {
             await session.close();
