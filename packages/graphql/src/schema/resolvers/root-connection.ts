@@ -28,7 +28,14 @@ import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 export default function rootConnectionResolver({ node, composer }: { node: Node; composer: SchemaComposer }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
-        context.resolveTree = getNeo4jResolveTree(info);
+        const resolveTree = getNeo4jResolveTree(info);
+
+        const edgeTree = resolveTree.fieldsByTypeName[`${node.name}RootConnection`].edges;
+        const nodeTree = edgeTree.fieldsByTypeName[`${node.name}RootEdge`].node;
+
+        context.resolveTree = { ...nodeTree, args: resolveTree.args };
+        context.isRootConnectionField = true;
+
         // TODO: Add rootConnections to translateRead
         const [cypher, params] = translateRead({ context, node });
 
@@ -39,7 +46,10 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
             context,
         });
 
-        return executeResult.records.map((x) => x.this);
+        const record = executeResult.records.length ? executeResult.records[0]?.this : undefined;
+
+        // to do -- translate returned edges to a connection
+        return record;
     }
 
     const rootEdge = composer.createObjectTC({

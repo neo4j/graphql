@@ -16,7 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { Integer } from "neo4j-driver";
+import { cursorToOffset } from "graphql-relay";
 import { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import { GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField, RelationField } from "../types";
@@ -27,13 +28,17 @@ import createInterfaceProjectionAndParams from "./create-interface-projection-an
 import translateTopLevelMatch from "./translate-top-level-match";
 
 function translateRead({ node, context }: { context: Context; node: Node }): [string, any] {
-    const { resolveTree } = context;
+    const { resolveTree, isRootConnectionField } = context;
     const varName = "this";
 
     let matchAndWhereStr = "";
     let authStr = "";
     let projAuth = "";
     let projStr = "";
+
+    const afterInput = resolveTree.args.after as string | undefined;
+    const firstInput = resolveTree.args.first as Integer | number | undefined;
+    const sortInput = resolveTree.args.sort as GraphQLSortArg[];
 
     const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
     let limitStr = "";
@@ -43,6 +48,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     let cypherParams: { [k: string]: any } = {};
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
+    const returnStrs: string[] = [];
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });
     matchAndWhereStr = topLevelMatch[0];
@@ -109,7 +115,42 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
-    if (optionsInput) {
+    // TODO: Check for root connection field
+    // If so, add the skip / limit str and add totalCount
+
+    if (isRootConnectionField) {
+        const hasAfter = Boolean(afterInput);
+        const hasFirst = Boolean(firstInput);
+        const hasSort = Boolean(sortInput && sortInput.length);
+
+        if (hasAfter && typeof afterInput === "string") {
+            const offset = cursorToOffset(afterInput) + 1;
+            if (offset && offset !== 0) {
+                offsetStr = `SKIP $${varName}_offset`;
+                cypherParams[`${varName}_offset`] = offset;
+            }
+        }
+
+        if (hasFirst) {
+            limitStr = `LIMIT $${varName}_limit`;
+            cypherParams[`${varName}_limit`] = firstInput;
+        }
+
+        if (hasSort) {
+            const sortArr = sortInput.reduce((res: string[], sort: GraphQLSortArg) => {
+                return [
+                    ...res,
+                    ...Object.entries(sort).map(([field, direction]) => {
+                        return `${varName}.${field} ${direction}`;
+                    }),
+                ];
+            }, []);
+
+            sortStr = `ORDER BY ${sortArr.join(", ")}`;
+        }
+        returnStrs.push(`WITH COLLECT({ node: ${varName} ${projStr} }) as edges`);
+        returnStrs.push(`RETURN { edges: edges, totalCount: size(edges) } as ${varName}`);
+    } else if (optionsInput) {
         const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
         const hasLimit = Boolean(optionsInput.limit) || optionsInput.limit === 0;
 
@@ -135,6 +176,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
 
             sortStr = `ORDER BY ${sortArr.join(", ")}`;
         }
+        returnStrs.push(`RETURN ${varName} ${projStr} as ${varName}`);
     }
 
     const cypher = [
@@ -143,7 +185,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
         ...connectionStrs,
         ...interfaceStrs,
-        `RETURN ${varName} ${projStr} as ${varName}`,
+        ...returnStrs,
         ...(sortStr ? [sortStr] : []),
         offsetStr,
         limitStr,
