@@ -202,6 +202,7 @@ function createProjectionAndParams({
                     context,
                     varName: `${varName}_${key}`,
                     chainStr: param,
+                    inRelationshipProjection: true,
                 });
                 const [str, p, meta] = recurse;
                 projectionStr = str;
