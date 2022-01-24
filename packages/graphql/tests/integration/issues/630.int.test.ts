@@ -111,7 +111,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const gqlActor = gqlResult.data?.actors[0];
+            const gqlActor = (gqlResult.data as any)?.actors[0];
 
             expect(gqlActor).toBeDefined();
             expect(gqlActor).toEqual({
