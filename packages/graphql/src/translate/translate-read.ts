@@ -115,9 +115,6 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
-    // TODO: Check for root connection field
-    // If so, add the skip / limit str and add totalCount
-
     if (isRootConnectionField) {
         const hasAfter = Boolean(afterInput);
         const hasFirst = Boolean(firstInput);
@@ -148,8 +145,6 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
 
             sortStr = `ORDER BY ${sortArr.join(", ")}`;
         }
-        returnStrs.push(`WITH COLLECT({ node: ${varName} ${projStr} }) as edges`);
-        returnStrs.push(`RETURN { edges: edges, totalCount: size(edges) } as ${varName}`);
     } else if (optionsInput) {
         const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
         const hasLimit = Boolean(optionsInput.limit) || optionsInput.limit === 0;
@@ -176,6 +171,12 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
 
             sortStr = `ORDER BY ${sortArr.join(", ")}`;
         }
+    }
+
+    if (isRootConnectionField) {
+        returnStrs.push(`WITH COLLECT({ node: ${varName} ${projStr} }) as edges`);
+        returnStrs.push(`RETURN { edges: edges, totalCount: size(edges) } as ${varName}`);
+    } else {
         returnStrs.push(`RETURN ${varName} ${projStr} as ${varName}`);
     }
 

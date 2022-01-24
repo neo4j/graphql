@@ -24,6 +24,8 @@ import { translateRead } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
+import { isNeoInt } from "../../utils/utils";
+import { createConnectionWithEdgeProperties } from "../pagination";
 
 export default function rootConnectionResolver({ node, composer }: { node: Node; composer: SchemaComposer }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
@@ -36,7 +38,6 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
         context.resolveTree = { ...nodeTree, args: resolveTree.args };
         context.isRootConnectionField = true;
 
-        // TODO: Add rootConnections to translateRead
         const [cypher, params] = translateRead({ context, node });
 
         const executeResult = await execute({
@@ -46,10 +47,19 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
             context,
         });
 
-        const record = executeResult.records.length ? executeResult.records[0]?.this : undefined;
+        const { totalCount, edges } = executeResult.records[0].this;
+        console.log(JSON.stringify(edges, null, 2));
+        const connection = createConnectionWithEdgeProperties({
+            selectionSet: resolveTree,
+            source: { edges },
+            args: resolveTree.args,
+            totalCount,
+        });
 
-        // to do -- translate returned edges to a connection
-        return record;
+        return {
+            totalCount: isNeoInt(totalCount) ? totalCount.toNumber() : totalCount,
+            ...connection,
+        };
     }
 
     const rootEdge = composer.createObjectTC({
