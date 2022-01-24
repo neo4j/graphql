@@ -36,7 +36,8 @@ type Cookie {
 ```
 
 == Relationship nullability isn't being enforced in my graph
-Currently, Neo4j GraphQL enforces on creating and updating that a movie has a director: 
+
+Currently, and given the typeDefs below, Neo4j GraphQL will enforce cardinality when creating and updating a one-one relationship such as the movie director field below: 
 
 [source, graphql, indent=0]
 ----
@@ -51,9 +52,7 @@ type Person {
 }
 ----
 
-However, at this point, there is no mechanism to support validating the actors relationship. Furthermore, there is a known limitation and that is: 
-
-Given we create a movie and a director in one mutation: 
+However, at this point, there is no mechanism to support validating the actors relationship. Furthermore, there is a known limitation given if you were create a movie and a director in one mutation: 
 
 [source, graphql, indent=0]
 ----
@@ -76,7 +75,7 @@ mutation {
 }
 ----
 
-Then we delete the director node: 
+Then delete the director node: 
 
 [source, graphql, indent=0]
 ----
@@ -87,4 +86,4 @@ mutation {
 }
 ----
 
-No error is thrown, even though the schema states that all movies must have a director thus technically rendering the movie node we created invalid. 
+No error is thrown, even though the schema states that all movies must have a director thus technically rendering the movie node invalid. 
