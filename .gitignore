@@ -92,3 +92,4 @@ scratchpad/
 .pnp.*
 
 tsconfig.tsbuildinfo
+tsconfig.*.tsbuildinfo
