@@ -92,6 +92,17 @@ describe("Unions", () => {
               sort: [GenreSort]
             }
 
+            type GenreRootConnection {
+              edges: [GenreRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type GenreRootEdge {
+              cursor: String!
+              node: Genre!
+            }
+
             \\"\\"\\"Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.\\"\\"\\"
             input GenreSort {
               id: SortDirection
@@ -163,6 +174,17 @@ describe("Unions", () => {
 
             input MovieRelationInput {
               search: MovieSearchCreateFieldInput
+            }
+
+            type MovieRootConnection {
+              edges: [MovieRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type MovieRootEdge {
+              cursor: String!
+              node: Movie!
             }
 
             input MovieSearchConnectInput {
@@ -357,8 +379,10 @@ describe("Unions", () => {
             type Query {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
+              genresConnection(after: String, before: String, first: Int, last: Int, sort: [GenreSort], where: GenreWhere): GenreRootConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
             }
 
             input QueryOptions {

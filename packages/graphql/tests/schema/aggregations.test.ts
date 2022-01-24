@@ -176,6 +176,17 @@ describe("Aggregations", () => {
               sort: [MovieSort]
             }
 
+            type MovieRootConnection {
+              edges: [MovieRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type MovieRootEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
               createdAt: SortDirection
@@ -310,9 +321,18 @@ describe("Aggregations", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
             }
 
             enum SortDirection {
@@ -1125,6 +1145,17 @@ describe("Aggregations", () => {
               likes: [PostLikesCreateFieldInput!]
             }
 
+            type PostRootConnection {
+              edges: [PostRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type PostRootEdge {
+              cursor: String!
+              node: Post!
+            }
+
             \\"\\"\\"Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.\\"\\"\\"
             input PostSort {
               title: SortDirection
@@ -1190,8 +1221,10 @@ describe("Aggregations", () => {
             type Query {
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
+              postsConnection(after: String, before: String, first: Int, last: Int, sort: [PostSort], where: PostWhere): PostRootConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, before: String, first: Int, last: Int, sort: [UserSort], where: UserWhere): UserRootConnection!
             }
 
             enum SortDirection {
@@ -1281,6 +1314,17 @@ describe("Aggregations", () => {
               offset: Int
               \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [UserSort]
+            }
+
+            type UserRootConnection {
+              edges: [UserRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type UserRootEdge {
+              cursor: String!
+              node: User!
             }
 
             \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"

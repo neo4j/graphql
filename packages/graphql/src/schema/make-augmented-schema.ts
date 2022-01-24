@@ -68,6 +68,7 @@ import {
     findResolver,
     updateResolver,
     numericalResolver,
+    rootConnectionResolver,
 } from "./resolvers";
 import * as Scalars from "./scalars";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
@@ -906,6 +907,10 @@ function makeAugmentedSchema(
             composer.Query.addFields({
                 [`${node.plural}Aggregate`]: aggregateResolver({ node }),
             });
+
+            composer.Query.addFields({
+                [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
+            });
         }
 
         if (!node.exclude?.operations.includes("create")) {
@@ -994,8 +999,8 @@ function makeAugmentedSchema(
     const generatedTypeDefs = composer.toSDL();
     let parsedDoc = parse(generatedTypeDefs);
 
-    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & {name: NameNode} {
-      return "name" in x
+    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
+        return "name" in x;
     }
 
     const documentNames = parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value);

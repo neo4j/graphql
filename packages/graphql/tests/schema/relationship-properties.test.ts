@@ -290,6 +290,17 @@ describe("Relationship-properties", () => {
               movies: [ActorMoviesCreateFieldInput!]
             }
 
+            type ActorRootConnection {
+              edges: [ActorRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type ActorRootEdge {
+              cursor: String!
+              node: Actor!
+            }
+
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
@@ -545,6 +556,17 @@ describe("Relationship-properties", () => {
               actors: [MovieActorsCreateFieldInput!]
             }
 
+            type MovieRootConnection {
+              edges: [MovieRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type MovieRootEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
               title: SortDirection
@@ -595,8 +617,10 @@ describe("Relationship-properties", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, before: String, first: Int, last: Int, sort: [ActorSort], where: ActorWhere): ActorRootConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
             }
 
             enum SortDirection {
@@ -921,6 +945,17 @@ describe("Relationship-properties", () => {
               movies: [ActorMoviesCreateFieldInput!]
             }
 
+            type ActorRootConnection {
+              edges: [ActorRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type ActorRootEdge {
+              cursor: String!
+              node: Actor!
+            }
+
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
@@ -1203,6 +1238,17 @@ describe("Relationship-properties", () => {
             input MovieRelationInput {
               actors: [MovieActorsCreateFieldInput!]
             }
+            
+            type MovieRootConnection {
+              edges: [MovieRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type MovieRootEdge {
+              cursor: String!
+              node: Movie!
+            }
 
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
@@ -1254,8 +1300,10 @@ describe("Relationship-properties", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, before: String, first: Int, last: Int, sort: [ActorSort], where: ActorWhere): ActorRootConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
             }
 
             enum SortDirection {
@@ -1531,6 +1579,17 @@ describe("Relationship-properties", () => {
               movies: [ActorMoviesCreateFieldInput!]
             }
 
+            type ActorRootConnection {
+              edges: [ActorRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type ActorRootEdge {
+              cursor: String!
+              node: Actor!
+            }
+
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
@@ -1776,6 +1835,17 @@ describe("Relationship-properties", () => {
             input MovieRelationInput {
               actors: [MovieActorsCreateFieldInput!]
             }
+            
+            type MovieRootConnection {
+              edges: [MovieRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type MovieRootEdge {
+              cursor: String!
+              node: Movie!
+            }
 
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
@@ -1827,8 +1897,10 @@ describe("Relationship-properties", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, before: String, first: Int, last: Int, sort: [ActorSort], where: ActorWhere): ActorRootConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
             }
 
             enum SortDirection {

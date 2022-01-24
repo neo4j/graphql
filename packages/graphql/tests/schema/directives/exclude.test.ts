@@ -110,6 +110,17 @@ describe("@exclude directive", () => {
               \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [MovieSort]
             }
+            
+            type MovieRootConnection {
+              edges: [MovieRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type MovieRootEdge {
+              cursor: String!
+              node: Movie!
+            }
 
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
@@ -144,9 +155,18 @@ describe("@exclude directive", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
             }
 
             enum SortDirection {
@@ -213,6 +233,17 @@ describe("@exclude directive", () => {
               sort: [ActorSort]
             }
 
+            type ActorRootConnection {
+              edges: [ActorRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type ActorRootEdge {
+              cursor: String!
+              node: Actor!
+            }
+
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
@@ -248,9 +279,18 @@ describe("@exclude directive", () => {
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, before: String, first: Int, last: Int, sort: [ActorSort], where: ActorWhere): ActorRootConnection!
             }
 
             enum SortDirection {
@@ -337,6 +377,17 @@ describe("@exclude directive", () => {
               sort: [MovieSort]
             }
 
+            type MovieRootConnection {
+              edges: [MovieRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type MovieRootEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
               title: SortDirection
@@ -366,10 +417,19 @@ describe("@exclude directive", () => {
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
+            
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
             }
 
             enum SortDirection {
@@ -464,6 +524,17 @@ describe("@exclude directive", () => {
               sort: [MovieSort]
             }
 
+            type MovieRootConnection {
+              edges: [MovieRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type MovieRootEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
               title: SortDirection
@@ -493,11 +564,20 @@ describe("@exclude directive", () => {
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
+            
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
             type Query {
               customActorQuery: Actor
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
             }
 
             enum SortDirection {
@@ -749,6 +829,17 @@ describe("@exclude directive", () => {
               actors: [MovieActorsCreateFieldInput!]
             }
 
+            type MovieRootConnection {
+              edges: [MovieRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type MovieRootEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
               title: SortDirection
@@ -796,6 +887,7 @@ describe("@exclude directive", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
             }
 
             enum SortDirection {
@@ -860,6 +952,17 @@ describe("@exclude directive", () => {
               \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [ActorSort]
             }
+            
+            type ActorRootConnection {
+              edges: [ActorRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type ActorRootEdge {
+              cursor: String!
+              node: Actor!
+            }
 
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
@@ -907,10 +1010,19 @@ describe("@exclude directive", () => {
               deleteActors(where: ActorWhere): DeleteInfo!
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
             }
+            
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, before: String, first: Int, last: Int, sort: [ActorSort], where: ActorWhere): ActorRootConnection!
             }
 
             enum SortDirection {
@@ -997,6 +1109,17 @@ describe("@exclude directive", () => {
               sort: [MovieSort]
             }
 
+            type MovieRootConnection {
+              edges: [MovieRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type MovieRootEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
               title: SortDirection
@@ -1028,6 +1151,14 @@ describe("@exclude directive", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+            
             interface Production {
               title: String
             }
@@ -1035,8 +1166,10 @@ describe("@exclude directive", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+              seriesConnection(after: String, before: String, first: Int, last: Int, sort: [SeriesSort], where: SeriesWhere): SeriesRootConnection!
             }
 
             type Series implements Production {
@@ -1057,6 +1190,17 @@ describe("@exclude directive", () => {
               offset: Int
               \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [SeriesSort]
+            }
+            
+            type SeriesRootConnection {
+              edges: [SeriesRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type SeriesRootEdge {
+              cursor: String!
+              node: Series!
             }
 
             \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"

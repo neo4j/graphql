@@ -72,9 +72,18 @@ describe("@private directive", () => {
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, before: String, first: Int, last: Int, sort: [UserSort], where: UserWhere): UserRootConnection!
             }
 
             enum SortDirection {
@@ -117,6 +126,17 @@ describe("@private directive", () => {
               offset: Int
               \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [UserSort]
+            }
+
+            type UserRootConnection {
+              edges: [UserRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type UserRootEdge {
+              cursor: String!
+              node: User!
             }
 
             \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"

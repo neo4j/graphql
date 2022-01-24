@@ -317,6 +317,17 @@ describe("Connect Or Create", () => {
               actedIn: ActorActedInCreateFieldInput
             }
 
+            type ActorRootConnection {
+              edges: [ActorRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type ActorRootEdge {
+              cursor: String!
+              node: Actor!
+            }
+
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
@@ -402,6 +413,17 @@ describe("Connect Or Create", () => {
               sort: [MovieSort]
             }
 
+            type MovieRootConnection {
+              edges: [MovieRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type MovieRootEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
               isan: SortDirection
@@ -472,10 +494,13 @@ describe("Connect Or Create", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, before: String, first: Int, last: Int, sort: [ActorSort], where: ActorWhere): ActorRootConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+              seriesConnection(after: String, before: String, first: Int, last: Int, sort: [SeriesSort], where: SeriesWhere): SeriesRootConnection!
             }
 
             input QueryOptions {
@@ -512,6 +537,17 @@ describe("Connect Or Create", () => {
               offset: Int
               \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [SeriesSort]
+            }
+
+            type SeriesRootConnection {
+              edges: [SeriesRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type SeriesRootEdge {
+              cursor: String!
+              node: Series!
             }
 
             \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"

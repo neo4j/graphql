@@ -110,10 +110,13 @@ describe("162", () => {
             type Query {
               tigerJawLevel2Part1s(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
               tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection!
+              tigerJawLevel2Part1sConnection(after: String, before: String, first: Int, last: Int, sort: [TigerJawLevel2Part1Sort], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1RootConnection!
               tigerJawLevel2s(options: TigerJawLevel2Options, where: TigerJawLevel2Where): [TigerJawLevel2!]!
               tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection!
+              tigerJawLevel2sConnection(after: String, before: String, first: Int, last: Int, sort: [TigerJawLevel2Sort], where: TigerJawLevel2Where): TigerJawLevel2RootConnection!
               tigers(options: TigerOptions, where: TigerWhere): [Tiger!]!
               tigersAggregate(where: TigerWhere): TigerAggregateSelection!
+              tigersConnection(after: String, before: String, first: Int, last: Int, sort: [TigerSort], where: TigerWhere): TigerRootConnection!
             }
 
             enum SortDirection {
@@ -283,6 +286,17 @@ describe("162", () => {
               node: TigerJawLevel2Part1!
             }
 
+            type TigerJawLevel2Part1RootConnection {
+              edges: [TigerJawLevel2Part1RootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type TigerJawLevel2Part1RootEdge {
+              cursor: String!
+              node: TigerJawLevel2Part1!
+            }
+
             \\"\\"\\"Fields to sort TigerJawLevel2Part1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Part1Sort object.\\"\\"\\"
             input TigerJawLevel2Part1Sort {
               id: SortDirection
@@ -436,6 +450,17 @@ describe("162", () => {
               part1: TigerJawLevel2Part1CreateFieldInput
             }
 
+            type TigerJawLevel2RootConnection {
+              edges: [TigerJawLevel2RootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type TigerJawLevel2RootEdge {
+              cursor: String!
+              node: TigerJawLevel2!
+            }
+
             \\"\\"\\"Fields to sort TigerJawLevel2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Sort object.\\"\\"\\"
             input TigerJawLevel2Sort {
               id: SortDirection
@@ -480,6 +505,17 @@ describe("162", () => {
               offset: Int
               \\"\\"\\"Specify one or more TigerSort objects to sort Tigers by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [TigerSort]
+            }
+            
+            type TigerRootConnection {
+              edges: [TigerRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type TigerRootEdge {
+              cursor: String!
+              node: Tiger!
             }
 
             \\"\\"\\"Fields to sort Tigers by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerSort object.\\"\\"\\"

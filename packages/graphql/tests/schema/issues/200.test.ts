@@ -68,6 +68,17 @@ describe("200", () => {
               sort: [CategorySort]
             }
 
+            type CategoryRootConnection {
+              edges: [CategoryRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type CategoryRootEdge {
+              cursor: String!
+              node: Category!
+            }
+
             \\"\\"\\"Fields to sort Categories by. The order in which sorts are applied is not guaranteed when specifying many fields in one CategorySort object.\\"\\"\\"
             input CategorySort {
               categoryId: SortDirection
@@ -148,9 +159,18 @@ describe("200", () => {
               updateCategories(update: CategoryUpdateInput, where: CategoryWhere): UpdateCategoriesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               categories(options: CategoryOptions, where: CategoryWhere): [Category!]!
               categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
+              categoriesConnection(after: String, before: String, first: Int, last: Int, sort: [CategorySort], where: CategoryWhere): CategoryRootConnection!
             }
 
             enum SortDirection {

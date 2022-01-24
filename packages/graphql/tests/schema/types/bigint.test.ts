@@ -89,6 +89,17 @@ describe("Bigint", () => {
               sort: [FileSort]
             }
 
+            type FileRootConnection {
+              edges: [FileRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type FileRootEdge {
+              cursor: String!
+              node: File!
+            }
+
             \\"\\"\\"Fields to sort Files by. The order in which sorts are applied is not guaranteed when specifying many fields in one FileSort object.\\"\\"\\"
             input FileSort {
               name: SortDirection
@@ -129,9 +140,18 @@ describe("Bigint", () => {
               updateFiles(update: FileUpdateInput, where: FileWhere): UpdateFilesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               files(options: FileOptions, where: FileWhere): [File!]!
               filesAggregate(where: FileWhere): FileAggregateSelection!
+              filesConnection(after: String, before: String, first: Int, last: Int, sort: [FileSort], where: FileWhere): FileRootConnection!
             }
 
             enum SortDirection {

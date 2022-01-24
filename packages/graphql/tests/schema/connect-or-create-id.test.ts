@@ -202,6 +202,17 @@ describe("connect or create with id", () => {
               movies: [ActorMoviesCreateFieldInput!]
             }
 
+            type ActorRootConnection {
+              edges: [ActorRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type ActorRootEdge {
+              cursor: String!
+              node: Actor!
+            }
+
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
@@ -289,6 +300,17 @@ describe("connect or create with id", () => {
               sort: [MovieSort]
             }
 
+            type MovieRootConnection {
+              edges: [MovieRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type MovieRootEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
               id: SortDirection
@@ -348,8 +370,10 @@ describe("connect or create with id", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, before: String, first: Int, last: Int, sort: [ActorSort], where: ActorWhere): ActorRootConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
             }
 
             enum SortDirection {
@@ -625,6 +649,17 @@ describe("connect or create with id", () => {
               creator: PostCreatorCreateFieldInput
             }
 
+            type PostRootConnection {
+              edges: [PostRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type PostRootEdge {
+              cursor: String!
+              node: Post!
+            }
+
             \\"\\"\\"Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.\\"\\"\\"
             input PostSort {
               content: SortDirection
@@ -694,8 +729,10 @@ describe("connect or create with id", () => {
             type Query {
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
+              postsConnection(after: String, before: String, first: Int, last: Int, sort: [PostSort], where: PostWhere): PostRootConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, before: String, first: Int, last: Int, sort: [UserSort], where: UserWhere): UserRootConnection!
             }
 
             enum SortDirection {
@@ -913,6 +950,17 @@ describe("connect or create with id", () => {
 
             input UserRelationInput {
               posts: [UserPostsCreateFieldInput!]
+            }
+
+            type UserRootConnection {
+              edges: [UserRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type UserRootEdge {
+              cursor: String!
+              node: User!
             }
 
             \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"

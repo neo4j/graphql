@@ -75,6 +75,17 @@ describe("609", () => {
               sort: [DeprecatedSort]
             }
 
+            type DeprecatedRootConnection {
+              edges: [DeprecatedRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type DeprecatedRootEdge {
+              cursor: String!
+              node: Deprecated!
+            }
+
             \\"\\"\\"Fields to sort Deprecateds by. The order in which sorts are applied is not guaranteed when specifying many fields in one DeprecatedSort object.\\"\\"\\"
             input DeprecatedSort {
               deprecatedField: SortDirection
@@ -105,9 +116,18 @@ describe("609", () => {
               updateDeprecateds(update: DeprecatedUpdateInput, where: DeprecatedWhere): UpdateDeprecatedsMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               deprecateds(options: DeprecatedOptions, where: DeprecatedWhere): [Deprecated!]!
               deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
+              deprecatedsConnection(after: String, before: String, first: Int, last: Int, sort: [DeprecatedSort], where: DeprecatedWhere): DeprecatedRootConnection!
             }
 
             enum SortDirection {

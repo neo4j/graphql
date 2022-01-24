@@ -47,9 +47,18 @@ describe("Node Directive", () => {
                   updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
+                  techsConnection(after: String, before: String, first: Int, last: Int, sort: [TechSort], where: TechWhere): TechRootConnection!
                 }
 
                 enum SortDirection {
@@ -85,6 +94,17 @@ describe("Node Directive", () => {
                   offset: Int
                   \\"\\"\\"Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechSort]
+                }
+
+                type TechRootConnection {
+                  edges: [TechRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type TechRootEdge {
+                  cursor: String!
+                  node: Tech!
                 }
 
                 \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
@@ -181,9 +201,18 @@ describe("Node Directive", () => {
                   updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
+                  techsConnection(after: String, before: String, first: Int, last: Int, sort: [TechSort], where: TechWhere): TechRootConnection!
                 }
 
                 enum SortDirection {
@@ -219,6 +248,17 @@ describe("Node Directive", () => {
                   offset: Int
                   \\"\\"\\"Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechSort]
+                }
+
+                type TechRootConnection {
+                  edges: [TechRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type TechRootEdge {
+                  cursor: String!
+                  node: Tech!
                 }
 
                 \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
@@ -315,9 +355,18 @@ describe("Node Directive", () => {
                   updateTechnologies(update: TechUpdateInput, where: TechWhere): UpdateTechnologiesMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   technologies(options: TechOptions, where: TechWhere): [Tech!]!
                   technologiesAggregate(where: TechWhere): TechAggregateSelection!
+                  technologiesConnection(after: String, before: String, first: Int, last: Int, sort: [TechSort], where: TechWhere): TechRootConnection!
                 }
 
                 enum SortDirection {
@@ -353,6 +402,17 @@ describe("Node Directive", () => {
                   offset: Int
                   \\"\\"\\"Specify one or more TechSort objects to sort Technologies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechSort]
+                }
+
+                type TechRootConnection {
+                  edges: [TechRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type TechRootEdge {
+                  cursor: String!
+                  node: Tech!
                 }
 
                 \\"\\"\\"Fields to sort Technologies by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
@@ -449,9 +509,18 @@ describe("Node Directive", () => {
                   updateTechs(update: TechsUpdateInput, where: TechsWhere): UpdateTechsMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   techs(options: TechsOptions, where: TechsWhere): [Techs!]!
                   techsAggregate(where: TechsWhere): TechsAggregateSelection!
+                  techsConnection(after: String, before: String, first: Int, last: Int, sort: [TechsSort], where: TechsWhere): TechsRootConnection!
                 }
 
                 enum SortDirection {
@@ -484,6 +553,17 @@ describe("Node Directive", () => {
                   offset: Int
                   \\"\\"\\"Specify one or more TechsSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [TechsSort]
+                }
+
+                type TechsRootConnection {
+                  edges: [TechsRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type TechsRootEdge {
+                  cursor: String!
+                  node: Techs!
                 }
 
                 \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechsSort object.\\"\\"\\"
@@ -568,9 +648,18 @@ describe("Node Directive", () => {
                   updateTechs(update: UserUpdateInput, where: UserWhere): UpdateTechsMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   techs(options: UserOptions, where: UserWhere): [User!]!
                   techsAggregate(where: UserWhere): UserAggregateSelection!
+                  techsConnection(after: String, before: String, first: Int, last: Int, sort: [UserSort], where: UserWhere): UserRootConnection!
                 }
 
                 enum SortDirection {
@@ -616,6 +705,17 @@ describe("Node Directive", () => {
                   offset: Int
                   \\"\\"\\"Specify one or more UserSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [UserSort]
+                }
+
+                type UserRootConnection {
+                  edges: [UserRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type UserRootEdge {
+                  cursor: String!
+                  node: User!
                 }
 
                 \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
@@ -687,9 +787,18 @@ describe("Node Directive", () => {
                   updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   users(options: UserOptions, where: UserWhere): [User!]!
                   usersAggregate(where: UserWhere): UserAggregateSelection!
+                  usersConnection(after: String, before: String, first: Int, last: Int, sort: [UserSort], where: UserWhere): UserRootConnection!
                 }
 
                 enum SortDirection {
@@ -735,6 +844,17 @@ describe("Node Directive", () => {
                   offset: Int
                   \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [UserSort]
+                }
+
+                type UserRootConnection {
+                  edges: [UserRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type UserRootEdge {
+                  cursor: String!
+                  node: User!
                 }
 
                 \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
@@ -806,9 +926,18 @@ describe("Node Directive", () => {
                   updateUsers(update: UsersUpdateInput, where: UsersWhere): UpdateUsersMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   users(options: UsersOptions, where: UsersWhere): [Users!]!
                   usersAggregate(where: UsersWhere): UsersAggregateSelection!
+                  usersConnection(after: String, before: String, first: Int, last: Int, sort: [UsersSort], where: UsersWhere): UsersRootConnection!
                 }
 
                 enum SortDirection {
@@ -854,6 +983,17 @@ describe("Node Directive", () => {
                   offset: Int
                   \\"\\"\\"Specify one or more UsersSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [UsersSort]
+                }
+
+                type UsersRootConnection {
+                  edges: [UsersRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type UsersRootEdge {
+                  cursor: String!
+                  node: Users!
                 }
 
                 \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UsersSort object.\\"\\"\\"

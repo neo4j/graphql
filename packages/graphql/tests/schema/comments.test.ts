@@ -151,6 +151,17 @@ describe("Comments", () => {
               sort: [MovieSort]
             }
 
+            type MovieRootConnection {
+              edges: [MovieRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type MovieRootEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
               actorCount: SortDirection
@@ -214,9 +225,18 @@ describe("Comments", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
             }
 
             enum SortDirection {
@@ -286,6 +306,17 @@ describe("Comments", () => {
                   offset: Int
                   \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [ActorSort]
+                }
+
+                type ActorRootConnection {
+                  edges: [ActorRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type ActorRootEdge {
+                  cursor: String!
+                  node: Actor!
                 }
 
                 \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
@@ -481,6 +512,17 @@ describe("Comments", () => {
                   actors: [MovieActorsCreateFieldInput!]
                 }
 
+                type MovieRootConnection {
+                  edges: [MovieRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type MovieRootEdge {
+                  cursor: String!
+                  node: Movie!
+                }
+
                 \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
                 input MovieSort {
                   id: SortDirection
@@ -531,8 +573,10 @@ describe("Comments", () => {
                 type Query {
                   actors(options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                  actorsConnection(after: String, before: String, first: Int, last: Int, sort: [ActorSort], where: ActorWhere): ActorRootConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
                 }
 
                 enum SortDirection {
@@ -734,6 +778,17 @@ describe("Comments", () => {
                   actedIn: [ActorActedInCreateFieldInput!]
                 }
 
+                type ActorRootConnection {
+                  edges: [ActorRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type ActorRootEdge {
+                  cursor: String!
+                  node: Actor!
+                }
+
                 \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
                 input ActorSort {
                   name: SortDirection
@@ -816,6 +871,17 @@ describe("Comments", () => {
                   offset: Int
                   \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [MovieSort]
+                }
+
+                type MovieRootConnection {
+                  edges: [MovieRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type MovieRootEdge {
+                  cursor: String!
+                  node: Movie!
                 }
 
                 \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
@@ -917,10 +983,13 @@ describe("Comments", () => {
                 type Query {
                   actors(options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                  actorsConnection(after: String, before: String, first: Int, last: Int, sort: [ActorSort], where: ActorWhere): ActorRootConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+                  seriesConnection(after: String, before: String, first: Int, last: Int, sort: [SeriesSort], where: SeriesWhere): SeriesRootConnection!
                 }
 
                 input QueryOptions {
@@ -949,6 +1018,17 @@ describe("Comments", () => {
                   offset: Int
                   \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
                   sort: [SeriesSort]
+                }
+
+                type SeriesRootConnection {
+                  edges: [SeriesRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type SeriesRootEdge {
+                  cursor: String!
+                  node: Series!
                 }
 
                 \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"
@@ -1041,364 +1121,388 @@ describe("Comments", () => {
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
             expect(printedSchema).toMatchInlineSnapshot(`
-				"schema {
-				  query: Query
-				  mutation: Mutation
-				}
+                "schema {
+                  query: Query
+                  mutation: Mutation
+                }
 
-				type CreateGenresMutationResponse {
-				  genres: [Genre!]!
-				  info: CreateInfo!
-				}
+                type CreateGenresMutationResponse {
+                  genres: [Genre!]!
+                  info: CreateInfo!
+                }
 
-				type CreateInfo {
-				  bookmark: String
-				  nodesCreated: Int!
-				  relationshipsCreated: Int!
-				}
+                type CreateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  relationshipsCreated: Int!
+                }
 
-				type CreateMoviesMutationResponse {
-				  info: CreateInfo!
-				  movies: [Movie!]!
-				}
+                type CreateMoviesMutationResponse {
+                  info: CreateInfo!
+                  movies: [Movie!]!
+                }
 
-				type DeleteInfo {
-				  bookmark: String
-				  nodesDeleted: Int!
-				  relationshipsDeleted: Int!
-				}
+                type DeleteInfo {
+                  bookmark: String
+                  nodesDeleted: Int!
+                  relationshipsDeleted: Int!
+                }
 
-				type Genre {
-				  id: ID
-				}
+                type Genre {
+                  id: ID
+                }
 
-				type GenreAggregateSelection {
-				  count: Int!
-				  id: IDAggregateSelectionNullable!
-				}
+                type GenreAggregateSelection {
+                  count: Int!
+                  id: IDAggregateSelectionNullable!
+                }
 
-				input GenreConnectWhere {
-				  node: GenreWhere!
-				}
+                input GenreConnectWhere {
+                  node: GenreWhere!
+                }
 
-				input GenreCreateInput {
-				  id: ID
-				}
+                input GenreCreateInput {
+                  id: ID
+                }
 
-				input GenreOptions {
-				  limit: Int
-				  offset: Int
-				  \\"\\"\\"Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-				  sort: [GenreSort]
-				}
+                input GenreOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  sort: [GenreSort]
+                }
 
-				\\"\\"\\"Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.\\"\\"\\"
-				input GenreSort {
-				  id: SortDirection
-				}
+                type GenreRootConnection {
+                  edges: [GenreRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
 
-				input GenreUpdateInput {
-				  id: ID
-				}
+                type GenreRootEdge {
+                  cursor: String!
+                  node: Genre!
+                }
 
-				input GenreWhere {
-				  AND: [GenreWhere!]
-				  OR: [GenreWhere!]
-				  id: ID
-				  id_CONTAINS: ID
-				  id_ENDS_WITH: ID
-				  id_IN: [ID]
-				  id_NOT: ID
-				  id_NOT_CONTAINS: ID
-				  id_NOT_ENDS_WITH: ID
-				  id_NOT_IN: [ID]
-				  id_NOT_STARTS_WITH: ID
-				  id_STARTS_WITH: ID
-				}
+                \\"\\"\\"Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.\\"\\"\\"
+                input GenreSort {
+                  id: SortDirection
+                }
 
-				type IDAggregateSelectionNullable {
-				  longest: ID
-				  shortest: ID
-				}
+                input GenreUpdateInput {
+                  id: ID
+                }
 
-				type Movie {
-				  id: ID
-				  search(options: QueryOptions, where: SearchWhere): [Search!]!
-				  searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
-				  searchNoDirective: Search
-				}
+                input GenreWhere {
+                  AND: [GenreWhere!]
+                  OR: [GenreWhere!]
+                  id: ID
+                  id_CONTAINS: ID
+                  id_ENDS_WITH: ID
+                  id_IN: [ID]
+                  id_NOT: ID
+                  id_NOT_CONTAINS: ID
+                  id_NOT_ENDS_WITH: ID
+                  id_NOT_IN: [ID]
+                  id_NOT_STARTS_WITH: ID
+                  id_STARTS_WITH: ID
+                }
 
-				type MovieAggregateSelection {
-				  count: Int!
-				  id: IDAggregateSelectionNullable!
-				}
+                type IDAggregateSelectionNullable {
+                  longest: ID
+                  shortest: ID
+                }
 
-				input MovieConnectInput {
-				  search: MovieSearchConnectInput
-				}
+                type Movie {
+                  id: ID
+                  search(options: QueryOptions, where: SearchWhere): [Search!]!
+                  searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
+                  searchNoDirective: Search
+                }
 
-				input MovieConnectWhere {
-				  node: MovieWhere!
-				}
+                type MovieAggregateSelection {
+                  count: Int!
+                  id: IDAggregateSelectionNullable!
+                }
 
-				input MovieCreateInput {
-				  id: ID
-				  search: MovieSearchCreateInput
-				}
+                input MovieConnectInput {
+                  search: MovieSearchConnectInput
+                }
 
-				input MovieDeleteInput {
-				  search: MovieSearchDeleteInput
-				}
+                input MovieConnectWhere {
+                  node: MovieWhere!
+                }
 
-				input MovieDisconnectInput {
-				  search: MovieSearchDisconnectInput
-				}
+                input MovieCreateInput {
+                  id: ID
+                  search: MovieSearchCreateInput
+                }
 
-				input MovieOptions {
-				  limit: Int
-				  offset: Int
-				  \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-				  sort: [MovieSort]
-				}
+                input MovieDeleteInput {
+                  search: MovieSearchDeleteInput
+                }
 
-				input MovieRelationInput {
-				  search: MovieSearchCreateFieldInput
-				}
+                input MovieDisconnectInput {
+                  search: MovieSearchDisconnectInput
+                }
 
-				input MovieSearchConnectInput {
-				  Genre: [MovieSearchGenreConnectFieldInput!]
-				  Movie: [MovieSearchMovieConnectFieldInput!]
-				}
+                input MovieOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  sort: [MovieSort]
+                }
 
-				type MovieSearchConnection {
-				  edges: [MovieSearchRelationship!]!
-				  pageInfo: PageInfo!
-				  totalCount: Int!
-				}
+                input MovieRelationInput {
+                  search: MovieSearchCreateFieldInput
+                }
 
-				input MovieSearchConnectionGenreWhere {
-				  AND: [MovieSearchConnectionGenreWhere]
-				  OR: [MovieSearchConnectionGenreWhere]
-				  node: GenreWhere
-				  node_NOT: GenreWhere
-				}
+                type MovieRootConnection {
+                  edges: [MovieRootEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
 
-				input MovieSearchConnectionMovieWhere {
-				  AND: [MovieSearchConnectionMovieWhere]
-				  OR: [MovieSearchConnectionMovieWhere]
-				  node: MovieWhere
-				  node_NOT: MovieWhere
-				}
+                type MovieRootEdge {
+                  cursor: String!
+                  node: Movie!
+                }
 
-				input MovieSearchConnectionWhere {
-				  Genre: MovieSearchConnectionGenreWhere
-				  Movie: MovieSearchConnectionMovieWhere
-				}
+                input MovieSearchConnectInput {
+                  Genre: [MovieSearchGenreConnectFieldInput!]
+                  Movie: [MovieSearchMovieConnectFieldInput!]
+                }
 
-				input MovieSearchCreateFieldInput {
-				  Genre: [MovieSearchGenreCreateFieldInput!]
-				  Movie: [MovieSearchMovieCreateFieldInput!]
-				}
+                type MovieSearchConnection {
+                  edges: [MovieSearchRelationship!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
 
-				input MovieSearchCreateInput {
-				  Genre: MovieSearchGenreFieldInput
-				  Movie: MovieSearchMovieFieldInput
-				}
+                input MovieSearchConnectionGenreWhere {
+                  AND: [MovieSearchConnectionGenreWhere]
+                  OR: [MovieSearchConnectionGenreWhere]
+                  node: GenreWhere
+                  node_NOT: GenreWhere
+                }
 
-				input MovieSearchDeleteInput {
-				  Genre: [MovieSearchGenreDeleteFieldInput!]
-				  Movie: [MovieSearchMovieDeleteFieldInput!]
-				}
+                input MovieSearchConnectionMovieWhere {
+                  AND: [MovieSearchConnectionMovieWhere]
+                  OR: [MovieSearchConnectionMovieWhere]
+                  node: MovieWhere
+                  node_NOT: MovieWhere
+                }
 
-				input MovieSearchDisconnectInput {
-				  Genre: [MovieSearchGenreDisconnectFieldInput!]
-				  Movie: [MovieSearchMovieDisconnectFieldInput!]
-				}
+                input MovieSearchConnectionWhere {
+                  Genre: MovieSearchConnectionGenreWhere
+                  Movie: MovieSearchConnectionMovieWhere
+                }
 
-				input MovieSearchGenreConnectFieldInput {
-				  where: GenreConnectWhere
-				}
+                input MovieSearchCreateFieldInput {
+                  Genre: [MovieSearchGenreCreateFieldInput!]
+                  Movie: [MovieSearchMovieCreateFieldInput!]
+                }
 
-				input MovieSearchGenreConnectionWhere {
-				  AND: [MovieSearchGenreConnectionWhere!]
-				  OR: [MovieSearchGenreConnectionWhere!]
-				  node: GenreWhere
-				  node_NOT: GenreWhere
-				}
+                input MovieSearchCreateInput {
+                  Genre: MovieSearchGenreFieldInput
+                  Movie: MovieSearchMovieFieldInput
+                }
 
-				input MovieSearchGenreCreateFieldInput {
-				  node: GenreCreateInput!
-				}
+                input MovieSearchDeleteInput {
+                  Genre: [MovieSearchGenreDeleteFieldInput!]
+                  Movie: [MovieSearchMovieDeleteFieldInput!]
+                }
 
-				input MovieSearchGenreDeleteFieldInput {
-				  where: MovieSearchGenreConnectionWhere
-				}
+                input MovieSearchDisconnectInput {
+                  Genre: [MovieSearchGenreDisconnectFieldInput!]
+                  Movie: [MovieSearchMovieDisconnectFieldInput!]
+                }
 
-				input MovieSearchGenreDisconnectFieldInput {
-				  where: MovieSearchGenreConnectionWhere
-				}
+                input MovieSearchGenreConnectFieldInput {
+                  where: GenreConnectWhere
+                }
 
-				input MovieSearchGenreFieldInput {
-				  connect: [MovieSearchGenreConnectFieldInput!]
-				  create: [MovieSearchGenreCreateFieldInput!]
-				}
+                input MovieSearchGenreConnectionWhere {
+                  AND: [MovieSearchGenreConnectionWhere!]
+                  OR: [MovieSearchGenreConnectionWhere!]
+                  node: GenreWhere
+                  node_NOT: GenreWhere
+                }
 
-				input MovieSearchGenreUpdateConnectionInput {
-				  node: GenreUpdateInput
-				}
+                input MovieSearchGenreCreateFieldInput {
+                  node: GenreCreateInput!
+                }
 
-				input MovieSearchGenreUpdateFieldInput {
-				  connect: [MovieSearchGenreConnectFieldInput!]
-				  create: [MovieSearchGenreCreateFieldInput!]
-				  delete: [MovieSearchGenreDeleteFieldInput!]
-				  disconnect: [MovieSearchGenreDisconnectFieldInput!]
-				  update: MovieSearchGenreUpdateConnectionInput
-				  where: MovieSearchGenreConnectionWhere
-				}
+                input MovieSearchGenreDeleteFieldInput {
+                  where: MovieSearchGenreConnectionWhere
+                }
 
-				input MovieSearchMovieConnectFieldInput {
-				  connect: [MovieConnectInput!]
-				  where: MovieConnectWhere
-				}
+                input MovieSearchGenreDisconnectFieldInput {
+                  where: MovieSearchGenreConnectionWhere
+                }
 
-				input MovieSearchMovieConnectionWhere {
-				  AND: [MovieSearchMovieConnectionWhere!]
-				  OR: [MovieSearchMovieConnectionWhere!]
-				  node: MovieWhere
-				  node_NOT: MovieWhere
-				}
+                input MovieSearchGenreFieldInput {
+                  connect: [MovieSearchGenreConnectFieldInput!]
+                  create: [MovieSearchGenreCreateFieldInput!]
+                }
 
-				input MovieSearchMovieCreateFieldInput {
-				  node: MovieCreateInput!
-				}
+                input MovieSearchGenreUpdateConnectionInput {
+                  node: GenreUpdateInput
+                }
 
-				input MovieSearchMovieDeleteFieldInput {
-				  delete: MovieDeleteInput
-				  where: MovieSearchMovieConnectionWhere
-				}
+                input MovieSearchGenreUpdateFieldInput {
+                  connect: [MovieSearchGenreConnectFieldInput!]
+                  create: [MovieSearchGenreCreateFieldInput!]
+                  delete: [MovieSearchGenreDeleteFieldInput!]
+                  disconnect: [MovieSearchGenreDisconnectFieldInput!]
+                  update: MovieSearchGenreUpdateConnectionInput
+                  where: MovieSearchGenreConnectionWhere
+                }
 
-				input MovieSearchMovieDisconnectFieldInput {
-				  disconnect: MovieDisconnectInput
-				  where: MovieSearchMovieConnectionWhere
-				}
+                input MovieSearchMovieConnectFieldInput {
+                  connect: [MovieConnectInput!]
+                  where: MovieConnectWhere
+                }
 
-				input MovieSearchMovieFieldInput {
-				  connect: [MovieSearchMovieConnectFieldInput!]
-				  create: [MovieSearchMovieCreateFieldInput!]
-				}
+                input MovieSearchMovieConnectionWhere {
+                  AND: [MovieSearchMovieConnectionWhere!]
+                  OR: [MovieSearchMovieConnectionWhere!]
+                  node: MovieWhere
+                  node_NOT: MovieWhere
+                }
 
-				input MovieSearchMovieUpdateConnectionInput {
-				  node: MovieUpdateInput
-				}
+                input MovieSearchMovieCreateFieldInput {
+                  node: MovieCreateInput!
+                }
 
-				input MovieSearchMovieUpdateFieldInput {
-				  connect: [MovieSearchMovieConnectFieldInput!]
-				  create: [MovieSearchMovieCreateFieldInput!]
-				  delete: [MovieSearchMovieDeleteFieldInput!]
-				  disconnect: [MovieSearchMovieDisconnectFieldInput!]
-				  update: MovieSearchMovieUpdateConnectionInput
-				  where: MovieSearchMovieConnectionWhere
-				}
+                input MovieSearchMovieDeleteFieldInput {
+                  delete: MovieDeleteInput
+                  where: MovieSearchMovieConnectionWhere
+                }
 
-				type MovieSearchRelationship {
-				  cursor: String!
-				  node: Search!
-				}
+                input MovieSearchMovieDisconnectFieldInput {
+                  disconnect: MovieDisconnectInput
+                  where: MovieSearchMovieConnectionWhere
+                }
 
-				input MovieSearchUpdateInput {
-				  Genre: [MovieSearchGenreUpdateFieldInput!]
-				  Movie: [MovieSearchMovieUpdateFieldInput!]
-				}
+                input MovieSearchMovieFieldInput {
+                  connect: [MovieSearchMovieConnectFieldInput!]
+                  create: [MovieSearchMovieCreateFieldInput!]
+                }
 
-				\\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
-				input MovieSort {
-				  id: SortDirection
-				}
+                input MovieSearchMovieUpdateConnectionInput {
+                  node: MovieUpdateInput
+                }
 
-				input MovieUpdateInput {
-				  id: ID
-				  search: MovieSearchUpdateInput
-				}
+                input MovieSearchMovieUpdateFieldInput {
+                  connect: [MovieSearchMovieConnectFieldInput!]
+                  create: [MovieSearchMovieCreateFieldInput!]
+                  delete: [MovieSearchMovieDeleteFieldInput!]
+                  disconnect: [MovieSearchMovieDisconnectFieldInput!]
+                  update: MovieSearchMovieUpdateConnectionInput
+                  where: MovieSearchMovieConnectionWhere
+                }
 
-				input MovieWhere {
-				  AND: [MovieWhere!]
-				  OR: [MovieWhere!]
-				  id: ID
-				  id_CONTAINS: ID
-				  id_ENDS_WITH: ID
-				  id_IN: [ID]
-				  id_NOT: ID
-				  id_NOT_CONTAINS: ID
-				  id_NOT_ENDS_WITH: ID
-				  id_NOT_IN: [ID]
-				  id_NOT_STARTS_WITH: ID
-				  id_STARTS_WITH: ID
-				  searchConnection: MovieSearchConnectionWhere
-				  searchConnection_NOT: MovieSearchConnectionWhere
-				}
+                type MovieSearchRelationship {
+                  cursor: String!
+                  node: Search!
+                }
 
-				type Mutation {
-				  createGenres(input: [GenreCreateInput!]!): CreateGenresMutationResponse!
-				  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-				  deleteGenres(where: GenreWhere): DeleteInfo!
-				  deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-				  updateGenres(update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
-				  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-				}
+                input MovieSearchUpdateInput {
+                  Genre: [MovieSearchGenreUpdateFieldInput!]
+                  Movie: [MovieSearchMovieUpdateFieldInput!]
+                }
 
-				\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-				type PageInfo {
-				  endCursor: String
-				  hasNextPage: Boolean!
-				  hasPreviousPage: Boolean!
-				  startCursor: String
-				}
+                \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+                input MovieSort {
+                  id: SortDirection
+                }
 
-				type Query {
-				  genres(options: GenreOptions, where: GenreWhere): [Genre!]!
-				  genresAggregate(where: GenreWhere): GenreAggregateSelection!
-				  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-				  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-				}
+                input MovieUpdateInput {
+                  id: ID
+                  search: MovieSearchUpdateInput
+                }
 
-				input QueryOptions {
-				  limit: Int
-				  offset: Int
-				}
+                input MovieWhere {
+                  AND: [MovieWhere!]
+                  OR: [MovieWhere!]
+                  id: ID
+                  id_CONTAINS: ID
+                  id_ENDS_WITH: ID
+                  id_IN: [ID]
+                  id_NOT: ID
+                  id_NOT_CONTAINS: ID
+                  id_NOT_ENDS_WITH: ID
+                  id_NOT_IN: [ID]
+                  id_NOT_STARTS_WITH: ID
+                  id_STARTS_WITH: ID
+                  searchConnection: MovieSearchConnectionWhere
+                  searchConnection_NOT: MovieSearchConnectionWhere
+                }
 
-				union Search = Genre | Movie
+                type Mutation {
+                  createGenres(input: [GenreCreateInput!]!): CreateGenresMutationResponse!
+                  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+                  deleteGenres(where: GenreWhere): DeleteInfo!
+                  deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+                  updateGenres(update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
+                  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                }
 
-				input SearchWhere {
-				  Genre: GenreWhere
-				  Movie: MovieWhere
-				}
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
 
-				enum SortDirection {
-				  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-				  ASC
-				  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-				  DESC
-				}
+                type Query {
+                  genres(options: GenreOptions, where: GenreWhere): [Genre!]!
+                  genresAggregate(where: GenreWhere): GenreAggregateSelection!
+                  genresConnection(after: String, before: String, first: Int, last: Int, sort: [GenreSort], where: GenreWhere): GenreRootConnection!
+                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesConnection(after: String, before: String, first: Int, last: Int, sort: [MovieSort], where: MovieWhere): MovieRootConnection!
+                }
 
-				type UpdateGenresMutationResponse {
-				  genres: [Genre!]!
-				  info: UpdateInfo!
-				}
+                input QueryOptions {
+                  limit: Int
+                  offset: Int
+                }
 
-				type UpdateInfo {
-				  bookmark: String
-				  nodesCreated: Int!
-				  nodesDeleted: Int!
-				  relationshipsCreated: Int!
-				  relationshipsDeleted: Int!
-				}
+                union Search = Genre | Movie
 
-				type UpdateMoviesMutationResponse {
-				  info: UpdateInfo!
-				  movies: [Movie!]!
-				}
-				"
-          `);
+                input SearchWhere {
+                  Genre: GenreWhere
+                  Movie: MovieWhere
+                }
+
+                enum SortDirection {
+                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+                  ASC
+                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+                  DESC
+                }
+
+                type UpdateGenresMutationResponse {
+                  genres: [Genre!]!
+                  info: UpdateInfo!
+                }
+
+                type UpdateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  nodesDeleted: Int!
+                  relationshipsCreated: Int!
+                  relationshipsDeleted: Int!
+                }
+
+                type UpdateMoviesMutationResponse {
+                  info: UpdateInfo!
+                  movies: [Movie!]!
+                }
+                "
+            `);
         });
     });
 });

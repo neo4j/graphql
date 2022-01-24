@@ -265,6 +265,17 @@ describe("Unions", () => {
               publications: AuthorPublicationsCreateFieldInput
             }
 
+            type AuthorRootConnection {
+              edges: [AuthorRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type AuthorRootEdge {
+              cursor: String!
+              node: Author!
+            }
+
             \\"\\"\\"Fields to sort Authors by. The order in which sorts are applied is not guaranteed when specifying many fields in one AuthorSort object.\\"\\"\\"
             input AuthorSort {
               name: SortDirection
@@ -478,9 +489,20 @@ describe("Unions", () => {
               \\"\\"\\"Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [BookSort]
             }
-
+            
             input BookRelationInput {
               author: [BookAuthorCreateFieldInput!]
+            }
+
+            type BookRootConnection {
+              edges: [BookRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type BookRootEdge {
+              cursor: String!
+              node: Book!
             }
 
             \\"\\"\\"Fields to sort Books by. The order in which sorts are applied is not guaranteed when specifying many fields in one BookSort object.\\"\\"\\"
@@ -738,6 +760,17 @@ describe("Unions", () => {
               author: [JournalAuthorCreateFieldInput!]
             }
 
+            type JournalRootConnection {
+              edges: [JournalRootEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type JournalRootEdge {
+              cursor: String!
+              node: Journal!
+            }
+
             \\"\\"\\"Fields to sort Journals by. The order in which sorts are applied is not guaranteed when specifying many fields in one JournalSort object.\\"\\"\\"
             input JournalSort {
               subject: SortDirection
@@ -798,10 +831,13 @@ describe("Unions", () => {
             type Query {
               authors(options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
+              authorsConnection(after: String, before: String, first: Int, last: Int, sort: [AuthorSort], where: AuthorWhere): AuthorRootConnection!
               books(options: BookOptions, where: BookWhere): [Book!]!
               booksAggregate(where: BookWhere): BookAggregateSelection!
+              booksConnection(after: String, before: String, first: Int, last: Int, sort: [BookSort], where: BookWhere): BookRootConnection!
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
               journalsAggregate(where: JournalWhere): JournalAggregateSelection!
+              journalsConnection(after: String, before: String, first: Int, last: Int, sort: [JournalSort], where: JournalWhere): JournalRootConnection!
             }
 
             input QueryOptions {
