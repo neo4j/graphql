@@ -103,7 +103,7 @@ And for `Connection`:
 ```graphql
 query Users {
   users {
-    friendsConnection {
+    friendsConnection(directed: false) {
       totalCount
     }
   }
