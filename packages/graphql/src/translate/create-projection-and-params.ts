@@ -179,16 +179,6 @@ function createProjectionAndParams({
 
             const isArray = cypherField.typeMeta.array;
 
-            const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
-                cypherField.typeMeta.name
-            );
-            const isEnum = context.neoSchema.document.definitions.find(
-                (x) => x.kind === "EnumTypeDefinition" && x.name.value === cypherField.typeMeta.name
-            );
-            const isScalar = context.neoSchema.document.definitions.find(
-                (x) => x.kind === "ScalarTypeDefinition" && x.name.value === cypherField.typeMeta.name
-            );
-
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
             const unions = context.neoSchema.document.definitions.filter(
                 (x) => x.kind === "UnionTypeDefinition"
@@ -305,13 +295,15 @@ function createProjectionAndParams({
             const apocParamsStr = `{this: ${chainStr || varName}${
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}`;
-            const apocStr = `${!isPrimitive && !isEnum && !isScalar ? `${param} IN` : ""} apoc.cypher.runFirstColumn("${
-                cypherField.statement
-            }", ${apocParamsStr}, ${expectMultipleValues})${apocWhere ? ` ${apocWhere}` : ""}${
-                unionWhere ? ` ${unionWhere} ` : ""
-            }${projectionStr ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""}`;
+            const apocStr = `${
+                !cypherField.isScalar && !cypherField.isEnum ? `${param} IN` : ""
+            } apoc.cypher.runFirstColumn("${cypherField.statement}", ${apocParamsStr}, ${expectMultipleValues})${
+                apocWhere ? ` ${apocWhere}` : ""
+            }${unionWhere ? ` ${unionWhere} ` : ""}${
+                projectionStr ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""
+            }`;
 
-            if (isPrimitive || isEnum || isScalar) {
+            if (cypherField.isScalar || cypherField.isEnum) {
                 res.projection.push(`${key}: ${apocStr}`);
 
                 return res;

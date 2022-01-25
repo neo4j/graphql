@@ -156,22 +156,7 @@ class Node extends GraphElement {
             ...this.enumFields,
             ...this.temporalFields,
             ...this.pointFields,
-            ...this.cypherFields.filter((field) =>
-                [
-                    "Boolean",
-                    "ID",
-                    "Int",
-                    "BigInt",
-                    "Float",
-                    "String",
-                    "DateTime",
-                    "LocalDateTime",
-                    "Time",
-                    "LocalTime",
-                    "Date",
-                    "Duration",
-                ].includes(field.typeMeta.name)
-            ),
+            ...this.cypherFields.filter((field) => field.isScalar || field.isEnum),
         ].filter((field) => !field.typeMeta.array);
     }
 
