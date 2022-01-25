@@ -129,8 +129,8 @@ function createConnectionFields({
                 const unionWhere = schemaComposer.createInputTC({
                     name: unionWhereName,
                     fields: {
-                        OR: `[${unionWhereName}]`,
-                        AND: `[${unionWhereName}]`,
+                        OR: `[${unionWhereName}!]`,
+                        AND: `[${unionWhereName}!]`,
                     },
                 });
 

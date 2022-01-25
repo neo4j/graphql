@@ -107,8 +107,8 @@ describe("Connect Or Create", () => {
             }
 
             input ActorActedInConnectionMovieWhere {
-              AND: [ActorActedInConnectionMovieWhere]
-              OR: [ActorActedInConnectionMovieWhere]
+              AND: [ActorActedInConnectionMovieWhere!]
+              OR: [ActorActedInConnectionMovieWhere!]
               edge: ActedInWhere
               edge_NOT: ActedInWhere
               node: MovieWhere
@@ -116,8 +116,8 @@ describe("Connect Or Create", () => {
             }
 
             input ActorActedInConnectionSeriesWhere {
-              AND: [ActorActedInConnectionSeriesWhere]
-              OR: [ActorActedInConnectionSeriesWhere]
+              AND: [ActorActedInConnectionSeriesWhere!]
+              OR: [ActorActedInConnectionSeriesWhere!]
               edge: ActedInWhere
               edge_NOT: ActedInWhere
               node: SeriesWhere

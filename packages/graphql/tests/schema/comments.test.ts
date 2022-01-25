@@ -1204,15 +1204,15 @@ describe("Comments", () => {
                 }
 
                 input MovieSearchConnectionGenreWhere {
-                  AND: [MovieSearchConnectionGenreWhere]
-                  OR: [MovieSearchConnectionGenreWhere]
+                  AND: [MovieSearchConnectionGenreWhere!]
+                  OR: [MovieSearchConnectionGenreWhere!]
                   node: GenreWhere
                   node_NOT: GenreWhere
                 }
 
                 input MovieSearchConnectionMovieWhere {
-                  AND: [MovieSearchConnectionMovieWhere]
-                  OR: [MovieSearchConnectionMovieWhere]
+                  AND: [MovieSearchConnectionMovieWhere!]
+                  OR: [MovieSearchConnectionMovieWhere!]
                   node: MovieWhere
                   node_NOT: MovieWhere
                 }

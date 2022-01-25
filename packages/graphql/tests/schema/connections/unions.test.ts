@@ -157,8 +157,8 @@ describe("Unions", () => {
             }
 
             input AuthorPublicationsConnectionBookWhere {
-              AND: [AuthorPublicationsConnectionBookWhere]
-              OR: [AuthorPublicationsConnectionBookWhere]
+              AND: [AuthorPublicationsConnectionBookWhere!]
+              OR: [AuthorPublicationsConnectionBookWhere!]
               edge: WroteWhere
               edge_NOT: WroteWhere
               node: BookWhere
@@ -166,8 +166,8 @@ describe("Unions", () => {
             }
 
             input AuthorPublicationsConnectionJournalWhere {
-              AND: [AuthorPublicationsConnectionJournalWhere]
-              OR: [AuthorPublicationsConnectionJournalWhere]
+              AND: [AuthorPublicationsConnectionJournalWhere!]
+              OR: [AuthorPublicationsConnectionJournalWhere!]
               edge: WroteWhere
               edge_NOT: WroteWhere
               node: JournalWhere
