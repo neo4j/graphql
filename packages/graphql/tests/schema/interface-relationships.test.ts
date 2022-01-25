@@ -360,11 +360,15 @@ describe("Interface Relationships", () => {
             input ProductionOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [ProductionSort]
             }
 
-            \\"\\"\\"Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+            \\"\\"\\"
             input ProductionSort {
               title: SortDirection
             }
@@ -1334,11 +1338,15 @@ describe("Interface Relationships", () => {
             input ProductionOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [ProductionSort]
             }
 
-            \\"\\"\\"Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+            \\"\\"\\"
             input ProductionSort {
               title: SortDirection
             }
@@ -1912,11 +1920,15 @@ describe("Interface Relationships", () => {
             input Interface1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Interface1Sort objects to sort Interface1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more Interface1Sort objects to sort Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [Interface1Sort]
             }
 
-            \\"\\"\\"Fields to sort Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface1Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface1Sort object.
+            \\"\\"\\"
             input Interface1Sort {
               field1: SortDirection
             }
@@ -1969,11 +1981,15 @@ describe("Interface Relationships", () => {
             input Interface2Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Interface2Sort objects to sort Interface2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more Interface2Sort objects to sort Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [Interface2Sort]
             }
 
-            \\"\\"\\"Fields to sort Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface2Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface2Sort object.
+            \\"\\"\\"
             input Interface2Sort {
               field2: SortDirection
             }
@@ -2964,11 +2980,15 @@ describe("Interface Relationships", () => {
             input ContentOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ContentSort objects to sort Contents by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more ContentSort objects to sort Contents by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [ContentSort]
             }
 
-            \\"\\"\\"Fields to sort Contents by. The order in which sorts are applied is not guaranteed when specifying many fields in one ContentSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Contents by. The order in which sorts are applied is not guaranteed when specifying many fields in one ContentSort object.
+            \\"\\"\\"
             input ContentSort {
               content: SortDirection
               id: SortDirection

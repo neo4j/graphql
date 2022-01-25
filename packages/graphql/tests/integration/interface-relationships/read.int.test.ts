@@ -218,7 +218,7 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            const [gqlActor] = gqlResult.data?.actors;
+            const [gqlActor] = gqlResult.data?.actors as any[];
 
             expect(gqlActor.name).toEqual(actor.name);
             expect(gqlActor.actedIn).toHaveLength(4);
