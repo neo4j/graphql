@@ -94,11 +94,11 @@ describe("Point", () => {
               filmedAt_DISTANCE: PointDistance
               filmedAt_GT: PointDistance
               filmedAt_GTE: PointDistance
-              filmedAt_IN: [PointInput]
+              filmedAt_IN: [PointInput!]
               filmedAt_LT: PointDistance
               filmedAt_LTE: PointDistance
               filmedAt_NOT: PointInput
-              filmedAt_NOT_IN: [PointInput]
+              filmedAt_NOT_IN: [PointInput!]
             }
 
             type Mutation {
@@ -244,11 +244,11 @@ describe("Point", () => {
               partLocation_DISTANCE: CartesianPointDistance
               partLocation_GT: CartesianPointDistance
               partLocation_GTE: CartesianPointDistance
-              partLocation_IN: [CartesianPointInput]
+              partLocation_IN: [CartesianPointInput!]
               partLocation_LT: CartesianPointDistance
               partLocation_LTE: CartesianPointDistance
               partLocation_NOT: CartesianPointInput
-              partLocation_NOT_IN: [CartesianPointInput]
+              partLocation_NOT_IN: [CartesianPointInput!]
             }
 
             type Mutation {

@@ -208,68 +208,68 @@ describe("@default directive", () => {
               fromInterface: String
               fromInterface_CONTAINS: String
               fromInterface_ENDS_WITH: String
-              fromInterface_IN: [String]
+              fromInterface_IN: [String!]
               fromInterface_NOT: String
               fromInterface_NOT_CONTAINS: String
               fromInterface_NOT_ENDS_WITH: String
-              fromInterface_NOT_IN: [String]
+              fromInterface_NOT_IN: [String!]
               fromInterface_NOT_STARTS_WITH: String
               fromInterface_STARTS_WITH: String
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_IN: [ID]
+              id_IN: [ID!]
               id_NOT: ID
               id_NOT_CONTAINS: ID
               id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
+              id_NOT_IN: [ID!]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
               numberOfFriends: Int
               numberOfFriends_GT: Int
               numberOfFriends_GTE: Int
-              numberOfFriends_IN: [Int]
+              numberOfFriends_IN: [Int!]
               numberOfFriends_LT: Int
               numberOfFriends_LTE: Int
               numberOfFriends_NOT: Int
-              numberOfFriends_NOT_IN: [Int]
+              numberOfFriends_NOT_IN: [Int!]
               rating: Float
               rating_GT: Float
               rating_GTE: Float
-              rating_IN: [Float]
+              rating_IN: [Float!]
               rating_LT: Float
               rating_LTE: Float
               rating_NOT: Float
-              rating_NOT_IN: [Float]
+              rating_NOT_IN: [Float!]
               toBeOverridden: String
               toBeOverridden_CONTAINS: String
               toBeOverridden_ENDS_WITH: String
-              toBeOverridden_IN: [String]
+              toBeOverridden_IN: [String!]
               toBeOverridden_NOT: String
               toBeOverridden_NOT_CONTAINS: String
               toBeOverridden_NOT_ENDS_WITH: String
-              toBeOverridden_NOT_IN: [String]
+              toBeOverridden_NOT_IN: [String!]
               toBeOverridden_NOT_STARTS_WITH: String
               toBeOverridden_STARTS_WITH: String
               verified: Boolean
               verifiedDate: DateTime
               verifiedDate_GT: DateTime
               verifiedDate_GTE: DateTime
-              verifiedDate_IN: [DateTime]
+              verifiedDate_IN: [DateTime!]
               verifiedDate_LT: DateTime
               verifiedDate_LTE: DateTime
               verifiedDate_NOT: DateTime
-              verifiedDate_NOT_IN: [DateTime]
+              verifiedDate_NOT_IN: [DateTime!]
               verified_NOT: Boolean
             }"
         `);

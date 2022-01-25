@@ -239,11 +239,11 @@ describe("Alias", () => {
               character: String
               character_CONTAINS: String
               character_ENDS_WITH: String
-              character_IN: [String]
+              character_IN: [String!]
               character_NOT: String
               character_NOT_CONTAINS: String
               character_NOT_ENDS_WITH: String
-              character_NOT_IN: [String]
+              character_NOT_IN: [String!]
               character_NOT_STARTS_WITH: String
               character_STARTS_WITH: String
               screenTime: Int
@@ -365,11 +365,11 @@ describe("Alias", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -466,11 +466,11 @@ describe("Alias", () => {
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }

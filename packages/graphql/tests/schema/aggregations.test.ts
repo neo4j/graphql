@@ -245,11 +245,11 @@ describe("Aggregations", () => {
               isbn: String
               isbn_CONTAINS: String
               isbn_ENDS_WITH: String
-              isbn_IN: [String]
+              isbn_IN: [String!]
               isbn_NOT: String
               isbn_NOT_CONTAINS: String
               isbn_NOT_ENDS_WITH: String
-              isbn_NOT_IN: [String]
+              isbn_NOT_IN: [String!]
               isbn_NOT_STARTS_WITH: String
               isbn_STARTS_WITH: String
               screenTime: Duration

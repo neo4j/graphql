@@ -135,21 +135,21 @@ describe("@writeonly directive", () => {
               password: String
               password_CONTAINS: String
               password_ENDS_WITH: String
-              password_IN: [String]
+              password_IN: [String!]
               password_NOT: String
               password_NOT_CONTAINS: String
               password_NOT_ENDS_WITH: String
-              password_NOT_IN: [String]
+              password_NOT_IN: [String!]
               password_NOT_STARTS_WITH: String
               password_STARTS_WITH: String
               username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
-              username_IN: [String]
+              username_IN: [String!]
               username_NOT: String
               username_NOT_CONTAINS: String
               username_NOT_ENDS_WITH: String
-              username_NOT_IN: [String]
+              username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
             }"
@@ -277,21 +277,21 @@ describe("@writeonly directive", () => {
               password: String
               password_CONTAINS: String
               password_ENDS_WITH: String
-              password_IN: [String]
+              password_IN: [String!]
               password_NOT: String
               password_NOT_CONTAINS: String
               password_NOT_ENDS_WITH: String
-              password_NOT_IN: [String]
+              password_NOT_IN: [String!]
               password_NOT_STARTS_WITH: String
               password_STARTS_WITH: String
               username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
-              username_IN: [String]
+              username_IN: [String!]
               username_NOT: String
               username_NOT_CONTAINS: String
               username_NOT_ENDS_WITH: String
-              username_NOT_IN: [String]
+              username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
             }"

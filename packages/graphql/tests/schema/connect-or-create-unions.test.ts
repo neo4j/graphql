@@ -77,11 +77,11 @@ describe("Connect Or Create", () => {
               screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
-              screenTime_IN: [Int]
+              screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
               screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
+              screenTime_NOT_IN: [Int!]
             }
 
             type Actor {
@@ -339,11 +339,11 @@ describe("Connect Or Create", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -431,21 +431,21 @@ describe("Connect Or Create", () => {
               isan: String
               isan_CONTAINS: String
               isan_ENDS_WITH: String
-              isan_IN: [String]
+              isan_IN: [String!]
               isan_NOT: String
               isan_NOT_CONTAINS: String
               isan_NOT_ENDS_WITH: String
-              isan_NOT_IN: [String]
+              isan_NOT_IN: [String!]
               isan_NOT_STARTS_WITH: String
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -547,21 +547,21 @@ describe("Connect Or Create", () => {
               isan: String
               isan_CONTAINS: String
               isan_ENDS_WITH: String
-              isan_IN: [String]
+              isan_IN: [String!]
               isan_NOT: String
               isan_NOT_CONTAINS: String
               isan_NOT_ENDS_WITH: String
-              isan_NOT_IN: [String]
+              isan_NOT_IN: [String!]
               isan_NOT_STARTS_WITH: String
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }

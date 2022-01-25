@@ -635,11 +635,11 @@ describe("Comments", () => {
                   screenTime: Int
                   screenTime_GT: Int
                   screenTime_GTE: Int
-                  screenTime_IN: [Int]
+                  screenTime_IN: [Int!]
                   screenTime_LT: Int
                   screenTime_LTE: Int
                   screenTime_NOT: Int
-                  screenTime_NOT_IN: [Int]
+                  screenTime_NOT_IN: [Int!]
                 }
 
                 type Actor {
@@ -766,11 +766,11 @@ describe("Comments", () => {
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_IN: [String]
+                  name_IN: [String!]
                   name_NOT: String
                   name_NOT_CONTAINS: String
                   name_NOT_ENDS_WITH: String
-                  name_NOT_IN: [String]
+                  name_NOT_IN: [String!]
                   name_NOT_STARTS_WITH: String
                   name_STARTS_WITH: String
                 }
@@ -853,19 +853,19 @@ describe("Comments", () => {
                   runtime: Int
                   runtime_GT: Int
                   runtime_GTE: Int
-                  runtime_IN: [Int]
+                  runtime_IN: [Int!]
                   runtime_LT: Int
                   runtime_LTE: Int
                   runtime_NOT: Int
-                  runtime_NOT_IN: [Int]
+                  runtime_NOT_IN: [Int!]
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_IN: [String]
+                  title_IN: [String!]
                   title_NOT: String
                   title_NOT_CONTAINS: String
                   title_NOT_ENDS_WITH: String
-                  title_NOT_IN: [String]
+                  title_NOT_IN: [String!]
                   title_NOT_STARTS_WITH: String
                   title_STARTS_WITH: String
                 }
@@ -923,11 +923,11 @@ describe("Comments", () => {
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_IN: [String]
+                  title_IN: [String!]
                   title_NOT: String
                   title_NOT_CONTAINS: String
                   title_NOT_ENDS_WITH: String
-                  title_NOT_IN: [String]
+                  title_NOT_IN: [String!]
                   title_NOT_STARTS_WITH: String
                   title_STARTS_WITH: String
                 }
@@ -990,19 +990,19 @@ describe("Comments", () => {
                   episodes: Int
                   episodes_GT: Int
                   episodes_GTE: Int
-                  episodes_IN: [Int]
+                  episodes_IN: [Int!]
                   episodes_LT: Int
                   episodes_LTE: Int
                   episodes_NOT: Int
-                  episodes_NOT_IN: [Int]
+                  episodes_NOT_IN: [Int!]
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_IN: [String]
+                  title_IN: [String!]
                   title_NOT: String
                   title_NOT_CONTAINS: String
                   title_NOT_ENDS_WITH: String
-                  title_NOT_IN: [String]
+                  title_NOT_IN: [String!]
                   title_NOT_STARTS_WITH: String
                   title_STARTS_WITH: String
                 }

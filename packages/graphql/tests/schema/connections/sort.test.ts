@@ -207,11 +207,11 @@ describe("Sort", () => {
               property: String
               property_CONTAINS: String
               property_ENDS_WITH: String
-              property_IN: [String]
+              property_IN: [String!]
               property_NOT: String
               property_NOT_CONTAINS: String
               property_NOT_ENDS_WITH: String
-              property_NOT_IN: [String]
+              property_NOT_IN: [String!]
               property_NOT_STARTS_WITH: String
               property_STARTS_WITH: String
               relatedTo: Node2Where
