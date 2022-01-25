@@ -25,7 +25,7 @@ function parseNodeDirective(nodeDirective: DirectiveNode | undefined, definition
         throw new Error("Undefined or incorrect directive passed into parseNodeDirective function");
     }
 
-    let nodeIdField = "";
+    let nodeIdField: string | undefined;
     const global = getArgumentValue<boolean>(nodeDirective, "global");
 
     if (global) {
