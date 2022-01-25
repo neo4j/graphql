@@ -348,7 +348,7 @@ describe("Comments", () => {
 
                 type Movie {
                   \\"\\"\\"Actors in Movie\\"\\"\\"
-                  actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -644,7 +644,7 @@ describe("Comments", () => {
 
                 type Actor {
                   \\"\\"\\"Acted in Production\\"\\"\\"
-                  actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
+                  actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
                   actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -1148,7 +1148,7 @@ describe("Comments", () => {
 
                 type Movie {
                   id: ID
-                  search(options: QueryOptions, where: SearchWhere): [Search!]!
+                  search(directed: Boolean = true, options: QueryOptions, where: SearchWhere): [Search!]!
                   searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
                   searchNoDirective: Search
                 }

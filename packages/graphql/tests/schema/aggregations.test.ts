@@ -651,7 +651,7 @@ describe("Aggregations", () => {
             }
 
             type Post {
-              likes(options: UserOptions, where: UserWhere): [User!]!
+              likes(directed: Boolean = true, options: UserOptions, where: UserWhere): [User!]!
               likesAggregate(where: UserWhere): PostUserLikesAggregationSelection
               likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String

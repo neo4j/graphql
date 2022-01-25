@@ -84,7 +84,7 @@ describe("Interfaces", () => {
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
               nodes: [MovieNode]

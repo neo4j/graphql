@@ -913,6 +913,7 @@ describe("generate", () => {
             };
 
             export type MovieActorsArgs = {
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
               where?: InputMaybe<PersonWhere>;
               options?: InputMaybe<PersonOptions>;
             };
