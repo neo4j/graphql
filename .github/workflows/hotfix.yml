@@ -1,4 +1,4 @@
-name: "Hotfix (Library and OGM)"
+name: "Hotfix Release (Library and OGM)"
 
 on:
   push:
@@ -198,8 +198,6 @@ jobs:
           - graphql
           - ogm
         neo4j-version:
-          - 4.1.5
-          - 4.1
           - 4.2.9
           - 4.2
           - 4.3.2
@@ -505,35 +503,6 @@ jobs:
           git tag -a @neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }}"
       - name: git push
         run: git push --follow-tags
-      - uses: actions/checkout@v2
-        with:
-          ref: dev
-          fetch-depth: 0
-          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
-      - name: git merge
-        run: git merge --no-ff origin/hotfix/${{ needs.bump-version.outputs.version }} --strategy-option theirs
-      - name: git push
-        run: git push
-
-  delete-release-branch:
-    needs:
-      - bump-version
-      - merge-tag-push
-
-    runs-on: ubuntu-latest
-
-    environment:
-      name: github
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
-      - name: Delete release branch
-        run: |
-          git config --global user.name 'Neo4j Team GraphQL'
-          git config --global user.email 'team-graphql@neotechnology.com'
-          git push origin --delete hotfix/${{ needs.bump-version.outputs.version }}
 
   changelog:
     needs:
@@ -594,3 +563,45 @@ jobs:
           payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASE_ANNOUNCEMENT_WEBHOOK_URL }}
+
+  merge-into-dev:
+    needs:
+      - bump-version
+      - slack-release-announcement
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: dev
+          fetch-depth: 0
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+      - name: git config
+        run: |
+          git config --global user.name 'Neo4j Team GraphQL'
+          git config --global user.email 'team-graphql@neotechnology.com'
+      - name: git merge
+        run: git merge --no-ff origin/hotfix/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+      - name: git push
+        run: git push
+
+  delete-release-branch:
+    needs:
+      - bump-version
+      - merge-into-dev
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+      - name: Delete release branch
+        run: |
+          git config --global user.name 'Neo4j Team GraphQL'
+          git config --global user.email 'team-graphql@neotechnology.com'
+          git push origin --delete hotfix/${{ needs.bump-version.outputs.version }}
