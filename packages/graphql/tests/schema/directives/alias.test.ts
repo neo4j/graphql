@@ -51,9 +51,9 @@ describe("Alias", () => {
             }
 
             type Actor {
-              actedIn(options: MovieOptions, where: MovieWhere): [Movie!]!
-              actedInAggregate(where: MovieWhere): ActorMovieActedInAggregationSelection
-              actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedIn(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              actedInAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieActedInAggregationSelection
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               city: String
               name: String!
             }

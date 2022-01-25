@@ -87,8 +87,8 @@ describe("Interface Relationships", () => {
             }
 
             type Actor {
-              actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
+              actedInConnection(directed: Boolean = true, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -560,8 +560,8 @@ describe("Interface Relationships", () => {
             }
 
             type Actor {
-              actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
+              actedInConnection(directed: Boolean = true, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -732,9 +732,9 @@ describe("Interface Relationships", () => {
 
             type Episode {
               runtime: Int!
-              series(options: SeriesOptions, where: SeriesWhere): Series!
-              seriesAggregate(where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection
-              seriesConnection(after: String, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
+              series(directed: Boolean = true, options: SeriesOptions, where: SeriesWhere): Series!
+              seriesAggregate(directed: Boolean = true, where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection
+              seriesConnection(after: String, directed: Boolean = true, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
             }
 
             type EpisodeAggregateSelection {
@@ -944,9 +944,9 @@ describe("Interface Relationships", () => {
             }
 
             type Movie implements Production {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               runtime: Int!
               title: String!
             }
@@ -1135,8 +1135,8 @@ describe("Interface Relationships", () => {
             }
 
             interface Production {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               title: String!
             }
 
@@ -1364,13 +1364,13 @@ describe("Interface Relationships", () => {
             }
 
             type Series implements Production {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection
-              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodeCount: Int!
-              episodes(options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
-              episodesAggregate(where: EpisodeWhere): SeriesEpisodeEpisodesAggregationSelection
-              episodesConnection(after: String, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
+              episodes(directed: Boolean = true, options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
+              episodesAggregate(directed: Boolean = true, where: EpisodeWhere): SeriesEpisodeEpisodesAggregationSelection
+              episodesConnection(after: String, directed: Boolean = true, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
               title: String!
             }
 
@@ -1783,8 +1783,8 @@ describe("Interface Relationships", () => {
 
             interface Interface1 {
               field1: String!
-              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2(directed: Boolean = true, options: QueryOptions, where: Interface2Where): [Interface2!]!
+              interface2Connection(directed: Boolean = true, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             input Interface1ConnectInput {
@@ -2011,8 +2011,8 @@ describe("Interface Relationships", () => {
 
             type Type1 {
               field1: String!
-              interface1(options: QueryOptions, where: Interface1Where): [Interface1!]!
-              interface1Connection(where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
+              interface1(directed: Boolean = true, options: QueryOptions, where: Interface1Where): [Interface1!]!
+              interface1Connection(directed: Boolean = true, where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
             type Type1AggregateSelection {
@@ -2039,8 +2039,8 @@ describe("Interface Relationships", () => {
 
             type Type1Interface1 implements Interface1 {
               field1: String!
-              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2(directed: Boolean = true, options: QueryOptions, where: Interface2Where): [Interface2!]!
+              interface2Connection(directed: Boolean = true, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             type Type1Interface1AggregateSelection {
@@ -2283,8 +2283,8 @@ describe("Interface Relationships", () => {
 
             type Type2Interface1 implements Interface1 {
               field1: String!
-              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2(directed: Boolean = true, options: QueryOptions, where: Interface2Where): [Interface2!]!
+              interface2Connection(directed: Boolean = true, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             type Type2Interface1AggregateSelection {
@@ -2508,13 +2508,13 @@ describe("Interface Relationships", () => {
 
             type Comment implements Content {
               content: String
-              creator(options: UserOptions, where: UserWhere): User!
-              creatorAggregate(where: UserWhere): CommentUserCreatorAggregationSelection
-              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              creatorAggregate(directed: Boolean = true, where: UserWhere): CommentUserCreatorAggregationSelection
+              creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
-              post(options: PostOptions, where: PostWhere): Post!
-              postAggregate(where: PostWhere): CommentPostPostAggregationSelection
-              postConnection(after: String, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
+              post(directed: Boolean = true, options: PostOptions, where: PostWhere): Post!
+              postAggregate(directed: Boolean = true, where: PostWhere): CommentPostPostAggregationSelection
+              postConnection(after: String, directed: Boolean = true, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
             }
 
             type CommentAggregateSelection {
@@ -2768,8 +2768,8 @@ describe("Interface Relationships", () => {
 
             interface Content {
               content: String
-              creator(options: UserOptions, where: UserWhere): User!
-              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
             }
 
@@ -3007,13 +3007,13 @@ describe("Interface Relationships", () => {
             }
 
             type Post implements Content {
-              comments(options: CommentOptions, where: CommentWhere): [Comment!]!
-              commentsAggregate(where: CommentWhere): PostCommentCommentsAggregationSelection
-              commentsConnection(after: String, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
+              comments(directed: Boolean = true, options: CommentOptions, where: CommentWhere): [Comment!]!
+              commentsAggregate(directed: Boolean = true, where: CommentWhere): PostCommentCommentsAggregationSelection
+              commentsConnection(after: String, directed: Boolean = true, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
               content: String
-              creator(options: UserOptions, where: UserWhere): User!
-              creatorAggregate(where: UserWhere): PostUserCreatorAggregationSelection
-              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              creatorAggregate(directed: Boolean = true, where: UserWhere): PostUserCreatorAggregationSelection
+              creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
             }
 
@@ -3316,8 +3316,8 @@ describe("Interface Relationships", () => {
             }
 
             type User {
-              content(options: QueryOptions, where: ContentWhere): [Content!]!
-              contentConnection(where: UserContentConnectionWhere): UserContentConnection!
+              content(directed: Boolean = true, options: QueryOptions, where: ContentWhere): [Content!]!
+              contentConnection(directed: Boolean = true, where: UserContentConnectionWhere): UserContentConnection!
               id: ID
               name: String
             }

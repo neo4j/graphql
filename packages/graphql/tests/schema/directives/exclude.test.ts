@@ -625,9 +625,9 @@ describe("@exclude directive", () => {
             }
 
             type Movie {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-              actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String
             }
 
