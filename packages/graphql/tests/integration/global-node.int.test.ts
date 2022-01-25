@@ -19,9 +19,9 @@
 
 import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import { toGlobalId } from "graphql-relay";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { NodeBuilder } from "../utils/builders/node-builder";
 import { generateUniqueType } from "../utils/graphql-types";
 
 describe("Global node resolution", () => {
@@ -58,7 +58,35 @@ describe("Global node resolution", () => {
           }
         `;
 
-        const expectedId = toGlobalId(`${typeFilm.name}:title`, "2001: A Space Odyssey");
+        const node = new NodeBuilder({
+            name: typeFilm.name,
+            primitiveFields: [
+                {
+                    fieldName: "title",
+                    typeMeta: {
+                        name: "String",
+                        array: false,
+                        required: false,
+                        pretty: "String",
+                        input: {
+                            where: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            create: { type: "String", pretty: "String" },
+                            update: { type: "String", pretty: "String" },
+                        },
+                    },
+                    otherDirectives: [],
+                    arguments: [],
+                },
+            ],
+        })
+            .withNodeDirective({ global: true, idField: "title" })
+            .instance();
+
+        const expectedId = node.toGlobalId("2001: A Space Odyssey");
+
         try {
             const mutationResult = await graphql({
                 schema: neoSchema.schema,
@@ -102,7 +130,34 @@ describe("Global node resolution", () => {
           }
         `;
 
-        const expectedId = toGlobalId(`${typeFilm.name}:title`, "2001: A Space Odyssey");
+        const node = new NodeBuilder({
+            name: typeFilm.name,
+            primitiveFields: [
+                {
+                    fieldName: "title",
+                    typeMeta: {
+                        name: "String",
+                        array: false,
+                        required: false,
+                        pretty: "String",
+                        input: {
+                            where: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            create: { type: "String", pretty: "String" },
+                            update: { type: "String", pretty: "String" },
+                        },
+                    },
+                    otherDirectives: [],
+                    arguments: [],
+                },
+            ],
+        })
+            .withNodeDirective({ global: true, idField: "title" })
+            .instance();
+
+        const expectedId = node.toGlobalId("2001: A Space Odyssey");
 
         try {
             await graphql({

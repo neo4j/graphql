@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, NamedTypeNode } from "graphql";
-import { toGlobalId } from "graphql-relay";
+import { DirectiveNode, GraphQLID, NamedTypeNode } from "graphql";
 import pluralize from "pluralize";
 import type {
     RelationField,
@@ -41,6 +40,7 @@ import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
 import { lowerFirst } from "../utils/lower-first";
+import { base64, unbase64 } from "../utils/base64";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -217,7 +217,17 @@ class Node extends GraphElement {
     public toGlobalId(value: string): string {
         const label = this.getMainLabel();
         const field = this.getGlobalIdField();
-        return toGlobalId(`${label}:${field}`, value);
+        return base64([label, field, GraphQLID.serialize(value)].join(":"));
+    }
+
+    public fromGlobalId(relayId: string): { field: string; value: string | number } {
+        const unbasedGlobalId = unbase64(relayId);
+        /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+        const [label, field, ...rest] = unbasedGlobalId.split(":");
+        return {
+            field,
+            value: rest.join(":"),
+        };
     }
 }
 

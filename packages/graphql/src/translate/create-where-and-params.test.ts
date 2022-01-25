@@ -43,4 +43,47 @@ describe("createWhereAndParams", () => {
         expect(result[0]).toBe(`WHERE this.title = $this_title`);
         expect(result[1]).toMatchObject({ this_title: whereInput.title });
     });
+
+    test("should return a clause with the correct idField when using the `id` where argument on a global node", () => {
+        const varName = "this";
+
+        const node = new NodeBuilder({
+            name: "Movie",
+            primitiveFields: [
+                {
+                    fieldName: "title",
+                    typeMeta: {
+                        name: "String",
+                        array: false,
+                        required: true,
+                        pretty: "String",
+                        input: {
+                            where: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            create: { type: "String", pretty: "String" },
+                            update: { type: "String", pretty: "string " },
+                        },
+                    },
+                    otherDirectives: [],
+                    arguments: [],
+                },
+            ],
+        })
+            .withNodeDirective({ global: true, idField: "title" })
+            .instance();
+
+        const whereInput = {
+            id: node.toGlobalId("some title"),
+        };
+
+        // @ts-ignore
+        const context: Context = { neoSchema: { nodes: [] } };
+
+        const result = createWhereAndParams({ whereInput, varName, node, context });
+
+        expect(result[0]).toBe(`WHERE this.title = $this_title`);
+        expect(result[1]).toMatchObject({ this_title: "some title" });
+    });
 });

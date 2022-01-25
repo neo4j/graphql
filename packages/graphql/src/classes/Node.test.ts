@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { fromGlobalId } from "graphql-relay";
 import Node, { NodeConstructor } from "./Node";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
@@ -169,10 +168,43 @@ describe("Node", () => {
 
             const relayId = node.toGlobalId(value);
 
-            expect(fromGlobalId(relayId)).toEqual({
-                type: "Film",
-                id: `title:${value}`,
+            expect(node.fromGlobalId(relayId)).toEqual({
+                field: "title",
+                value,
             });
+        });
+        test("should convert a relay id to an object of { field: string, value: string | number }", () => {
+            const node = new NodeBuilder({
+                name: "Film",
+            })
+                .withNodeDirective({
+                    global: true,
+                    idField: "title",
+                })
+                .instance();
+
+            const value = "carrie-anne@thematrix.com";
+
+            const relayId = node.toGlobalId(value);
+
+            expect(node.fromGlobalId(relayId)).toMatchObject({ field: "title", value });
+        });
+
+        test("should properly convert a relay id to an object when the id has a colon in the name", () => {
+            const node = new NodeBuilder({
+                name: "Film",
+            })
+                .withNodeDirective({
+                    global: true,
+                    idField: "title",
+                })
+                .instance();
+
+            const value = "2001: A Space Odyssey";
+
+            const relayId = node.toGlobalId(value);
+
+            expect(node.fromGlobalId(relayId)).toMatchObject({ field: "title", value });
         });
     });
 });

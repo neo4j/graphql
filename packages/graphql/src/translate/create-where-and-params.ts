@@ -47,7 +47,7 @@ function createWhereAndParams({
         return ["", {}];
     }
 
-    function reducer(res: Res, [key, value]: [string, GraphQLWhereArg]): Res {
+    function reducer(res: Res, [key, value]: [string, any | GraphQLWhereArg | GraphQLWhereArg[]]): Res {
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
@@ -63,6 +63,15 @@ function createWhereAndParams({
         const durationField = node.primitiveFields.find(
             (x) => key.startsWith(x.fieldName) && x.typeMeta.name === "Duration"
         );
+
+        if (node.isGlobalNode() && key === "id") {
+            const { field, value: nodeIdValue } = node.fromGlobalId(value as string);
+            param = param.replace(key, field);
+
+            res.clauses.push(`${varName}.${field} = $${param}`);
+            res.params = { ...res.params, [param]: nodeIdValue };
+            return res;
+        }
 
         if (key.endsWith("Aggregate")) {
             const [fieldName] = key.split("Aggregate");
@@ -362,6 +371,7 @@ function createWhereAndParams({
                 nodeEntries = { [equalityConnection.relationship.typeMeta.name]: value };
             }
 
+            /* eslint-disable-next-line consistent-return */
             Object.entries(nodeEntries).forEach((entry) => {
                 const refNode = context.neoSchema.nodes.find((x) => x.name === entry[0]) as Node;
                 const relationship = context.neoSchema.relationships.find(
