@@ -205,8 +205,19 @@ class Node extends GraphElement {
         return Boolean(this.nodeDirective?.global);
     }
 
-    public toGlobalId(id: string): string {
-        return toGlobalId(this.getMainLabel(), id);
+    public getGlobalIdField(): string {
+        if (!this.isGlobalNode()) {
+            throw new Error(
+                "The 'global' property needs to be set to true on the @node directive before accessing the unique node id field"
+            );
+        }
+        return this.nodeDirective?.idField as string;
+    }
+
+    public toGlobalId(value: string): string {
+        const label = this.getMainLabel();
+        const field = this.getGlobalIdField();
+        return toGlobalId(`${label}:${field}`, value);
     }
 }
 

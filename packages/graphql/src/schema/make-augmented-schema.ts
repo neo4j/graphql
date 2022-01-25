@@ -25,6 +25,7 @@ import {
     DirectiveNode,
     DocumentNode,
     EnumTypeDefinitionNode,
+    GraphQLID,
     GraphQLInt,
     GraphQLNonNull,
     GraphQLString,
@@ -124,6 +125,13 @@ function makeAugmentedSchema(
             nodesDeleted: new GraphQLNonNull(GraphQLInt),
             relationshipsCreated: new GraphQLNonNull(GraphQLInt),
             relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
+        },
+    });
+
+    composer.createInterfaceTC({
+        name: "Node",
+        fields: {
+            id: new GraphQLNonNull(GraphQLID),
         },
     });
 
@@ -265,6 +273,11 @@ function makeAugmentedSchema(
             exclude = parseExcludeDirective(excludeDirective || interfaceExcludeDirectives[0]);
         }
 
+        let nodeDirective: NodeDirective;
+        if (nodeDirectiveDefinition) {
+            nodeDirective = parseNodeDirective(nodeDirectiveDefinition, definition);
+        }
+
         const nodeFields = getObjFieldMeta({
             obj: definition,
             enums,
@@ -281,11 +294,6 @@ function makeAugmentedSchema(
                 nodeFields,
                 definition,
             });
-        }
-
-        let nodeDirective: NodeDirective;
-        if (nodeDirectiveDefinition) {
-            nodeDirective = parseNodeDirective(nodeDirectiveDefinition, definition);
         }
 
         nodeFields.relationFields.forEach((relationship) => {
@@ -708,6 +716,19 @@ function makeAugmentedSchema(
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
+        if (node.isGlobalNode()) {
+            composeNode.setField("id", {
+                type: new GraphQLNonNull(GraphQLID),
+                resolve: (src) => {
+                    const field = node.getGlobalIdField();
+                    const value = src[field] as string | number;
+                    return node.toGlobalId(value.toString());
+                },
+            });
+
+            composeNode.addInterface("Node");
+        }
+
         const sortFields = node.sortableFields.reduce(
             (res, f) => ({
                 ...res,
@@ -787,7 +808,7 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${node.name}Where`,
-            fields: queryFields,
+            fields: node.isGlobalNode() ? { id: "ID", ...queryFields } : queryFields,
         });
 
         if (node.fulltextDirective) {

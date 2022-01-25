@@ -161,16 +161,17 @@ describe("Node", () => {
             })
                 .withNodeDirective({
                     global: true,
+                    idField: "title",
                 })
                 .instance();
 
-            const id = "as09skddaslasdaslkjasd";
+            const value = "keanu@thematrix.com";
 
-            const relayId = node.toGlobalId(id);
+            const relayId = node.toGlobalId(value);
 
             expect(fromGlobalId(relayId)).toEqual({
                 type: "Film",
-                id,
+                id: `title:${value}`,
             });
         });
     });
