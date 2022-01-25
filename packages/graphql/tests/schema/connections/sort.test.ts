@@ -76,14 +76,14 @@ describe("Sort", () => {
 
             type Node1 {
               property: String!
-              relatedTo(options: Node2Options, where: Node2Where): [Node2!]!
-              relatedToAggregate(where: Node2Where): Node1Node2RelatedToAggregationSelection
-              relatedToConnection(after: String, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
+              relatedTo(directed: Boolean = true, options: Node2Options, where: Node2Where): [Node2!]!
+              relatedToAggregate(directed: Boolean = true, where: Node2Where): Node1Node2RelatedToAggregationSelection
+              relatedToConnection(after: String, directed: Boolean = true, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
             }
 
             type Node1AggregateSelection {
               count: Int!
-              property: StringAggregateSelection!
+              property: StringAggregateSelectionNonNullable!
             }
 
             input Node1ConnectInput {
@@ -114,7 +114,9 @@ describe("Sort", () => {
             input Node1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Node1Sort objects to sort Node1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more Node1Sort objects to sort Node1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [Node1Sort]
             }
 
@@ -187,7 +189,9 @@ describe("Sort", () => {
               relatedTo: [Node1RelatedToCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Node1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Node1Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Node1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Node1Sort object.
+            \\"\\"\\"
             input Node1Sort {
               property: SortDirection
             }
@@ -218,9 +222,9 @@ describe("Sort", () => {
             }
 
             type Node2 {
-              relatedTo(options: Node1Options, where: Node1Where): [Node1!]!
-              relatedToAggregate(where: Node1Where): Node2Node1RelatedToAggregationSelection
-              relatedToConnection(after: String, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
+              relatedTo(directed: Boolean = true, options: Node1Options, where: Node1Where): [Node1!]!
+              relatedToAggregate(directed: Boolean = true, where: Node1Where): Node2Node1RelatedToAggregationSelection
+              relatedToConnection(after: String, directed: Boolean = true, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
             }
 
             type Node2AggregateSelection {
@@ -253,7 +257,7 @@ describe("Sort", () => {
             }
 
             type Node2Node1RelatedToNodeAggregateSelection {
-              property: StringAggregateSelection!
+              property: StringAggregateSelectionNonNullable!
             }
 
             input Node2Options {
@@ -385,10 +389,8 @@ describe("Sort", () => {
             type Query {
               node1s(options: Node1Options, where: Node1Where): [Node1!]!
               node1sAggregate(where: Node1Where): Node1AggregateSelection!
-              node1sCount(where: Node1Where): Int!
               node2s(options: Node2Options, where: Node2Where): [Node2!]!
               node2sAggregate(where: Node2Where): Node2AggregateSelection!
-              node2sCount(where: Node2Where): Int!
             }
 
             enum SortDirection {
@@ -398,9 +400,9 @@ describe("Sort", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -419,8 +421,7 @@ describe("Sort", () => {
             type UpdateNode2sMutationResponse {
               info: UpdateInfo!
               node2s: [Node2!]!
-            }
-            "
+            }"
         `);
     });
 });

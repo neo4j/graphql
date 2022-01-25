@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
+import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
 import neo4j from "neo4j-driver";
 
-export const LOCAL_TIME_REGEX = /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?$/;
+export const LOCAL_TIME_REGEX =
+    /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?$/;
 
 export const parseLocalTime = (value: any) => {
     if (typeof value !== "string") {
@@ -59,7 +60,7 @@ const parse = (value: any) => {
 export default new GraphQLScalarType({
     name: "LocalTime",
     description: "A local time, represented as a time string without timezone information",
-    serialize: (value) => {
+    serialize: (value: unknown) => {
         if (typeof value !== "string" && !(value instanceof neo4j.types.LocalTime)) {
             throw new TypeError(`Value must be of type string: ${value}`);
         }
@@ -72,10 +73,10 @@ export default new GraphQLScalarType({
 
         return stringifiedValue;
     },
-    parseValue: (value) => {
+    parseValue: (value: unknown) => {
         return parse(value);
     },
-    parseLiteral: (ast) => {
+    parseLiteral: (ast: ValueNode) => {
         if (ast.kind !== Kind.STRING) {
             throw new GraphQLError(`Only strings can be validated as LocalTime, but received: ${ast.kind}`);
         }

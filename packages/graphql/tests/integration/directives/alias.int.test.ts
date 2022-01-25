@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import * as neo4jDriver from "neo4j-driver";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("@alias directive", () => {
     let driver: Driver;
@@ -46,7 +46,7 @@ describe("@alias directive", () => {
             type AliasDirectiveTestUser implements AliasInterface {
                 id: ID! @id
                 name: String! @alias(property: "dbName")
-                likes: [AliasDirectiveTestMovie] @relationship(direction: OUT, type: "LIKES", properties: "AliasDirectiveTestLikesProps")
+                likes: [AliasDirectiveTestMovie!]! @relationship(direction: OUT, type: "LIKES", properties: "AliasDirectiveTestLikesProps")
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 

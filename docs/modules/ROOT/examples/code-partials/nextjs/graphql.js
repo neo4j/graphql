@@ -5,11 +5,11 @@ import neo4j from "neo4j-driver";
 const typeDefs = gql`
     type Movie @exclude(operations: [CREATE, UPDATE, DELETE]) {
         title: String!
-        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
     }
     type Actor @exclude(operations: [CREATE, UPDATE, DELETE]) {
         name: String!
-        actedIn: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+        actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
     }
 `;
 

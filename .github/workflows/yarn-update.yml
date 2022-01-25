@@ -1,0 +1,42 @@
+name: "yarn update"
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "5 3 1 * *"
+
+jobs:
+  yarn-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+      - name: yarn install
+        run: yarn
+      - name: update yarn
+        run: yarn set version stable
+      - name: yarn install (new version)
+        run: yarn
+      - name: update typescript plugin
+        run: yarn plugin import typescript
+      - name: update version plugin
+        run: yarn plugin import version
+      - name: update workspace-tools plugin
+        run: yarn plugin import workspace-tools
+      - name: yarn install (new plugin versions)
+        run: yarn
+      - name: Set output variables
+        id: vars
+        run: |
+          echo ::set-output name=title::"[Test] Update yarn $(date +%Y-%m-%d)"
+          echo ::set-output name=branch::"yarn-update-$(date +%Y-%m-%d)"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+          commit-message: ${{ steps.vars.outputs.title }}
+          title: ${{ steps.vars.outputs.title }}
+          branch: ${{ steps.vars.outputs.branch }}

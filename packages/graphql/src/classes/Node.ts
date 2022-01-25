@@ -18,7 +18,6 @@
  */
 
 import { DirectiveNode, NamedTypeNode } from "graphql";
-import camelCase from "camelcase";
 import pluralize from "pluralize";
 import type {
     RelationField,
@@ -40,6 +39,7 @@ import type {
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
+import { lowerFirst } from "../utils/lower-first";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -183,6 +183,11 @@ class Node extends GraphElement {
         return this.constrainableFields.filter((field) => field.unique);
     }
 
+    public get plural(): string {
+        const pluralValue = this.nodeDirective?.plural ? this.nodeDirective.plural : pluralize(this.name);
+        return lowerFirst(pluralValue);
+    }
+
     public getLabelString(context: Context): string {
         return this.nodeDirective?.getLabelsString(this.name, context) || `:${this.name}`;
     }
@@ -193,14 +198,6 @@ class Node extends GraphElement {
 
     public getMainLabel(): string {
         return this.nodeDirective?.label || this.name;
-    }
-
-    public getPlural(options: { camelCase: boolean }): string {
-        // camelCase is optional in this case to maintain backward compatibility
-        if (this.nodeDirective?.plural) {
-            return options.camelCase ? camelCase(this.nodeDirective.plural) : this.nodeDirective.plural;
-        }
-        return pluralize(options.camelCase ? camelCase(this.name) : this.name);
     }
 }
 

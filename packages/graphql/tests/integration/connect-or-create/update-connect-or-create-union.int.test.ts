@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import pluralize from "pluralize";
 import { gql } from "apollo-server";
 import { Driver, Session, Integer } from "neo4j-driver";
 import { graphql, DocumentNode } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../../tests/utils/graphql-types";
+import { generateUniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 
 describe("Update -> ConnectOrCreate Union", () => {
@@ -85,7 +84,7 @@ describe("Update -> ConnectOrCreate Union", () => {
 
         const query = gql`
             mutation {
-                update${pluralize(typeActor.name)}(
+                ${typeActor.operations.update}(
                     update: {
                             name: "Tom Hanks"
                             actedIn: {
@@ -126,7 +125,7 @@ describe("Update -> ConnectOrCreate Union", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[`update${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.update][typeActor.plural]).toEqual([
             {
                 name: "Tom Hanks",
             },
@@ -138,7 +137,7 @@ describe("Update -> ConnectOrCreate Union", () => {
         `);
 
         expect(movieTitle.records).toHaveLength(1);
-        expect(movieTitle.records[0].toObject().title).toEqual("Forrest Gump");
+        expect(movieTitle.records[0].toObject().title).toBe("Forrest Gump");
 
         const movieActedInRelation = await session.run(`
             MATCH (:${typeMovie.name} {isan: "${movieIsan}"})<-[r:ACTED_IN]-(:${typeActor.name} {name: "Tom Hanks"})
@@ -146,7 +145,7 @@ describe("Update -> ConnectOrCreate Union", () => {
             `);
 
         expect(movieActedInRelation.records).toHaveLength(1);
-        expect((movieActedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(105);
+        expect((movieActedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(105);
 
         const seriesTitle = await session.run(`
           MATCH (m:${typeSeries.name} {isan: "${seriesIsan}"})
@@ -154,7 +153,7 @@ describe("Update -> ConnectOrCreate Union", () => {
         `);
 
         expect(seriesTitle.records).toHaveLength(1);
-        expect(seriesTitle.records[0].toObject().title).toEqual("Band of Brothers");
+        expect(seriesTitle.records[0].toObject().title).toBe("Band of Brothers");
 
         const seriesActedInRelation = await session.run(`
             MATCH (:${typeSeries.name} {isan: "${seriesIsan}"})<-[r:ACTED_IN]-(:${typeActor.name} {name: "Tom Hanks"})
@@ -162,7 +161,7 @@ describe("Update -> ConnectOrCreate Union", () => {
             `);
 
         expect(seriesActedInRelation.records).toHaveLength(1);
-        expect((seriesActedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(126);
+        expect((seriesActedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(126);
     });
 
     test("ConnectOrCreate on existing node", async () => {
@@ -176,7 +175,7 @@ describe("Update -> ConnectOrCreate Union", () => {
 
         const query = gql`
             mutation {
-                update${pluralize(typeActor.name)}(
+                ${typeActor.operations.update}(
                     update: {
                             name: "${actorName}"
                             actedIn: {
@@ -220,7 +219,7 @@ describe("Update -> ConnectOrCreate Union", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[`update${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
+        expect((gqlResult as any).data[typeActor.operations.update][typeActor.plural]).toEqual([
             {
                 name: actorName,
             },
@@ -231,14 +230,14 @@ describe("Update -> ConnectOrCreate Union", () => {
               RETURN COUNT(a) as count
             `);
 
-        expect(actorsWithMovieCount.records[0].toObject().count.toInt()).toEqual(1);
+        expect(actorsWithMovieCount.records[0].toObject().count.toInt()).toBe(1);
 
         const actorsWithSeriesCount = await session.run(`
               MATCH (a:${typeActor.name} {name:"${actorName}"})-[]->(:${typeSeries.name} {isan:"${seriesIsan}"})
               RETURN COUNT(a) as count
             `);
 
-        expect(actorsWithSeriesCount.records[0].toObject().count.toInt()).toEqual(1);
+        expect(actorsWithSeriesCount.records[0].toObject().count.toInt()).toBe(1);
 
         const movieActedInRelation = await session.run(`
             MATCH (:${typeMovie.name} {isan: "${movieIsan}"})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${actorName}"})
@@ -246,7 +245,7 @@ describe("Update -> ConnectOrCreate Union", () => {
             `);
 
         expect(movieActedInRelation.records).toHaveLength(1);
-        expect((movieActedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(105);
+        expect((movieActedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(105);
 
         const seriesActedInRelation = await session.run(`
             MATCH (:${typeSeries.name} {isan: "${seriesIsan}"})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${actorName}"})
@@ -254,6 +253,6 @@ describe("Update -> ConnectOrCreate Union", () => {
             `);
 
         expect(seriesActedInRelation.records).toHaveLength(1);
-        expect((seriesActedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(126);
+        expect((seriesActedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(126);
     });
 });

@@ -33,7 +33,7 @@ describe("#413", () => {
             # Cannot use 'type Node'
             type Movie {
                 title: String
-                actors: [Person] @relationship(type: "ACTED_IN", direction: OUT)
+                actors: [Person!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Person {

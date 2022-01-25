@@ -100,7 +100,7 @@ describe("checkNeo4jCompat", () => {
         );
     });
 
-    test("should not throw Error that 4.1.10 is less than 4.1.5", async () => {
+    test("should not throw Error that 4.2.10 is less than 4.2.5", async () => {
         // @ts-ignore
         const fakeSession: Session = {
             // @ts-ignore
@@ -108,8 +108,8 @@ describe("checkNeo4jCompat", () => {
                 records: [
                     {
                         toObject: () => ({
-                            version: "4.1.10",
-                            apocVersion: "4.1.0.0",
+                            version: "4.2.10",
+                            apocVersion: "4.2.0.0",
                             functions: REQUIRED_APOC_FUNCTIONS,
                             procedures: REQUIRED_APOC_PROCEDURES,
                         }),
@@ -193,7 +193,7 @@ describe("checkNeo4jCompat", () => {
         };
 
         await expect(checkNeo4jCompat({ driver: fakeDriver })).rejects.toThrow(
-            `Encountered the following DBMS compatiblility issues:\nAPOC version does not match Neo4j version '4.1', received: '${invalidApocVersion}'`
+            `Encountered the following DBMS compatiblility issues:\nAPOC version does not match Neo4j version '4.2', received: '${invalidApocVersion}'`
         );
     });
 
@@ -333,5 +333,38 @@ describe("checkNeo4jCompat", () => {
         };
 
         await expect(checkNeo4jCompat({ driver: fakeDriver })).resolves.not.toThrow();
+    });
+
+    test("should not throw Error that 4.2 is minimum", async () => {
+        // @ts-ignore
+        const fakeSession: Session = {
+            // @ts-ignore
+            run: () => ({
+                records: [
+                    {
+                        toObject: () => ({
+                            version: "4.1.10",
+                            apocVersion: "4.1.0.0",
+                            functions: REQUIRED_APOC_FUNCTIONS,
+                            procedures: REQUIRED_APOC_PROCEDURES,
+                        }),
+                    },
+                ],
+            }),
+            // @ts-ignore
+            close: () => undefined,
+        };
+
+        // @ts-ignore
+        const fakeDriver: Driver = {
+            // @ts-ignore
+            session: () => fakeSession,
+            // @ts-ignore
+            verifyConnectivity: () => undefined,
+        };
+
+        await expect(checkNeo4jCompat({ driver: fakeDriver })).rejects.toThrow(
+            `Encountered the following DBMS compatiblility issues:\nExpected Neo4j version '${MIN_VERSIONS[0].majorMinor}' or greater, received: '4.1.10'`
+        );
     });
 });

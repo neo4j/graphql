@@ -487,7 +487,7 @@ describe("Connections -> Interfaces", () => {
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     name: actorName,
-                    after: result.data?.actors[0].actedInConnection.pageInfo.endCursor,
+                    after: (result.data?.actors as any)[0].actedInConnection.pageInfo.endCursor,
                 },
             });
 

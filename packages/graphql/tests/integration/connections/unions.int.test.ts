@@ -32,7 +32,7 @@ describe("Connections -> Unions", () => {
 
         type Author {
             name: String!
-            publications: [Publication] @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
+            publications: [Publication!]! @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
         }
 
         type Book {
@@ -337,7 +337,7 @@ describe("Connections -> Unions", () => {
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
-                    after: result.data?.authors[0].publicationsConnection.pageInfo.endCursor,
+                    after: (result.data?.authors as any)[0].publicationsConnection.pageInfo.endCursor,
                 },
             });
 

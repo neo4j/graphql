@@ -36,7 +36,7 @@ describe("Cypher Where Aggregations with @node directive", () => {
 
             type Post @node(label: "_Post", additionalLabels: ["additionalPost"]) {
                 content: String!
-                likes: [User] @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 

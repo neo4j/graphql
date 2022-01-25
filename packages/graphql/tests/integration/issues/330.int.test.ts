@@ -21,7 +21,7 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 
 // Reference: https://github.com/neo4j/graphql/pull/330
 // Reference: https://github.com/neo4j/graphql/pull/303#discussion_r671148932
@@ -64,7 +64,7 @@ describe("unauthenticated-requests", () => {
             contextValue: { driver, req },
         });
 
-        expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+        expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
     });
 
     test("should throw Unauthenticated when trying to pluck undefined value with where", async () => {
@@ -94,7 +94,7 @@ describe("unauthenticated-requests", () => {
             contextValue: { driver, req },
         });
 
-        expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+        expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
     });
 
     test("should throw Unauthenticated when trying to pluck undefined value with bind", async () => {
@@ -126,6 +126,6 @@ describe("unauthenticated-requests", () => {
             contextValue: { driver, req },
         });
 
-        expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+        expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
     });
 });

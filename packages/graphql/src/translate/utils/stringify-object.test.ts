@@ -26,7 +26,7 @@ describe("stringifyObject", () => {
             that: `"that"`,
         });
 
-        expect(result).toEqual(`{ this: this, that: "that" }`);
+        expect(result).toBe(`{ this: this, that: "that" }`);
     });
 
     test("ignores undefined, null and empty string values", () => {
@@ -37,6 +37,6 @@ describe("stringifyObject", () => {
             inquisition: "",
         });
 
-        expect(result).toEqual(`{ nobody: expects }`);
+        expect(result).toBe(`{ nobody: expects }`);
     });
 });

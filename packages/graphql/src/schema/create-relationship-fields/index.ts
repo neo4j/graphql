@@ -1,16 +1,30 @@
-import {
-    InputTypeComposer,
-    InterfaceTypeComposer,
-    ObjectTypeComposer,
-    SchemaComposer,
-    upperFirst,
-} from "graphql-compose";
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { InputTypeComposer, InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { Node } from "../../classes";
 import { WHERE_AGGREGATION_AVERAGE_TYPES, WHERE_AGGREGATION_OPERATORS, WHERE_AGGREGATION_TYPES } from "../../constants";
 import { BaseField, RelationField } from "../../types";
 import { ObjectFields } from "../get-obj-field-meta";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
+import { upperFirst } from "../../utils/upper-first";
 
 function createRelationshipFields({
     relationshipFields,
@@ -78,15 +92,19 @@ function createRelationshipFields({
         if (rel.interface) {
             const refNodes = nodes.filter((x) => rel.interface?.implementations?.includes(x.name));
 
-            composeNode.addFields({
-                [rel.fieldName]: {
-                    type: rel.typeMeta.pretty,
-                    args: {
-                        options: "QueryOptions",
-                        where: `${rel.typeMeta.name}Where`,
+            if (!rel.writeonly) {
+                composeNode.addFields({
+                    [rel.fieldName]: {
+                        type: rel.typeMeta.pretty,
+                        args: {
+                            directed: { type: "Boolean", defaultValue: true },
+                            options: "QueryOptions",
+                            where: `${rel.typeMeta.name}Where`,
+                        },
+                        description: rel.description,
                     },
-                },
-            });
+                });
+            }
 
             const connectWhere = schemaComposer.getOrCreateITC(`${rel.typeMeta.name}ConnectWhere`, (tc) => {
                 tc.addFields({
@@ -229,15 +247,19 @@ function createRelationshipFields({
         if (rel.union) {
             const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
-            composeNode.addFields({
-                [rel.fieldName]: {
-                    type: rel.typeMeta.pretty,
-                    args: {
-                        options: "QueryOptions",
-                        where: `${rel.typeMeta.name}Where`,
+            if (!rel.writeonly) {
+                composeNode.addFields({
+                    [rel.fieldName]: {
+                        type: rel.typeMeta.pretty,
+                        args: {
+                            directed: { type: "Boolean", defaultValue: true },
+                            options: "QueryOptions",
+                            where: `${rel.typeMeta.name}Where`,
+                        },
+                        description: rel.description,
                     },
-                },
-            });
+                });
+            }
 
             const upperFieldName = upperFirst(rel.fieldName);
             const upperNodeName = upperFirst(sourceName);
@@ -671,34 +693,39 @@ function createRelationshipFields({
             });
         });
 
-        composeNode.addFields({
-            [rel.fieldName]: {
-                type: rel.typeMeta.pretty,
-                args: {
-                    where: `${rel.typeMeta.name}Where`,
-                    options: `${rel.typeMeta.name}Options`,
-                },
-            },
-        });
-
-        if (composeNode instanceof ObjectTypeComposer) {
-            const baseTypeName = `${sourceName}${n.name}${upperFirst(rel.fieldName)}`;
-            const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer);
-
-            const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
-                baseTypeName,
-                n,
-                relFields
-            );
-
+        if (!rel.writeonly) {
             composeNode.addFields({
-                [`${rel.fieldName}Aggregate`]: {
-                    type: aggregationTypeObject,
+                [rel.fieldName]: {
+                    type: rel.typeMeta.pretty,
                     args: {
+                        directed: { type: "Boolean", defaultValue: true },
                         where: `${rel.typeMeta.name}Where`,
+                        options: `${rel.typeMeta.name}Options`,
                     },
+                    description: rel.description,
                 },
             });
+
+            if (composeNode instanceof ObjectTypeComposer) {
+                const baseTypeName = `${sourceName}${n.name}${upperFirst(rel.fieldName)}`;
+                const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer);
+
+                const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
+                    baseTypeName,
+                    n,
+                    relFields
+                );
+
+                composeNode.addFields({
+                    [`${rel.fieldName}Aggregate`]: {
+                        type: aggregationTypeObject,
+                        args: {
+                            where: `${rel.typeMeta.name}Where`,
+                            directed: { type: "Boolean", defaultValue: true },
+                        },
+                    },
+                });
+            }
         }
 
         schemaComposer.getOrCreateITC(connectionUpdateInputName, (tc) => {

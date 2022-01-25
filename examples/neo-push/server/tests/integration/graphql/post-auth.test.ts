@@ -52,8 +52,8 @@ describe("post-auth", () => {
         try {
             const apolloServer = server(driver, { req });
 
-            const response = await apolloServer.mutate({
-                mutation,
+            const response = await apolloServer.executeOperation({
+                query: mutation,
             });
 
             expect((response?.errors as any[])[0].message).toEqual("Forbidden");
@@ -94,8 +94,8 @@ describe("post-auth", () => {
 
             const apolloServer = server(driver, { req });
 
-            const response = await apolloServer.mutate({
-                mutation,
+            const response = await apolloServer.executeOperation({
+                query: mutation,
             });
 
             expect((response?.errors as any[])[0].message).toEqual("Forbidden");
