@@ -71,9 +71,14 @@ function createConnectionAndParams({
         (r) => r.name === field.relationshipTypeName
     ) as Relationship;
 
-    const inStr = field.relationship.direction === "IN" ? "<-" : "-";
+    let inStr = field.relationship.direction === "IN" ? "<-" : "-";
     const relTypeStr = `[${relationshipVariable}:${field.relationship.type}]`;
-    const outStr = field.relationship.direction === "OUT" ? "->" : "-";
+    let outStr = field.relationship.direction === "OUT" ? "->" : "-";
+
+    if (resolveTree.args.directed === false) {
+        inStr = "-";
+        outStr = "-";
+    }
 
     let relationshipProperties: ResolveTree[] = [];
     let node: ResolveTree | undefined;
@@ -153,7 +158,7 @@ function createConnectionAndParams({
                     });
 
                     const nodeProjectionAndParams = createProjectionAndParams({
-                        fieldsByTypeName: nodeFieldsByTypeName,
+                        resolveTree: { ...node, fieldsByTypeName: nodeFieldsByTypeName },
                         node: n,
                         context,
                         varName: relatedNodeVariable,
@@ -384,7 +389,7 @@ function createConnectionAndParams({
 
         if (node) {
             const nodeProjectionAndParams = createProjectionAndParams({
-                fieldsByTypeName: node?.fieldsByTypeName,
+                resolveTree: node,
                 node: relatedNode,
                 context,
                 varName: relatedNodeVariable,

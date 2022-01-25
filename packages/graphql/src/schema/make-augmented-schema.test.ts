@@ -19,8 +19,6 @@
 
 import camelCase from "camelcase";
 import {
-    printSchema,
-    parse,
     ObjectTypeDefinitionNode,
     NamedTypeNode,
     ListTypeNode,
