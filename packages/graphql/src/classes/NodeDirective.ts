@@ -25,17 +25,23 @@ export interface NodeDirectiveConstructor {
     label?: string;
     additionalLabels?: string[];
     plural?: string;
+    global?: boolean;
+    idField?: string;
 }
 
 export class NodeDirective {
     public readonly label: string | undefined;
     public readonly additionalLabels: string[];
     public readonly plural: string | undefined;
+    public readonly global: boolean;
+    public readonly idField: string | undefined;
 
     constructor(input: NodeDirectiveConstructor) {
         this.label = input.label;
         this.additionalLabels = input.additionalLabels || [];
         this.plural = input.plural;
+        this.global = Boolean(input.global);
+        this.idField = input.idField;
     }
 
     public getLabelsString(typeName: string, context: Context): string {

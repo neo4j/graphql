@@ -65,9 +65,8 @@ describe("makeAugmentedSchema", () => {
 
             // Find
             const nodeFindQuery = queryObject.fields?.find((x) => x.name.value === pluralize(camelCase(type)));
-            const nodeFindQueryType = (
-                ((nodeFindQuery?.type as NonNullTypeNode).type as ListTypeNode).type as NonNullTypeNode
-            ).type as NamedTypeNode;
+            const nodeFindQueryType = (((nodeFindQuery?.type as NonNullTypeNode).type as ListTypeNode)
+                .type as NonNullTypeNode).type as NamedTypeNode;
             expect(nodeFindQueryType.name.value).toEqual(type);
 
             // Options
@@ -395,6 +394,59 @@ describe("makeAugmentedSchema", () => {
             expect(() => makeAugmentedSchema(typeDefs)).toThrow(
                 "Directive @unique cannot be used in combination with @relationship"
             );
+        });
+    });
+    describe("Global Node Directive", () => {
+        test("should throw if a type already contains an id field", () => {
+            const typeDefs = gql`
+                type Movie @node(global: true) {
+                    id: ID!
+                    title: String!
+                }
+            `;
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                "Type `Movie` already has a field `id`. Either remove it, or if you need access to this property, consider using the `@alias` directive to access it via another field"
+            );
+        });
+
+        test("should NOT throw if an id field contains an id field that is aliased", () => {
+            const typeDefs = gql`
+                type Movie @node(global: true) {
+                    id: ID! @id @alias(property: "dbId")
+                    title: String!
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).not.toThrow();
+        });
+
+        test("should throw if there is no field with either the `@id` or `@unique` directive", () => {
+            const typeDefs = gql`
+                type Movie @node(global: true) {
+                    title: String
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                "The `global` flag on the `@node` directive requires at least one field with the `@id` or `@unique` directive"
+            );
+        });
+
+        test("should not throw if there is field with an @id directive", () => {
+            const typeDefs = gql`
+                type Person @node(global: true) {
+                    firebaseId: ID! @id
+                }
+            `;
+            expect(() => makeAugmentedSchema(typeDefs)).not.toThrow();
+        });
+        test("should not throw if there is field with a @unique directive", () => {
+            const typeDefs = gql`
+                type Person @node(global: true) {
+                    email: String! @unique
+                }
+            `;
+            expect(() => makeAugmentedSchema(typeDefs)).not.toThrow();
         });
     });
 });

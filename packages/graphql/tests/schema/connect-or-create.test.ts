@@ -213,9 +213,7 @@ describe("Connect Or Create", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [ActorSort]
             }
 
@@ -223,9 +221,7 @@ describe("Connect Or Create", () => {
               movies: [ActorMoviesCreateFieldInput!]
             }
 
-            \\"\\"\\"
-            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
-            \\"\\"\\"
+            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -304,15 +300,11 @@ describe("Connect Or Create", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [MovieSort]
             }
 
-            \\"\\"\\"
-            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-            \\"\\"\\"
+            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
               isan: SortDirection
               title: SortDirection
@@ -404,7 +396,8 @@ describe("Connect Or Create", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }"
+            }
+            "
         `);
     });
 
@@ -712,9 +705,7 @@ describe("Connect Or Create", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [ActorSort]
             }
 
@@ -722,9 +713,7 @@ describe("Connect Or Create", () => {
               movies: [ActorMoviesCreateFieldInput!]
             }
 
-            \\"\\"\\"
-            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
-            \\"\\"\\"
+            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -810,15 +799,11 @@ describe("Connect Or Create", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
+              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [MovieSort]
             }
 
-            \\"\\"\\"
-            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-            \\"\\"\\"
+            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
               isan: SortDirection
               title: SortDirection
@@ -915,7 +900,8 @@ describe("Connect Or Create", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }"
+            }
+            "
         `);
     });
 });

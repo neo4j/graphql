@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { fromGlobalId } from "graphql-relay";
 import Node, { NodeConstructor } from "./Node";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
@@ -142,6 +143,35 @@ describe("Node", () => {
 
             expect(labels).toEqual(["Film", "Movie"]);
             expect(labelString).toBe(":`Film`:`Movie`");
+        });
+        test("should return true if it is a global node", () => {
+            const node = new NodeBuilder({
+                name: "Film",
+            })
+                .withNodeDirective({
+                    global: true,
+                })
+                .instance();
+            const isGlobalNode = node.isGlobalNode();
+            expect(isGlobalNode).toBe(true);
+        });
+        test("should convert the a db id to a global relay id with the main label name", () => {
+            const node = new NodeBuilder({
+                name: "Film",
+            })
+                .withNodeDirective({
+                    global: true,
+                })
+                .instance();
+
+            const id = "as09skddaslasdaslkjasd";
+
+            const relayId = node.toGlobalId(id);
+
+            expect(fromGlobalId(relayId)).toEqual({
+                type: "Film",
+                id,
+            });
         });
     });
 });

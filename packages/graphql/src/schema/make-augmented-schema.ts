@@ -265,11 +265,6 @@ function makeAugmentedSchema(
             exclude = parseExcludeDirective(excludeDirective || interfaceExcludeDirectives[0]);
         }
 
-        let nodeDirective: NodeDirective;
-        if (nodeDirectiveDefinition) {
-            nodeDirective = parseNodeDirective(nodeDirectiveDefinition);
-        }
-
         const nodeFields = getObjFieldMeta({
             obj: definition,
             enums,
@@ -286,6 +281,11 @@ function makeAugmentedSchema(
                 nodeFields,
                 definition,
             });
+        }
+
+        let nodeDirective: NodeDirective;
+        if (nodeDirectiveDefinition) {
+            nodeDirective = parseNodeDirective(nodeDirectiveDefinition, definition);
         }
 
         nodeFields.relationFields.forEach((relationship) => {
@@ -995,8 +995,8 @@ function makeAugmentedSchema(
     const generatedTypeDefs = composer.toSDL();
     let parsedDoc = parse(generatedTypeDefs);
 
-    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & {name: NameNode} {
-      return "name" in x
+    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
+        return "name" in x;
     }
 
     const documentNames = parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value);

@@ -18,6 +18,7 @@
  */
 
 import { DirectiveNode, NamedTypeNode } from "graphql";
+import { toGlobalId } from "graphql-relay";
 import pluralize from "pluralize";
 import type {
     RelationField,
@@ -198,6 +199,14 @@ class Node extends GraphElement {
 
     public getMainLabel(): string {
         return this.nodeDirective?.label || this.name;
+    }
+
+    public isGlobalNode(): boolean {
+        return Boolean(this.nodeDirective?.global);
+    }
+
+    public toGlobalId(id: string): string {
+        return toGlobalId(this.getMainLabel(), id);
     }
 }
 

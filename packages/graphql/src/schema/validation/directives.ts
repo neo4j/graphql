@@ -138,6 +138,10 @@ export const nodeDirective = new GraphQLDirective({
             description: "Defines a custom plural for the Node API",
             type: GraphQLString,
         },
+        global: {
+            description: "Opt-in to implementing the Node interface with a globally unique id",
+            type: GraphQLBoolean,
+        },
     },
 });
 
