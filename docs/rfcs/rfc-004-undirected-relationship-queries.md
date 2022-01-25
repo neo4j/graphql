@@ -71,6 +71,60 @@ type User {
 -   `DIRECTED_ONLY` - All queries are directed (as of `2.5.3`, this is the default behaviour).
 -   `UNDIRECTED_ONLY` - All queries are undirected.
 
+### Connection and Aggregations
+
+The same argument could be used on `Connection` and nested `Aggregate` queries.
+
+For `Aggregate`:
+
+```graphql
+query Users {
+  users {
+    friendsAggregate(directed: false) {
+      count
+    }
+  }
+}
+```
+
+Would yield:
+
+```cypher
+MATCH (this:User)
+RETURN this { friendsAggregate: { 
+    count: head(apoc.cypher.runFirstColumn("MATCH (this)-[r:FRIENDS_WITH]-(n:User)      
+    RETURN COUNT(n)", { this: this })) 
+    } 
+} as this
+```
+
+And for `Connection`:
+
+```graphql
+query Users {
+  users {
+    friendsConnection(directed: false) {
+      totalCount
+    }
+  }
+}
+```
+
+The resulting Cypher:
+
+```Cypher
+MATCH (this:User)
+CALL {
+    WITH this
+    MATCH (this)-[this_friends_with_relationship:FRIENDS_WITH]-(this_user:User)
+    WITH collect({  }) AS edges
+    RETURN { totalCount: size(edges) } AS friendsConnection
+}
+RETURN this { friendsConnection } as this
+
+
+```
+
 ## Risks
 
 -   New security considerations for users, as undirected relationship queries will now be possible.
