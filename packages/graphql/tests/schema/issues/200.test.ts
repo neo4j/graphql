@@ -67,7 +67,7 @@ describe("200", () => {
               \\"\\"\\"
               Specify one or more CategorySort objects to sort Categories by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [CategorySort]
+              sort: [CategorySort!]
             }
 
             \\"\\"\\"

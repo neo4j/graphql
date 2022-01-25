@@ -150,7 +150,7 @@ describe("Comments", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -290,7 +290,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [ActorSort]
+                  sort: [ActorSort!]
                 }
 
                 \\"\\"\\"
@@ -483,7 +483,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [MovieSort]
+                  sort: [MovieSort!]
                 }
 
                 input MovieRelationInput {
@@ -739,7 +739,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [ActorSort]
+                  sort: [ActorSort!]
                 }
 
                 input ActorRelationInput {
@@ -831,7 +831,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [MovieSort]
+                  sort: [MovieSort!]
                 }
 
                 \\"\\"\\"
@@ -968,7 +968,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [SeriesSort]
+                  sort: [SeriesSort!]
                 }
 
                 \\"\\"\\"
@@ -1112,7 +1112,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [GenreSort]
+                  sort: [GenreSort!]
                 }
 
                 \\"\\"\\"
@@ -1185,7 +1185,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [MovieSort]
+                  sort: [MovieSort!]
                 }
 
                 input MovieRelationInput {

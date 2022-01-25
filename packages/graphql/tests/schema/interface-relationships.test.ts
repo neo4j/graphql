@@ -182,7 +182,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
@@ -274,7 +274,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -411,7 +411,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [SeriesSort]
+              sort: [SeriesSort!]
             }
 
             \\"\\"\\"
@@ -662,7 +662,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
@@ -769,7 +769,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [EpisodeSort]
+              sort: [EpisodeSort!]
             }
 
             input EpisodeRelationInput {
@@ -1062,7 +1062,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
@@ -1602,7 +1602,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [SeriesSort]
+              sort: [SeriesSort!]
             }
 
             input SeriesRelationInput {
@@ -2137,7 +2137,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more Type1Interface1Sort objects to sort Type1Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Type1Interface1Sort]
+              sort: [Type1Interface1Sort!]
             }
 
             input Type1Interface1RelationInput {
@@ -2210,7 +2210,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more Type1Interface2Sort objects to sort Type1Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Type1Interface2Sort]
+              sort: [Type1Interface2Sort!]
             }
 
             \\"\\"\\"
@@ -2245,7 +2245,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more Type1Sort objects to sort Type1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Type1Sort]
+              sort: [Type1Sort!]
             }
 
             input Type1RelationInput {
@@ -2344,7 +2344,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Type2Interface1Sort]
+              sort: [Type2Interface1Sort!]
             }
 
             input Type2Interface1RelationInput {
@@ -2399,7 +2399,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more Type2Interface2Sort objects to sort Type2Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Type2Interface2Sort]
+              sort: [Type2Interface2Sort!]
             }
 
             \\"\\"\\"
@@ -2592,7 +2592,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more CommentSort objects to sort Comments by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [CommentSort]
+              sort: [CommentSort!]
             }
 
             input CommentPostAggregateInput {
@@ -3198,7 +3198,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [PostSort]
+              sort: [PostSort!]
             }
 
             input PostRelationInput {
@@ -3411,7 +3411,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [UserSort]
+              sort: [UserSort!]
             }
 
             input UserRelationInput {

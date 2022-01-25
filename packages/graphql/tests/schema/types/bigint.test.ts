@@ -90,7 +90,7 @@ describe("Bigint", () => {
               \\"\\"\\"
               Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [FileSort]
+              sort: [FileSort!]
             }
 
             \\"\\"\\"

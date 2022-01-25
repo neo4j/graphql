@@ -142,7 +142,7 @@ describe("Pluralize consistency", () => {
               \\"\\"\\"
               Specify one or more super_friendSort objects to sort Super_friends by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [super_friendSort]
+              sort: [super_friendSort!]
             }
 
             \\"\\"\\"
@@ -298,7 +298,7 @@ describe("Pluralize consistency", () => {
               \\"\\"\\"
               Specify one or more super_userSort objects to sort Super_users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [super_userSort]
+              sort: [super_userSort!]
             }
 
             input super_userRelationInput {

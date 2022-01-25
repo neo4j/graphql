@@ -93,7 +93,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [AuthorSort]
+              sort: [AuthorSort!]
             }
 
             input AuthorPublicationsBookConnectFieldInput {
@@ -482,7 +482,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [BookSort]
+              sort: [BookSort!]
             }
 
             input BookRelationInput {
@@ -741,7 +741,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [JournalSort]
+              sort: [JournalSort!]
             }
 
             input JournalRelationInput {

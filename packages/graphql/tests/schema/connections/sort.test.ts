@@ -117,7 +117,7 @@ describe("Sort", () => {
               \\"\\"\\"
               Specify one or more Node1Sort objects to sort Node1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Node1Sort]
+              sort: [Node1Sort!]
             }
 
             input Node1RelatedToAggregateInput {
