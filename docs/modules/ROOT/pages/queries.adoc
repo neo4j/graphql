@@ -91,7 +91,6 @@ all related nodes, regardless of the direction of the relationship. This can be 
 
 For example, the following query:
 
-
 [source, graphql, indent=0]
 ----
 query {
@@ -106,7 +105,24 @@ query {
 
 Will return all user friends, regardless on the direction of the relationship `"FRIENDS_WITH"`.
 
-Note that _undirected_ relationships are only supported in queries.
+Undirected relationships can also be used in the same fashion with connections:
+
+[source, graphql, indent=0]
+----
+query Query {
+  users {
+    friendsConnection(directed: false) {
+      edges {
+        node {
+          name
+        }
+      }
+    }
+  }
+}
+----
+
+Note that _undirected relationships_ are only supported in queries.
 
 
 [[queries-aggregate]]
@@ -250,6 +266,23 @@ query {
                 max
               }
             }
+        }
+    }
+}
+----
+
+=== Undirected aggregation queries
+
+When performing an aggregation on related nodes, the query against the relationship
+can be defined as an xref::queries.adoc#_undirected_queries[undirected] using the argument `directed: false`:
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        id
+        postsAggregate(directed: false) {
+            count
         }
     }
 }

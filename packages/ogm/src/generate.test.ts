@@ -920,10 +920,12 @@ describe("generate", () => {
 
             export type MovieActorsAggregateArgs = {
               where?: InputMaybe<PersonWhere>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
             };
 
             export type MovieActorsConnectionArgs = {
               where?: InputMaybe<MovieActorsConnectionWhere>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
               sort?: InputMaybe<Array<MovieActorsConnectionSort>>;
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;

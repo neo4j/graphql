@@ -721,6 +721,7 @@ function createRelationshipFields({
                         type: aggregationTypeObject,
                         args: {
                             where: `${rel.typeMeta.name}Where`,
+                            directed: { type: "Boolean", defaultValue: true },
                         },
                     },
                 });
