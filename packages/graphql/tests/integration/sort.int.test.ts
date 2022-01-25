@@ -30,16 +30,26 @@ describe("sort", () => {
     let driver: Driver;
 
     const typeDefs = gql`
-        type Movie {
+        interface Production {
+            title: String!
+        }
+        type Movie implements Production {
             id: ID!
             title: String!
+            runtime: Int!
             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             numberOfActors: Int! @cypher(statement: "MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor)")
+        }
+
+        type Series implements Production {
+            title: String!
+            episodes: Int!
         }
         type Actor {
             id: ID!
             name: String!
             movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             totalScreenTime: Int!
                 @cypher(
                     statement: """
@@ -48,7 +58,7 @@ describe("sort", () => {
                     """
                 )
         }
-        interface ActedIn {
+        interface ActedIn @relationshipProperties {
             screenTime: Int!
         }
     `;
@@ -57,21 +67,34 @@ describe("sort", () => {
         {
             id: generate({ charset: "alphabetic" }),
             title: "A",
+            runtime: 400,
         },
         {
             id: generate({ charset: "alphabetic" }),
             title: "B",
+            runtime: 300,
+        },
+    ];
+
+    const series = [
+        {
+            title: "C",
+            episodes: 200,
+        },
+        {
+            title: "D",
+            episodes: 100,
         },
     ];
 
     const actors = [
         {
             id: generate({ charset: "alphabetic" }),
-            name: "A",
+            name: `A${generate({ charset: "alphbetic" })}`,
         },
         {
             id: generate({ charset: "alphabetic" }),
-            name: "B",
+            name: `B${generate({ charset: "alphbetic" })}`,
         },
     ];
 
@@ -85,12 +108,17 @@ describe("sort", () => {
             `
                     CREATE (m1:Movie:${testLabel}) SET m1 = $movies[0]
                     CREATE (m2:Movie:${testLabel}) SET m2 = $movies[1]
+                    CREATE (s1:Series:${testLabel}) SET s1 = $series[0]
+                    CREATE (s2:Series:${testLabel}) SET s2 = $series[1]
+
                     CREATE (a1:Actor:${testLabel}) SET a1 = $actors[0]
                     CREATE (a2:Actor:${testLabel}) SET a2 = $actors[1]
+                    
                     MERGE (a1)-[:ACTED_IN {screenTime: 1}]->(m1)
                     MERGE (a1)-[:ACTED_IN {screenTime: 2}]->(m2)<-[:ACTED_IN {screenTime: 1}]-(a2)
+                    MERGE (s1)<-[:ACTED_IN {screenTime: 1}]-(a1)-[:ACTED_IN {screenTime: 1}]->(s2)
                 `,
-            { movies, actors }
+            { movies, series, actors }
         );
     });
 
@@ -464,97 +492,10 @@ describe("sort", () => {
     });
 
     describe("interface relationship", () => {
-        const typeDefs = gql`
-            interface Production {
-                title: String!
-            }
-
-            type Movie implements Production {
-                title: String!
-                runtime: Int!
-            }
-
-            type Series implements Production {
-                title: String!
-                episodes: Int!
-            }
-
-            interface ActedIn @relationshipProperties {
-                screenTime: Int!
-            }
-
-            type Actor {
-                name: String!
-                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-            }
-        `;
-
-        const { schema } = new Neo4jGraphQL({
-            typeDefs,
-        });
-
-        const movie1 = {
-            title: "A",
-            runtime: 400,
-        };
-
-        const movie2 = {
-            title: "B",
-            runtime: 300,
-        };
-
-        const series1 = {
-            title: "C",
-            episodes: 200,
-        };
-
-        const series2 = {
-            title: "D",
-            episodes: 100,
-        };
-
-        const actor = {
-            name: generate({ charset: "alphabetic" }),
-        };
-
-        const testLabel = generate({ charset: "alphabetic", readable: false });
-
-        beforeAll(async () => {
-            const session = driver.session();
-            await session.run(
-                `
-                        CREATE (actor:Actor:${testLabel})
-                        SET actor = $actor
-                        CREATE (movie1:Movie:${testLabel})<-[:ACTED_IN {screenTime: 30}]-(actor)
-                        SET movie1 = $movie1
-                        CREATE (movie2:Movie:${testLabel})<-[:ACTED_IN {screenTime: 40}]-(actor)
-                        SET movie2 = $movie2
-                        CREATE (series1:Series:${testLabel})<-[:ACTED_IN {screenTime: 50}]-(actor)
-                        SET series1 = $series1
-                        CREATE (series2:Series:${testLabel})<-[:ACTED_IN {screenTime: 60}]-(actor)
-                        SET series2 = $series2
-                    `,
-                {
-                    actor,
-                    movie1,
-                    movie2,
-                    series1,
-                    series2,
-                }
-            );
-            await session.close();
-        });
-
-        afterAll(async () => {
-            const session = driver.session();
-            await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
-            await session.close();
-        });
-
         describe("field", () => {
             test("should sort ASC", async () => {
                 const query = gql`
-                    query($actorName: String!) {
+                    query ($actorName: String!) {
                         actors(where: { name: $actorName }) {
                             name
                             actedIn(options: { sort: [{ title: ASC }] }) {
@@ -568,24 +509,24 @@ describe("sort", () => {
                     schema,
                     source: query.loc!.source,
                     contextValue: { driver },
-                    variableValues: { actorName: actor.name },
+                    variableValues: { actorName: actors[0].name },
                 });
 
                 expect(graphqlResult.errors).toBeUndefined();
 
-                const [graphqlActor] = graphqlResult.data?.actors;
+                const [graphqlActor] = graphqlResult.data?.actors as any[];
 
-                expect(graphqlActor.name).toEqual(actor.name);
+                expect(graphqlActor.name).toEqual(actors[0].name);
                 expect(graphqlActor.actedIn).toHaveLength(4);
-                expect(graphqlActor.actedIn[0].title).toBe(movie1.title);
-                expect(graphqlActor.actedIn[1].title).toBe(movie2.title);
-                expect(graphqlActor.actedIn[2].title).toBe(series1.title);
-                expect(graphqlActor.actedIn[3].title).toBe(series2.title);
+                expect(graphqlActor.actedIn[0].title).toBe(movies[0].title);
+                expect(graphqlActor.actedIn[1].title).toBe(movies[1].title);
+                expect(graphqlActor.actedIn[2].title).toBe(series[0].title);
+                expect(graphqlActor.actedIn[3].title).toBe(series[1].title);
             });
 
             test("should sort DESC", async () => {
                 const query = gql`
-                    query($actorName: String!) {
+                    query ($actorName: String!) {
                         actors(where: { name: $actorName }) {
                             name
                             actedIn(options: { sort: [{ title: DESC }] }) {
@@ -599,27 +540,27 @@ describe("sort", () => {
                     schema,
                     source: query.loc!.source,
                     contextValue: { driver },
-                    variableValues: { actorName: actor.name },
+                    variableValues: { actorName: actors[0].name },
                 });
 
                 expect(graphqlResult.errors).toBeUndefined();
 
-                const [graphqlActor] = graphqlResult.data?.actors;
-                expect(graphqlActor.name).toEqual(actor.name);
+                const [graphqlActor] = graphqlResult.data?.actors as any[];
+                expect(graphqlActor.name).toEqual(actors[0].name);
 
                 const { actedIn: production } = graphqlActor;
                 expect(graphqlActor.actedIn).toHaveLength(4);
-                expect(production[0].title).toBe(series2.title);
-                expect(production[1].title).toBe(series1.title);
-                expect(production[2].title).toBe(movie2.title);
-                expect(production[3].title).toBe(movie1.title);
+                expect(production[0].title).toBe(series[1].title);
+                expect(production[1].title).toBe(series[0].title);
+                expect(production[2].title).toBe(movies[1].title);
+                expect(production[3].title).toBe(movies[0].title);
             });
         });
 
         describe("connection", () => {
             describe("field in selection set", () => {
                 const query = gql`
-                    query($actorName: String!, $titleSort: SortDirection!) {
+                    query ($actorName: String!, $titleSort: SortDirection!) {
                         actors(where: { name: $actorName }) {
                             name
                             actedInConnection(sort: [{ node: { title: $titleSort } }]) {
@@ -638,19 +579,19 @@ describe("sort", () => {
                         schema,
                         source: query.loc!.source,
                         contextValue: { driver },
-                        variableValues: { actorName: actor.name, titleSort: "ASC" },
+                        variableValues: { actorName: actors[0].name, titleSort: "ASC" },
                     });
 
                     expect(graphqlResult.errors).toBeUndefined();
 
-                    const [graphqlActor] = graphqlResult.data?.actors;
+                    const [graphqlActor] = graphqlResult.data?.actors as any[];
 
-                    expect(graphqlActor.name).toEqual(actor.name);
+                    expect(graphqlActor.name).toEqual(actors[0].name);
                     expect(graphqlActor.actedInConnection.edges).toHaveLength(4);
-                    expect(graphqlActor.actedInConnection.edges[0].node.title).toBe(movie1.title);
-                    expect(graphqlActor.actedInConnection.edges[1].node.title).toBe(movie2.title);
-                    expect(graphqlActor.actedInConnection.edges[2].node.title).toBe(series1.title);
-                    expect(graphqlActor.actedInConnection.edges[3].node.title).toBe(series2.title);
+                    expect(graphqlActor.actedInConnection.edges[0].node.title).toBe(movies[0].title);
+                    expect(graphqlActor.actedInConnection.edges[1].node.title).toBe(movies[1].title);
+                    expect(graphqlActor.actedInConnection.edges[2].node.title).toBe(series[0].title);
+                    expect(graphqlActor.actedInConnection.edges[3].node.title).toBe(series[1].title);
                 });
 
                 test("should sort DESC", async () => {
@@ -658,25 +599,25 @@ describe("sort", () => {
                         schema,
                         source: query.loc!.source,
                         contextValue: { driver },
-                        variableValues: { actorName: actor.name, titleSort: "DESC" },
+                        variableValues: { actorName: actors[0].name, titleSort: "DESC" },
                     });
 
                     expect(graphqlResult.errors).toBeUndefined();
 
-                    const [graphqlActor] = graphqlResult.data?.actors;
+                    const [graphqlActor] = graphqlResult.data?.actors as any[];
 
-                    expect(graphqlActor.name).toEqual(actor.name);
+                    expect(graphqlActor.name).toEqual(actors[0].name);
                     expect(graphqlActor.actedInConnection.edges).toHaveLength(4);
-                    expect(graphqlActor.actedInConnection.edges[0].node.title).toBe(series2.title);
-                    expect(graphqlActor.actedInConnection.edges[1].node.title).toBe(series1.title);
-                    expect(graphqlActor.actedInConnection.edges[2].node.title).toBe(movie2.title);
-                    expect(graphqlActor.actedInConnection.edges[3].node.title).toBe(movie1.title);
+                    expect(graphqlActor.actedInConnection.edges[0].node.title).toBe(series[1].title);
+                    expect(graphqlActor.actedInConnection.edges[1].node.title).toBe(series[0].title);
+                    expect(graphqlActor.actedInConnection.edges[2].node.title).toBe(movies[1].title);
+                    expect(graphqlActor.actedInConnection.edges[3].node.title).toBe(movies[0].title);
                 });
             });
 
             describe("field not in selection set", () => {
                 const query = gql`
-                    query($actorName: String!, $titleSort: SortDirection!) {
+                    query ($actorName: String!, $titleSort: SortDirection!) {
                         actors(where: { name: $actorName }) {
                             name
                             actedInConnection(sort: [{ node: { title: $titleSort } }]) {
@@ -700,19 +641,19 @@ describe("sort", () => {
                         schema,
                         source: query.loc!.source,
                         contextValue: { driver },
-                        variableValues: { actorName: actor.name, titleSort: "ASC" },
+                        variableValues: { actorName: actors[0].name, titleSort: "ASC" },
                     });
 
                     expect(graphqlResult.errors).toBeUndefined();
 
-                    const [graphqlActor] = graphqlResult.data?.actors;
+                    const [graphqlActor] = graphqlResult.data?.actors as any[];
 
-                    expect(graphqlActor.name).toEqual(actor.name);
+                    expect(graphqlActor.name).toEqual(actors[0].name);
                     expect(graphqlActor.actedInConnection.edges).toHaveLength(4);
-                    expect(graphqlActor.actedInConnection.edges[0].node.runtime).toBe(movie1.runtime);
-                    expect(graphqlActor.actedInConnection.edges[1].node.runtime).toBe(movie2.runtime);
-                    expect(graphqlActor.actedInConnection.edges[2].node.episodes).toBe(series1.episodes);
-                    expect(graphqlActor.actedInConnection.edges[3].node.episodes).toBe(series2.episodes);
+                    expect(graphqlActor.actedInConnection.edges[0].node.runtime).toBe(movies[0].runtime);
+                    expect(graphqlActor.actedInConnection.edges[1].node.runtime).toBe(movies[1].runtime);
+                    expect(graphqlActor.actedInConnection.edges[2].node.episodes).toBe(series[0].episodes);
+                    expect(graphqlActor.actedInConnection.edges[3].node.episodes).toBe(series[1].episodes);
                 });
 
                 test("should sort DESC", async () => {
@@ -720,19 +661,19 @@ describe("sort", () => {
                         schema,
                         source: query.loc!.source,
                         contextValue: { driver },
-                        variableValues: { actorName: actor.name, titleSort: "DESC" },
+                        variableValues: { actorName: actors[0].name, titleSort: "DESC" },
                     });
 
                     expect(graphqlResult.errors).toBeUndefined();
 
-                    const [graphqlActor] = graphqlResult.data?.actors;
+                    const [graphqlActor] = graphqlResult.data?.actors as any[];
 
-                    expect(graphqlActor.name).toEqual(actor.name);
+                    expect(graphqlActor.name).toEqual(actors[0].name);
                     expect(graphqlActor.actedInConnection.edges).toHaveLength(4);
-                    expect(graphqlActor.actedInConnection.edges[0].node.episodes).toBe(series2.episodes);
-                    expect(graphqlActor.actedInConnection.edges[1].node.episodes).toBe(series1.episodes);
-                    expect(graphqlActor.actedInConnection.edges[2].node.runtime).toBe(movie2.runtime);
-                    expect(graphqlActor.actedInConnection.edges[3].node.runtime).toBe(movie1.runtime);
+                    expect(graphqlActor.actedInConnection.edges[0].node.episodes).toBe(series[1].episodes);
+                    expect(graphqlActor.actedInConnection.edges[1].node.episodes).toBe(series[0].episodes);
+                    expect(graphqlActor.actedInConnection.edges[2].node.runtime).toBe(movies[1].runtime);
+                    expect(graphqlActor.actedInConnection.edges[3].node.runtime).toBe(movies[0].runtime);
                 });
             });
         });

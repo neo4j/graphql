@@ -606,37 +606,39 @@ function createProjectionAndParams({
         return res;
     }
 
+    // Include fields of implemented interfaces to allow for fragments on interfaces
+    // cf. https://github.com/neo4j/graphql/issues/476
+
+    const selectedFields = node.interfaces
+        // Map over the implemented interfaces of the node and extract the names
+        .map((implementedInterface) => implementedInterface.name.value)
+        .reduce(
+            // Combine the fields of the interfaces...
+            (prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }),
+            // with the fields of the node
+            resolveTree.fieldsByTypeName[node.name]
+        );
+
     // Fields of reference node to sort on. Since sorting is done on projection, if field is not selected
     // sort will fail silently
 
     const sortFieldNames = ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat();
 
     // Iterate over fields name in sort argument
-    const nodeFields = sortFieldNames.reduce(
+    const fields = sortFieldNames.reduce(
         (acc, sortFieldName) => ({
             ...acc,
             // If fieldname is not found in fields of selection set
-            ...(!Object.values(resolveTree.fieldsByTypeName[node.name]).find((field) => field.name === sortFieldName)
+            ...(!Object.values(selectedFields).find((field) => field.name === sortFieldName) ||
+            // or is found but aliased
+            Object.values(selectedFields).find((field) => field.name === sortFieldName && field.alias !== sortFieldName)
                 ? // generate a basic resolve tree
                   generateProjectionField({ name: sortFieldName })
                 : {}),
         }),
-        // and add it to existing fields for projection
-        resolveTree.fieldsByTypeName[node.name]
+        // and add it to selectedFields
+        selectedFields
     );
-
-    // Include fields of implemented interfaces to allow for fragments on interfaces
-    // cf. https://github.com/neo4j/graphql/issues/476
-
-    const fields = node.interfaces
-        // Map over the implemented interfaces of the node and extract the names
-        .map((implementedInterface) => implementedInterface.name.value)
-        // Combine the fields of the interfaces...
-        .reduce(
-            (prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }),
-            // with the fields of the node
-            nodeFields
-        );
 
     const { projection, params, meta } = Object.entries(fields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
