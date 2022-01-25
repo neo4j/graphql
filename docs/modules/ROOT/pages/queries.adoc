@@ -87,7 +87,7 @@ query {
 
 All xref:type-definitions/relationships.adoc[relationships] are created with a _direction_ from one **node** to another.
 By default, all queries follow the direction defined in the relationship, however, in some cases we may need to query for
-all related nodes, regardless of the direction of the query. This can be achieved with the argument `directed: false`.
+all related nodes, regardless of the direction of the relationship. This can be achieved with the argument `directed: false`.
 
 For example, the following query:
 
@@ -106,7 +106,7 @@ query {
 
 Will return all user friends, regardless on the direction of the relationship `"FRIENDS_WITH"`.
 
-Note that _undirected relationships_ are only supported in queries.
+Note that _undirected_ relationships are only supported in queries.
 
 
 [[queries-aggregate]]
