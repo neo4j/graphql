@@ -84,4 +84,62 @@ describe("createProjectionAndParams", () => {
         expect(result[0]).toBe(`{ .title }`);
         expect(result[1]).toMatchObject({});
     });
+    test("should return the correct projection when querying for a global with id in the selection set", () => {
+        const resolveTree: ResolveTree = {
+            alias: "movies",
+            name: "movies",
+            fieldsByTypeName: {
+                Movie: {
+                    id: {
+                        name: "id",
+                        alias: "id",
+                        args: {},
+                        fieldsByTypeName: {},
+                    },
+                },
+            },
+            args: {},
+        };
+
+        const node = new NodeBuilder({
+            name: "Movie",
+
+            primitiveFields: [
+                {
+                    fieldName: "title",
+                    typeMeta: {
+                        name: "String",
+                        array: false,
+                        required: true,
+                        pretty: "String",
+                        input: {
+                            where: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            create: { type: "String", pretty: "String" },
+                            update: { type: "String", pretty: "String" },
+                        },
+                    },
+                    otherDirectives: [],
+                    arguments: [],
+                },
+            ],
+        })
+            .withNodeDirective({
+                global: true,
+                idField: "title",
+            })
+            .instance();
+
+        // @ts-ignore
+        const neoSchema: Neo4jGraphQL = {
+            nodes: [node],
+        };
+
+        // @ts-ignore
+        const context: Context = { neoSchema, resolveTree };
+        const result = createProjectionAndParams({ resolveTree, node, context, varName: "this" });
+        expect(result[0]).toBe(`{ .title }`);
+    });
 });

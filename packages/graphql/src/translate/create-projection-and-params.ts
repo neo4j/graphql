@@ -551,7 +551,7 @@ function createProjectionAndParams({
                 nodeVariable: varName,
             });
 
-            const connectionParamName = Object.keys(connection[1])[0];
+            const connectionParamName = Object.keys(connection[1] as Record<string, any>)[0];
             const runFirstColumnParams = [
                 ...[`${chainStr}: ${chainStr}`],
                 ...(connectionParamName ? [`${connectionParamName}: $${connectionParamName}`] : []),
@@ -598,6 +598,23 @@ function createProjectionAndParams({
         return res;
     }
 
+    const existingProjection = { ...resolveTree.fieldsByTypeName[node.name] };
+
+    // if we have a global node, and the selection set includes the id field
+    if (node.isGlobalNode() && existingProjection.id) {
+        const globalIdField = node.getGlobalIdField();
+        // check to see if the idField has been projected, and include it if it hasn't
+        if (!Object.values(existingProjection).find((field) => field.name === globalIdField)) {
+            existingProjection[globalIdField] = {
+                alias: node.getGlobalIdField(),
+                args: {},
+                fieldsByTypeName: {},
+                name: node.getGlobalIdField(),
+            };
+        }
+        delete existingProjection.id;
+    }
+
     // Fields of reference node to sort on. Since sorting is done on projection, if field is not selected
     // sort will fail silently
 
@@ -608,13 +625,13 @@ function createProjectionAndParams({
         (acc, sortFieldName) => ({
             ...acc,
             // If fieldname is not found in fields of selection set
-            ...(!Object.values(resolveTree.fieldsByTypeName[node.name]).find((field) => field.name === sortFieldName)
+            ...(!Object.values(existingProjection).find((field) => field.name === sortFieldName)
                 ? // generate a basic resolve tree
                   generateProjectionField({ name: sortFieldName })
                 : {}),
         }),
         // and add it to existing fields for projection
-        resolveTree.fieldsByTypeName[node.name]
+        existingProjection
     );
 
     // Include fields of implemented interfaces to allow for fragments on interfaces
