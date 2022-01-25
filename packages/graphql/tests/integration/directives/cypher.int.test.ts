@@ -666,12 +666,12 @@ describe("cypher", () => {
                     id: ID!
                     name: String!
                 }
-                
+
                 input ListAccountOptions {
                     offset: Int
                     limit: Int
                 }
-                
+
                 type Query {
                     listAccounts(options: ListAccountOptions${withDefaultValue ? "= null" : ""}): [Account!]!
                         @cypher(
@@ -730,7 +730,7 @@ describe("cypher", () => {
 
                 expect(gqlResultWithDefaultValue.errors).toBeFalsy();
 
-                expect(gqlResultWithDefaultValue.data?.listAccounts[0].id).toBe(expectedStartId);
+                expect((gqlResultWithDefaultValue.data as any)?.listAccounts[0].id).toBe(expectedStartId);
                 expect(gqlResultWithDefaultValue.data?.listAccounts).toHaveLength(expectedAccountListLength);
 
                 // Schema with missing value
@@ -738,7 +738,7 @@ describe("cypher", () => {
 
                 expect(gqlResultWithMissingValue.errors).toBeFalsy();
 
-                expect(gqlResultWithMissingValue.data?.listAccounts[0].id).toBe(expectedStartId);
+                expect((gqlResultWithDefaultValue.data as any)?.listAccounts[0].id).toBe(expectedStartId);
                 expect(gqlResultWithMissingValue.data?.listAccounts).toHaveLength(expectedAccountListLength);
             });
 
@@ -767,7 +767,7 @@ describe("cypher", () => {
 
                 expect(gqlResultWithDefaultValue.errors).toBeFalsy();
 
-                expect(gqlResultWithDefaultValue.data?.listAccounts[0].id).toBe(expectedStartId);
+                expect((gqlResultWithDefaultValue.data as any)?.listAccounts[0].id).toBe(expectedStartId);
                 expect(gqlResultWithDefaultValue.data?.listAccounts).toHaveLength(expectedAccountListLength);
 
                 // Schema with missing value
@@ -775,7 +775,7 @@ describe("cypher", () => {
 
                 expect(gqlResultWithMissingValue.errors).toBeFalsy();
 
-                expect(gqlResultWithMissingValue.data?.listAccounts[0].id).toBe(expectedStartId);
+                expect((gqlResultWithDefaultValue.data as any)?.listAccounts[0].id).toBe(expectedStartId);
                 expect(gqlResultWithMissingValue.data?.listAccounts).toHaveLength(expectedAccountListLength);
             });
         });
