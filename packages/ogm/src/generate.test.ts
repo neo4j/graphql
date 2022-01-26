@@ -55,10 +55,12 @@ describe("generate", () => {
             export type Exact<T extends { [key: string]: unknown }> = {
               [K in keyof T]: T[K];
             };
-            export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]?: Maybe<T[SubKey]> };
-            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]: Maybe<T[SubKey]> };
+            export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]?: Maybe<T[SubKey]>;
+            };
+            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]: Maybe<T[SubKey]>;
+            };
             /** All built-in and custom scalars, mapped to their actual values */
             export type Scalars = {
               ID: string;
@@ -75,7 +77,6 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
-              usersConnection: UserConnection;
             };
 
             export type QueryUsersArgs = {
@@ -141,15 +142,6 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
-            /** Pagination information (Relay) */
-            export type PageInfo = {
-              __typename?: \\"PageInfo\\";
-              hasNextPage: Scalars[\\"Boolean\\"];
-              hasPreviousPage: Scalars[\\"Boolean\\"];
-              startCursor?: Maybe<Scalars[\\"String\\"]>;
-              endCursor?: Maybe<Scalars[\\"String\\"]>;
-            };
-
             export type StringAggregateSelectionNullable = {
               __typename?: \\"StringAggregateSelectionNullable\\";
               shortest?: Maybe<Scalars[\\"String\\"]>;
@@ -180,19 +172,6 @@ describe("generate", () => {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               name: StringAggregateSelectionNullable;
-            };
-
-            export type UserConnection = {
-              __typename?: \\"UserConnection\\";
-              totalCount: Scalars[\\"Int\\"];
-              pageInfo: PageInfo;
-              edges: Array<UserEdge>;
-            };
-
-            export type UserEdge = {
-              __typename?: \\"UserEdge\\";
-              cursor: Scalars[\\"String\\"];
-              node: User;
             };
 
             export type UserCreateInput = {
@@ -314,10 +293,12 @@ describe("generate", () => {
             export type Exact<T extends { [key: string]: unknown }> = {
               [K in keyof T]: T[K];
             };
-            export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]?: Maybe<T[SubKey]> };
-            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]: Maybe<T[SubKey]> };
+            export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]?: Maybe<T[SubKey]>;
+            };
+            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]: Maybe<T[SubKey]>;
+            };
             /** All built-in and custom scalars, mapped to their actual values */
             export type Scalars = {
               ID: string;
@@ -334,7 +315,6 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
-              usersConnection: UserConnection;
             };
 
             export type QueryUsersArgs = {
@@ -403,15 +383,6 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
-            /** Pagination information (Relay) */
-            export type PageInfo = {
-              __typename?: \\"PageInfo\\";
-              hasNextPage: Scalars[\\"Boolean\\"];
-              hasPreviousPage: Scalars[\\"Boolean\\"];
-              startCursor?: Maybe<Scalars[\\"String\\"]>;
-              endCursor?: Maybe<Scalars[\\"String\\"]>;
-            };
-
             export type StringAggregateSelectionNullable = {
               __typename?: \\"StringAggregateSelectionNullable\\";
               shortest?: Maybe<Scalars[\\"String\\"]>;
@@ -442,19 +413,6 @@ describe("generate", () => {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               name: StringAggregateSelectionNullable;
-            };
-
-            export type UserConnection = {
-              __typename?: \\"UserConnection\\";
-              totalCount: Scalars[\\"Int\\"];
-              pageInfo: PageInfo;
-              edges: Array<UserEdge>;
-            };
-
-            export type UserEdge = {
-              __typename?: \\"UserEdge\\";
-              cursor: Scalars[\\"String\\"];
-              node: User;
             };
 
             export type UserCreateInput = {
@@ -594,10 +552,12 @@ describe("generate", () => {
             export type Exact<T extends { [key: string]: unknown }> = {
               [K in keyof T]: T[K];
             };
-            export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]?: Maybe<T[SubKey]> };
-            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]: Maybe<T[SubKey]> };
+            export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]?: Maybe<T[SubKey]>;
+            };
+            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]: Maybe<T[SubKey]>;
+            };
             /** All built-in and custom scalars, mapped to their actual values */
             export type Scalars = {
               ID: string;
@@ -614,7 +574,6 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
-              usersConnection: UserConnection;
             };
 
             export type QueryUsersArgs = {
@@ -680,15 +639,6 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
-            /** Pagination information (Relay) */
-            export type PageInfo = {
-              __typename?: \\"PageInfo\\";
-              hasNextPage: Scalars[\\"Boolean\\"];
-              hasPreviousPage: Scalars[\\"Boolean\\"];
-              startCursor?: Maybe<Scalars[\\"String\\"]>;
-              endCursor?: Maybe<Scalars[\\"String\\"]>;
-            };
-
             export type StringAggregateSelectionNullable = {
               __typename?: \\"StringAggregateSelectionNullable\\";
               shortest?: Maybe<Scalars[\\"String\\"]>;
@@ -719,19 +669,6 @@ describe("generate", () => {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               name: StringAggregateSelectionNullable;
-            };
-
-            export type UserConnection = {
-              __typename?: \\"UserConnection\\";
-              totalCount: Scalars[\\"Int\\"];
-              pageInfo: PageInfo;
-              edges: Array<UserEdge>;
-            };
-
-            export type UserEdge = {
-              __typename?: \\"UserEdge\\";
-              cursor: Scalars[\\"String\\"];
-              node: User;
             };
 
             export type UserCreateInput = {
@@ -858,10 +795,12 @@ describe("generate", () => {
             export type Exact<T extends { [key: string]: unknown }> = {
               [K in keyof T]: T[K];
             };
-            export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]?: Maybe<T[SubKey]> };
-            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]: Maybe<T[SubKey]> };
+            export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]?: Maybe<T[SubKey]>;
+            };
+            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]: Maybe<T[SubKey]>;
+            };
             /** All built-in and custom scalars, mapped to their actual values */
             export type Scalars = {
               ID: string;
@@ -879,10 +818,8 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               movies: Array<Movie>;
               moviesAggregate: MovieAggregateSelection;
-              moviesConnection: MovieConnection;
               people: Array<Person>;
               peopleAggregate: PersonAggregateSelection;
-              peopleConnection: PersonConnection;
             };
 
             export type QueryMoviesArgs = {
@@ -1050,19 +987,6 @@ describe("generate", () => {
               title: StringAggregateSelectionNonNullable;
             };
 
-            export type MovieConnection = {
-              __typename?: \\"MovieConnection\\";
-              totalCount: Scalars[\\"Int\\"];
-              pageInfo: PageInfo;
-              edges: Array<MovieEdge>;
-            };
-
-            export type MovieEdge = {
-              __typename?: \\"MovieEdge\\";
-              cursor: Scalars[\\"String\\"];
-              node: Movie;
-            };
-
             export type MoviePersonActorsAggregationSelection = {
               __typename?: \\"MoviePersonActorsAggregationSelection\\";
               count: Scalars[\\"Int\\"];
@@ -1098,19 +1022,6 @@ describe("generate", () => {
               __typename?: \\"PersonAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               name: StringAggregateSelectionNonNullable;
-            };
-
-            export type PersonConnection = {
-              __typename?: \\"PersonConnection\\";
-              totalCount: Scalars[\\"Int\\"];
-              pageInfo: PageInfo;
-              edges: Array<PersonEdge>;
-            };
-
-            export type PersonEdge = {
-              __typename?: \\"PersonEdge\\";
-              cursor: Scalars[\\"String\\"];
-              node: Person;
             };
 
             export type StringAggregateSelectionNonNullable = {
