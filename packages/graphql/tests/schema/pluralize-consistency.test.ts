@@ -152,11 +152,15 @@ describe("Pluralize consistency", () => {
             input super_friendOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more super_friendSort objects to sort Super_friends by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more super_friendSort objects to sort Super_friends by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [super_friendSort]
             }
 
-            \\"\\"\\"Fields to sort Super_friends by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_friendSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Super_friends by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_friendSort object.
+            \\"\\"\\"
             input super_friendSort {
               name: SortDirection
             }
@@ -315,7 +319,9 @@ describe("Pluralize consistency", () => {
             input super_userOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more super_userSort objects to sort Super_users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more super_userSort objects to sort Super_users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [super_userSort]
             }
 
@@ -323,7 +329,9 @@ describe("Pluralize consistency", () => {
               my_friend: [super_userMy_friendCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Super_users by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_userSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Super_users by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_userSort object.
+            \\"\\"\\"
             input super_userSort {
               name: SortDirection
             }
@@ -360,8 +368,7 @@ describe("Pluralize consistency", () => {
 
             type super_usersuper_friendMy_friendNodeAggregateSelection {
               name: StringAggregateSelectionNonNullable!
-            }
-            "
+            }"
         `);
     });
 });
