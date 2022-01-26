@@ -77,6 +77,7 @@ import { validateDocument } from "./validation";
 import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import { upperFirst } from "../utils/upper-first";
+import globalNodeResolver from "./resolvers/global-node";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -130,8 +131,11 @@ function makeAugmentedSchema(
 
     composer.createInterfaceTC({
         name: "Node",
+        description: "An object with a globally-unique ID",
         fields: {
-            id: new GraphQLNonNull(GraphQLID),
+            id: {
+                type: new GraphQLNonNull(GraphQLID),
+            },
         },
     });
 
@@ -1013,7 +1017,15 @@ function makeAugmentedSchema(
         composer.delete("Mutation");
     }
 
+    const globalNodes = nodes.filter((node) => node.isGlobalNode());
+    if (globalNodes.length > 0) {
+        composer.Query.addFields({
+            node: globalNodeResolver({ nodes: globalNodes }),
+        });
+    }
+
     const generatedTypeDefs = composer.toSDL();
+
     let parsedDoc = parse(generatedTypeDefs);
 
     function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
@@ -1036,6 +1048,8 @@ function makeAugmentedSchema(
             }
             return res;
         }, {}),
+        // eslint-disable-next-line no-underscore-dangle
+        ...(globalNodes.length > 0 ? { Node: { __resolveType: (root) => root.__resolveType } } : {}),
     };
 
     unions.forEach((union) => {

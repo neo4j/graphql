@@ -65,11 +65,11 @@ function createWhereAndParams({
         );
 
         if (node.isGlobalNode() && key === "id") {
-            const { field, value: nodeIdValue } = node.fromGlobalId(value as string);
+            const { field, id } = node.fromGlobalId(value as string);
             param = param.replace(key, field);
 
             res.clauses.push(`${varName}.${field} = $${param}`);
-            res.params = { ...res.params, [param]: nodeIdValue };
+            res.params = { ...res.params, [param]: id };
             return res;
         }
 
@@ -77,9 +77,9 @@ function createWhereAndParams({
             const [fieldName] = key.split("Aggregate");
             const relationField = node.relationFields.find((x) => x.fieldName === fieldName) as RelationField;
             const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-            const relationship = (context.neoSchema.relationships.find(
+            const relationship = context.neoSchema.relationships.find(
                 (x) => x.properties === relationField.properties
-            ) as unknown) as Relationship;
+            ) as unknown as Relationship;
 
             const aggregateWhereAndParams = createAggregateWhereAndParams({
                 node: refNode,

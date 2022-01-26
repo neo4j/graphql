@@ -169,8 +169,9 @@ describe("Node", () => {
             const relayId = node.toGlobalId(value);
 
             expect(node.fromGlobalId(relayId)).toEqual({
+                label: "Film",
                 field: "title",
-                value,
+                id: value,
             });
         });
         test("should convert a relay id to an object of { field: string, value: string | number }", () => {
@@ -187,7 +188,7 @@ describe("Node", () => {
 
             const relayId = node.toGlobalId(value);
 
-            expect(node.fromGlobalId(relayId)).toMatchObject({ field: "title", value });
+            expect(node.fromGlobalId(relayId)).toMatchObject({ field: "title", label: "Film", id: value });
         });
 
         test("should properly convert a relay id to an object when the id has a colon in the name", () => {
@@ -204,7 +205,7 @@ describe("Node", () => {
 
             const relayId = node.toGlobalId(value);
 
-            expect(node.fromGlobalId(relayId)).toMatchObject({ field: "title", value });
+            expect(node.fromGlobalId(relayId)).toMatchObject({ field: "title", label: "Film", id: value });
         });
     });
 });

@@ -23,7 +23,7 @@ import { lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Node Interface Types", () => {
-    test("should have an id field of type `ID!`", () => {
+    test("nodes should impelment the Node Interface and generate a top-level node query", () => {
         const typeDefs = gql`
             type Movie @node(global: true) {
                 title: String! @unique
@@ -111,6 +111,7 @@ describe("Node Interface Types", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            \\"\\"\\"An object with a globally-unique ID\\"\\"\\"
             interface Node {
               id: ID!
             }
@@ -118,6 +119,7 @@ describe("Node Interface Types", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              node(id: ID!): Node
             }
 
             enum SortDirection {
