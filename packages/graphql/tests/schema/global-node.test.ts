@@ -72,11 +72,15 @@ describe("Node Interface Types", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MovieSort]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               title: SortDirection
             }
@@ -106,7 +110,7 @@ describe("Node Interface Types", () => {
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
-            
+
             interface Node {
               id: ID!
             }
@@ -122,7 +126,7 @@ describe("Node Interface Types", () => {
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
             }
-            
+
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
@@ -139,8 +143,7 @@ describe("Node Interface Types", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 });

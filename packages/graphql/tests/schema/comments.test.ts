@@ -147,11 +147,15 @@ describe("Comments", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MovieSort]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               actorCount: SortDirection
               averageRating: SortDirection
@@ -237,8 +241,7 @@ describe("Comments", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
@@ -284,11 +287,15 @@ describe("Comments", () => {
                 input ActorOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"
+                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
                   sort: [ActorSort]
                 }
 
-                \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+                \\"\\"\\"
                 input ActorSort {
                   name: SortDirection
                 }
@@ -473,7 +480,9 @@ describe("Comments", () => {
                 input MovieOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"
+                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
                   sort: [MovieSort]
                 }
 
@@ -481,7 +490,9 @@ describe("Comments", () => {
                   actors: [MovieActorsCreateFieldInput!]
                 }
 
-                \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+                \\"\\"\\"
                 input MovieSort {
                   id: SortDirection
                 }
@@ -563,8 +574,7 @@ describe("Comments", () => {
                 type UpdateMoviesMutationResponse {
                   info: UpdateInfo!
                   movies: [Movie!]!
-                }
-                "
+                }"
             `);
         });
 
@@ -726,7 +736,9 @@ describe("Comments", () => {
                 input ActorOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"
+                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
                   sort: [ActorSort]
                 }
 
@@ -734,7 +746,9 @@ describe("Comments", () => {
                   actedIn: [ActorActedInCreateFieldInput!]
                 }
 
-                \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+                \\"\\"\\"
                 input ActorSort {
                   name: SortDirection
                 }
@@ -814,11 +828,15 @@ describe("Comments", () => {
                 input MovieOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"
+                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
                   sort: [MovieSort]
                 }
 
-                \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+                \\"\\"\\"
                 input MovieSort {
                   runtime: SortDirection
                   title: SortDirection
@@ -947,11 +965,15 @@ describe("Comments", () => {
                 input SeriesOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"
+                  Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
                   sort: [SeriesSort]
                 }
 
-                \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+                \\"\\"\\"
                 input SeriesSort {
                   episodes: SortDirection
                   title: SortDirection
@@ -1018,8 +1040,7 @@ describe("Comments", () => {
                 type UpdateSeriesMutationResponse {
                   info: UpdateInfo!
                   series: [Series!]!
-                }
-                "
+                }"
             `);
         });
 
@@ -1088,11 +1109,15 @@ describe("Comments", () => {
                 input GenreOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"
+                  Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
                   sort: [GenreSort]
                 }
 
-                \\"\\"\\"Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
+                \\"\\"\\"
                 input GenreSort {
                   id: SortDirection
                 }
@@ -1157,7 +1182,9 @@ describe("Comments", () => {
                 input MovieOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+                  \\"\\"\\"
+                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
                   sort: [MovieSort]
                 }
 
@@ -1310,7 +1337,9 @@ describe("Comments", () => {
                   Movie: [MovieSearchMovieUpdateFieldInput!]
                 }
 
-                \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+                \\"\\"\\"
                 input MovieSort {
                   id: SortDirection
                 }
@@ -1396,8 +1425,7 @@ describe("Comments", () => {
                 type UpdateMoviesMutationResponse {
                   info: UpdateInfo!
                   movies: [Movie!]!
-                }
-                "
+                }"
             `);
         });
     });

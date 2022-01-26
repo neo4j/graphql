@@ -116,11 +116,15 @@ describe("@readonly directive", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [UserSort]
             }
 
-            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
             input UserSort {
               id: SortDirection
               username: SortDirection
@@ -153,8 +157,7 @@ describe("@readonly directive", () => {
               username_NOT_IN: [String]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
-            }
-            "
+            }"
         `);
     });
 
@@ -261,11 +264,15 @@ describe("@readonly directive", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [UserSort]
             }
 
-            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
             input UserSort {
               id: SortDirection
               username: SortDirection
@@ -298,8 +305,7 @@ describe("@readonly directive", () => {
               username_NOT_IN: [String]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
-            }
-            "
+            }"
         `);
     });
 });

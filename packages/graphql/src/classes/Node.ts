@@ -18,6 +18,7 @@
  */
 
 import { DirectiveNode, GraphQLID, NamedTypeNode } from "graphql";
+import { base64, unbase64 } from "graphql-relay/utils/base64";
 import pluralize from "pluralize";
 import type {
     RelationField,
@@ -40,7 +41,6 @@ import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
 import { lowerFirst } from "../utils/lower-first";
-import { base64, unbase64 } from "../utils/base64";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
