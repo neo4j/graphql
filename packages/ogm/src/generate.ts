@@ -30,16 +30,16 @@ import { upperFirst } from "./utils/upper-first";
 
 export interface IGenerateOptions {
     /**
-        File to write types to
-    */
+      File to write types to
+  */
     outFile?: string;
     /**
-        If specified will return the string contents of file and not write
-    */
+      If specified will return the string contents of file and not write
+  */
     noWrite?: boolean;
     /**
-        Instance of @neo4j/graphql-ogm
-    */
+      Instance of @neo4j/graphql-ogm
+  */
     ogm: OGM;
 }
 

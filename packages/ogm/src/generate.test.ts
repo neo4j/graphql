@@ -55,10 +55,12 @@ describe("generate", () => {
             export type Exact<T extends { [key: string]: unknown }> = {
               [K in keyof T]: T[K];
             };
-            export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]?: Maybe<T[SubKey]> };
-            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]: Maybe<T[SubKey]> };
+            export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]?: Maybe<T[SubKey]>;
+            };
+            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]: Maybe<T[SubKey]>;
+            };
             /** All built-in and custom scalars, mapped to their actual values */
             export type Scalars = {
               ID: string;
@@ -284,10 +286,12 @@ describe("generate", () => {
             export type Exact<T extends { [key: string]: unknown }> = {
               [K in keyof T]: T[K];
             };
-            export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]?: Maybe<T[SubKey]> };
-            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]: Maybe<T[SubKey]> };
+            export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]?: Maybe<T[SubKey]>;
+            };
+            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]: Maybe<T[SubKey]>;
+            };
             /** All built-in and custom scalars, mapped to their actual values */
             export type Scalars = {
               ID: string;
@@ -533,10 +537,12 @@ describe("generate", () => {
             export type Exact<T extends { [key: string]: unknown }> = {
               [K in keyof T]: T[K];
             };
-            export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]?: Maybe<T[SubKey]> };
-            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]: Maybe<T[SubKey]> };
+            export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]?: Maybe<T[SubKey]>;
+            };
+            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]: Maybe<T[SubKey]>;
+            };
             /** All built-in and custom scalars, mapped to their actual values */
             export type Scalars = {
               ID: string;
@@ -767,10 +773,12 @@ describe("generate", () => {
             export type Exact<T extends { [key: string]: unknown }> = {
               [K in keyof T]: T[K];
             };
-            export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]?: Maybe<T[SubKey]> };
-            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]: Maybe<T[SubKey]> };
+            export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]?: Maybe<T[SubKey]>;
+            };
+            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]: Maybe<T[SubKey]>;
+            };
             /** All built-in and custom scalars, mapped to their actual values */
             export type Scalars = {
               ID: string;
@@ -905,16 +913,19 @@ describe("generate", () => {
             };
 
             export type MovieActorsArgs = {
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
               where?: InputMaybe<PersonWhere>;
               options?: InputMaybe<PersonOptions>;
             };
 
             export type MovieActorsAggregateArgs = {
               where?: InputMaybe<PersonWhere>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
             };
 
             export type MovieActorsConnectionArgs = {
               where?: InputMaybe<MovieActorsConnectionWhere>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
               sort?: InputMaybe<Array<MovieActorsConnectionSort>>;
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
