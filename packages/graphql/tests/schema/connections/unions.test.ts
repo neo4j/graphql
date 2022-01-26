@@ -57,8 +57,8 @@ describe("Unions", () => {
 
             type Author {
               name: String!
-              publications(options: QueryOptions, where: PublicationWhere): [Publication!]!
-              publicationsConnection(sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
+              publications(directed: Boolean = true, options: QueryOptions, where: PublicationWhere): [Publication!]!
+              publicationsConnection(directed: Boolean = true, sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
             type AuthorAggregateSelection {
@@ -308,9 +308,9 @@ describe("Unions", () => {
             }
 
             type Book {
-              author(options: AuthorOptions, where: AuthorWhere): [Author!]!
-              authorAggregate(where: AuthorWhere): BookAuthorAuthorAggregationSelection
-              authorConnection(after: String, first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
+              author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
+              authorAggregate(directed: Boolean = true, where: AuthorWhere): BookAuthorAuthorAggregationSelection
+              authorConnection(after: String, directed: Boolean = true, first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
               title: String!
             }
 
@@ -578,9 +578,9 @@ describe("Unions", () => {
             }
 
             type Journal {
-              author(options: AuthorOptions, where: AuthorWhere): [Author!]!
-              authorAggregate(where: AuthorWhere): JournalAuthorAuthorAggregationSelection
-              authorConnection(after: String, first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
+              author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
+              authorAggregate(directed: Boolean = true, where: AuthorWhere): JournalAuthorAuthorAggregationSelection
+              authorConnection(after: String, directed: Boolean = true, first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
               subject: String!
             }
 

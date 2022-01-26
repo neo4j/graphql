@@ -379,9 +379,9 @@ describe("Comments", () => {
 
                 type Movie {
                   \\"\\"\\"Actors in Movie\\"\\"\\"
-                  actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+                  actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -688,8 +688,8 @@ describe("Comments", () => {
 
                 type Actor {
                   \\"\\"\\"Acted in Production\\"\\"\\"
-                  actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-                  actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+                  actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
+                  actedInConnection(directed: Boolean = true, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
 
@@ -1239,8 +1239,8 @@ describe("Comments", () => {
 
                 type Movie {
                   id: ID
-                  search(options: QueryOptions, where: SearchWhere): [Search!]!
-                  searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
+                  search(directed: Boolean = true, options: QueryOptions, where: SearchWhere): [Search!]!
+                  searchConnection(directed: Boolean = true, where: MovieSearchConnectionWhere): MovieSearchConnection!
                   searchNoDirective: Search
                 }
 

@@ -95,9 +95,13 @@ export function createFieldAggregation({
         relationField: relationAggregationField,
         referenceNode,
         context,
+        directed: field.args.directed as boolean | undefined,
     });
     const matchWherePattern = createMatchWherePattern(targetPattern, authData, whereQuery);
-    const apocRunParams = { ...serializeParamsForApocRun(whereParams), ...serializeAuthParamsForApocRun(authData) };
+    const apocRunParams = {
+        ...serializeParamsForApocRun(whereParams as Record<string, any>),
+        ...serializeAuthParamsForApocRun(authData),
+    };
 
     return {
         query: stringifyObject({
@@ -154,14 +158,20 @@ function createTargetPattern({
     relationField,
     referenceNode,
     context,
+    directed = true,
 }: {
     nodeLabel: string;
     relationField: RelationField;
     referenceNode: Node;
     context: Context;
+    directed?: boolean;
 }): string {
-    const inStr = relationField.direction === "IN" ? "<-" : "-";
-    const outStr = relationField.direction === "OUT" ? "->" : "-";
+    let inStr = relationField.direction === "IN" ? "<-" : "-";
+    let outStr = relationField.direction === "OUT" ? "->" : "-";
+    if (!directed) {
+        inStr = "-";
+        outStr = "-";
+    }
     const nodeOutStr = `(${subqueryNodeAlias}${referenceNode.getLabelString(context)})`;
 
     return `(${nodeLabel})${inStr}[${subqueryRelationAlias}:${relationField.type}]${outStr}${nodeOutStr}`;
