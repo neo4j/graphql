@@ -6659,10 +6659,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:14.3.0":
-  version: 14.3.0
-  resolution: "dotenv@npm:14.3.0"
-  checksum: 0591a1aa6d2acaf31d4d5e7b79c1bce744fc8e06c6d38a066d70fe77d36cc7c67df6c04be70c9fdf637f421e84512ce83b4f8f8abe6f455b8ba970065f7a2fd6
+"dotenv@npm:14.3.2":
+  version: 14.3.2
+  resolution: "dotenv@npm:14.3.2"
+  checksum: 86c06758915d6facc35275f4a7fafc16705b6f3b44befaa8abca91367991efc8ff8db5437d3cc14778231d19fb97610fe82d60f8a53ba723cdb69fe4171439aa
   languageName: node
   linkType: hard
 
@@ -11595,9 +11595,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:12.3.1":
-  version: 12.3.1
-  resolution: "lint-staged@npm:12.3.1"
+"lint-staged@npm:12.3.2":
+  version: 12.3.2
+  resolution: "lint-staged@npm:12.3.2"
   dependencies:
     cli-truncate: ^3.1.0
     colorette: ^2.0.16
@@ -11614,7 +11614,7 @@ __metadata:
     yaml: ^1.10.2
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: 53e4a0e6021221f8d712397996d4a10374f2ee287a0d62dab2e84ddd1e06f5cc4cb42ac909337c52feba20a13f89bfefe7939683003ccedc04ac6ec20fd65651
+  checksum: 35cab689dfc967ff95afeeaa7be7d1e19a131f36eeac9ac1d80240e0b20108286ce04f2d6bdf0b77fdf58db3ca5313bcbf2667dc6017335e604ff455caf69e33
   languageName: node
   linkType: hard
 
@@ -12710,7 +12710,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.10.1
     "@typescript-eslint/parser": 5.10.1
     concurrently: 7.0.0
-    dotenv: 14.3.0
+    dotenv: 14.3.2
     eslint: 8.7.0
     eslint-config-airbnb-typescript: 16.1.0
     eslint-config-prettier: 8.3.0
@@ -12723,7 +12723,7 @@ __metadata:
     graphql: 16.2.0
     husky: 7.0.4
     jest: 27.4.7
-    lint-staged: 12.3.1
+    lint-staged: 12.3.2
     neo4j-driver: 4.4.0
     npm-run-all: 4.1.5
     prettier: 2.5.1
