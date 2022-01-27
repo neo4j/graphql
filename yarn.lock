@@ -8523,6 +8523,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"graphql@npm:16.3.0":
+  version: 16.3.0
+  resolution: "graphql@npm:16.3.0"
+  checksum: ba540641e9cd2a8de5b989ff1433b015f232fa73aaef478d6709c1339cd43113347917acb965a5799c004667687852fc8ff0cfaa935eb26374c91c1fd7fdaeb1
+  languageName: node
+  linkType: hard
+
 "growly@npm:^1.3.0":
   version: 1.3.0
   resolution: "growly@npm:1.3.0"
@@ -12720,7 +12727,7 @@ __metadata:
     eslint-plugin-jest: 26.0.0
     eslint-plugin-jsx-a11y: 6.5.1
     eslint-plugin-react: 7.28.0
-    graphql: 16.2.0
+    graphql: 16.3.0
     husky: 7.0.4
     jest: 27.4.7
     lint-staged: 12.3.2
