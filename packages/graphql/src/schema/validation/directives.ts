@@ -242,3 +242,14 @@ export const fulltextDirective = new GraphQLDirective({
     },
     locations: [DirectiveLocation.OBJECT],
 });
+
+export const queryOptions = new GraphQLDirective({
+    name: "queryOptions",
+    description: "TODO",
+    args: {
+        defaultLimit: {
+            type: GraphQLString,
+        },
+    },
+    locations: [DirectiveLocation.OBJECT],
+});

@@ -145,7 +145,7 @@ function createProjectionAndParams({
         }
 
         const whereInput = field.args.where as GraphQLWhereArg;
-        const optionsInput = field.args.options as GraphQLOptionsArg;
+        const optionsInput = (field.args.options || {}) as GraphQLOptionsArg;
         const fieldFields = field.fieldsByTypeName;
         const cypherField = node.cypherFields.find((x) => x.fieldName === field.name);
         const relationField = node.relationFields.find((x) => x.fieldName === field.name);
@@ -330,6 +330,10 @@ function createProjectionAndParams({
 
         if (relationField) {
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+
+            if (referenceNode?.queryOptions?.defaultLimit && !optionsInput.limit) {
+                optionsInput.limit = referenceNode.queryOptions.defaultLimit;
+            }
 
             const nodeMatchStr = `(${chainStr || varName})`;
             let inStr = relationField.direction === "IN" ? "<-" : "-";

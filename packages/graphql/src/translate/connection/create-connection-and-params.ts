@@ -59,6 +59,7 @@ function createConnectionAndParams({
     const relationship = context.neoSchema.relationships.find(
         (r) => r.name === field.relationshipTypeName
     ) as Relationship;
+    const relatedNode = context.neoSchema.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
 
     let inStr = field.relationship.direction === "IN" ? "<-" : "-";
     const relTypeStr = `[${relationshipVariable}:${field.relationship.type}]`;
@@ -286,7 +287,6 @@ function createConnectionAndParams({
         subquery.push(subqueryCypher.join("\n"));
     } else {
         const relatedNodeVariable = `${nodeVariable}_${field.relationship.typeMeta.name.toLowerCase()}`;
-        const relatedNode = context.neoSchema.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
         const labels = relatedNode.getLabelString(context);
         const nodeOutStr = `(${relatedNodeVariable}${labels})`;
         subquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
@@ -420,7 +420,14 @@ function createConnectionAndParams({
     }
 
     const returnValues: string[] = [];
-    if (!firstInput && !afterInput) {
+    if (relatedNode && relatedNode?.queryOptions?.defaultLimit) {
+        const offsetLimitStr = createOffsetLimitStr({
+            offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
+            limit: relatedNode?.queryOptions?.defaultLimit,
+        });
+        subquery.push(`WITH size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`);
+        subquery.push(`RETURN { edges: limitedSelection, totalCount: totalCount } AS ${resolveTree.alias}`);
+    } else if (!firstInput && !afterInput) {
         if (connection.edges || connection.pageInfo) {
             returnValues.push("edges: edges");
         }
