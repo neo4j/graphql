@@ -61,54 +61,48 @@ describe("Relationship - Multiple Types", () => {
             title: generate({ charset: "alphabetic" }),
         };
 
-        const person1 = {
-            id: generate(),
-            name: generate({ charset: "alphabetic" }),
-        };
+        const numberOfActors = 2;
+        const actors = Array(numberOfActors)
+            .fill(null)
+            .map(() => ({ id: generate(), name: generate({ charset: "alphabetic" }) }));
 
-        const person2 = {
-            id: generate(),
-            name: generate({ charset: "alphabetic" }),
-        };
+        const numberOfDirectors = 1;
+        const directors = Array(numberOfDirectors)
+            .fill(null)
+            .map(() => ({ id: generate(), name: generate({ charset: "alphabetic" }) }));
 
-        const person3 = {
-            id: generate(),
-            name: generate({ charset: "alphabetic" }),
-        };
-
+        const people = [...actors, ...directors];
         beforeAll(async () => {
             const session = driver.session();
 
             await session.run(
                 `
-                    CREATE (movie:Movie:${testLabel})
-                    SET movie = $movie
-                    CREATE (person1:Person:${testLabel})
-                    SET person1 = $person1
-                    CREATE (person2:Person:${testLabel})
-                    SET person2 = $person2
-                    CREATE (person3:Person:${testLabel})
-                    SET person3 = $person3
+                    CREATE (movie:Movie:${testLabel}) SET movie = $movie
+                    CREATE (person1:Person:${testLabel}) SET person1 = $actors[0]
+                    CREATE (person2:Person:${testLabel}) SET person2 = $actors[1]
+                    CREATE (person3:Person:${testLabel}) SET person3 = $directors[0]
                     CREATE (person1)-[:ACTED_IN]->(movie)<-[:ACTED_IN]-(person2)
                     CREATE (person3)-[:DIRECTED]->(movie)
                 `,
-                { movie, person1, person2, person3 }
+                { movie, actors, directors }
             );
             await session.close();
         });
 
         test("should read a relationship with multiple types", async () => {
             const query = gql`
-                query($movieId: ID!) {
+                query ($movieId: ID!) {
                     movies(where: { id: $movieId }) {
                         title
                         people {
+                            id
                             name
                         }
                         peopleConnection {
                             totalCount
                             edges {
                                 node {
+                                    id
                                     name
                                 }
                             }
@@ -125,43 +119,47 @@ describe("Relationship - Multiple Types", () => {
             });
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlMovie: {
-                title: string;
-                people: Array<{ name: string }>;
-                peopleConnection: {
-                    totalCount: number;
-                    edges: Array<{ node: { name: string } }>;
-                };
-            } = graphqlResult.data?.movies[0];
+            const {
+                movies: [graphqlMovie],
+            } = graphqlResult.data as {
+                movies: Array<{
+                    title: string;
+                    people: Array<{ name: string }>;
+                    peopleConnection: {
+                        totalCount: number;
+                        edges: Array<{ node: { name: string } }>;
+                    };
+                }>;
+            };
 
             expect(graphqlMovie).toBeDefined();
 
             expect(graphqlMovie.title).toBe(movie.title);
 
-            expect(graphqlMovie.people).toHaveLength(3);
-            expect(graphqlMovie.people).toContainEqual({ name: person1.name });
-            expect(graphqlMovie.people).toContainEqual({ name: person2.name });
-            expect(graphqlMovie.people).toContainEqual({ name: person3.name });
+            expect(graphqlMovie.people).toHaveLength(people.length);
+            expect(graphqlMovie.people).toEqual(expect.arrayContaining(people));
 
-            expect(graphqlMovie.peopleConnection.totalCount).toBe(3);
-            expect(graphqlMovie.peopleConnection.edges).toHaveLength(3);
-            expect(graphqlMovie.peopleConnection.edges).toContainEqual({ node: { name: person1.name } });
-            expect(graphqlMovie.peopleConnection.edges).toContainEqual({ node: { name: person2.name } });
-            expect(graphqlMovie.peopleConnection.edges).toContainEqual({ node: { name: person3.name } });
+            expect(graphqlMovie.peopleConnection.totalCount).toBe(people.length);
+            expect(graphqlMovie.peopleConnection.edges).toHaveLength(people.length);
+            expect(graphqlMovie.peopleConnection.edges).toEqual(
+                expect.arrayContaining(people.map((person) => ({ node: person })))
+            );
         });
 
         test("should filter a relationship with multiple types", async () => {
             const query = gql`
-                query($movieId: ID!, $person1Id: ID!, $person2Id: ID!) {
+                query ($movieId: ID!, $peopleIds: [ID!]!) {
                     movies(where: { id: $movieId }) {
                         title
-                        people(where: { id_IN: [$person1Id, $person2Id] }) {
+                        people(where: { id_IN: $peopleIds }) {
+                            id
                             name
                         }
-                        peopleConnection(where: { node: { id_IN: [$person1Id, $person2Id] } }) {
+                        peopleConnection(where: { node: { id_IN: $peopleIds } }) {
                             totalCount
                             edges {
                                 node {
+                                    id
                                     name
                                 }
                             }
@@ -170,49 +168,56 @@ describe("Relationship - Multiple Types", () => {
                 }
             `;
 
+            const testPeople = people.slice(0, 2);
+
             const graphqlResult = await graphql({
                 schema,
                 source: query.loc!.source,
                 contextValue: { driver },
-                variableValues: { movieId: movie.id, person1Id: person1.id, person2Id: person2.id },
+                variableValues: { movieId: movie.id, peopleIds: testPeople.map((person) => person.id) },
             });
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlMovie: {
-                title: string;
-                people: Array<{ name: string }>;
-                peopleConnection: {
-                    totalCount: number;
-                    edges: Array<{ node: { name: string } }>;
-                };
-            } = graphqlResult.data?.movies[0];
+            const {
+                movies: [graphqlMovie],
+            } = graphqlResult.data as {
+                movies: Array<{
+                    title: string;
+                    people: Array<{ name: string }>;
+                    peopleConnection: {
+                        totalCount: number;
+                        edges: Array<{ node: { name: string } }>;
+                    };
+                }>;
+            };
 
             expect(graphqlMovie).toBeDefined();
             expect(graphqlMovie.title).toBe(movie.title);
 
             // people
 
-            expect(graphqlMovie.people).toHaveLength(2);
-            expect(graphqlMovie.people).toContainEqual({ name: person1.name });
-            expect(graphqlMovie.people).toContainEqual({ name: person2.name });
+            expect(graphqlMovie.people).toHaveLength(testPeople.length);
+            expect(graphqlMovie.people).toEqual(expect.arrayContaining(testPeople));
 
             // peopleConnection
 
-            expect(graphqlMovie.peopleConnection.totalCount).toBe(2);
-            expect(graphqlMovie.peopleConnection.edges).toHaveLength(2);
-            expect(graphqlMovie.peopleConnection.edges).toContainEqual({ node: { name: person1.name } });
-            expect(graphqlMovie.peopleConnection.edges).toContainEqual({ node: { name: person2.name } });
+            expect(graphqlMovie.peopleConnection.totalCount).toBe(testPeople.length);
+            expect(graphqlMovie.peopleConnection.edges).toHaveLength(testPeople.length);
+            expect(graphqlMovie.peopleConnection.edges).toEqual(
+                expect.arrayContaining(testPeople.map((person) => ({ node: person })))
+            );
         });
 
         test("should filter a relationship with multiple types on relationship type", async () => {
             const query = gql`
-                query($movieId: ID!) {
+                query ($movieId: ID!) {
                     movies(where: { id: $movieId }) {
                         title
                         actedInPeopleConnection: peopleConnection(where: { edge: { _type: ACTED_IN } }) {
                             totalCount
                             edges {
                                 node {
+                                    id
                                     name
                                 }
                             }
@@ -221,6 +226,7 @@ describe("Relationship - Multiple Types", () => {
                             totalCount
                             edges {
                                 node {
+                                    id
                                     name
                                 }
                             }
@@ -237,50 +243,57 @@ describe("Relationship - Multiple Types", () => {
             });
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlMovie: {
-                title: string;
-                directedPeopleConnection: {
-                    totalCount: number;
-                    edges: Array<{ node: { name: string } }>;
-                };
-                actedInPeopleConnection: {
-                    totalCount: number;
-                    edges: Array<{ node: { name: string } }>;
-                };
-            } = graphqlResult.data?.movies[0];
+            const {
+                movies: [graphqlMovie],
+            } = graphqlResult.data as {
+                movies: Array<{
+                    title: string;
+                    directedPeopleConnection: {
+                        totalCount: number;
+                        edges: Array<{ node: { name: string } }>;
+                    };
+                    actedInPeopleConnection: {
+                        totalCount: number;
+                        edges: Array<{ node: { name: string } }>;
+                    };
+                }>;
+            };
 
             expect(graphqlMovie).toBeDefined();
             expect(graphqlMovie.title).toBe(movie.title);
 
             // ACTED_IN
 
-            expect(graphqlMovie.actedInPeopleConnection.totalCount).toBe(2);
-            expect(graphqlMovie.actedInPeopleConnection.edges).toHaveLength(2);
-            expect(graphqlMovie.actedInPeopleConnection.edges).toContainEqual({ node: { name: person1.name } });
-            expect(graphqlMovie.actedInPeopleConnection.edges).toContainEqual({ node: { name: person2.name } });
+            expect(graphqlMovie.actedInPeopleConnection.totalCount).toBe(actors.length);
+            expect(graphqlMovie.actedInPeopleConnection.edges).toHaveLength(actors.length);
+            expect(graphqlMovie.actedInPeopleConnection.edges).toEqual(
+                expect.arrayContaining(actors.map((actor) => ({ node: actor })))
+            );
 
             // DIRECTED
 
-            expect(graphqlMovie.directedPeopleConnection.totalCount).toBe(1);
-            expect(graphqlMovie.directedPeopleConnection.edges).toHaveLength(1);
-            expect(graphqlMovie.directedPeopleConnection.edges).toContainEqual({ node: { name: person3.name } });
+            expect(graphqlMovie.directedPeopleConnection.totalCount).toBe(directors.length);
+            expect(graphqlMovie.directedPeopleConnection.edges).toHaveLength(directors.length);
+            expect(graphqlMovie.directedPeopleConnection.edges).toEqual(
+                expect.arrayContaining(directors.map((director) => ({ node: director })))
+            );
         });
 
         test("should update a node through a relationship with multiple types", async () => {
             const mutation = gql`
-                mutation($movieId: ID!, $person1Id: ID!, $person1NameUpdate: String!) {
+                mutation ($movieId: ID!, $updatePersonId: ID!, $personNameUpdate: String!) {
                     updateMovies(
                         where: { id: $movieId }
                         update: {
                             people: {
-                                where: { node: { id: $person1Id } }
-                                update: { node: { name: $person1NameUpdate } }
+                                where: { node: { id: $updatePersonId } }
+                                update: { node: { name: $personNameUpdate } }
                             }
                         }
                     ) {
                         movies {
                             title
-                            people(where: { id: $person1Id }) {
+                            people(where: { id: $updatePersonId }) {
                                 name
                             }
                         }
@@ -288,7 +301,8 @@ describe("Relationship - Multiple Types", () => {
                 }
             `;
 
-            const person1NameUpdate = generate({ charset: "alphabetic" });
+            const updatePerson = actors[0];
+            const personNameUpdate = generate({ charset: "alphabetic" });
 
             // GraphQL
 
@@ -296,19 +310,27 @@ describe("Relationship - Multiple Types", () => {
                 schema,
                 source: mutation.loc!.source,
                 contextValue: { driver },
-                variableValues: { movieId: movie.id, person1Id: person1.id, person1NameUpdate },
+                variableValues: { movieId: movie.id, updatePersonId: updatePerson.id, personNameUpdate },
             });
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlMovie: {
-                title: string;
-                people: Array<{ id: string; name: string }>;
-            } = graphqlResult.data?.updateMovies.movies[0];
+            const {
+                updateMovies: {
+                    movies: [graphqlMovie],
+                },
+            } = graphqlResult.data as {
+                updateMovies: {
+                    movies: Array<{
+                        title: string;
+                        people: Array<{ id: string; name: string }>;
+                    }>;
+                };
+            };
 
             expect(graphqlMovie).toBeDefined();
             expect(graphqlMovie.title).toBe(movie.title);
             expect(graphqlMovie.people).toHaveLength(1);
-            expect(graphqlMovie.people).toContainEqual({ name: person1NameUpdate });
+            expect(graphqlMovie.people).toContainEqual({ name: personNameUpdate });
 
             // Neo4j
 
@@ -317,27 +339,45 @@ describe("Relationship - Multiple Types", () => {
             const neo4jResult = await session.run(
                 `
                     MATCH (person:Person)
-                    WHERE person.id = $personId
+                    WHERE person.id = $updatePersonId
                     RETURN person { .id, .name } as person
                 `,
-                { personId: person1.id }
+                { updatePersonId: updatePerson.id }
             );
 
             const neo4jPerson: { id: string; name: string } = neo4jResult.records[0].toObject().person;
 
             expect(neo4jPerson).toBeDefined();
-            expect(neo4jPerson.id).toBe(person1.id);
-            expect(neo4jPerson.name).toBe(person1NameUpdate);
+            expect(neo4jPerson.id).toBe(updatePerson.id);
+            expect(neo4jPerson.name).toBe(personNameUpdate);
+
+            // Revert back for testing purposes
+
+            const neo4jRevertedResult = await session.run(
+                `
+                    MATCH (person:Person)
+                    WHERE person.id = $updatePerson.id
+                    SET person = $updatePerson
+                    RETURN person { .id, .name } as person
+                `,
+                { updatePerson }
+            );
+
+            const neo4jOriginalPerson: { id: string; name: string } = neo4jRevertedResult.records[0].toObject().person;
+
+            expect(neo4jOriginalPerson).toBeDefined();
+            expect(neo4jOriginalPerson.id).toBe(updatePerson.id);
+            expect(neo4jOriginalPerson.name).toBe(updatePerson.name);
 
             await session.close();
         });
 
         test("should disconnect a node through a relationship with multiple types", async () => {
             const mutation = gql`
-                mutation($movieId: ID!, $person1Id: ID!) {
+                mutation ($movieId: ID!, $disconnectPersonId: ID!) {
                     updateMovies(
                         where: { id: $movieId }
-                        disconnect: { people: { where: { node: { id: $person1Id } } } }
+                        disconnect: { people: { where: { node: { id: $disconnectPersonId } } } }
                     ) {
                         movies {
                             title
@@ -350,26 +390,35 @@ describe("Relationship - Multiple Types", () => {
                 }
             `;
 
+            const disconnectPersonId = actors[0].id;
+
             // GraphQL
 
             const graphqlResult = await graphql({
                 schema,
                 source: mutation.loc!.source,
                 contextValue: { driver },
-                variableValues: { movieId: movie.id, person1Id: person1.id },
+                variableValues: { movieId: movie.id, disconnectPersonId },
             });
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlMovie: {
-                title: string;
-                people: Array<{ id: string; name: string }>;
-            } = graphqlResult.data?.updateMovies.movies[0];
+            const {
+                updateMovies: {
+                    movies: [graphqlMovie],
+                },
+            } = graphqlResult.data as {
+                updateMovies: {
+                    movies: Array<{
+                        title: string;
+                        people: Array<{ id: string; name: string }>;
+                    }>;
+                };
+            };
 
             expect(graphqlMovie).toBeDefined();
             expect(graphqlMovie.title).toBe(movie.title);
             expect(graphqlMovie.people).toHaveLength(2);
-            expect(graphqlMovie.people).toContainEqual(person2);
-            expect(graphqlMovie.people).toContainEqual(person3);
+            expect(graphqlMovie.people).toEqual(expect.arrayContaining([actors[1], directors[0]]));
 
             // Neo4j
 
@@ -389,8 +438,7 @@ describe("Relationship - Multiple Types", () => {
 
             expect(neo4jPeople).toBeDefined();
             expect(neo4jPeople).toHaveLength(2);
-            expect(neo4jPeople).toContainEqual(person2);
-            expect(neo4jPeople).toContainEqual(person3);
+            expect(neo4jPeople).toEqual(expect.arrayContaining([actors[1], directors[0]]));
 
             await session.close();
         });
@@ -399,8 +447,11 @@ describe("Relationship - Multiple Types", () => {
         // eslint-disable-next-line jest/no-disabled-tests
         test.skip("should delete a node through a relationship with multiple types", async () => {
             const mutation = gql`
-                mutation($movieId: ID!, $person1Id: ID!) {
-                    updateMovies(where: { id: $movieId }, delete: { people: { where: { node: { id: $person1Id } } } }) {
+                mutation ($movieId: ID!, $deletePersonId: ID!) {
+                    updateMovies(
+                        where: { id: $movieId }
+                        delete: { people: { where: { node: { id: $deletePersonId } } } }
+                    ) {
                         movies {
                             title
                             people {
@@ -415,28 +466,37 @@ describe("Relationship - Multiple Types", () => {
                 }
             `;
 
+            const deletePersonId = actors[0].id;
+
             // GraphQL
 
             const graphqlResult = await graphql({
                 schema,
                 source: mutation.loc!.source,
                 contextValue: { driver },
-                variableValues: { movieId: movie.id, person1Id: person1.id },
+                variableValues: { movieId: movie.id, deletePersonId },
             });
             expect(graphqlResult.errors).toBeUndefined();
 
             console.log(JSON.stringify(graphqlResult, null, 4));
 
-            const graphqlMovie: {
-                title: string;
-                people: Array<{ id: string; name: string }>;
-            } = graphqlResult.data?.updateMovies.movies[0];
+            const {
+                updateMovies: {
+                    movies: [graphqlMovie],
+                },
+            } = graphqlResult.data as {
+                updateMovies: {
+                    movies: Array<{
+                        title: string;
+                        people: Array<{ id: string; name: string }>;
+                    }>;
+                };
+            };
 
             expect(graphqlMovie).toBeDefined();
             expect(graphqlMovie.title).toBe(movie.title);
             expect(graphqlMovie.people).toHaveLength(2);
-            expect(graphqlMovie.people).toContainEqual(person2);
-            expect(graphqlMovie.people).toContainEqual(person3);
+            expect(graphqlMovie.people).toEqual(expect.arrayContaining([actors[1], directors[0]]));
 
             // Neo4j
 
@@ -453,8 +513,7 @@ describe("Relationship - Multiple Types", () => {
 
             expect(neo4jPeople).toBeDefined();
             expect(neo4jPeople).toHaveLength(2);
-            expect(neo4jPeople).toContainEqual(person2);
-            expect(neo4jPeople).toContainEqual(person3);
+            expect(neo4jPeople).toEqual(expect.arrayContaining([actors[1], directors[0]]));
 
             await session.close();
         });
@@ -495,14 +554,13 @@ describe("Relationship - Multiple Types", () => {
             id: generate(),
             title: generate({ charset: "alphabetic" }),
         };
-        const actor1 = {
-            id: generate(),
-            name: generate({ charset: "alphabetic" }),
-        };
-        const actor2 = {
-            id: generate(),
-            name: generate({ charset: "alphabetic" }),
-        };
+
+        const numberOfActors = 2;
+
+        const actors = Array(numberOfActors)
+            .fill(null)
+            .map(() => ({ id: generate(), name: generate({ charset: "alphabetic" }) }));
+
         const director = {
             id: generate(),
             name: generate({ charset: "alphabetic" }),
@@ -513,32 +571,30 @@ describe("Relationship - Multiple Types", () => {
 
             await session.run(
                 `
-            CREATE (movie:Movie:${testLabel})
-            SET movie = $movie
-            CREATE (actor1:Actor:${testLabel})
-            SET actor1 = $actor1
-            CREATE (actor2:Actor:${testLabel})
-            SET actor2 = $actor2
-            CREATE (director:Director:${testLabel})
-            SET director = $director
-            CREATE (actor1)-[:ACTED_IN]->(movie)<-[:ACTED_IN]-(actor2)
-            CREATE (director)-[:DIRECTED]->(movie)
-          `,
-                { movie, actor1, actor2, director }
+                CREATE (movie:Movie:${testLabel}) SET movie = $movie
+                CREATE (actor1:Actor:${testLabel}) SET actor1 = $actors[0]
+                CREATE (actor2:Actor:${testLabel}) SET actor2 = $actors[1]
+                CREATE (director:Director:${testLabel}) SET director = $director
+                CREATE (actor1)-[:ACTED_IN]->(movie)<-[:ACTED_IN]-(actor2)
+                CREATE (director)-[:DIRECTED]->(movie)
+            `,
+                { movie, actors, director }
             );
             await session.close();
         });
 
         test("should read a union relationship with multiple types", async () => {
             const query = gql`
-                query($movieId: ID!) {
+                query ($movieId: ID!) {
                     movies(where: { id: $movieId }) {
                         title
                         people {
                             ... on Director {
+                                id
                                 name
                             }
                             ... on Actor {
+                                id
                                 name
                             }
                         }
@@ -547,9 +603,11 @@ describe("Relationship - Multiple Types", () => {
                             edges {
                                 node {
                                     ... on Director {
+                                        id
                                         name
                                     }
                                     ... on Actor {
+                                        id
                                         name
                                     }
                                 }
@@ -567,41 +625,45 @@ describe("Relationship - Multiple Types", () => {
             });
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlMovie: {
-                title: string;
-                people: Array<{ name: string }>;
-                peopleConnection: {
-                    totalCount: number;
-                    edges: Array<{ node: { name: string } }>;
-                };
-            } = graphqlResult.data?.movies[0];
+            const {
+                movies: [graphqlMovie],
+            } = graphqlResult.data as {
+                movies: Array<{
+                    title: string;
+                    people: Array<{ name: string }>;
+                    peopleConnection: {
+                        totalCount: number;
+                        edges: Array<{ node: { name: string } }>;
+                    };
+                }>;
+            };
 
             expect(graphqlMovie).toBeDefined();
 
             expect(graphqlMovie.title).toBe(movie.title);
 
             expect(graphqlMovie.people).toHaveLength(3);
-            expect(graphqlMovie.people).toContainEqual({ name: actor1.name });
-            expect(graphqlMovie.people).toContainEqual({ name: actor2.name });
-            expect(graphqlMovie.people).toContainEqual({ name: director.name });
+            expect(graphqlMovie.people).toEqual(expect.arrayContaining([...actors, director]));
 
             expect(graphqlMovie.peopleConnection.totalCount).toBe(3);
             expect(graphqlMovie.peopleConnection.edges).toHaveLength(3);
-            expect(graphqlMovie.peopleConnection.edges).toContainEqual({ node: { name: actor1.name } });
-            expect(graphqlMovie.peopleConnection.edges).toContainEqual({ node: { name: actor2.name } });
-            expect(graphqlMovie.peopleConnection.edges).toContainEqual({ node: { name: director.name } });
+            expect(graphqlMovie.peopleConnection.edges).toEqual(
+                expect.arrayContaining([...actors, director].map((person) => ({ node: person })))
+            );
         });
 
         test("should filter a union relationship with multiple types", async () => {
             const query = gql`
-                query($movieId: ID!, $directorId: ID!) {
+                query ($movieId: ID!, $directorId: ID!) {
                     movies(where: { id: $movieId }) {
                         title
                         people {
                             ... on Director {
+                                id
                                 name
                             }
                             ... on Actor {
+                                id
                                 name
                             }
                         }
@@ -610,9 +672,11 @@ describe("Relationship - Multiple Types", () => {
                             edges {
                                 node {
                                     ... on Director {
+                                        id
                                         name
                                     }
                                     ... on Actor {
+                                        id
                                         name
                                     }
                                 }
@@ -620,6 +684,7 @@ describe("Relationship - Multiple Types", () => {
                         }
                         directorPeople: people(where: { Director: { id: $directorId } }) {
                             ... on Director {
+                                id
                                 name
                             }
                         }
@@ -628,6 +693,7 @@ describe("Relationship - Multiple Types", () => {
                             edges {
                                 node {
                                     ... on Director {
+                                        id
                                         name
                                     }
                                 }
@@ -635,6 +701,7 @@ describe("Relationship - Multiple Types", () => {
                         }
                         actorPeople: people(where: { Actor: { id_NOT: null } }) {
                             ... on Actor {
+                                id
                                 name
                             }
                         }
@@ -643,6 +710,7 @@ describe("Relationship - Multiple Types", () => {
                             edges {
                                 node {
                                     ... on Actor {
+                                        id
                                         name
                                     }
                                 }
@@ -656,28 +724,32 @@ describe("Relationship - Multiple Types", () => {
                 schema,
                 source: query.loc!.source,
                 contextValue: { driver },
-                variableValues: { movieId: movie.id, directorId: director.id, actor1Id: actor1.id },
+                variableValues: { movieId: movie.id, directorId: director.id },
             });
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlMovie: {
-                title: string;
-                people: Array<{ name: string }>;
-                directorPeople: Array<{ name: string }>;
-                actorPeople: Array<{ name: string }>;
-                peopleConnection: {
-                    totalCount: number;
-                    edges: Array<{ node: { name: string } }>;
-                };
-                directorPeopleConnection: {
-                    totalCount: number;
-                    edges: Array<{ node: { name: string } }>;
-                };
-                actorPeopleConnection: {
-                    totalCount: number;
-                    edges: Array<{ node: { name: string } }>;
-                };
-            } = graphqlResult.data?.movies[0];
+            const {
+                movies: [graphqlMovie],
+            } = graphqlResult.data as {
+                movies: Array<{
+                    title: string;
+                    people: Array<{ name: string }>;
+                    directorPeople: Array<{ name: string }>;
+                    actorPeople: Array<{ name: string }>;
+                    peopleConnection: {
+                        totalCount: number;
+                        edges: Array<{ node: { name: string } }>;
+                    };
+                    directorPeopleConnection: {
+                        totalCount: number;
+                        edges: Array<{ node: { name: string } }>;
+                    };
+                    actorPeopleConnection: {
+                        totalCount: number;
+                        edges: Array<{ node: { name: string } }>;
+                    };
+                }>;
+            };
 
             expect(graphqlMovie).toBeDefined();
             expect(graphqlMovie.title).toBe(movie.title);
@@ -685,38 +757,36 @@ describe("Relationship - Multiple Types", () => {
             // people
 
             expect(graphqlMovie.people).toHaveLength(3);
-            expect(graphqlMovie.people).toContainEqual({ name: director.name });
-            expect(graphqlMovie.people).toContainEqual({ name: actor1.name });
-            expect(graphqlMovie.people).toContainEqual({ name: actor2.name });
+            expect(graphqlMovie.people).toEqual(expect.arrayContaining([...actors, director]));
 
             expect(graphqlMovie.directorPeople).toHaveLength(1);
-            expect(graphqlMovie.directorPeople).toContainEqual({ name: director.name });
+            expect(graphqlMovie.directorPeople).toEqual([director]);
 
             expect(graphqlMovie.actorPeople).toHaveLength(2);
-            expect(graphqlMovie.actorPeople).toContainEqual({ name: actor1.name });
-            expect(graphqlMovie.actorPeople).toContainEqual({ name: actor2.name });
+            expect(graphqlMovie.actorPeople).toEqual(expect.arrayContaining(actors));
 
             // peopleConnection
 
             expect(graphqlMovie.peopleConnection.totalCount).toBe(3);
             expect(graphqlMovie.peopleConnection.edges).toHaveLength(3);
-            expect(graphqlMovie.peopleConnection.edges).toContainEqual({ node: { name: actor1.name } });
-            expect(graphqlMovie.peopleConnection.edges).toContainEqual({ node: { name: actor2.name } });
-            expect(graphqlMovie.peopleConnection.edges).toContainEqual({ node: { name: director.name } });
+            expect(graphqlMovie.peopleConnection.edges).toEqual(
+                expect.arrayContaining([...actors, director].map((person) => ({ node: person })))
+            );
 
             expect(graphqlMovie.directorPeopleConnection.totalCount).toBe(1);
             expect(graphqlMovie.directorPeopleConnection.edges).toHaveLength(1);
-            expect(graphqlMovie.directorPeopleConnection.edges).toContainEqual({ node: { name: director.name } });
+            expect(graphqlMovie.directorPeopleConnection.edges).toEqual([{ node: director }]);
 
             expect(graphqlMovie.actorPeopleConnection.totalCount).toBe(2);
             expect(graphqlMovie.actorPeopleConnection.edges).toHaveLength(2);
-            expect(graphqlMovie.actorPeopleConnection.edges).toContainEqual({ node: { name: actor1.name } });
-            expect(graphqlMovie.actorPeopleConnection.edges).toContainEqual({ node: { name: actor2.name } });
+            expect(graphqlMovie.actorPeopleConnection.edges).toEqual(
+                expect.arrayContaining(actors.map((actor) => ({ node: actor })))
+            );
         });
 
         test("should update a node through a union relationship with multiple types", async () => {
             const mutation = gql`
-                mutation($movieId: ID!, $directorId: ID!, $directorNameUpdate: String!) {
+                mutation ($movieId: ID!, $directorId: ID!, $directorNameUpdate: String!) {
                     updateMovies(
                         where: { id: $movieId }
                         update: {
@@ -751,15 +821,22 @@ describe("Relationship - Multiple Types", () => {
             });
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlMovie: {
-                title: string;
-                directors: { id: string; name: string }[];
-            } = graphqlResult.data?.updateMovies.movies[0];
+            const {
+                updateMovies: {
+                    movies: [graphqlMovie],
+                },
+            } = graphqlResult.data as {
+                updateMovies: {
+                    movies: Array<{
+                        title: string;
+                        directors: { id: string; name: string }[];
+                    }>;
+                };
+            };
 
             expect(graphqlMovie).toBeDefined();
             expect(graphqlMovie.title).toBe(movie.title);
-            expect(graphqlMovie.directors[0].id).toBe(director.id);
-            expect(graphqlMovie.directors[0].name).toBe(directorNameUpdate);
+            expect(graphqlMovie.directors).toEqual([{ id: director.id, name: directorNameUpdate }]);
 
             // Neo4j
 
@@ -785,10 +862,10 @@ describe("Relationship - Multiple Types", () => {
 
         test("should disconnect a node through a union relationship with multiple types", async () => {
             const mutation = gql`
-                mutation($movieId: ID!, $actor1Id: ID!) {
+                mutation ($movieId: ID!, $disconnectActorId: ID!) {
                     updateMovies(
                         where: { id: $movieId }
-                        disconnect: { people: { Actor: { where: { node: { id: $actor1Id } } } } }
+                        disconnect: { people: { Actor: { where: { node: { id: $disconnectActorId } } } } }
                     ) {
                         movies {
                             title
@@ -801,25 +878,35 @@ describe("Relationship - Multiple Types", () => {
                 }
             `;
 
+            const disconnectActor = actors[0];
+
             // GraphQL
 
             const graphqlResult = await graphql({
                 schema,
                 source: mutation.loc!.source,
                 contextValue: { driver },
-                variableValues: { movieId: movie.id, actor1Id: actor1.id },
+                variableValues: { movieId: movie.id, disconnectActorId: disconnectActor.id },
             });
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlMovie: {
-                title: string;
-                actors: Array<{ id: string; name: string }>;
-            } = graphqlResult.data?.updateMovies.movies[0];
+            const {
+                updateMovies: {
+                    movies: [graphqlMovie],
+                },
+            } = graphqlResult.data as {
+                updateMovies: {
+                    movies: Array<{
+                        title: string;
+                        actors: Array<{ id: string; name: string }>;
+                    }>;
+                };
+            };
 
             expect(graphqlMovie).toBeDefined();
             expect(graphqlMovie.title).toBe(movie.title);
             expect(graphqlMovie.actors).toHaveLength(1);
-            expect(graphqlMovie.actors).toContainEqual(actor2);
+            expect(graphqlMovie.actors).toContainEqual(actors[1]);
 
             // Neo4j
 
@@ -839,7 +926,7 @@ describe("Relationship - Multiple Types", () => {
 
             expect(neo4jActors).toBeDefined();
             expect(neo4jActors).toHaveLength(1);
-            expect(neo4jActors).toContainEqual(actor2);
+            expect(neo4jActors).toContainEqual(actors[1]);
 
             await session.close();
         });
@@ -849,10 +936,10 @@ describe("Relationship - Multiple Types", () => {
         test.skip("should delete a node through a union relationship with multiple types", async () => {
             const session = driver.session();
             const mutation = gql`
-                mutation($movieId: ID!, $actor1Id: ID!) {
+                mutation ($movieId: ID!, $deleteActorId: ID!) {
                     updateMovies(
                         where: { id: $movieId }
-                        delete: { people: { Actor: { where: { node: { id: $actor1Id } } } } }
+                        delete: { people: { Actor: { where: { node: { id: $deleteActorId } } } } }
                     ) {
                         movies {
                             title
@@ -865,25 +952,35 @@ describe("Relationship - Multiple Types", () => {
                 }
             `;
 
+            const deleteActor = actors[0];
+
             // GraphQL
 
             const graphqlResult = await graphql({
                 schema,
                 source: mutation.loc!.source,
                 contextValue: { driver },
-                variableValues: { movieId: movie.id, actor1Id: actor1.id },
+                variableValues: { movieId: movie.id, deleteActorId: deleteActor.id },
             });
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlMovie: {
-                title: string;
-                actors: Array<{ id: string; name: string }>;
-            } = graphqlResult.data?.updateMovies.movies[0];
+            const {
+                updateMovies: {
+                    movies: [graphqlMovie],
+                },
+            } = graphqlResult.data as {
+                updateMovies: {
+                    movies: Array<{
+                        title: string;
+                        actors: Array<{ id: string; name: string }>;
+                    }>;
+                };
+            };
 
             expect(graphqlMovie).toBeDefined();
             expect(graphqlMovie.title).toBe(movie.title);
             expect(graphqlMovie.actors).toHaveLength(1);
-            expect(graphqlMovie.actors).toContainEqual(actor2);
+            expect(graphqlMovie.actors).toContainEqual(actors[1]);
 
             // Neo4j
 
@@ -899,14 +996,14 @@ describe("Relationship - Multiple Types", () => {
 
             expect(neo4jActors).toBeDefined();
             expect(neo4jActors).toHaveLength(1);
-            expect(neo4jActors).toContainEqual(actor2);
+            expect(neo4jActors).toContainEqual(actors[1]);
 
             await session.close();
         });
 
         test("should create a movie and people through union field", async () => {
             const mutation = gql`
-                mutation(
+                mutation (
                     $movieId: ID!
                     $movieTitle: String!
                     $director1Id: ID!
@@ -1016,15 +1113,26 @@ describe("Relationship - Multiple Types", () => {
             });
             expect(graphqlResult.errors).toBeUndefined();
 
-            const graphqlMovie: {
-                title: string;
-                peopleConnection: {
-                    totalCount: number;
-                    edges: Array<{ _type: string; node: Array<{ __typename: string; id: string; name: string }> }>;
+            const {
+                createMovies: {
+                    movies: [graphqlMovie],
+                },
+            } = graphqlResult.data as {
+                createMovies: {
+                    movies: Array<{
+                        title: string;
+                        peopleConnection: {
+                            totalCount: number;
+                            edges: Array<{
+                                _type: string;
+                                node: Array<{ __typename: string; id: string; name: string }>;
+                            }>;
+                        };
+                        actors: { id: string; name: string }[];
+                        directors: { id: string; name: string }[];
+                    }>;
                 };
-                actors: { id: string; name: string }[];
-                directors: { id: string; name: string }[];
-            } = graphqlResult.data?.createMovies.movies[0];
+            };
 
             expect(graphqlMovie).toBeDefined();
 
