@@ -95,6 +95,13 @@ function getObjFieldMeta({
                 .find((i) => i.fields?.map((f) => f.name.value).includes(field.name.value))
                 ?.fields?.find((f) => f.name.value === field.name.value);
 
+            // Since the `@relationship` directive needn't be on the interface fields
+            // This find all fields in the underlying types to be passed into `getRelationshipMeta`
+            const implementedFields = objects
+                .filter((o) => (o.interfaces ?? []).some((oi) => oi.name.value === obj.name.value))
+                .map((o) => (o.fields ?? []).filter((f) => f.name.value === field.name.value))
+                .flat();
+
             // Create array of directives for this field. Field directives override interface field directives.
             const directives = [
                 ...(field?.directives || []),
@@ -109,7 +116,7 @@ function getObjFieldMeta({
                 return res;
             }
 
-            const relationshipMeta = getRelationshipMeta(field, interfaceField);
+            const relationshipMeta = getRelationshipMeta(field, interfaceField, implementedFields);
             const cypherMeta = getCypherMeta(field, interfaceField);
             const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");

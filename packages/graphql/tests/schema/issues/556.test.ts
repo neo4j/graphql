@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
             }
 
             interface Image {
-                featuredIn: [Article!]
+                featuredIn: [Article!]!
             }
 
             type PDFImage implements Image {

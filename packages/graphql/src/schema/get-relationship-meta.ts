@@ -22,11 +22,16 @@ import { RelationshipMeta } from "../types";
 
 function getRelationshipMeta(
     field: FieldDefinitionNode,
-    interfaceField?: FieldDefinitionNode
+    interfaceField?: FieldDefinitionNode,
+    implementedFields?: FieldDefinitionNode[]
 ): RelationshipMeta | undefined {
     const directive =
         field.directives?.find((x) => x.name.value === "relationship") ||
-        interfaceField?.directives?.find((x) => x.name.value === "relationship");
+        interfaceField?.directives?.find((x) => x.name.value === "relationship") ||
+        implementedFields
+            ?.map((f) => f.directives)
+            .flat()
+            .find((x) => x?.name.value === "relationship");
     if (!directive) {
         return undefined;
     }
