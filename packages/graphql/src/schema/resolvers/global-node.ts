@@ -18,6 +18,7 @@
  */
 
 import { GraphQLResolveInfo } from "graphql";
+import { FieldsByTypeName, parseResolveInfo } from "graphql-parse-resolve-info";
 import { execute } from "../../utils";
 import { translateRead } from "../../translate";
 import { Node } from "../../classes";
@@ -37,9 +38,28 @@ export default function globalNodeResolver({ nodes }: { nodes: Node[] }) {
         if (!node) return null;
 
         // modify the resolve tree and append the fragment selectionSet
+        const parseInfo = parseResolveInfo(info) ?? { fieldsByTypeName: [] };
+
+        const fieldsByTypeName = Object.entries(parseInfo.fieldsByTypeName).reduce((res, [key, value]) => {
+            if (key === "Node") return res;
+
+            if (key === label) {
+                const fields = { ...value, id: { name: "id", alias: "id", args: {}, fieldsByTypeName: {} } };
+                return { ...res, [key]: fields };
+            }
+
+            return { ...res, [key]: value };
+        }, {} as FieldsByTypeName);
+
+        const resolveTree = {
+            name: node.plural,
+            alias: "node",
+            args: { where: { [field]: id } },
+            fieldsByTypeName,
+        };
 
         const context = _context as Context;
-        context.resolveTree = getNeo4jResolveTree(info);
+        context.resolveTree = getNeo4jResolveTree(info, { resolveTree });
 
         const [cypher, params] = translateRead({ context, node });
         const executeResult = await execute({
@@ -49,6 +69,10 @@ export default function globalNodeResolver({ nodes }: { nodes: Node[] }) {
             context,
         });
 
+        // TODO: Determine workaround for TCK tests
+        // we should return null if no record is found, but if you
+        // return null here it throws off the tck tests. Same issue as in the
+        // root-connections PR
         let obj = { id: _args.id, __resolveType: node.name };
         if (executeResult.records.length && executeResult.records[0].this) {
             obj = { ...executeResult.records[0].this, ...obj };

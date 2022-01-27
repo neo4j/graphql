@@ -81,7 +81,7 @@ function getNeo4jArgumentValue({ argument, type }: { argument: unknown | unknown
 
 interface GetNeo4jResolveTreeOptions {
     resolveTree: ResolveTree;
-    field: GraphQLField<any, any>;
+    field?: GraphQLField<any, any>;
 }
 
 function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4jResolveTreeOptions) {

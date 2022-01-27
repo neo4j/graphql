@@ -63,8 +63,9 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-          "MATCH (this:\`Movie\`)
-          RETURN this { .title } as this"
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $this_title
+            RETURN this { .title } as this"
         `);
     });
 });
