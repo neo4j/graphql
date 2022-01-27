@@ -39,14 +39,14 @@ describe("Field Level Aggregations Graphql alias", () => {
         typeDefs = `
         type ${typeMovie.name} {
             title: String
-            ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
+            ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
         }
 
         type ${typeActor.name} {
             name: String
             age: Int
             born: DateTime
-            ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
+            ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
         }
 
         interface ActedIn {

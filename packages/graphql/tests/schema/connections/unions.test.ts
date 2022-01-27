@@ -29,7 +29,7 @@ describe("Unions", () => {
 
             type Author {
                 name: String!
-                publications: [Publication] @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
+                publications: [Publication!]! @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
             }
 
             type Book {
@@ -57,7 +57,7 @@ describe("Unions", () => {
 
             type Author {
               name: String!
-              publications(options: QueryOptions, where: PublicationWhere): [Publication]
+              publications(options: QueryOptions, where: PublicationWhere): [Publication!]!
               publicationsConnection(sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 

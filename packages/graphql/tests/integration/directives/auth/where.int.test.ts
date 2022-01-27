@@ -90,12 +90,12 @@ describe("auth/where", () => {
             const typeDefs = `
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 extend type Post @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
@@ -158,12 +158,12 @@ describe("auth/where", () => {
             const typeDefs = `
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 extend type Post @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
@@ -239,12 +239,12 @@ describe("auth/where", () => {
 
                     type User {
                         id: ID
-                        content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+                        content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
                     }
 
                     type Post {
                         id: ID
-                        creator: User @relationship(type: "HAS_CONTENT", direction: IN)
+                        creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                     }
 
                     extend type Post @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
@@ -313,12 +313,12 @@ describe("auth/where", () => {
 
                 type User {
                     id: ID
-                    content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+                    content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_CONTENT", direction: IN)
+                    creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 }
 
                 extend type Post @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
@@ -501,12 +501,12 @@ describe("auth/where", () => {
             const typeDefs = `
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User @auth(rules: [{ operations: [CONNECT], where: { id: "$jwt.sub" } }])
@@ -562,12 +562,12 @@ describe("auth/where", () => {
             const typeDefs = `
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User @auth(rules: [{ operations: [CONNECT], where: { id: "$jwt.sub" } }])
@@ -625,12 +625,12 @@ describe("auth/where", () => {
             const typeDefs = `
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User @auth(rules: [{ operations: [DISCONNECT], where: { id: "$jwt.sub" } }])
@@ -685,12 +685,12 @@ describe("auth/where", () => {
             const typeDefs = `
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User @auth(rules: [{ operations: [DISCONNECT], where: { id: "$jwt.sub" } }])

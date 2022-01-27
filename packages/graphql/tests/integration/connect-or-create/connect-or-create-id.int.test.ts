@@ -43,12 +43,12 @@ describe("connectorcreate with @id", () => {
         type ${typeMovie.name} {
             title: String! @unique
             id: ID! @id
-            actors: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN)
+            actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
         }
 
         type ${typeActor.name} {
             name: String
-            movies: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT)
+            movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
         }
         `;
 

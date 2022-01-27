@@ -28,7 +28,7 @@ describe("Alias", () => {
             type Actor {
                 name: String!
                 city: String @alias(property: "cityPropInDb")
-                actedIn: [Movie] @relationship(direction: OUT, type: "ACTED_IN", properties: "ActorActedInProps")
+                actedIn: [Movie!]! @relationship(direction: OUT, type: "ACTED_IN", properties: "ActorActedInProps")
             }
 
             type Movie {
@@ -51,7 +51,7 @@ describe("Alias", () => {
             }
 
             type Actor {
-              actedIn(options: MovieOptions, where: MovieWhere): [Movie]
+              actedIn(options: MovieOptions, where: MovieWhere): [Movie!]!
               actedInAggregate(where: MovieWhere): ActorMovieActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               city: String

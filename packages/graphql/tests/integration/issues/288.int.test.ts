@@ -30,11 +30,11 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
         type USER {
             USERID: String
             COMPANYID: String
-            COMPANY: [COMPANY] @relationship(type: "IS_PART_OF", direction: OUT)
+            COMPANY: [COMPANY!]! @relationship(type: "IS_PART_OF", direction: OUT)
         }
 
         type COMPANY {
-            USERS: [USER] @relationship(type: "IS_PART_OF", direction: IN)
+            USERS: [USER!]! @relationship(type: "IS_PART_OF", direction: IN)
         }
     `;
 
