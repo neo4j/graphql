@@ -82,21 +82,21 @@ async function createConstraints({ nodes, session }: { nodes: Node[]; session: S
                         label: node.getMainLabel(),
                         properties,
                     });
+                } else {
+                    index.fields.forEach((field) => {
+                        const stringField = node.primitiveFields.find((f) => f.fieldName === field);
+                        const fieldName = stringField?.dbPropertyName || field;
+
+                        const property = existingIndex.properties.find((p) => p === fieldName);
+                        if (!property) {
+                            const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
+
+                            indexErrors.push(
+                                `@fulltext index '${index.name}' on Node '${node.name}' already exists, but is missing field '${field}'${aliasError}`
+                            );
+                        }
+                    });
                 }
-
-                index.fields.forEach((field) => {
-                    const stringField = node.primitiveFields.find((f) => f.fieldName === field);
-                    const fieldName = stringField?.dbPropertyName || field;
-
-                    const property = existingIndex.properties.find((p) => p === fieldName);
-                    if (!property) {
-                        const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
-
-                        indexErrors.push(
-                            `@fulltext index '${index.name}' on Node '${node.name}' already exists, but is missing field '${field}'${aliasError}`
-                        );
-                    }
-                });
             });
         }
     });
