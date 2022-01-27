@@ -24,12 +24,30 @@ const schema = await neoSchema.getSchema();
 - Call makeAugmentedSchema
 - Store result of makeAugmentedSchema?
 - Return result of makeAugmentedSchema as a Promise<GraphQLSchema>
+    
+### OGM
+    
+The OGM will need refactoring to account for the new asynchronous `getSchema` method in `Neo4jGraphQL`.
+
+This will be worked around by introducing an asynchronous `init` method which will be called as follows:
+    
+```ts
+const typeDefs = `
+    type User {
+        name: String!
+    }
+`
+
+const ogm = new OGM({ typeDefs });
+const User = ogm.model("User");
+await ogm.init();
+const user = await User.find(...); // throws an error if init has not been called
+```
+    
+`init` returns a type `Promise<void>`.
 
 ### Usage Examples
 
 ## Risks
 
-**OGM** - we need to figure out how this will work with the new API!
-
 ## Out of Scope
-
