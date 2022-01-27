@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import gql from "graphql-tag";
 import { graphql } from "graphql";
 import { Driver } from "neo4j-driver";
@@ -99,7 +118,7 @@ describe("583", () => {
 
     test("should project all interfaces of node", async () => {
         const query = gql`
-            query($actorId: ID!) {
+            query ($actorId: ID!) {
                 actors(where: { id: $actorId }) {
                     id
                     name
@@ -121,8 +140,9 @@ describe("583", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        const gqlActors: Array<{ id: string; name: string; actedIn: { title: string; awardsGiven?: number } }> =
-            gqlResult?.data?.actors;
+        const gqlActors: Array<{ id: string; name: string; actedIn: { title: string; awardsGiven?: number } }> = (
+            gqlResult?.data as any
+        )?.actors;
         expect(gqlActors[0]).toBeDefined();
         expect(gqlActors[0].actedIn).toContainEqual(movie);
         expect(gqlActors[0].actedIn).toContainEqual(series);

@@ -89,8 +89,12 @@ describe("Connections Filtering", () => {
                 },
             });
             expect(result.errors).toBeFalsy();
-            expect(result?.data?.movies[0].actorsConnection.edges).toContainEqual({ node: { name: actorOneName } });
-            expect(result?.data?.movies[0].actorsConnection.edges).toContainEqual({ node: { name: actorTwoName } });
+            expect((result?.data as any)?.movies[0].actorsConnection.edges).toContainEqual({
+                node: { name: actorOneName },
+            });
+            expect((result?.data as any)?.movies[0].actorsConnection.edges).toContainEqual({
+                node: { name: actorTwoName },
+            });
         } finally {
             await session.close();
         }

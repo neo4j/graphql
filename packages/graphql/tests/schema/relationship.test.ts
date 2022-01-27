@@ -63,11 +63,15 @@ describe("Relationship", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [ActorSort]
             }
 
-            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -119,9 +123,9 @@ describe("Relationship", () => {
             }
 
             type Movie {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-              actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
             }
 
@@ -251,7 +255,9 @@ describe("Relationship", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
               sort: [MovieSort]
             }
 
@@ -259,7 +265,9 @@ describe("Relationship", () => {
               actors: [MovieActorsCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               id: SortDirection
             }
@@ -341,8 +349,7 @@ describe("Relationship", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
@@ -393,11 +400,15 @@ describe("Relationship", () => {
           input ActorOptions {
             limit: Int
             offset: Int
-            \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+            \\"\\"\\"
+            Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+            \\"\\"\\"
             sort: [ActorSort]
           }
 
-          \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+          \\"\\"\\"
+          Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+          \\"\\"\\"
           input ActorSort {
             id: SortDirection
             name: SortDirection
@@ -469,9 +480,9 @@ describe("Relationship", () => {
           }
 
           type Movie {
-            actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-            actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-            actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+            actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+            actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+            actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
             id: ID
           }
 
@@ -637,7 +648,9 @@ describe("Relationship", () => {
           input MovieOptions {
             limit: Int
             offset: Int
-            \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+            \\"\\"\\"
+            Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+            \\"\\"\\"
             sort: [MovieSort]
           }
 
@@ -645,7 +658,9 @@ describe("Relationship", () => {
             actors: [MovieActorsCreateFieldInput!]
           }
 
-          \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+          \\"\\"\\"
+          Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+          \\"\\"\\"
           input MovieSort {
             id: SortDirection
           }
@@ -727,8 +742,7 @@ describe("Relationship", () => {
           type UpdateMoviesMutationResponse {
             info: UpdateInfo!
             movies: [Movie!]!
-          }
-          "
+          }"
       `);
     });
 
@@ -754,9 +768,9 @@ describe("Relationship", () => {
           }
 
           type Actor {
-            movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-            moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
-            moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+            movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+            moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
+            moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
             name: String
           }
 
@@ -874,7 +888,9 @@ describe("Relationship", () => {
           input ActorOptions {
             limit: Int
             offset: Int
-            \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+            \\"\\"\\"
+            Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+            \\"\\"\\"
             sort: [ActorSort]
           }
 
@@ -882,7 +898,9 @@ describe("Relationship", () => {
             movies: [ActorMoviesCreateFieldInput!]
           }
 
-          \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+          \\"\\"\\"
+          Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+          \\"\\"\\"
           input ActorSort {
             name: SortDirection
           }
@@ -940,9 +958,9 @@ describe("Relationship", () => {
           }
 
           type Movie {
-            actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-            actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-            actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+            actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+            actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+            actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
             id: ID
           }
 
@@ -1079,7 +1097,9 @@ describe("Relationship", () => {
           input MovieOptions {
             limit: Int
             offset: Int
-            \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+            \\"\\"\\"
+            Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+            \\"\\"\\"
             sort: [MovieSort]
           }
 
@@ -1087,7 +1107,9 @@ describe("Relationship", () => {
             actors: [MovieActorsCreateFieldInput!]
           }
 
-          \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+          \\"\\"\\"
+          Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+          \\"\\"\\"
           input MovieSort {
             id: SortDirection
           }
@@ -1169,8 +1191,7 @@ describe("Relationship", () => {
           type UpdateMoviesMutationResponse {
             info: UpdateInfo!
             movies: [Movie!]!
-          }
-          "
+          }"
       `);
     });
 
@@ -1196,9 +1217,9 @@ describe("Relationship", () => {
           }
 
           type Actor {
-            movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-            moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
-            moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+            movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+            moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
+            moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
             name: String
           }
 
@@ -1334,7 +1355,9 @@ describe("Relationship", () => {
           input ActorOptions {
             limit: Int
             offset: Int
-            \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+            \\"\\"\\"
+            Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+            \\"\\"\\"
             sort: [ActorSort]
           }
 
@@ -1342,7 +1365,9 @@ describe("Relationship", () => {
             movies: [ActorMoviesCreateFieldInput!]
           }
 
-          \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+          \\"\\"\\"
+          Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+          \\"\\"\\"
           input ActorSort {
             name: SortDirection
           }
@@ -1400,9 +1425,9 @@ describe("Relationship", () => {
           }
 
           type Movie {
-            currentActors(options: ActorOptions, where: ActorWhere): [Actor!]!
-            currentActorsAggregate(where: ActorWhere): MovieActorCurrentActorsAggregationSelection
-            currentActorsConnection(after: String, first: Int, sort: [MovieCurrentActorsConnectionSort!], where: MovieCurrentActorsConnectionWhere): MovieCurrentActorsConnection!
+            currentActors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+            currentActorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorCurrentActorsAggregationSelection
+            currentActorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieCurrentActorsConnectionSort!], where: MovieCurrentActorsConnectionWhere): MovieCurrentActorsConnection!
             id: ID
           }
 
@@ -1539,7 +1564,9 @@ describe("Relationship", () => {
           input MovieOptions {
             limit: Int
             offset: Int
-            \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+            \\"\\"\\"
+            Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+            \\"\\"\\"
             sort: [MovieSort]
           }
 
@@ -1547,7 +1574,9 @@ describe("Relationship", () => {
             currentActors: [MovieCurrentActorsCreateFieldInput!]
           }
 
-          \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+          \\"\\"\\"
+          Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+          \\"\\"\\"
           input MovieSort {
             id: SortDirection
           }
@@ -1629,8 +1658,7 @@ describe("Relationship", () => {
           type UpdateMoviesMutationResponse {
             info: UpdateInfo!
             movies: [Movie!]!
-          }
-          "
+          }"
     `);
     });
 
@@ -1665,9 +1693,9 @@ describe("Relationship", () => {
           }
 
           type Actor {
-            movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-            moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
-            moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+            movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+            moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
+            moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
             name: String
           }
 
@@ -1785,7 +1813,9 @@ describe("Relationship", () => {
           input ActorOptions {
             limit: Int
             offset: Int
-            \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+            \\"\\"\\"
+            Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+            \\"\\"\\"
             sort: [ActorSort]
           }
 
@@ -1793,7 +1823,9 @@ describe("Relationship", () => {
             movies: [ActorMoviesCreateFieldInput!]
           }
 
-          \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+          \\"\\"\\"
+          Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+          \\"\\"\\"
           input ActorSort {
             name: SortDirection
           }
@@ -1851,9 +1883,9 @@ describe("Relationship", () => {
           }
 
           type Director {
-            directed(options: MovieOptions, where: MovieWhere): [Movie!]!
-            directedAggregate(where: MovieWhere): DirectorMovieDirectedAggregationSelection
-            directedConnection(after: String, first: Int, sort: [DirectorDirectedConnectionSort!], where: DirectorDirectedConnectionWhere): DirectorDirectedConnection!
+            directed(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+            directedAggregate(directed: Boolean = true, where: MovieWhere): DirectorMovieDirectedAggregationSelection
+            directedConnection(after: String, directed: Boolean = true, first: Int, sort: [DirectorDirectedConnectionSort!], where: DirectorDirectedConnectionWhere): DirectorDirectedConnection!
             name: String
           }
 
@@ -1971,7 +2003,9 @@ describe("Relationship", () => {
           input DirectorOptions {
             limit: Int
             offset: Int
-            \\"\\"\\"Specify one or more DirectorSort objects to sort Directors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+            \\"\\"\\"
+            Specify one or more DirectorSort objects to sort Directors by. The sorts will be applied in the order in which they are arranged in the array.
+            \\"\\"\\"
             sort: [DirectorSort]
           }
 
@@ -1979,7 +2013,9 @@ describe("Relationship", () => {
             directed: [DirectorDirectedCreateFieldInput!]
           }
 
-          \\"\\"\\"Fields to sort Directors by. The order in which sorts are applied is not guaranteed when specifying many fields in one DirectorSort object.\\"\\"\\"
+          \\"\\"\\"
+          Fields to sort Directors by. The order in which sorts are applied is not guaranteed when specifying many fields in one DirectorSort object.
+          \\"\\"\\"
           input DirectorSort {
             name: SortDirection
           }
@@ -2015,15 +2051,15 @@ describe("Relationship", () => {
           }
 
           type Movie {
-            actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-            actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-            actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
-            director(options: DirectorOptions, where: DirectorWhere): Director!
-            directorAggregate(where: DirectorWhere): MovieDirectorDirectorAggregationSelection
-            directorConnection(after: String, first: Int, sort: [MovieDirectorConnectionSort!], where: MovieDirectorConnectionWhere): MovieDirectorConnection!
+            actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+            actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+            actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+            director(directed: Boolean = true, options: DirectorOptions, where: DirectorWhere): Director!
+            directorAggregate(directed: Boolean = true, where: DirectorWhere): MovieDirectorDirectorAggregationSelection
+            directorConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieDirectorConnectionSort!], where: MovieDirectorConnectionWhere): MovieDirectorConnection!
             id: ID
-            people(options: QueryOptions, where: PersonWhere): [Person!]!
-            peopleConnection(where: MoviePeopleConnectionWhere): MoviePeopleConnection!
+            people(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+            peopleConnection(directed: Boolean = true, where: MoviePeopleConnectionWhere): MoviePeopleConnection!
           }
 
           type MovieActorActorsAggregationSelection {
@@ -2271,7 +2307,9 @@ describe("Relationship", () => {
           input MovieOptions {
             limit: Int
             offset: Int
-            \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+            \\"\\"\\"
+            Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+            \\"\\"\\"
             sort: [MovieSort]
           }
 
@@ -2455,7 +2493,9 @@ describe("Relationship", () => {
             people: MoviePeopleCreateFieldInput
           }
 
-          \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+          \\"\\"\\"
+          Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+          \\"\\"\\"
           input MovieSort {
             id: SortDirection
           }
@@ -2568,8 +2608,7 @@ describe("Relationship", () => {
           type UpdateMoviesMutationResponse {
             info: UpdateInfo!
             movies: [Movie!]!
-          }
-          "
+          }"
     `);
     });
 });

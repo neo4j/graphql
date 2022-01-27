@@ -70,7 +70,7 @@ describe("fragments", () => {
 
     test("should be able project fragment on type", async () => {
         const query = gql`
-            query($id: ID!) {
+            query ($id: ID!) {
                 users(where: { id: $id }) {
                     email
                     ...FragmentOnType
@@ -90,7 +90,7 @@ describe("fragments", () => {
 
         expect(graphqlResult.errors).toBeFalsy();
 
-        const graphqlUsers: Array<{ email: string; username: string }> = graphqlResult.data?.users;
+        const graphqlUsers: Array<{ email: string; username: string }> = (graphqlResult.data as any)?.users;
 
         expect(graphqlUsers).toHaveLength(1);
         expect(graphqlUsers[0].email).toBe(email);
@@ -100,7 +100,7 @@ describe("fragments", () => {
 
     test("should be able project fragment on interface", async () => {
         const query = gql`
-            query($id: ID!) {
+            query ($id: ID!) {
                 users(where: { id: $id }) {
                     email
                     ...FragmentOnInterface
@@ -120,7 +120,7 @@ describe("fragments", () => {
 
         expect(graphqlResult.errors).toBeFalsy();
 
-        const graphqlUsers: Array<{ email: string; username: string }> = graphqlResult.data?.users;
+        const graphqlUsers: Array<{ email: string; username: string }> = (graphqlResult.data as any)?.users;
 
         expect(graphqlUsers).toHaveLength(1);
         expect(graphqlUsers[0].email).toBe(email);

@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "setup": "npm run setup:commonjs && npm run setup:babel && npm run setup:typescript && npm run setup:apollo",
+        "setup": "npm run setup:commonjs && npm run setup:babel && npm run setup:typescript && npm run setup:apollo && npm run setup:graphql-15",
         "test:commonjs": "cd commonjs && npm run test",
         "setup:commonjs": "cp -R ./package ./commonjs/ && cd commonjs && npm install",
         "cleanup:commonjs": "rimraf ./commonjs/package/ && rimraf ./commonjs/node_modules/",
@@ -17,8 +17,11 @@
         "test:typescript": "cd typescript && npm run test",
         "setup:typescript": "cp -R ./package ./typescript/ && cd typescript && npm install",
         "cleanup:typescript": "rimraf ./typescript/package/ && rimraf ./typescript/node_modules/",
-        "test:all": "npm run test:commonjs && npm run test:typescript && npm run test:babel && npm run test:apollo",
-        "cleanup": "rimraf ./**/package {apollo,babel,commonjs,typescript}/node_modules/ ./typescript/dist"
+        "test:graphql-15": "cd graphql-15 && npm run test",
+        "setup:graphql-15": "cp -R ./package ./graphql-15/ && cd graphql-15 && npm install",
+        "cleanup:graphql-15": "rimraf ./graphql-15/package/ && rimraf ./graphql-15/node_modules/",
+        "test:all": "npm run test:commonjs && npm run test:typescript && npm run test:babel && npm run test:apollo && npm run test:graphql-15",
+        "cleanup": "rimraf ./**/package {apollo,babel,commonjs,typescript,graphql-15}/node_modules/ ./typescript/dist"
     },
     "author": "Neo4j Inc.",
     "devDependencies": {

@@ -202,6 +202,7 @@ function createProjectionAndParams({
                     context,
                     varName: `${varName}_${key}`,
                     chainStr: param,
+                    inRelationshipProjection: true,
                 });
                 const [str, p, meta] = recurse;
                 projectionStr = str;
@@ -331,12 +332,17 @@ function createProjectionAndParams({
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
             const nodeMatchStr = `(${chainStr || varName})`;
-            const inStr = relationField.direction === "IN" ? "<-" : "-";
+            let inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
-            const outStr = relationField.direction === "OUT" ? "->" : "-";
+            let outStr = relationField.direction === "OUT" ? "->" : "-";
             const labels = referenceNode?.getLabelString(context);
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
+
+            if (field.args.directed === false) {
+                inStr = "-";
+                outStr = "-";
+            }
 
             if (relationField.interface) {
                 if (!res.meta.interfaceFields) {
