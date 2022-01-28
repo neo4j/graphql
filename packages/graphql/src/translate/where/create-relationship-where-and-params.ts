@@ -50,13 +50,17 @@ function createRelationshipWhereAndParams({
         // Relationship Type
 
         if (key === RELATIONSHIP_TYPE_FIELD) {
-            res.clauses.push(`type(${relationshipVariable}) = $${param}`);
+            const typeRelationshipVariable = (value as any as string).includes("`")
+                ? `'\`'+ type(${relationshipVariable}) +'\`'`
+                : `type(${relationshipVariable})`;
+            res.clauses.push(`${typeRelationshipVariable} = $${param}`);
             return res;
         }
 
         // Relationship Properties
 
-        const re = /(?<field>[_A-Za-z][_0-9A-Za-z]*?)(?:_(?<not>NOT))?(?:_(?<operator>INCLUDES|IN|MATCHES|CONTAINS|STARTS_WITH|ENDS_WITH|LT|GT|GTE|LTE|DISTANCE))?$/gm;
+        const re =
+            /(?<field>[_A-Za-z][_0-9A-Za-z]*?)(?:_(?<not>NOT))?(?:_(?<operator>INCLUDES|IN|MATCHES|CONTAINS|STARTS_WITH|ENDS_WITH|LT|GT|GTE|LTE|DISTANCE))?$/gm;
 
         const match = re.exec(key);
 
@@ -71,12 +75,14 @@ function createRelationshipWhereAndParams({
             (f) => f.fieldName === fieldName && f.typeMeta.name === "Duration"
         );
 
-        const coalesceValue = ([
-            ...relationship.temporalFields,
-            ...relationship.enumFields,
-            ...relationship.scalarFields,
-            ...relationship.primitiveFields,
-        ].find((f) => f.fieldName === fieldName && "coalesce" in f) as PrimitiveField)?.coalesceValue;
+        const coalesceValue = (
+            [
+                ...relationship.temporalFields,
+                ...relationship.enumFields,
+                ...relationship.scalarFields,
+                ...relationship.primitiveFields,
+            ].find((f) => f.fieldName === fieldName && "coalesce" in f) as PrimitiveField
+        )?.coalesceValue;
 
         const property =
             coalesceValue !== undefined

@@ -64,7 +64,8 @@ function getRelationshipMeta(
     const properties = (propertiesArg?.value as StringValueNode)?.value;
     const type = typeArg.value.value;
 
-    const paramName = type.replace("|", "_").toLowerCase();
+    // to account for special characters remove backticks and replace each non word character with an underscore
+    const paramName = type.replace(/`/g, "").replace(/\W/g, "_").toLowerCase();
     const types = Array.from(new Set(type.split("|")));
     const multiple = types.length > 1;
 

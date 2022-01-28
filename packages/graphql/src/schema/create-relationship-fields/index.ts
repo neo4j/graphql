@@ -78,7 +78,9 @@ function createRelationshipFields({
             values: rel.types.reduce(
                 (res, type) => ({
                     ...res,
-                    [type]: {
+                    // To account for special characters in relationship types '-,&,...' replace those with '_'
+                    // e.g. `ACTED-IN` -> ACTED_IN
+                    [type.replace(/`/g, "").replace(/\W/g, "_")]: {
                         value: type,
                     },
                 }),
