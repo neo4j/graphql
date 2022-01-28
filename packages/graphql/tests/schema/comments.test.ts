@@ -1203,23 +1203,9 @@ describe("Comments", () => {
                   totalCount: Int!
                 }
 
-                input MovieSearchConnectionGenreWhere {
-                  AND: [MovieSearchConnectionGenreWhere]
-                  OR: [MovieSearchConnectionGenreWhere]
-                  node: GenreWhere
-                  node_NOT: GenreWhere
-                }
-
-                input MovieSearchConnectionMovieWhere {
-                  AND: [MovieSearchConnectionMovieWhere]
-                  OR: [MovieSearchConnectionMovieWhere]
-                  node: MovieWhere
-                  node_NOT: MovieWhere
-                }
-
                 input MovieSearchConnectionWhere {
-                  Genre: MovieSearchConnectionGenreWhere
-                  Movie: MovieSearchConnectionMovieWhere
+                  Genre: MovieSearchGenreConnectionWhere
+                  Movie: MovieSearchMovieConnectionWhere
                 }
 
                 input MovieSearchCreateFieldInput {

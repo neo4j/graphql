@@ -106,31 +106,13 @@ describe("Connect Or Create", () => {
               totalCount: Int!
             }
 
-            input ActorActedInConnectionMovieWhere {
-              AND: [ActorActedInConnectionMovieWhere]
-              OR: [ActorActedInConnectionMovieWhere]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
-              node: MovieWhere
-              node_NOT: MovieWhere
-            }
-
-            input ActorActedInConnectionSeriesWhere {
-              AND: [ActorActedInConnectionSeriesWhere]
-              OR: [ActorActedInConnectionSeriesWhere]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
-              node: SeriesWhere
-              node_NOT: SeriesWhere
-            }
-
             input ActorActedInConnectionSort {
               edge: ActedInSort
             }
 
             input ActorActedInConnectionWhere {
-              Movie: ActorActedInConnectionMovieWhere
-              Series: ActorActedInConnectionSeriesWhere
+              Movie: ActorActedInMovieConnectionWhere
+              Series: ActorActedInSeriesConnectionWhere
             }
 
             input ActorActedInCreateFieldInput {

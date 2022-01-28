@@ -156,31 +156,13 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
-            input AuthorPublicationsConnectionBookWhere {
-              AND: [AuthorPublicationsConnectionBookWhere]
-              OR: [AuthorPublicationsConnectionBookWhere]
-              edge: WroteWhere
-              edge_NOT: WroteWhere
-              node: BookWhere
-              node_NOT: BookWhere
-            }
-
-            input AuthorPublicationsConnectionJournalWhere {
-              AND: [AuthorPublicationsConnectionJournalWhere]
-              OR: [AuthorPublicationsConnectionJournalWhere]
-              edge: WroteWhere
-              edge_NOT: WroteWhere
-              node: JournalWhere
-              node_NOT: JournalWhere
-            }
-
             input AuthorPublicationsConnectionSort {
               edge: WroteSort
             }
 
             input AuthorPublicationsConnectionWhere {
-              Book: AuthorPublicationsConnectionBookWhere
-              Journal: AuthorPublicationsConnectionJournalWhere
+              Book: AuthorPublicationsBookConnectionWhere
+              Journal: AuthorPublicationsJournalConnectionWhere
             }
 
             input AuthorPublicationsCreateFieldInput {
