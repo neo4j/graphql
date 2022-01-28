@@ -90,7 +90,7 @@ describe("Bigint", () => {
               \\"\\"\\"
               Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [FileSort]
+              sort: [FileSort!]
             }
 
             \\"\\"\\"
@@ -112,21 +112,21 @@ describe("Bigint", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
               size: BigInt
               size_GT: BigInt
               size_GTE: BigInt
-              size_IN: [BigInt]
+              size_IN: [BigInt!]
               size_LT: BigInt
               size_LTE: BigInt
               size_NOT: BigInt
-              size_NOT_IN: [BigInt]
+              size_NOT_IN: [BigInt!]
             }
 
             type Mutation {

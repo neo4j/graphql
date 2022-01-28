@@ -93,7 +93,7 @@ describe("Timestamps", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -115,11 +115,11 @@ describe("Timestamps", () => {
               createdAt: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
-              createdAt_IN: [DateTime]
+              createdAt_IN: [DateTime!]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
               createdAt_NOT: DateTime
-              createdAt_NOT_IN: [DateTime]
+              createdAt_NOT_IN: [DateTime!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -133,11 +133,11 @@ describe("Timestamps", () => {
               updatedAt: DateTime
               updatedAt_GT: DateTime
               updatedAt_GTE: DateTime
-              updatedAt_IN: [DateTime]
+              updatedAt_IN: [DateTime!]
               updatedAt_LT: DateTime
               updatedAt_LTE: DateTime
               updatedAt_NOT: DateTime
-              updatedAt_NOT_IN: [DateTime]
+              updatedAt_NOT_IN: [DateTime!]
             }
 
             type Mutation {

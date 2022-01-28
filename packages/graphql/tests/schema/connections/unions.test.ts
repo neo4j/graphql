@@ -93,7 +93,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [AuthorSort]
+              sort: [AuthorSort!]
             }
 
             input AuthorPublicationsBookConnectFieldInput {
@@ -157,8 +157,8 @@ describe("Unions", () => {
             }
 
             input AuthorPublicationsConnectionBookWhere {
-              AND: [AuthorPublicationsConnectionBookWhere]
-              OR: [AuthorPublicationsConnectionBookWhere]
+              AND: [AuthorPublicationsConnectionBookWhere!]
+              OR: [AuthorPublicationsConnectionBookWhere!]
               edge: WroteWhere
               edge_NOT: WroteWhere
               node: BookWhere
@@ -166,8 +166,8 @@ describe("Unions", () => {
             }
 
             input AuthorPublicationsConnectionJournalWhere {
-              AND: [AuthorPublicationsConnectionJournalWhere]
-              OR: [AuthorPublicationsConnectionJournalWhere]
+              AND: [AuthorPublicationsConnectionJournalWhere!]
+              OR: [AuthorPublicationsConnectionJournalWhere!]
               edge: WroteWhere
               edge_NOT: WroteWhere
               node: JournalWhere
@@ -285,11 +285,11 @@ describe("Unions", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
               publicationsConnection: AuthorPublicationsConnectionWhere
@@ -482,7 +482,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [BookSort]
+              sort: [BookSort!]
             }
 
             input BookRelationInput {
@@ -512,11 +512,11 @@ describe("Unions", () => {
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -741,7 +741,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [JournalSort]
+              sort: [JournalSort!]
             }
 
             input JournalRelationInput {
@@ -771,11 +771,11 @@ describe("Unions", () => {
               subject: String
               subject_CONTAINS: String
               subject_ENDS_WITH: String
-              subject_IN: [String]
+              subject_IN: [String!]
               subject_NOT: String
               subject_NOT_CONTAINS: String
               subject_NOT_ENDS_WITH: String
-              subject_NOT_IN: [String]
+              subject_NOT_IN: [String!]
               subject_NOT_STARTS_WITH: String
               subject_STARTS_WITH: String
             }
@@ -878,11 +878,11 @@ describe("Unions", () => {
               words: Int
               words_GT: Int
               words_GTE: Int
-              words_IN: [Int]
+              words_IN: [Int!]
               words_LT: Int
               words_LTE: Int
               words_NOT: Int
-              words_NOT_IN: [Int]
+              words_NOT_IN: [Int!]
             }"
         `);
     });

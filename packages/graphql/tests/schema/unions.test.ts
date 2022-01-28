@@ -91,7 +91,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [GenreSort]
+              sort: [GenreSort!]
             }
 
             \\"\\"\\"
@@ -164,7 +164,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
@@ -183,15 +183,15 @@ describe("Unions", () => {
             }
 
             input MovieSearchConnectionGenreWhere {
-              AND: [MovieSearchConnectionGenreWhere]
-              OR: [MovieSearchConnectionGenreWhere]
+              AND: [MovieSearchConnectionGenreWhere!]
+              OR: [MovieSearchConnectionGenreWhere!]
               node: GenreWhere
               node_NOT: GenreWhere
             }
 
             input MovieSearchConnectionMovieWhere {
-              AND: [MovieSearchConnectionMovieWhere]
-              OR: [MovieSearchConnectionMovieWhere]
+              AND: [MovieSearchConnectionMovieWhere!]
+              OR: [MovieSearchConnectionMovieWhere!]
               node: MovieWhere
               node_NOT: MovieWhere
             }

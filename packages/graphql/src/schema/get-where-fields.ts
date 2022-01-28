@@ -60,8 +60,8 @@ function getWhereFields({
                     return res;
                 }
 
-                res[`${f.fieldName}_IN`] = `[${f.typeMeta.input.where.pretty}]`;
-                res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}]`;
+                res[`${f.fieldName}_IN`] = `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`;
+                res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`;
 
                 if (
                     [
