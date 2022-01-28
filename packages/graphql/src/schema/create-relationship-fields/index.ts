@@ -25,7 +25,7 @@ import { ObjectFields } from "../get-obj-field-meta";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
-import { getDirectedArgument } from "../get-directed-argument";
+import { addDirectedArgument } from "../directed-argument";
 
 function createRelationshipFields({
     relationshipFields,
@@ -93,25 +93,16 @@ function createRelationshipFields({
         if (rel.interface) {
             const refNodes = nodes.filter((x) => rel.interface?.implementations?.includes(x.name));
             if (!rel.writeonly) {
-                const nodeFieldsArgs: {
-                    where: string;
-                    options: string;
-                    directed?: {
-                        type: "Boolean";
-                        defaultValue: boolean;
-                    };
-                } = {
+                const baseNodeFieldArgs = {
                     options: "QueryOptions",
                     where: `${rel.typeMeta.name}Where`,
                 };
-
-                const directedArg = getDirectedArgument(rel);
-                if (directedArg) nodeFieldsArgs.directed = directedArg;
+                const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
 
                 composeNode.addFields({
                     [rel.fieldName]: {
                         type: rel.typeMeta.pretty,
-                        args: nodeFieldsArgs,
+                        args: nodeFieldArgs,
                         description: rel.description,
                     },
                 });
@@ -259,25 +250,16 @@ function createRelationshipFields({
             const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
             if (!rel.writeonly) {
-                const nodeFieldsArgs: {
-                    where: string;
-                    options: string;
-                    directed?: {
-                        type: "Boolean";
-                        defaultValue: boolean;
-                    };
-                } = {
+                const baseNodeFieldArgs = {
                     options: "QueryOptions",
                     where: `${rel.typeMeta.name}Where`,
                 };
-
-                const directedArg = getDirectedArgument(rel);
-                if (directedArg) nodeFieldsArgs.directed = directedArg;
+                const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
 
                 composeNode.addFields({
                     [rel.fieldName]: {
                         type: rel.typeMeta.pretty,
-                        args: nodeFieldsArgs,
+                        args: nodeFieldArgs,
                         description: rel.description,
                     },
                 });
@@ -716,20 +698,12 @@ function createRelationshipFields({
         });
 
         if (!rel.writeonly) {
-            const nodeFieldsArgs: {
-                where: string;
-                options: string;
-                directed?: {
-                    type: "Boolean";
-                    defaultValue: boolean;
-                };
-            } = {
+            const nodeFieldsBaseArgs = {
                 where: `${rel.typeMeta.name}Where`,
                 options: `${rel.typeMeta.name}Options`,
             };
 
-            const directedArg = getDirectedArgument(rel);
-            if (directedArg) nodeFieldsArgs.directed = directedArg;
+            const nodeFieldsArgs = addDirectedArgument(nodeFieldsBaseArgs, rel);
 
             composeNode.addFields({
                 [rel.fieldName]: {
@@ -749,18 +723,11 @@ function createRelationshipFields({
                     relFields
                 );
 
-                const aggregationFieldsArgs: {
-                    where: string;
-                    directed?: {
-                        type: "Boolean";
-                        defaultValue: boolean;
-                    };
-                } = {
+                const aggregationFieldsBaseArgs = {
                     where: `${rel.typeMeta.name}Where`,
                 };
 
-                const aggregationDirectedArg = getDirectedArgument(rel);
-                if (aggregationDirectedArg) aggregationFieldsArgs.directed = aggregationDirectedArg;
+                const aggregationFieldsArgs = addDirectedArgument(aggregationFieldsBaseArgs, rel);
 
                 composeNode.addFields({
                     [`${rel.fieldName}Aggregate`]: {

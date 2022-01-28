@@ -22,7 +22,7 @@ import { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graph
 import { Node, Relationship } from "../classes";
 import { ConnectionField, ConnectionQueryArgs } from "../types";
 import { ObjectFields } from "./get-obj-field-meta";
-import { getDirectedArgument } from "./get-directed-argument";
+import { addDirectedArgument } from "./directed-argument";
 import { connectionFieldResolver } from "./pagination";
 
 function createConnectionFields({
@@ -85,18 +85,16 @@ function createConnectionFields({
             [`${connectionField.fieldName}_NOT`]: connectionWhere,
         });
 
-        let composeNodeArgs: {
+        const composeNodeBaseArgs: {
             where: any;
             sort?: any;
             first?: any;
             after?: any;
-            directed?: { type: "Boolean"; defaultValue: boolean };
         } = {
             where: connectionWhere,
         };
 
-        const directedArg = getDirectedArgument(connectionField.relationship);
-        if (directedArg) composeNodeArgs.directed = directedArg;
+        let composeNodeArgs = addDirectedArgument(composeNodeBaseArgs, connectionField.relationship);
 
         if (connectionField.relationship.properties) {
             const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);

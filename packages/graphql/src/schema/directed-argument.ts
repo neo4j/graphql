@@ -45,3 +45,12 @@ export function getDirectedArgument(relationField: RelationField): DirectedArgum
         defaultValue,
     };
 }
+
+export function addDirectedArgument<T extends Record<string, any>>(
+    args: T,
+    relationField: RelationField
+): T & { directed?: DirectedArgument } {
+    const directedArg = getDirectedArgument(relationField);
+    if (directedArg) return { ...args, directed: directedArg };
+    return { ...args };
+}
