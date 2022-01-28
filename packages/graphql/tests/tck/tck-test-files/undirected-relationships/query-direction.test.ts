@@ -67,4 +67,114 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | t
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
+
+    test("query with directed and undirected relationships with a DEFAULT_DIRECTED", async () => {
+        typeDefs = gql`
+            type User {
+                name: String!
+                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DEFAULT_DIRECTED)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: { jwt: { secret } },
+        });
+        const query = gql`
+            query {
+                users {
+                    name
+                    friends: friends {
+                        name
+                    }
+                    undirectedFriends: friends(directed: false) {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+"MATCH (this:User)
+RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | this_friends { .name } ], undirectedFriends: [ (this)-[:FRIENDS_WITH]-(this_undirectedFriends:User)   | this_undirectedFriends { .name } ] } as this"
+`);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("query with a DIRECTED_ONLY relationship", async () => {
+        typeDefs = gql`
+            type User {
+                name: String!
+                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DIRECTED_ONLY)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: { jwt: { secret } },
+        });
+        const query = gql`
+            query {
+                users {
+                    name
+                    friends: friends {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+"MATCH (this:User)
+RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | this_friends { .name } ] } as this"
+`);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+    test("query with a UNDIRECTED_ONLY relationship", async () => {
+        typeDefs = gql`
+            type User {
+                name: String!
+                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: UNDIRECTED_ONLY)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: { jwt: { secret } },
+        });
+        const query = gql`
+            query {
+                users {
+                    name
+                    friends: friends {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+"MATCH (this:User)
+RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | this_friends { .name } ] } as this"
+`);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
 });
