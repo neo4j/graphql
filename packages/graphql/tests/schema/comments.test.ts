@@ -122,7 +122,7 @@ describe("Comments", () => {
               id: ID
               \\"\\"\\"
               Is the movie active?
-              
+
               This is measured based on annual profit.
               \\"\\"\\"
               isActive: Boolean
@@ -150,7 +150,7 @@ describe("Comments", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -290,7 +290,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [ActorSort]
+                  sort: [ActorSort!]
                 }
 
                 \\"\\"\\"
@@ -483,7 +483,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [MovieSort]
+                  sort: [MovieSort!]
                 }
 
                 input MovieRelationInput {
@@ -635,11 +635,11 @@ describe("Comments", () => {
                   screenTime: Int
                   screenTime_GT: Int
                   screenTime_GTE: Int
-                  screenTime_IN: [Int]
+                  screenTime_IN: [Int!]
                   screenTime_LT: Int
                   screenTime_LTE: Int
                   screenTime_NOT: Int
-                  screenTime_NOT_IN: [Int]
+                  screenTime_NOT_IN: [Int!]
                 }
 
                 type Actor {
@@ -739,7 +739,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [ActorSort]
+                  sort: [ActorSort!]
                 }
 
                 input ActorRelationInput {
@@ -766,11 +766,11 @@ describe("Comments", () => {
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_IN: [String]
+                  name_IN: [String!]
                   name_NOT: String
                   name_NOT_CONTAINS: String
                   name_NOT_ENDS_WITH: String
-                  name_NOT_IN: [String]
+                  name_NOT_IN: [String!]
                   name_NOT_STARTS_WITH: String
                   name_STARTS_WITH: String
                 }
@@ -831,7 +831,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [MovieSort]
+                  sort: [MovieSort!]
                 }
 
                 \\"\\"\\"
@@ -853,19 +853,19 @@ describe("Comments", () => {
                   runtime: Int
                   runtime_GT: Int
                   runtime_GTE: Int
-                  runtime_IN: [Int]
+                  runtime_IN: [Int!]
                   runtime_LT: Int
                   runtime_LTE: Int
                   runtime_NOT: Int
-                  runtime_NOT_IN: [Int]
+                  runtime_NOT_IN: [Int!]
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_IN: [String]
+                  title_IN: [String!]
                   title_NOT: String
                   title_NOT_CONTAINS: String
                   title_NOT_ENDS_WITH: String
-                  title_NOT_IN: [String]
+                  title_NOT_IN: [String!]
                   title_NOT_STARTS_WITH: String
                   title_STARTS_WITH: String
                 }
@@ -923,11 +923,11 @@ describe("Comments", () => {
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_IN: [String]
+                  title_IN: [String!]
                   title_NOT: String
                   title_NOT_CONTAINS: String
                   title_NOT_ENDS_WITH: String
-                  title_NOT_IN: [String]
+                  title_NOT_IN: [String!]
                   title_NOT_STARTS_WITH: String
                   title_STARTS_WITH: String
                 }
@@ -968,7 +968,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [SeriesSort]
+                  sort: [SeriesSort!]
                 }
 
                 \\"\\"\\"
@@ -990,19 +990,19 @@ describe("Comments", () => {
                   episodes: Int
                   episodes_GT: Int
                   episodes_GTE: Int
-                  episodes_IN: [Int]
+                  episodes_IN: [Int!]
                   episodes_LT: Int
                   episodes_LTE: Int
                   episodes_NOT: Int
-                  episodes_NOT_IN: [Int]
+                  episodes_NOT_IN: [Int!]
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_IN: [String]
+                  title_IN: [String!]
                   title_NOT: String
                   title_NOT_CONTAINS: String
                   title_NOT_ENDS_WITH: String
-                  title_NOT_IN: [String]
+                  title_NOT_IN: [String!]
                   title_NOT_STARTS_WITH: String
                   title_STARTS_WITH: String
                 }
@@ -1112,7 +1112,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [GenreSort]
+                  sort: [GenreSort!]
                 }
 
                 \\"\\"\\"
@@ -1185,7 +1185,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [MovieSort]
+                  sort: [MovieSort!]
                 }
 
                 input MovieRelationInput {

@@ -81,10 +81,10 @@ When discussing how the field `where` of type `MovieWhere` differs to the field 
 |`title_NOT: String`
 
 |`title_in: [String!]`
-|`title_IN: [String]`
+|`title_IN: [String!]`
 
 |`title_not_in: [String!]`
-|`title_NOT_IN: [String]`
+|`title_NOT_IN: [String!]`
 
 |`title_contains: String`
 |`title_CONTAINS: String`

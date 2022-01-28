@@ -117,7 +117,7 @@ describe("Sort", () => {
               \\"\\"\\"
               Specify one or more Node1Sort objects to sort Node1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Node1Sort]
+              sort: [Node1Sort!]
             }
 
             input Node1RelatedToAggregateInput {
@@ -207,11 +207,11 @@ describe("Sort", () => {
               property: String
               property_CONTAINS: String
               property_ENDS_WITH: String
-              property_IN: [String]
+              property_IN: [String!]
               property_NOT: String
               property_NOT_CONTAINS: String
               property_NOT_ENDS_WITH: String
-              property_NOT_IN: [String]
+              property_NOT_IN: [String!]
               property_NOT_STARTS_WITH: String
               property_STARTS_WITH: String
               relatedTo: Node2Where
