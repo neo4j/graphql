@@ -122,7 +122,7 @@ describe("Comments", () => {
               id: ID
               \\"\\"\\"
               Is the movie active?
-
+              
               This is measured based on annual profit.
               \\"\\"\\"
               isActive: Boolean
