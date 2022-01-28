@@ -124,6 +124,8 @@ query Query {
 
 Note that _undirected relationships_ are only supported in queries.
 
+The xref:type-definitions/relationships.adoc#_querydirection[type definitions] for a relationship may define
+a different behaviour, the option `directed` may not be available in some cases.
 
 [[queries-aggregate]]
 == Aggregate
