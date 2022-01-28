@@ -22,6 +22,7 @@ import { ResolveTree } from "graphql-parse-resolve-info";
 import { JwtPayload } from "jsonwebtoken";
 import { Driver, Integer } from "neo4j-driver";
 import { Neo4jGraphQL } from "./classes";
+import { RelationshipQueryDirectionOption } from "./constants";
 
 export type DriverConfig = {
     database?: string;
@@ -134,6 +135,7 @@ export interface RelationField extends BaseField {
     properties?: string;
     union?: UnionField;
     interface?: InterfaceField;
+    queryDirection: RelationshipQueryDirectionOption;
 }
 
 export interface ConnectionField extends BaseField {

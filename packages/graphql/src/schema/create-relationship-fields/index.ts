@@ -25,6 +25,7 @@ import { ObjectFields } from "../get-obj-field-meta";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
+import { getDirectedArgument } from "../get_directed_argument";
 
 function createRelationshipFields({
     relationshipFields,
@@ -46,10 +47,10 @@ function createRelationshipFields({
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
     const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
 
-    let nodeConnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
-    let nodeDeleteInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
-    let nodeDisconnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
-    let nodeRelationInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
+    let nodeConnectInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
+    let nodeDeleteInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
+    let nodeDisconnectInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
+    let nodeRelationInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
 
     if (relationshipFields.length) {
         [nodeConnectInput, nodeDeleteInput, nodeDisconnectInput, nodeRelationInput] = [
@@ -91,16 +92,26 @@ function createRelationshipFields({
 
         if (rel.interface) {
             const refNodes = nodes.filter((x) => rel.interface?.implementations?.includes(x.name));
-
             if (!rel.writeonly) {
+                const nodeFieldsArgs: {
+                    where: string;
+                    options: string;
+                    directed?: {
+                        type: "Boolean";
+                        defaultValue: boolean;
+                    };
+                } = {
+                    options: "QueryOptions",
+                    where: `${rel.typeMeta.name}Where`,
+                };
+
+                const directedArg = getDirectedArgument(rel);
+                if (directedArg) nodeFieldsArgs.directed = directedArg;
+
                 composeNode.addFields({
                     [rel.fieldName]: {
                         type: rel.typeMeta.pretty,
-                        args: {
-                            directed: { type: "Boolean", defaultValue: true },
-                            options: "QueryOptions",
-                            where: `${rel.typeMeta.name}Where`,
-                        },
+                        args: nodeFieldsArgs,
                         description: rel.description,
                     },
                 });
@@ -248,14 +259,25 @@ function createRelationshipFields({
             const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
             if (!rel.writeonly) {
+                const nodeFieldsArgs: {
+                    where: string;
+                    options: string;
+                    directed?: {
+                        type: "Boolean";
+                        defaultValue: boolean;
+                    };
+                } = {
+                    options: "QueryOptions",
+                    where: `${rel.typeMeta.name}Where`,
+                };
+
+                const directedArg = getDirectedArgument(rel);
+                if (directedArg) nodeFieldsArgs.directed = directedArg;
+
                 composeNode.addFields({
                     [rel.fieldName]: {
                         type: rel.typeMeta.pretty,
-                        args: {
-                            directed: { type: "Boolean", defaultValue: true },
-                            options: "QueryOptions",
-                            where: `${rel.typeMeta.name}Where`,
-                        },
+                        args: nodeFieldsArgs,
                         description: rel.description,
                     },
                 });
@@ -694,14 +716,25 @@ function createRelationshipFields({
         });
 
         if (!rel.writeonly) {
+            const nodeFieldsArgs: {
+                where: string;
+                options: string;
+                directed?: {
+                    type: "Boolean";
+                    defaultValue: boolean;
+                };
+            } = {
+                where: `${rel.typeMeta.name}Where`,
+                options: `${rel.typeMeta.name}Options`,
+            };
+
+            const directedArg = getDirectedArgument(rel);
+            if (directedArg) nodeFieldsArgs.directed = directedArg;
+
             composeNode.addFields({
                 [rel.fieldName]: {
                     type: rel.typeMeta.pretty,
-                    args: {
-                        directed: { type: "Boolean", defaultValue: true },
-                        where: `${rel.typeMeta.name}Where`,
-                        options: `${rel.typeMeta.name}Options`,
-                    },
+                    args: nodeFieldsArgs,
                     description: rel.description,
                 },
             });
@@ -716,13 +749,23 @@ function createRelationshipFields({
                     relFields
                 );
 
+                const aggregationFieldsArgs: {
+                    where: string;
+                    directed?: {
+                        type: "Boolean";
+                        defaultValue: boolean;
+                    };
+                } = {
+                    where: `${rel.typeMeta.name}Where`,
+                };
+
+                const aggregationDirectedArg = getDirectedArgument(rel);
+                if (aggregationDirectedArg) aggregationFieldsArgs.directed = aggregationDirectedArg;
+
                 composeNode.addFields({
                     [`${rel.fieldName}Aggregate`]: {
                         type: aggregationTypeObject,
-                        args: {
-                            where: `${rel.typeMeta.name}Where`,
-                            directed: { type: "Boolean", defaultValue: true },
-                        },
+                        args: aggregationFieldsArgs,
                     },
                 });
             }

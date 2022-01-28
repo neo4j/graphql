@@ -3,6 +3,7 @@ import { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graph
 import { Node, Relationship } from "../classes";
 import { ConnectionField, ConnectionQueryArgs } from "../types";
 import { ObjectFields } from "./get-obj-field-meta";
+import { getDirectedArgument } from "./get_directed_argument";
 import { connectionFieldResolver } from "./pagination";
 
 function createConnectionFields({
@@ -70,11 +71,13 @@ function createConnectionFields({
             sort?: any;
             first?: any;
             after?: any;
-            directed?: any;
+            directed?: { type: "Boolean"; defaultValue: boolean };
         } = {
             where: connectionWhere,
-            directed: { type: "Boolean", defaultValue: true },
         };
+
+        const directedArg = getDirectedArgument(connectionField.relationship);
+        if (directedArg) composeNodeArgs.directed = directedArg;
 
         if (connectionField.relationship.properties) {
             const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);

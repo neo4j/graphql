@@ -80,7 +80,7 @@ export const WHERE_AGGREGATION_TYPES = [
     "Duration",
 ];
 
-export enum RelationshipQueryDirectionOptions {
+export enum RelationshipQueryDirectionOption {
     DEFAULT_DIRECTED = "DEFAULT_DIRECTED",
     DEFAULT_UNDIRECTED = "DEFAULT_UNDIRECTED",
     DIRECTED_ONLY = "DIRECTED_ONLY",
