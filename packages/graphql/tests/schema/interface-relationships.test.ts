@@ -1799,7 +1799,6 @@ describe("Interface Relationships", () => {
             input Interface1CreateInput {
               Type1Interface1: Type1Interface1CreateInput
               Type2Interface1: Type2Interface1CreateInput
-              interface2: Interface1Interface2FieldInput
             }
 
             input Interface1DeleteInput {

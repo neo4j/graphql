@@ -46,10 +46,10 @@ function createRelationshipFields({
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
     const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
 
-    let nodeConnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
-    let nodeDeleteInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
-    let nodeDisconnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
-    let nodeRelationInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
+    let nodeConnectInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
+    let nodeDeleteInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
+    let nodeDisconnectInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
+    let nodeRelationInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
 
     if (relationshipFields.length) {
         [nodeConnectInput, nodeDeleteInput, nodeDisconnectInput, nodeRelationInput] = [
@@ -217,9 +217,11 @@ function createRelationshipFields({
                 }
             });
 
-            nodeCreateInput.addFields({
-                [rel.fieldName]: nodeFieldInput,
-            });
+            if (!(composeNode instanceof InterfaceTypeComposer)) {
+                nodeCreateInput.addFields({
+                    [rel.fieldName]: nodeFieldInput,
+                });
+            }
 
             nodeConnectInput.addFields({
                 [rel.fieldName]: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
@@ -496,9 +498,11 @@ function createRelationshipFields({
                 }
             });
 
-            nodeCreateInput.addFields({
-                [rel.fieldName]: unionCreateInput,
-            });
+            if (!(composeNode instanceof InterfaceTypeComposer)) {
+                nodeCreateInput.addFields({
+                    [rel.fieldName]: unionCreateInput,
+                });
+            }
 
             nodeRelationInput.addFields({
                 [rel.fieldName]: unionCreateFieldInput,
