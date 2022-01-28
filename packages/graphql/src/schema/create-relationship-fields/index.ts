@@ -25,7 +25,7 @@ import { ObjectFields } from "../get-obj-field-meta";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
-import { getDirectedArgument } from "../get_directed_argument";
+import { getDirectedArgument } from "../get-directed-argument";
 
 function createRelationshipFields({
     relationshipFields,

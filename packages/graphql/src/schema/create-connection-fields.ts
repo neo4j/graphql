@@ -22,7 +22,7 @@ import { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graph
 import { Node, Relationship } from "../classes";
 import { ConnectionField, ConnectionQueryArgs } from "../types";
 import { ObjectFields } from "./get-obj-field-meta";
-import { getDirectedArgument } from "./get_directed_argument";
+import { getDirectedArgument } from "./get-directed-argument";
 import { connectionFieldResolver } from "./pagination";
 
 function createConnectionFields({
