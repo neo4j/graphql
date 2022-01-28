@@ -33,6 +33,30 @@ async function createConstraints({ nodes, session }: { nodes: Node[]; session: S
     const constraintsToCreate: { constraintName: string; label: string; property: string }[] = [];
     const indexesToCreate: { indexName: string; label: string; properties: string[] }[] = [];
 
+    const existingIndexes: Record<string, { labelsOrTypes: string; properties: string[] }> = {};
+    const indexErrors: string[] = [];
+    const indexesCypher = "CALL db.indexes";
+
+    debug(`About to execute Cypher: ${indexesCypher}`);
+    const indexesResult = await session.run(indexesCypher);
+
+    indexesResult.records.forEach((record) => {
+        const index = record.toObject();
+
+        if (index.type !== "FULLTEXT" || index.entityType !== "NODE") {
+            return;
+        }
+
+        if (existingIndexes[index.name]) {
+            return;
+        }
+
+        existingIndexes[index.name] = {
+            labelsOrTypes: index.labelsOrTypes,
+            properties: index.properties,
+        };
+    });
+
     nodes.forEach((node) => {
         node.uniqueFields.forEach((field) => {
             constraintsToCreate.push({
@@ -45,20 +69,41 @@ async function createConstraints({ nodes, session }: { nodes: Node[]; session: S
 
         if (node.fulltextDirective) {
             node.fulltextDirective.indexes.forEach((index) => {
-                const properties = index.fields.map((field) => {
-                    const stringField = node.primitiveFields.find((f) => f.fieldName === field);
+                const existingIndex = existingIndexes[index.name];
+                if (!existingIndex) {
+                    const properties = index.fields.map((field) => {
+                        const stringField = node.primitiveFields.find((f) => f.fieldName === field);
 
-                    return stringField?.dbPropertyName || field;
-                });
+                        return stringField?.dbPropertyName || field;
+                    });
 
-                indexesToCreate.push({
-                    indexName: index.name,
-                    label: node.getMainLabel(),
-                    properties,
-                });
+                    indexesToCreate.push({
+                        indexName: index.name,
+                        label: node.getMainLabel(),
+                        properties,
+                    });
+                } else {
+                    index.fields.forEach((field) => {
+                        const stringField = node.primitiveFields.find((f) => f.fieldName === field);
+                        const fieldName = stringField?.dbPropertyName || field;
+
+                        const property = existingIndex.properties.find((p) => p === fieldName);
+                        if (!property) {
+                            const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
+
+                            indexErrors.push(
+                                `@fulltext index '${index.name}' on Node '${node.name}' already exists, but is missing field '${field}'${aliasError}`
+                            );
+                        }
+                    });
+                }
             });
         }
     });
+
+    if (indexErrors.length) {
+        throw new Error(indexErrors.join("\n"));
+    }
 
     for (const constraintToCreate of constraintsToCreate) {
         const cypher = [
