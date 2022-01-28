@@ -159,7 +159,7 @@ function createTargetPattern({
     relationField,
     referenceNode,
     context,
-    directed = true,
+    directed,
 }: {
     nodeLabel: string;
     relationField: RelationField;

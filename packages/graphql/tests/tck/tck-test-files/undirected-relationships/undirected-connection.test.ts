@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
-describe("Undirected Aggregations", () => {
+describe("undirected connections", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;

@@ -23,12 +23,12 @@ import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
-describe("QueryDirection in relationships", () => {
+describe("queryDirection in relationships aggregations", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
-    test("query with directed and undirected relationships with DEFAULT_UNDIRECTED", async () => {
+    test("query with directed and undirected relationships with a DEFAULT_UNDIRECTED", async () => {
         typeDefs = gql`
             type User {
                 name: String!
@@ -42,14 +42,10 @@ describe("QueryDirection in relationships", () => {
             config: { jwt: { secret } },
         });
         const query = gql`
-            query {
+            query Users {
                 users {
-                    name
-                    friends: friends {
-                        name
-                    }
-                    directedFriends: friends(directed: true) {
-                        name
+                    friendsAggregate {
+                        count
                     }
                 }
             }
@@ -62,52 +58,12 @@ describe("QueryDirection in relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
 "MATCH (this:User)
-RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | this_friends { .name } ], directedFriends: [ (this)-[:FRIENDS_WITH]->(this_directedFriends:User)   | this_directedFriends { .name } ] } as this"
+RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]-(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
 `);
-
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test("query with directed and undirected relationships with a DEFAULT_DIRECTED", async () => {
-        typeDefs = gql`
-            type User {
-                name: String!
-                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DEFAULT_DIRECTED)
-            }
-        `;
-
-        neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            config: { jwt: { secret } },
-        });
-        const query = gql`
-            query {
-                users {
-                    name
-                    friends: friends {
-                        name
-                    }
-                    undirectedFriends: friends(directed: false) {
-                        name
-                    }
-                }
-            }
-        `;
-
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | this_friends { .name } ], undirectedFriends: [ (this)-[:FRIENDS_WITH]-(this_undirectedFriends:User)   | this_undirectedFriends { .name } ] } as this"
-`);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-    });
-
-    test("query with a DIRECTED_ONLY relationship", async () => {
+    test("query connection with a DIRECTED_ONLY relationship", async () => {
         typeDefs = gql`
             type User {
                 name: String!
@@ -120,11 +76,10 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | 
             config: { jwt: { secret } },
         });
         const query = gql`
-            query {
+            query Users {
                 users {
-                    name
-                    friends: friends {
-                        name
+                    friendsAggregate {
+                        count
                     }
                 }
             }
@@ -137,11 +92,11 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | 
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
 "MATCH (this:User)
-RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | this_friends { .name } ] } as this"
+RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]->(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
 `);
-
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
+
     test("query with a UNDIRECTED_ONLY relationship", async () => {
         typeDefs = gql`
             type User {
@@ -155,11 +110,10 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | 
             config: { jwt: { secret } },
         });
         const query = gql`
-            query {
+            query Users {
                 users {
-                    name
-                    friends: friends {
-                        name
+                    friendsAggregate {
+                        count
                     }
                 }
             }
@@ -172,9 +126,8 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | 
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
 "MATCH (this:User)
-RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | this_friends { .name } ] } as this"
+RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]-(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
 `);
-
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });
