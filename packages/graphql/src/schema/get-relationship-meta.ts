@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { FieldDefinitionNode, StringValueNode } from "graphql";
+import { ConstDirectiveNode, FieldDefinitionNode, StringValueNode } from "graphql";
 import { RelationshipQueryDirectionOption } from "../constants";
 
 type RelationshipMeta = {
@@ -49,21 +49,7 @@ function getRelationshipMeta(
         throw new Error("@relationship direction invalid");
     }
 
-    const queryDirectionArg = directive.arguments?.find((x) => x.name.value === "queryDirection");
-    let queryDirection = RelationshipQueryDirectionOption.DEFAULT_DIRECTED;
-    if (queryDirectionArg) {
-        if (queryDirectionArg.value.kind !== "EnumValue") {
-            throw new Error("@relationship queryDirection is not a enum");
-        }
-
-        const queryDirectionValue = RelationshipQueryDirectionOption[
-            queryDirectionArg.value.value
-        ] as RelationshipQueryDirectionOption;
-        if (!Object.values(RelationshipQueryDirectionOption).includes(queryDirectionValue)) {
-            throw new Error("@relationship queryDirection invalid");
-        }
-        queryDirection = queryDirectionArg.value.value as RelationshipQueryDirectionOption;
-    }
+    const queryDirection = getQueryDirection(directive);
 
     const typeArg = directive.arguments?.find((x) => x.name.value === "type");
     if (!typeArg) {
@@ -88,6 +74,26 @@ function getRelationshipMeta(
         properties,
         queryDirection,
     };
+}
+
+function getQueryDirection(directive: ConstDirectiveNode): RelationshipQueryDirectionOption {
+    const queryDirectionArg = directive.arguments?.find((x) => x.name.value === "queryDirection");
+    let queryDirection = RelationshipQueryDirectionOption.DEFAULT_DIRECTED;
+
+    if (queryDirectionArg) {
+        if (queryDirectionArg.value.kind !== "EnumValue") {
+            throw new Error("@relationship queryDirection is not a enum");
+        }
+
+        const queryDirectionValue = RelationshipQueryDirectionOption[
+            queryDirectionArg.value.value
+        ] as RelationshipQueryDirectionOption;
+        if (!Object.values(RelationshipQueryDirectionOption).includes(queryDirectionValue)) {
+            throw new Error("@relationship queryDirection invalid");
+        }
+        queryDirection = queryDirectionArg.value.value as RelationshipQueryDirectionOption;
+    }
+    return queryDirection;
 }
 
 export default getRelationshipMeta;
