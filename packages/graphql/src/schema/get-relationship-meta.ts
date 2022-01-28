@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { ConstDirectiveNode, FieldDefinitionNode, StringValueNode } from "graphql";
+import { DirectiveNode, FieldDefinitionNode, StringValueNode } from "graphql";
 import { RelationshipQueryDirectionOption } from "../constants";
 
 type RelationshipMeta = {
@@ -76,7 +76,7 @@ function getRelationshipMeta(
     };
 }
 
-function getQueryDirection(directive: ConstDirectiveNode): RelationshipQueryDirectionOption {
+function getQueryDirection(directive: DirectiveNode): RelationshipQueryDirectionOption {
     const queryDirectionArg = directive.arguments?.find((x) => x.name.value === "queryDirection");
     let queryDirection = RelationshipQueryDirectionOption.DEFAULT_DIRECTED;
 
