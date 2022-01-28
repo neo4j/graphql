@@ -21,7 +21,7 @@ import { RelationshipQueryDirectionOption } from "../constants";
 import { RelationFieldBuilder } from "../../tests/utils/builders/relation-field-builder";
 import { addDirectedArgument, getDirectedArgument } from "./directed-argument";
 
-describe("directed argument", () => {
+describe("Directed argument", () => {
     describe("getDirectedArgument", () => {
         test("should return default true argument for DEFAULT_DIRECTED", () => {
             const relationField = new RelationFieldBuilder({
