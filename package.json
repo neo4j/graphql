@@ -13,7 +13,7 @@
         "examples/neo-push/*"
     ],
     "scripts": {
-        "build": "tsc -b",
+        "build": "tsc --build tsconfig.production.json",
         "lint": "eslint .",
         "test": "jest",
         "test:pr": "run-s lint test",
@@ -22,6 +22,7 @@
         "test-docker": "docker-compose up --build --abort-on-container-exit"
     },
     "devDependencies": {
+        "@tsconfig/node12": "^1.0.9",
         "@typescript-eslint/eslint-plugin": "4.1.1",
         "@typescript-eslint/parser": "4.15.1",
         "concurrently": "6.0.0",

@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql",
-    "version": "2.5.5",
+    "version": "2.5.6",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
@@ -36,7 +36,7 @@
         "posttest:package-tests": "yarn run cleanup:package-tests",
         "test:package-tests": "yarn run setup:package-tests && cd ../package-tests/ && yarn run test:all",
         "cleanup:package-tests": "cd ../package-tests/ && yarn run cleanup && rimraf ./package/ && rimraf *.tgz",
-        "build": "tsc --project src/",
+        "build": "tsc --build src/tsconfig.production.json",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "start": "run-s build:clean watch"
