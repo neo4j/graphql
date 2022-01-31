@@ -55,52 +55,74 @@ export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
 }
 
 class Neo4jGraphQL {
-    public schema: GraphQLSchema;
-    public nodes: Node[];
-    public relationships: Relationship[];
-    public document: DocumentNode;
+    public config: Neo4jGraphQLConfig;
     private driver?: Driver;
-    public config?: Neo4jGraphQLConfig;
+
+    private schemaDefinition: IExecutableSchemaDefinition;
+
+    public nodes?: Node[];
+    public relationships?: Relationship[];
+
+    private schema?: Promise<GraphQLSchema>;
+
+    public document?: DocumentNode;
 
     constructor(input: Neo4jGraphQLConstructor) {
         const { config = {}, driver, ...schemaDefinition } = input;
-        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(input.typeDefs, {
-            enableRegex: config.enableRegex,
-            skipValidateTypeDefs: config.skipValidateTypeDefs,
-        });
 
         this.driver = driver;
         this.config = config;
-        this.nodes = nodes;
-        this.relationships = relationships;
+        this.schemaDefinition = schemaDefinition;
+    }
 
-        const resolversComposition = {
-            "Query.*": [wrapResolver({ driver, config, neoSchema: this })],
-            "Mutation.*": [wrapResolver({ driver, config, neoSchema: this })],
-        };
+    async getSchema(): Promise<GraphQLSchema> {
+        if (this.schema) {
+            return this.schema;
+        }
 
-        // Merge generated and custom resolvers
-        const allResolvers = mergeResolvers([resolvers, input.resolvers]);
+        this.schema = new Promise((resolve) => {
+            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(this.schemaDefinition.typeDefs, {
+                enableRegex: this.config?.enableRegex,
+                skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
+            });
 
-        const composedResolvers = composeResolvers(allResolvers, resolversComposition);
+            this.nodes = nodes;
+            this.relationships = relationships;
 
-        const schema = makeExecutableSchema({
-            ...schemaDefinition,
-            typeDefs,
-            resolvers: composedResolvers,
+            const resolversComposition = {
+                "Query.*": [
+                    wrapResolver({ driver: this.driver, config: this.config, neoSchema: this, nodes, relationships }),
+                ],
+                "Mutation.*": [
+                    wrapResolver({ driver: this.driver, config: this.config, neoSchema: this, nodes, relationships }),
+                ],
+            };
+
+            // Merge generated and custom resolvers
+            const allResolvers = mergeResolvers([resolvers, this.schemaDefinition.resolvers]);
+
+            const composedResolvers = composeResolvers(allResolvers, resolversComposition);
+
+            const schema = makeExecutableSchema({
+                ...this.schemaDefinition,
+                typeDefs,
+                resolvers: composedResolvers,
+            });
+
+            // Assign a default field resolver to account for aliasing of fields
+            forEachField(schema, (field) => {
+                if (!field.resolve) {
+                    // eslint-disable-next-line no-param-reassign
+                    field.resolve = defaultFieldResolver;
+                }
+            });
+
+            resolve(schema);
+
+            this.document = parse(printSchema(schema));
         });
 
-        // Assign a default field resolver to account for aliasing of fields
-        forEachField(schema, (field) => {
-            if (!field.resolve) {
-                // eslint-disable-next-line no-param-reassign
-                field.resolve = defaultFieldResolver;
-            }
-        });
-
-        this.schema = schema;
-
-        this.document = parse(printSchema(schema));
+        return this.schema;
     }
 
     async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
@@ -124,7 +146,7 @@ class Neo4jGraphQL {
             throw new Error("neo4j-driver Driver missing");
         }
 
-        await assertIndexesAndConstraints({ driver, driverConfig, nodes: this.nodes, options: input.options });
+        await assertIndexesAndConstraints({ driver, driverConfig, nodes: this.nodes!, options: input.options });
     }
 }
 

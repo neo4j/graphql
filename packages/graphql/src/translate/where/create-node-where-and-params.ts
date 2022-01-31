@@ -60,7 +60,8 @@ function createNodeWhereAndParams({
             DISTANCE: "=",
         };
 
-        const re = /(?<field>[_A-Za-z][_0-9A-Za-z]*?)(?:_(?<not>NOT))?(?:_(?<operator>INCLUDES|IN|MATCHES|CONTAINS|STARTS_WITH|ENDS_WITH|LT|GT|GTE|LTE|DISTANCE))?$/gm;
+        const re =
+            /(?<field>[_A-Za-z][_0-9A-Za-z]*?)(?:_(?<not>NOT))?(?:_(?<operator>INCLUDES|IN|MATCHES|CONTAINS|STARTS_WITH|ENDS_WITH|LT|GT|GTE|LTE|DISTANCE))?$/gm;
 
         const match = re.exec(key);
 
@@ -75,8 +76,9 @@ function createNodeWhereAndParams({
             (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
         );
 
-        const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find((f) => fieldName === f.fieldName)
-            ?.coalesceValue;
+        const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
+            (f) => fieldName === f.fieldName
+        )?.coalesceValue;
 
         const property =
             coalesceValue !== undefined
@@ -111,7 +113,7 @@ function createNodeWhereAndParams({
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
 
             if (relationField) {
-                const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+                const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
                 const inStr = relationField.direction === "IN" ? "<-" : "-";
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
@@ -218,7 +220,7 @@ function createNodeWhereAndParams({
             if (pointField) {
                 clause = `distance(${property}, point($${param}.point)) ${operators[operator]} $${param}.distance`;
             }
-            
+
             if (durationField) {
                 clause = `datetime() + ${property} ${operators[operator]} datetime() + $${param}`;
             }

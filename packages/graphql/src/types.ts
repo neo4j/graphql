@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { InputValueDefinitionNode, DirectiveNode, TypeNode } from "graphql";
+import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { JwtPayload } from "jsonwebtoken";
 import { Driver, Integer } from "neo4j-driver";
-import { Neo4jGraphQL } from "./classes";
+import { Neo4jGraphQL, Node, Relationship } from "./classes";
 import { RelationshipQueryDirectionOption } from "./constants";
 
 export type DriverConfig = {
@@ -40,6 +40,8 @@ export interface Context {
     driverConfig?: DriverConfig;
     resolveTree: ResolveTree;
     neoSchema: Neo4jGraphQL;
+    nodes: Node[];
+    relationships: Relationship[];
     jwt?: JwtPayload;
     auth?: AuthContext;
     queryOptions?: CypherQueryOptions;

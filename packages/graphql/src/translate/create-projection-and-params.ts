@@ -183,15 +183,15 @@ function createProjectionAndParams({
             const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
                 cypherField.typeMeta.name
             );
-            const isEnum = context.neoSchema.document.definitions.find(
+            const isEnum = context.neoSchema.document?.definitions.find(
                 (x) => x.kind === "EnumTypeDefinition" && x.name.value === cypherField.typeMeta.name
             );
-            const isScalar = context.neoSchema.document.definitions.find(
+            const isScalar = context.neoSchema.document?.definitions.find(
                 (x) => x.kind === "ScalarTypeDefinition" && x.name.value === cypherField.typeMeta.name
             );
 
-            const referenceNode = context.neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
-            const unions = context.neoSchema.document.definitions.filter(
+            const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
+            const unions = context.neoSchema.document?.definitions.filter(
                 (x) => x.kind === "UnionTypeDefinition"
             ) as UnionTypeDefinitionNode[];
             const referenceUnion = unions.find((u) => u.name.value === cypherField.typeMeta.name);
@@ -217,7 +217,7 @@ function createProjectionAndParams({
                 const headStrs: string[] = [];
                 const referencedNodes =
                     referenceUnion?.types
-                        ?.map((u) => context.neoSchema.nodes.find((n) => n.name === u.name.value))
+                        ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
                         ?.filter((b) => b !== undefined)
                         ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? "")) || [];
 
@@ -330,7 +330,7 @@ function createProjectionAndParams({
         }
 
         if (relationField) {
-            const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const referenceNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
             const nodeMatchStr = `(${chainStr || varName})`;
             const relTypeStr = `[:${relationField.type}]`;
@@ -362,7 +362,7 @@ function createProjectionAndParams({
             }
 
             if (relationField.union) {
-                const referenceNodes = context.neoSchema.nodes.filter(
+                const referenceNodes = context.nodes.filter(
                     (x) =>
                         relationField.union?.nodes?.includes(x.name) &&
                         (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
