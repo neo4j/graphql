@@ -21,6 +21,7 @@ import { GraphQLWhereArg, Context } from "../../types";
 import { Node, Relationship } from "../../classes";
 import createFilter from "./create-filter";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
+import { wrapInApocRunFirstColumn } from "../utils/apoc-run";
 
 interface Res {
     clauses: string[];
@@ -164,7 +165,9 @@ function createNodeWhereAndParams({
                         (x) => x.name === connectionField.relationshipTypeName
                     ) as Relationship;
 
-                    const relatedNodeVariable = `${nodeVariable.replace(/\./g, "_")}_${refNode.name}`;
+                    const safeNodeVariable = `${nodeVariable.replace(/\./g, "_")}`;
+
+                    const relatedNodeVariable = `${safeNodeVariable}_${refNode.name}`;
 
                     const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
                     const relationshipVariable = `${relatedNodeVariable}_${connectionField.relationshipTypeName}`;
@@ -173,7 +176,9 @@ function createNodeWhereAndParams({
 
                     const collectedMap = `${relatedNodeVariable}_map`;
 
-                    const existsStr = `EXISTS((${nodeVariable})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`;
+                    const rootParam = parameterPrefix.split(".", 1)[0];
+
+                    const existsStr = `EXISTS((${safeNodeVariable})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`;
 
                     if (value === null) {
                         res.clauses.push(not ? `NOT ${existsStr}` : existsStr);
@@ -181,10 +186,10 @@ function createNodeWhereAndParams({
                     }
 
                     const resultArr = [
-                        existsStr,
+                        `RETURN ${existsStr}`,
                         `AND ${
                             not ? "NONE" : "ANY"
-                        }(${collectedMap} IN [(${nodeVariable})${inStr}[${relationshipVariable}:${
+                        }(${collectedMap} IN [(${safeNodeVariable})${inStr}[${relationshipVariable}:${
                             connectionField.relationship.type
                         }]${outStr}(${relatedNodeVariable}${labels}) | { node: ${relatedNodeVariable}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
                     ];
@@ -201,7 +206,13 @@ function createNodeWhereAndParams({
 
                     resultArr.push(connectionWhere[0]);
                     resultArr.push(")"); // close NONE/ANY
-                    res.clauses.push(resultArr.join("\n"));
+
+                    const apocRunFirstColumn = wrapInApocRunFirstColumn(resultArr.join("\n"), {
+                        [safeNodeVariable]: nodeVariable,
+                        [rootParam]: `$${rootParam}`,
+                    });
+
+                    res.clauses.push(apocRunFirstColumn);
 
                     res.params = { ...res.params, [fieldName]: connectionWhere[1] };
                     return res;
