@@ -622,8 +622,8 @@ function createProjectionAndParams({
 
 export default createProjectionAndParams;
 
-// Fields of reference node to sort on. Since sorting is done on projection, if field is not selected or is and aliased
-// sort will fail silently
+// Fields of reference node to sort on. Since sorting is done on the projection sorting will fail silently
+// if field does not exist in selection set or does exist but is aliased
 const generateSortFields = ({
     node,
     resolveTree,
@@ -635,17 +635,19 @@ const generateSortFields = ({
 
     const sortFieldNames = ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat();
 
-    return Array.from(new Set(sortFieldNames)).reduce(
-        (acc, sortFieldName) => ({
-            ...acc,
-            // If fieldname is not found in fields of selection set
-            ...(!Object.values(nodeFields).find((field) => field.name === sortFieldName) ||
-            // or does exist but is aliased
+    return Array.from(new Set(sortFieldNames)).reduce((acc, sortFieldName) => {
+        const fieldIsMissing = !Object.values(nodeFields).find((field) => field.name === sortFieldName);
+        const fieldIsAliased = Boolean(
             Object.values(nodeFields).find((field) => field.name === sortFieldName && field.alias !== sortFieldName)
-                ? // generate a basic resolve tree
-                  generateProjectionField({ name: sortFieldName })
-                : {}),
-        }),
-        {}
-    );
+        );
+
+        if (fieldIsMissing || fieldIsAliased) {
+            return {
+                ...acc,
+                ...generateProjectionField({ name: sortFieldName }),
+            };
+        }
+
+        return acc;
+    }, {});
 };
