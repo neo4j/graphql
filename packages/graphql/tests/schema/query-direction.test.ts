@@ -35,254 +35,254 @@ describe("Query Direction", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-type CreateInfo {
-  bookmark: String
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-type CreateUsersMutationResponse {
-  info: CreateInfo!
-  users: [User!]!
-}
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [User!]!
+            }
 
-type DeleteInfo {
-  bookmark: String
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-type Mutation {
-  createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
-  deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
-  updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
-}
+            type Mutation {
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
+              updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
 
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-type Query {
-  users(options: UserOptions, where: UserWhere): [User!]!
-  usersAggregate(where: UserWhere): UserAggregateSelection!
-}
+            type Query {
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+            }
 
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-type StringAggregateSelectionNonNullable {
-  longest: String!
-  shortest: String!
-}
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
 
-type UpdateInfo {
-  bookmark: String
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-type UpdateUsersMutationResponse {
-  info: UpdateInfo!
-  users: [User!]!
-}
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [User!]!
+            }
 
-type User {
-  friends(directed: Boolean = false, options: UserOptions, where: UserWhere): [User!]!
-  friendsAggregate(directed: Boolean = false, where: UserWhere): UserUserFriendsAggregationSelection
-  friendsConnection(after: String, directed: Boolean = false, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
-  name: String!
-}
+            type User {
+              friends(directed: Boolean = false, options: UserOptions, where: UserWhere): [User!]!
+              friendsAggregate(directed: Boolean = false, where: UserWhere): UserUserFriendsAggregationSelection
+              friendsConnection(after: String, directed: Boolean = false, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
+              name: String!
+            }
 
-type UserAggregateSelection {
-  count: Int!
-  name: StringAggregateSelectionNonNullable!
-}
+            type UserAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNonNullable!
+            }
 
-input UserConnectInput {
-  friends: [UserFriendsConnectFieldInput!]
-}
+            input UserConnectInput {
+              friends: [UserFriendsConnectFieldInput!]
+            }
 
-input UserConnectWhere {
-  node: UserWhere!
-}
+            input UserConnectWhere {
+              node: UserWhere!
+            }
 
-input UserCreateInput {
-  friends: UserFriendsFieldInput
-  name: String!
-}
+            input UserCreateInput {
+              friends: UserFriendsFieldInput
+              name: String!
+            }
 
-input UserDeleteInput {
-  friends: [UserFriendsDeleteFieldInput!]
-}
+            input UserDeleteInput {
+              friends: [UserFriendsDeleteFieldInput!]
+            }
 
-input UserDisconnectInput {
-  friends: [UserFriendsDisconnectFieldInput!]
-}
+            input UserDisconnectInput {
+              friends: [UserFriendsDisconnectFieldInput!]
+            }
 
-input UserFriendsAggregateInput {
-  AND: [UserFriendsAggregateInput!]
-  OR: [UserFriendsAggregateInput!]
-  count: Int
-  count_GT: Int
-  count_GTE: Int
-  count_LT: Int
-  count_LTE: Int
-  node: UserFriendsNodeAggregationWhereInput
-}
+            input UserFriendsAggregateInput {
+              AND: [UserFriendsAggregateInput!]
+              OR: [UserFriendsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: UserFriendsNodeAggregationWhereInput
+            }
 
-input UserFriendsConnectFieldInput {
-  connect: [UserConnectInput!]
-  where: UserConnectWhere
-}
+            input UserFriendsConnectFieldInput {
+              connect: [UserConnectInput!]
+              where: UserConnectWhere
+            }
 
-type UserFriendsConnection {
-  edges: [UserFriendsRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
+            type UserFriendsConnection {
+              edges: [UserFriendsRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
 
-input UserFriendsConnectionSort {
-  node: UserSort
-}
+            input UserFriendsConnectionSort {
+              node: UserSort
+            }
 
-input UserFriendsConnectionWhere {
-  AND: [UserFriendsConnectionWhere!]
-  OR: [UserFriendsConnectionWhere!]
-  node: UserWhere
-  node_NOT: UserWhere
-}
+            input UserFriendsConnectionWhere {
+              AND: [UserFriendsConnectionWhere!]
+              OR: [UserFriendsConnectionWhere!]
+              node: UserWhere
+              node_NOT: UserWhere
+            }
 
-input UserFriendsCreateFieldInput {
-  node: UserCreateInput!
-}
+            input UserFriendsCreateFieldInput {
+              node: UserCreateInput!
+            }
 
-input UserFriendsDeleteFieldInput {
-  delete: UserDeleteInput
-  where: UserFriendsConnectionWhere
-}
+            input UserFriendsDeleteFieldInput {
+              delete: UserDeleteInput
+              where: UserFriendsConnectionWhere
+            }
 
-input UserFriendsDisconnectFieldInput {
-  disconnect: UserDisconnectInput
-  where: UserFriendsConnectionWhere
-}
+            input UserFriendsDisconnectFieldInput {
+              disconnect: UserDisconnectInput
+              where: UserFriendsConnectionWhere
+            }
 
-input UserFriendsFieldInput {
-  connect: [UserFriendsConnectFieldInput!]
-  create: [UserFriendsCreateFieldInput!]
-}
+            input UserFriendsFieldInput {
+              connect: [UserFriendsConnectFieldInput!]
+              create: [UserFriendsCreateFieldInput!]
+            }
 
-input UserFriendsNodeAggregationWhereInput {
-  AND: [UserFriendsNodeAggregationWhereInput!]
-  OR: [UserFriendsNodeAggregationWhereInput!]
-  name_AVERAGE_EQUAL: Float
-  name_AVERAGE_GT: Float
-  name_AVERAGE_GTE: Float
-  name_AVERAGE_LT: Float
-  name_AVERAGE_LTE: Float
-  name_EQUAL: String
-  name_GT: Int
-  name_GTE: Int
-  name_LONGEST_EQUAL: Int
-  name_LONGEST_GT: Int
-  name_LONGEST_GTE: Int
-  name_LONGEST_LT: Int
-  name_LONGEST_LTE: Int
-  name_LT: Int
-  name_LTE: Int
-  name_SHORTEST_EQUAL: Int
-  name_SHORTEST_GT: Int
-  name_SHORTEST_GTE: Int
-  name_SHORTEST_LT: Int
-  name_SHORTEST_LTE: Int
-}
+            input UserFriendsNodeAggregationWhereInput {
+              AND: [UserFriendsNodeAggregationWhereInput!]
+              OR: [UserFriendsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
+            }
 
-type UserFriendsRelationship {
-  cursor: String!
-  node: User!
-}
+            type UserFriendsRelationship {
+              cursor: String!
+              node: User!
+            }
 
-input UserFriendsUpdateConnectionInput {
-  node: UserUpdateInput
-}
+            input UserFriendsUpdateConnectionInput {
+              node: UserUpdateInput
+            }
 
-input UserFriendsUpdateFieldInput {
-  connect: [UserFriendsConnectFieldInput!]
-  create: [UserFriendsCreateFieldInput!]
-  delete: [UserFriendsDeleteFieldInput!]
-  disconnect: [UserFriendsDisconnectFieldInput!]
-  update: UserFriendsUpdateConnectionInput
-  where: UserFriendsConnectionWhere
-}
+            input UserFriendsUpdateFieldInput {
+              connect: [UserFriendsConnectFieldInput!]
+              create: [UserFriendsCreateFieldInput!]
+              delete: [UserFriendsDeleteFieldInput!]
+              disconnect: [UserFriendsDisconnectFieldInput!]
+              update: UserFriendsUpdateConnectionInput
+              where: UserFriendsConnectionWhere
+            }
 
-input UserOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [UserSort]
-}
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
+            }
 
-input UserRelationInput {
-  friends: [UserFriendsCreateFieldInput!]
-}
+            input UserRelationInput {
+              friends: [UserFriendsCreateFieldInput!]
+            }
 
-\\"\\"\\"
-Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
-\\"\\"\\"
-input UserSort {
-  name: SortDirection
-}
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
+            input UserSort {
+              name: SortDirection
+            }
 
-input UserUpdateInput {
-  friends: [UserFriendsUpdateFieldInput!]
-  name: String
-}
+            input UserUpdateInput {
+              friends: [UserFriendsUpdateFieldInput!]
+              name: String
+            }
 
-type UserUserFriendsAggregationSelection {
-  count: Int!
-  node: UserUserFriendsNodeAggregateSelection
-}
+            type UserUserFriendsAggregationSelection {
+              count: Int!
+              node: UserUserFriendsNodeAggregateSelection
+            }
 
-type UserUserFriendsNodeAggregateSelection {
-  name: StringAggregateSelectionNonNullable!
-}
+            type UserUserFriendsNodeAggregateSelection {
+              name: StringAggregateSelectionNonNullable!
+            }
 
-input UserWhere {
-  AND: [UserWhere!]
-  OR: [UserWhere!]
-  friends: UserWhere
-  friendsAggregate: UserFriendsAggregateInput
-  friendsConnection: UserFriendsConnectionWhere
-  friendsConnection_NOT: UserFriendsConnectionWhere
-  friends_NOT: UserWhere
-  name: String
-  name_CONTAINS: String
-  name_ENDS_WITH: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_CONTAINS: String
-  name_NOT_ENDS_WITH: String
-  name_NOT_IN: [String]
-  name_NOT_STARTS_WITH: String
-  name_STARTS_WITH: String
-}"
-`);
+            input UserWhere {
+              AND: [UserWhere!]
+              OR: [UserWhere!]
+              friends: UserWhere
+              friendsAggregate: UserFriendsAggregateInput
+              friendsConnection: UserFriendsConnectionWhere
+              friendsConnection_NOT: UserFriendsConnectionWhere
+              friends_NOT: UserWhere
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String!]
+              name_NOT: String
+              name_NOT_CONTAINS: String
+              name_NOT_ENDS_WITH: String
+              name_NOT_IN: [String!]
+              name_NOT_STARTS_WITH: String
+              name_STARTS_WITH: String
+            }"
+        `);
     });
 
     test("DIRECTED_ONLY", () => {
@@ -296,254 +296,254 @@ input UserWhere {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-type CreateInfo {
-  bookmark: String
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-type CreateUsersMutationResponse {
-  info: CreateInfo!
-  users: [User!]!
-}
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [User!]!
+            }
 
-type DeleteInfo {
-  bookmark: String
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-type Mutation {
-  createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
-  deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
-  updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
-}
+            type Mutation {
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
+              updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
 
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-type Query {
-  users(options: UserOptions, where: UserWhere): [User!]!
-  usersAggregate(where: UserWhere): UserAggregateSelection!
-}
+            type Query {
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+            }
 
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-type StringAggregateSelectionNonNullable {
-  longest: String!
-  shortest: String!
-}
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
 
-type UpdateInfo {
-  bookmark: String
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-type UpdateUsersMutationResponse {
-  info: UpdateInfo!
-  users: [User!]!
-}
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [User!]!
+            }
 
-type User {
-  friends(options: UserOptions, where: UserWhere): [User!]!
-  friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
-  friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
-  name: String!
-}
+            type User {
+              friends(options: UserOptions, where: UserWhere): [User!]!
+              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
+              friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
+              name: String!
+            }
 
-type UserAggregateSelection {
-  count: Int!
-  name: StringAggregateSelectionNonNullable!
-}
+            type UserAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNonNullable!
+            }
 
-input UserConnectInput {
-  friends: [UserFriendsConnectFieldInput!]
-}
+            input UserConnectInput {
+              friends: [UserFriendsConnectFieldInput!]
+            }
 
-input UserConnectWhere {
-  node: UserWhere!
-}
+            input UserConnectWhere {
+              node: UserWhere!
+            }
 
-input UserCreateInput {
-  friends: UserFriendsFieldInput
-  name: String!
-}
+            input UserCreateInput {
+              friends: UserFriendsFieldInput
+              name: String!
+            }
 
-input UserDeleteInput {
-  friends: [UserFriendsDeleteFieldInput!]
-}
+            input UserDeleteInput {
+              friends: [UserFriendsDeleteFieldInput!]
+            }
 
-input UserDisconnectInput {
-  friends: [UserFriendsDisconnectFieldInput!]
-}
+            input UserDisconnectInput {
+              friends: [UserFriendsDisconnectFieldInput!]
+            }
 
-input UserFriendsAggregateInput {
-  AND: [UserFriendsAggregateInput!]
-  OR: [UserFriendsAggregateInput!]
-  count: Int
-  count_GT: Int
-  count_GTE: Int
-  count_LT: Int
-  count_LTE: Int
-  node: UserFriendsNodeAggregationWhereInput
-}
+            input UserFriendsAggregateInput {
+              AND: [UserFriendsAggregateInput!]
+              OR: [UserFriendsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: UserFriendsNodeAggregationWhereInput
+            }
 
-input UserFriendsConnectFieldInput {
-  connect: [UserConnectInput!]
-  where: UserConnectWhere
-}
+            input UserFriendsConnectFieldInput {
+              connect: [UserConnectInput!]
+              where: UserConnectWhere
+            }
 
-type UserFriendsConnection {
-  edges: [UserFriendsRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
+            type UserFriendsConnection {
+              edges: [UserFriendsRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
 
-input UserFriendsConnectionSort {
-  node: UserSort
-}
+            input UserFriendsConnectionSort {
+              node: UserSort
+            }
 
-input UserFriendsConnectionWhere {
-  AND: [UserFriendsConnectionWhere!]
-  OR: [UserFriendsConnectionWhere!]
-  node: UserWhere
-  node_NOT: UserWhere
-}
+            input UserFriendsConnectionWhere {
+              AND: [UserFriendsConnectionWhere!]
+              OR: [UserFriendsConnectionWhere!]
+              node: UserWhere
+              node_NOT: UserWhere
+            }
 
-input UserFriendsCreateFieldInput {
-  node: UserCreateInput!
-}
+            input UserFriendsCreateFieldInput {
+              node: UserCreateInput!
+            }
 
-input UserFriendsDeleteFieldInput {
-  delete: UserDeleteInput
-  where: UserFriendsConnectionWhere
-}
+            input UserFriendsDeleteFieldInput {
+              delete: UserDeleteInput
+              where: UserFriendsConnectionWhere
+            }
 
-input UserFriendsDisconnectFieldInput {
-  disconnect: UserDisconnectInput
-  where: UserFriendsConnectionWhere
-}
+            input UserFriendsDisconnectFieldInput {
+              disconnect: UserDisconnectInput
+              where: UserFriendsConnectionWhere
+            }
 
-input UserFriendsFieldInput {
-  connect: [UserFriendsConnectFieldInput!]
-  create: [UserFriendsCreateFieldInput!]
-}
+            input UserFriendsFieldInput {
+              connect: [UserFriendsConnectFieldInput!]
+              create: [UserFriendsCreateFieldInput!]
+            }
 
-input UserFriendsNodeAggregationWhereInput {
-  AND: [UserFriendsNodeAggregationWhereInput!]
-  OR: [UserFriendsNodeAggregationWhereInput!]
-  name_AVERAGE_EQUAL: Float
-  name_AVERAGE_GT: Float
-  name_AVERAGE_GTE: Float
-  name_AVERAGE_LT: Float
-  name_AVERAGE_LTE: Float
-  name_EQUAL: String
-  name_GT: Int
-  name_GTE: Int
-  name_LONGEST_EQUAL: Int
-  name_LONGEST_GT: Int
-  name_LONGEST_GTE: Int
-  name_LONGEST_LT: Int
-  name_LONGEST_LTE: Int
-  name_LT: Int
-  name_LTE: Int
-  name_SHORTEST_EQUAL: Int
-  name_SHORTEST_GT: Int
-  name_SHORTEST_GTE: Int
-  name_SHORTEST_LT: Int
-  name_SHORTEST_LTE: Int
-}
+            input UserFriendsNodeAggregationWhereInput {
+              AND: [UserFriendsNodeAggregationWhereInput!]
+              OR: [UserFriendsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
+            }
 
-type UserFriendsRelationship {
-  cursor: String!
-  node: User!
-}
+            type UserFriendsRelationship {
+              cursor: String!
+              node: User!
+            }
 
-input UserFriendsUpdateConnectionInput {
-  node: UserUpdateInput
-}
+            input UserFriendsUpdateConnectionInput {
+              node: UserUpdateInput
+            }
 
-input UserFriendsUpdateFieldInput {
-  connect: [UserFriendsConnectFieldInput!]
-  create: [UserFriendsCreateFieldInput!]
-  delete: [UserFriendsDeleteFieldInput!]
-  disconnect: [UserFriendsDisconnectFieldInput!]
-  update: UserFriendsUpdateConnectionInput
-  where: UserFriendsConnectionWhere
-}
+            input UserFriendsUpdateFieldInput {
+              connect: [UserFriendsConnectFieldInput!]
+              create: [UserFriendsCreateFieldInput!]
+              delete: [UserFriendsDeleteFieldInput!]
+              disconnect: [UserFriendsDisconnectFieldInput!]
+              update: UserFriendsUpdateConnectionInput
+              where: UserFriendsConnectionWhere
+            }
 
-input UserOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [UserSort]
-}
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
+            }
 
-input UserRelationInput {
-  friends: [UserFriendsCreateFieldInput!]
-}
+            input UserRelationInput {
+              friends: [UserFriendsCreateFieldInput!]
+            }
 
-\\"\\"\\"
-Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
-\\"\\"\\"
-input UserSort {
-  name: SortDirection
-}
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
+            input UserSort {
+              name: SortDirection
+            }
 
-input UserUpdateInput {
-  friends: [UserFriendsUpdateFieldInput!]
-  name: String
-}
+            input UserUpdateInput {
+              friends: [UserFriendsUpdateFieldInput!]
+              name: String
+            }
 
-type UserUserFriendsAggregationSelection {
-  count: Int!
-  node: UserUserFriendsNodeAggregateSelection
-}
+            type UserUserFriendsAggregationSelection {
+              count: Int!
+              node: UserUserFriendsNodeAggregateSelection
+            }
 
-type UserUserFriendsNodeAggregateSelection {
-  name: StringAggregateSelectionNonNullable!
-}
+            type UserUserFriendsNodeAggregateSelection {
+              name: StringAggregateSelectionNonNullable!
+            }
 
-input UserWhere {
-  AND: [UserWhere!]
-  OR: [UserWhere!]
-  friends: UserWhere
-  friendsAggregate: UserFriendsAggregateInput
-  friendsConnection: UserFriendsConnectionWhere
-  friendsConnection_NOT: UserFriendsConnectionWhere
-  friends_NOT: UserWhere
-  name: String
-  name_CONTAINS: String
-  name_ENDS_WITH: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_CONTAINS: String
-  name_NOT_ENDS_WITH: String
-  name_NOT_IN: [String]
-  name_NOT_STARTS_WITH: String
-  name_STARTS_WITH: String
-}"
-`);
+            input UserWhere {
+              AND: [UserWhere!]
+              OR: [UserWhere!]
+              friends: UserWhere
+              friendsAggregate: UserFriendsAggregateInput
+              friendsConnection: UserFriendsConnectionWhere
+              friendsConnection_NOT: UserFriendsConnectionWhere
+              friends_NOT: UserWhere
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String!]
+              name_NOT: String
+              name_NOT_CONTAINS: String
+              name_NOT_ENDS_WITH: String
+              name_NOT_IN: [String!]
+              name_NOT_STARTS_WITH: String
+              name_STARTS_WITH: String
+            }"
+        `);
     });
 
     test("UNDIRECTED_ONLY", () => {
@@ -557,253 +557,253 @@ input UserWhere {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-type CreateInfo {
-  bookmark: String
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-type CreateUsersMutationResponse {
-  info: CreateInfo!
-  users: [User!]!
-}
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [User!]!
+            }
 
-type DeleteInfo {
-  bookmark: String
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-type Mutation {
-  createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
-  deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
-  updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
-}
+            type Mutation {
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
+              updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
 
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-type Query {
-  users(options: UserOptions, where: UserWhere): [User!]!
-  usersAggregate(where: UserWhere): UserAggregateSelection!
-}
+            type Query {
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+            }
 
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-type StringAggregateSelectionNonNullable {
-  longest: String!
-  shortest: String!
-}
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
 
-type UpdateInfo {
-  bookmark: String
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-type UpdateUsersMutationResponse {
-  info: UpdateInfo!
-  users: [User!]!
-}
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [User!]!
+            }
 
-type User {
-  friends(options: UserOptions, where: UserWhere): [User!]!
-  friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
-  friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
-  name: String!
-}
+            type User {
+              friends(options: UserOptions, where: UserWhere): [User!]!
+              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
+              friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
+              name: String!
+            }
 
-type UserAggregateSelection {
-  count: Int!
-  name: StringAggregateSelectionNonNullable!
-}
+            type UserAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNonNullable!
+            }
 
-input UserConnectInput {
-  friends: [UserFriendsConnectFieldInput!]
-}
+            input UserConnectInput {
+              friends: [UserFriendsConnectFieldInput!]
+            }
 
-input UserConnectWhere {
-  node: UserWhere!
-}
+            input UserConnectWhere {
+              node: UserWhere!
+            }
 
-input UserCreateInput {
-  friends: UserFriendsFieldInput
-  name: String!
-}
+            input UserCreateInput {
+              friends: UserFriendsFieldInput
+              name: String!
+            }
 
-input UserDeleteInput {
-  friends: [UserFriendsDeleteFieldInput!]
-}
+            input UserDeleteInput {
+              friends: [UserFriendsDeleteFieldInput!]
+            }
 
-input UserDisconnectInput {
-  friends: [UserFriendsDisconnectFieldInput!]
-}
+            input UserDisconnectInput {
+              friends: [UserFriendsDisconnectFieldInput!]
+            }
 
-input UserFriendsAggregateInput {
-  AND: [UserFriendsAggregateInput!]
-  OR: [UserFriendsAggregateInput!]
-  count: Int
-  count_GT: Int
-  count_GTE: Int
-  count_LT: Int
-  count_LTE: Int
-  node: UserFriendsNodeAggregationWhereInput
-}
+            input UserFriendsAggregateInput {
+              AND: [UserFriendsAggregateInput!]
+              OR: [UserFriendsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: UserFriendsNodeAggregationWhereInput
+            }
 
-input UserFriendsConnectFieldInput {
-  connect: [UserConnectInput!]
-  where: UserConnectWhere
-}
+            input UserFriendsConnectFieldInput {
+              connect: [UserConnectInput!]
+              where: UserConnectWhere
+            }
 
-type UserFriendsConnection {
-  edges: [UserFriendsRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
+            type UserFriendsConnection {
+              edges: [UserFriendsRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
 
-input UserFriendsConnectionSort {
-  node: UserSort
-}
+            input UserFriendsConnectionSort {
+              node: UserSort
+            }
 
-input UserFriendsConnectionWhere {
-  AND: [UserFriendsConnectionWhere!]
-  OR: [UserFriendsConnectionWhere!]
-  node: UserWhere
-  node_NOT: UserWhere
-}
+            input UserFriendsConnectionWhere {
+              AND: [UserFriendsConnectionWhere!]
+              OR: [UserFriendsConnectionWhere!]
+              node: UserWhere
+              node_NOT: UserWhere
+            }
 
-input UserFriendsCreateFieldInput {
-  node: UserCreateInput!
-}
+            input UserFriendsCreateFieldInput {
+              node: UserCreateInput!
+            }
 
-input UserFriendsDeleteFieldInput {
-  delete: UserDeleteInput
-  where: UserFriendsConnectionWhere
-}
+            input UserFriendsDeleteFieldInput {
+              delete: UserDeleteInput
+              where: UserFriendsConnectionWhere
+            }
 
-input UserFriendsDisconnectFieldInput {
-  disconnect: UserDisconnectInput
-  where: UserFriendsConnectionWhere
-}
+            input UserFriendsDisconnectFieldInput {
+              disconnect: UserDisconnectInput
+              where: UserFriendsConnectionWhere
+            }
 
-input UserFriendsFieldInput {
-  connect: [UserFriendsConnectFieldInput!]
-  create: [UserFriendsCreateFieldInput!]
-}
+            input UserFriendsFieldInput {
+              connect: [UserFriendsConnectFieldInput!]
+              create: [UserFriendsCreateFieldInput!]
+            }
 
-input UserFriendsNodeAggregationWhereInput {
-  AND: [UserFriendsNodeAggregationWhereInput!]
-  OR: [UserFriendsNodeAggregationWhereInput!]
-  name_AVERAGE_EQUAL: Float
-  name_AVERAGE_GT: Float
-  name_AVERAGE_GTE: Float
-  name_AVERAGE_LT: Float
-  name_AVERAGE_LTE: Float
-  name_EQUAL: String
-  name_GT: Int
-  name_GTE: Int
-  name_LONGEST_EQUAL: Int
-  name_LONGEST_GT: Int
-  name_LONGEST_GTE: Int
-  name_LONGEST_LT: Int
-  name_LONGEST_LTE: Int
-  name_LT: Int
-  name_LTE: Int
-  name_SHORTEST_EQUAL: Int
-  name_SHORTEST_GT: Int
-  name_SHORTEST_GTE: Int
-  name_SHORTEST_LT: Int
-  name_SHORTEST_LTE: Int
-}
+            input UserFriendsNodeAggregationWhereInput {
+              AND: [UserFriendsNodeAggregationWhereInput!]
+              OR: [UserFriendsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
+            }
 
-type UserFriendsRelationship {
-  cursor: String!
-  node: User!
-}
+            type UserFriendsRelationship {
+              cursor: String!
+              node: User!
+            }
 
-input UserFriendsUpdateConnectionInput {
-  node: UserUpdateInput
-}
+            input UserFriendsUpdateConnectionInput {
+              node: UserUpdateInput
+            }
 
-input UserFriendsUpdateFieldInput {
-  connect: [UserFriendsConnectFieldInput!]
-  create: [UserFriendsCreateFieldInput!]
-  delete: [UserFriendsDeleteFieldInput!]
-  disconnect: [UserFriendsDisconnectFieldInput!]
-  update: UserFriendsUpdateConnectionInput
-  where: UserFriendsConnectionWhere
-}
+            input UserFriendsUpdateFieldInput {
+              connect: [UserFriendsConnectFieldInput!]
+              create: [UserFriendsCreateFieldInput!]
+              delete: [UserFriendsDeleteFieldInput!]
+              disconnect: [UserFriendsDisconnectFieldInput!]
+              update: UserFriendsUpdateConnectionInput
+              where: UserFriendsConnectionWhere
+            }
 
-input UserOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [UserSort]
-}
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
+            }
 
-input UserRelationInput {
-  friends: [UserFriendsCreateFieldInput!]
-}
+            input UserRelationInput {
+              friends: [UserFriendsCreateFieldInput!]
+            }
 
-\\"\\"\\"
-Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
-\\"\\"\\"
-input UserSort {
-  name: SortDirection
-}
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
+            input UserSort {
+              name: SortDirection
+            }
 
-input UserUpdateInput {
-  friends: [UserFriendsUpdateFieldInput!]
-  name: String
-}
+            input UserUpdateInput {
+              friends: [UserFriendsUpdateFieldInput!]
+              name: String
+            }
 
-type UserUserFriendsAggregationSelection {
-  count: Int!
-  node: UserUserFriendsNodeAggregateSelection
-}
+            type UserUserFriendsAggregationSelection {
+              count: Int!
+              node: UserUserFriendsNodeAggregateSelection
+            }
 
-type UserUserFriendsNodeAggregateSelection {
-  name: StringAggregateSelectionNonNullable!
-}
+            type UserUserFriendsNodeAggregateSelection {
+              name: StringAggregateSelectionNonNullable!
+            }
 
-input UserWhere {
-  AND: [UserWhere!]
-  OR: [UserWhere!]
-  friends: UserWhere
-  friendsAggregate: UserFriendsAggregateInput
-  friendsConnection: UserFriendsConnectionWhere
-  friendsConnection_NOT: UserFriendsConnectionWhere
-  friends_NOT: UserWhere
-  name: String
-  name_CONTAINS: String
-  name_ENDS_WITH: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_CONTAINS: String
-  name_NOT_ENDS_WITH: String
-  name_NOT_IN: [String]
-  name_NOT_STARTS_WITH: String
-  name_STARTS_WITH: String
-}"
-`);
+            input UserWhere {
+              AND: [UserWhere!]
+              OR: [UserWhere!]
+              friends: UserWhere
+              friendsAggregate: UserFriendsAggregateInput
+              friendsConnection: UserFriendsConnectionWhere
+              friendsConnection_NOT: UserFriendsConnectionWhere
+              friends_NOT: UserWhere
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String!]
+              name_NOT: String
+              name_NOT_CONTAINS: String
+              name_NOT_ENDS_WITH: String
+              name_NOT_IN: [String!]
+              name_NOT_STARTS_WITH: String
+              name_STARTS_WITH: String
+            }"
+        `);
     });
 });
