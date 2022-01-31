@@ -74,7 +74,7 @@ describe("609", () => {
               \\"\\"\\"
               Specify one or more DeprecatedSort objects to sort Deprecateds by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [DeprecatedSort]
+              sort: [DeprecatedSort!]
             }
 
             \\"\\"\\"
