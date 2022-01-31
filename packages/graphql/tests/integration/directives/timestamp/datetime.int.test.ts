@@ -45,7 +45,7 @@ describe("timestamp/datetime", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -65,7 +65,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -108,7 +108,7 @@ describe("timestamp/datetime", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             const title = generate({
                 charset: "alphabetic",
@@ -137,7 +137,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title, name },
@@ -165,7 +165,7 @@ describe("timestamp/datetime", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -189,7 +189,7 @@ describe("timestamp/datetime", () => {
                 `);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -232,7 +232,7 @@ describe("timestamp/datetime", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             const title = generate({
                 charset: "alphabetic",
@@ -267,7 +267,7 @@ describe("timestamp/datetime", () => {
                 );
 
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: update,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title },
@@ -295,7 +295,7 @@ describe("timestamp/datetime", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -315,7 +315,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -358,7 +358,7 @@ describe("timestamp/datetime", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             const title = generate({
                 charset: "alphabetic",
@@ -387,7 +387,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title, name },
@@ -422,7 +422,7 @@ describe("timestamp/datetime", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             const title = generate({
                 charset: "alphabetic",
@@ -457,7 +457,7 @@ describe("timestamp/datetime", () => {
                 );
 
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: update,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title },
@@ -483,7 +483,7 @@ describe("timestamp/datetime", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -507,7 +507,7 @@ describe("timestamp/datetime", () => {
                 `);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -543,7 +543,7 @@ describe("timestamp/datetime", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -563,7 +563,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -606,7 +606,7 @@ describe("timestamp/datetime", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             const title = generate({
                 charset: "alphabetic",
@@ -635,7 +635,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title, name },
@@ -670,7 +670,7 @@ describe("timestamp/datetime", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             const title = generate({
                 charset: "alphabetic",
@@ -705,7 +705,7 @@ describe("timestamp/datetime", () => {
                 );
 
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: update,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title },
@@ -731,7 +731,7 @@ describe("timestamp/datetime", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -755,7 +755,7 @@ describe("timestamp/datetime", () => {
                 `);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });

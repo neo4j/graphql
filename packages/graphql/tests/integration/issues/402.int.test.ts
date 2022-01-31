@@ -56,7 +56,7 @@ describe("402", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         // testing the missing non non-null array
         const query = `
@@ -87,7 +87,7 @@ describe("402", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });

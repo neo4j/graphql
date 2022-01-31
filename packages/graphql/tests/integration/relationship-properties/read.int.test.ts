@@ -85,7 +85,7 @@ describe("Relationship properties - read", () => {
     test("Projecting node and relationship properties with no arguments", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query {
@@ -108,10 +108,10 @@ describe("Relationship properties - read", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
@@ -150,7 +150,7 @@ describe("Relationship properties - read", () => {
     test("With `where` argument", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query {
@@ -176,10 +176,10 @@ describe("Relationship properties - read", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
@@ -214,7 +214,7 @@ describe("Relationship properties - read", () => {
     test("With `sort` argument", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query ConnectionWithSort($nameSort: SortDirection) {
@@ -237,10 +237,10 @@ describe("Relationship properties - read", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const ascResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "ASC" },
@@ -281,7 +281,7 @@ describe("Relationship properties - read", () => {
             ]);
 
             const descResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "DESC" },
@@ -328,7 +328,7 @@ describe("Relationship properties - read", () => {
     test("With `where` and `sort` arguments", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query ConnectionWithSort($nameSort: SortDirection) {
@@ -354,10 +354,10 @@ describe("Relationship properties - read", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const ascResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "ASC" },
@@ -392,7 +392,7 @@ describe("Relationship properties - read", () => {
             ]);
 
             const descResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "DESC" },
@@ -433,7 +433,7 @@ describe("Relationship properties - read", () => {
     test("Projecting a connection from a relationship with no argument", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query {
@@ -455,10 +455,10 @@ describe("Relationship properties - read", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
@@ -497,7 +497,7 @@ describe("Relationship properties - read", () => {
     test("Projecting a connection from a relationship with `where` argument", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query {
@@ -519,10 +519,10 @@ describe("Relationship properties - read", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });

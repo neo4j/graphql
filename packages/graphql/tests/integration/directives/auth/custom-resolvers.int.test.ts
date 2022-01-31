@@ -60,7 +60,7 @@ describe("auth/custom-resolvers", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
                 resolvers: {
                     Query: {
@@ -73,7 +73,7 @@ describe("auth/custom-resolvers", () => {
             const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req },
             });
@@ -105,7 +105,7 @@ describe("auth/custom-resolvers", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
                 resolvers: { Mutation: { me: (_, __, ctx) => ({ id: ctx.auth.jwt.sub }) } },
                 config: { jwt: { secret } },
@@ -114,7 +114,7 @@ describe("auth/custom-resolvers", () => {
             const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req },
             });
@@ -146,7 +146,7 @@ describe("auth/custom-resolvers", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
                 resolvers: {
                     Query: { me: () => ({}) },
@@ -162,7 +162,7 @@ describe("auth/custom-resolvers", () => {
             const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req },
             });
@@ -200,7 +200,7 @@ describe("auth/custom-resolvers", () => {
                 iat: 1516239022,
             };
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
                 resolvers: {
                     Query: {
@@ -210,7 +210,7 @@ describe("auth/custom-resolvers", () => {
             });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, jwt },
             });

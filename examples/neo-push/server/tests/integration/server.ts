@@ -11,7 +11,7 @@ function server(driver, context = {}) {
         driver,
     });
 
-    const neoSchema = new Neo4jGraphQL({
+    const neo4jgraphql = new Neo4jGraphQL({
         typeDefs,
         resolvers,
         config: {
@@ -22,7 +22,7 @@ function server(driver, context = {}) {
     });
 
     const apolloServer = new ApolloServer({
-        schema: neoSchema.schema,
+        schema: neo4jgraphql.schema,
         context: () => ({ ...context, driver, ogm } as Context),
     });
 

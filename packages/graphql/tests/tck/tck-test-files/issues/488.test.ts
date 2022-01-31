@@ -26,7 +26,7 @@ import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test
 describe("#488", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
@@ -53,7 +53,7 @@ describe("#488", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { enableRegex: true, jwt: { secret } },
         });
@@ -75,7 +75,7 @@ describe("#488", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -116,7 +116,7 @@ describe("#488", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 

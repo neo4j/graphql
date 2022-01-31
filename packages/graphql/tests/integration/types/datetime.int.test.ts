@@ -48,7 +48,7 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -68,7 +68,7 @@ describe("DateTime", () => {
 
             try {
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -104,7 +104,7 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -124,7 +124,7 @@ describe("DateTime", () => {
 
             try {
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -166,7 +166,7 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -190,7 +190,7 @@ describe("DateTime", () => {
                 );
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -216,7 +216,7 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -236,7 +236,7 @@ describe("DateTime", () => {
                `);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -262,7 +262,7 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -287,7 +287,7 @@ describe("DateTime", () => {
                 `);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });

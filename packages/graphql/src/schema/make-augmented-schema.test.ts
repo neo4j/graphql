@@ -49,14 +49,14 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema(typeDefs);
-        const document = neoSchema.typeDefs;
+        const neo4jgraphql = makeAugmentedSchema(typeDefs);
+        const document = neo4jgraphql.typeDefs;
         const queryObject = document.definitions.find(
             (x) => x.kind === "ObjectTypeDefinition" && x.name.value === "Query"
         ) as ObjectTypeDefinitionNode;
 
         ["Actor", "Movie"].forEach((type) => {
-            const node = neoSchema.nodes.find((x) => x.name === type);
+            const node = neo4jgraphql.nodes.find((x) => x.name === type);
             expect(node).toBeInstanceOf(Node);
             const nodeObject = document.definitions.find(
                 (x) => x.kind === "ObjectTypeDefinition" && x.name.value === type
@@ -138,9 +138,9 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema(typeDefs);
+            const neo4jgraphql = makeAugmentedSchema(typeDefs);
 
-            const document = neoSchema.typeDefs;
+            const document = neo4jgraphql.typeDefs;
 
             const nodeWhereInput = document.definitions.find(
                 (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "MovieWhere"
@@ -158,9 +158,9 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema(typeDefs, { enableRegex: true });
+            const neo4jgraphql = makeAugmentedSchema(typeDefs, { enableRegex: true });
 
-            const document = neoSchema.typeDefs;
+            const document = neo4jgraphql.typeDefs;
 
             const nodeWhereInput = document.definitions.find(
                 (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
@@ -186,9 +186,9 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema(typeDefs);
+            const neo4jgraphql = makeAugmentedSchema(typeDefs);
 
-            const document = neoSchema.typeDefs;
+            const document = neo4jgraphql.typeDefs;
 
             // make sure the schema constructs
             expect(document.kind).toBe("Document");

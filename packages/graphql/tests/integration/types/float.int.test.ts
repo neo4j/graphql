@@ -47,7 +47,7 @@ describe("Float", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -71,7 +71,7 @@ describe("Float", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -109,7 +109,7 @@ describe("Float", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -133,7 +133,7 @@ describe("Float", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -190,7 +190,7 @@ describe("Float", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -204,7 +204,7 @@ describe("Float", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -249,7 +249,7 @@ describe("Float", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const query = `
             query {
@@ -267,7 +267,7 @@ describe("Float", () => {
                 {}
             );
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });

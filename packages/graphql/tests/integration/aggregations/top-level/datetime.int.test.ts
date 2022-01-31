@@ -51,7 +51,7 @@ describe("aggregations-top_level-datetime", () => {
 
         const minDate = new Date();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -77,7 +77,7 @@ describe("aggregations-top_level-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -118,7 +118,7 @@ describe("aggregations-top_level-datetime", () => {
         const maxDate = new Date();
         maxDate.setDate(maxDate.getDate() + 1);
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -144,7 +144,7 @@ describe("aggregations-top_level-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -185,7 +185,7 @@ describe("aggregations-top_level-datetime", () => {
         const maxDate = new Date();
         maxDate.setDate(maxDate.getDate() + 1);
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -212,7 +212,7 @@ describe("aggregations-top_level-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });

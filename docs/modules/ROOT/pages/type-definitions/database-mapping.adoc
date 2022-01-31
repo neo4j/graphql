@@ -135,7 +135,7 @@ When running the server with Apollo:
 [source, js, indent=0]
 ----
 new ApolloServer({
-    schema: neoSchema.schema,
+    schema: neo4jgraphql.schema,
     context: ({ req }) => ({ req, appId: "myApp" }),
 });
 ----

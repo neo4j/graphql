@@ -91,7 +91,7 @@ describe("multi-database", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const query = `
             query {
@@ -102,7 +102,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             variableValues: { id },
             contextValue: { driver, driverConfig: { database: "non-existing-db" } },
@@ -123,7 +123,7 @@ describe("multi-database", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const query = `
             query {
@@ -134,7 +134,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             variableValues: { id },
             contextValue: { driver, driverConfig: { database: dbName } },
@@ -156,7 +156,7 @@ describe("multi-database", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
             config: { driverConfig: { database: "non-existing-db" } },
@@ -171,7 +171,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             variableValues: { id },
             contextValue: {}, // This is needed, otherwise the context in resolvers will be undefined
@@ -196,7 +196,7 @@ describe("multi-database", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
             config: { driverConfig: { database: dbName } },
@@ -211,7 +211,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             variableValues: { id },
             contextValue: {}, // This is needed, otherwise the context in resolvers will be undefined

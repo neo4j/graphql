@@ -53,7 +53,7 @@ describe("composite-where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             const actorName = generate({
                 charset: "alphabetic",
@@ -101,7 +101,7 @@ describe("composite-where", () => {
                 );
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     variableValues: { movieId, actorName, screenTime },
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -135,7 +135,7 @@ describe("composite-where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             const actorName = generate({
                 charset: "alphabetic",
@@ -183,7 +183,7 @@ describe("composite-where", () => {
                 );
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     variableValues: { movieId, actorName, screenTime },
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },

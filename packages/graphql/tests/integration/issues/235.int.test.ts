@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const b1 = generate({ charset: "alphabetic" });
         const b2 = generate({ charset: "alphabetic" });
@@ -114,7 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
         `;
 
         const createBSResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: createBS,
             variableValues: { b1, b2 },
             contextValue: { driver },
@@ -124,7 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
         expect((createBSResult.data as any)?.createBS.bS).toEqual([{ name: b1 }, { name: b2 }]);
 
         const createASResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: createAS,
             variableValues: { a, b1, b2, c },
             contextValue: { driver },
@@ -139,7 +139,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
         expect((createASResult.data as any)?.createAS.aS[0].rel_c).toEqual([{ name: c }]);
 
         const asResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: as,
             variableValues: { a },
             contextValue: { driver },

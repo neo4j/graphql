@@ -52,7 +52,7 @@ describe("Relationship properties - create", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -92,7 +92,7 @@ describe("Relationship properties - create", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { movieTitle, actorName, screenTime },
@@ -138,7 +138,7 @@ describe("Relationship properties - create", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -177,7 +177,7 @@ describe("Relationship properties - create", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { movieTitle, actorName, words },

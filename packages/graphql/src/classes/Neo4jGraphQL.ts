@@ -75,8 +75,8 @@ class Neo4jGraphQL {
         this.relationships = relationships;
 
         const resolversComposition = {
-            "Query.*": [wrapResolver({ driver, config, neoSchema: this })],
-            "Mutation.*": [wrapResolver({ driver, config, neoSchema: this })],
+            "Query.*": [wrapResolver({ driver, config, neo4jgraphql: this })],
+            "Mutation.*": [wrapResolver({ driver, config, neo4jgraphql: this })],
         };
 
         // Merge generated and custom resolvers

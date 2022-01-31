@@ -93,7 +93,7 @@ const driver = neo4j.driver(
     neo4j.auth.basic("neo4j", "password")
 );
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 ----
 
 == Create an instance of `ApolloServer`
@@ -105,7 +105,7 @@ Add the following to the bottom of `index.js`:
 [source, javascript, indent=0]
 ----
 const server = new ApolloServer({
-    schema: neoSchema.schema,
+    schema: neo4jgraphql.schema,
 });
 
 server.listen().then(({ url }) => {

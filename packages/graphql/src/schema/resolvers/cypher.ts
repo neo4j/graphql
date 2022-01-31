@@ -55,10 +55,10 @@ export default function cypherResolver({
         const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
             field.typeMeta.name
         );
-        const isEnum = context.neoSchema.document.definitions.find(
+        const isEnum = context.neo4jgraphql.document.definitions.find(
             (x) => x.kind === "EnumTypeDefinition" && x.name.value === field.typeMeta.name
         );
-        const isScalar = context.neoSchema.document.definitions.find(
+        const isScalar = context.neo4jgraphql.document.definitions.find(
             (x) => x.kind === "ScalarTypeDefinition" && x.name.value === field.typeMeta.name
         );
 
@@ -68,8 +68,8 @@ export default function cypherResolver({
             cypherStrs.push(`CALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
-        const referenceNode = context.neoSchema.nodes.find((x) => x.name === field.typeMeta.name);
-        const unions = context.neoSchema.document.definitions.filter(
+        const referenceNode = context.neo4jgraphql.nodes.find((x) => x.name === field.typeMeta.name);
+        const unions = context.neo4jgraphql.document.definitions.filter(
             (x) => x.kind === "UnionTypeDefinition"
         ) as UnionTypeDefinitionNode[];
         const referenceUnion = unions.find((u) => u.name.value === field.typeMeta.name);
@@ -112,7 +112,7 @@ export default function cypherResolver({
             const headStrs: string[] = [];
             const referencedNodes =
                 referenceUnion?.types
-                    ?.map((u) => context.neoSchema.nodes.find((n) => n.name === u.name.value))
+                    ?.map((u) => context.neo4jgraphql.nodes.find((n) => n.name === u.name.value))
                     ?.filter((b) => b !== undefined)
                     ?.filter((n) => Object.keys(resolveTree.fieldsByTypeName).includes(n?.name ?? "")) || [];
 

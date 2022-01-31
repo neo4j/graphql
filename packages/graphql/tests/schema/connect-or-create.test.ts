@@ -35,8 +35,8 @@ describe("Connect Or Create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -425,8 +425,8 @@ describe("Connect Or Create", () => {
                 characterName: String
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

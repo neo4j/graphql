@@ -26,7 +26,7 @@ import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test
 describe("Undirected connections", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     test("query with undirected aggregation", async () => {
         typeDefs = gql`
@@ -36,7 +36,7 @@ describe("Undirected connections", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { jwt: { secret } },
         });
@@ -51,7 +51,7 @@ describe("Undirected connections", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 

@@ -33,7 +33,7 @@ describe("Create -> ConnectOrCreate", () => {
     const typeMovie = generateUniqueType("Movie");
     const typeActor = generateUniqueType("Actor");
 
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -55,7 +55,7 @@ describe("Create -> ConnectOrCreate", () => {
         }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        neo4jgraphql = new Neo4jGraphQL({ typeDefs });
     });
 
     beforeEach(() => {
@@ -94,7 +94,7 @@ describe("Create -> ConnectOrCreate", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -148,7 +148,7 @@ describe("Create -> ConnectOrCreate", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -220,7 +220,7 @@ describe("Create -> ConnectOrCreate", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

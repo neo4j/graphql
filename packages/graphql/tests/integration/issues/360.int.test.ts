@@ -49,7 +49,7 @@ describe("360", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -71,7 +71,7 @@ describe("360", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -98,7 +98,7 @@ describe("360", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -120,7 +120,7 @@ describe("360", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -147,7 +147,7 @@ describe("360", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -173,7 +173,7 @@ describe("360", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { rangeStart, rangeEnd },

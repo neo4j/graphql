@@ -31,7 +31,7 @@ describe("Field Level Aggregations Graphql alias", () => {
     const typeMovie = generateUniqueType("Movie");
     const typeActor = generateUniqueType("Actor");
 
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -55,7 +55,7 @@ describe("Field Level Aggregations Graphql alias", () => {
         }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        neo4jgraphql = new Neo4jGraphQL({ typeDefs });
         session = driver.session();
         await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
         CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37, born: datetime('2000-02-02')})`);
@@ -89,7 +89,7 @@ describe("Field Level Aggregations Graphql alias", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -127,7 +127,7 @@ describe("Field Level Aggregations Graphql alias", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

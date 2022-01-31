@@ -203,7 +203,7 @@ function createConnectAndParams({
         subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (relationField.properties) {
-            const relationship = (context.neoSchema.relationships.find(
+            const relationship = (context.neo4jgraphql.relationships.find(
                 (x) => x.properties === relationField.properties
             ) as unknown) as Relationship;
             const setA = createSetRelationshipPropertiesAndParams({
@@ -246,11 +246,11 @@ function createConnectAndParams({
 
                             if (relField.union) {
                                 Object.keys(v).forEach((modelName) => {
-                                    newRefNodes.push(context.neoSchema.nodes.find((x) => x.name === modelName) as Node);
+                                    newRefNodes.push(context.neo4jgraphql.nodes.find((x) => x.name === modelName) as Node);
                                 });
                             } else {
                                 newRefNodes.push(
-                                    context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
+                                    context.neo4jgraphql.nodes.find((x) => x.name === relField.typeMeta.name) as Node
                                 );
                             }
 
@@ -294,12 +294,12 @@ function createConnectAndParams({
                                 if (relField.union) {
                                     Object.keys(v).forEach((modelName) => {
                                         newRefNodes.push(
-                                            context.neoSchema.nodes.find((x) => x.name === modelName) as Node
+                                            context.neo4jgraphql.nodes.find((x) => x.name === modelName) as Node
                                         );
                                     });
                                 } else {
                                     newRefNodes.push(
-                                        context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
+                                        context.neo4jgraphql.nodes.find((x) => x.name === relField.typeMeta.name) as Node
                                     );
                                 }
 

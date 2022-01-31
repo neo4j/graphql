@@ -75,13 +75,13 @@ describe("Field Level Aggregations Auth", () => {
     testCases.forEach((testCase) => {
         describe(`isAuthenticated auth requests ~ ${testCase.name}`, () => {
             let req: IncomingMessage;
-            let neoSchema: Neo4jGraphQL;
+            let neo4jgraphql: Neo4jGraphQL;
 
             beforeAll(() => {
                 const extendedTypeDefs = `${typeDefs}
                 extend type ${typeMovie.name} @auth(rules: [{ isAuthenticated: true }])`;
 
-                neoSchema = new Neo4jGraphQL({
+                neo4jgraphql = new Neo4jGraphQL({
                     typeDefs: extendedTypeDefs,
                     config: {
                         jwt: {
@@ -103,7 +103,7 @@ describe("Field Level Aggregations Auth", () => {
                 }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -120,7 +120,7 @@ describe("Field Level Aggregations Auth", () => {
                 }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -137,7 +137,7 @@ describe("Field Level Aggregations Auth", () => {
                 }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -154,7 +154,7 @@ describe("Field Level Aggregations Auth", () => {
                 }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -162,7 +162,7 @@ describe("Field Level Aggregations Auth", () => {
             });
         });
         describe(`allow requests ~ ${testCase.name}`, () => {
-            let neoSchema: Neo4jGraphQL;
+            let neo4jgraphql: Neo4jGraphQL;
 
             beforeAll(() => {
                 const extendedTypeDefs = `${typeDefs}
@@ -170,7 +170,7 @@ describe("Field Level Aggregations Auth", () => {
                     allow: { testId: "$jwt.sub" }
                 }])`;
 
-                neoSchema = new Neo4jGraphQL({
+                neo4jgraphql = new Neo4jGraphQL({
                     typeDefs: extendedTypeDefs,
                     config: {
                         jwt: {
@@ -191,7 +191,7 @@ describe("Field Level Aggregations Auth", () => {
 
                 const req = createJwtRequest(secret, { sub: 1234 });
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -208,7 +208,7 @@ describe("Field Level Aggregations Auth", () => {
                     }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -226,7 +226,7 @@ describe("Field Level Aggregations Auth", () => {
                 const invalidReq = createJwtRequest(secret, { sub: 2222 });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req: invalidReq, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });

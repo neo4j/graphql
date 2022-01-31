@@ -62,7 +62,7 @@ describe("Nested unions", () => {
     });
 
     test("chain multiple connects, all for union relationships", async () => {
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -112,7 +112,7 @@ describe("Nested unions", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -128,7 +128,7 @@ describe("Nested unions", () => {
     });
 
     test("chain multiple disconnects, all for union relationships", async () => {
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -176,7 +176,7 @@ describe("Nested unions", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -213,7 +213,7 @@ describe("Nested unions", () => {
     });
 
     test("chain multiple deletes, all for union relationships", async () => {
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -261,7 +261,7 @@ describe("Nested unions", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -302,7 +302,7 @@ describe("Nested unions", () => {
     });
 
     test("chain multiple creates under update, all for union relationships", async () => {
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -362,7 +362,7 @@ describe("Nested unions", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -402,7 +402,7 @@ describe("Nested unions", () => {
     });
 
     test("chain multiple creates under create, all for union relationships", async () => {
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -461,7 +461,7 @@ describe("Nested unions", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });

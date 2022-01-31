@@ -54,7 +54,7 @@ describe("schema/rfs/003", () => {
             `;
 
             expect(() => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
             }).toThrow(msg);
         });
 
@@ -70,7 +70,7 @@ describe("schema/rfs/003", () => {
             `;
 
             expect(() => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
             }).toThrow(msg);
         });
 
@@ -86,7 +86,7 @@ describe("schema/rfs/003", () => {
             `;
 
             expect(() => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
             }).toThrow(msg);
         });
     });
@@ -132,7 +132,7 @@ describe("schema/rfs/003", () => {
             `;
 
             expect(() => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
             }).toThrow(msg);
         });
 
@@ -153,7 +153,7 @@ describe("schema/rfs/003", () => {
             `;
 
             expect(() => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
             }).toThrow(msg);
         });
 
@@ -174,7 +174,7 @@ describe("schema/rfs/003", () => {
             `;
 
             expect(() => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
             }).toThrow(msg);
         });
     });

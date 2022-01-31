@@ -56,7 +56,7 @@ describe("aggregations-where-node-datetime", () => {
 
         const someDateTime = new Date();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -79,7 +79,7 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -125,7 +125,7 @@ describe("aggregations-where-node-datetime", () => {
         const someDateTimeGT = new Date();
         someDateTimeGT.setDate(someDateTimeGT.getDate() - 1);
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -148,7 +148,7 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -192,7 +192,7 @@ describe("aggregations-where-node-datetime", () => {
 
         const someDateTime = new Date();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -215,7 +215,7 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -261,7 +261,7 @@ describe("aggregations-where-node-datetime", () => {
         const someDateTimeLT = new Date();
         someDateTimeLT.setDate(someDateTimeLT.getDate() + 1);
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -284,7 +284,7 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -328,7 +328,7 @@ describe("aggregations-where-node-datetime", () => {
 
         const someDateTime = new Date();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -351,7 +351,7 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });

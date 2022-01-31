@@ -51,7 +51,7 @@ describe("query options", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
             config: { queryOptions: { runtime: CypherRuntime.INTERPRETED } },
@@ -70,7 +70,7 @@ describe("query options", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             await session.run(
                 `
@@ -80,7 +80,7 @@ describe("query options", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },

@@ -85,7 +85,7 @@ describe("execute", () => {
                 };
 
                 // @ts-ignore
-                const neoSchema: Neo4jGraphQL = {
+                const neo4jgraphql: Neo4jGraphQL = {
                     // @ts-ignore
                     options: {},
                 };
@@ -94,7 +94,7 @@ describe("execute", () => {
                     cypher,
                     params,
                     defaultAccessMode,
-                    context: { driverConfig: { database, bookmarks }, neoSchema, driver } as Context,
+                    context: { driverConfig: { database, bookmarks }, neo4jgraphql, driver } as Context,
                 });
 
                 expect(executeResult.records).toEqual([{ title }]);
@@ -156,7 +156,7 @@ describe("execute", () => {
             };
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 // @ts-ignore
                 options: {},
             };
@@ -167,7 +167,7 @@ describe("execute", () => {
                 defaultAccessMode,
                 context: {
                     driverConfig: { database, bookmarks },
-                    neoSchema,
+                    neo4jgraphql,
                     driver,
                     queryOptions: {},
                 } as Context,
@@ -235,7 +235,7 @@ describe("execute", () => {
             };
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 // @ts-ignore
                 options: {},
             };
@@ -246,7 +246,7 @@ describe("execute", () => {
                 defaultAccessMode,
                 context: {
                     driverConfig: { database, bookmarks },
-                    neoSchema,
+                    neo4jgraphql,
                     driver,
                     queryOptions: {
                         runtime: CypherRuntime.INTERPRETED,

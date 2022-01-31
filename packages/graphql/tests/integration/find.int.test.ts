@@ -50,7 +50,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const id = generate({
             charset: "alphabetic",
@@ -65,7 +65,7 @@ describe("find", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             await session.run(
                 `
@@ -75,7 +75,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -105,7 +105,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -128,7 +128,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -168,7 +168,7 @@ describe("find", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const query = `
             query($ids: [ID!]){
@@ -187,7 +187,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { ids: [id1, id2, id3] },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -219,7 +219,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id1 = generate({
             charset: "alphabetic",
@@ -252,7 +252,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { ids: [id1, id2, id3], title },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -284,7 +284,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const movieId1 = generate({
             charset: "alphabetic",
@@ -341,7 +341,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: {
                     movieIds: [movieId1, movieId2, movieId3],
@@ -428,7 +428,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const movieId1 = generate({
             charset: "alphabetic",
@@ -482,7 +482,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { movieIds: [movieId1, movieId2, movieId3], actorIds: [actorId1, actorId2, actorId3] },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -519,7 +519,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -547,7 +547,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { movieWhere: { OR: [{ title, id }] } },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },

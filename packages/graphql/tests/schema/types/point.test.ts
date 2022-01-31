@@ -29,8 +29,8 @@ describe("Point", () => {
                 filmedAt: Point!
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -160,8 +160,8 @@ describe("Point", () => {
                 partLocation: CartesianPoint!
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -290,8 +290,8 @@ describe("Point", () => {
                 filmedAt: [Point!]!
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -392,8 +392,8 @@ describe("Point", () => {
                 partLocations: [CartesianPoint!]!
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

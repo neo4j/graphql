@@ -56,7 +56,7 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const genreId = generate({
             charset: "alphabetic",
@@ -96,7 +96,7 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
             `);
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver },
             });

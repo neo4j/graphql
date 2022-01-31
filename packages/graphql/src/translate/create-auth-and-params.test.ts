@@ -67,7 +67,7 @@ describe("createAuthAndParams", () => {
             }).instance();
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 nodes: [node],
             };
 
@@ -76,7 +76,7 @@ describe("createAuthAndParams", () => {
             });
 
             // @ts-ignore
-            const context: Context = { neoSchema, jwt: { sub } };
+            const context: Context = { neo4jgraphql, jwt: { sub } };
 
             const result = createAuthAndParams({
                 context,
@@ -208,7 +208,7 @@ describe("createAuthAndParams", () => {
             }).instance();
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 nodes: [node],
             };
 
@@ -217,7 +217,7 @@ describe("createAuthAndParams", () => {
             });
 
             // @ts-ignore
-            const context: Context = { neoSchema };
+            const context: Context = { neo4jgraphql };
             context.jwt = {
                 sub,
             };
@@ -276,7 +276,7 @@ describe("createAuthAndParams", () => {
             }).instance();
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 nodes: [node],
             };
 
@@ -285,7 +285,7 @@ describe("createAuthAndParams", () => {
             });
 
             // @ts-ignore
-            const context: Context = { neoSchema };
+            const context: Context = { neo4jgraphql };
             context.jwt = {
                 sub,
             };
@@ -346,7 +346,7 @@ describe("createAuthAndParams", () => {
             }).instance();
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 nodes: [node],
             };
 
@@ -355,7 +355,7 @@ describe("createAuthAndParams", () => {
             });
 
             // @ts-ignore
-            const context: Context = { neoSchema };
+            const context: Context = { neo4jgraphql };
             context.jwt = {
                 sub,
             };
@@ -414,7 +414,7 @@ describe("createAuthAndParams", () => {
             }).instance();
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 nodes: [node],
             };
 
@@ -423,7 +423,7 @@ describe("createAuthAndParams", () => {
             });
 
             // @ts-ignore
-            const context: Context = { neoSchema };
+            const context: Context = { neo4jgraphql };
             context.jwt = {
                 sub,
             };
@@ -489,7 +489,7 @@ describe("createAuthAndParams", () => {
             }).instance();
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 nodes: [node],
             };
 
@@ -498,7 +498,7 @@ describe("createAuthAndParams", () => {
             });
 
             // @ts-ignore
-            const context: Context = { neoSchema };
+            const context: Context = { neo4jgraphql };
             context.jwt = {
                 sub,
             };
@@ -599,7 +599,7 @@ describe("createAuthAndParams", () => {
             }).instance();
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 nodes: [node],
             };
 
@@ -608,7 +608,7 @@ describe("createAuthAndParams", () => {
             });
 
             // @ts-ignore
-            const context: Context = { neoSchema };
+            const context: Context = { neo4jgraphql };
             context.jwt = {
                 sub,
             };
@@ -701,7 +701,7 @@ describe("createAuthAndParams", () => {
             }).instance();
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 nodes: [node],
             };
 
@@ -710,7 +710,7 @@ describe("createAuthAndParams", () => {
             });
 
             // @ts-ignore
-            const context: Context = { neoSchema };
+            const context: Context = { neo4jgraphql };
             context.jwt = {
                 sub,
             };
@@ -777,12 +777,12 @@ describe("createAuthAndParams", () => {
             }).instance();
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 nodes: [node],
             };
 
             // @ts-ignore
-            const context: Context = { neoSchema, jwt: {} };
+            const context: Context = { neo4jgraphql, jwt: {} };
 
             expect(() => {
                 createAuthAndParams({
@@ -835,12 +835,12 @@ describe("createAuthAndParams", () => {
             }).instance();
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 nodes: [node],
             };
 
             // @ts-ignore
-            const context: Context = { neoSchema, jwt: {} };
+            const context: Context = { neo4jgraphql, jwt: {} };
 
             expect(() => {
                 createAuthAndParams({
@@ -893,12 +893,12 @@ describe("createAuthAndParams", () => {
             }).instance();
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 nodes: [node],
             };
 
             // @ts-ignore
-            const context: Context = { neoSchema, jwt: {} };
+            const context: Context = { neo4jgraphql, jwt: {} };
 
             const result = createAuthAndParams({
                 context,
@@ -954,12 +954,12 @@ describe("createAuthAndParams", () => {
             }).instance();
 
             // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
+            const neo4jgraphql: Neo4jGraphQL = {
                 nodes: [node],
             };
 
             // @ts-ignore
-            const context: Context = { neoSchema, jwt: {} };
+            const context: Context = { neo4jgraphql, jwt: {} };
 
             const result = createAuthAndParams({
                 context,

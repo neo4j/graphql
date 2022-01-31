@@ -54,12 +54,12 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         const req = createJwtRequest(secret);
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, req },
         });
@@ -84,12 +84,12 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         const req = createJwtRequest(secret);
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, req },
         });
@@ -116,12 +116,12 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         const req = createJwtRequest(secret);
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, req },
         });

@@ -111,7 +111,7 @@ function createNodeWhereAndParams({
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
 
             if (relationField) {
-                const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+                const refNode = context.neo4jgraphql.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
                 const inStr = relationField.direction === "IN" ? "<-" : "-";
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;

@@ -62,7 +62,7 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
             await session.run(`
@@ -72,7 +72,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req },
             });
@@ -112,7 +112,7 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
             await session.run(`
@@ -122,7 +122,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req },
             });
@@ -173,7 +173,7 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
             await session.run(`
@@ -183,7 +183,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req },
             });
@@ -228,7 +228,7 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
             await session.run(`
@@ -238,7 +238,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req },
             });
@@ -283,7 +283,7 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
             await session.run(`
@@ -293,7 +293,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req },
             });
@@ -338,7 +338,7 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
             await session.run(`
@@ -348,7 +348,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req },
             });
@@ -393,7 +393,7 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
             await session.run(`
@@ -403,7 +403,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req },
             });
@@ -448,7 +448,7 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
             await session.run(`
@@ -458,7 +458,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req },
             });
@@ -503,7 +503,7 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
             await session.run(`
@@ -513,7 +513,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req },
             });

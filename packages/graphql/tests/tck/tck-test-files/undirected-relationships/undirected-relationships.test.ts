@@ -26,7 +26,7 @@ import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test
 describe("Undirected relationships", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     test("query with directed and undirected relationships", async () => {
         typeDefs = gql`
@@ -36,7 +36,7 @@ describe("Undirected relationships", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { jwt: { secret } },
         });
@@ -55,7 +55,7 @@ describe("Undirected relationships", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -86,7 +86,7 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | t
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { jwt: { secret } },
         });
@@ -106,7 +106,7 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | t
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -147,7 +147,7 @@ RETURN this { content:  [this_content IN [(this)-[:HAS_CONTENT]-(this_content) W
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { jwt: { secret } },
         });
@@ -162,7 +162,7 @@ RETURN this { content:  [this_content IN [(this)-[:HAS_CONTENT]-(this_content) W
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -200,7 +200,7 @@ RETURN this { actedIn: collect(actedIn) } as this"
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { jwt: { secret } },
         });
@@ -218,7 +218,7 @@ RETURN this { actedIn: collect(actedIn) } as this"
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 

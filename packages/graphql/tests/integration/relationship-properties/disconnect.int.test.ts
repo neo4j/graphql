@@ -52,7 +52,7 @@ describe("Relationship properties - disconnect", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -86,7 +86,7 @@ describe("Relationship properties - disconnect", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { movieTitle, actorName },
@@ -136,7 +136,7 @@ describe("Relationship properties - disconnect", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -176,7 +176,7 @@ describe("Relationship properties - disconnect", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { actorName, screenTime },

@@ -31,7 +31,7 @@ describe("Field Level Aggregations Where", () => {
     const typeMovie = generateUniqueType("Movie");
     const typePerson = generateUniqueType("Person");
 
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -55,7 +55,7 @@ describe("Field Level Aggregations Where", () => {
         }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        neo4jgraphql = new Neo4jGraphQL({ typeDefs });
         session = driver.session();
         await session.run(`
             CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typePerson.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
@@ -79,7 +79,7 @@ describe("Field Level Aggregations Where", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -102,7 +102,7 @@ describe("Field Level Aggregations Where", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -123,7 +123,7 @@ describe("Field Level Aggregations Where", () => {
               }
           }`;
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -145,7 +145,7 @@ describe("Field Level Aggregations Where", () => {
                 }
             }`;
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -166,7 +166,7 @@ describe("Field Level Aggregations Where", () => {
                 }
             }`;
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -187,7 +187,7 @@ describe("Field Level Aggregations Where", () => {
                 }
             }`;
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -211,7 +211,7 @@ describe("Field Level Aggregations Where", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -234,7 +234,7 @@ describe("Field Level Aggregations Where", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -257,7 +257,7 @@ describe("Field Level Aggregations Where", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

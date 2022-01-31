@@ -44,7 +44,7 @@ describe("delete", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -68,7 +68,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -101,7 +101,7 @@ describe("delete", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -125,7 +125,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 variableValues: { id: "NOT FOUND" },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -164,7 +164,7 @@ describe("delete", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -197,7 +197,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 variableValues: { id, name },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -246,7 +246,7 @@ describe("delete", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id1 = generate({
             charset: "alphabetic",
@@ -289,7 +289,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 variableValues: { id1, name, id2 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -348,7 +348,7 @@ describe("delete", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const title = generate({
             charset: "alphabetic",
@@ -380,7 +380,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 variableValues: { name },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },

@@ -17,7 +17,7 @@ The recommended construction of a `Neo4jGraphQL` instance would be:
 
 [source, javascript, indent=0]
 ----
-const neoSchema = new Neo4jGraphQL({
+const neo4jgraphql = new Neo4jGraphQL({
     typeDefs,
     config: {
         jwt: {
@@ -31,7 +31,7 @@ Another valid construction could be:
 
 [source, javascript, indent=0]
 ----
-const neoSchema = new Neo4jGraphQL({
+const neo4jgraphql = new Neo4jGraphQL({
     typeDefs,
     config: {
         jwt: {
@@ -61,7 +61,7 @@ In order to make use of this, you must pass it in as a "dot path" into the `role
 
 [source, javascript, indent=0]
 ----
-const neoSchema = new Neo4jGraphQL({
+const neo4jgraphql = new Neo4jGraphQL({
     typeDefs,
     config: {
         jwt: {
@@ -86,12 +86,12 @@ content-type: application/json
 
 Note the string "Bearer" before the inclusion of the JWT.
 
-Then, using Apollo Server as an example, you must include the request in the GraphQL context, as follows (using the `neoSchema` instance from the example above):
+Then, using Apollo Server as an example, you must include the request in the GraphQL context, as follows (using the `neo4jgraphql` instance from the example above):
 
 [source, javascript, indent=0]
 ----
 const server = new ApolloServer({
-    schema: neoSchema.schema,
+    schema: neo4jgraphql.schema,
     context: ({ req }) => ({ req }),
 });
 ----
@@ -126,7 +126,7 @@ For example, you might have a function `decodeJWT` which returns a decoded JWT:
 const decodedJWT = decodeJWT(encodedJWT)
 
 const server = new ApolloServer({
-    schema: neoSchema.schema,
+    schema: neo4jgraphql.schema,
     context: { jwt: decodedJWT.payload },
 });
 ----

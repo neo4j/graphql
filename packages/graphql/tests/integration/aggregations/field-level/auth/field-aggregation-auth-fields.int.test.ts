@@ -26,7 +26,7 @@ import { generateUniqueType } from "../../../../utils/graphql-types";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 
 describe(`Field Level Auth Where Requests`, () => {
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
     let driver: Driver;
     let session: Session;
     let req: IncomingMessage;
@@ -58,7 +58,7 @@ describe(`Field Level Auth Where Requests`, () => {
                 (:${typeActor.name} { name: "Arnold", year: 1970 })
                 CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", year:1985 })`);
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: {
                 jwt: {
@@ -89,7 +89,7 @@ describe(`Field Level Auth Where Requests`, () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -110,7 +110,7 @@ describe(`Field Level Auth Where Requests`, () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -131,7 +131,7 @@ describe(`Field Level Auth Where Requests`, () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

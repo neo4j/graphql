@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
     test("COMPANYID can be populated on create and update", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const userid = generate({ charset: "alphabetic" });
         const companyid1 = generate({ charset: "alphabetic" });
@@ -78,10 +78,10 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const createResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: createMutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
             ]);
 
             const updateResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: updateMutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });

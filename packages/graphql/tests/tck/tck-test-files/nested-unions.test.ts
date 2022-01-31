@@ -26,7 +26,7 @@ import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-ut
 describe("Nested Unions", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
@@ -55,7 +55,7 @@ describe("Nested Unions", () => {
             union Actor = LeadActor | Extra
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { enableRegex: true, jwt: { secret } },
         });
@@ -93,7 +93,7 @@ describe("Nested Unions", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -168,7 +168,7 @@ describe("Nested Unions", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 

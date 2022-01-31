@@ -45,7 +45,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -68,7 +68,7 @@ describe("update", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { id, name: updatedName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -92,7 +92,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -129,7 +129,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { id, name: updatedName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -158,7 +158,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const initialMovieId = generate({
             charset: "alphabetic",
@@ -202,7 +202,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { updatedMovieId, actorName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -228,7 +228,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id1 = generate({
             charset: "alphabetic",
@@ -264,7 +264,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { id1, id2, name: updatedName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -298,7 +298,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -347,7 +347,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { movieId, updatedName, initialName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -378,7 +378,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -415,7 +415,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 variableValues: { id, name },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -446,7 +446,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -483,7 +483,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 variableValues: { id, name },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -514,7 +514,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id1 = generate({
             charset: "alphabetic",
@@ -563,7 +563,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 variableValues: { id1, name, id2 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -604,7 +604,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -658,7 +658,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 variableValues: { id, name1, name3 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -690,7 +690,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -737,7 +737,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -768,7 +768,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -804,7 +804,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -839,7 +839,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -883,7 +883,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { movieId, seriesId },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -912,7 +912,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -949,7 +949,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -982,7 +982,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const productId = generate({
             charset: "alphabetic",
@@ -1041,7 +1041,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -1080,7 +1080,7 @@ describe("update", () => {
            }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const productId = generate({
             charset: "alphabetic",
@@ -1187,7 +1187,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -1242,7 +1242,7 @@ describe("update", () => {
            }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const productId = generate({
             charset: "alphabetic",
@@ -1305,7 +1305,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -1345,7 +1345,7 @@ describe("update", () => {
            }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const productId = generate({
             charset: "alphabetic",
@@ -1406,7 +1406,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },

@@ -30,8 +30,8 @@ describe("@writeonly directive", () => {
                 password: String! @writeonly
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -168,8 +168,8 @@ describe("@writeonly directive", () => {
                 password: String!
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -309,8 +309,8 @@ describe("@writeonly directive", () => {
                 actors: [Actor!]! @writeonly @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

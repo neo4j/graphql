@@ -25,7 +25,7 @@ import { createJwtRequest } from "../../../../utils/create-jwt-request";
 
 describe("connectOrCreate", () => {
     const secret = "secret";
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     function createTypedef(operations: string): DocumentNode {
         return gql`
@@ -63,13 +63,13 @@ describe("connectOrCreate", () => {
         `;
 
         test("Create with createOrConnect and CONNECT operation rule", async () => {
-            neoSchema = new Neo4jGraphQL({
+            neo4jgraphql = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CONNECT]"),
                 config: { enableRegex: true, jwt: { secret } },
             });
 
             const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
+            const result = await translateQuery(neo4jgraphql, query, {
                 req,
             });
 
@@ -106,13 +106,13 @@ describe("connectOrCreate", () => {
         });
 
         test("Create with createOrConnect and CREATE operation rule", async () => {
-            neoSchema = new Neo4jGraphQL({
+            neo4jgraphql = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE]"),
                 config: { enableRegex: true, jwt: { secret } },
             });
 
             const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
+            const result = await translateQuery(neo4jgraphql, query, {
                 req,
             });
 
@@ -149,13 +149,13 @@ describe("connectOrCreate", () => {
         });
 
         test("Create with createOrConnect and CREATE, CONNECT operation rule", async () => {
-            neoSchema = new Neo4jGraphQL({
+            neo4jgraphql = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE, CONNECT]"),
                 config: { enableRegex: true, jwt: { secret } },
             });
 
             const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
+            const result = await translateQuery(neo4jgraphql, query, {
                 req,
             });
 
@@ -192,13 +192,13 @@ describe("connectOrCreate", () => {
         });
 
         test("Create with createOrConnect and DELETE operation rule", async () => {
-            neoSchema = new Neo4jGraphQL({
+            neo4jgraphql = new Neo4jGraphQL({
                 typeDefs: createTypedef("[DELETE]"),
                 config: { enableRegex: true, jwt: { secret } },
             });
 
             const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
+            const result = await translateQuery(neo4jgraphql, query, {
                 req,
             });
 
@@ -248,13 +248,13 @@ describe("connectOrCreate", () => {
         `;
 
         test("Update with createOrConnect and CONNECT operation rule", async () => {
-            neoSchema = new Neo4jGraphQL({
+            neo4jgraphql = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CONNECT]"),
                 config: { enableRegex: true, jwt: { secret } },
             });
 
             const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
+            const result = await translateQuery(neo4jgraphql, query, {
                 req,
             });
 
@@ -292,13 +292,13 @@ describe("connectOrCreate", () => {
         });
 
         test("Update with createOrConnect and CREATE operation rule", async () => {
-            neoSchema = new Neo4jGraphQL({
+            neo4jgraphql = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE]"),
                 config: { enableRegex: true, jwt: { secret } },
             });
 
             const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
+            const result = await translateQuery(neo4jgraphql, query, {
                 req,
             });
 
@@ -336,13 +336,13 @@ describe("connectOrCreate", () => {
         });
 
         test("Update with createOrConnect and CREATE, CONNECT operation rule", async () => {
-            neoSchema = new Neo4jGraphQL({
+            neo4jgraphql = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE, CONNECT]"),
                 config: { enableRegex: true, jwt: { secret } },
             });
 
             const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
+            const result = await translateQuery(neo4jgraphql, query, {
                 req,
             });
 
@@ -380,13 +380,13 @@ describe("connectOrCreate", () => {
         });
 
         test("Create with createOrConnect and DELETE operation rule", async () => {
-            neoSchema = new Neo4jGraphQL({
+            neo4jgraphql = new Neo4jGraphQL({
                 typeDefs: createTypedef("[DELETE]"),
                 config: { enableRegex: true, jwt: { secret } },
             });
 
             const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
+            const result = await translateQuery(neo4jgraphql, query, {
                 req,
             });
 
@@ -433,13 +433,13 @@ describe("connectOrCreate", () => {
         `;
 
         test("Update with createOrConnect and CONNECT operation rule", async () => {
-            neoSchema = new Neo4jGraphQL({
+            neo4jgraphql = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CONNECT]"),
                 config: { enableRegex: true, jwt: { secret } },
             });
 
             const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
+            const result = await translateQuery(neo4jgraphql, query, {
                 req,
             });
 
@@ -472,13 +472,13 @@ describe("connectOrCreate", () => {
         });
 
         test("Update with createOrConnect and CREATE operation rule", async () => {
-            neoSchema = new Neo4jGraphQL({
+            neo4jgraphql = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE]"),
                 config: { enableRegex: true, jwt: { secret } },
             });
 
             const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
+            const result = await translateQuery(neo4jgraphql, query, {
                 req,
             });
 
@@ -511,13 +511,13 @@ describe("connectOrCreate", () => {
         });
 
         test("Update with createOrConnect and CREATE, CONNECT operation rule", async () => {
-            neoSchema = new Neo4jGraphQL({
+            neo4jgraphql = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE, CONNECT]"),
                 config: { enableRegex: true, jwt: { secret } },
             });
 
             const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
+            const result = await translateQuery(neo4jgraphql, query, {
                 req,
             });
 
@@ -550,13 +550,13 @@ describe("connectOrCreate", () => {
         });
 
         test("Create with createOrConnect and DELETE operation rule", async () => {
-            neoSchema = new Neo4jGraphQL({
+            neo4jgraphql = new Neo4jGraphQL({
                 typeDefs: createTypedef("[DELETE]"),
                 config: { enableRegex: true, jwt: { secret } },
             });
 
             const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
+            const result = await translateQuery(neo4jgraphql, query, {
                 req,
             });
 

@@ -26,10 +26,10 @@ const driver = neo4j.driver(
     neo4j.auth.basic("neo4j", "password")
 );
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
 const server = new ApolloServer({
-    schema: neoSchema.schema,
+    schema: neo4jgraphql.schema,
     context: ({ req }) => ({ req }),
 });
 ----
@@ -52,10 +52,10 @@ const driver = neo4j.driver(
     neo4j.auth.basic("neo4j", "password")
 );
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
 const server = new ApolloServer({
-    schema: neoSchema.schema,
+    schema: neo4jgraphql.schema,
     context: ({ req }) => ({ req, driver }),
 });
 ----
@@ -104,8 +104,8 @@ const driver = neo4j.driver(
     neo4j.auth.basic("neo4j", "password")
 );
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-await neoSchema.checkNeo4jCompat();
+const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
+await neo4jgraphql.checkNeo4jCompat();
 ----
 
 === `OGM`
@@ -152,7 +152,7 @@ const driver = neo4j.driver(
     neo4j.auth.basic("neo4j", "password")
 );
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
 const server = new ApolloServer({
   schema,
@@ -178,7 +178,7 @@ const driver = neo4j.driver(
     neo4j.auth.basic("neo4j", "password")
 );
 
-const neoSchema = new Neo4jGraphQL({
+const neo4jgraphql = new Neo4jGraphQL({
     typeDefs,
     driver,
     config: {
@@ -234,7 +234,7 @@ const driver = neo4j.driver(
     neo4j.auth.basic("neo4j", "password")
 );
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
 const server = new ApolloServer({
   schema,

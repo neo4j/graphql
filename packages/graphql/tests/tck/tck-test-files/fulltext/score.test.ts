@@ -29,7 +29,7 @@ describe("Cypher -> fulltext -> Score", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -41,7 +41,7 @@ describe("Cypher -> fulltext -> Score", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query, {});
+        const result = await translateQuery(neo4jgraphql, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
@@ -70,7 +70,7 @@ describe("Cypher -> fulltext -> Score", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -82,7 +82,7 @@ describe("Cypher -> fulltext -> Score", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query, {});
+        const result = await translateQuery(neo4jgraphql, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
@@ -108,7 +108,7 @@ describe("Cypher -> fulltext -> Score", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -120,7 +120,7 @@ describe("Cypher -> fulltext -> Score", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query, {});
+        const result = await translateQuery(neo4jgraphql, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(

@@ -75,10 +75,10 @@ async function main() {
     const readonly = true; // We don't want to expose mutations in this case
     const typeDefs = await toGraphQLTypeDefs(sessionFactory, readonly);
 
-    const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+    const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
     const server = new ApolloServer({
-        schema: neoSchema.schema,
+        schema: neo4jgraphql.schema,
         context: ({ req }) => ({ req }),
     });
 }

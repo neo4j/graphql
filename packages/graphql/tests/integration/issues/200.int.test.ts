@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/200", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const catOne = generate({ charset: "alphabetic" });
         const catTwo = generate({ charset: "alphabetic" });
@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/200", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             variableValues: { catOne, catTwo, exampleImageLocations: [] },
             contextValue: { driver },

@@ -69,7 +69,7 @@ describe("createCreateAndParams", () => {
         }).instance();
 
         // @ts-ignore
-        const neoSchema: Neo4jGraphQL = {
+        const neo4jgraphql: Neo4jGraphQL = {
             nodes: [node],
         };
 
@@ -77,7 +77,7 @@ describe("createCreateAndParams", () => {
             input,
             node,
             // @ts-ignore
-            context: { neoSchema } as Context,
+            context: { neo4jgraphql } as Context,
             varName: "this0",
             withVars: ["this0"],
         });

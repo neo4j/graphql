@@ -26,7 +26,7 @@ import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test
 describe("QueryDirection in relationships", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     test("query with directed and undirected relationships with DEFAULT_UNDIRECTED", async () => {
         typeDefs = gql`
@@ -37,7 +37,7 @@ describe("QueryDirection in relationships", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { jwt: { secret } },
         });
@@ -56,7 +56,7 @@ describe("QueryDirection in relationships", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -76,7 +76,7 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | t
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { jwt: { secret } },
         });
@@ -95,7 +95,7 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | t
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -115,7 +115,7 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | 
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { jwt: { secret } },
         });
@@ -131,7 +131,7 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | 
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -150,7 +150,7 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | 
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { jwt: { secret } },
         });
@@ -166,7 +166,7 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | 
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 

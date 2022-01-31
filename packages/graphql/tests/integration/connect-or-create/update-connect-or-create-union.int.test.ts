@@ -34,7 +34,7 @@ describe("Update -> ConnectOrCreate Union", () => {
     const typeSeries = generateUniqueType("Series");
     const typeActor = generateUniqueType("Actor");
 
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -62,7 +62,7 @@ describe("Update -> ConnectOrCreate Union", () => {
         }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        neo4jgraphql = new Neo4jGraphQL({ typeDefs });
     });
 
     beforeEach(() => {
@@ -120,7 +120,7 @@ describe("Update -> ConnectOrCreate Union", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -214,7 +214,7 @@ describe("Update -> ConnectOrCreate Union", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

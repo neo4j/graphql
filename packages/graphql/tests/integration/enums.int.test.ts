@@ -52,7 +52,7 @@ describe("enums", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers: { Status: statusResolver } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, resolvers: { Status: statusResolver } });
 
         const id = generate({
             charset: "alphabetic",
@@ -70,7 +70,7 @@ describe("enums", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });

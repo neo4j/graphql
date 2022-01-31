@@ -53,7 +53,7 @@ describe("aggregations-where-node-string", () => {
             readable: true,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -75,7 +75,7 @@ describe("aggregations-where-node-string", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -120,7 +120,7 @@ describe("aggregations-where-node-string", () => {
             length,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -142,7 +142,7 @@ describe("aggregations-where-node-string", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -186,7 +186,7 @@ describe("aggregations-where-node-string", () => {
             length,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -208,7 +208,7 @@ describe("aggregations-where-node-string", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -252,7 +252,7 @@ describe("aggregations-where-node-string", () => {
             length: length - 1,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -274,7 +274,7 @@ describe("aggregations-where-node-string", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -318,7 +318,7 @@ describe("aggregations-where-node-string", () => {
             length,
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -340,7 +340,7 @@ describe("aggregations-where-node-string", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -400,7 +400,7 @@ describe("aggregations-where-node-string", () => {
                 length: 12,
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             try {
                 await session.run(
@@ -423,7 +423,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -484,7 +484,7 @@ describe("aggregations-where-node-string", () => {
                 length: 12,
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             try {
                 await session.run(
@@ -507,7 +507,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -571,7 +571,7 @@ describe("aggregations-where-node-string", () => {
 
             const avg = (10 + 11 + 12) / 3;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             try {
                 await session.run(
@@ -596,7 +596,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -656,7 +656,7 @@ describe("aggregations-where-node-string", () => {
             const avg = (10 + 11 + 12) / 3;
             const avgGT = avg - 1;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             try {
                 await session.run(
@@ -681,7 +681,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -740,7 +740,7 @@ describe("aggregations-where-node-string", () => {
 
             const avg = (10 + 11 + 12) / 3;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             try {
                 await session.run(
@@ -765,7 +765,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -825,7 +825,7 @@ describe("aggregations-where-node-string", () => {
             const avg = (10 + 11 + 12) / 3;
             const avgLT = avg + 1;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             try {
                 await session.run(
@@ -850,7 +850,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -909,7 +909,7 @@ describe("aggregations-where-node-string", () => {
 
             const avg = (10 + 11 + 12) / 3;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             try {
                 await session.run(
@@ -934,7 +934,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });

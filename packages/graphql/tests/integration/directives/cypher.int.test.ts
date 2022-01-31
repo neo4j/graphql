@@ -66,7 +66,7 @@ describe("cypher", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
                 const source = `
                     query($title: String!) {
@@ -91,7 +91,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: neo4jgraphql.schema,
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -136,7 +136,7 @@ describe("cypher", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
                 const source = `
                     query($title: String!, $name: String) {
@@ -161,7 +161,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: neo4jgraphql.schema,
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle, name: actorName },
@@ -208,7 +208,7 @@ describe("cypher", () => {
 
                 const secret = "secret";
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
                 const source = `
                     query($title: String!, $name: String) {
@@ -235,7 +235,7 @@ describe("cypher", () => {
                     const req = createJwtRequest(secret);
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: neo4jgraphql.schema,
                         source,
                         contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle, name: actorName },
@@ -284,7 +284,7 @@ describe("cypher", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
                 const source = `
                     query($titles: [String!]!) {
@@ -313,7 +313,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: neo4jgraphql.schema,
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
@@ -382,7 +382,7 @@ describe("cypher", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
                 const source = `
                     query($title: String!) {
@@ -420,7 +420,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: neo4jgraphql.schema,
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title },
@@ -473,7 +473,7 @@ describe("cypher", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
                 const source = `
                     mutation($title: String!) {
@@ -498,7 +498,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: neo4jgraphql.schema,
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -543,7 +543,7 @@ describe("cypher", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
                 const source = `
                     mutation($title: String!, $name: String) {
@@ -568,7 +568,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: neo4jgraphql.schema,
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -613,7 +613,7 @@ describe("cypher", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
                 const source = `
                     mutation($title: String!, $name: String) {
@@ -638,7 +638,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: neo4jgraphql.schema,
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -814,7 +814,7 @@ describe("cypher", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
                 const source = `
                     query($id: ID!) {
@@ -842,7 +842,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: neo4jgraphql.schema,
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { id: townId },

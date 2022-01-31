@@ -26,7 +26,7 @@ import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-t
 describe("Interface Relationships - Update disconnect", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
@@ -57,7 +57,7 @@ describe("Interface Relationships - Update disconnect", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { enableRegex: true, jwt: { secret } },
         });
@@ -75,7 +75,7 @@ describe("Interface Relationships - Update disconnect", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -142,7 +142,7 @@ describe("Interface Relationships - Update disconnect", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -240,7 +240,7 @@ describe("Interface Relationships - Update disconnect", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -337,7 +337,7 @@ describe("Interface Relationships - Update disconnect", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 

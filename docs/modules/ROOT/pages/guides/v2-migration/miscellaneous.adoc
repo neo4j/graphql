@@ -37,7 +37,7 @@ In version 2.0.0, there are greater levels of schema validation. However, upon u
 
 [source, javascript, indent=0]
 ----
-const neoSchema = new Neo4jGraphQL({
+const neo4jgraphql = new Neo4jGraphQL({
     typeDefs,
     config: {
         skipValidateTypeDefs: true,

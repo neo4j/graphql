@@ -73,13 +73,13 @@ describe("createDisconnectAndParams", () => {
         }).instance();
 
         // @ts-ignore
-        const neoSchema: Neo4jGraphQL = {
+        const neo4jgraphql: Neo4jGraphQL = {
             nodes: [node],
             relationships: [],
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema };
+        const context: Context = { neo4jgraphql };
 
         const result = createDisconnectAndParams({
             withVars: ["this"],

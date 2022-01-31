@@ -67,16 +67,16 @@ function createCreateAndParams({
                 // [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
 
                 Object.keys(value).forEach((unionTypeName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                    refNodes.push(context.neo4jgraphql.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
 
-                // refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
+                // refNode = context.neo4jgraphql.nodes.find((x) => x.name === unionTypeName) as Node;
             } else if (relationField.interface) {
                 relationField.interface?.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                    refNodes.push(context.neo4jgraphql.nodes.find((x) => x.name === implementationName) as Node);
                 });
             } else {
-                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+                refNodes.push(context.neo4jgraphql.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             refNodes.forEach((refNode) => {
@@ -112,7 +112,7 @@ function createCreateAndParams({
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                         if (relationField.properties) {
-                            const relationship = (context.neoSchema.relationships.find(
+                            const relationship = (context.neo4jgraphql.relationships.find(
                                 (x) => x.properties === relationField.properties
                             ) as unknown) as Relationship;
 

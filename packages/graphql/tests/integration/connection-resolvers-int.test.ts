@@ -56,7 +56,7 @@ describe("Connection Resolvers", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -110,7 +110,7 @@ describe("Connection Resolvers", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -164,7 +164,7 @@ describe("Connection Resolvers", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
         });
@@ -211,10 +211,10 @@ describe("Connection Resolvers", () => {
         const movieId = generate({ charset: "alphabetic" });
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -280,7 +280,7 @@ describe("Connection Resolvers", () => {
             `;
 
             const result2 = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: secondQuery,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -310,7 +310,7 @@ describe("Connection Resolvers", () => {
             });
 
             const result3 = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: secondQuery,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -363,7 +363,7 @@ describe("Connection Resolvers", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
         });
@@ -389,7 +389,7 @@ describe("Connection Resolvers", () => {
             await session.run("CREATE (:Movie { id: $movieId })", { movieId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { movieId },

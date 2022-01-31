@@ -63,7 +63,7 @@ describe("Enum Relationship Properties", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             resolvers: { RoleType: roleTypeResolver },
         });
@@ -110,7 +110,7 @@ describe("Enum Relationship Properties", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { title, name },

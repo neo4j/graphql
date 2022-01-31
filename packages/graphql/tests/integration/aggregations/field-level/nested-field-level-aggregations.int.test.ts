@@ -31,7 +31,7 @@ describe("Nested Field Level Aggregations", () => {
     const typeMovie = generateUniqueType("Movie");
     const typeActor = generateUniqueType("Actor");
 
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -55,7 +55,7 @@ describe("Nested Field Level Aggregations", () => {
         }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        neo4jgraphql = new Neo4jGraphQL({ typeDefs });
         session = driver.session();
         await session.run(`
         CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(arnold:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
@@ -85,7 +85,7 @@ describe("Nested Field Level Aggregations", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

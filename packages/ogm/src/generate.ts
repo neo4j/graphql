@@ -118,7 +118,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
         ],
         filename: options.outFile || "some-random-file-name-thats-not-used",
         documents: [],
-        schema: graphql.parse(graphql.printSchema(options.ogm.neoSchema.schema)),
+        schema: graphql.parse(graphql.printSchema(options.ogm.neo4jgraphql.schema)),
         pluginMap: {
             typescript: typescriptPlugin,
         },
@@ -131,7 +131,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
     const aggregateSelections: any = {};
     const modeMap: Record<string, string> = {};
 
-    options.ogm.neoSchema.nodes.forEach((node) => {
+    options.ogm.neo4jgraphql.nodes.forEach((node) => {
         const modelName = `${node.name}Model`;
         const hasFulltextArg = Boolean(node.fulltextDirective);
 
@@ -144,7 +144,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
             input: output,
         });
 
-        const nodeHasConnectOrCreate = hasConnectOrCreate(node, options.ogm.neoSchema);
+        const nodeHasConnectOrCreate = hasConnectOrCreate(node, options.ogm.neo4jgraphql);
         const model = `
             ${Object.values(aggregationInput[1]).join("\n")}
             ${aggregationInput[0]}

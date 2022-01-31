@@ -59,7 +59,7 @@ describe("aggregations-where-edge-int", () => {
 
         const someInt = Math.floor(Math.random() * Math.random());
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -81,7 +81,7 @@ describe("aggregations-where-edge-int", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -129,7 +129,7 @@ describe("aggregations-where-edge-int", () => {
         const someInt = Math.floor(Math.random() * Math.random());
         const someIntGt = someInt - 1;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -151,7 +151,7 @@ describe("aggregations-where-edge-int", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -199,7 +199,7 @@ describe("aggregations-where-edge-int", () => {
 
         const someInt = Math.floor(Math.random() * Math.random());
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -221,7 +221,7 @@ describe("aggregations-where-edge-int", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -270,7 +270,7 @@ describe("aggregations-where-edge-int", () => {
         const someInt = Math.floor(Math.random() * Math.random());
         const someIntLT = someInt + 1;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -292,7 +292,7 @@ describe("aggregations-where-edge-int", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -339,7 +339,7 @@ describe("aggregations-where-edge-int", () => {
 
         const someInt = Math.floor(Math.random() * Math.random());
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -361,7 +361,7 @@ describe("aggregations-where-edge-int", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -413,7 +413,7 @@ describe("aggregations-where-edge-int", () => {
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             try {
                 await session.run(
@@ -438,7 +438,7 @@ describe("aggregations-where-edge-int", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -487,7 +487,7 @@ describe("aggregations-where-edge-int", () => {
             const avg = (someInt1 + someInt2 + someInt3) / 3;
             const avgGT = avg - 1;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             try {
                 await session.run(
@@ -512,7 +512,7 @@ describe("aggregations-where-edge-int", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -560,7 +560,7 @@ describe("aggregations-where-edge-int", () => {
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             try {
                 await session.run(
@@ -585,7 +585,7 @@ describe("aggregations-where-edge-int", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -634,7 +634,7 @@ describe("aggregations-where-edge-int", () => {
             const avg = (someInt1 + someInt2 + someInt3) / 3;
             const avgLT = avg + 1;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             try {
                 await session.run(
@@ -659,7 +659,7 @@ describe("aggregations-where-edge-int", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -707,7 +707,7 @@ describe("aggregations-where-edge-int", () => {
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             try {
                 await session.run(
@@ -732,7 +732,7 @@ describe("aggregations-where-edge-int", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -782,7 +782,7 @@ describe("aggregations-where-edge-int", () => {
 
             const sum = someInt1 + someInt2 + someInt3;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             try {
                 await session.run(
@@ -807,7 +807,7 @@ describe("aggregations-where-edge-int", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });

@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/556 - Input Object type Articl
     test("Can create empty nodes", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             mutation {
@@ -72,10 +72,10 @@ describe("https://github.com/neo4j/graphql/issues/556 - Input Object type Articl
             }
         `;
 
-        await neoSchema.checkNeo4jCompat();
+        await neo4jgraphql.checkNeo4jCompat();
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks } },
         });

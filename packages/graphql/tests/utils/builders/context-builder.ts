@@ -28,7 +28,7 @@ export class ContextBuilder extends Builder<Context, Context> {
         super({
             driver: {} as neo4j.Driver,
             resolveTree: {} as ResolveTree,
-            neoSchema: new Neo4jGraphQL({
+            neo4jgraphql: new Neo4jGraphQL({
                 typeDefs: "",
             }),
             ...newOptions,

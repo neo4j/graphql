@@ -67,8 +67,8 @@ function createWhereAndParams({
         if (key.endsWith("Aggregate")) {
             const [fieldName] = key.split("Aggregate");
             const relationField = node.relationFields.find((x) => x.fieldName === fieldName) as RelationField;
-            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-            const relationship = (context.neoSchema.relationships.find(
+            const refNode = context.neo4jgraphql.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const relationship = (context.neo4jgraphql.relationships.find(
                 (x) => x.properties === relationField.properties
             ) as unknown) as Relationship;
 
@@ -104,7 +104,7 @@ function createWhereAndParams({
                     : `${varName}.${dbFieldName}`;
 
             if (relationField) {
-                const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+                const refNode = context.neo4jgraphql.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
                 const inStr = relationField.direction === "IN" ? "<-" : "-";
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
@@ -148,8 +148,8 @@ function createWhereAndParams({
                 }
 
                 Object.entries(nodeEntries).forEach((entry) => {
-                    const refNode = context.neoSchema.nodes.find((x) => x.name === entry[0]) as Node;
-                    const relationship = context.neoSchema.relationships.find(
+                    const refNode = context.neo4jgraphql.nodes.find((x) => x.name === entry[0]) as Node;
+                    const relationship = context.neo4jgraphql.relationships.find(
                         (x) => x.name === connectionField.relationshipTypeName
                     ) as Relationship;
 
@@ -317,7 +317,7 @@ function createWhereAndParams({
 
         const equalityRelation = node.relationFields.find((x) => key === x.fieldName);
         if (equalityRelation) {
-            const refNode = context.neoSchema.nodes.find((x) => x.name === equalityRelation.typeMeta.name) as Node;
+            const refNode = context.neo4jgraphql.nodes.find((x) => x.name === equalityRelation.typeMeta.name) as Node;
             const inStr = equalityRelation.direction === "IN" ? "<-" : "-";
             const outStr = equalityRelation.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${equalityRelation.type}]`;
@@ -363,8 +363,8 @@ function createWhereAndParams({
             }
 
             Object.entries(nodeEntries).forEach((entry) => {
-                const refNode = context.neoSchema.nodes.find((x) => x.name === entry[0]) as Node;
-                const relationship = context.neoSchema.relationships.find(
+                const refNode = context.neo4jgraphql.nodes.find((x) => x.name === entry[0]) as Node;
+                const relationship = context.neo4jgraphql.relationships.find(
                     (x) => x.name === equalityConnection.relationshipTypeName
                 ) as Relationship;
 

@@ -27,7 +27,7 @@ import { Neo4jGraphQL } from "../../../../../src/classes";
 import { generateUniqueType } from "../../../../utils/graphql-types";
 
 describe(`Field Level Auth Where Requests`, () => {
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
     let token: string;
     let driver: Driver;
     let session: Session;
@@ -64,7 +64,7 @@ describe(`Field Level Auth Where Requests`, () => {
         const extendedTypeDefs = `${typeDefs}
         extend type ${typeActor.name} @auth(rules: [{ where: { testId: "$jwt.sub" } }])`;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs: extendedTypeDefs,
             config: {
                 jwt: {
@@ -110,7 +110,7 @@ describe(`Field Level Auth Where Requests`, () => {
         req.headers.authorization = `Bearer ${token}`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

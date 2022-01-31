@@ -27,7 +27,7 @@ import { generateUniqueType } from "../../utils/graphql-types";
 describe("https://github.com/neo4j/graphql/issues/620", () => {
     let driver: Driver;
     let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     const typeUser = generateUniqueType("User");
     const typeBusiness = generateUniqueType("Business");
@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/620", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        neo4jgraphql = new Neo4jGraphQL({ typeDefs });
         try {
             session = driver.session();
             await session.run(`
@@ -85,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/620", () => {
         `;
 
         const gqlResult: any = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

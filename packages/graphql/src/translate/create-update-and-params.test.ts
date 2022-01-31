@@ -57,12 +57,12 @@ describe("createUpdateAndParams", () => {
         }).instance();
 
         // @ts-ignore
-        const neoSchema: Neo4jGraphQL = {
+        const neo4jgraphql: Neo4jGraphQL = {
             nodes: [node],
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema };
+        const context: Context = { neo4jgraphql };
 
         const result = createUpdateAndParams({
             updateInput: { id: "new" },

@@ -26,7 +26,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 describe("@ignore directive", () => {
     let driver: Driver;
     let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -37,7 +37,7 @@ describe("@ignore directive", () => {
             }
         `;
         const resolvers = { User: { customField: () => "Some custom value" } };
-        neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
+        neo4jgraphql = new Neo4jGraphQL({ typeDefs, resolvers });
     });
 
     beforeEach(() => {
@@ -75,7 +75,7 @@ describe("@ignore directive", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: usersQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { username },

@@ -26,7 +26,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 describe("Point", () => {
     let driver: Driver;
     let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -47,7 +47,7 @@ describe("Point", () => {
                 custom: () => "hello",
             },
         };
-        neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
+        neo4jgraphql = new Neo4jGraphQL({ typeDefs, resolvers });
     });
 
     beforeEach(() => {
@@ -88,7 +88,7 @@ describe("Point", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: create,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { id, size, longitude, latitude },
@@ -155,7 +155,7 @@ describe("Point", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: create,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { id, size, longitude, latitude, height },
@@ -228,7 +228,7 @@ describe("Point", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: update,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { id, longitude, latitude: newLatitude },
@@ -302,7 +302,7 @@ describe("Point", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: update,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { id, longitude, latitude: newLatitude, height },
@@ -371,7 +371,7 @@ describe("Point", () => {
         `;
 
         const equalsResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: photographsEqualsQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { longitude, latitude },
@@ -406,7 +406,7 @@ describe("Point", () => {
         `;
 
         const inResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: photographsInQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: {
@@ -449,7 +449,7 @@ describe("Point", () => {
         `;
 
         const notInResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: photographsNotInQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: {
@@ -497,7 +497,7 @@ describe("Point", () => {
         `;
 
         const lessThanResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: photographsLessThanQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { longitude, latitude: latitude + 1 },
@@ -534,7 +534,7 @@ describe("Point", () => {
         `;
 
         const greaterThanResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: photographsGreaterThanQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { longitude, latitude: latitude + 1 },
@@ -593,7 +593,7 @@ describe("Point", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: photographsQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { longitude, latitude, height },

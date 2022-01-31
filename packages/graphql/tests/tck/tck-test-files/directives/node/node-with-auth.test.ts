@@ -26,7 +26,7 @@ import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-t
 describe("Node Directive", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
@@ -48,7 +48,7 @@ describe("Node Directive", () => {
                 @auth(rules: [{ operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT], allow: { id: "$jwt.sub" } }])
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { enableRegex: true, jwt: { secret } },
         });
@@ -64,7 +64,7 @@ describe("Node Directive", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -91,7 +91,7 @@ describe("Node Directive", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 

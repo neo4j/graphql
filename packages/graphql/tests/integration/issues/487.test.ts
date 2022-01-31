@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -126,7 +126,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
             `);
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver },
             });

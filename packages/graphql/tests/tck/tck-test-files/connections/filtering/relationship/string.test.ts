@@ -32,7 +32,7 @@ import {
 describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
@@ -52,7 +52,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { enableRegex: true, jwt: { secret } },
         });
@@ -80,7 +80,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -129,7 +129,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -178,7 +178,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -227,7 +227,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -276,7 +276,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -325,7 +325,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -374,7 +374,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 

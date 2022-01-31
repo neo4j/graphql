@@ -71,7 +71,7 @@ export function formatParams(params: Record<string, any>): string {
 }
 
 export async function translateQuery(
-    neoSchema: Neo4jGraphQL,
+    neo4jgraphql: Neo4jGraphQL,
     query: DocumentNode,
     options: {
         req?: IncomingMessage;
@@ -81,7 +81,7 @@ export async function translateQuery(
     const driverBuilder = new DriverBuilder();
 
     const { errors } = await graphql({
-        schema: neoSchema.schema,
+        schema: neo4jgraphql.schema,
         source: getQuerySource(query),
         contextValue: {
             req: options.req,

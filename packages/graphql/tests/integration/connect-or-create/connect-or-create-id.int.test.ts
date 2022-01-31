@@ -34,7 +34,7 @@ describe("connectorcreate with @id", () => {
     const typeMovie = generateUniqueType("Movie");
     const typeActor = generateUniqueType("Actor");
 
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -52,7 +52,7 @@ describe("connectorcreate with @id", () => {
         }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        neo4jgraphql = new Neo4jGraphQL({ typeDefs });
     });
 
     beforeEach(() => {
@@ -95,7 +95,7 @@ describe("connectorcreate with @id", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -149,7 +149,7 @@ describe("connectorcreate with @id", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

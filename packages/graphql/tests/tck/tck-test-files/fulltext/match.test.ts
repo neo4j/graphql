@@ -24,7 +24,7 @@ import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test
 
 describe("Cypher -> fulltext -> Match", () => {
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
@@ -33,7 +33,7 @@ describe("Cypher -> fulltext -> Match", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
     });
@@ -47,7 +47,7 @@ describe("Cypher -> fulltext -> Match", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query, {});
+        const result = await translateQuery(neo4jgraphql, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
@@ -76,7 +76,7 @@ describe("Cypher -> fulltext -> Match", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query, {});
+        const result = await translateQuery(neo4jgraphql, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(

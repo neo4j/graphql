@@ -54,7 +54,7 @@ describe("aggregations-top_level-duration", () => {
         const minDuration = new neo4jDriver.types.Duration(months, days, 0, 0);
         const maxDuration = new neo4jDriver.types.Duration(months + 1, days, 0, 0);
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -80,7 +80,7 @@ describe("aggregations-top_level-duration", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -121,7 +121,7 @@ describe("aggregations-top_level-duration", () => {
         const minDuration = new neo4jDriver.types.Duration(months, days, 0, 0);
         const maxDuration = new neo4jDriver.types.Duration(months + 1, days, 0, 0);
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -147,7 +147,7 @@ describe("aggregations-top_level-duration", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -188,7 +188,7 @@ describe("aggregations-top_level-duration", () => {
         const minDuration = new neo4jDriver.types.Duration(months, days, 0, 0);
         const maxDuration = new neo4jDriver.types.Duration(months + 1, days, 0, 0);
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
@@ -215,7 +215,7 @@ describe("aggregations-top_level-duration", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });

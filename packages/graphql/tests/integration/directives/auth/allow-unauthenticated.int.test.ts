@@ -69,7 +69,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: true})
@@ -80,7 +80,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
             });
 
@@ -119,7 +119,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
@@ -130,7 +130,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
             });
 
@@ -171,7 +171,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
@@ -183,7 +183,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
             });
 
@@ -225,7 +225,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: true})
@@ -236,7 +236,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
             });
 
@@ -275,7 +275,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
@@ -286,7 +286,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
             });
 
@@ -326,7 +326,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
@@ -338,7 +338,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
             });
 
@@ -376,14 +376,14 @@ describe("auth/allow-unauthenticated", () => {
             `;
 
             const secret = "secret";
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
 
             const gqlResult = await graphql({
                 contextValue: { driver, req },
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
             });
 

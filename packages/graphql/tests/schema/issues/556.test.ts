@@ -70,10 +70,10 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        expect(neoSchema.schema).toBeDefined();
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        expect(neo4jgraphql.schema).toBeDefined();
 
-        const errors = validateSchema(neoSchema.schema);
+        const errors = validateSchema(neo4jgraphql.schema);
         expect(errors).toEqual([]);
     });
     test("should compile empty type def with error", () => {

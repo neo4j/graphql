@@ -35,8 +35,8 @@ describe("connect or create with id", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -406,8 +406,8 @@ describe("connect or create with id", () => {
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

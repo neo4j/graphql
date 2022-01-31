@@ -68,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/207", () => {
     test("__resolveType resolvers are correctly evaluated", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, resolvers, driver });
 
         const mutation = `
             query GetSearchResults {
@@ -85,10 +85,10 @@ describe("https://github.com/neo4j/graphql/issues/207", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });

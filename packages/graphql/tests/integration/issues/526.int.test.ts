@@ -84,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
     test("Query with a limit", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             {
@@ -97,10 +97,10 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
             }
         `;
 
-        await neoSchema.checkNeo4jCompat();
+        await neo4jgraphql.checkNeo4jCompat();
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks } },
         });

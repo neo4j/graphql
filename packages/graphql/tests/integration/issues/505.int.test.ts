@@ -97,10 +97,10 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         await driver.close();
     });
 
-    async function queryTest(neoSchema: Neo4jGraphQL, variableValues: any, userId: string, session: Session) {
+    async function queryTest(neo4jgraphql: Neo4jGraphQL, variableValues: any, userId: string, session: Session) {
         async function graphqlQuery(query: string) {
             return graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: {
                     driver,
@@ -160,7 +160,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("single user, single workspace, multiple pages", async () => {
         const session = driver.session();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
         const userId = generate({ charset: "alphabetic" });
         const workspaceId = generate({ charset: "alphabetic" });
         const pageIds = Array(2)
@@ -193,10 +193,10 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         };
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
-                neoSchema,
+                neo4jgraphql,
                 variableValues,
                 userId,
                 session
@@ -222,7 +222,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("single user, multiple workspaces, multiple shared pages", async () => {
         const session = driver.session();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
         const userId = generate({ charset: "alphabetic" });
         const workspaceIds = Array(2)
             .fill(0)
@@ -267,10 +267,10 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         };
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
-                neoSchema,
+                neo4jgraphql,
                 variableValues,
                 userId,
                 session
@@ -297,7 +297,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("multiple users, multiple workspaces, multiple shared pages", async () => {
         const session = driver.session();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
         const userIds = Array(2)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
@@ -351,10 +351,10 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         };
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
-                neoSchema,
+                neo4jgraphql,
                 variableValues,
                 userIds[1],
                 session
@@ -380,7 +380,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("multiple users, multiple workspaces, multiple mixed shared pages", async () => {
         const session = driver.session();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
         const userIds = Array(2)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
@@ -434,10 +434,10 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         };
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
-                neoSchema,
+                neo4jgraphql,
                 variableValues,
                 userIds[1],
                 session
@@ -463,7 +463,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("multiple users, multiple workspaces, multiple private pages", async () => {
         const session = driver.session();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
         const userIds = Array(2)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
@@ -517,10 +517,10 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         };
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
-                neoSchema,
+                neo4jgraphql,
                 variableValues,
                 userIds[1],
                 session
@@ -546,7 +546,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("multiple users, multiple workspaces where not member, multiple shared pages", async () => {
         const session = driver.session();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
         const userIds = Array(2)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
@@ -600,10 +600,10 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         };
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
-                neoSchema,
+                neo4jgraphql,
                 variableValues,
                 userIds[1],
                 session
@@ -628,7 +628,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("multiple users, multiple workspaces with partial membership, multiple shared pages", async () => {
         const session = driver.session();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
         const userIds = Array(2)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
@@ -682,10 +682,10 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         };
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
-                neoSchema,
+                neo4jgraphql,
                 variableValues,
                 userIds[1],
                 session
@@ -711,7 +711,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("multiple users, multiple workspaces with partial membership, multiple mixed shared pages", async () => {
         const session = driver.session();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
         const userIds = Array(2)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" }));
@@ -765,10 +765,10 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         };
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
-                neoSchema,
+                neo4jgraphql,
                 variableValues,
                 userIds[1],
                 session

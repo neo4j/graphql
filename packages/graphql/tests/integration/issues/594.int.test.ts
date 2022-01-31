@@ -27,7 +27,7 @@ import { Neo4jGraphQL } from "../../../src";
 describe("https://github.com/neo4j/graphql/issues/594", () => {
     let driver: Driver;
     let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     const typeMovie = generateUniqueType("Movie");
     const typePerson = generateUniqueType("Person");
@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        neo4jgraphql = new Neo4jGraphQL({ typeDefs });
         try {
             session = driver.session();
             await session.run(`CREATE (:${typeMovie.name} {title: "Cool Movie"})<-[:ACTED_IN]-(:${typePerson.name} {name: "Some Name", nickname: "SName"})
@@ -85,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         `;
 
         const gqlResult: any = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -110,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         `;
 
         const gqlResult: any = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

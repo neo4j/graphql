@@ -33,8 +33,8 @@ describe("@exclude directive", () => {
                 title: String
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -191,8 +191,8 @@ describe("@exclude directive", () => {
                 name: String
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -297,8 +297,8 @@ describe("@exclude directive", () => {
                 title: String
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -423,8 +423,8 @@ describe("@exclude directive", () => {
                 customActorQuery: Actor
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -551,8 +551,8 @@ describe("@exclude directive", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -851,8 +851,8 @@ describe("@exclude directive", () => {
                 name: String
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -977,8 +977,8 @@ describe("@exclude directive", () => {
                 title: String
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

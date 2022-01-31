@@ -28,9 +28,9 @@ describe("Neo4jGraphQL", () => {
     describe("methods", () => {
         describe("checkNeo4jCompat", () => {
             test("should throw neo4j-driver Driver missing", async () => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs: "type User {id: ID}" });
+                const neo4jgraphql = new Neo4jGraphQL({ typeDefs: "type User {id: ID}" });
 
-                await expect(neoSchema.checkNeo4jCompat()).rejects.toThrow(`neo4j-driver Driver missing`);
+                await expect(neo4jgraphql.checkNeo4jCompat()).rejects.toThrow(`neo4j-driver Driver missing`);
             });
         });
     });

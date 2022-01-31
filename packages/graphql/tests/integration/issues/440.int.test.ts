@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
     test("should be able to disconnect 2 nodes while creating one in the same mutation", async () => {
         const session = driver.session();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
         const videoID = generate({ charset: "alphabetic" });
         const catIDs = Array(3)
             .fill(0)
@@ -93,10 +93,10 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const mutationResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues,
@@ -115,7 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
     test("should be able to delete 2 nodes while creating one in the same mutation", async () => {
         const session = driver.session();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
         const videoID = generate({ charset: "alphabetic" });
         const catIDs = Array(3)
             .fill(0)
@@ -160,10 +160,10 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const mutationResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues,

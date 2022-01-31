@@ -60,7 +60,7 @@ describe("326", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         const query = `
             {
@@ -81,7 +81,7 @@ describe("326", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -117,7 +117,7 @@ describe("326", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         const query = `
             mutation {
@@ -138,7 +138,7 @@ describe("326", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },

@@ -52,7 +52,7 @@ function createInterfaceProjectionAndParams({
 
     const whereInput = resolveTree.args.where as InterfaceWhereArg;
 
-    const referenceNodes = context.neoSchema.nodes.filter(
+    const referenceNodes = context.neo4jgraphql.nodes.filter(
         (x) => field.interface?.implementations?.includes(x.name) && filterInterfaceNodes({ node: x, whereInput })
     );
 

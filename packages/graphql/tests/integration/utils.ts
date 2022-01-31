@@ -22,9 +22,9 @@ import { ApolloServer } from "apollo-server";
 import { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../src/classes";
 
-const constructTestServer = (neoSchema: Neo4jGraphQL, driver: Driver, context = {}) => {
+const constructTestServer = (neo4jgraphql: Neo4jGraphQL, driver: Driver, context = {}) => {
     const server = new ApolloServer({
-        schema: neoSchema.schema,
+        schema: neo4jgraphql.schema,
         context: ({ req }) => ({ driver, req, ...context }),
     });
 

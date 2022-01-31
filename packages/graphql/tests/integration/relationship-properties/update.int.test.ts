@@ -87,7 +87,7 @@ describe("Relationship properties - update", () => {
     test("Update a relationship property on a relationship between two specified nodes (update -> update)", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const mutation = `
             mutation {
@@ -111,10 +111,10 @@ describe("Relationship properties - update", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
@@ -150,7 +150,7 @@ describe("Relationship properties - update", () => {
     test("Update properties on both the relationship and end node in a nested update (update -> update)", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const mutation = `
             mutation {
@@ -184,10 +184,10 @@ describe("Relationship properties - update", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
@@ -223,7 +223,7 @@ describe("Relationship properties - update", () => {
     test("Create relationship node through update field on end node in a nested update (update -> update)", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const mutation = `
             mutation {
@@ -256,10 +256,10 @@ describe("Relationship properties - update", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
@@ -301,7 +301,7 @@ describe("Relationship properties - update", () => {
     test("Create a relationship node with relationship properties on end node in a nested update (update -> create)", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const mutation = `
             mutation {
@@ -332,10 +332,10 @@ describe("Relationship properties - update", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });

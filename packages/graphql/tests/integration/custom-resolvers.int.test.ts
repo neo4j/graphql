@@ -48,7 +48,7 @@ describe("Custom Resolvers", () => {
             return (root.id as string).toUpperCase();
         }
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             resolvers: { Movie: { custom: customResolver } },
         });
@@ -70,7 +70,7 @@ describe("Custom Resolvers", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -106,7 +106,7 @@ describe("Custom Resolvers", () => {
             return id;
         }
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             resolvers: { Query: { id: customResolver } },
         });
@@ -118,7 +118,7 @@ describe("Custom Resolvers", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver },
         });
@@ -148,7 +148,7 @@ describe("Custom Resolvers", () => {
             return id;
         }
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             resolvers: { Mutation: { id: customResolver } },
         });
@@ -160,7 +160,7 @@ describe("Custom Resolvers", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: mutation,
             contextValue: { driver },
         });
@@ -186,7 +186,7 @@ describe("Custom Resolvers", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             resolvers: {
                 Subscription: {
@@ -206,7 +206,7 @@ describe("Custom Resolvers", () => {
             }
         `;
 
-        const gqlResult = await createSourceEventStream(neoSchema.schema, parse(query), null, { driver });
+        const gqlResult = await createSourceEventStream(neo4jgraphql.schema, parse(query), null, { driver });
 
         // @ts-ignore
         const next = await gqlResult.next();
@@ -339,7 +339,7 @@ describe("Custom Resolvers", () => {
 
                     const session = driver.session();
 
-                    const neoSchema = new Neo4jGraphQL({
+                    const neo4jgraphql = new Neo4jGraphQL({
                         typeDefs,
                     });
 
@@ -351,7 +351,7 @@ describe("Custom Resolvers", () => {
                         }
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: neo4jgraphql.schema,
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -413,13 +413,13 @@ describe("Custom Resolvers", () => {
 
             const session = driver.session();
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
             try {
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: mutation,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -454,13 +454,13 @@ describe("Custom Resolvers", () => {
 
             const session = driver.session();
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
             try {
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -502,7 +502,7 @@ describe("Custom Resolvers", () => {
 
             const session = driver.session();
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -512,7 +512,7 @@ describe("Custom Resolvers", () => {
                 `);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -559,7 +559,7 @@ describe("Custom Resolvers", () => {
 
             const session = driver.session();
 
-            const neoSchema = new Neo4jGraphQL({
+            const neo4jgraphql = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -569,7 +569,7 @@ describe("Custom Resolvers", () => {
                 `);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });

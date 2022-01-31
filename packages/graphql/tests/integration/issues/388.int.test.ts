@@ -72,7 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
     test("should be able to alias union fields of custom cypher", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const userID = generate({ charset: "alphabetic" });
 
@@ -208,10 +208,10 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const mutationResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { input },
@@ -228,7 +228,7 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
             });
 
             const queryResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {

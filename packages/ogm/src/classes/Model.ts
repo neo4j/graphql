@@ -27,7 +27,7 @@ import { lowerFirst } from "../utils/lower-first";
 export interface ModelConstructor {
     name: string;
     selectionSet: string;
-    neoSchema: Neo4jGraphQL;
+    neo4jgraphql: Neo4jGraphQL;
 }
 
 function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNode): string {
@@ -41,13 +41,13 @@ function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNod
 class Model {
     public name: string;
     private namePluralized: string;
-    private neoSchema: Neo4jGraphQL;
+    private neo4jgraphql: Neo4jGraphQL;
     protected selectionSet: string;
 
     constructor(input: ModelConstructor) {
         this.name = input.name;
         this.namePluralized = lowerFirst(pluralize(input.name));
-        this.neoSchema = input.neoSchema;
+        this.neo4jgraphql = input.neo4jgraphql;
         this.selectionSet = input.selectionSet;
     }
 
@@ -101,7 +101,7 @@ class Model {
         const variableValues = { where, options, ...args };
 
         const result = await graphql({
-            schema: this.neoSchema.schema,
+            schema: this.neo4jgraphql.schema,
             source: query,
             rootValue,
             contextValue: context,
@@ -151,7 +151,7 @@ class Model {
         const variableValues = { ...args, input };
 
         const result = await graphql({
-            schema: this.neoSchema.schema,
+            schema: this.neo4jgraphql.schema,
             source: mutation,
             rootValue,
             contextValue: context,
@@ -235,7 +235,7 @@ class Model {
         const variableValues = { ...args, where, update, connect, disconnect, create, connectOrCreate };
 
         const result = await graphql({
-            schema: this.neoSchema.schema,
+            schema: this.neo4jgraphql.schema,
             source: mutation,
             rootValue,
             contextValue: context,
@@ -289,7 +289,7 @@ class Model {
         const variableValues = { where, delete: deleteInput };
 
         const result = await graphql({
-            schema: this.neoSchema.schema,
+            schema: this.neo4jgraphql.schema,
             source: mutation,
             rootValue,
             contextValue: context,
@@ -368,7 +368,7 @@ class Model {
         const variableValues = { where };
 
         const result = await graphql({
-            schema: this.neoSchema.schema,
+            schema: this.neo4jgraphql.schema,
             source: query,
             rootValue,
             contextValue: context,

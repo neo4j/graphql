@@ -640,7 +640,7 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             const title = generate({
                 charset: "alphabetic",
@@ -670,7 +670,7 @@ describe("timestamp/time", () => {
 
             try {
                 const graphqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title, name, screenTime },

@@ -72,7 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: {
                 jwt: { jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json" },
@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
             });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: {
                     driver,
@@ -134,7 +134,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: {
                 jwt: {
@@ -160,7 +160,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
             });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: {
                     driver,
@@ -202,7 +202,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: {
                 jwt: {
@@ -228,7 +228,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
             });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: {
                     driver,

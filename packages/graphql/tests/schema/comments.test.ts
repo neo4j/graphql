@@ -56,8 +56,8 @@ describe("Comments", () => {
                 customScalar: CustomScalar
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -258,8 +258,8 @@ describe("Comments", () => {
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -604,8 +604,8 @@ describe("Comments", () => {
                     actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -1058,8 +1058,8 @@ describe("Comments", () => {
                     searchNoDirective: Search
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neo4jgraphql.schema));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {

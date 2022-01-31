@@ -26,7 +26,7 @@ import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test
 describe("QueryDirection in relationships connection", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     test("query with directed and undirected relationships with a DEFAULT_UNDIRECTED", async () => {
         typeDefs = gql`
@@ -37,7 +37,7 @@ describe("QueryDirection in relationships connection", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { jwt: { secret } },
         });
@@ -52,7 +52,7 @@ describe("QueryDirection in relationships connection", () => {
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -78,7 +78,7 @@ RETURN this { friendsConnection } as this"
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { jwt: { secret } },
         });
@@ -93,7 +93,7 @@ RETURN this { friendsConnection } as this"
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -118,7 +118,7 @@ RETURN this { friendsConnection } as this"
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { jwt: { secret } },
         });
@@ -133,7 +133,7 @@ RETURN this { friendsConnection } as this"
         `;
 
         const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 

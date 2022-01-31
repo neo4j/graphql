@@ -39,7 +39,7 @@ export interface Context {
     driver: Driver;
     driverConfig?: DriverConfig;
     resolveTree: ResolveTree;
-    neoSchema: Neo4jGraphQL;
+    neo4jgraphql: Neo4jGraphQL;
     jwt?: JwtPayload;
     auth?: AuthContext;
     queryOptions?: CypherQueryOptions;

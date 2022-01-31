@@ -27,7 +27,7 @@ import { getQuerySource } from "../../utils/get-query-source";
 describe("https://github.com/neo4j/graphql/issues/619", () => {
     let driver: Driver;
     let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/619", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        neo4jgraphql = new Neo4jGraphQL({ typeDefs });
     });
 
     beforeEach(() => {
@@ -82,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/619", () => {
         `;
 
         const gqlResult: any = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: getQuerySource(mutation),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

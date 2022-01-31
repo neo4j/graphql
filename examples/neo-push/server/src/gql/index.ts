@@ -20,7 +20,7 @@ export const ogm = new OGM({
     driver,
 });
 
-export const neoSchema = new Neo4jGraphQL({
+export const neo4jgraphql = new Neo4jGraphQL({
     typeDefs,
     resolvers,
     config: {
@@ -31,6 +31,6 @@ export const neoSchema = new Neo4jGraphQL({
 });
 
 export const server: ApolloServer = new ApolloServer({
-    schema: neoSchema.schema,
+    schema: neo4jgraphql.schema,
     context: ({ req }) => ({ ogm, driver, req } as Context),
 });

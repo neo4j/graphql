@@ -29,7 +29,7 @@ const resolvers = {
     },
 };
 
-const neoSchema = new Neo4jGraphQL({
+const neo4jgraphql = new Neo4jGraphQL({
     typeDefs,
     resolvers,
 });

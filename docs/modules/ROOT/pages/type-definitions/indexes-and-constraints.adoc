@@ -151,7 +151,7 @@ const typeDefs = gql`
     }
 `;
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
-await neoSchema.assertIndexesAndConstraints({ options: { create: true }});
+await neo4jgraphql.assertIndexesAndConstraints({ options: { create: true }});
 ----

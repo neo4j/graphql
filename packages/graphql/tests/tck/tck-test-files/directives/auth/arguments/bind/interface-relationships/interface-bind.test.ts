@@ -26,7 +26,7 @@ import { formatCypher, translateQuery, formatParams } from "../../../../../../ut
 describe("Cypher Auth Allow", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
@@ -56,7 +56,7 @@ describe("Cypher Auth Allow", () => {
                 @auth(rules: [{ operations: [CREATE, UPDATE, CONNECT, DISCONNECT], bind: { id: "$jwt.sub" } }])
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { enableRegex: true, jwt: { secret } },
         });
@@ -93,7 +93,7 @@ describe("Cypher Auth Allow", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -155,7 +155,7 @@ describe("Cypher Auth Allow", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -265,7 +265,7 @@ describe("Cypher Auth Allow", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -327,7 +327,7 @@ describe("Cypher Auth Allow", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 

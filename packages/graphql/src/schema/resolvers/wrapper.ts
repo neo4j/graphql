@@ -31,11 +31,11 @@ const debug = Debug(DEBUG_GRAPHQL);
 export const wrapResolver = ({
     driver,
     config,
-    neoSchema,
+    neo4jgraphql,
 }: {
     driver?: Driver;
     config: Neo4jGraphQLConfig;
-    neoSchema: Neo4jGraphQL;
+    neo4jgraphql: Neo4jGraphQL;
 }) => (next) => async (root, args, context: Context, info: GraphQLResolveInfo) => {
     const { driverConfig } = config;
 
@@ -58,7 +58,7 @@ export const wrapResolver = ({
         context.driverConfig = driverConfig;
     }
 
-    context.neoSchema = neoSchema;
+    context.neo4jgraphql = neo4jgraphql;
 
     if (!context.jwt) {
         context.jwt = await getJWT(context);

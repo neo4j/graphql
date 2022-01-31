@@ -11,7 +11,7 @@ Takes an `input` object as a parameter, the supported fields of which are descri
 
 [source, javascript, indent=0]
 ----
-const neoSchema = new Neo4jGraphQL({
+const neo4jgraphql = new Neo4jGraphQL({
     typeDefs,
 });
 ----
@@ -209,8 +209,8 @@ Given any valid type definitions saved to the variable `typeDefs` and a valid dr
 
 [source, javascript, indent=0]
 ----
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-await neoSchema.checkNeo4jCompat();
+const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
+await neo4jgraphql.checkNeo4jCompat();
 ----
 
 [[api-reference-checkneo4jcompat-input]]
@@ -271,21 +271,21 @@ And the construction of a `Neo4jGraphQL`, using:
 
 [source, javascript, indent=0]
 ----
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 ----
 
 The following will check whether a unique node property constraint exists for label "Book" and property "isbn", and throw an error if it does not:
 
 [source, javascript, indent=0]
 ----
-await neoSchema.assertIndexesAndConstraints();
+await neo4jgraphql.assertIndexesAndConstraints();
 ----
 
 The next example will create the constraint if it does not exist:
 
 [source, javascript, indent=0]
 ----
-await neoSchema.assertIndexesAndConstraints({ options: { create: true } });
+await neo4jgraphql.assertIndexesAndConstraints({ options: { create: true } });
 ----
 
 [[api-reference-assertconstraints-input]]

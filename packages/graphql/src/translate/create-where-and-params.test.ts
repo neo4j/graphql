@@ -36,7 +36,7 @@ describe("createWhereAndParams", () => {
         const node = new NodeBuilder().instance();
 
         // @ts-ignore
-        const context: Context = { neoSchema: { nodes: [] } };
+        const context: Context = { neo4jgraphql: { nodes: [] } };
 
         const result = createWhereAndParams({ whereInput, varName, node, context });
 

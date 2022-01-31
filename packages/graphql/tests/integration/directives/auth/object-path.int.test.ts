@@ -59,7 +59,7 @@ describe("auth/object-path", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
             await session.run(`
@@ -77,7 +77,7 @@ describe("auth/object-path", () => {
             });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -123,7 +123,7 @@ describe("auth/object-path", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
             await session.run(`
@@ -133,7 +133,7 @@ describe("auth/object-path", () => {
             const req = createJwtRequest(secret);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req, userId },
             });
@@ -170,7 +170,7 @@ describe("auth/object-path", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: {
                 jwt: { secret, rolesPath: "https://github\\.com/claims.https://github\\.com/claims/roles" },
@@ -187,7 +187,7 @@ describe("auth/object-path", () => {
             });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -225,7 +225,7 @@ describe("auth/object-path", () => {
         `;
 
         // Pass the well-known JWKS Endpoint
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: {
                 jwt: { jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json" },
@@ -241,7 +241,7 @@ describe("auth/object-path", () => {
             const req = createJwtRequest(secret);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });

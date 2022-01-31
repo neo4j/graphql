@@ -118,7 +118,7 @@ describe("Connections -> Unions", () => {
     test("Projecting node and relationship properties with no arguments", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query ($authorName: String) {
@@ -142,10 +142,10 @@ describe("Connections -> Unions", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -190,7 +190,7 @@ describe("Connections -> Unions", () => {
     test("Projecting node and relationship properties with sort argument", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query($authorName: String) {
@@ -214,10 +214,10 @@ describe("Connections -> Unions", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -262,7 +262,7 @@ describe("Connections -> Unions", () => {
     test("Projecting node and relationship properties for one union member with no arguments", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query ($authorName: String) {
@@ -283,10 +283,10 @@ describe("Connections -> Unions", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -329,7 +329,7 @@ describe("Connections -> Unions", () => {
     test("With where argument on node with node in database", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query ($authorName: String, $bookTitle: String) {
@@ -350,10 +350,10 @@ describe("Connections -> Unions", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -387,7 +387,7 @@ describe("Connections -> Unions", () => {
     test("With where argument on node with node not in database", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query ($authorName: String, $bookTitle: String) {
@@ -408,10 +408,10 @@ describe("Connections -> Unions", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -445,7 +445,7 @@ describe("Connections -> Unions", () => {
     test("With where argument on all nodes with all in database", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query ($authorName: String, $bookTitle: String, $journalSubject: String) {
@@ -476,10 +476,10 @@ describe("Connections -> Unions", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -523,7 +523,7 @@ describe("Connections -> Unions", () => {
     test("With where argument on all nodes with only one in database", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query ($authorName: String, $bookTitle: String, $journalSubject: String) {
@@ -554,10 +554,10 @@ describe("Connections -> Unions", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -594,7 +594,7 @@ describe("Connections -> Unions", () => {
     test("With where argument on relationship with relationship in database", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query ($authorName: String, $bookWordCount: Int) {
@@ -615,10 +615,10 @@ describe("Connections -> Unions", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -652,7 +652,7 @@ describe("Connections -> Unions", () => {
     test("With where argument on relationship with relationship not in database", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query ($authorName: String, $bookWordCount: Int) {
@@ -673,10 +673,10 @@ describe("Connections -> Unions", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -710,7 +710,7 @@ describe("Connections -> Unions", () => {
     test("With where argument on all edges with all in database", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query ($authorName: String, $bookWordCount: Int, $journalWordCount: Int) {
@@ -741,10 +741,10 @@ describe("Connections -> Unions", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -788,7 +788,7 @@ describe("Connections -> Unions", () => {
     test("With where argument on all edges with only one in database", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query ($authorName: String, $bookWordCount: Int, $journalWordCount: Int) {
@@ -819,10 +819,10 @@ describe("Connections -> Unions", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -859,7 +859,7 @@ describe("Connections -> Unions", () => {
     test("With where argument on relationship and node", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query ($authorName: String, $bookWordCount: Int, $bookTitle: String) {
@@ -887,10 +887,10 @@ describe("Connections -> Unions", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {

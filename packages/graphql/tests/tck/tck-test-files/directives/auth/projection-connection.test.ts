@@ -26,7 +26,7 @@ import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-t
 describe("Cypher Auth Projection On Connections", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
@@ -45,7 +45,7 @@ describe("Cypher Auth Projection On Connections", () => {
             extend type Post @auth(rules: [{ allow: { creator: { id: "$jwt.sub" } } }])
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { enableRegex: true, jwt: { secret } },
         });
@@ -68,7 +68,7 @@ describe("Cypher Auth Projection On Connections", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "super_admin" });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -117,7 +117,7 @@ describe("Cypher Auth Projection On Connections", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "super_admin" });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 

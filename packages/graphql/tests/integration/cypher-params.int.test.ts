@@ -47,7 +47,7 @@ describe("cypherParams", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -63,7 +63,7 @@ describe("cypherParams", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source,
                 contextValue: { driver, cypherParams: { id } },
             });
@@ -90,7 +90,7 @@ describe("cypherParams", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -121,7 +121,7 @@ describe("cypherParams", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source,
                 variableValues: {
                     id: movieId,
@@ -155,7 +155,7 @@ describe("cypherParams", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -171,7 +171,7 @@ describe("cypherParams", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source,
                 contextValue: { driver, cypherParams: { id } },
             });

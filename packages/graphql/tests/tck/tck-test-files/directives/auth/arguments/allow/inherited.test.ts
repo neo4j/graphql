@@ -26,7 +26,7 @@ import { formatCypher, translateQuery, formatParams } from "../../../../../utils
 describe("@auth allow when inherited from interface", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
@@ -71,7 +71,7 @@ describe("@auth allow when inherited from interface", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: { enableRegex: true, jwt: { secret } },
         });
@@ -87,7 +87,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -114,7 +114,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -147,7 +147,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -177,7 +177,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -211,7 +211,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -246,7 +246,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "old-id", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -280,7 +280,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -315,7 +315,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -386,7 +386,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -453,7 +453,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -483,7 +483,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -538,7 +538,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -601,7 +601,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 
@@ -679,7 +679,7 @@ describe("@auth allow when inherited from interface", () => {
         `;
 
         const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 

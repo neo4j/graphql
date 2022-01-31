@@ -48,7 +48,7 @@ describe("Node directive labels", () => {
             title: String
         }`;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -59,7 +59,7 @@ describe("Node directive labels", () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -79,7 +79,7 @@ describe("Node directive labels", () => {
 
         const req = createJwtRequest(secret, { filmLabel: typeFilm.name });
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: {
                 jwt: {
@@ -95,7 +95,7 @@ describe("Node directive labels", () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -111,7 +111,7 @@ describe("Node directive labels", () => {
             title: String
         }`;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -122,7 +122,7 @@ describe("Node directive labels", () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, filmLabel: typeFilm.name, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

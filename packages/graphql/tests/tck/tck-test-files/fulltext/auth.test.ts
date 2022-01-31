@@ -45,7 +45,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: {
                 jwt: {
@@ -64,7 +64,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const req = createJwtRequest(secret, { sub });
 
-        const result = await translateQuery(neoSchema, query, { req });
+        const result = await translateQuery(neo4jgraphql, query, { req });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
@@ -102,7 +102,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: {
                 jwt: {
@@ -121,7 +121,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const req = createJwtRequest(secret, { sub });
 
-        const result = await translateQuery(neoSchema, query, { req });
+        const result = await translateQuery(neo4jgraphql, query, { req });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(

@@ -28,7 +28,7 @@ import { createJwtRequest } from "../../utils/create-jwt-request";
 describe("@alias directive", () => {
     let driver: Driver;
     let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
     const dbName = generate({ charset: "alphabetic" });
     const dbComment = generate({ charset: "alphabetic" });
     const dbTitle = generate({ charset: "alphabetic" });
@@ -66,7 +66,7 @@ describe("@alias directive", () => {
                 name: String! @alias(property: "dbName")
             }
         `;
-        neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
     });
 
     beforeEach(async () => {
@@ -109,7 +109,7 @@ describe("@alias directive", () => {
         const req = createJwtRequest(secret, { roles: ["reader"] });
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: usersQuery,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] }, req },
         });
@@ -142,7 +142,7 @@ describe("@alias directive", () => {
         const req = createJwtRequest(secret, { roles: ["reader"], sub: tokenSub });
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: protectedUsersQuery,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] }, req },
         });
@@ -169,7 +169,7 @@ describe("@alias directive", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: usersQuery,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -206,7 +206,7 @@ describe("@alias directive", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: usersQuery,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -251,7 +251,7 @@ describe("@alias directive", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: userMutation,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -316,7 +316,7 @@ describe("@alias directive", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: userMutation,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -370,7 +370,7 @@ describe("@alias directive", () => {
           }
         `;
         const createResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: create,
             contextValue: { driver },
         });
@@ -403,7 +403,7 @@ describe("@alias directive", () => {
         }
         `;
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: update,
             contextValue: { driver, driverConfig: { bookmarks: [bookmark] } },
         });

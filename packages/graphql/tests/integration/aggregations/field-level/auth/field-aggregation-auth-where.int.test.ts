@@ -25,7 +25,7 @@ import { generateUniqueType } from "../../../../utils/graphql-types";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 
 describe(`Field Level Auth Where Requests`, () => {
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
     let driver: Driver;
     let session: Session;
     const typeMovie = generateUniqueType("Movie");
@@ -61,7 +61,7 @@ describe(`Field Level Auth Where Requests`, () => {
         const extendedTypeDefs = `${typeDefs}
         extend type ${typeActor.name} @auth(rules: [{ where: { testId: "$jwt.sub" } }])`;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs: extendedTypeDefs,
             config: {
                 jwt: {
@@ -87,7 +87,7 @@ describe(`Field Level Auth Where Requests`, () => {
 
         const req = createJwtRequest(secret, { sub: 1234 });
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -107,7 +107,7 @@ describe(`Field Level Auth Where Requests`, () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -125,7 +125,7 @@ describe(`Field Level Auth Where Requests`, () => {
 
         const invalidReq = createJwtRequest(secret, { sub: 2222 });
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, req: invalidReq, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

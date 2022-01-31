@@ -27,7 +27,7 @@ import { generateUniqueType } from "../../utils/graphql-types";
 describe("Empty fields on unions due to escaped labels", () => {
     let driver: Driver;
     let session: Session;
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     const typeBlog = generateUniqueType("Blog");
     const typePost = generateUniqueType("Post");
@@ -53,7 +53,7 @@ describe("Empty fields on unions due to escaped labels", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        neo4jgraphql = new Neo4jGraphQL({ typeDefs });
         try {
             session = driver.session();
             await session.run(`CREATE (u:${typeUser.name} {name: "dan"})
@@ -95,7 +95,7 @@ describe("Empty fields on unions due to escaped labels", () => {
         `;
 
         const gqlResult: any = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

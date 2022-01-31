@@ -27,7 +27,7 @@ import { DEBUG_AUTH } from "../constants";
 const debug = Debug(DEBUG_AUTH);
 
 export async function getJWT(context: Context): Promise<JwtPayload | undefined> {
-    const jwtConfig = context.neoSchema.config?.jwt;
+    const jwtConfig = context.neo4jgraphql.config?.jwt;
     let result: JwtPayload | undefined;
     let client: JwksClient;
 

@@ -45,7 +45,7 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
         }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const query = `
             mutation {
@@ -58,7 +58,7 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: query,
             contextValue: { driver },
         });

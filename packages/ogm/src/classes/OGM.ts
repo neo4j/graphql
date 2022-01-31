@@ -28,24 +28,24 @@ class OGM<ModelMap = {}> {
 
     checkNeo4jCompat: () => Promise<void>;
 
-    public neoSchema: Neo4jGraphQL;
+    public neo4jgraphql: Neo4jGraphQL;
 
     constructor(input: OGMConstructor) {
         const { typeDefs, ...rest } = input;
 
-        this.neoSchema = new Neo4jGraphQL({
+        this.neo4jgraphql = new Neo4jGraphQL({
             ...rest,
             typeDefs: filterDocument(typeDefs),
         });
 
         this.checkNeo4jCompat = function checkNeo4jCompat() {
-            return this.neoSchema.checkNeo4jCompat({
+            return this.neo4jgraphql.checkNeo4jCompat({
                 driver: rest.driver,
                 ...(rest.config?.driverConfig ? { driverConfig: rest.config.driverConfig } : {}),
             });
         };
 
-        this.models = this.neoSchema.nodes.map((n) => {
+        this.models = this.neo4jgraphql.nodes.map((n) => {
             const selectionSet = `
                 {
                     ${[n.primitiveFields, n.scalarFields, n.enumFields, n.temporalFields].reduce(
@@ -56,7 +56,7 @@ class OGM<ModelMap = {}> {
             `;
 
             return new Model({
-                neoSchema: this.neoSchema,
+                neo4jgraphql: this.neo4jgraphql,
                 name: n.name,
                 selectionSet,
             });

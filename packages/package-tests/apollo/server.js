@@ -35,9 +35,9 @@ const defaultTypeDefs = `
 `;
 
 async function start(typeDefs = defaultTypeDefs, driver = {}) {
-    const neoSchema = new Neo4jGraphQL({ typeDefs });
+    const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
     const server = new ApolloServer({
-        schema: neoSchema.schema,
+        schema: neo4jgraphql.schema,
         context: ({ req }) => ({ driver, req }),
     });
     const { url } = await server.listen();

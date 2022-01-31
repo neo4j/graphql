@@ -35,7 +35,7 @@ describe("Update -> ConnectOrCreate", () => {
     const typeMovie = generateUniqueType("Movie");
     const typeGenre = generateUniqueType("Genre");
     const secret = "secret";
-    let neoSchema: Neo4jGraphQL;
+    let neo4jgraphql: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -71,7 +71,7 @@ describe("Update -> ConnectOrCreate", () => {
             }
             `;
 
-        neoSchema = new Neo4jGraphQL({
+        neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: {
                 jwt: {
@@ -96,7 +96,7 @@ describe("Update -> ConnectOrCreate", () => {
     test("cannot update with ConnectOrCreate auth", async () => {
         await session.run(`CREATE (:${typeMovie.name} { title: "RandomMovie1"})`);
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -109,7 +109,7 @@ describe("Update -> ConnectOrCreate", () => {
         const req = createJwtRequest(secret, { roles: ["admin"] });
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: neo4jgraphql.schema,
             source: getQuerySource(query),
             contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

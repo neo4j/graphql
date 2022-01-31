@@ -32,7 +32,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -44,7 +44,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query, {});
+        const result = await translateQuery(neo4jgraphql, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
@@ -75,7 +75,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
 
         const secret = "supershhhhhh";
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs,
             config: {
                 jwt: {
@@ -93,7 +93,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         `;
 
         const req = createJwtRequest(secret, { label });
-        const result = await translateQuery(neoSchema, query, {
+        const result = await translateQuery(neo4jgraphql, query, {
             req,
         });
 

@@ -65,7 +65,7 @@ describe("Custom Directives", () => {
 
         const { upperDirectiveTypeDefs, upperDirectiveTransformer } = upperDirective("uppercase");
 
-        const neoSchema = new Neo4jGraphQL({
+        const neo4jgraphql = new Neo4jGraphQL({
             typeDefs: [
                 upperDirectiveTypeDefs,
                 gql`
@@ -79,7 +79,7 @@ describe("Custom Directives", () => {
             driver,
         });
 
-        const schema = upperDirectiveTransformer(neoSchema.schema as GraphQLSchema);
+        const schema = upperDirectiveTransformer(neo4jgraphql.schema as GraphQLSchema);
 
         const name = generate({
             charset: "alphabetic",

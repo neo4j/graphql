@@ -50,7 +50,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 {
@@ -68,7 +68,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -89,7 +89,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 {
@@ -107,7 +107,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -133,7 +133,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -153,7 +153,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -177,7 +177,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -197,7 +197,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -223,7 +223,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -243,7 +243,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -267,7 +267,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -287,7 +287,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -337,7 +337,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -363,7 +363,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -413,7 +413,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -439,7 +439,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -465,7 +465,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -483,7 +483,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -513,7 +513,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const userId = generate({
                 charset: "alphabetic",
@@ -543,7 +543,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -570,7 +570,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 query {
@@ -588,7 +588,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -613,7 +613,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -631,7 +631,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -658,7 +658,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 {
@@ -678,7 +678,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -702,7 +702,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 {
@@ -720,7 +720,7 @@ describe("auth/is-authenticated", () => {
 
             try {
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: neo4jgraphql.schema,
                     source: query,
                     contextValue: { driver, jwt },
                 });

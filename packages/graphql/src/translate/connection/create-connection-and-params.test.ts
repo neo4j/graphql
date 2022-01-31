@@ -101,7 +101,7 @@ describe("createConnectionAndParams", () => {
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema: mockedNeo4jGraphQL };
+        const context: Context = { neo4jgraphql: mockedNeo4jGraphQL };
 
         const entry = createConnectionAndParams({ resolveTree, field, context, nodeVariable: "this" });
 
@@ -196,7 +196,7 @@ describe("createConnectionAndParams", () => {
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema: mockedNeo4jGraphQL };
+        const context: Context = { neo4jgraphql: mockedNeo4jGraphQL };
 
         const entry = createConnectionAndParams({ resolveTree, field, context, nodeVariable: "this" });
 
@@ -285,7 +285,7 @@ describe("createConnectionAndParams", () => {
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema: mockedNeo4jGraphQL };
+        const context: Context = { neo4jgraphql: mockedNeo4jGraphQL };
 
         const entry = createConnectionAndParams({ resolveTree, field, context, nodeVariable: "this" });
 

@@ -61,7 +61,7 @@ passed into the `typeDefs` array alongside the rest of the type definitions:
 
 [source, typescript, indent=0]
 ----
-const neoSchema = new Neo4jGraphQL({
+const neo4jgraphql = new Neo4jGraphQL({
     typeDefs: [
         upperDirectiveTypeDefs,
         gql`
@@ -79,7 +79,7 @@ returned from the directive function:
 
 [source, typescript, indent=0]
 ----
-const schema = upperDirectiveTransformer(neoSchema.schema);
+const schema = upperDirectiveTransformer(neo4jgraphql.schema);
 ----
 
 This `schema` object is an instance of a `GraphQLSchema` which can be used in

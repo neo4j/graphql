@@ -126,7 +126,7 @@ describe("Connections -> Interfaces", () => {
     test("Projecting node and relationship properties with no arguments", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query Actors($name: String) {
@@ -151,10 +151,10 @@ describe("Connections -> Interfaces", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -202,7 +202,7 @@ describe("Connections -> Interfaces", () => {
     test("Projecting node and relationship properties with shared where argument", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query Actors($name: String) {
@@ -227,10 +227,10 @@ describe("Connections -> Interfaces", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -264,7 +264,7 @@ describe("Connections -> Interfaces", () => {
     test("Projecting node and relationship properties with shared where override", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query Actors($name: String) {
@@ -289,10 +289,10 @@ describe("Connections -> Interfaces", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -333,7 +333,7 @@ describe("Connections -> Interfaces", () => {
     test("Projecting node and relationship properties with sort argument", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
             query Actors($name: String) {
@@ -358,10 +358,10 @@ describe("Connections -> Interfaces", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -409,7 +409,7 @@ describe("Connections -> Interfaces", () => {
     test("With where argument for shared field on node with node in database", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
         query Actors($name: String, $title: String) {
@@ -434,10 +434,10 @@ describe("Connections -> Interfaces", () => {
         `;
 
         try {
-            await neoSchema.checkNeo4jCompat();
+            await neo4jgraphql.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {

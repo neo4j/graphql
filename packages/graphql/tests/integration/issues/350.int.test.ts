@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neo4jgraphql = new Neo4jGraphQL({ typeDefs });
 
         const postId = generate({
             charset: "alphabetic",
@@ -116,7 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: neo4jgraphql.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
