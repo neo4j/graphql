@@ -173,7 +173,7 @@ describe("generate", () => {
 
             export type UserOptions = {
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
@@ -410,7 +410,7 @@ describe("generate", () => {
 
             export type UserOptions = {
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
@@ -655,7 +655,7 @@ describe("generate", () => {
 
             export type UserOptions = {
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
@@ -1032,8 +1032,8 @@ describe("generate", () => {
               AND?: InputMaybe<Array<ActedInWhere>>;
               screenTime?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_NOT?: InputMaybe<Scalars[\\"Int\\"]>;
-              screenTime_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"Int\\"]>>>;
-              screenTime_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"Int\\"]>>>;
+              screenTime_IN?: InputMaybe<Array<Scalars[\\"Int\\"]>>;
+              screenTime_NOT_IN?: InputMaybe<Array<Scalars[\\"Int\\"]>>;
               screenTime_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_GT?: InputMaybe<Scalars[\\"Int\\"]>;
@@ -1177,7 +1177,7 @@ describe("generate", () => {
 
             export type MovieOptions = {
               /** Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<InputMaybe<MovieSort>>>;
+              sort?: InputMaybe<Array<MovieSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
@@ -1201,8 +1201,8 @@ describe("generate", () => {
               AND?: InputMaybe<Array<MovieWhere>>;
               title?: InputMaybe<Scalars[\\"String\\"]>;
               title_NOT?: InputMaybe<Scalars[\\"String\\"]>;
-              title_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              title_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              title_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
+              title_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
               title_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               title_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               title_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
@@ -1226,7 +1226,7 @@ describe("generate", () => {
 
             export type PersonOptions = {
               /** Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<InputMaybe<PersonSort>>>;
+              sort?: InputMaybe<Array<PersonSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
@@ -1245,8 +1245,8 @@ describe("generate", () => {
               AND?: InputMaybe<Array<PersonWhere>>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
               name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
-              name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              name_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
+              name_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;

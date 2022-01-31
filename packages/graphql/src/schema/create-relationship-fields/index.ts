@@ -219,9 +219,11 @@ function createRelationshipFields({
                 }
             });
 
-            nodeCreateInput.addFields({
-                [rel.fieldName]: nodeFieldInput,
-            });
+            if (!(composeNode instanceof InterfaceTypeComposer)) {
+                nodeCreateInput.addFields({
+                    [rel.fieldName]: nodeFieldInput,
+                });
+            }
 
             nodeConnectInput.addFields({
                 [rel.fieldName]: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
@@ -500,9 +502,11 @@ function createRelationshipFields({
                 }
             });
 
-            nodeCreateInput.addFields({
-                [rel.fieldName]: unionCreateInput,
-            });
+            if (!(composeNode instanceof InterfaceTypeComposer)) {
+                nodeCreateInput.addFields({
+                    [rel.fieldName]: unionCreateInput,
+                });
+            }
 
             nodeRelationInput.addFields({
                 [rel.fieldName]: unionCreateFieldInput,
