@@ -27,6 +27,7 @@ import {
     GraphQLInputObjectType,
     GraphQLInt,
 } from "graphql";
+import { RelationshipQueryDirectionOption } from "../../constants";
 import {
     ExcludeOperationEnum,
     RelationshipDirectionEnum,
@@ -170,6 +171,8 @@ export const relationshipDirective = new GraphQLDirective({
         },
         queryDirection: {
             type: RelationshipQueryDirectionEnum,
+            defaultValue: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
+            description: "Valid and default directions for this relationship.",
         },
         direction: {
             type: new GraphQLNonNull(RelationshipDirectionEnum),

@@ -44,16 +44,24 @@ export function getRelationshipDirection(
 
     switch (relationField.queryDirection) {
         case RelationshipQueryDirectionOption.DEFAULT_DIRECTED:
-            if (fieldArgs.directed === false) return undirectedArgs;
+            if (fieldArgs.directed === false) {
+                return undirectedArgs;
+            }
             return directedArgs;
         case RelationshipQueryDirectionOption.DEFAULT_UNDIRECTED:
-            if (fieldArgs.directed === true) return directedArgs;
+            if (fieldArgs.directed === true) {
+                return directedArgs;
+            }
             return undirectedArgs;
         case RelationshipQueryDirectionOption.DIRECTED_ONLY:
-            if (fieldArgs.directed === false) throw new Error("Invalid direction in 'DIRECTED_ONLY' relationship");
+            if (fieldArgs.directed === false) {
+                throw new Error("Invalid direction in 'DIRECTED_ONLY' relationship");
+            }
             return directedArgs;
         case RelationshipQueryDirectionOption.UNDIRECTED_ONLY:
-            if (fieldArgs.directed === true) throw new Error("Invalid direction in 'UNDIRECTED_ONLY' relationship");
+            if (fieldArgs.directed === true) {
+                throw new Error("Invalid direction in 'UNDIRECTED_ONLY' relationship");
+            }
             return undirectedArgs;
         default:
             throw new Neo4jGraphQLError(`Invalid queryDirection argument ${relationField.queryDirection}`);
