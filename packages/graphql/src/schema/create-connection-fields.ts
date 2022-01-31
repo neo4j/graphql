@@ -125,7 +125,13 @@ function createConnectionFields({
             const relatedNodes = nodes.filter((n) => connectionField.relationship.union?.nodes?.includes(n.name));
 
             relatedNodes.forEach((n) => {
-                const unionWhereName = `${connectionField.typeMeta.name}${n.name}Where`;
+                const connectionName = connectionField.typeMeta.name;
+
+                // Append union member name before "ConnectionWhere"
+                const unionWhereName = `${connectionName.substring(0, connectionName.length - "Connection".length)}${
+                    n.name
+                }ConnectionWhere`;
+
                 const unionWhere = schemaComposer.createInputTC({
                     name: unionWhereName,
                     fields: {
