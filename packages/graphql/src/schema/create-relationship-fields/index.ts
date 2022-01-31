@@ -25,6 +25,7 @@ import { ObjectFields } from "../get-obj-field-meta";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
+import { addDirectedArgument } from "../directed-argument";
 
 function createRelationshipFields({
     relationshipFields,
@@ -91,16 +92,17 @@ function createRelationshipFields({
 
         if (rel.interface) {
             const refNodes = nodes.filter((x) => rel.interface?.implementations?.includes(x.name));
-
             if (!rel.writeonly) {
+                const baseNodeFieldArgs = {
+                    options: "QueryOptions",
+                    where: `${rel.typeMeta.name}Where`,
+                };
+                const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
+
                 composeNode.addFields({
                     [rel.fieldName]: {
                         type: rel.typeMeta.pretty,
-                        args: {
-                            directed: { type: "Boolean", defaultValue: true },
-                            options: "QueryOptions",
-                            where: `${rel.typeMeta.name}Where`,
-                        },
+                        args: nodeFieldArgs,
                         description: rel.description,
                     },
                 });
@@ -250,14 +252,16 @@ function createRelationshipFields({
             const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
             if (!rel.writeonly) {
+                const baseNodeFieldArgs = {
+                    options: "QueryOptions",
+                    where: `${rel.typeMeta.name}Where`,
+                };
+                const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
+
                 composeNode.addFields({
                     [rel.fieldName]: {
                         type: rel.typeMeta.pretty,
-                        args: {
-                            directed: { type: "Boolean", defaultValue: true },
-                            options: "QueryOptions",
-                            where: `${rel.typeMeta.name}Where`,
-                        },
+                        args: nodeFieldArgs,
                         description: rel.description,
                     },
                 });
@@ -698,14 +702,17 @@ function createRelationshipFields({
         });
 
         if (!rel.writeonly) {
+            const nodeFieldsBaseArgs = {
+                where: `${rel.typeMeta.name}Where`,
+                options: `${rel.typeMeta.name}Options`,
+            };
+
+            const nodeFieldsArgs = addDirectedArgument(nodeFieldsBaseArgs, rel);
+
             composeNode.addFields({
                 [rel.fieldName]: {
                     type: rel.typeMeta.pretty,
-                    args: {
-                        directed: { type: "Boolean", defaultValue: true },
-                        where: `${rel.typeMeta.name}Where`,
-                        options: `${rel.typeMeta.name}Options`,
-                    },
+                    args: nodeFieldsArgs,
                     description: rel.description,
                 },
             });
@@ -720,13 +727,16 @@ function createRelationshipFields({
                     relFields
                 );
 
+                const aggregationFieldsBaseArgs = {
+                    where: `${rel.typeMeta.name}Where`,
+                };
+
+                const aggregationFieldsArgs = addDirectedArgument(aggregationFieldsBaseArgs, rel);
+
                 composeNode.addFields({
                     [`${rel.fieldName}Aggregate`]: {
                         type: aggregationTypeObject,
-                        args: {
-                            where: `${rel.typeMeta.name}Where`,
-                            directed: { type: "Boolean", defaultValue: true },
-                        },
+                        args: aggregationFieldsArgs,
                     },
                 });
             }
