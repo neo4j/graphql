@@ -31,11 +31,13 @@ import {
     StringValueNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import getFieldTypeMeta from "./get-field-type-meta";
-import getCypherMeta from "./get-cypher-meta";
-import getAliasMeta from "./get-alias-meta";
 import getAuth from "./get-auth";
+import getAliasMeta from "./get-alias-meta";
+import getCypherMeta from "./get-cypher-meta";
+import getFieldTypeMeta from "./get-field-type-meta";
+import getIgnoreMeta from "./get-ignore-meta";
 import getRelationshipMeta from "./get-relationship-meta";
+import getUniqueMeta from "./parse/get-unique-meta";
 import { SCALAR_TYPES } from "../constants";
 import {
     RelationField,
@@ -55,7 +57,6 @@ import {
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
-import getUniqueMeta from "./parse/get-unique-meta";
 import { upperFirst } from "../utils/upper-first";
 
 export interface ObjectFields {
@@ -113,6 +114,7 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
+            const ignoreMeta = getIgnoreMeta(field, interfaceField);
             const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
@@ -120,7 +122,6 @@ function getObjFieldMeta({
             const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
-            const ignoreDirective = directives.find((x) => x.name.value === "ignore");
 
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
@@ -302,6 +303,8 @@ function getObjFieldMeta({
                     isScalar: !!fieldScalar || SCALAR_TYPES.includes(typeMeta.name),
                 };
                 res.cypherFields.push(cypherField);
+            } else if (ignoreMeta) {
+                res.ignoredFields.push({ ...baseField, ...ignoreMeta });
             } else if (fieldScalar) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
@@ -362,19 +365,6 @@ function getObjFieldMeta({
                     ...baseField,
                 };
                 res.objectFields.push(objectField);
-            } else if (ignoreDirective) {
-                // `@ignore(require: [String!])`
-                // Create a set from array of argument `require`
-                const requiredFields = Array.from(
-                    new Set(
-                        (
-                            ignoreDirective?.arguments?.find((arg) => arg.name.value === "require")
-                                ?.value as ListValueNode
-                        )?.values.map((v) => (v as StringValueNode).value) ?? []
-                    )
-                );
-
-                res.ignoredFields.push({ ...baseField, requiredFields });
             } else {
                 // eslint-disable-next-line no-lonely-if
                 if (["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeMeta.name)) {
