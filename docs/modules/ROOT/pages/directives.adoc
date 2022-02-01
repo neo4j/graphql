@@ -108,3 +108,9 @@ Reference: xref::type-definitions/indexes-and-constraints.adoc#type-definitions-
 The `@writeonly` directive marks fields as write-only.
 
 Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-writeonly[`@writeonly`]
+
+== `@queryOptions`
+
+The `@queryOptions` is to be used on nodes, where applied will inject default values into a query such as the `defaultLimit`.
+
+Reference: xref::type-definitions/default-values.adoc#type-definitions-default-values-queryoptions[`@queryOptions`]
