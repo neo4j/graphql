@@ -49,15 +49,16 @@ function createRelationshipValidationString({
         const toNode = context.neoSchema.nodes.find((n) => n.name === field.typeMeta.name) as Node;
         const inStr = field.direction === "IN" ? "<-" : "-";
         const outStr = field.direction === "OUT" ? "->" : "-";
-        const relTypeStr = `[:${field.type}]`;
+        const relVarname = `${varName}_${field.fieldName}_${toNode.name}_unique`;
+        const relTypeStr = `[${relVarname}:${field.type}]`;
 
         const subQuery = [
             `CALL {`,
             `\tWITH ${varName}`,
-            `\tMATCH p=(${varName})${inStr}${relTypeStr}${outStr}(${toNode.getLabelString(context)})`,
-            `\tWITH count(nodes(p)) AS c`,
+            `\tMATCH (${varName})${inStr}${relTypeStr}${outStr}(${toNode.getLabelString(context)})`,
+            `\tWITH count(${relVarname}) as c`,
             `\tCALL apoc.util.validate(NOT(c = 1), '${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} required', [0])`,
-            `\tRETURN c AS ${varName}_${field.fieldName}_${toNode.name}_unique_ignored`,
+            `\tRETURN c AS ${relVarname}_ignored`,
             `}`,
         ].join("\n");
 
