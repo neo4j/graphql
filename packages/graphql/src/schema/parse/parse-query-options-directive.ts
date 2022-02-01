@@ -1,7 +1,7 @@
 import { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
+import * as neo4j from "neo4j-driver";
 import { QueryOptions } from "../../types";
 import parseValueNode from "../parse-value-node";
-import * as neo4j from "neo4j-driver";
 
 function parseQueryOptionsDirective({
     directive,
@@ -11,7 +11,7 @@ function parseQueryOptionsDirective({
     definition: ObjectTypeDefinitionNode;
 }): QueryOptions {
     const defaultLimitArgument = directive.arguments?.find((direc) => direc.name.value === "defaultLimit");
-    let defaultLimit: neo4j.Integer | undefined = undefined;
+    let defaultLimit: neo4j.Integer | undefined;
     if (defaultLimitArgument) {
         const parsed = parseValueNode(defaultLimitArgument.value) as number;
 

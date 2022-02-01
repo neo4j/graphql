@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+/* eslint-disable-next-line import/no-extraneous-dependencies */
 import { gql } from "apollo-server-core";
+import * as neo4j from "neo4j-driver";
 import { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
 import parseQueryOptionsDirective from "./parse-query-options-directive";
-import * as neo4j from "neo4j-driver";
 
 describe("parseQueryOptionsDirective", () => {
     test("should throw error when defaultLimit is less than or equal to 0", () => {
@@ -31,7 +32,7 @@ describe("parseQueryOptionsDirective", () => {
                 }
             `;
 
-            const definition = (typeDefs.definitions[0] as unknown) as ObjectTypeDefinitionNode;
+            const definition = typeDefs.definitions[0] as unknown as ObjectTypeDefinitionNode;
             const directive = (definition.directives || [])[0] as DirectiveNode;
 
             expect(() =>
@@ -54,7 +55,7 @@ describe("parseQueryOptionsDirective", () => {
                 }
             `;
 
-        const definition = (typeDefs.definitions[0] as unknown) as ObjectTypeDefinitionNode;
+        const definition = typeDefs.definitions[0] as unknown as ObjectTypeDefinitionNode;
         const directive = (definition.directives || [])[0] as DirectiveNode;
 
         const result = parseQueryOptionsDirective({

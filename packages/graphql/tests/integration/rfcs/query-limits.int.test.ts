@@ -19,10 +19,10 @@
 
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
-import { generate } from "randomstring";
 
 describe("integration/rfcs/query-limits", () => {
     let driver: Driver;
