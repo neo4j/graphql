@@ -6,7 +6,7 @@ Users want to be able to hard limit the maximum number of results that can be re
 
 ## Proposed Solution
 
-A new directive, `@queryOptions` to be added, which has an argument `limit` for specifying the maximum number of nodes for this type which should be returned from a query.
+A new directive, `@queryOptions` to be added, which has an argument `limit` for specifying the default **and** maximum number of nodes for this type which should be returned from a query.
 
 The minimum value for `limit` should be 1.
 
@@ -15,7 +15,7 @@ The minimum value for `limit` should be 1.
 #### Root query field
 
 ```graphql
-type Movie @queryOptions(limit: 10) {
+type Movie @queryOptions(limit: {default: 5, max: 10}) {
   title: String!
 }
 ```
@@ -25,7 +25,7 @@ Would result in the following type definitions being generated:
 ```graphql
 input MovieOptions {
   offset: Int
-  limit: Int! = 10
+  limit: Int! = 5
   sort: [MovieSort]
 }
 
@@ -34,7 +34,7 @@ type Query {
 }
 ```
 
-Given a Neo4j database containing more than 10 `Movie` nodes, a query with no arguments like the following would return 10 results.
+Given a Neo4j database containing more than 10 `Movie` nodes, a query with no arguments like the following would return 5 results.
 
 ```graphql
 {
@@ -49,14 +49,14 @@ The Cypher output for the query above would be something along the lines of:
 ```cypher
 MATCH (m:Movie)
 RETURN m
-LIMIT 10
+LIMIT 5
 ```
 
-If desired, the user could request less:
+If desired, the user could request less or more:
 
 ```graphql
 {
-  movies(options: { limit: 5 }) {
+  movies(options: { limit: 8 }) {
     title
   }
 }
@@ -67,10 +67,10 @@ The Cypher output for the query above would be something along the lines of:
 ```cypher
 MATCH (m:Movie)
 RETURN m
-LIMIT 5
+LIMIT 8
 ```
 
-However, if they request more than the limit, they will only receive the maximum number of results specified in the type definitions. For example, the following query would only have 10 results returned:
+However, if they request more than the **max** argument (10 in the example), they will only receive the maximum number of results specified in the type definitions. For example, the following query would only have 10 results returned:
 
 ```graphql
 {
@@ -91,7 +91,7 @@ LIMIT 10
 #### Relationship field
 
 ```graphql
-type Movie @queryOptions(limit: 10) {
+type Movie @queryOptions(limit: {default=10, max: 10}) {
   title: String!
 }
 
