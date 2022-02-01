@@ -48,7 +48,7 @@ describe("#402", () => {
 
     test("Should ignore the empty array and not include any where", async () => {
         const query = gql`
-            query($area: [ID]) {
+            query ($area: [ID!]) {
                 events(where: { area: { id_IN: $area } }) {
                     id
                     area {

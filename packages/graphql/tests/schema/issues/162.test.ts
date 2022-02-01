@@ -175,7 +175,7 @@ describe("162", () => {
               \\"\\"\\"
               Specify one or more TigerJawLevel2Sort objects to sort TigerJawLevel2s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [TigerJawLevel2Sort]
+              sort: [TigerJawLevel2Sort!]
             }
 
             type TigerJawLevel2Part1 {
@@ -275,7 +275,7 @@ describe("162", () => {
               \\"\\"\\"
               Specify one or more TigerJawLevel2Part1Sort objects to sort TigerJawLevel2Part1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [TigerJawLevel2Part1Sort]
+              sort: [TigerJawLevel2Part1Sort!]
             }
 
             input TigerJawLevel2Part1RelationInput {
@@ -489,7 +489,7 @@ describe("162", () => {
               \\"\\"\\"
               Specify one or more TigerSort objects to sort Tigers by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [TigerSort]
+              sort: [TigerSort!]
             }
 
             \\"\\"\\"

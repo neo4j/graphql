@@ -31,6 +31,8 @@ import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
+import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
+import { CypherStatement } from "../types";
 
 function createConnectionAndParams({
     resolveTree,
@@ -44,7 +46,7 @@ function createConnectionAndParams({
     context: Context;
     nodeVariable: string;
     parameterPrefix?: string;
-}): [string, any] {
+}): CypherStatement {
     let globalParams = {};
     let nestedConnectionFieldParams;
 
@@ -61,14 +63,9 @@ function createConnectionAndParams({
     ) as Relationship;
     const relatedNode = context.neoSchema.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
 
-    let inStr = field.relationship.direction === "IN" ? "<-" : "-";
     const relTypeStr = `[${relationshipVariable}:${field.relationship.type}]`;
-    let outStr = field.relationship.direction === "OUT" ? "->" : "-";
 
-    if (resolveTree.args.directed === false) {
-        inStr = "-";
-        outStr = "-";
-    }
+    const { inStr, outStr } = getRelationshipDirection(field.relationship, resolveTree.args);
 
     let relationshipProperties: ResolveTree[] = [];
     let node: ResolveTree | undefined;
