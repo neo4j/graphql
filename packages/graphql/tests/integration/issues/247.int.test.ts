@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
         `;
 
         const connect = `
-            mutation Connect($name: String, $title2: String, $title3: String) {
+            mutation Connect($name: String, $title2: String!, $title3: String!) {
                 updateUsers(
                     where: { name: $name }
                     connect: { movies: [{ where: { node: { title_IN: [$title2, $title3] } } }] }

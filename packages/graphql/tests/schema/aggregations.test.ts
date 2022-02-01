@@ -179,7 +179,7 @@ describe("Aggregations", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -245,11 +245,11 @@ describe("Aggregations", () => {
               isbn: String
               isbn_CONTAINS: String
               isbn_ENDS_WITH: String
-              isbn_IN: [String]
+              isbn_IN: [String!]
               isbn_NOT: String
               isbn_NOT_CONTAINS: String
               isbn_NOT_ENDS_WITH: String
-              isbn_NOT_IN: [String]
+              isbn_NOT_IN: [String!]
               isbn_NOT_STARTS_WITH: String
               isbn_STARTS_WITH: String
               screenTime: Duration
@@ -651,9 +651,9 @@ describe("Aggregations", () => {
             }
 
             type Post {
-              likes(options: UserOptions, where: UserWhere): [User!]!
-              likesAggregate(where: UserWhere): PostUserLikesAggregationSelection
-              likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
+              likes(directed: Boolean = true, options: UserOptions, where: UserWhere): [User!]!
+              likesAggregate(directed: Boolean = true, where: UserWhere): PostUserLikesAggregationSelection
+              likesConnection(after: String, directed: Boolean = true, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String
             }
 
@@ -1131,7 +1131,7 @@ describe("Aggregations", () => {
               \\"\\"\\"
               Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [PostSort]
+              sort: [PostSort!]
             }
 
             input PostRelationInput {
@@ -1297,7 +1297,7 @@ describe("Aggregations", () => {
               \\"\\"\\"
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [UserSort]
+              sort: [UserSort!]
             }
 
             \\"\\"\\"

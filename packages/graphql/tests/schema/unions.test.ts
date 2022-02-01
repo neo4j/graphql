@@ -91,7 +91,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [GenreSort]
+              sort: [GenreSort!]
             }
 
             \\"\\"\\"
@@ -127,8 +127,8 @@ describe("Unions", () => {
 
             type Movie {
               id: ID
-              search(options: QueryOptions, where: SearchWhere): [Search!]!
-              searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
+              search(directed: Boolean = true, options: QueryOptions, where: SearchWhere): [Search!]!
+              searchConnection(directed: Boolean = true, where: MovieSearchConnectionWhere): MovieSearchConnection!
               searchNoDirective: Search
             }
 
@@ -164,7 +164,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
@@ -182,23 +182,9 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
-            input MovieSearchConnectionGenreWhere {
-              AND: [MovieSearchConnectionGenreWhere]
-              OR: [MovieSearchConnectionGenreWhere]
-              node: GenreWhere
-              node_NOT: GenreWhere
-            }
-
-            input MovieSearchConnectionMovieWhere {
-              AND: [MovieSearchConnectionMovieWhere]
-              OR: [MovieSearchConnectionMovieWhere]
-              node: MovieWhere
-              node_NOT: MovieWhere
-            }
-
             input MovieSearchConnectionWhere {
-              Genre: MovieSearchConnectionGenreWhere
-              Movie: MovieSearchConnectionMovieWhere
+              Genre: MovieSearchGenreConnectionWhere
+              Movie: MovieSearchMovieConnectionWhere
             }
 
             input MovieSearchCreateFieldInput {

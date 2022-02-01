@@ -23,6 +23,7 @@ import { CypherStatement } from "../types";
 import { Node } from "../../classes";
 import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
+import { asArray } from "../../utils/utils";
 import { joinStatements } from "../cypher-builder/join-statements";
 
 type CreateOrConnectInput = {
@@ -43,26 +44,24 @@ export function createConnectOrCreateAndParams({
     refNode,
     context,
 }: {
-    input: CreateOrConnectInput[];
+    input: CreateOrConnectInput[] | CreateOrConnectInput;
     varName: string;
     parentVar: string;
     relationField: RelationField;
     refNode: Node;
     context: Context;
 }): CypherStatement {
-    const statements = input.map(
-        (inputItem, index): CypherStatement => {
-            const subqueryBaseName = `${varName}${index}`;
-            return createConnectOrCreatePartialStatement({
-                input: inputItem,
-                baseName: subqueryBaseName,
-                parentVar,
-                relationField,
-                refNode,
-                context,
-            });
-        }
-    );
+    const statements = asArray(input).map((inputItem, index): CypherStatement => {
+        const subqueryBaseName = `${varName}${index}`;
+        return createConnectOrCreatePartialStatement({
+            input: inputItem,
+            baseName: subqueryBaseName,
+            parentVar,
+            relationField,
+            refNode,
+            context,
+        });
+    });
 
     return joinStatements(statements);
 }

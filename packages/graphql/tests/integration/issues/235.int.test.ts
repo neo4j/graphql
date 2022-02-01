@@ -75,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
         `;
 
         const createAS = `
-            mutation CreateAS($a: String!, $b1: String, $b2: String, $c: String!) {
+            mutation CreateAS($a: String!, $b1: String!, $b2: String!, $c: String!) {
                 createAS(
                     input: [
                         {
