@@ -31,8 +31,9 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
-import { generateProjectionField } from "./utils/generate-projection-field";
 import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
+import { generateMissingFields, filterFieldsInSelection } from "./utils/resolveTree";
+import { removeDuplicates } from "../utils/utils";
 
 interface Res {
     projection: string[];
@@ -593,19 +594,18 @@ function createProjectionAndParams({
 
     // Include fields of implemented interfaces to allow for fragments on interfaces
     // cf. https://github.com/neo4j/graphql/issues/476
-
-    const fields = node.interfaces
-        // Map over the implemented interfaces of the node and extract the names
+    const selectedFields = node.interfaces
         .map((implementedInterface) => implementedInterface.name.value)
-        // Combine the fields of the interfaces...
-        .reduce((prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }), {
-            // with the fields of the node
-            ...resolveTree.fieldsByTypeName[node.name],
-            // and fields to sort on
-            ...generateSortFields({ node, resolveTree }),
-            // and any required fields for custom resolvers
-            ...getRequiredFields({ node, resolveTree }),
-        });
+        .reduce(
+            (prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }),
+            resolveTree.fieldsByTypeName[node.name]
+        );
+
+    const fields = {
+        ...selectedFields,
+        ...generateMissingSortFields({ selection: selectedFields, resolveTree }),
+        ...generateMissingRequiredFields({ selection: selectedFields, node }),
+    };
 
     const { projection, params, meta } = Object.entries(fields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
@@ -618,68 +618,36 @@ function createProjectionAndParams({
 
 export default createProjectionAndParams;
 
-const generateSortFields = ({
-    node,
+// Generates any missing fields required for sorting
+const generateMissingSortFields = ({
+    selection,
     resolveTree,
 }: {
-    node: Node;
+    selection: Record<string, ResolveTree>;
     resolveTree: ResolveTree;
 }): Record<string, ResolveTree> => {
-    const nodeFields = resolveTree.fieldsByTypeName[node.name];
+    const sortFieldNames = removeDuplicates(
+        ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat()
+    );
 
-    const sortFieldNames = ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat();
-
-    return Array.from(new Set(sortFieldNames)).reduce((acc, sortFieldName) => {
-        const fieldIsMissing = !Object.values(nodeFields).find((field) => field.name === sortFieldName);
-        const fieldIsAliased = Boolean(
-            Object.values(nodeFields).find((field) => field.name === sortFieldName && field.alias !== sortFieldName)
-        );
-
-        if (fieldIsMissing || fieldIsAliased) {
-            return {
-                ...acc,
-                ...generateProjectionField({ name: sortFieldName }),
-            };
-        }
-
-        return acc;
-    }, {});
+    return generateMissingFields({ fieldNames: sortFieldNames, selection });
 };
 
-const getRequiredFields = ({
+// Generated any missing fields required for custom resolvers
+const generateMissingRequiredFields = ({
     node,
-    resolveTree,
+    selection,
 }: {
     node: Node;
-    resolveTree: ResolveTree;
+    selection: Record<string, ResolveTree>;
 }): Record<string, ResolveTree> => {
-    const nodeFields = resolveTree.fieldsByTypeName[node.name];
+    const filterFields = filterFieldsInSelection(selection);
 
-    return Array.from(
-        // Create set to remove duplicate fields required across different `@ignore` fields
-        new Set(
-            node.ignoredFields
-                // Filter any that have required fields
-                .filter((f) => f.requiredFields?.length)
-                // Filter those ignored fields that exist in selection set
-                .filter((ignoredField) => Object.values(nodeFields).find((f) => f.name === ignoredField.fieldName))
-                // Extract required fields
-                .map((f) => f.requiredFields)
-                .flat()
-        )
-    ).reduce(
-        (acc, requiredField) => ({
-            ...acc,
-            // If required field does not exist in selection set
-            ...(!Object.values(nodeFields).find((nodeField) => nodeField.name === requiredField) ||
-            // or does exist but is aliased.
-            Object.values(nodeFields).find(
-                (nodeField) => nodeField.name === requiredField && nodeField.alias !== requiredField
-            )
-                ? // Generate a new field to project
-                  generateProjectionField({ name: requiredField })
-                : {}),
-        }),
-        {}
+    const requiredFields = removeDuplicates(
+        filterFields(node.ignoredFields)
+            .map((f) => f.requiredFields)
+            .flat()
     );
+
+    return generateMissingFields({ fieldNames: requiredFields, selection });
 };
