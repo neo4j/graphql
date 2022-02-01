@@ -38,3 +38,19 @@ directive @coalesce(
     value: Scalar!,
 ) on FIELD_DEFINITION
 ----
+
+[[type-definitions-default-values-queryoptions]]
+== `@queryOptions`
+
+The `@queryOptions` is to be used on nodes, where applied will inject default values into a query such as the `defaultLimit`.
+
+=== Definition
+
+[source, graphql, indent=0]
+----
+"""The `@queryOptions` is to be used on nodes, where applied will inject default values into a query such as the `defaultLimit`."""
+directive @queryOptions(
+    """If no limit argument is supplied on query will fallback to this value."""
+    defaultLimit: Int
+) on OBJECT
+----

@@ -256,9 +256,10 @@ export const fulltextDirective = new GraphQLDirective({
 
 export const queryOptions = new GraphQLDirective({
     name: "queryOptions",
-    description: "TODO",
+    description: "Instructs @neo4j/graphql to inject default values into a query such as the `defaultLimit`.",
     args: {
         defaultLimit: {
+            description: "If no limit argument is supplied on query will fallback to this value.",
             type: GraphQLString,
         },
     },
