@@ -224,7 +224,6 @@ function createNodeWhereAndParams({
                     res.clauses.push(apocRunFirstColumn);
 
                     res.params = { ...res.params, [fieldName]: connectionWhere[1] };
-                    return res;
                 });
 
                 return res;
