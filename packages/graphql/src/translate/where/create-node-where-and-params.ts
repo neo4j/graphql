@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg, Context } from "../../types";
+import { GraphQLWhereArg, Context, ConnectionWhereArg } from "../../types";
 import { Node, Relationship } from "../../classes";
 import createFilter from "./create-filter";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
@@ -153,7 +153,7 @@ function createNodeWhereAndParams({
             }
 
             if (connectionField) {
-                let nodeEntries: Record<string, any> = value;
+                let nodeEntries: Record<string, ConnectionWhereArg> = value;
 
                 if (!connectionField?.relationship.union) {
                     nodeEntries = { [connectionField.relationship.typeMeta.name]: value };
@@ -195,7 +195,7 @@ function createNodeWhereAndParams({
                     ];
 
                     const connectionWhere = createConnectionWhereAndParams({
-                        whereInput: entry[1] as any,
+                        whereInput: entry[1],
                         context,
                         node: refNode,
                         nodeVariable: `${collectedMap}.node`,
