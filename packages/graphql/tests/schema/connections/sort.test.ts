@@ -76,9 +76,9 @@ describe("Sort", () => {
 
             type Node1 {
               property: String!
-              relatedTo(options: Node2Options, where: Node2Where): [Node2!]!
-              relatedToAggregate(where: Node2Where): Node1Node2RelatedToAggregationSelection
-              relatedToConnection(after: String, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
+              relatedTo(directed: Boolean = true, options: Node2Options, where: Node2Where): [Node2!]!
+              relatedToAggregate(directed: Boolean = true, where: Node2Where): Node1Node2RelatedToAggregationSelection
+              relatedToConnection(after: String, directed: Boolean = true, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
             }
 
             type Node1AggregateSelection {
@@ -117,7 +117,7 @@ describe("Sort", () => {
               \\"\\"\\"
               Specify one or more Node1Sort objects to sort Node1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Node1Sort]
+              sort: [Node1Sort!]
             }
 
             input Node1RelatedToAggregateInput {
@@ -207,11 +207,11 @@ describe("Sort", () => {
               property: String
               property_CONTAINS: String
               property_ENDS_WITH: String
-              property_IN: [String]
+              property_IN: [String!]
               property_NOT: String
               property_NOT_CONTAINS: String
               property_NOT_ENDS_WITH: String
-              property_NOT_IN: [String]
+              property_NOT_IN: [String!]
               property_NOT_STARTS_WITH: String
               property_STARTS_WITH: String
               relatedTo: Node2Where
@@ -222,9 +222,9 @@ describe("Sort", () => {
             }
 
             type Node2 {
-              relatedTo(options: Node1Options, where: Node1Where): [Node1!]!
-              relatedToAggregate(where: Node1Where): Node2Node1RelatedToAggregationSelection
-              relatedToConnection(after: String, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
+              relatedTo(directed: Boolean = true, options: Node1Options, where: Node1Where): [Node1!]!
+              relatedToAggregate(directed: Boolean = true, where: Node1Where): Node2Node1RelatedToAggregationSelection
+              relatedToConnection(after: String, directed: Boolean = true, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
             }
 
             type Node2AggregateSelection {

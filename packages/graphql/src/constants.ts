@@ -22,7 +22,6 @@ const DEBUG_PREFIX = "@neo4j/graphql";
 export const AUTH_FORBIDDEN_ERROR = "@neo4j/graphql/FORBIDDEN";
 export const AUTH_UNAUTHENTICATED_ERROR = "@neo4j/graphql/UNAUTHENTICATED";
 export const MIN_VERSIONS = [
-    { majorMinor: "4.1", neo4j: "4.1.5" },
     { majorMinor: "4.2", neo4j: "4.2.9" },
     { majorMinor: "4.3", neo4j: "4.3.2" },
 ];
@@ -42,18 +41,15 @@ export const RELATIONSHIP_REQUIREMENT_PREFIX = "@neo4j/graphql/RELATIONSHIP-REQU
 export const RESERVED_TYPE_NAMES = [
     {
         regex: /^PageInfo$/,
-        error:
-            "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.",
+        error: "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.",
     },
     {
         regex: /^.+Connection$/,
-        error:
-            'Type or Interface with name ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.',
+        error: 'Type or Interface with name ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.',
     },
     {
         regex: /^Node$/,
-        error:
-            "Type or Interface with name `Node` reserved to support Relay. See https://relay.dev/graphql/ for more information.",
+        error: "Type or Interface with name `Node` reserved to support Relay. See https://relay.dev/graphql/ for more information.",
     },
 ];
 
@@ -83,3 +79,10 @@ export const WHERE_AGGREGATION_TYPES = [
     "Time",
     "Duration",
 ];
+
+export enum RelationshipQueryDirectionOption {
+    DEFAULT_DIRECTED = "DEFAULT_DIRECTED",
+    DEFAULT_UNDIRECTED = "DEFAULT_UNDIRECTED",
+    DIRECTED_ONLY = "DIRECTED_ONLY",
+    UNDIRECTED_ONLY = "UNDIRECTED_ONLY",
+}

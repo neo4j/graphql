@@ -171,7 +171,7 @@ describe("find", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const query = `
-            query($ids: [ID]){
+            query($ids: [ID!]){
                 movies(where: {id_IN: $ids}){
                     id
                 }
@@ -235,7 +235,7 @@ describe("find", () => {
         });
 
         const query = `
-            query($ids: [ID], $title: String){
+            query($ids: [ID!], $title: String){
                 movies(where: {id_IN: $ids, title: $title}){
                     id
                     title
@@ -307,7 +307,7 @@ describe("find", () => {
         });
 
         const query = `
-            query($movieIds: [ID], $actorIds: [ID]){
+            query($movieIds: [ID!], $actorIds: [ID!]){
                 movies(where: {id_IN: $movieIds}){
                     id
                     actors(where: {id_IN: $actorIds}){
@@ -418,7 +418,7 @@ describe("find", () => {
 
             type Movie {
                 id: ID!
-                actors(actorIds: [ID]): [Actor!]! @cypher(
+                actors(actorIds: [ID!]): [Actor!]! @cypher(
                    statement:  """
                    MATCH (a:Actor)
                    WHERE a.id IN $actorIds
@@ -451,7 +451,7 @@ describe("find", () => {
         });
 
         const query = `
-            query($movieIds: [ID], $actorIds: [ID]){
+            query($movieIds: [ID!], $actorIds: [ID!]){
                 movies(where: {id_IN: $movieIds}){
                     id
                     actors(actorIds: $actorIds) {

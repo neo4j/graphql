@@ -391,7 +391,7 @@ describe("Point", () => {
 
         // Test IN functionality
         const photographsInQuery = `
-            query Photographs($locations: [PointInput]) {
+            query Photographs($locations: [PointInput!]) {
                 photographs(where: { location_IN: $locations }) {
                     id
                     size
@@ -434,7 +434,7 @@ describe("Point", () => {
 
         // Test NOT IN functionality
         const photographsNotInQuery = `
-            query Photographs($locations: [PointInput]) {
+            query Photographs($locations: [PointInput!]) {
                 photographs(where: { location_NOT_IN: $locations }) {
                     id
                     size
