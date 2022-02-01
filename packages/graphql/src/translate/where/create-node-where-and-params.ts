@@ -67,9 +67,18 @@ function createNodeWhereAndParams({
 
         const match = re.exec(key);
 
-        const fieldName = match?.groups?.field as string;
-        const not = !!match?.groups?.not;
-        const operator = match?.groups?.operator;
+        if (!match) {
+            throw new Error(`Failed to match key in filter: ${key}`);
+        }
+
+        const fieldName = match.groups?.field;
+
+        if (!fieldName) {
+            throw new Error(`Failed to find field name in filter: ${key}`);
+        }
+
+        const not = !!match.groups?.not;
+        const operator = match.groups?.operator;
 
         const pointField = node.pointFields.find((x) => x.fieldName === fieldName);
         // Comparison operations requires adding dates to durations
