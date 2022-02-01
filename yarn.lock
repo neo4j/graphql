@@ -12709,7 +12709,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"neo4j-driver-bolt-connection@npm:^4.4.0, neo4j-driver-bolt-connection@npm:^4.4.1":
+"neo4j-driver-bolt-connection@npm:^4.4.1":
   version: 4.4.1
   resolution: "neo4j-driver-bolt-connection@npm:4.4.1"
   dependencies:
@@ -12720,22 +12720,40 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo4j-driver-core@npm:^4.4.0, neo4j-driver-core@npm:^4.4.1":
+"neo4j-driver-bolt-connection@npm:^4.4.2":
+  version: 4.4.2
+  resolution: "neo4j-driver-bolt-connection@npm:4.4.2"
+  dependencies:
+    buffer: ^6.0.3
+    neo4j-driver-core: ^4.4.2
+    string_decoder: ^1.3.0
+  checksum: 8d37e404f8a357c70569f2b312e4d20701dde991aee8f43da97e29ec2aec6c4ba700aa411a8fc7ca6f332ffc1e7e4ee074624d0397d6ac5eae95037c72cf4add
+  languageName: node
+  linkType: hard
+
+"neo4j-driver-core@npm:^4.4.1":
   version: 4.4.1
   resolution: "neo4j-driver-core@npm:4.4.1"
   checksum: 62bbbf0d263dabc4fd2a6e174a7723ae80916352f56c34eee2fead7ff93e39e59cdffe5fff80a4cc848a83d84ad9fd1400a3cd429df673f548373ef121383c8d
   languageName: node
   linkType: hard
 
-"neo4j-driver@npm:4.4.0":
-  version: 4.4.0
-  resolution: "neo4j-driver@npm:4.4.0"
+"neo4j-driver-core@npm:^4.4.2":
+  version: 4.4.2
+  resolution: "neo4j-driver-core@npm:4.4.2"
+  checksum: ac612e33ae9733f5c9433d9186c55bbaa221542bc18d1ab9e9d7eda3c92151571410fc25a9f64c54c09eaf66c7f2e6a06f3f8de410ce1e3536e4943ca1ac24ab
+  languageName: node
+  linkType: hard
+
+"neo4j-driver@npm:4.4.2":
+  version: 4.4.2
+  resolution: "neo4j-driver@npm:4.4.2"
   dependencies:
     "@babel/runtime": ^7.5.5
-    neo4j-driver-bolt-connection: ^4.4.0
-    neo4j-driver-core: ^4.4.0
+    neo4j-driver-bolt-connection: ^4.4.2
+    neo4j-driver-core: ^4.4.2
     rxjs: ^6.6.3
-  checksum: f6125e3767b49ff927399fa069bd36324bd3fce5d935b6bee4c182571375e1dd7c81b41724a14d89dd72c8cc018c81b74fa6ffb14eb645264a262601976b30fb
+  checksum: b252de02634ba62cade71396b4db17f8d76c07448b4ed6afc60ef85d95b23d6350791104db2a0275b25d78e89b4c2c58a310a66ee3d4576131d2255c9f6f594c
   languageName: node
   linkType: hard
 
@@ -12773,7 +12791,7 @@ __metadata:
     husky: 7.0.4
     jest: 27.4.7
     lint-staged: 12.3.2
-    neo4j-driver: 4.4.0
+    neo4j-driver: 4.4.2
     npm-run-all: 4.1.5
     prettier: 2.5.1
     set-tz: 0.2.0
