@@ -32,6 +32,7 @@ import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { generateProjectionField } from "./utils/generate-projection-field";
+import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
 
 interface Res {
     projection: string[];
@@ -324,17 +325,12 @@ function createProjectionAndParams({
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
             const nodeMatchStr = `(${chainStr || varName})`;
-            let inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
-            let outStr = relationField.direction === "OUT" ? "->" : "-";
             const labels = referenceNode?.getLabelString(context);
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
-            if (field.args.directed === false) {
-                inStr = "-";
-                outStr = "-";
-            }
+            const { inStr, outStr } = getRelationshipDirection(relationField, field.args);
 
             if (relationField.interface) {
                 if (!res.meta.interfaceFields) {
@@ -595,25 +591,6 @@ function createProjectionAndParams({
         return res;
     }
 
-    // Fields of reference node to sort on. Since sorting is done on projection, if field is not selected
-    // sort will fail silently
-
-    const sortFieldNames = ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat();
-
-    // Iterate over fields name in sort argument
-    const nodeFields = sortFieldNames.reduce(
-        (acc, sortFieldName) => ({
-            ...acc,
-            // If fieldname is not found in fields of selection set
-            ...(!Object.values(resolveTree.fieldsByTypeName[node.name]).find((field) => field.name === sortFieldName)
-                ? // generate a basic resolve tree
-                  generateProjectionField({ name: sortFieldName })
-                : {}),
-        }),
-        // and add it to existing fields for projection
-        resolveTree.fieldsByTypeName[node.name]
-    );
-
     // Include fields of implemented interfaces to allow for fragments on interfaces
     // cf. https://github.com/neo4j/graphql/issues/476
 
@@ -623,7 +600,9 @@ function createProjectionAndParams({
         // Combine the fields of the interfaces...
         .reduce((prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }), {
             // with the fields of the node
-            ...nodeFields,
+            ...resolveTree.fieldsByTypeName[node.name],
+            // and fields to sort on
+            ...generateSortFields({ node, resolveTree }),
             // and any required fields for custom resolvers
             ...getRequiredFields({ node, resolveTree }),
         });
@@ -638,6 +617,34 @@ function createProjectionAndParams({
 }
 
 export default createProjectionAndParams;
+
+const generateSortFields = ({
+    node,
+    resolveTree,
+}: {
+    node: Node;
+    resolveTree: ResolveTree;
+}): Record<string, ResolveTree> => {
+    const nodeFields = resolveTree.fieldsByTypeName[node.name];
+
+    const sortFieldNames = ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat();
+
+    return Array.from(new Set(sortFieldNames)).reduce((acc, sortFieldName) => {
+        const fieldIsMissing = !Object.values(nodeFields).find((field) => field.name === sortFieldName);
+        const fieldIsAliased = Boolean(
+            Object.values(nodeFields).find((field) => field.name === sortFieldName && field.alias !== sortFieldName)
+        );
+
+        if (fieldIsMissing || fieldIsAliased) {
+            return {
+                ...acc,
+                ...generateProjectionField({ name: sortFieldName }),
+            };
+        }
+
+        return acc;
+    }, {});
+};
 
 const getRequiredFields = ({
     node,

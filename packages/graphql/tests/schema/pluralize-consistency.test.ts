@@ -142,7 +142,7 @@ describe("Pluralize consistency", () => {
               \\"\\"\\"
               Specify one or more super_friendSort objects to sort Super_friends by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [super_friendSort]
+              sort: [super_friendSort!]
             }
 
             \\"\\"\\"
@@ -162,11 +162,11 @@ describe("Pluralize consistency", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -298,7 +298,7 @@ describe("Pluralize consistency", () => {
               \\"\\"\\"
               Specify one or more super_userSort objects to sort Super_users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [super_userSort]
+              sort: [super_userSort!]
             }
 
             input super_userRelationInput {
@@ -328,11 +328,11 @@ describe("Pluralize consistency", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }

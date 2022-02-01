@@ -757,7 +757,7 @@ function makeAugmentedSchema(
                         description: `Specify one or more ${`${node.name}Sort`} objects to sort ${upperFirst(
                             node.plural
                         )} by. The sorts will be applied in the order in which they are arranged in the array.`,
-                        type: sortInput.List,
+                        type: sortInput.NonNull.List,
                     },
                     limit: "Int",
                     offset: "Int",

@@ -24,6 +24,7 @@ import { ConnectionField, Context } from "../../types";
 import createConnectionAndParams from "./create-connection-and-params";
 import Neo4jGraphQL from "../../classes/Neo4jGraphQL";
 import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import { RelationshipQueryDirectionOption } from "../../constants";
 
 jest.mock("../../classes/Neo4jGraphQL");
 
@@ -91,6 +92,7 @@ describe("createConnectionAndParams", () => {
                 fieldName: "actors",
                 type: "ACTED_IN",
                 direction: "IN",
+                queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                 // @ts-ignore
                 typeMeta: {
                     name: "Actor",
@@ -184,6 +186,7 @@ describe("createConnectionAndParams", () => {
             relationship: {
                 fieldName: "actors",
                 type: "ACTED_IN",
+                queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                 direction: "IN",
                 // @ts-ignore
                 typeMeta: {
@@ -272,6 +275,7 @@ describe("createConnectionAndParams", () => {
             relationship: {
                 fieldName: "actors",
                 type: "ACTED_IN",
+                queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                 direction: "IN",
                 // @ts-ignore
                 typeMeta: {

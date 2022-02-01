@@ -37,6 +37,7 @@ import { stringifyObject } from "../utils/stringify-object";
 import { serializeParamsForApocRun, wrapInApocRunFirstColumn } from "../utils/apoc-run";
 import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
+import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
 
 const subqueryNodeAlias = "n";
 const subqueryRelationAlias = "r";
@@ -158,7 +159,7 @@ function createTargetPattern({
     relationField,
     referenceNode,
     context,
-    directed = true,
+    directed,
 }: {
     nodeLabel: string;
     relationField: RelationField;
@@ -166,12 +167,7 @@ function createTargetPattern({
     context: Context;
     directed?: boolean;
 }): string {
-    let inStr = relationField.direction === "IN" ? "<-" : "-";
-    let outStr = relationField.direction === "OUT" ? "->" : "-";
-    if (!directed) {
-        inStr = "-";
-        outStr = "-";
-    }
+    const { inStr, outStr } = getRelationshipDirection(relationField, { directed });
     const nodeOutStr = `(${subqueryNodeAlias}${referenceNode.getLabelString(context)})`;
 
     return `(${nodeLabel})${inStr}[${subqueryRelationAlias}:${relationField.type}]${outStr}${nodeOutStr}`;
