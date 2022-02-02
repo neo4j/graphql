@@ -17,9 +17,11 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg, Context } from "../../types";
-import { Node } from "../../classes";
+import { GraphQLWhereArg, Context, ConnectionWhereArg } from "../../types";
+import { Node, Relationship } from "../../classes";
 import createFilter from "./create-filter";
+import createConnectionWhereAndParams from "./create-connection-where-and-params";
+import { wrapInApocRunFirstColumn } from "../utils/apoc-run";
 
 interface Res {
     clauses: string[];
@@ -60,13 +62,23 @@ function createNodeWhereAndParams({
             DISTANCE: "=",
         };
 
-        const re = /(?<field>[_A-Za-z][_0-9A-Za-z]*?)(?:_(?<not>NOT))?(?:_(?<operator>INCLUDES|IN|MATCHES|CONTAINS|STARTS_WITH|ENDS_WITH|LT|GT|GTE|LTE|DISTANCE))?$/gm;
+        const re =
+            /(?<field>[_A-Za-z][_0-9A-Za-z]*?)(?:_(?<not>NOT))?(?:_(?<operator>INCLUDES|IN|MATCHES|CONTAINS|STARTS_WITH|ENDS_WITH|LT|GT|GTE|LTE|DISTANCE))?$/gm;
 
         const match = re.exec(key);
 
-        const fieldName = match?.groups?.field;
-        const not = !!match?.groups?.not;
-        const operator = match?.groups?.operator;
+        if (!match) {
+            throw new Error(`Failed to match key in filter: ${key}`);
+        }
+
+        const fieldName = match.groups?.field;
+
+        if (!fieldName) {
+            throw new Error(`Failed to find field name in filter: ${key}`);
+        }
+
+        const not = !!match.groups?.not;
+        const operator = match.groups?.operator;
 
         const pointField = node.pointFields.find((x) => x.fieldName === fieldName);
         // Comparison operations requires adding dates to durations
@@ -75,8 +87,9 @@ function createNodeWhereAndParams({
             (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
         );
 
-        const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find((f) => fieldName === f.fieldName)
-            ?.coalesceValue;
+        const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
+            (f) => fieldName === f.fieldName
+        )?.coalesceValue;
 
         const property =
             coalesceValue !== undefined
@@ -109,6 +122,7 @@ function createNodeWhereAndParams({
         // Equality/inequality
         if (!operator) {
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
+            const connectionField = node.connectionFields.find((x) => fieldName === x.fieldName);
 
             if (relationField) {
                 const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
@@ -116,6 +130,7 @@ function createNodeWhereAndParams({
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
                 const relatedNodeVariable = `${nodeVariable}_${relationField.fieldName}`;
+                const labels = refNode.getLabelString(context);
 
                 if (value === null) {
                     let clause = `EXISTS((${nodeVariable})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`;
@@ -128,9 +143,7 @@ function createNodeWhereAndParams({
                     `EXISTS((${nodeVariable})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
                     `AND ${
                         not ? "NONE" : "ANY"
-                    }(${relatedNodeVariable} IN [(${nodeVariable})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}:${
-                        relationField.typeMeta.name
-                    }) | ${relatedNodeVariable}] INNER_WHERE `,
+                    }(${relatedNodeVariable} IN [(${nodeVariable})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}${labels}) | ${relatedNodeVariable}] INNER_WHERE `,
                 ].join(" ");
 
                 const recurse = createNodeWhereAndParams({
@@ -144,7 +157,75 @@ function createNodeWhereAndParams({
                 resultStr += recurse[0];
                 resultStr += ")"; // close NONE/ANY
                 res.clauses.push(resultStr);
-                res.params = { ...res.params, fieldName: recurse[1] };
+                res.params = { ...res.params, [fieldName]: recurse[1] };
+                return res;
+            }
+
+            if (connectionField) {
+                let nodeEntries: Record<string, ConnectionWhereArg> = value;
+
+                if (!connectionField?.relationship.union) {
+                    nodeEntries = { [connectionField.relationship.typeMeta.name]: value };
+                }
+
+                Object.entries(nodeEntries).forEach((entry) => {
+                    const refNode = context.neoSchema.nodes.find((x) => x.name === entry[0]) as Node;
+                    const relationship = context.neoSchema.relationships.find(
+                        (x) => x.name === connectionField.relationshipTypeName
+                    ) as Relationship;
+
+                    const safeNodeVariable = `${nodeVariable.replace(/\./g, "_")}`;
+
+                    const relatedNodeVariable = `${safeNodeVariable}_${refNode.name}`;
+
+                    const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
+                    const relationshipVariable = `${relatedNodeVariable}_${connectionField.relationshipTypeName}`;
+                    const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
+                    const labels = refNode.getLabelString(context);
+
+                    const collectedMap = `${relatedNodeVariable}_map`;
+
+                    const rootParam = parameterPrefix.split(".", 1)[0];
+
+                    const existsStr = `EXISTS((${safeNodeVariable})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`;
+
+                    if (value === null) {
+                        res.clauses.push(not ? `NOT ${existsStr}` : existsStr);
+                        return;
+                    }
+
+                    const resultArr = [
+                        `RETURN ${existsStr}`,
+                        `AND ${
+                            not ? "NONE" : "ANY"
+                        }(${collectedMap} IN [(${safeNodeVariable})${inStr}[${relationshipVariable}:${
+                            connectionField.relationship.type
+                        }]${outStr}(${relatedNodeVariable}${labels}) | { node: ${relatedNodeVariable}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+                    ];
+
+                    const connectionWhere = createConnectionWhereAndParams({
+                        whereInput: entry[1],
+                        context,
+                        node: refNode,
+                        nodeVariable: `${collectedMap}.node`,
+                        relationship,
+                        relationshipVariable: `${collectedMap}.relationship`,
+                        parameterPrefix: `${parameterPrefix}.${fieldName}`,
+                    });
+
+                    resultArr.push(connectionWhere[0]);
+                    resultArr.push(")"); // close NONE/ANY
+
+                    const apocRunFirstColumn = wrapInApocRunFirstColumn(resultArr.join("\n"), {
+                        [safeNodeVariable]: nodeVariable,
+                        [rootParam]: `$${rootParam}`,
+                    });
+
+                    res.clauses.push(apocRunFirstColumn);
+
+                    res.params = { ...res.params, [fieldName]: connectionWhere[1] };
+                });
+
                 return res;
             }
 
@@ -218,7 +299,7 @@ function createNodeWhereAndParams({
             if (pointField) {
                 clause = `distance(${property}, point($${param}.point)) ${operators[operator]} $${param}.distance`;
             }
-            
+
             if (durationField) {
                 clause = `datetime() + ${property} ${operators[operator]} datetime() + $${param}`;
             }
