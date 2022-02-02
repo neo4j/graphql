@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
-describe("#894", () => {
+describe("https://github.com/neo4j/graphql/issues/894", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
@@ -48,7 +48,7 @@ describe("#894", () => {
         });
     });
 
-    test("Nested Connection", async () => {
+    test("Disconnect and connect", async () => {
         const query = gql`
             mutation SwapSides {
                 updateUsers(
