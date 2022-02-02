@@ -33,6 +33,7 @@ import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
 import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
 import { CypherStatement } from "../types";
+import { isString } from "../../utils/utils";
 
 function createConnectionAndParams({
     resolveTree,
@@ -419,7 +420,7 @@ function createConnectionAndParams({
     const returnValues: string[] = [];
     if (relatedNode && relatedNode?.queryOptions?.defaultLimit) {
         const offsetLimitStr = createOffsetLimitStr({
-            offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
+            offset: isString(afterInput) ? cursorToOffset(afterInput) + 1 : undefined,
             limit: relatedNode?.queryOptions?.defaultLimit,
         });
         subquery.push(`WITH size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`);
@@ -432,7 +433,7 @@ function createConnectionAndParams({
         subquery.push(`RETURN { ${returnValues.join(", ")} } AS ${resolveTree.alias}`);
     } else {
         const offsetLimitStr = createOffsetLimitStr({
-            offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
+            offset: isString(afterInput) ? cursorToOffset(afterInput) + 1 : undefined,
             limit: firstInput as Integer | number | undefined,
         });
         subquery.push(`WITH size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`);

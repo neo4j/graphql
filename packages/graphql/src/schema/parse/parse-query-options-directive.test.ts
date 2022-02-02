@@ -32,7 +32,7 @@ describe("parseQueryOptionsDirective", () => {
                 }
             `;
 
-            const definition = typeDefs.definitions[0] as unknown as ObjectTypeDefinitionNode;
+            const definition = (typeDefs.definitions[0] as unknown) as ObjectTypeDefinitionNode;
             const directive = (definition.directives || [])[0] as DirectiveNode;
 
             expect(() =>
@@ -46,6 +46,23 @@ describe("parseQueryOptionsDirective", () => {
         });
     });
 
+    test("should return correct object if defaultLimit is undefined", () => {
+        const typeDefs = gql`
+            type Movie @queryOptions {
+                id: ID
+            }
+        `;
+
+        const definition = (typeDefs.definitions[0] as unknown) as ObjectTypeDefinitionNode;
+        const directive = (definition.directives || [])[0] as DirectiveNode;
+
+        const result = parseQueryOptionsDirective({
+            directive,
+            definition,
+        });
+        expect(result).toEqual({});
+    });
+
     test("should parse and return correct meta data", () => {
         const defaultLimit = 100;
 
@@ -55,7 +72,7 @@ describe("parseQueryOptionsDirective", () => {
                 }
             `;
 
-        const definition = typeDefs.definitions[0] as unknown as ObjectTypeDefinitionNode;
+        const definition = (typeDefs.definitions[0] as unknown) as ObjectTypeDefinitionNode;
         const directive = (definition.directives || [])[0] as DirectiveNode;
 
         const result = parseQueryOptionsDirective({
