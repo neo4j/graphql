@@ -89,11 +89,15 @@ describe("Unions", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [GenreSort]
+              \\"\\"\\"
+              Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [GenreSort!]
             }
 
-            \\"\\"\\"Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
+            \\"\\"\\"
             input GenreSort {
               id: SortDirection
             }
@@ -124,8 +128,8 @@ describe("Unions", () => {
 
             type Movie {
               id: ID
-              search(options: QueryOptions, where: SearchWhere): [Search!]!
-              searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
+              search(directed: Boolean = true, options: QueryOptions, where: SearchWhere): [Search!]!
+              searchConnection(directed: Boolean = true, where: MovieSearchConnectionWhere): MovieSearchConnection!
               searchNoDirective: Search
             }
 
@@ -159,8 +163,10 @@ describe("Unions", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
@@ -178,23 +184,9 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
-            input MovieSearchConnectionGenreWhere {
-              AND: [MovieSearchConnectionGenreWhere]
-              OR: [MovieSearchConnectionGenreWhere]
-              node: GenreWhere
-              node_NOT: GenreWhere
-            }
-
-            input MovieSearchConnectionMovieWhere {
-              AND: [MovieSearchConnectionMovieWhere]
-              OR: [MovieSearchConnectionMovieWhere]
-              node: MovieWhere
-              node_NOT: MovieWhere
-            }
-
             input MovieSearchConnectionWhere {
-              Genre: MovieSearchConnectionGenreWhere
-              Movie: MovieSearchConnectionMovieWhere
+              Genre: MovieSearchGenreConnectionWhere
+              Movie: MovieSearchMovieConnectionWhere
             }
 
             input MovieSearchCreateFieldInput {
@@ -312,7 +304,9 @@ describe("Unions", () => {
               Movie: [MovieSearchMovieUpdateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               id: SortDirection
             }
@@ -399,8 +393,7 @@ describe("Unions", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 });

@@ -65,11 +65,15 @@ describe("200", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more CategorySort objects to sort Categories by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [CategorySort]
+              \\"\\"\\"
+              Specify one or more CategorySort objects to sort Categories by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [CategorySort!]
             }
 
-            \\"\\"\\"Fields to sort Categories by. The order in which sorts are applied is not guaranteed when specifying many fields in one CategorySort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Categories by. The order in which sorts are applied is not guaranteed when specifying many fields in one CategorySort object.
+            \\"\\"\\"
             input CategorySort {
               categoryId: SortDirection
               description: SortDirection
@@ -88,21 +92,21 @@ describe("200", () => {
               categoryId: ID
               categoryId_CONTAINS: ID
               categoryId_ENDS_WITH: ID
-              categoryId_IN: [ID]
+              categoryId_IN: [ID!]
               categoryId_NOT: ID
               categoryId_NOT_CONTAINS: ID
               categoryId_NOT_ENDS_WITH: ID
-              categoryId_NOT_IN: [ID]
+              categoryId_NOT_IN: [ID!]
               categoryId_NOT_STARTS_WITH: ID
               categoryId_STARTS_WITH: ID
               description: String
               description_CONTAINS: String
               description_ENDS_WITH: String
-              description_IN: [String]
+              description_IN: [String!]
               description_NOT: String
               description_NOT_CONTAINS: String
               description_NOT_ENDS_WITH: String
-              description_NOT_IN: [String]
+              description_NOT_IN: [String!]
               description_NOT_STARTS_WITH: String
               description_STARTS_WITH: String
               exampleImageLocations: [String!]
@@ -112,11 +116,11 @@ describe("200", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -177,8 +181,7 @@ describe("200", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }
-            "
+            }"
         `);
     });
 });

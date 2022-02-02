@@ -20,18 +20,18 @@
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { offsetToCursor } from "graphql-relay";
 import dedent from "dedent";
-import { mocked } from "ts-jest/utils";
 import { ConnectionField, Context } from "../../types";
 import createConnectionAndParams from "./create-connection-and-params";
 import Neo4jGraphQL from "../../classes/Neo4jGraphQL";
 import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import { RelationshipQueryDirectionOption } from "../../constants";
 
 jest.mock("../../classes/Neo4jGraphQL");
 
 describe("createConnectionAndParams", () => {
     test("Returns entry with no args", () => {
         // @ts-ignore
-        const mockedNeo4jGraphQL = mocked(new Neo4jGraphQL(), true);
+        const mockedNeo4jGraphQL = jest.mocked(new Neo4jGraphQL(), true);
         mockedNeo4jGraphQL.nodes = [
             // @ts-ignore
             new NodeBuilder({
@@ -92,6 +92,7 @@ describe("createConnectionAndParams", () => {
                 fieldName: "actors",
                 type: "ACTED_IN",
                 direction: "IN",
+                queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                 // @ts-ignore
                 typeMeta: {
                     name: "Actor",
@@ -114,7 +115,7 @@ describe("createConnectionAndParams", () => {
 
     test("Returns entry with sort arg", () => {
         // @ts-ignore
-        const mockedNeo4jGraphQL = mocked(new Neo4jGraphQL(), true);
+        const mockedNeo4jGraphQL = jest.mocked(new Neo4jGraphQL(), true);
         mockedNeo4jGraphQL.nodes = [
             // @ts-ignore
             new NodeBuilder({
@@ -185,6 +186,7 @@ describe("createConnectionAndParams", () => {
             relationship: {
                 fieldName: "actors",
                 type: "ACTED_IN",
+                queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                 direction: "IN",
                 // @ts-ignore
                 typeMeta: {
@@ -210,7 +212,7 @@ describe("createConnectionAndParams", () => {
 
     test("Returns an entry with offset and limit args", () => {
         // @ts-ignore
-        const mockedNeo4jGraphQL = mocked(new Neo4jGraphQL(), true);
+        const mockedNeo4jGraphQL = jest.mocked(new Neo4jGraphQL(), true);
         // @ts-ignore
         mockedNeo4jGraphQL.nodes = [
             // @ts-ignore
@@ -273,6 +275,7 @@ describe("createConnectionAndParams", () => {
             relationship: {
                 fieldName: "actors",
                 type: "ACTED_IN",
+                queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                 direction: "IN",
                 // @ts-ignore
                 typeMeta: {

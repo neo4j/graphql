@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "apollo-server";
@@ -84,11 +103,15 @@ describe("Node Directive", () => {
                   distinct: Boolean
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [TechSort]
+                  \\"\\"\\"
+                  Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [TechSort!]
                 }
 
-                \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.
+                \\"\\"\\"
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
@@ -135,8 +158,7 @@ describe("Node Directive", () => {
                 type UpdateTechsMutationResponse {
                   info: UpdateInfo!
                   techs: [Tech!]!
-                }
-                "
+                }"
             `);
         });
 
@@ -219,11 +241,15 @@ describe("Node Directive", () => {
                   distinct: Boolean
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [TechSort]
+                  \\"\\"\\"
+                  Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [TechSort!]
                 }
 
-                \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.
+                \\"\\"\\"
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
@@ -270,8 +296,7 @@ describe("Node Directive", () => {
                 type UpdateTechsMutationResponse {
                   info: UpdateInfo!
                   techs: [Tech!]!
-                }
-                "
+                }"
             `);
         });
 
@@ -354,11 +379,15 @@ describe("Node Directive", () => {
                   distinct: Boolean
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechSort objects to sort Technologies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [TechSort]
+                  \\"\\"\\"
+                  Specify one or more TechSort objects to sort Technologies by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [TechSort!]
                 }
 
-                \\"\\"\\"Fields to sort Technologies by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Technologies by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.
+                \\"\\"\\"
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
@@ -405,8 +434,7 @@ describe("Node Directive", () => {
                 type UpdateTechnologiesMutationResponse {
                   info: UpdateInfo!
                   technologies: [Tech!]!
-                }
-                "
+                }"
             `);
         });
 
@@ -486,11 +514,15 @@ describe("Node Directive", () => {
                   distinct: Boolean
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechsSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [TechsSort]
+                  \\"\\"\\"
+                  Specify one or more TechsSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [TechsSort!]
                 }
 
-                \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechsSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechsSort object.
+                \\"\\"\\"
                 input TechsSort {
                   value: SortDirection
                 }
@@ -525,8 +557,7 @@ describe("Node Directive", () => {
                 type UpdateTechsMutationResponse {
                   info: UpdateInfo!
                   techs: [Techs!]!
-                }
-                "
+                }"
             `);
         });
 
@@ -619,11 +650,15 @@ describe("Node Directive", () => {
                   distinct: Boolean
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more UserSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [UserSort]
+                  \\"\\"\\"
+                  Specify one or more UserSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [UserSort!]
                 }
 
-                \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+                \\"\\"\\"
                 input UserSort {
                   value: SortDirection
                 }
@@ -645,8 +680,7 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
-                }
-                "
+                }"
             `);
         });
 
@@ -739,11 +773,15 @@ describe("Node Directive", () => {
                   distinct: Boolean
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [UserSort]
+                  \\"\\"\\"
+                  Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [UserSort!]
                 }
 
-                \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+                \\"\\"\\"
                 input UserSort {
                   value: SortDirection
                 }
@@ -765,8 +803,7 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
-                }
-                "
+                }"
             `);
         });
 
@@ -859,11 +896,15 @@ describe("Node Directive", () => {
                   distinct: Boolean
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more UsersSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [UsersSort]
+                  \\"\\"\\"
+                  Specify one or more UsersSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [UsersSort!]
                 }
 
-                \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UsersSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UsersSort object.
+                \\"\\"\\"
                 input UsersSort {
                   value: SortDirection
                 }
@@ -885,8 +926,7 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
-                }
-                "
+                }"
             `);
         });
     });

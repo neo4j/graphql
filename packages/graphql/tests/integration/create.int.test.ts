@@ -379,7 +379,7 @@ describe("create", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        const graphqlProduct = gqlResult?.data?.createProducts.products[0];
+        const graphqlProduct = (gqlResult?.data as any)?.createProducts.products[0];
         expect(graphqlProduct.id).toEqual(product.id);
 
         const cypher = `

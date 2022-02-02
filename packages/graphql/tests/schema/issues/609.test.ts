@@ -72,11 +72,15 @@ describe("609", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more DeprecatedSort objects to sort Deprecateds by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [DeprecatedSort]
+              \\"\\"\\"
+              Specify one or more DeprecatedSort objects to sort Deprecateds by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [DeprecatedSort!]
             }
 
-            \\"\\"\\"Fields to sort Deprecateds by. The order in which sorts are applied is not guaranteed when specifying many fields in one DeprecatedSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Deprecateds by. The order in which sorts are applied is not guaranteed when specifying many fields in one DeprecatedSort object.
+            \\"\\"\\"
             input DeprecatedSort {
               deprecatedField: SortDirection
             }
@@ -134,8 +138,7 @@ describe("609", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }
-            "
+            }"
         `);
     });
 });

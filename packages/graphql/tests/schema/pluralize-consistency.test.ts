@@ -140,11 +140,15 @@ describe("Pluralize consistency", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more super_friendSort objects to sort Super_friends by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [super_friendSort]
+              \\"\\"\\"
+              Specify one or more super_friendSort objects to sort Super_friends by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [super_friendSort!]
             }
 
-            \\"\\"\\"Fields to sort Super_friends by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_friendSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Super_friends by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_friendSort object.
+            \\"\\"\\"
             input super_friendSort {
               name: SortDirection
             }
@@ -159,19 +163,19 @@ describe("Pluralize consistency", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
 
             type super_user {
-              my_friend(options: super_friendOptions, where: super_friendWhere): [super_friend!]!
-              my_friendAggregate(where: super_friendWhere): super_usersuper_friendMy_friendAggregationSelection
-              my_friendConnection(after: String, first: Int, sort: [super_userMy_friendConnectionSort!], where: super_userMy_friendConnectionWhere): super_userMy_friendConnection!
+              my_friend(directed: Boolean = true, options: super_friendOptions, where: super_friendWhere): [super_friend!]!
+              my_friendAggregate(directed: Boolean = true, where: super_friendWhere): super_usersuper_friendMy_friendAggregationSelection
+              my_friendConnection(after: String, directed: Boolean = true, first: Int, sort: [super_userMy_friendConnectionSort!], where: super_userMy_friendConnectionWhere): super_userMy_friendConnection!
               name: String!
             }
 
@@ -293,15 +297,19 @@ describe("Pluralize consistency", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more super_userSort objects to sort Super_users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [super_userSort]
+              \\"\\"\\"
+              Specify one or more super_userSort objects to sort Super_users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [super_userSort!]
             }
 
             input super_userRelationInput {
               my_friend: [super_userMy_friendCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Super_users by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_userSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Super_users by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_userSort object.
+            \\"\\"\\"
             input super_userSort {
               name: SortDirection
             }
@@ -322,11 +330,11 @@ describe("Pluralize consistency", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -338,8 +346,7 @@ describe("Pluralize consistency", () => {
 
             type super_usersuper_friendMy_friendNodeAggregateSelection {
               name: StringAggregateSelectionNonNullable!
-            }
-            "
+            }"
         `);
     });
 });

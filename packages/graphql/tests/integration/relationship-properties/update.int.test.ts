@@ -121,7 +121,7 @@ describe("Relationship properties - update", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.updateMovies?.movies).toEqual([
+            expect((result?.data as any)?.updateMovies?.movies).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -194,7 +194,7 @@ describe("Relationship properties - update", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.updateMovies?.movies).toEqual([
+            expect((result?.data as any)?.updateMovies?.movies).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -266,7 +266,7 @@ describe("Relationship properties - update", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.updateMovies?.movies).toEqual([
+            expect((result?.data as any)?.updateMovies?.movies).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -342,7 +342,7 @@ describe("Relationship properties - update", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.updateMovies?.movies).toEqual([
+            expect((result?.data as any)?.updateMovies?.movies).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {

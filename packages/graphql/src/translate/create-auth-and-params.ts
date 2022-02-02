@@ -201,34 +201,11 @@ function createAuthAndParams({
         authRules = entity?.auth.rules;
     }
 
-    if (where) {
-        const subPredicates = authRules.reduce(
-            (res: Res, authRule: AuthRule, index): Res => {
-                if (!authRule.where) {
-                    return res;
-                }
+    const hasWhere = (rule: BaseAuthRule): boolean =>
+        !!(rule.where || rule.AND?.some(hasWhere) || rule.OR?.some(hasWhere));
 
-                const authWhere = createAuthPredicate({
-                    rule: {
-                        where: authRule.where,
-                        allowUnauthenticated: authRule.allowUnauthenticated,
-                    },
-                    context,
-                    node: where.node,
-                    varName: where.varName,
-                    chainStr: `${where.chainStr || where.varName}_auth_where${index}`,
-                    kind: "where",
-                });
-
-                return {
-                    strs: [...res.strs, authWhere[0]],
-                    params: { ...res.params, ...authWhere[1] },
-                };
-            },
-            { strs: [], params: {} }
-        );
-
-        return [joinPredicates(subPredicates.strs, "OR"), subPredicates.params];
+    if (where && !authRules.some(hasWhere)) {
+        return ["", [{}]];
     }
 
     function createSubPredicate({
@@ -299,6 +276,21 @@ function createAuthAndParams({
             thisPredicates.push(joinPredicates(predicates, key));
             thisParams = { ...thisParams, ...predicateParams };
         });
+
+        if (where && authRule.where) {
+            const whereAndParams = createAuthPredicate({
+                context,
+                node: where.node,
+                varName: where.varName,
+                rule: authRule,
+                chainStr: `${where.chainStr || where.varName}${chainStr || ""}_auth_where${index}`,
+                kind: "where",
+            });
+            if (whereAndParams[0]) {
+                thisPredicates.push(whereAndParams[0]);
+                thisParams = { ...thisParams, ...whereAndParams[1] };
+            }
+        }
 
         if (bind && authRule.bind) {
             const allowAndParams = createAuthPredicate({
