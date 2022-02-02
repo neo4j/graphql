@@ -35,7 +35,7 @@ describe("tck/rfcs/query-limits", () => {
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Person @queryOptions(defaultLimit: 3) {
+            type Person @queryOptions(defaultLimit: 2) {
                 id: ID!
             }
         `;
@@ -98,7 +98,7 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
-                RETURN this { .id, actors: [ (this)<-[:ACTED_IN]-(this_actors:Person)   | this_actors { .id } ][..3] } as this
+                RETURN this { .id, actors: [ (this)<-[:ACTED_IN]-(this_actors:Person)   | this_actors { .id } ][..2] } as this
                 LIMIT $this_limit"
             `);
 
@@ -139,7 +139,7 @@ describe("tck/rfcs/query-limits", () => {
                 WITH this
                 MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_person:Person)
                 WITH collect({ node: { id: this_person.id } }) AS edges
-                WITH size(edges) AS totalCount, edges[..3] AS limitedSelection
+                WITH size(edges) AS totalCount, edges[..2] AS limitedSelection
                 RETURN { edges: limitedSelection, totalCount: totalCount } AS actorsConnection
                 }
                 RETURN this { .id, actorsConnection } as this
