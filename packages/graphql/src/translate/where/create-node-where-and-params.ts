@@ -20,6 +20,7 @@
 import { GraphQLWhereArg, Context, ConnectionWhereArg } from "../../types";
 import { Node, Relationship } from "../../classes";
 import createFilter from "./create-filter";
+import mapToDbProperty from "../../utils/map-to-db-property";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
 import { wrapInApocRunFirstColumn } from "../utils/apoc-run";
 
@@ -86,6 +87,7 @@ function createNodeWhereAndParams({
         const durationField = node.scalarFields.find(
             (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
         );
+        const dbProperty = mapToDbProperty(node, fieldName);
 
         const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
             (f) => fieldName === f.fieldName
@@ -93,9 +95,8 @@ function createNodeWhereAndParams({
 
         const property =
             coalesceValue !== undefined
-                ? `coalesce(${nodeVariable}.${fieldName}, ${coalesceValue})`
-                : `${nodeVariable}.${fieldName}`;
-
+                ? `coalesce(${nodeVariable}.${dbProperty}, ${coalesceValue})`
+                : `${nodeVariable}.${dbProperty}`;
         if (fieldName && ["AND", "OR"].includes(fieldName)) {
             const innerClauses: string[] = [];
             const nestedParams: any[] = [];
