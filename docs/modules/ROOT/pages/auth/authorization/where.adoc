@@ -46,8 +46,6 @@ Where is used on the following operations;
 - `DELETE`
 
 
-Note that `where` rules are not supported when applied over nested xref::type-definitions/unions.adoc[unions] or xref::type-definitions/interfaces.adoc[interfaces].
-
 == Combining `where` with `roles`
 
 The `where` argument can be combined with `roles` within auth rules to support rule based filtering of results.
