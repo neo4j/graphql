@@ -25,7 +25,7 @@ Would result in the following type definitions being generated:
 ```graphql
 input MovieOptions {
   offset: Int
-  limit: Int! = 5
+  limit: Int!
   sort: [MovieSort]
 }
 
@@ -91,7 +91,7 @@ LIMIT 10
 #### Relationship field
 
 ```graphql
-type Movie @queryOptions(limit: {default=10, max: 10}) {
+type Movie @queryOptions(limit: {default: 10, max: 10}) {
   title: String!
 }
 
