@@ -292,7 +292,7 @@ function makeAugmentedSchema(
             });
         }
 
-        let queryOptionsDirective: QueryOptions;
+        let queryOptionsDirective: QueryOptions | undefined;
         if (queryOptionsDirectiveDefinition) {
             queryOptionsDirective = parseQueryOptionsDirective({
                 directive: queryOptionsDirectiveDefinition,
@@ -335,7 +335,6 @@ function makeAugmentedSchema(
             nodeDirective,
             // @ts-ignore we can be sure it's defined
             fulltextDirective,
-            // @ts-ignore we can be sure it's defined
             queryOptionsDirective,
             description: definition.description?.value,
         });
