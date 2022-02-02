@@ -397,4 +397,36 @@ describe("makeAugmentedSchema", () => {
             );
         });
     });
+
+    describe("@private", () => {
+        test("should throw error if @private would leave no fields in interface", () => {
+            const typeDefs = gql`
+                interface UserInterface {
+                    private: String @private
+                }
+
+                type User implements UserInterface {
+                    id: ID
+                    password: String @private
+                    private: String
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                "Objects and Interfaces must have one or more fields: UserInterface"
+            );
+        });
+
+        test("should throw error if @private would leave no fields in object", () => {
+            const typeDefs = gql`
+                type User {
+                    password: String @private
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                "Objects and Interfaces must have one or more fields: User"
+            );
+        });
+    });
 });
