@@ -20,6 +20,7 @@
 import { GraphQLWhereArg, Context } from "../../types";
 import { Node } from "../../classes";
 import createFilter from "./create-filter";
+import mapToDbProperty from "../../utils/map-to-db-property";
 
 interface Res {
     clauses: string[];
@@ -65,24 +66,26 @@ function createNodeWhereAndParams({
         const match = re.exec(key);
 
         const fieldName = match?.groups?.field;
+        if (fieldName === undefined) {
+            throw new Error("FieldName cannot be undefined");
+        }
         const not = !!match?.groups?.not;
         const operator = match?.groups?.operator;
-
         const pointField = node.pointFields.find((x) => x.fieldName === fieldName);
         // Comparison operations requires adding dates to durations
         // See https://neo4j.com/developer/cypher/dates-datetimes-durations/#comparing-filtering-values
         const durationField = node.scalarFields.find(
             (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
         );
+        const dbProperty = mapToDbProperty(node, fieldName);
 
         const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find((f) => fieldName === f.fieldName)
             ?.coalesceValue;
 
         const property =
             coalesceValue !== undefined
-                ? `coalesce(${nodeVariable}.${fieldName}, ${coalesceValue})`
-                : `${nodeVariable}.${fieldName}`;
-
+                ? `coalesce(${nodeVariable}.${dbProperty}, ${coalesceValue})`
+                : `${nodeVariable}.${dbProperty}`;
         if (fieldName && ["AND", "OR"].includes(fieldName)) {
             const innerClauses: string[] = [];
             const nestedParams: any[] = [];
@@ -218,7 +221,7 @@ function createNodeWhereAndParams({
             if (pointField) {
                 clause = `distance(${property}, point($${param}.point)) ${operators[operator]} $${param}.distance`;
             }
-            
+
             if (durationField) {
                 clause = `datetime() + ${property} ${operators[operator]} datetime() + $${param}`;
             }
