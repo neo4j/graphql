@@ -391,7 +391,7 @@ describe("Point", () => {
 
         // Test IN functionality
         const photographsInQuery = `
-            query Photographs($locations: [PointInput]) {
+            query Photographs($locations: [PointInput!]) {
                 photographs(where: { location_IN: $locations }) {
                     id
                     size
@@ -409,10 +409,15 @@ describe("Point", () => {
             schema: neoSchema.schema,
             source: photographsInQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-            variableValues: [
-                { longitude, latitude },
-                { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
-            ],
+            variableValues: {
+                locations: [
+                    { longitude, latitude },
+                    {
+                        longitude: parseFloat(faker.address.longitude()),
+                        latitude: parseFloat(faker.address.latitude()),
+                    },
+                ],
+            },
         });
 
         expect(inResult.errors).toBeFalsy();
@@ -429,7 +434,7 @@ describe("Point", () => {
 
         // Test NOT IN functionality
         const photographsNotInQuery = `
-            query Photographs($locations: [PointInput]) {
+            query Photographs($locations: [PointInput!]) {
                 photographs(where: { location_NOT_IN: $locations }) {
                     id
                     size
@@ -447,10 +452,18 @@ describe("Point", () => {
             schema: neoSchema.schema,
             source: photographsNotInQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-            variableValues: [
-                { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
-                { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
-            ],
+            variableValues: {
+                locations: [
+                    {
+                        longitude: parseFloat(faker.address.longitude()),
+                        latitude: parseFloat(faker.address.latitude()),
+                    },
+                    {
+                        longitude: parseFloat(faker.address.longitude()),
+                        latitude: parseFloat(faker.address.latitude()),
+                    },
+                ],
+            },
         });
 
         expect(notInResult.errors).toBeFalsy();

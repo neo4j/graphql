@@ -31,7 +31,6 @@ import {
     StringValueNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import { upperFirst } from "graphql-compose";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getAliasMeta from "./get-alias-meta";
@@ -55,6 +54,7 @@ import {
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
 import getUniqueMeta from "./parse/get-unique-meta";
+import { upperFirst } from "../utils/upper-first";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -111,7 +111,7 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
-            const typeMeta = getFieldTypeMeta(field);
+            const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
             const defaultDirective = directives.find((x) => x.name.value === "default");
@@ -182,6 +182,18 @@ function getObjFieldMeta({
 
                 if (aliasDirective) {
                     throw new Error("@alias directive cannot be used on relationship fields");
+                }
+
+                const msg = `List type relationship fields must be non-nullable and have non-nullable entries, please change type of ${obj.name.value}.${field.name.value} to [${baseField.typeMeta.name}!]!`;
+
+                if (typeMeta.originalType?.kind === "NonNullType") {
+                    if (typeMeta.originalType?.type.kind === "ListType") {
+                        if (typeMeta.originalType?.type.type.kind !== "NonNullType") {
+                            throw new Error(msg);
+                        }
+                    }
+                } else if (typeMeta.originalType?.kind === "ListType") {
+                    throw new Error(msg);
                 }
 
                 const relationField: RelationField = {

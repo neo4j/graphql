@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("326", () => {
     let driver: Driver;
@@ -87,7 +87,7 @@ describe("326", () => {
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -144,7 +144,7 @@ describe("326", () => {
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }

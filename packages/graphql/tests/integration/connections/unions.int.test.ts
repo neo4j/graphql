@@ -32,7 +32,7 @@ describe("Connections -> Unions", () => {
 
         type Author {
             name: String!
-            publications: [Publication] @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
+            publications: [Publication!]! @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
         }
 
         type Book {

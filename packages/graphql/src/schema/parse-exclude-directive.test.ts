@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { parse } from "graphql";
+import { DirectiveNode, parse } from "graphql";
 import parseExcludeDirective from "./parse-exclude-directive";
 import { Exclude } from "../classes";
 
@@ -29,8 +29,7 @@ describe("parseExcludeDirective", () => {
             }
         `;
 
-        // @ts-ignore
-        const directive = parse(typeDefs).definitions[0].directives[0];
+        const directive = (parse(typeDefs) as any).definitions[0].directives[0] as DirectiveNode | undefined;
 
         expect(() => parseExcludeDirective(directive)).toThrow(
             "Undefined or incorrect directive passed into parseExcludeDirective function"
@@ -44,8 +43,7 @@ describe("parseExcludeDirective", () => {
             }
         `;
 
-        // @ts-ignore
-        const directive = parse(typeDefs).definitions[0].directives[0];
+        const directive = (parse(typeDefs) as any).definitions[0].directives[0] as DirectiveNode | undefined;
 
         const expected = new Exclude({ operations: ["create", "delete"] });
 
@@ -59,8 +57,7 @@ describe("parseExcludeDirective", () => {
             }
         `;
 
-        // @ts-ignore
-        const directive = parse(typeDefs).definitions[0].directives[0];
+        const directive = (parse(typeDefs) as any).definitions[0].directives[0] as DirectiveNode | undefined;
 
         const expected = new Exclude({ operations: ["create", "read", "update", "delete"] });
 

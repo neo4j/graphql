@@ -40,7 +40,7 @@ describe("402", () => {
         const typeDefs = `
             type Event {
                 id: ID!
-                area: Area @relationship(type: "HAPPENS_IN", direction: OUT)
+                area: Area! @relationship(type: "HAPPENS_IN", direction: OUT)
             }
 
             type Area {
@@ -60,7 +60,7 @@ describe("402", () => {
 
         // testing the missing non non-null array
         const query = `
-            query ($area: [ID]) {
+            query ($area: [ID!]) {
                events (
                  where: {
                    id: "${eventId}"

@@ -32,13 +32,13 @@ describe("Cypher Auth Projection On Connections", () => {
         typeDefs = gql`
             type Post @node(label: "Comment") {
                 content: String
-                creator: User @relationship(type: "HAS_POST", direction: IN)
+                creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
             type User @node(label: "Person") {
                 id: ID
                 name: String
-                posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
             extend type User @auth(rules: [{ allow: { id: "$jwt.sub" } }])

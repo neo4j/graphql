@@ -27,7 +27,7 @@ describe("Interfaces", () => {
         const typeDefs = gql`
             interface MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
                 id: ID
-                movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
+                movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
                     @cypher(
                         statement: """
@@ -40,7 +40,7 @@ describe("Interfaces", () => {
             type Movie implements MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
                 id: ID
                 nodes: [MovieNode]
-                movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
+                movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
                     @cypher(
                         statement: """
@@ -76,7 +76,7 @@ describe("Interfaces", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
             }
@@ -84,15 +84,15 @@ describe("Interfaces", () => {
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
-              movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate(where: MovieWhere): MovieMovieMoviesAggregationSelection
-              moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
+              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(directed: Boolean = true, where: MovieWhere): MovieMovieMoviesAggregationSelection
+              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
               nodes: [MovieNode]
             }
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -122,7 +122,7 @@ describe("Interfaces", () => {
             }
 
             type MovieMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieMoviesAggregateInput {
@@ -145,7 +145,7 @@ describe("Interfaces", () => {
             interface MovieNode {
               customQuery: [Movie]
               id: ID
-              movies: [Movie]
+              movies: [Movie!]!
               moviesConnection: MovieNodeMoviesConnection!
             }
 
@@ -211,15 +211,19 @@ describe("Interfaces", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
               movies: [MovieNodeMoviesCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               id: SortDirection
             }
@@ -266,7 +270,6 @@ describe("Interfaces", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -287,8 +290,7 @@ describe("Interfaces", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 });

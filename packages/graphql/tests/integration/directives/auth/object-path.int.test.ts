@@ -101,7 +101,7 @@ describe("auth/object-path", () => {
 
             type Post {
                 id: ID
-                creator: User @relationship(type: "HAS_POST", direction: IN)
+                creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
             extend type Post @auth(rules: [{ operations: [READ], allow: { creator: { id: "$context.userId" } } }])
@@ -247,7 +247,7 @@ describe("auth/object-path", () => {
             });
 
             // Since we don't have a valid JWKS Endpoint, we will always get an error validating our JWKS
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }

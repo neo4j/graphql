@@ -38,7 +38,7 @@ describe("Cypher Aggregations where node with ID", () => {
 
             type Post {
                 content: String!
-                likes: [User] @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 

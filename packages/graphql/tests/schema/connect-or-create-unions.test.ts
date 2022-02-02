@@ -77,16 +77,16 @@ describe("Connect Or Create", () => {
               screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
-              screenTime_IN: [Int]
+              screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
               screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
+              screenTime_NOT_IN: [Int!]
             }
 
             type Actor {
-              actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
+              actedInConnection(directed: Boolean = true, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -106,31 +106,13 @@ describe("Connect Or Create", () => {
               totalCount: Int!
             }
 
-            input ActorActedInConnectionMovieWhere {
-              AND: [ActorActedInConnectionMovieWhere]
-              OR: [ActorActedInConnectionMovieWhere]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
-              node: MovieWhere
-              node_NOT: MovieWhere
-            }
-
-            input ActorActedInConnectionSeriesWhere {
-              AND: [ActorActedInConnectionSeriesWhere]
-              OR: [ActorActedInConnectionSeriesWhere]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
-              node: SeriesWhere
-              node_NOT: SeriesWhere
-            }
-
             input ActorActedInConnectionSort {
               edge: ActedInSort
             }
 
             input ActorActedInConnectionWhere {
-              Movie: ActorActedInConnectionMovieWhere
-              Series: ActorActedInConnectionSeriesWhere
+              Movie: ActorActedInMovieConnectionWhere
+              Series: ActorActedInSeriesConnectionWhere
             }
 
             input ActorActedInCreateFieldInput {
@@ -282,7 +264,7 @@ describe("Connect Or Create", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input ActorConnectInput {
@@ -309,15 +291,19 @@ describe("Connect Or Create", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [ActorSort]
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
               actedIn: ActorActedInCreateFieldInput
             }
 
-            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -335,11 +321,11 @@ describe("Connect Or Create", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -378,8 +364,8 @@ describe("Connect Or Create", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              isan: StringAggregateSelection!
-              title: StringAggregateSelection!
+              isan: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectOrCreateWhere {
@@ -398,11 +384,15 @@ describe("Connect Or Create", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               isan: SortDirection
               title: SortDirection
@@ -423,21 +413,21 @@ describe("Connect Or Create", () => {
               isan: String
               isan_CONTAINS: String
               isan_ENDS_WITH: String
-              isan_IN: [String]
+              isan_IN: [String!]
               isan_NOT: String
               isan_NOT_CONTAINS: String
               isan_NOT_ENDS_WITH: String
-              isan_NOT_IN: [String]
+              isan_NOT_IN: [String!]
               isan_NOT_STARTS_WITH: String
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -472,13 +462,10 @@ describe("Connect Or Create", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesCount(where: SeriesWhere): Int!
             }
 
             input QueryOptions {
@@ -493,8 +480,8 @@ describe("Connect Or Create", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              isan: StringAggregateSelection!
-              title: StringAggregateSelection!
+              isan: StringAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input SeriesConnectOrCreateWhere {
@@ -513,11 +500,15 @@ describe("Connect Or Create", () => {
             input SeriesOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [SeriesSort]
+              \\"\\"\\"
+              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [SeriesSort!]
             }
 
-            \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+            \\"\\"\\"
             input SeriesSort {
               isan: SortDirection
               title: SortDirection
@@ -538,21 +529,21 @@ describe("Connect Or Create", () => {
               isan: String
               isan_CONTAINS: String
               isan_ENDS_WITH: String
-              isan_IN: [String]
+              isan_IN: [String!]
               isan_NOT: String
               isan_NOT_CONTAINS: String
               isan_NOT_ENDS_WITH: String
-              isan_NOT_IN: [String]
+              isan_NOT_IN: [String!]
               isan_NOT_STARTS_WITH: String
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -564,9 +555,9 @@ describe("Connect Or Create", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
@@ -590,8 +581,7 @@ describe("Connect Or Create", () => {
             type UpdateSeriesMutationResponse {
               info: UpdateInfo!
               series: [Series!]!
-            }
-            "
+            }"
         `);
     });
 });

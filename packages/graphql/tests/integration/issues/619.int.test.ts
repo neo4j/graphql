@@ -21,7 +21,6 @@ import { gql } from "apollo-server";
 import { graphql } from "graphql";
 import { Driver, Session } from "neo4j-driver";
 import neo4j from "../neo4j";
-import { generateUniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
 import { getQuerySource } from "../../utils/get-query-source";
 
@@ -30,24 +29,21 @@ describe("https://github.com/neo4j/graphql/issues/619", () => {
     let session: Session;
     let neoSchema: Neo4jGraphQL;
 
-    const typeFoo = generateUniqueType("Foo");
-    const typeBar = generateUniqueType("Bar");
-
     beforeAll(async () => {
         driver = await neo4j();
         const typeDefs = gql`
-        type ${typeFoo.name} {
-          id: ID @unique
-          Name: String
-          Age: Int
-          DrinksAt: ${typeBar.name} @relationship(type:"DRINKS_AT", direction: OUT)
-        }
+            type FooIsARandomName {
+                id: ID @unique
+                Name: String
+                Age: Int
+                DrinksAt: BarIsACoolName @relationship(type: "DRINKS_AT", direction: OUT)
+            }
 
-        type ${typeBar.name} {
-          id: ID @unique
-          Adress: String
-          Customers: [${typeFoo.name}!]! @relationship(type:"DRINKS_AT", direction: IN)
-        }
+            type BarIsACoolName {
+                id: ID @unique
+                Adress: String
+                Customers: [FooIsARandomName!]! @relationship(type: "DRINKS_AT", direction: IN)
+            }
         `;
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -68,7 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/619", () => {
     test("should not throw 'input.map is not a function' error on one to many mutations", async () => {
         const mutation = gql`
             mutation {
-                ${typeFoo.operations.create}(
+                createFooIsARandomNames(
                     input: {
                         DrinksAt: {
                             connectOrCreate: {

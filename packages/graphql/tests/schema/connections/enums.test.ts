@@ -27,12 +27,12 @@ describe("Enums", () => {
         const typeDefs = gql`
             type Actor {
                 name: String!
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type Movie {
                 title: String!
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             enum RoleType {
@@ -73,21 +73,21 @@ describe("Enums", () => {
               AND: [ActedInWhere!]
               OR: [ActedInWhere!]
               roleType: RoleType
-              roleType_IN: [RoleType]
+              roleType_IN: [RoleType!]
               roleType_NOT: RoleType
-              roleType_NOT_IN: [RoleType]
+              roleType_NOT_IN: [RoleType!]
             }
 
             type Actor {
-              movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
-              moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input ActorConnectInput {
@@ -117,7 +117,7 @@ describe("Enums", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input ActorMoviesAggregateInput {
@@ -225,15 +225,19 @@ describe("Enums", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [ActorSort]
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
               movies: [ActorMoviesCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -254,11 +258,11 @@ describe("Enums", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -286,9 +290,9 @@ describe("Enums", () => {
             }
 
             type Movie {
-              actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-              actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
 
@@ -298,7 +302,7 @@ describe("Enums", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -405,7 +409,7 @@ describe("Enums", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectInput {
@@ -432,15 +436,19 @@ describe("Enums", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
               actors: [MovieActorsCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               title: SortDirection
             }
@@ -461,11 +469,11 @@ describe("Enums", () => {
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -490,10 +498,8 @@ describe("Enums", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             enum RoleType {
@@ -508,9 +514,9 @@ describe("Enums", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
@@ -529,8 +535,7 @@ describe("Enums", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 });

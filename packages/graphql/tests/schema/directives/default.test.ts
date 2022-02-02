@@ -64,9 +64,9 @@ describe("@default directive", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelection {
-              max: DateTime
-              min: DateTime
+            type DateTimeAggregateSelectionNonNullable {
+              max: DateTime!
+              min: DateTime!
             }
 
             type DeleteInfo {
@@ -75,23 +75,23 @@ describe("@default directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelection {
-              average: Float
-              max: Float
-              min: Float
-              sum: Float
+            type FloatAggregateSelectionNonNullable {
+              average: Float!
+              max: Float!
+              min: Float!
+              sum: Float!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
             }
 
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
+            type IntAggregateSelectionNonNullable {
+              average: Float!
+              max: Int!
+              min: Int!
+              sum: Int!
             }
 
             type Mutation {
@@ -103,7 +103,6 @@ describe("@default directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersCount(where: UserWhere): Int!
             }
 
             enum SortDirection {
@@ -113,9 +112,9 @@ describe("@default directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -144,13 +143,13 @@ describe("@default directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              fromInterface: StringAggregateSelection!
-              id: IDAggregateSelection!
-              name: StringAggregateSelection!
-              numberOfFriends: IntAggregateSelection!
-              rating: FloatAggregateSelection!
-              toBeOverridden: StringAggregateSelection!
-              verifiedDate: DateTimeAggregateSelection!
+              fromInterface: StringAggregateSelectionNonNullable!
+              id: IDAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
+              numberOfFriends: IntAggregateSelectionNonNullable!
+              rating: FloatAggregateSelectionNonNullable!
+              toBeOverridden: StringAggregateSelectionNonNullable!
+              verifiedDate: DateTimeAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {
@@ -172,11 +171,15 @@ describe("@default directive", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [UserSort]
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
             }
 
-            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
             input UserSort {
               fromInterface: SortDirection
               id: SortDirection
@@ -205,71 +208,70 @@ describe("@default directive", () => {
               fromInterface: String
               fromInterface_CONTAINS: String
               fromInterface_ENDS_WITH: String
-              fromInterface_IN: [String]
+              fromInterface_IN: [String!]
               fromInterface_NOT: String
               fromInterface_NOT_CONTAINS: String
               fromInterface_NOT_ENDS_WITH: String
-              fromInterface_NOT_IN: [String]
+              fromInterface_NOT_IN: [String!]
               fromInterface_NOT_STARTS_WITH: String
               fromInterface_STARTS_WITH: String
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_IN: [ID]
+              id_IN: [ID!]
               id_NOT: ID
               id_NOT_CONTAINS: ID
               id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
+              id_NOT_IN: [ID!]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
               numberOfFriends: Int
               numberOfFriends_GT: Int
               numberOfFriends_GTE: Int
-              numberOfFriends_IN: [Int]
+              numberOfFriends_IN: [Int!]
               numberOfFriends_LT: Int
               numberOfFriends_LTE: Int
               numberOfFriends_NOT: Int
-              numberOfFriends_NOT_IN: [Int]
+              numberOfFriends_NOT_IN: [Int!]
               rating: Float
               rating_GT: Float
               rating_GTE: Float
-              rating_IN: [Float]
+              rating_IN: [Float!]
               rating_LT: Float
               rating_LTE: Float
               rating_NOT: Float
-              rating_NOT_IN: [Float]
+              rating_NOT_IN: [Float!]
               toBeOverridden: String
               toBeOverridden_CONTAINS: String
               toBeOverridden_ENDS_WITH: String
-              toBeOverridden_IN: [String]
+              toBeOverridden_IN: [String!]
               toBeOverridden_NOT: String
               toBeOverridden_NOT_CONTAINS: String
               toBeOverridden_NOT_ENDS_WITH: String
-              toBeOverridden_NOT_IN: [String]
+              toBeOverridden_NOT_IN: [String!]
               toBeOverridden_NOT_STARTS_WITH: String
               toBeOverridden_STARTS_WITH: String
               verified: Boolean
               verifiedDate: DateTime
               verifiedDate_GT: DateTime
               verifiedDate_GTE: DateTime
-              verifiedDate_IN: [DateTime]
+              verifiedDate_IN: [DateTime!]
               verifiedDate_LT: DateTime
               verifiedDate_LTE: DateTime
               verifiedDate_NOT: DateTime
-              verifiedDate_NOT_IN: [DateTime]
+              verifiedDate_NOT_IN: [DateTime!]
               verified_NOT: Boolean
-            }
-            "
+            }"
         `);
     });
 });

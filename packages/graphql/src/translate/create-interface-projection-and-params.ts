@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
@@ -6,6 +25,7 @@ import filterInterfaceNodes from "../utils/filter-interface-nodes";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
+import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
 import createNodeWhereAndParams from "./where/create-node-where-and-params";
 
 function createInterfaceProjectionAndParams({
@@ -26,9 +46,9 @@ function createInterfaceProjectionAndParams({
     let globalParams = {};
     let params: { args?: any } = {};
 
-    const inStr = field.direction === "IN" ? "<-" : "-";
     const relTypeStr = `[:${field.type}]`;
-    const outStr = field.direction === "OUT" ? "->" : "-";
+
+    const { inStr, outStr } = getRelationshipDirection(field, resolveTree.args);
 
     const whereInput = resolveTree.args.where as InterfaceWhereArg;
 
@@ -139,7 +159,7 @@ function createInterfaceProjectionAndParams({
         }
 
         const recurse = createProjectionAndParams({
-            fieldsByTypeName: resolveTree.fieldsByTypeName,
+            resolveTree,
             node: refNode,
             context,
             varName: param,

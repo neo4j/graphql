@@ -31,6 +31,8 @@ import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
+import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
+import { CypherStatement } from "../types";
 
 function createConnectionAndParams({
     resolveTree,
@@ -44,7 +46,7 @@ function createConnectionAndParams({
     context: Context;
     nodeVariable: string;
     parameterPrefix?: string;
-}): [string, any] {
+}): CypherStatement {
     let globalParams = {};
     let nestedConnectionFieldParams;
 
@@ -60,9 +62,9 @@ function createConnectionAndParams({
         (r) => r.name === field.relationshipTypeName
     ) as Relationship;
 
-    const inStr = field.relationship.direction === "IN" ? "<-" : "-";
     const relTypeStr = `[${relationshipVariable}:${field.relationship.type}]`;
-    const outStr = field.relationship.direction === "OUT" ? "->" : "-";
+
+    const { inStr, outStr } = getRelationshipDirection(field.relationship, resolveTree.args);
 
     let relationshipProperties: ResolveTree[] = [];
     let node: ResolveTree | undefined;
@@ -122,7 +124,7 @@ function createConnectionAndParams({
                     };
 
                     const nodeProjectionAndParams = createProjectionAndParams({
-                        fieldsByTypeName: nodeFieldsByTypeName,
+                        resolveTree: { ...node, fieldsByTypeName: nodeFieldsByTypeName },
                         node: n,
                         context,
                         varName: relatedNodeVariable,
@@ -256,7 +258,9 @@ function createConnectionAndParams({
 
         if (sortInput && sortInput.length) {
             const sort = sortInput.map((s) =>
-                Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`).join(", ")
+                Object.entries(s.edge || [])
+                    .map(([f, direction]) => `edge.${f} ${direction}`)
+                    .join(", ")
             );
             subqueryCypher.push(`WITH edge ORDER BY ${sort.join(", ")}`);
         }
@@ -350,7 +354,7 @@ function createConnectionAndParams({
 
         if (node) {
             const nodeProjectionAndParams = createProjectionAndParams({
-                fieldsByTypeName: node?.fieldsByTypeName,
+                resolveTree: node,
                 node: relatedNode,
                 context,
                 varName: relatedNodeVariable,

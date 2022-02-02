@@ -116,8 +116,8 @@ describe("getAuth", () => {
             ]) {
                 id: ID
                 title: String
-                director: Person @relationship(type: "DIRECTOR_OF", direction: "IN")
-                actor: Person @relationship(type: "ACTED_IN", direction: "IN")
+                director: Person! @relationship(type: "DIRECTOR_OF", direction: "IN")
+                actor: Person! @relationship(type: "ACTED_IN", direction: "IN")
             }
         `;
 

@@ -18,11 +18,11 @@
  */
 
 import dotProp from "dot-prop";
-import { Context } from "../types";
+import { AuthContext, Context } from "../types";
 
-function createAuthParam({ context }: { context: Context }) {
+function createAuthParam({ context }: { context: Context }): AuthContext {
     const { jwt } = context;
-    const param: { isAuthenticated: boolean; roles?: string[]; jwt: any } = {
+    const param: AuthContext = {
         isAuthenticated: false,
         roles: [],
         jwt,
@@ -39,7 +39,7 @@ function createAuthParam({ context }: { context: Context }) {
 
     // Roles added to config come from the role path or a roles array
     if (jwtConfig?.rolesPath) {
-        param.roles = dotProp.get(jwt, jwtConfig.rolesPath);
+        param.roles = dotProp.get(jwt, jwtConfig.rolesPath, []);
     } else if (jwt.roles) {
         param.roles = jwt.roles;
     }

@@ -32,17 +32,17 @@ describe("#324", () => {
         typeDefs = gql`
             type Person {
                 identifier: ID!
-                car: Car @relationship(type: "CAR", direction: OUT)
+                car: Car! @relationship(type: "CAR", direction: OUT)
             }
 
             type Car {
                 identifier: ID!
-                manufacturer: Manufacturer @relationship(type: "MANUFACTURER", direction: OUT)
+                manufacturer: Manufacturer! @relationship(type: "MANUFACTURER", direction: OUT)
             }
 
             type Manufacturer {
                 identifier: ID!
-                logo: Logo @relationship(type: "LOGO", direction: OUT)
+                logo: Logo! @relationship(type: "LOGO", direction: OUT)
                 name: String
             }
 

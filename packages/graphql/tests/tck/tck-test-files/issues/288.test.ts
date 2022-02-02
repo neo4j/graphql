@@ -33,11 +33,11 @@ describe("#288", () => {
             type USER {
                 USERID: String
                 COMPANYID: String
-                COMPANY: [COMPANY] @relationship(type: "IS_PART_OF", direction: OUT)
+                COMPANY: [COMPANY!]! @relationship(type: "IS_PART_OF", direction: OUT)
             }
 
             type COMPANY {
-                USERS: [USER] @relationship(type: "IS_PART_OF", direction: IN)
+                USERS: [USER!]! @relationship(type: "IS_PART_OF", direction: IN)
             }
         `;
 
@@ -51,7 +51,7 @@ describe("#288", () => {
         const query = gql`
             mutation {
                 createUSERS(input: { USERID: "userid", COMPANYID: "companyid" }) {
-                    users {
+                    uSERS {
                         USERID
                         COMPANYID
                     }
@@ -87,7 +87,7 @@ describe("#288", () => {
         const query = gql`
             mutation {
                 updateUSERS(where: { USERID: "userid" }, update: { COMPANYID: "companyid2" }) {
-                    users {
+                    uSERS {
                         USERID
                         COMPANYID
                     }

@@ -45,12 +45,12 @@ describe("Enum Relationship Properties", () => {
         const typeDefs = `
             type Actor {
                 name: String!
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type Movie {
                 title: String!
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             enum RoleType {
