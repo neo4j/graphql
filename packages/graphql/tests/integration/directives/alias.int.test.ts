@@ -46,7 +46,7 @@ describe("@alias directive", () => {
             type AliasDirectiveTestUser implements AliasInterface {
                 id: ID! @id
                 name: String! @alias(property: "dbName")
-                likes: [AliasDirectiveTestMovie] @relationship(direction: OUT, type: "LIKES", properties: "AliasDirectiveTestLikesProps")
+                likes: [AliasDirectiveTestMovie!]! @relationship(direction: OUT, type: "LIKES", properties: "AliasDirectiveTestLikesProps")
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 

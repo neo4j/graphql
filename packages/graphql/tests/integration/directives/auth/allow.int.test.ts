@@ -133,7 +133,7 @@ describe("auth/allow", () => {
             const typeDefs = `
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
@@ -190,7 +190,7 @@ describe("auth/allow", () => {
             const typeDefs = `
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
@@ -251,13 +251,13 @@ describe("auth/allow", () => {
             const typeDefs = `
                 type Post {
                     content: String
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
                     id: ID
                     name: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type Post
@@ -310,13 +310,13 @@ describe("auth/allow", () => {
             const typeDefs = `
                 type Post {
                     content: String
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
                     id: ID
                     name: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type Post
@@ -374,20 +374,20 @@ describe("auth/allow", () => {
                 type Comment {
                     id: ID
                     content: String
-                    creator: User @relationship(type: "HAS_COMMENT", direction: IN)
+                    creator: User! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
                 type Post {
                     id: ID
                     content: String
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
-                    comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
                 type User {
                     id: ID
                     name: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type Comment
@@ -545,7 +545,7 @@ describe("auth/allow", () => {
                 type Post {
                     id: ID
                     content: String
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
@@ -604,7 +604,7 @@ describe("auth/allow", () => {
                 type Post {
                     id: ID
                     content: String
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
@@ -712,13 +712,13 @@ describe("auth/allow", () => {
             const typeDefs = `
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post {
                     id: ID
                     name: String
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 extend type Post @auth(rules: [{ operations: [DELETE], allow: { creator: { id: "$jwt.sub" } }}])
@@ -780,12 +780,12 @@ describe("auth/allow", () => {
             const typeDefs = `
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type Post @auth(rules: [{ operations: [DISCONNECT], allow: { creator: { id: "$jwt.sub" } }}])
@@ -840,18 +840,18 @@ describe("auth/allow", () => {
                 type Comment {
                     id: ID
                     content: String
-                    post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+                    post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
-                    comments: Comment @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    comments: Comment! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type Post @auth(rules: [{ operations: [DISCONNECT], allow: { creator: { id: "$jwt.sub" } }}])
@@ -923,12 +923,12 @@ describe("auth/allow", () => {
             const typeDefs = `
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type Post @auth(rules: [{ operations: [CONNECT], allow: { creator: { id: "$jwt.sub" } }}])
@@ -984,18 +984,18 @@ describe("auth/allow", () => {
                 type Comment {
                     id: ID
                     content: String
-                    post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+                    post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
-                    comments: Comment @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    comments: Comment! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type Post @auth(rules: [{ operations: [CONNECT], allow: { creator: { id: "$jwt.sub" } }}])

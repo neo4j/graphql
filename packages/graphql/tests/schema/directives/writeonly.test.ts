@@ -111,11 +111,15 @@ describe("@writeonly directive", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [UserSort]
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
             }
 
-            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
             input UserSort {
               password: SortDirection
               username: SortDirection
@@ -132,25 +136,24 @@ describe("@writeonly directive", () => {
               password: String
               password_CONTAINS: String
               password_ENDS_WITH: String
-              password_IN: [String]
+              password_IN: [String!]
               password_NOT: String
               password_NOT_CONTAINS: String
               password_NOT_ENDS_WITH: String
-              password_NOT_IN: [String]
+              password_NOT_IN: [String!]
               password_NOT_STARTS_WITH: String
               password_STARTS_WITH: String
               username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
-              username_IN: [String]
+              username_IN: [String!]
               username_NOT: String
               username_NOT_CONTAINS: String
               username_NOT_ENDS_WITH: String
-              username_NOT_IN: [String]
+              username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
-            }
-            "
+            }"
         `);
     });
 
@@ -251,11 +254,15 @@ describe("@writeonly directive", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [UserSort]
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
             }
 
-            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
             input UserSort {
               password: SortDirection
               username: SortDirection
@@ -272,25 +279,24 @@ describe("@writeonly directive", () => {
               password: String
               password_CONTAINS: String
               password_ENDS_WITH: String
-              password_IN: [String]
+              password_IN: [String!]
               password_NOT: String
               password_NOT_CONTAINS: String
               password_NOT_ENDS_WITH: String
-              password_NOT_IN: [String]
+              password_NOT_IN: [String!]
               password_NOT_STARTS_WITH: String
               password_STARTS_WITH: String
               username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
-              username_IN: [String]
+              username_IN: [String!]
               username_NOT: String
               username_NOT_CONTAINS: String
               username_NOT_ENDS_WITH: String
-              username_NOT_IN: [String]
+              username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
-            }
-            "
+            }"
         `);
     });
 
@@ -302,7 +308,7 @@ describe("@writeonly directive", () => {
 
             type Movie {
                 id: ID
-                actors: [Actor]! @writeonly @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @writeonly @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -335,11 +341,15 @@ describe("@writeonly directive", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [ActorSort]
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
             }
 
-            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -497,15 +507,19 @@ describe("@writeonly directive", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
               actors: [MovieActorsCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               id: SortDirection
             }
@@ -579,8 +593,7 @@ describe("@writeonly directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 });

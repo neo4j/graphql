@@ -76,7 +76,7 @@ export default function cypherResolver({
 
         if (referenceNode) {
             const recurse = createProjectionAndParams({
-                fieldsByTypeName: resolveTree.fieldsByTypeName,
+                resolveTree,
                 node: referenceNode,
                 context,
                 varName: `this`,
@@ -125,7 +125,7 @@ export default function cypherResolver({
 
                     if (resolveTree.fieldsByTypeName[node.name]) {
                         const [str, p, meta] = createProjectionAndParams({
-                            fieldsByTypeName: resolveTree.fieldsByTypeName,
+                            resolveTree,
                             node,
                             context,
                             varName: "this",
@@ -153,13 +153,22 @@ export default function cypherResolver({
         }
 
         const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
-        const apocParams = Object.entries(resolveTree.args).reduce(
-            (r: { strs: string[]; params: any }, entry) => {
-                return {
-                    strs: [...r.strs, `${entry[0]}: $${entry[0]}`],
-                    params: { ...r.params, [entry[0]]: entry[1] },
-                };
-            },
+
+        // Null default argument values are not passed into the resolve tree therefore these are not being passed to
+        // `apocParams` below causing a runtime error when executing.
+        const nullArgumentValues = field.arguments.reduce(
+            (res, argument) => ({
+                ...res,
+                ...{ [argument.name.value]: null },
+            }),
+            {}
+        );
+
+        const apocParams = Object.entries({ ...nullArgumentValues, ...resolveTree.args }).reduce(
+            (r: { strs: string[]; params: any }, entry) => ({
+                strs: [...r.strs, `${entry[0]}: $${entry[0]}`],
+                params: { ...r.params, [entry[0]]: entry[1] },
+            }),
             { strs: initApocParamsStrs, params }
         ) as { strs: string[]; params: any };
 

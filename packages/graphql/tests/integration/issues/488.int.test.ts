@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
         const typeDefs = gql`
             type ${testJournalist.name} {
                 id: ID!
-                keywords: [Keyword]! @relationship(type: "HAS_KEYWORD", direction: OUT)
+                keywords: [Keyword!]! @relationship(type: "HAS_KEYWORD", direction: OUT)
             }
 
             union Keyword = ${testEmoji.name} | ${testHashtag.name} | ${testText.name}

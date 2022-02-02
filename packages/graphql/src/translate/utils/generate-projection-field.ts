@@ -16,4 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { default as getJWT } from "./get-jwt";
+
+import { ResolveTree } from "graphql-parse-resolve-info";
+
+/**
+ * Generates a field to be used in creating projections
+ */
+export function generateProjectionField({ name }: { name: string }): Record<string, ResolveTree> {
+    return {
+        [name]: {
+            alias: name,
+            args: {},
+            fieldsByTypeName: {},
+            name,
+        },
+    };
+}

@@ -48,7 +48,9 @@ describe("Aggregations", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
+            \\"\\"\\"
+            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
+            \\"\\"\\"
             scalar BigInt
 
             type BigIntAggregateSelectionNullable {
@@ -118,7 +120,9 @@ describe("Aggregations", () => {
               min: LocalDateTime
             }
 
-            \\"\\"\\"A local time, represented as a time string without timezone information\\"\\"\\"
+            \\"\\"\\"
+            A local time, represented as a time string without timezone information
+            \\"\\"\\"
             scalar LocalTime
 
             type LocalTimeAggregateSelectionNullable {
@@ -173,11 +177,15 @@ describe("Aggregations", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               createdAt: SortDirection
               id: SortDirection
@@ -238,11 +246,11 @@ describe("Aggregations", () => {
               isbn: String
               isbn_CONTAINS: String
               isbn_ENDS_WITH: String
-              isbn_IN: [String]
+              isbn_IN: [String!]
               isbn_NOT: String
               isbn_NOT_CONTAINS: String
               isbn_NOT_ENDS_WITH: String
-              isbn_NOT_IN: [String]
+              isbn_NOT_IN: [String!]
               isbn_NOT_STARTS_WITH: String
               isbn_STARTS_WITH: String
               screenTime: Duration
@@ -352,8 +360,7 @@ describe("Aggregations", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
@@ -374,7 +381,7 @@ describe("Aggregations", () => {
 
             type Post {
                 title: String
-                likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {
@@ -399,7 +406,9 @@ describe("Aggregations", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
+            \\"\\"\\"
+            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
+            \\"\\"\\"
             scalar BigInt
 
             type BigIntAggregateSelectionNullable {
@@ -615,7 +624,9 @@ describe("Aggregations", () => {
               min: LocalDateTime
             }
 
-            \\"\\"\\"A local time, represented as a time string without timezone information\\"\\"\\"
+            \\"\\"\\"
+            A local time, represented as a time string without timezone information
+            \\"\\"\\"
             scalar LocalTime
 
             type LocalTimeAggregateSelectionNullable {
@@ -641,9 +652,9 @@ describe("Aggregations", () => {
             }
 
             type Post {
-              likes(options: UserOptions, where: UserWhere): [User]
-              likesAggregate(where: UserWhere): PostUserLikesAggregationSelection
-              likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
+              likes(directed: Boolean = true, options: UserOptions, where: UserWhere): [User!]!
+              likesAggregate(directed: Boolean = true, where: UserWhere): PostUserLikesAggregationSelection
+              likesConnection(after: String, directed: Boolean = true, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String
             }
 
@@ -1119,15 +1130,19 @@ describe("Aggregations", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [PostSort]
+              \\"\\"\\"
+              Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [PostSort!]
             }
 
             input PostRelationInput {
               likes: [PostLikesCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.
+            \\"\\"\\"
             input PostSort {
               title: SortDirection
             }
@@ -1282,11 +1297,15 @@ describe("Aggregations", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [UserSort]
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
             }
 
-            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
             input UserSort {
               someBigInt: SortDirection
               someDateTime: SortDirection
@@ -1400,8 +1419,7 @@ describe("Aggregations", () => {
               someTime_LTE: Time
               someTime_NOT: Time
               someTime_NOT_IN: [Time]
-            }
-            "
+            }"
         `);
     });
 });

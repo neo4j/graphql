@@ -148,11 +148,15 @@ describe("Comments", () => {
               distinct: Boolean
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               actorCount: SortDirection
               averageRating: SortDirection
@@ -238,8 +242,1178 @@ describe("Comments", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
+    });
+
+    describe("Relationship", () => {
+        test("Simple", () => {
+            const typeDefs = gql`
+                type Actor {
+                    name: String
+                }
+
+                type Movie {
+                    id: ID
+                    "Actors in Movie"
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            `;
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+
+            expect(printedSchema).toMatchInlineSnapshot(`
+                "schema {
+                  query: Query
+                  mutation: Mutation
+                }
+
+                type Actor {
+                  name: String
+                }
+
+                type ActorAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
+                input ActorConnectWhere {
+                  node: ActorWhere!
+                }
+
+                input ActorCreateInput {
+                  name: String
+                }
+
+                input ActorOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [ActorSort!]
+                }
+
+                \\"\\"\\"
+                Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+                \\"\\"\\"
+                input ActorSort {
+                  name: SortDirection
+                }
+
+                input ActorUpdateInput {
+                  name: String
+                }
+
+                input ActorWhere {
+                  AND: [ActorWhere!]
+                  OR: [ActorWhere!]
+                  name: String
+                  name_CONTAINS: String
+                  name_ENDS_WITH: String
+                  name_IN: [String]
+                  name_NOT: String
+                  name_NOT_CONTAINS: String
+                  name_NOT_ENDS_WITH: String
+                  name_NOT_IN: [String]
+                  name_NOT_STARTS_WITH: String
+                  name_STARTS_WITH: String
+                }
+
+                type CreateActorsMutationResponse {
+                  actors: [Actor!]!
+                  info: CreateInfo!
+                }
+
+                type CreateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  relationshipsCreated: Int!
+                }
+
+                type CreateMoviesMutationResponse {
+                  info: CreateInfo!
+                  movies: [Movie!]!
+                }
+
+                type DeleteInfo {
+                  bookmark: String
+                  nodesDeleted: Int!
+                  relationshipsDeleted: Int!
+                }
+
+                type IDAggregateSelectionNullable {
+                  longest: ID
+                  shortest: ID
+                }
+
+                type Movie {
+                  \\"\\"\\"Actors in Movie\\"\\"\\"
+                  actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+                  actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  id: ID
+                }
+
+                type MovieActorActorsAggregationSelection {
+                  count: Int!
+                  node: MovieActorActorsNodeAggregateSelection
+                }
+
+                type MovieActorActorsNodeAggregateSelection {
+                  name: StringAggregateSelectionNullable!
+                }
+
+                input MovieActorsAggregateInput {
+                  AND: [MovieActorsAggregateInput!]
+                  OR: [MovieActorsAggregateInput!]
+                  count: Int
+                  count_GT: Int
+                  count_GTE: Int
+                  count_LT: Int
+                  count_LTE: Int
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectFieldInput {
+                  where: ActorConnectWhere
+                }
+
+                type MovieActorsConnection {
+                  edges: [MovieActorsRelationship!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                input MovieActorsConnectionSort {
+                  node: ActorSort
+                }
+
+                input MovieActorsConnectionWhere {
+                  AND: [MovieActorsConnectionWhere!]
+                  OR: [MovieActorsConnectionWhere!]
+                  node: ActorWhere
+                  node_NOT: ActorWhere
+                }
+
+                input MovieActorsCreateFieldInput {
+                  node: ActorCreateInput!
+                }
+
+                input MovieActorsDeleteFieldInput {
+                  where: MovieActorsConnectionWhere
+                }
+
+                input MovieActorsDisconnectFieldInput {
+                  where: MovieActorsConnectionWhere
+                }
+
+                input MovieActorsFieldInput {
+                  connect: [MovieActorsConnectFieldInput!]
+                  create: [MovieActorsCreateFieldInput!]
+                }
+
+                input MovieActorsNodeAggregationWhereInput {
+                  AND: [MovieActorsNodeAggregationWhereInput!]
+                  OR: [MovieActorsNodeAggregationWhereInput!]
+                  name_AVERAGE_EQUAL: Float
+                  name_AVERAGE_GT: Float
+                  name_AVERAGE_GTE: Float
+                  name_AVERAGE_LT: Float
+                  name_AVERAGE_LTE: Float
+                  name_EQUAL: String
+                  name_GT: Int
+                  name_GTE: Int
+                  name_LONGEST_EQUAL: Int
+                  name_LONGEST_GT: Int
+                  name_LONGEST_GTE: Int
+                  name_LONGEST_LT: Int
+                  name_LONGEST_LTE: Int
+                  name_LT: Int
+                  name_LTE: Int
+                  name_SHORTEST_EQUAL: Int
+                  name_SHORTEST_GT: Int
+                  name_SHORTEST_GTE: Int
+                  name_SHORTEST_LT: Int
+                  name_SHORTEST_LTE: Int
+                }
+
+                type MovieActorsRelationship {
+                  cursor: String!
+                  node: Actor!
+                }
+
+                input MovieActorsUpdateConnectionInput {
+                  node: ActorUpdateInput
+                }
+
+                input MovieActorsUpdateFieldInput {
+                  connect: [MovieActorsConnectFieldInput!]
+                  create: [MovieActorsCreateFieldInput!]
+                  delete: [MovieActorsDeleteFieldInput!]
+                  disconnect: [MovieActorsDisconnectFieldInput!]
+                  update: MovieActorsUpdateConnectionInput
+                  where: MovieActorsConnectionWhere
+                }
+
+                type MovieAggregateSelection {
+                  count: Int!
+                  id: IDAggregateSelectionNullable!
+                }
+
+                input MovieConnectInput {
+                  actors: [MovieActorsConnectFieldInput!]
+                }
+
+                input MovieCreateInput {
+                  actors: MovieActorsFieldInput
+                  id: ID
+                }
+
+                input MovieDeleteInput {
+                  actors: [MovieActorsDeleteFieldInput!]
+                }
+
+                input MovieDisconnectInput {
+                  actors: [MovieActorsDisconnectFieldInput!]
+                }
+
+                input MovieOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [MovieSort!]
+                }
+
+                input MovieRelationInput {
+                  actors: [MovieActorsCreateFieldInput!]
+                }
+
+                \\"\\"\\"
+                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+                \\"\\"\\"
+                input MovieSort {
+                  id: SortDirection
+                }
+
+                input MovieUpdateInput {
+                  actors: [MovieActorsUpdateFieldInput!]
+                  id: ID
+                }
+
+                input MovieWhere {
+                  AND: [MovieWhere!]
+                  OR: [MovieWhere!]
+                  actors: ActorWhere
+                  actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionWhere
+                  actorsConnection_NOT: MovieActorsConnectionWhere
+                  actors_NOT: ActorWhere
+                  id: ID
+                  id_CONTAINS: ID
+                  id_ENDS_WITH: ID
+                  id_IN: [ID]
+                  id_NOT: ID
+                  id_NOT_CONTAINS: ID
+                  id_NOT_ENDS_WITH: ID
+                  id_NOT_IN: [ID]
+                  id_NOT_STARTS_WITH: ID
+                  id_STARTS_WITH: ID
+                }
+
+                type Mutation {
+                  createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+                  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+                  deleteActors(where: ActorWhere): DeleteInfo!
+                  deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+                  updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                }
+
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
+                type Query {
+                  actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                }
+
+                enum SortDirection {
+                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+                  ASC
+                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+                  DESC
+                }
+
+                type StringAggregateSelectionNullable {
+                  longest: String
+                  shortest: String
+                }
+
+                type UpdateActorsMutationResponse {
+                  actors: [Actor!]!
+                  info: UpdateInfo!
+                }
+
+                type UpdateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  nodesDeleted: Int!
+                  relationshipsCreated: Int!
+                  relationshipsDeleted: Int!
+                }
+
+                type UpdateMoviesMutationResponse {
+                  info: UpdateInfo!
+                  movies: [Movie!]!
+                }"
+            `);
+        });
+
+        test("Interface", () => {
+            const typeDefs = gql`
+                interface Production {
+                    title: String!
+                }
+
+                type Movie implements Production {
+                    title: String!
+                    runtime: Int!
+                }
+
+                type Series implements Production {
+                    title: String!
+                    episodes: Int!
+                }
+
+                interface ActedIn @relationshipProperties {
+                    screenTime: Int!
+                }
+
+                type Actor {
+                    name: String!
+                    "Acted in Production"
+                    actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                }
+            `;
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+
+            expect(printedSchema).toMatchInlineSnapshot(`
+                "schema {
+                  query: Query
+                  mutation: Mutation
+                }
+
+                interface ActedIn {
+                  screenTime: Int!
+                }
+
+                input ActedInCreateInput {
+                  screenTime: Int!
+                }
+
+                input ActedInSort {
+                  screenTime: SortDirection
+                }
+
+                input ActedInUpdateInput {
+                  screenTime: Int
+                }
+
+                input ActedInWhere {
+                  AND: [ActedInWhere!]
+                  OR: [ActedInWhere!]
+                  screenTime: Int
+                  screenTime_GT: Int
+                  screenTime_GTE: Int
+                  screenTime_IN: [Int!]
+                  screenTime_LT: Int
+                  screenTime_LTE: Int
+                  screenTime_NOT: Int
+                  screenTime_NOT_IN: [Int!]
+                }
+
+                type Actor {
+                  \\"\\"\\"Acted in Production\\"\\"\\"
+                  actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
+                  actedInConnection(directed: Boolean = true, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+                  name: String!
+                }
+
+                input ActorActedInConnectFieldInput {
+                  edge: ActedInCreateInput!
+                  where: ProductionConnectWhere
+                }
+
+                type ActorActedInConnection {
+                  edges: [ActorActedInRelationship!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                input ActorActedInConnectionSort {
+                  edge: ActedInSort
+                }
+
+                input ActorActedInConnectionWhere {
+                  AND: [ActorActedInConnectionWhere!]
+                  OR: [ActorActedInConnectionWhere!]
+                  edge: ActedInWhere
+                  edge_NOT: ActedInWhere
+                  node: ProductionWhere
+                  node_NOT: ProductionWhere
+                }
+
+                input ActorActedInCreateFieldInput {
+                  edge: ActedInCreateInput!
+                  node: ProductionCreateInput!
+                }
+
+                input ActorActedInDeleteFieldInput {
+                  where: ActorActedInConnectionWhere
+                }
+
+                input ActorActedInDisconnectFieldInput {
+                  where: ActorActedInConnectionWhere
+                }
+
+                input ActorActedInFieldInput {
+                  connect: [ActorActedInConnectFieldInput!]
+                  create: [ActorActedInCreateFieldInput!]
+                }
+
+                type ActorActedInRelationship implements ActedIn {
+                  cursor: String!
+                  node: Production!
+                  screenTime: Int!
+                }
+
+                input ActorActedInUpdateConnectionInput {
+                  edge: ActedInUpdateInput
+                  node: ProductionUpdateInput
+                }
+
+                input ActorActedInUpdateFieldInput {
+                  connect: [ActorActedInConnectFieldInput!]
+                  create: [ActorActedInCreateFieldInput!]
+                  delete: [ActorActedInDeleteFieldInput!]
+                  disconnect: [ActorActedInDisconnectFieldInput!]
+                  update: ActorActedInUpdateConnectionInput
+                  where: ActorActedInConnectionWhere
+                }
+
+                type ActorAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNonNullable!
+                }
+
+                input ActorConnectInput {
+                  actedIn: [ActorActedInConnectFieldInput!]
+                }
+
+                input ActorCreateInput {
+                  actedIn: ActorActedInFieldInput
+                  name: String!
+                }
+
+                input ActorDeleteInput {
+                  actedIn: [ActorActedInDeleteFieldInput!]
+                }
+
+                input ActorDisconnectInput {
+                  actedIn: [ActorActedInDisconnectFieldInput!]
+                }
+
+                input ActorOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [ActorSort!]
+                }
+
+                input ActorRelationInput {
+                  actedIn: [ActorActedInCreateFieldInput!]
+                }
+
+                \\"\\"\\"
+                Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+                \\"\\"\\"
+                input ActorSort {
+                  name: SortDirection
+                }
+
+                input ActorUpdateInput {
+                  actedIn: [ActorActedInUpdateFieldInput!]
+                  name: String
+                }
+
+                input ActorWhere {
+                  AND: [ActorWhere!]
+                  OR: [ActorWhere!]
+                  actedInConnection: ActorActedInConnectionWhere
+                  actedInConnection_NOT: ActorActedInConnectionWhere
+                  name: String
+                  name_CONTAINS: String
+                  name_ENDS_WITH: String
+                  name_IN: [String!]
+                  name_NOT: String
+                  name_NOT_CONTAINS: String
+                  name_NOT_ENDS_WITH: String
+                  name_NOT_IN: [String!]
+                  name_NOT_STARTS_WITH: String
+                  name_STARTS_WITH: String
+                }
+
+                type CreateActorsMutationResponse {
+                  actors: [Actor!]!
+                  info: CreateInfo!
+                }
+
+                type CreateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  relationshipsCreated: Int!
+                }
+
+                type CreateMoviesMutationResponse {
+                  info: CreateInfo!
+                  movies: [Movie!]!
+                }
+
+                type CreateSeriesMutationResponse {
+                  info: CreateInfo!
+                  series: [Series!]!
+                }
+
+                type DeleteInfo {
+                  bookmark: String
+                  nodesDeleted: Int!
+                  relationshipsDeleted: Int!
+                }
+
+                type IntAggregateSelectionNonNullable {
+                  average: Float!
+                  max: Int!
+                  min: Int!
+                  sum: Int!
+                }
+
+                type Movie implements Production {
+                  runtime: Int!
+                  title: String!
+                }
+
+                type MovieAggregateSelection {
+                  count: Int!
+                  runtime: IntAggregateSelectionNonNullable!
+                  title: StringAggregateSelectionNonNullable!
+                }
+
+                input MovieCreateInput {
+                  runtime: Int!
+                  title: String!
+                }
+
+                input MovieOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [MovieSort!]
+                }
+
+                \\"\\"\\"
+                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+                \\"\\"\\"
+                input MovieSort {
+                  runtime: SortDirection
+                  title: SortDirection
+                }
+
+                input MovieUpdateInput {
+                  runtime: Int
+                  title: String
+                }
+
+                input MovieWhere {
+                  AND: [MovieWhere!]
+                  OR: [MovieWhere!]
+                  runtime: Int
+                  runtime_GT: Int
+                  runtime_GTE: Int
+                  runtime_IN: [Int!]
+                  runtime_LT: Int
+                  runtime_LTE: Int
+                  runtime_NOT: Int
+                  runtime_NOT_IN: [Int!]
+                  title: String
+                  title_CONTAINS: String
+                  title_ENDS_WITH: String
+                  title_IN: [String!]
+                  title_NOT: String
+                  title_NOT_CONTAINS: String
+                  title_NOT_ENDS_WITH: String
+                  title_NOT_IN: [String!]
+                  title_NOT_STARTS_WITH: String
+                  title_STARTS_WITH: String
+                }
+
+                type Mutation {
+                  createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+                  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+                  createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
+                  deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
+                  deleteMovies(where: MovieWhere): DeleteInfo!
+                  deleteSeries(where: SeriesWhere): DeleteInfo!
+                  updateActors(connect: ActorConnectInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+                }
+
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
+                interface Production {
+                  title: String!
+                }
+
+                input ProductionConnectWhere {
+                  node: ProductionWhere!
+                }
+
+                input ProductionCreateInput {
+                  Movie: MovieCreateInput
+                  Series: SeriesCreateInput
+                }
+
+                input ProductionImplementationsUpdateInput {
+                  Movie: MovieUpdateInput
+                  Series: SeriesUpdateInput
+                }
+
+                input ProductionImplementationsWhere {
+                  Movie: MovieWhere
+                  Series: SeriesWhere
+                }
+
+                input ProductionUpdateInput {
+                  _on: ProductionImplementationsUpdateInput
+                  title: String
+                }
+
+                input ProductionWhere {
+                  _on: ProductionImplementationsWhere
+                  title: String
+                  title_CONTAINS: String
+                  title_ENDS_WITH: String
+                  title_IN: [String!]
+                  title_NOT: String
+                  title_NOT_CONTAINS: String
+                  title_NOT_ENDS_WITH: String
+                  title_NOT_IN: [String!]
+                  title_NOT_STARTS_WITH: String
+                  title_STARTS_WITH: String
+                }
+
+                type Query {
+                  actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+                }
+
+                input QueryOptions {
+                  limit: Int
+                  offset: Int
+                }
+
+                type Series implements Production {
+                  episodes: Int!
+                  title: String!
+                }
+
+                type SeriesAggregateSelection {
+                  count: Int!
+                  episodes: IntAggregateSelectionNonNullable!
+                  title: StringAggregateSelectionNonNullable!
+                }
+
+                input SeriesCreateInput {
+                  episodes: Int!
+                  title: String!
+                }
+
+                input SeriesOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [SeriesSort!]
+                }
+
+                \\"\\"\\"
+                Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+                \\"\\"\\"
+                input SeriesSort {
+                  episodes: SortDirection
+                  title: SortDirection
+                }
+
+                input SeriesUpdateInput {
+                  episodes: Int
+                  title: String
+                }
+
+                input SeriesWhere {
+                  AND: [SeriesWhere!]
+                  OR: [SeriesWhere!]
+                  episodes: Int
+                  episodes_GT: Int
+                  episodes_GTE: Int
+                  episodes_IN: [Int!]
+                  episodes_LT: Int
+                  episodes_LTE: Int
+                  episodes_NOT: Int
+                  episodes_NOT_IN: [Int!]
+                  title: String
+                  title_CONTAINS: String
+                  title_ENDS_WITH: String
+                  title_IN: [String!]
+                  title_NOT: String
+                  title_NOT_CONTAINS: String
+                  title_NOT_ENDS_WITH: String
+                  title_NOT_IN: [String!]
+                  title_NOT_STARTS_WITH: String
+                  title_STARTS_WITH: String
+                }
+
+                enum SortDirection {
+                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+                  ASC
+                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+                  DESC
+                }
+
+                type StringAggregateSelectionNonNullable {
+                  longest: String!
+                  shortest: String!
+                }
+
+                type UpdateActorsMutationResponse {
+                  actors: [Actor!]!
+                  info: UpdateInfo!
+                }
+
+                type UpdateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  nodesDeleted: Int!
+                  relationshipsCreated: Int!
+                  relationshipsDeleted: Int!
+                }
+
+                type UpdateMoviesMutationResponse {
+                  info: UpdateInfo!
+                  movies: [Movie!]!
+                }
+
+                type UpdateSeriesMutationResponse {
+                  info: UpdateInfo!
+                  series: [Series!]!
+                }"
+            `);
+        });
+
+        test("Unions", () => {
+            const typeDefs = gql`
+                union Search = Movie | Genre
+
+                type Genre {
+                    id: ID
+                }
+
+                type Movie {
+                    id: ID
+                    search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
+                    searchNoDirective: Search
+                }
+            `;
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+
+            expect(printedSchema).toMatchInlineSnapshot(`
+                "schema {
+                  query: Query
+                  mutation: Mutation
+                }
+
+                type CreateGenresMutationResponse {
+                  genres: [Genre!]!
+                  info: CreateInfo!
+                }
+
+                type CreateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  relationshipsCreated: Int!
+                }
+
+                type CreateMoviesMutationResponse {
+                  info: CreateInfo!
+                  movies: [Movie!]!
+                }
+
+                type DeleteInfo {
+                  bookmark: String
+                  nodesDeleted: Int!
+                  relationshipsDeleted: Int!
+                }
+
+                type Genre {
+                  id: ID
+                }
+
+                type GenreAggregateSelection {
+                  count: Int!
+                  id: IDAggregateSelectionNullable!
+                }
+
+                input GenreConnectWhere {
+                  node: GenreWhere!
+                }
+
+                input GenreCreateInput {
+                  id: ID
+                }
+
+                input GenreOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [GenreSort!]
+                }
+
+                \\"\\"\\"
+                Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
+                \\"\\"\\"
+                input GenreSort {
+                  id: SortDirection
+                }
+
+                input GenreUpdateInput {
+                  id: ID
+                }
+
+                input GenreWhere {
+                  AND: [GenreWhere!]
+                  OR: [GenreWhere!]
+                  id: ID
+                  id_CONTAINS: ID
+                  id_ENDS_WITH: ID
+                  id_IN: [ID]
+                  id_NOT: ID
+                  id_NOT_CONTAINS: ID
+                  id_NOT_ENDS_WITH: ID
+                  id_NOT_IN: [ID]
+                  id_NOT_STARTS_WITH: ID
+                  id_STARTS_WITH: ID
+                }
+
+                type IDAggregateSelectionNullable {
+                  longest: ID
+                  shortest: ID
+                }
+
+                type Movie {
+                  id: ID
+                  search(directed: Boolean = true, options: QueryOptions, where: SearchWhere): [Search!]!
+                  searchConnection(directed: Boolean = true, where: MovieSearchConnectionWhere): MovieSearchConnection!
+                  searchNoDirective: Search
+                }
+
+                type MovieAggregateSelection {
+                  count: Int!
+                  id: IDAggregateSelectionNullable!
+                }
+
+                input MovieConnectInput {
+                  search: MovieSearchConnectInput
+                }
+
+                input MovieConnectWhere {
+                  node: MovieWhere!
+                }
+
+                input MovieCreateInput {
+                  id: ID
+                  search: MovieSearchCreateInput
+                }
+
+                input MovieDeleteInput {
+                  search: MovieSearchDeleteInput
+                }
+
+                input MovieDisconnectInput {
+                  search: MovieSearchDisconnectInput
+                }
+
+                input MovieOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [MovieSort!]
+                }
+
+                input MovieRelationInput {
+                  search: MovieSearchCreateFieldInput
+                }
+
+                input MovieSearchConnectInput {
+                  Genre: [MovieSearchGenreConnectFieldInput!]
+                  Movie: [MovieSearchMovieConnectFieldInput!]
+                }
+
+                type MovieSearchConnection {
+                  edges: [MovieSearchRelationship!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                input MovieSearchConnectionWhere {
+                  Genre: MovieSearchGenreConnectionWhere
+                  Movie: MovieSearchMovieConnectionWhere
+                }
+
+                input MovieSearchCreateFieldInput {
+                  Genre: [MovieSearchGenreCreateFieldInput!]
+                  Movie: [MovieSearchMovieCreateFieldInput!]
+                }
+
+                input MovieSearchCreateInput {
+                  Genre: MovieSearchGenreFieldInput
+                  Movie: MovieSearchMovieFieldInput
+                }
+
+                input MovieSearchDeleteInput {
+                  Genre: [MovieSearchGenreDeleteFieldInput!]
+                  Movie: [MovieSearchMovieDeleteFieldInput!]
+                }
+
+                input MovieSearchDisconnectInput {
+                  Genre: [MovieSearchGenreDisconnectFieldInput!]
+                  Movie: [MovieSearchMovieDisconnectFieldInput!]
+                }
+
+                input MovieSearchGenreConnectFieldInput {
+                  where: GenreConnectWhere
+                }
+
+                input MovieSearchGenreConnectionWhere {
+                  AND: [MovieSearchGenreConnectionWhere!]
+                  OR: [MovieSearchGenreConnectionWhere!]
+                  node: GenreWhere
+                  node_NOT: GenreWhere
+                }
+
+                input MovieSearchGenreCreateFieldInput {
+                  node: GenreCreateInput!
+                }
+
+                input MovieSearchGenreDeleteFieldInput {
+                  where: MovieSearchGenreConnectionWhere
+                }
+
+                input MovieSearchGenreDisconnectFieldInput {
+                  where: MovieSearchGenreConnectionWhere
+                }
+
+                input MovieSearchGenreFieldInput {
+                  connect: [MovieSearchGenreConnectFieldInput!]
+                  create: [MovieSearchGenreCreateFieldInput!]
+                }
+
+                input MovieSearchGenreUpdateConnectionInput {
+                  node: GenreUpdateInput
+                }
+
+                input MovieSearchGenreUpdateFieldInput {
+                  connect: [MovieSearchGenreConnectFieldInput!]
+                  create: [MovieSearchGenreCreateFieldInput!]
+                  delete: [MovieSearchGenreDeleteFieldInput!]
+                  disconnect: [MovieSearchGenreDisconnectFieldInput!]
+                  update: MovieSearchGenreUpdateConnectionInput
+                  where: MovieSearchGenreConnectionWhere
+                }
+
+                input MovieSearchMovieConnectFieldInput {
+                  connect: [MovieConnectInput!]
+                  where: MovieConnectWhere
+                }
+
+                input MovieSearchMovieConnectionWhere {
+                  AND: [MovieSearchMovieConnectionWhere!]
+                  OR: [MovieSearchMovieConnectionWhere!]
+                  node: MovieWhere
+                  node_NOT: MovieWhere
+                }
+
+                input MovieSearchMovieCreateFieldInput {
+                  node: MovieCreateInput!
+                }
+
+                input MovieSearchMovieDeleteFieldInput {
+                  delete: MovieDeleteInput
+                  where: MovieSearchMovieConnectionWhere
+                }
+
+                input MovieSearchMovieDisconnectFieldInput {
+                  disconnect: MovieDisconnectInput
+                  where: MovieSearchMovieConnectionWhere
+                }
+
+                input MovieSearchMovieFieldInput {
+                  connect: [MovieSearchMovieConnectFieldInput!]
+                  create: [MovieSearchMovieCreateFieldInput!]
+                }
+
+                input MovieSearchMovieUpdateConnectionInput {
+                  node: MovieUpdateInput
+                }
+
+                input MovieSearchMovieUpdateFieldInput {
+                  connect: [MovieSearchMovieConnectFieldInput!]
+                  create: [MovieSearchMovieCreateFieldInput!]
+                  delete: [MovieSearchMovieDeleteFieldInput!]
+                  disconnect: [MovieSearchMovieDisconnectFieldInput!]
+                  update: MovieSearchMovieUpdateConnectionInput
+                  where: MovieSearchMovieConnectionWhere
+                }
+
+                type MovieSearchRelationship {
+                  cursor: String!
+                  node: Search!
+                }
+
+                input MovieSearchUpdateInput {
+                  Genre: [MovieSearchGenreUpdateFieldInput!]
+                  Movie: [MovieSearchMovieUpdateFieldInput!]
+                }
+
+                \\"\\"\\"
+                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+                \\"\\"\\"
+                input MovieSort {
+                  id: SortDirection
+                }
+
+                input MovieUpdateInput {
+                  id: ID
+                  search: MovieSearchUpdateInput
+                }
+
+                input MovieWhere {
+                  AND: [MovieWhere!]
+                  OR: [MovieWhere!]
+                  id: ID
+                  id_CONTAINS: ID
+                  id_ENDS_WITH: ID
+                  id_IN: [ID]
+                  id_NOT: ID
+                  id_NOT_CONTAINS: ID
+                  id_NOT_ENDS_WITH: ID
+                  id_NOT_IN: [ID]
+                  id_NOT_STARTS_WITH: ID
+                  id_STARTS_WITH: ID
+                  searchConnection: MovieSearchConnectionWhere
+                  searchConnection_NOT: MovieSearchConnectionWhere
+                }
+
+                type Mutation {
+                  createGenres(input: [GenreCreateInput!]!): CreateGenresMutationResponse!
+                  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+                  deleteGenres(where: GenreWhere): DeleteInfo!
+                  deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+                  updateGenres(update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
+                  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                }
+
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
+                type Query {
+                  genres(options: GenreOptions, where: GenreWhere): [Genre!]!
+                  genresAggregate(where: GenreWhere): GenreAggregateSelection!
+                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                }
+
+                input QueryOptions {
+                  limit: Int
+                  offset: Int
+                }
+
+                union Search = Genre | Movie
+
+                input SearchWhere {
+                  Genre: GenreWhere
+                  Movie: MovieWhere
+                }
+
+                enum SortDirection {
+                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+                  ASC
+                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+                  DESC
+                }
+
+                type UpdateGenresMutationResponse {
+                  genres: [Genre!]!
+                  info: UpdateInfo!
+                }
+
+                type UpdateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  nodesDeleted: Int!
+                  relationshipsCreated: Int!
+                  relationshipsDeleted: Int!
+                }
+
+                type UpdateMoviesMutationResponse {
+                  info: UpdateInfo!
+                  movies: [Movie!]!
+                }"
+            `);
+        });
     });
 });

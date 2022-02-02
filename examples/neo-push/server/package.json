@@ -12,14 +12,14 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@neo4j/graphql": "^2.5.5",
-        "@neo4j/graphql-ogm": "^2.5.5",
-        "apollo-server-express": "2.19.0",
+        "@neo4j/graphql": "^2.5.6",
+        "@neo4j/graphql-ogm": "^2.5.6",
+        "apollo-server-express": "^3.6.1",
         "bcrypt": "5.0.1",
         "debug": "4.3.1",
         "dotenv": "^10.0.0",
         "express": "4.17.1",
-        "graphql": "15.5.0",
+        "graphql": "^16.2.0",
         "jsonwebtoken": "8.5.1",
         "neo4j-driver": "^4.4.0"
     },
@@ -33,7 +33,6 @@
         "@types/jsonwebtoken": "8.5.1",
         "@types/node": "14.14.14",
         "@types/uuid": "8.3.0",
-        "apollo-server-testing": "2.19.0",
         "cross-env": "7.0.3",
         "faker": "5.1.0",
         "jest": "26.6.3",
@@ -41,7 +40,7 @@
         "randomstring": "1.1.5",
         "ts-jest": "26.4.4",
         "ts-node": "9.1.1",
-        "tsconfig-paths": "^3.9.0",
+        "tsconfig-paths": "3.9.0",
         "typescript": "4.2.4"
     }
 }

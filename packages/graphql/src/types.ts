@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import { InputValueDefinitionNode, DirectiveNode } from "graphql";
+import { InputValueDefinitionNode, DirectiveNode, TypeNode } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { JwtPayload } from "jsonwebtoken";
 import { Driver, Integer } from "neo4j-driver";
 import { Neo4jGraphQL } from "./classes";
+import { RelationshipQueryDirectionOption } from "./constants";
 
 export type DriverConfig = {
     database?: string;
@@ -98,6 +99,7 @@ export interface TypeMeta {
             pretty: string;
         };
     };
+    originalType?: TypeNode;
 }
 
 export interface Unique {
@@ -133,6 +135,7 @@ export interface RelationField extends BaseField {
     properties?: string;
     union?: UnionField;
     interface?: InterfaceField;
+    queryDirection: RelationshipQueryDirectionOption;
 }
 
 export interface ConnectionField extends BaseField {
