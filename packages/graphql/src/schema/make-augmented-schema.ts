@@ -732,7 +732,7 @@ function makeAugmentedSchema(
                         description: `Specify one or more ${`${node.name}Sort`} objects to sort ${upperFirst(
                             node.plural
                         )} by. The sorts will be applied in the order in which they are arranged in the array.`,
-                        type: sortInput.List,
+                        type: sortInput.NonNull.List,
                     },
                     limit: "Int",
                     offset: "Int",
@@ -995,8 +995,24 @@ function makeAugmentedSchema(
     const generatedTypeDefs = composer.toSDL();
     let parsedDoc = parse(generatedTypeDefs);
 
-    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & {name: NameNode} {
-      return "name" in x
+    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
+        return "name" in x;
+    }
+
+    const emptyObjectsInterfaces = (
+        parsedDoc.definitions.filter(
+            (x) =>
+                (x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)) ||
+                x.kind === "InterfaceTypeDefinition"
+        ) as (InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode)[]
+    ).filter((x) => !x.fields?.length);
+
+    if (emptyObjectsInterfaces.length) {
+        throw new Error(
+            `Objects and Interfaces must have one or more fields: ${emptyObjectsInterfaces
+                .map((x) => x.name.value)
+                .join(", ")}`
+        );
     }
 
     const documentNames = parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value);

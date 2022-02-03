@@ -87,6 +87,30 @@ describe("Cypher sort tests", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
         });
 
+        test("with field aliased in selection set", async () => {
+            const query = gql`
+                {
+                    movies(options: { sort: [{ id: DESC }] }) {
+                        aliased: id
+                        title
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:Movie)
+                RETURN this { aliased: this.id, .title, .id } as this
+                ORDER BY this.id DESC"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+
         test("with field not in selection set", async () => {
             const query = gql`
                 {
@@ -171,7 +195,7 @@ describe("Cypher sort tests", () => {
 
     test("Sort with offset limit & with other variables", async () => {
         const query = gql`
-            query($title: String, $offset: Int, $limit: Int) {
+            query ($title: String, $offset: Int, $limit: Int) {
                 movies(
                     options: { sort: [{ id: DESC }, { title: ASC }], offset: $offset, limit: $limit }
                     where: { title: $title }
