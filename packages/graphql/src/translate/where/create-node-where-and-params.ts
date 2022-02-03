@@ -170,8 +170,8 @@ function createNodeWhereAndParams({
                 }
 
                 Object.entries(nodeEntries).forEach((entry) => {
-                    const refNode = context.neoSchema.nodes.find((x) => x.name === entry[0]) as Node;
-                    const relationship = context.neoSchema.relationships.find(
+                    const refNode = context.nodes.find((x) => x.name === entry[0]) as Node;
+                    const relationship = context.relationships.find(
                         (x) => x.name === connectionField.relationshipTypeName
                     ) as Relationship;
 

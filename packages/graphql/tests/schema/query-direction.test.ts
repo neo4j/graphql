@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Query Direction", () => {
-    test("DEFAULT_UNDIRECTED", () => {
+    test("DEFAULT_UNDIRECTED", async () => {
         const typeDefs = gql`
             type User {
                 name: String!
@@ -32,7 +32,7 @@ describe("Query Direction", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -285,7 +285,7 @@ describe("Query Direction", () => {
         `);
     });
 
-    test("DIRECTED_ONLY", () => {
+    test("DIRECTED_ONLY", async () => {
         const typeDefs = gql`
             type User {
                 name: String!
@@ -293,7 +293,7 @@ describe("Query Direction", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -546,7 +546,7 @@ describe("Query Direction", () => {
         `);
     });
 
-    test("UNDIRECTED_ONLY", () => {
+    test("UNDIRECTED_ONLY", async () => {
         const typeDefs = gql`
             type User {
                 name: String!
@@ -554,7 +554,7 @@ describe("Query Direction", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

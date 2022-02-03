@@ -80,7 +80,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -130,7 +130,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -183,7 +183,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -236,7 +236,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -286,7 +286,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -338,7 +338,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -383,7 +383,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 

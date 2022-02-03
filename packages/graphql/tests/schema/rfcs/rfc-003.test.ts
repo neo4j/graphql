@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -26,7 +25,7 @@ describe("schema/rfs/003", () => {
     const msg = `List type relationship fields must be non-nullable and have non-nullable entries, please change type of Source.targets to [Target!]!`;
 
     describe("ObjectType", () => {
-        test("should not throw when using valid relationship", () => {
+        test("should not throw when using valid relationship", async () => {
             const typeDefs = gql`
                 type Source {
                     targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
@@ -39,10 +38,12 @@ describe("schema/rfs/003", () => {
                 }
             `;
 
-            expect(new Neo4jGraphQL({ typeDefs })?.schema).toBeInstanceOf(GraphQLSchema);
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            await expect(neoSchema.getSchema()).resolves.toBeInstanceOf(GraphQLSchema);
         });
 
-        test("If there are no relationships, then should always be empty array and not null", () => {
+        test("If there are no relationships, then should always be empty array and not null", async () => {
             const typeDefs = gql`
                 type Source {
                     targets: [Target!] @relationship(type: "HAS_TARGET", direction: OUT)
@@ -53,12 +54,12 @@ describe("schema/rfs/003", () => {
                 }
             `;
 
-            expect(() => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-            }).toThrow(msg);
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            await expect(neoSchema.getSchema()).rejects.toThrow(msg);
         });
 
-        test("This suggests a relationship with no target node", () => {
+        test("This suggests a relationship with no target node", async () => {
             const typeDefs = gql`
                 type Source {
                     targets: [Target]! @relationship(type: "HAS_TARGET", direction: OUT)
@@ -69,12 +70,11 @@ describe("schema/rfs/003", () => {
                 }
             `;
 
-            expect(() => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-            }).toThrow(msg);
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await expect(neoSchema.getSchema()).rejects.toThrow(msg);
         });
 
-        test("should throw when ListType and not NonNullNamedType inside it", () => {
+        test("should throw when ListType and not NonNullNamedType inside it", async () => {
             const typeDefs = gql`
                 type Source {
                     targets: [Target] @relationship(type: "HAS_TARGET", direction: OUT)
@@ -85,14 +85,14 @@ describe("schema/rfs/003", () => {
                 }
             `;
 
-            expect(() => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-            }).toThrow(msg);
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            await expect(neoSchema.getSchema()).rejects.toThrow(msg);
         });
     });
 
     describe("InterfaceType", () => {
-        test("should not throw when using valid relationship", () => {
+        test("should not throw when using valid relationship", async () => {
             const typeDefs = gql`
                 interface SourceInterface {
                     targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
@@ -112,10 +112,12 @@ describe("schema/rfs/003", () => {
                 }
             `;
 
-            expect(new Neo4jGraphQL({ typeDefs })?.schema).toBeInstanceOf(GraphQLSchema);
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            await expect(neoSchema.getSchema()).resolves.toBeInstanceOf(GraphQLSchema);
         });
 
-        test("If there are no relationships, then should always be empty array and not null", () => {
+        test("If there are no relationships, then should always be empty array and not null", async () => {
             const typeDefs = gql`
                 interface SourceInterface {
                     targets: [Target!] @relationship(type: "HAS_TARGET", direction: OUT)
@@ -131,12 +133,12 @@ describe("schema/rfs/003", () => {
                 }
             `;
 
-            expect(() => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-            }).toThrow(msg);
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            await expect(neoSchema.getSchema()).rejects.toThrow(msg);
         });
 
-        test("This suggests a relationship with no target node", () => {
+        test("This suggests a relationship with no target node", async () => {
             const typeDefs = gql`
                 interface SourceInterface {
                     targets: [Target]! @relationship(type: "HAS_TARGET", direction: OUT)
@@ -152,12 +154,12 @@ describe("schema/rfs/003", () => {
                 }
             `;
 
-            expect(() => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-            }).toThrow(msg);
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            await expect(neoSchema.getSchema()).rejects.toThrow(msg);
         });
 
-        test("should throw when ListType and not NonNullNamedType inside it", () => {
+        test("should throw when ListType and not NonNullNamedType inside it", async () => {
             const typeDefs = gql`
                 interface SourceInterface {
                     targets: [Target] @relationship(type: "HAS_TARGET", direction: OUT)
@@ -173,10 +175,9 @@ describe("schema/rfs/003", () => {
                 }
             `;
 
-            expect(() => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-            }).toThrow(msg);
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            await expect(neoSchema.getSchema()).rejects.toThrow(msg);
         });
     });
 });
-/* eslint-enable @typescript-eslint/no-unused-vars */

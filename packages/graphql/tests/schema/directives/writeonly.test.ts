@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@writeonly directive", () => {
-    test("makes a field writeonly", () => {
+    test("makes a field writeonly", async () => {
         const typeDefs = gql`
             type User {
                 username: String!
@@ -31,7 +31,7 @@ describe("@writeonly directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -156,7 +156,7 @@ describe("@writeonly directive", () => {
         `);
     });
 
-    test("makes an inherited field writeonly", () => {
+    test("makes an inherited field writeonly", async () => {
         const typeDefs = gql`
             interface UserInterface {
                 username: String!
@@ -169,7 +169,7 @@ describe("@writeonly directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -298,7 +298,7 @@ describe("@writeonly directive", () => {
         `);
     });
 
-    test("makes a relationship field writeonly", () => {
+    test("makes a relationship field writeonly", async () => {
         const typeDefs = gql`
             type Actor {
                 name: String
@@ -310,7 +310,7 @@ describe("@writeonly directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

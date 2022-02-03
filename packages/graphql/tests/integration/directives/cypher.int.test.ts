@@ -91,7 +91,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -161,7 +161,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle, name: actorName },
@@ -235,7 +235,7 @@ describe("cypher", () => {
                     const req = createJwtRequest(secret);
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle, name: actorName },
@@ -313,7 +313,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
@@ -420,7 +420,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title },
@@ -498,7 +498,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -568,7 +568,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -638,7 +638,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -842,7 +842,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { id: townId },

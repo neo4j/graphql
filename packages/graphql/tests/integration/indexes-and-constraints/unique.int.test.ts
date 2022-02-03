@@ -132,7 +132,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         `;
 
         const createResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: mutation,
             contextValue: {
                 driver,
@@ -151,7 +151,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         });
 
         const errorResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: mutation,
             contextValue: {
                 driver,

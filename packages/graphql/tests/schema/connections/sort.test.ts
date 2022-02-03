@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Sort", () => {
-    test("sort argument is not present when nothing to sort", () => {
+    test("sort argument is not present when nothing to sort", async () => {
         const typeDefs = gql`
             type Node1 {
                 property: String!
@@ -35,7 +35,7 @@ describe("Sort", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

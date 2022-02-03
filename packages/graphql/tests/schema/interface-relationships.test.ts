@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Interface Relationships", () => {
-    test("Interface Relationships - single", () => {
+    test("Interface Relationships - single", async () => {
         const typeDefs = gql`
             interface Production {
                 title: String!
@@ -49,7 +49,7 @@ describe("Interface Relationships", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -487,7 +487,7 @@ describe("Interface Relationships", () => {
         `);
     });
 
-    test("Interface Relationships - multiple", () => {
+    test("Interface Relationships - multiple", async () => {
         const typeDefs = gql`
             type Episode {
                 runtime: Int!
@@ -522,7 +522,7 @@ describe("Interface Relationships", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -1700,7 +1700,7 @@ describe("Interface Relationships", () => {
         `);
     });
 
-    test("Interface Relationships - nested interface relationships", () => {
+    test("Interface Relationships - nested interface relationships", async () => {
         const typeDefs = gql`
             interface Interface1 {
                 field1: String!
@@ -1736,7 +1736,7 @@ describe("Interface Relationships", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -2467,7 +2467,7 @@ describe("Interface Relationships", () => {
         // }).toThrowError("Nested interface relationship fields are not supported: Interface1.interface2");
     });
 
-    test("Interface Relationships - nested relationships", () => {
+    test("Interface Relationships - nested relationships", async () => {
         const typeDefs = gql`
             interface Content {
                 id: ID
@@ -2497,7 +2497,7 @@ describe("Interface Relationships", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

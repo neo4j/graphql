@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Connect Or Create", () => {
-    test("Connect Or Create", () => {
+    test("Connect Or Create", async () => {
         const typeDefs = gql`
             type Movie {
                 title: String!
@@ -36,7 +36,7 @@ describe("Connect Or Create", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -408,7 +408,7 @@ describe("Connect Or Create", () => {
         `);
     });
 
-    test("Connect Or Create with relation properties", () => {
+    test("Connect Or Create with relation properties", async () => {
         const typeDefs = gql`
             type Movie {
                 title: String!
@@ -426,7 +426,7 @@ describe("Connect Or Create", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

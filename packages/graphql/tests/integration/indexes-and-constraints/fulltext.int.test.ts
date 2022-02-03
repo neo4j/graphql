@@ -156,7 +156,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: {
                 driver,
@@ -210,7 +210,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: {
                 driver,
@@ -302,7 +302,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: {
                 driver,
@@ -398,7 +398,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: {
                 driver,

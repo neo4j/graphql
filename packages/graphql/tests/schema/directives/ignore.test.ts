@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@ignore directive", () => {
-    test("passes fields directly through with no generation", () => {
+    test("passes fields directly through with no generation", async () => {
         const typeDefs = gql`
             interface UserInterface {
                 ignored: String @ignore
@@ -38,7 +38,7 @@ describe("@ignore directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

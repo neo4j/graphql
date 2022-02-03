@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Relationship-properties", () => {
-    test("Relationship Properties", () => {
+    test("Relationship Properties", async () => {
         const typeDefs = gql`
             type Actor {
                 name: String!
@@ -42,7 +42,7 @@ describe("Relationship-properties", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -639,7 +639,7 @@ describe("Relationship-properties", () => {
         `);
     });
 
-    test("should filter out generated fields", () => {
+    test("should filter out generated fields", async () => {
         const typeDefs = gql`
             type Actor {
                 name: String!
@@ -658,7 +658,7 @@ describe("Relationship-properties", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -1305,7 +1305,7 @@ describe("Relationship-properties", () => {
         `);
     });
 
-    test("should not create or use <RelationshipProperties>{Create,Update}Input if only generated fields", () => {
+    test("should not create or use <RelationshipProperties>{Create,Update}Input if only generated fields", async () => {
         const typeDefs = gql`
             type Actor {
                 name: String!
@@ -1323,7 +1323,7 @@ describe("Relationship-properties", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

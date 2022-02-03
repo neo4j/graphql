@@ -82,7 +82,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -117,7 +117,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -155,7 +155,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -197,7 +197,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -237,7 +237,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -279,7 +279,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -319,7 +319,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -390,7 +390,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: ["admin"] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -479,7 +479,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: [""] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -550,7 +550,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: ["admin"] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -638,7 +638,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: [""] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -678,7 +678,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -733,7 +733,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -774,7 +774,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -813,7 +813,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -856,7 +856,7 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -924,7 +924,7 @@ describe("auth/roles", () => {
                 const userReq = createJwtRequest(secret, { roles: ["user"], id: userId });
 
                 const gqlResultUser = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req: userReq, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -937,7 +937,7 @@ describe("auth/roles", () => {
                 const adminReq = createJwtRequest(secret, { roles: ["admin"], id: userId2 });
 
                 const gqlResultAdmin = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req: adminReq, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -1013,7 +1013,7 @@ describe("auth/roles", () => {
                 });
 
                 const gqlResultUser = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req: nonAdminReq, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -1027,7 +1027,7 @@ describe("auth/roles", () => {
                 });
 
                 const gqlResultAdmin = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req: adminReq, driverConfig: { bookmarks: session.lastBookmark() } },
                 });

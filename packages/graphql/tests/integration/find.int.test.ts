@@ -75,7 +75,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -128,7 +128,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -187,7 +187,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { ids: [id1, id2, id3] },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -252,7 +252,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { ids: [id1, id2, id3], title },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -341,7 +341,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {
                     movieIds: [movieId1, movieId2, movieId3],
@@ -482,7 +482,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { movieIds: [movieId1, movieId2, movieId3], actorIds: [actorId1, actorId2, actorId3] },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -547,7 +547,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { movieWhere: { OR: [{ title, id }] } },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },

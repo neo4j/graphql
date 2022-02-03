@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Comments", () => {
-    test("Simple", () => {
+    test("Simple", async () => {
         const typeDefs = gql`
             "A custom scalar."
             scalar CustomScalar
@@ -57,7 +57,7 @@ describe("Comments", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -246,7 +246,7 @@ describe("Comments", () => {
     });
 
     describe("Relationship", () => {
-        test("Simple", () => {
+        test("Simple", async () => {
             const typeDefs = gql`
                 type Actor {
                     name: String
@@ -259,7 +259,7 @@ describe("Comments", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -578,7 +578,7 @@ describe("Comments", () => {
             `);
         });
 
-        test("Interface", () => {
+        test("Interface", async () => {
             const typeDefs = gql`
                 interface Production {
                     title: String!
@@ -605,7 +605,7 @@ describe("Comments", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -1044,7 +1044,7 @@ describe("Comments", () => {
             `);
         });
 
-        test("Unions", () => {
+        test("Unions", async () => {
             const typeDefs = gql`
                 union Search = Movie | Genre
 
@@ -1059,7 +1059,7 @@ describe("Comments", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {

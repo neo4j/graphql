@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@default directive", () => {
-    test("sets default values in schema", () => {
+    test("sets default values in schema", async () => {
         const typeDefs = gql`
             interface UserInterface {
                 fromInterface: String! @default(value: "Interface default value")
@@ -42,7 +42,7 @@ describe("@default directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
