@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
+import { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { Integer } from "neo4j-driver";
 import { ConnectionField, ConnectionSortArg, ConnectionWhereArg, Context } from "../../types";
@@ -85,7 +85,10 @@ function createConnectionAndParams({
 
         edgeSortFields.forEach((sortField) => {
             // For every sort field on edge check to see if the field is in selection set
-            if (!relationshipProperties.find((rt) => rt.name === sortField)) {
+            if (
+                !relationshipProperties.find((rt) => rt.name === sortField) ||
+                relationshipProperties.find((rt) => rt.name === sortField && rt.alias !== sortField)
+            ) {
                 // if it doesn't exist add a basic resolve tree to relationshipProperties
                 relationshipProperties.push({ alias: sortField, args: {}, fieldsByTypeName: {}, name: sortField });
             }
@@ -132,26 +135,42 @@ function createConnectionAndParams({
                 const nestedSubqueries: string[] = [];
 
                 if (node) {
-                    const nodeFieldsByTypeName: FieldsByTypeName = {
-                        [n.name]: {
-                            ...node?.fieldsByTypeName[n.name],
-                            ...node?.fieldsByTypeName[field.relationship.typeMeta.name],
-                        },
-                    };
+                    const selectedFields: Record<string, ResolveTree> = n.interfaces
+                        // Map over the implemented interfaces of the node and extract the names
+                        .map((implementedInterface) => implementedInterface.name.value)
+                        .reduce(
+                            // Combine the fields of the interfaces...
+                            (prevFields, interfaceName) => ({
+                                ...prevFields,
+                                ...node?.fieldsByTypeName[interfaceName],
+                            }),
+                            // with the fields of the node
+                            node.fieldsByTypeName[n.name]
+                        );
 
-                    nodeSortFields.forEach((sortField) => {
+                    const missingOrAliasedSortFields = nodeSortFields.reduce((acc, sortField) => {
                         // For every sort field on node check to see if the field is in selection set
-                        if (!Object.values(nodeFieldsByTypeName[n.name]).find((r) => r.name === sortField)) {
+                        if (
+                            !Object.values(selectedFields).find((r) => r.name === sortField) ||
+                            Object.values(selectedFields).find((r) => r.name === sortField && r.alias !== sortField)
+                        ) {
                             // if it doesn't exist add a basic resolve tree to FieldsByTypeName on reference node
-                            nodeFieldsByTypeName[n.name] = {
-                                ...nodeFieldsByTypeName[n.name],
+                            return {
+                                ...acc,
                                 [sortField]: { alias: sortField, args: {}, fieldsByTypeName: {}, name: sortField },
                             };
                         }
-                    });
+                        return acc;
+                    }, {});
 
                     const nodeProjectionAndParams = createProjectionAndParams({
-                        resolveTree: { ...node, fieldsByTypeName: nodeFieldsByTypeName },
+                        resolveTree: {
+                            ...node,
+                            fieldsByTypeName: {
+                                ...node.fieldsByTypeName,
+                                [n.name]: { ...selectedFields, ...missingOrAliasedSortFields },
+                            },
+                        },
                         node: n,
                         context,
                         varName: relatedNodeVariable,
