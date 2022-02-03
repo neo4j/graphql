@@ -51,7 +51,7 @@ function createConnectionAndParams({
     let globalParams = {};
     let nestedConnectionFieldParams;
 
-    const subquery = ["CALL {", `WITH ${nodeVariable}`];
+    let subquery = ["CALL {", `WITH ${nodeVariable}`];
 
     const sortInput = resolveTree.args.sort as ConnectionSortArg[];
     const afterInput = resolveTree.args.after;
@@ -418,13 +418,12 @@ function createConnectionAndParams({
     }
 
     const returnValues: string[] = [];
+
     if (relatedNode && relatedNode?.queryOptions?.defaultLimit) {
-        const offsetLimitStr = createOffsetLimitStr({
-            offset: isString(afterInput) ? cursorToOffset(afterInput) + 1 : undefined,
-            limit: relatedNode?.queryOptions?.defaultLimit,
-        });
-        subquery.push(`WITH size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`);
-        subquery.push(`RETURN { edges: limitedSelection, totalCount: totalCount } AS ${resolveTree.alias}`);
+        subquery = [
+            ...subquery,
+            ...createLimitedReturnSubquery(resolveTree.alias, relatedNode.queryOptions.defaultLimit, afterInput),
+        ];
     } else if (!firstInput && !afterInput) {
         if (connection.edges || connection.pageInfo) {
             returnValues.push("edges: edges");
@@ -432,12 +431,10 @@ function createConnectionAndParams({
         returnValues.push(`totalCount: ${field.relationship.union ? "totalCount" : "size(edges)"}`);
         subquery.push(`RETURN { ${returnValues.join(", ")} } AS ${resolveTree.alias}`);
     } else {
-        const offsetLimitStr = createOffsetLimitStr({
-            offset: isString(afterInput) ? cursorToOffset(afterInput) + 1 : undefined,
-            limit: firstInput as Integer | number | undefined,
-        });
-        subquery.push(`WITH size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`);
-        subquery.push(`RETURN { edges: limitedSelection, totalCount: totalCount } AS ${resolveTree.alias}`);
+        subquery = [
+            ...subquery,
+            ...createLimitedReturnSubquery(resolveTree.alias, firstInput as Integer | number | undefined, afterInput),
+        ];
     }
     subquery.push("}");
 
@@ -455,3 +452,19 @@ function createConnectionAndParams({
 }
 
 export default createConnectionAndParams;
+
+function createLimitedReturnSubquery(
+    alias: string,
+    limit: Integer | number | undefined,
+    afterInput: unknown
+): string[] {
+    const offset = isString(afterInput) ? cursorToOffset(afterInput) + 1 : undefined;
+    const offsetLimitStr = createOffsetLimitStr({
+        offset,
+        limit,
+    });
+    return [
+        `WITH size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`,
+        `RETURN { edges: limitedSelection, totalCount: totalCount } AS ${alias}`,
+    ];
+}
