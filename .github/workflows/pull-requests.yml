@@ -66,6 +66,15 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      neo4j:
+        image: neo4j:latest
+        env:
+          NEO4J_AUTH: admin/password
+          NEO4JLABS_PLUGINS: '["apoc"]'
+        ports:
+          - 7687:7687
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
