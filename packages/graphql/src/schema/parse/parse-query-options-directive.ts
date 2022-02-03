@@ -19,8 +19,8 @@
 
 import { DirectiveNode, ObjectFieldNode, ObjectTypeDefinitionNode, ObjectValueNode } from "graphql";
 import * as neo4j from "neo4j-driver";
+import { QueryOptionsDirective } from "../../classes/QueryOptionsDirective";
 import { Neo4jGraphQLError } from "../../classes/Error";
-import { QueryOptions } from "../../types";
 import parseValueNode from "../parse-value-node";
 
 export function parseQueryOptionsDirective({
@@ -29,7 +29,7 @@ export function parseQueryOptionsDirective({
 }: {
     directive: DirectiveNode;
     definition: ObjectTypeDefinitionNode;
-}): QueryOptions {
+}): QueryOptionsDirective {
     const limitArgument = directive.arguments?.find((direc) => direc.name.value === "limit");
     const limitValue = limitArgument?.value as ObjectValueNode | undefined;
     const defaultLimitArgument = limitValue?.fields.find((field) => field.name.value === "default");
@@ -41,9 +41,7 @@ export function parseQueryOptionsDirective({
     const queryOptionsLimit = { default: defaultLimit, max: maxLimit };
     validateLimitArguments(queryOptionsLimit, definition.name.value);
 
-    return {
-        limit: queryOptionsLimit,
-    };
+    return new QueryOptionsDirective({ limit: queryOptionsLimit });
 }
 
 function parseArgumentToInt(field: ObjectFieldNode | undefined): neo4j.Integer | undefined {
@@ -54,7 +52,7 @@ function parseArgumentToInt(field: ObjectFieldNode | undefined): neo4j.Integer |
     return undefined;
 }
 
-function validateLimitArguments(arg: QueryOptions["limit"], typeName: string): void {
+function validateLimitArguments(arg: QueryOptionsDirective["limit"], typeName: string): void {
     const maxLimit = arg.max?.toNumber();
     const defaultLimit = arg.default?.toNumber();
 

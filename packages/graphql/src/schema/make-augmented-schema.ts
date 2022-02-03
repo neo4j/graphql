@@ -49,7 +49,7 @@ import { Exclude, Node } from "../classes";
 import { NodeDirective } from "../classes/NodeDirective";
 import Relationship from "../classes/Relationship";
 import * as constants from "../constants";
-import { Auth, BaseField, FullText, PrimitiveField, QueryOptions } from "../types";
+import { Auth, BaseField, FullText, PrimitiveField } from "../types";
 import { isString } from "../utils/utils";
 import createConnectionFields from "./create-connection-fields";
 import createRelationshipFields from "./create-relationship-fields";
@@ -77,6 +77,7 @@ import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import { upperFirst } from "../utils/upper-first";
 import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
+import { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -292,7 +293,7 @@ function makeAugmentedSchema(
             });
         }
 
-        let queryOptionsDirective: QueryOptions | undefined;
+        let queryOptionsDirective: QueryOptionsDirective | undefined;
         if (queryOptionsDirectiveDefinition) {
             queryOptionsDirective = parseQueryOptionsDirective({
                 directive: queryOptionsDirectiveDefinition,
