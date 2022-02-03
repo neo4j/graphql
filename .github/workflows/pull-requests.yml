@@ -83,13 +83,12 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - name: Run Schema tests
+      - name: Run neo-push tests
         run: yarn --cwd examples/neo-push/server run test
         env:
           NEO_USER: neo4j
           NEO_PASSWORD: password
           NEO_URL: bolt://localhost:7687
-
 
   typescript-changes:
     runs-on: ubuntu-latest
