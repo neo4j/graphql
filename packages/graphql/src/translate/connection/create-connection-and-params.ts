@@ -265,21 +265,8 @@ function createConnectionAndParams({
             subqueryCypher.push(`WITH edge ORDER BY ${sort.join(", ")}`);
         }
 
-        const withValues: string[] = [];
-        if (!firstInput && !afterInput) {
-            if (connection.edges || connection.pageInfo) {
-                withValues.push("collect(edge) as edges");
-            }
-            withValues.push("count(edge) as totalCount");
-            subqueryCypher.push(`WITH ${withValues.join(", ")}`);
-        } else {
-            const offsetLimitStr = createOffsetLimitStr({
-                offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
-                limit: firstInput as Integer | number | undefined,
-            });
-            subqueryCypher.push("WITH collect(edge) AS allEdges");
-            subqueryCypher.push(`WITH allEdges, size(allEdges) as totalCount, allEdges${offsetLimitStr} AS edges`);
-        }
+        subqueryCypher.push("WITH collect(edge) as edges");
+
         subquery.push(subqueryCypher.join("\n"));
     } else {
         const relatedNodeVariable = `${nodeVariable}_${field.relationship.typeMeta.name.toLowerCase()}`;
@@ -421,7 +408,7 @@ function createConnectionAndParams({
         if (connection.edges || connection.pageInfo) {
             returnValues.push("edges: edges");
         }
-        returnValues.push(`totalCount: ${field.relationship.union ? "totalCount" : "size(edges)"}`);
+        returnValues.push("totalCount: size(edges)");
         subquery.push(`RETURN { ${returnValues.join(", ")} } AS ${resolveTree.alias}`);
     } else {
         const offsetLimitStr = createOffsetLimitStr({
