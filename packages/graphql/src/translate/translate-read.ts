@@ -35,7 +35,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     let projAuth = "";
     let projStr = "";
 
-    const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
+    const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
     let limitStr = "";
     let offsetStr = "";
     let sortStr = "";
@@ -43,6 +43,10 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     let cypherParams: { [k: string]: any } = {};
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
+
+    if (node.queryOptions?.limit?.default && !optionsInput.limit) {
+        optionsInput.limit = node.queryOptions.limit.default;
+    }
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });
     matchAndWhereStr = topLevelMatch[0];
