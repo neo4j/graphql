@@ -93,6 +93,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -132,7 +133,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         `;
 
         const createResult = await graphql({
-            schema: await neoSchema.getSchema(),
+            schema,
             source: mutation,
             contextValue: {
                 driver,
@@ -151,7 +152,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         });
 
         const errorResult = await graphql({
-            schema: await neoSchema.getSchema(),
+            schema,
             source: mutation,
             contextValue: {
                 driver,
@@ -186,6 +187,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
@@ -210,6 +212,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
@@ -234,6 +237,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             const session = driver.session({ database: databaseName });
 
@@ -268,6 +272,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             const session = driver.session({ database: databaseName });
 
@@ -302,6 +307,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -348,6 +354,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -400,6 +407,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
@@ -424,6 +432,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
@@ -448,6 +457,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
@@ -472,6 +482,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
@@ -496,6 +507,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             const session = driver.session({ database: databaseName });
 
@@ -530,6 +542,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             const session = driver.session({ database: databaseName });
 
@@ -564,6 +577,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -610,6 +624,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -659,6 +674,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -705,6 +721,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({

@@ -31,6 +31,8 @@ export class ContextBuilder extends Builder<Context, Context> {
             neoSchema: new Neo4jGraphQL({
                 typeDefs: "",
             }),
+            nodes: [],
+            relationships: [],
             ...newOptions,
         });
     }

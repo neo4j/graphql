@@ -95,6 +95,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -156,7 +157,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
+            schema,
             source: query,
             contextValue: {
                 driver,
@@ -192,6 +193,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -210,7 +212,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
+            schema,
             source: query,
             contextValue: {
                 driver,
@@ -241,6 +243,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -302,7 +305,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
+            schema,
             source: query,
             contextValue: {
                 driver,
@@ -337,6 +340,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -398,7 +402,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
+            schema,
             source: query,
             contextValue: {
                 driver,
@@ -431,6 +435,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -459,6 +464,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await neoSchema.getSchema();
 
         const session = driver.session({ database: databaseName });
 
@@ -504,6 +510,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await neoSchema.getSchema();
 
         const session = driver.session({ database: databaseName });
 
@@ -550,6 +557,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -631,6 +639,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
+        await neoSchema.getSchema();
 
         const session = driver.session({ database: databaseName });
 

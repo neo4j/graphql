@@ -139,6 +139,12 @@ class Neo4jGraphQL {
     async assertIndexesAndConstraints(
         input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
     ): Promise<void> {
+        if (!this.schema) {
+            throw new Error("You must call `.getSchema()` before `.assertIndexesAndConstraints()`");
+        }
+
+        await this.schema;
+
         const driver = input.driver || this.driver;
         const driverConfig = input.driverConfig || this.config?.driverConfig;
 

@@ -76,7 +76,7 @@ describe("createConnectAndParams", () => {
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema };
+        const context: Context = { neoSchema, nodes: [node] };
 
         const result = createConnectAndParams({
             withVars: ["this"],
