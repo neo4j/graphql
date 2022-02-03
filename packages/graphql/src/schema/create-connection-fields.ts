@@ -92,9 +92,15 @@ function createConnectionFields({
             after?: any;
         } = {
             where: connectionWhere,
+            first: {
+                type: "Int",
+            },
+            after: {
+                type: "String",
+            },
         };
 
-        let composeNodeArgs = addDirectedArgument(composeNodeBaseArgs, connectionField.relationship);
+        const composeNodeArgs = addDirectedArgument(composeNodeBaseArgs, connectionField.relationship);
 
         if (connectionField.relationship.properties) {
             const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);
@@ -178,16 +184,6 @@ function createConnectionFields({
                     composeNodeArgs.sort = connectionSort.NonNull.List;
                 }
             }
-
-            composeNodeArgs = {
-                ...composeNodeArgs,
-                first: {
-                    type: "Int",
-                },
-                after: {
-                    type: "String",
-                },
-            };
         }
 
         if (!connectionField.relationship.writeonly) {

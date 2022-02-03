@@ -319,3 +319,9 @@ export interface CypherQueryOptions {
 
 /** Nested Records helper type, supports any level of recursion. Ending in properties of type T */
 export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {} // Using interface to allow recursive types
+
+export type QueryOptions = {
+    limit: {
+        default?: Integer;
+    };
+};
