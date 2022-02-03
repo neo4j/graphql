@@ -56,14 +56,8 @@ function createConnectionAndParams({
     const sortInput = (resolveTree.args.sort ?? []) as ConnectionSortArg[];
     // Fields of {edge, node} to sort on. A simple resolve tree will be added if not in selection set
     // Since nodes of abstract types and edges are constructed sort will not work if field is not in selection set
-    const sortFields: Record<keyof ConnectionSortArg, string[]> = Object.assign(
-        {},
-        ...(["edge", "node"] as Array<keyof ConnectionSortArg>).map((element) => ({
-            [element]: ([] as string[]).concat(
-                ...sortInput.map(({ [element]: sortField = {} }) => Object.keys(sortField))
-            ),
-        }))
-    );
+    const edgeSortFields = sortInput.map(({ edge = {} }) => Object.keys(edge)).flat();
+    const nodeSortFields = sortInput.map(({ node = {} }) => Object.keys(node)).flat();
 
     const afterInput = resolveTree.args.after;
     const firstInput = resolveTree.args.first;
@@ -89,7 +83,7 @@ function createConnectionAndParams({
 
         relationshipProperties = Object.values(relationshipFieldsByTypeName).filter((v) => v.name !== "node");
 
-        sortFields.edge.forEach((sortField) => {
+        edgeSortFields.forEach((sortField) => {
             // For every sort field on edge check to see if the field is in selection set
             if (!relationshipProperties.find((rt) => rt.name === sortField)) {
                 // if it doesn't exist add a basic resolve tree to relationshipProperties
@@ -145,7 +139,7 @@ function createConnectionAndParams({
                         },
                     };
 
-                    sortFields.node.forEach((sortField) => {
+                    nodeSortFields.forEach((sortField) => {
                         // For every sort field on node check to see if the field is in selection set
                         if (!Object.values(nodeFieldsByTypeName[n.name]).find((r) => r.name === sortField)) {
                             // if it doesn't exist add a basic resolve tree to FieldsByTypeName on reference node
