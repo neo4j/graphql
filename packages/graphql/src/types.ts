@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
+import { InputValueDefinitionNode, DirectiveNode, TypeNode } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { JwtPayload } from "jsonwebtoken";
 import { Driver, Integer } from "neo4j-driver";
@@ -315,3 +315,9 @@ export interface CypherQueryOptions {
 
 /** Nested Records helper type, supports any level of recursion. Ending in properties of type T */
 export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {} // Using interface to allow recursive types
+
+export type QueryOptions = {
+    limit: {
+        default?: Integer;
+    };
+};

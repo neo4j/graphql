@@ -206,7 +206,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface UserAggregateInput {
+            export interface UserAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInputNullable;
             }
@@ -246,7 +246,7 @@ describe("generate", () => {
               public aggregate(args: {
                 where?: UserWhere;
 
-                aggregate: UserAggregateInput;
+                aggregate: UserAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
@@ -448,7 +448,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface UserAggregateInput {
+            export interface UserAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInputNullable;
             }
@@ -488,7 +488,7 @@ describe("generate", () => {
               public aggregate(args: {
                 where?: UserWhere;
                 fulltext?: UserFulltext;
-                aggregate: UserAggregateInput;
+                aggregate: UserAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
@@ -688,7 +688,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface UserAggregateInput {
+            export interface UserAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInputNullable;
             }
@@ -728,7 +728,7 @@ describe("generate", () => {
               public aggregate(args: {
                 where?: UserWhere;
 
-                aggregate: UserAggregateInput;
+                aggregate: UserAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
@@ -925,10 +925,10 @@ describe("generate", () => {
 
             export type MovieActorsConnectionArgs = {
               where?: InputMaybe<MovieActorsConnectionWhere>;
-              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
-              sort?: InputMaybe<Array<MovieActorsConnectionSort>>;
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
+              sort?: InputMaybe<Array<MovieActorsConnectionSort>>;
             };
 
             export type MovieActorsConnection = {
@@ -1259,7 +1259,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface MovieAggregateInput {
+            export interface MovieAggregateSelectionInput {
               count?: boolean;
               title?: StringAggregateInputNonNullable;
             }
@@ -1302,7 +1302,7 @@ describe("generate", () => {
               public aggregate(args: {
                 where?: MovieWhere;
 
-                aggregate: MovieAggregateInput;
+                aggregate: MovieAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<MovieAggregateSelection>;
@@ -1312,7 +1312,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface PersonAggregateInput {
+            export interface PersonAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInputNonNullable;
             }
@@ -1352,7 +1352,7 @@ describe("generate", () => {
               public aggregate(args: {
                 where?: PersonWhere;
 
-                aggregate: PersonAggregateInput;
+                aggregate: PersonAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<PersonAggregateSelection>;
