@@ -35,6 +35,7 @@ import type {
     BaseField,
     Context,
     FullText,
+    QueryOptions,
 } from "../types";
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
@@ -62,6 +63,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     exclude?: Exclude;
     nodeDirective?: NodeDirective;
     description?: string;
+    queryOptionsDirective?: QueryOptions;
 }
 
 type MutableField =
@@ -102,6 +104,7 @@ class Node extends GraphElement {
     public fulltextDirective?: FullText;
     public auth?: Auth;
     public description?: string;
+    public queryOptions?: QueryOptions;
 
     constructor(input: NodeConstructor) {
         super(input);
@@ -117,6 +120,7 @@ class Node extends GraphElement {
         this.nodeDirective = input.nodeDirective;
         this.fulltextDirective = input.fulltextDirective;
         this.auth = input.auth;
+        this.queryOptions = input.queryOptionsDirective;
     }
 
     // Fields you can set in a create or update mutation

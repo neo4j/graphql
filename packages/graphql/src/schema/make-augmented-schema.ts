@@ -49,7 +49,7 @@ import { Exclude, Node } from "../classes";
 import { NodeDirective } from "../classes/NodeDirective";
 import Relationship from "../classes/Relationship";
 import * as constants from "../constants";
-import { Auth, BaseField, FullText, PrimitiveField } from "../types";
+import { Auth, BaseField, FullText, PrimitiveField, QueryOptions } from "../types";
 import { isString } from "../utils/utils";
 import createConnectionFields from "./create-connection-fields";
 import createRelationshipFields from "./create-relationship-fields";
@@ -76,6 +76,7 @@ import { validateDocument } from "./validation";
 import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import { upperFirst } from "../utils/upper-first";
+import parseQueryOptionsDirective from "./parse/parse-query-options-directive";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -210,12 +211,15 @@ function makeAugmentedSchema(
 
     const nodes = objectNodes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude", "node", "fulltext"].includes(x.name.value)
+            (x) => !["auth", "exclude", "node", "fulltext", "queryOptions"].includes(x.name.value)
         );
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
         const fulltextDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "fulltext");
+        const queryOptionsDirectiveDefinition = (definition.directives || []).find(
+            (x) => x.name.value === "queryOptions"
+        );
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
         const { interfaceAuthDirectives, interfaceExcludeDirectives } = nodeInterfaces.reduce<{
@@ -288,6 +292,14 @@ function makeAugmentedSchema(
             });
         }
 
+        let queryOptionsDirective: QueryOptions | undefined;
+        if (queryOptionsDirectiveDefinition) {
+            queryOptionsDirective = parseQueryOptionsDirective({
+                directive: queryOptionsDirectiveDefinition,
+                definition,
+            });
+        }
+
         nodeFields.relationFields.forEach((relationship) => {
             if (relationship.properties) {
                 const propertiesInterface = interfaces.find((i) => i.name.value === relationship.properties);
@@ -323,6 +335,7 @@ function makeAugmentedSchema(
             nodeDirective,
             // @ts-ignore we can be sure it's defined
             fulltextDirective,
+            queryOptionsDirective,
             description: definition.description?.value,
         });
 
