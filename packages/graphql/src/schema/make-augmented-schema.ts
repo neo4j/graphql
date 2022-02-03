@@ -76,7 +76,7 @@ import { validateDocument } from "./validation";
 import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import { upperFirst } from "../utils/upper-first";
-import parseQueryOptionsDirective from "./parse/parse-query-options-directive";
+import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,

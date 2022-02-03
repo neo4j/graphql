@@ -267,6 +267,10 @@ export const queryOptions = new GraphQLDirective({
                         description: "If no limit argument is supplied on query will fallback to this value.",
                         type: GraphQLInt,
                     },
+                    max: {
+                        description: "Maximum limit to be used for queries.",
+                        type: GraphQLInt,
+                    },
                 },
             }),
         },

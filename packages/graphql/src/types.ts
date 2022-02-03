@@ -317,5 +317,6 @@ export interface NestedRecord<T> extends Record<string | symbol | number, T | Ne
 export type QueryOptions = {
     limit: {
         default?: Integer;
+        max?: Integer;
     };
 };
