@@ -18,7 +18,6 @@
  */
 
 import { Integer } from "neo4j-driver";
-import { Neo4jGraphQLError } from "./Error";
 
 type QueryOptionsDirectiveConstructor = {
     limit: {
@@ -37,7 +36,7 @@ export class QueryOptionsDirective {
     public getLimit(optionsLimit?: Integer): Integer | undefined {
         if (optionsLimit) {
             if (this.limit.max && optionsLimit.greaterThan(this.limit.max)) {
-                throw new Neo4jGraphQLError(`Invalid limit ${optionsLimit}`);
+                return this.limit.max;
             }
             return optionsLimit;
         }

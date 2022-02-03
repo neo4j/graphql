@@ -42,7 +42,7 @@ describe("parseQueryOptionsDirective", () => {
             definition,
         });
 
-        expect(result).toEqual({ limit: { max: neo4j.int(maxLimit), default: neo4j.int(defaultLimit) } });
+        expect(result.limit).toEqual({ max: neo4j.int(maxLimit), default: neo4j.int(defaultLimit) });
     });
 
     test("should return correct object if default limit is undefined", () => {
@@ -59,11 +59,9 @@ describe("parseQueryOptionsDirective", () => {
             directive,
             definition,
         });
-        expect(result).toEqual({
-            limit: {
-                default: undefined,
-                max: undefined,
-            },
+        expect(result.limit).toEqual({
+            default: undefined,
+            max: undefined,
         });
     });
 
@@ -129,7 +127,7 @@ describe("parseQueryOptionsDirective", () => {
                 definition,
             });
 
-            expect(result).toEqual({ limit: { default: neo4j.int(defaultLimit) } });
+            expect(result.limit).toEqual({ default: neo4j.int(defaultLimit) });
         });
     });
 
@@ -151,7 +149,7 @@ describe("parseQueryOptionsDirective", () => {
                 definition,
             });
 
-            expect(result).toEqual({ limit: { max: neo4j.int(maxLimit) } });
+            expect(result.limit).toEqual({ max: neo4j.int(maxLimit) });
         });
 
         test("should fail if value is 0", () => {

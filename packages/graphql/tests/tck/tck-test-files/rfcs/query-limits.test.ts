@@ -110,6 +110,36 @@ describe("tck/rfcs/query-limits", () => {
                 }"
             `);
         });
+
+        test("should limit the top level query with max value the option given is higher", async () => {
+            const query = gql`
+                query {
+                    shows(options: { limit: 5 }) {
+                        id
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:Show)
+                RETURN this { .id } as this
+                LIMIT $this_limit"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"this_limit\\": {
+                        \\"low\\": 2,
+                        \\"high\\": 0
+                    }
+                }"
+            `);
+        });
     });
 
     describe("Field Level Query Limits", () => {
