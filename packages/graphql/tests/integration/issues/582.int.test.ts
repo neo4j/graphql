@@ -35,8 +35,8 @@ describe("582", () => {
 
         typeDefs = `
             type ${type.name} {
-                children: [${type.name}] @relationship(type: "EDGE", properties: "Edge", direction: OUT)
-                parents: [${type.name}] @relationship(type: "EDGE", properties: "Edge", direction: IN)
+                children: [${type.name}!]! @relationship(type: "EDGE", properties: "Edge", direction: OUT)
+                parents: [${type.name}!]! @relationship(type: "EDGE", properties: "Edge", direction: IN)
                 type: String!
             }
 
