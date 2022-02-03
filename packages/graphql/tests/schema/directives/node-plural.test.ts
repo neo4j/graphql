@@ -105,7 +105,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [TechSort]
+                  sort: [TechSort!]
                 }
 
                 \\"\\"\\"
@@ -242,7 +242,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [TechSort]
+                  sort: [TechSort!]
                 }
 
                 \\"\\"\\"
@@ -379,7 +379,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more TechSort objects to sort Technologies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [TechSort]
+                  sort: [TechSort!]
                 }
 
                 \\"\\"\\"
@@ -513,7 +513,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more TechsSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [TechsSort]
+                  sort: [TechsSort!]
                 }
 
                 \\"\\"\\"
@@ -648,7 +648,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more UserSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [UserSort]
+                  sort: [UserSort!]
                 }
 
                 \\"\\"\\"
@@ -770,7 +770,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [UserSort]
+                  sort: [UserSort!]
                 }
 
                 \\"\\"\\"
@@ -892,7 +892,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more UsersSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [UsersSort]
+                  sort: [UsersSort!]
                 }
 
                 \\"\\"\\"

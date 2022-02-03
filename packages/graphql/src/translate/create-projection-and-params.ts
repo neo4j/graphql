@@ -32,6 +32,7 @@ import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { generateProjectionField } from "./utils/generate-projection-field";
+import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
 
 interface Res {
     projection: string[];
@@ -332,17 +333,12 @@ function createProjectionAndParams({
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
             const nodeMatchStr = `(${chainStr || varName})`;
-            let inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
-            let outStr = relationField.direction === "OUT" ? "->" : "-";
             const labels = referenceNode?.getLabelString(context);
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
-            if (field.args.directed === false) {
-                inStr = "-";
-                outStr = "-";
-            }
+            const { inStr, outStr } = getRelationshipDirection(relationField, field.args);
 
             if (relationField.interface) {
                 if (!res.meta.interfaceFields) {
@@ -619,26 +615,10 @@ function createProjectionAndParams({
             resolveTree.fieldsByTypeName[node.name]
         );
 
-    // Fields of reference node to sort on. Since sorting is done on projection, if field is not selected
-    // sort will fail silently
-
-    const sortFieldNames = ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat();
-
-    // Iterate over fields name in sort argument
-    const fields = sortFieldNames.reduce(
-        (acc, sortFieldName) => ({
-            ...acc,
-            // If fieldname is not found in fields of selection set
-            ...(!Object.values(selectedFields).find((field) => field.name === sortFieldName) ||
-            // or is found but aliased
-            Object.values(selectedFields).find((field) => field.name === sortFieldName && field.alias !== sortFieldName)
-                ? // generate a basic resolve tree
-                  generateProjectionField({ name: sortFieldName })
-                : {}),
-        }),
-        // and add it to selectedFields
-        selectedFields
-    );
+    const fields = {
+        ...selectedFields,
+        ...generateSortFields({ selection: selectedFields, resolveTree }),
+    };
 
     const { projection, params, meta } = Object.entries(fields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
@@ -663,3 +643,31 @@ function sortReducer(s: string[], sort: GraphQLSortArg) {
 }
 
 export default createProjectionAndParams;
+
+// Fields of reference node to sort on. Since sorting is done on the projection sorting will fail silently
+// if field does not exist in selection set or does exist but is aliased
+const generateSortFields = ({
+    selection,
+    resolveTree,
+}: {
+    selection: Record<string, ResolveTree>;
+    resolveTree: ResolveTree;
+}): Record<string, ResolveTree> => {
+    const sortFieldNames = ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat();
+
+    return Array.from(new Set(sortFieldNames)).reduce((acc, sortFieldName) => {
+        const fieldIsMissing = !Object.values(selection).find((field) => field.name === sortFieldName);
+        const fieldIsAliased = Boolean(
+            Object.values(selection).find((field) => field.name === sortFieldName && field.alias !== sortFieldName)
+        );
+
+        if (fieldIsMissing || fieldIsAliased) {
+            return {
+                ...acc,
+                ...generateProjectionField({ name: sortFieldName }),
+            };
+        }
+
+        return acc;
+    }, {});
+};

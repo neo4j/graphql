@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 
-import { FieldDefinitionNode, StringValueNode } from "graphql";
+import { DirectiveNode, FieldDefinitionNode, StringValueNode } from "graphql";
+import { RelationshipQueryDirectionOption } from "../constants";
 
 type RelationshipMeta = {
     direction: "IN" | "OUT";
     type: string;
     properties?: string;
+    queryDirection: RelationshipQueryDirectionOption;
 };
 
 function getRelationshipMeta(
@@ -47,6 +49,8 @@ function getRelationshipMeta(
         throw new Error("@relationship direction invalid");
     }
 
+    const queryDirection = getQueryDirection(directive);
+
     const typeArg = directive.arguments?.find((x) => x.name.value === "type");
     if (!typeArg) {
         throw new Error("@relationship type required");
@@ -68,7 +72,28 @@ function getRelationshipMeta(
         direction,
         type,
         properties,
+        queryDirection,
     };
+}
+
+function getQueryDirection(directive: DirectiveNode): RelationshipQueryDirectionOption {
+    const queryDirectionArg = directive.arguments?.find((x) => x.name.value === "queryDirection");
+    let queryDirection = RelationshipQueryDirectionOption.DEFAULT_DIRECTED;
+
+    if (queryDirectionArg) {
+        if (queryDirectionArg.value.kind !== "EnumValue") {
+            throw new Error("@relationship queryDirection is not a enum");
+        }
+
+        const queryDirectionValue = RelationshipQueryDirectionOption[
+            queryDirectionArg.value.value
+        ] as RelationshipQueryDirectionOption;
+        if (!Object.values(RelationshipQueryDirectionOption).includes(queryDirectionValue)) {
+            throw new Error("@relationship queryDirection invalid");
+        }
+        queryDirection = queryDirectionArg.value.value as RelationshipQueryDirectionOption;
+    }
+    return queryDirection;
 }
 
 export default getRelationshipMeta;
