@@ -954,4 +954,90 @@ describe("auth/roles", () => {
             }
         });
     });
+
+    describe("rolesPath with dots", () => {
+        test("can read role from path containing dots", async () => {
+            const session = driver.session();
+
+            const type = generateUniqueType("User");
+
+            const typeDefs = `
+                type ${type.name} {
+                    id: ID
+                    name: String
+                    password: String
+                }
+
+                extend type ${type.name}
+                    @auth(
+                        rules: [
+                            {
+                                roles: ["admin"]
+                            }
+                        ]
+                    )
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                query {
+                    ${type.plural} {
+                        id
+                        name
+                        password
+                    }
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                config: {
+                    jwt: {
+                        secret,
+                        rolesPath: "https://auth0\\.mysite\\.com/claims.https://auth0\\.mysite\\.com/claims/roles",
+                    },
+                },
+            });
+
+            try {
+                await session.run(`
+                    CREATE (:${type.name} {id: "${userId}", name: "User1", password: "password" })
+                `);
+                // request without role "admin" - should return all users
+                const nonAdminReq = createJwtRequest(secret, {
+                    "https://auth0.mysite.com/claims": { "https://auth0.mysite.com/claims/roles": ["user"] },
+                    id: userId,
+                });
+
+                const gqlResultUser = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req: nonAdminReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect((gqlResultUser.errors as any[])[0].message).toBe("Forbidden");
+
+                // request with role "admin" - should return all users
+                const adminReq = createJwtRequest(secret, {
+                    "https://auth0.mysite.com/claims": { "https://auth0.mysite.com/claims/roles": ["admin"] },
+                    id: userId,
+                });
+
+                const gqlResultAdmin = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req: adminReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect(gqlResultAdmin.data).toEqual({
+                    [type.plural]: [{ id: userId, name: "User1", password: "password" }],
+                });
+            } finally {
+                await session.close();
+            }
+        });
+    });
 });
