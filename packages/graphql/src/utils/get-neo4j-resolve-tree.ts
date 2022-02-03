@@ -80,12 +80,14 @@ function getNeo4jArgumentValue({ argument, type }: { argument: unknown | unknown
 }
 
 interface GetNeo4jResolveTreeOptions {
-    resolveTree: ResolveTree;
-    field: GraphQLField<any, any>;
+    resolveTree?: ResolveTree;
+    field?: GraphQLField<any, any>;
+    args?: any
 }
 
 function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4jResolveTreeOptions) {
     const resolveTree = options?.resolveTree || (parseResolveInfo(resolveInfo) as ResolveTree);
+    const resolverArgs = options?.args;
 
     let field: GraphQLField<any, any>;
 
@@ -103,7 +105,7 @@ function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4j
         }).find((f) => f.name === resolveTree.name) as GraphQLField<any, any>;
     }
 
-    const args = Object.entries(resolveTree.args).reduce((res, [name, value]) => {
+    const resolveTreeArgs = Object.entries(resolveTree.args).reduce((res, [name, value]) => {
         const argument = field.args.find((arg) => arg.name === name);
 
         if (!argument) {
@@ -160,6 +162,7 @@ function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4j
     }, {});
 
     const { alias, name } = resolveTree;
+    const args = { ...resolveTreeArgs, ...resolverArgs };
 
     return { alias, args, fieldsByTypeName, name } as ResolveTree;
 }

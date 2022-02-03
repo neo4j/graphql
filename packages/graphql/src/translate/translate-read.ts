@@ -26,7 +26,7 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
 
-function translateRead({ node, context, args }: { context: Context; node: Node, args?: any }): [string, any] {
+function translateRead({ node, context }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
     const varName = "this";
 
@@ -35,8 +35,7 @@ function translateRead({ node, context, args }: { context: Context; node: Node, 
     let projAuth = "";
     let projStr = "";
 
-    const rootArgs: any = { ...resolveTree.args, ...args };
-    const optionsInput = (rootArgs.options || {}) as GraphQLOptionsArg;
+    const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
     let limitStr = "";
     let offsetStr = "";
     let sortStr = "";

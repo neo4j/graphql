@@ -24,10 +24,9 @@ import createAuthAndParams from "./create-auth-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
 
-function translateDelete({ context, node, args }: { context: Context; node: Node, args?: any }): [string, any] {
+function translateDelete({ context, node }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
-    const rootArgs: any = { ...resolveTree.args, ...args };
-    const deleteInput: any = rootArgs.delete;
+    const deleteInput = resolveTree.args.delete;
     const varName = "this";
     let matchAndWhereStr = "";
     let allowStr = "";

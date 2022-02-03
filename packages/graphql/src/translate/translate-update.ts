@@ -33,15 +33,14 @@ import translateTopLevelMatch from "./translate-top-level-match";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 import { upperFirst } from "../utils/upper-first";
 
-function translateUpdate({ node, context, args }: { node: Node; context: Context, args?: any }): [string, any] {
+function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
-    const rootArgs = { ...resolveTree.args, ...args };
-    const updateInput = rootArgs.update;
-    const connectInput = rootArgs.connect;
-    const disconnectInput = rootArgs.disconnect;
-    const createInput = rootArgs.create;
-    const deleteInput = rootArgs.delete;
-    const connectOrCreateInput = rootArgs.connectOrCreate;
+    const updateInput = resolveTree.args.update;
+    const connectInput = resolveTree.args.connect;
+    const disconnectInput = resolveTree.args.disconnect;
+    const createInput = resolveTree.args.create;
+    const deleteInput = resolveTree.args.delete;
+    const connectOrCreateInput = resolveTree.args.connectOrCreate;
     const varName = "this";
 
     let matchAndWhereStr = "";
