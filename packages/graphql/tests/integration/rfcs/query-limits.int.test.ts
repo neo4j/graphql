@@ -41,7 +41,7 @@ describe("integration/rfcs/query-limits", () => {
             const randomType = generateUniqueType("Movie");
 
             const typeDefs = `
-                type ${randomType.name} @queryOptions(defaultLimit: 2) {
+                type ${randomType.name} @queryOptions(limit: {default:2}) {
                     id: ID!
                 }
             `;
@@ -99,7 +99,7 @@ describe("integration/rfcs/query-limits", () => {
                     actors: [${randomType2.name}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type ${randomType2.name} @queryOptions(defaultLimit: 3) {
+                type ${randomType2.name} @queryOptions(limit:{default: 3}) {
                     id: ID!
                 }
             `;
@@ -159,7 +159,7 @@ describe("integration/rfcs/query-limits", () => {
                     actors: [${randomType2.name}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type ${randomType2.name} @queryOptions(defaultLimit: 4) {
+                type ${randomType2.name} @queryOptions(limit:{default: 4}) {
                     id: ID!
                 }
             `;

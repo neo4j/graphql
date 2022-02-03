@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
+import { DirectiveNode, ObjectTypeDefinitionNode, ObjectValueNode } from "graphql";
 import * as neo4j from "neo4j-driver";
 import { QueryOptions } from "../../types";
 import parseValueNode from "../parse-value-node";
@@ -29,14 +29,17 @@ function parseQueryOptionsDirective({
     directive: DirectiveNode;
     definition: ObjectTypeDefinitionNode;
 }): QueryOptions {
-    const defaultLimitArgument = directive.arguments?.find((direc) => direc.name.value === "defaultLimit");
+    const limitArgument = directive.arguments?.find((direc) => direc.name.value === "limit");
+    const limitValue = limitArgument?.value as ObjectValueNode | undefined;
+    const defaultLimitArgument = limitValue?.fields.find((field) => field.name.value === "default");
+
     let defaultLimit: neo4j.Integer | undefined;
     if (defaultLimitArgument) {
         const parsed = parseValueNode(defaultLimitArgument.value) as number;
 
         if (parsed <= 0) {
             throw new Error(
-                `${definition.name.value} @queryOptions(defaultLimit: ${parsed}) invalid value: '${parsed}' try a number greater than 0`
+                `${definition.name.value} @queryOptions(limit: {default: ${parsed}}) invalid value: '${parsed}' try a number greater than 0`
             );
         }
 
@@ -44,7 +47,7 @@ function parseQueryOptionsDirective({
     }
 
     return {
-        defaultLimit,
+        limit: { default: defaultLimit },
     };
 }
 

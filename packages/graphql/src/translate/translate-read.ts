@@ -44,8 +44,8 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
 
-    if (node.queryOptions?.defaultLimit && !optionsInput.limit) {
-        optionsInput.limit = node.queryOptions.defaultLimit;
+    if (node.queryOptions?.limit?.default && !optionsInput.limit) {
+        optionsInput.limit = node.queryOptions.limit.default;
     }
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });

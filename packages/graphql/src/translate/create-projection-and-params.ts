@@ -332,8 +332,8 @@ function createProjectionAndParams({
         if (relationField) {
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
-            if (referenceNode?.queryOptions?.defaultLimit && !optionsInput.limit) {
-                optionsInput.limit = referenceNode.queryOptions.defaultLimit;
+            if (referenceNode?.queryOptions?.limit?.default && !optionsInput.limit) {
+                optionsInput.limit = referenceNode.queryOptions.limit.default;
             }
 
             const nodeMatchStr = `(${chainStr || varName})`;

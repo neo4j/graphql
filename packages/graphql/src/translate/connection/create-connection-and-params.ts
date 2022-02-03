@@ -419,10 +419,10 @@ function createConnectionAndParams({
 
     const returnValues: string[] = [];
 
-    if (relatedNode && relatedNode?.queryOptions?.defaultLimit) {
+    if (relatedNode && relatedNode?.queryOptions?.limit?.default) {
         subquery = [
             ...subquery,
-            ...createLimitedReturnSubquery(resolveTree.alias, relatedNode.queryOptions.defaultLimit, afterInput),
+            ...createLimitedReturnSubquery(resolveTree.alias, relatedNode.queryOptions.limit.default, afterInput),
         ];
     } else if (!firstInput && !afterInput) {
         if (connection.edges || connection.pageInfo) {

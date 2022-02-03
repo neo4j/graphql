@@ -30,12 +30,12 @@ describe("tck/rfcs/query-limits", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie @queryOptions(defaultLimit: 3) {
+            type Movie @queryOptions(limit: { default: 3 }) {
                 id: ID!
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Person @queryOptions(defaultLimit: 2) {
+            type Person @queryOptions(limit: { default: 2 }) {
                 id: ID!
             }
         `;

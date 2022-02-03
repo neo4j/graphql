@@ -258,9 +258,17 @@ export const queryOptions = new GraphQLDirective({
     name: "queryOptions",
     description: "Instructs @neo4j/graphql to inject default values into a query such as the `defaultLimit`.",
     args: {
-        defaultLimit: {
-            description: "If no limit argument is supplied on query will fallback to this value.",
-            type: GraphQLString,
+        limit: {
+            description: "Limit options.",
+            type: new GraphQLInputObjectType({
+                name: "LimitInput",
+                fields: {
+                    default: {
+                        description: "If no limit argument is supplied on query will fallback to this value.",
+                        type: GraphQLInt,
+                    },
+                },
+            }),
         },
     },
     locations: [DirectiveLocation.OBJECT],
