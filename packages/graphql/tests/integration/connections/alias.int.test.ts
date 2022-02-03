@@ -877,7 +877,8 @@ describe("Connections Alias", () => {
             }
         `;
 
-        const { schema } = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
 
         const postTitle = generate({ charset: "alphabetic" });
 
@@ -959,7 +960,8 @@ describe("Connections Alias", () => {
             }
         `;
 
-        const { schema } = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
         const session = driver.session();
 
         const query = `

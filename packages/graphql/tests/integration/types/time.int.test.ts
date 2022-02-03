@@ -47,9 +47,8 @@ describe("Time", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const time = faker.date.past().toISOString().split("T")[1];
@@ -109,9 +108,8 @@ describe("Time", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const times = [...new Array(faker.random.number({ min: 2, max: 4 }))].map(
@@ -191,9 +189,8 @@ describe("Time", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const time = faker.date.past().toISOString().split("T")[1];
@@ -263,9 +260,8 @@ describe("Time", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const date = faker.date.future();
@@ -320,7 +316,8 @@ describe("Time", () => {
                         }
                     `;
 
-                    const { schema } = new Neo4jGraphQL({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
                     const future = "13:00:00";
@@ -449,7 +446,8 @@ describe("Time", () => {
                         }
                     `;
 
-                    const { schema } = new Neo4jGraphQL({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
                     const future = "13:00:00";

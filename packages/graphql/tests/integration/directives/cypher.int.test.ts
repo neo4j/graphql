@@ -653,6 +653,9 @@ describe("cypher", () => {
 
         // Reproduces https://github.com/neo4j/graphql/issues/595 with missing value test
         describe("Null Values", () => {
+            let schemaWithDefaultValue: GraphQLSchema;
+            let schemaWithMissingValue: GraphQLSchema;
+
             const testLabel = generate({ charset: "alphabetic" });
 
             const defaultOffset = 0;
@@ -685,16 +688,19 @@ describe("cypher", () => {
                 }
             `;
 
-            const { schema: schemaWithDefaultValue } = new Neo4jGraphQL({
-                typeDefs: generateTypeDefs(true),
-            });
-
-            const { schema: schemaWithMissingValue } = new Neo4jGraphQL({
-                typeDefs: generateTypeDefs(false),
-            });
-
             beforeAll(async () => {
                 const session = driver.session();
+
+                const neoSchemaWithDefaultValue = new Neo4jGraphQL({
+                    typeDefs: generateTypeDefs(true),
+                });
+                const neoSchemaWithMissingValue = new Neo4jGraphQL({
+                    typeDefs: generateTypeDefs(false),
+                });
+
+                schemaWithDefaultValue = await neoSchemaWithDefaultValue.getSchema();
+                schemaWithMissingValue = await neoSchemaWithMissingValue.getSchema();
+
                 // Create 50 Account nodes with ids 1, 2, 3...
                 await session.run(`FOREACH (x in range(1,50) | CREATE (:Account:${testLabel} {id: x}))`);
                 await session.close();
@@ -861,6 +867,9 @@ describe("cypher", () => {
     describe("Field level cypher", () => {
         // Reproduces https://github.com/neo4j/graphql/issues/444 with default value test
         describe("Null Values", () => {
+            let schemaWithDefaultValue: GraphQLSchema;
+            let schemaWithMissingValue: GraphQLSchema;
+
             const testLabel = generate({ charset: "alphabetic" });
 
             const townId = generate({ charset: "alphabetic" });
@@ -886,16 +895,19 @@ describe("cypher", () => {
                 }
             `;
 
-            const { schema: schemaWithDefaultValue } = new Neo4jGraphQL({
-                typeDefs: generateTypeDefs(true),
-            });
-
-            const { schema: schemaWithMissingValue } = new Neo4jGraphQL({
-                typeDefs: generateTypeDefs(false),
-            });
-
             beforeAll(async () => {
                 const session = driver.session();
+
+                const neoSchemaWithDefaultValue = new Neo4jGraphQL({
+                    typeDefs: generateTypeDefs(true),
+                });
+                const neoSchemaWithMissingValue = new Neo4jGraphQL({
+                    typeDefs: generateTypeDefs(false),
+                });
+
+                schemaWithDefaultValue = await neoSchemaWithDefaultValue.getSchema();
+                schemaWithMissingValue = await neoSchemaWithMissingValue.getSchema();
+
                 await session.run(
                     `
                         CREATE (t:Town:${testLabel} {id: $townId})

@@ -50,7 +50,8 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
         }
     `;
 
-        const { schema } = new Neo4jGraphQL({ typeDefs, driver });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const schema = await neoSchema.getSchema();
 
         const actors = [
             {

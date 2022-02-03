@@ -206,7 +206,7 @@ describe("Custom Resolvers", () => {
             }
         `;
 
-        const gqlResult = await createSourceEventStream(neoSchema.schema, parse(query), null, { driver });
+        const gqlResult = await createSourceEventStream(await neoSchema.getSchema(), parse(query), null, { driver });
 
         // @ts-ignore
         const next = await gqlResult.next();

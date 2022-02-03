@@ -44,9 +44,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({
                 charset: "alphabetic",
@@ -108,7 +107,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const title = generate({
                 charset: "alphabetic",
@@ -176,9 +176,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({
                 charset: "alphabetic",
@@ -241,7 +240,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const title = generate({
                 charset: "alphabetic",
@@ -315,9 +315,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({
                 charset: "alphabetic",
@@ -375,7 +374,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const title = generate({
                 charset: "alphabetic",
@@ -450,7 +450,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const title = generate({
                 charset: "alphabetic",
@@ -522,9 +523,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({
                 charset: "alphabetic",
@@ -580,9 +580,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({
                 charset: "alphabetic",
@@ -715,7 +714,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const title = generate({
                 charset: "alphabetic",
@@ -787,9 +787,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({
                 charset: "alphabetic",

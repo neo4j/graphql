@@ -18,7 +18,7 @@
  */
 
 import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
+import { graphql, GraphQLSchema } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
@@ -28,6 +28,8 @@ const testLabel = generate({ charset: "alphabetic" });
 
 describe("fragments", () => {
     let driver: Driver;
+    let schema: GraphQLSchema;
+
     const typeDefs = gql`
         interface Entity {
             username: String!
@@ -40,8 +42,6 @@ describe("fragments", () => {
         }
     `;
 
-    const { schema } = new Neo4jGraphQL({ typeDefs });
-
     const id = generate();
     const email = generate({ charset: "alphabetic" });
     const username = generate({ charset: "alphabetic" });
@@ -49,6 +49,10 @@ describe("fragments", () => {
     beforeAll(async () => {
         driver = await neo4j();
         const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        schema = await neoSchema.getSchema();
+
         await session.run(
             `
                 CREATE (user:User:${testLabel})
