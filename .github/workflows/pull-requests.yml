@@ -70,7 +70,7 @@ jobs:
       neo4j:
         image: neo4j:latest
         env:
-          NEO4J_AUTH: admin/password
+          NEO4J_AUTH: neo4j/password
           NEO4JLABS_PLUGINS: '["apoc"]'
         ports:
           - 7687:7687
@@ -85,6 +85,11 @@ jobs:
         run: yarn --immutable
       - name: Run Schema tests
         run: yarn --cwd examples/neo-push/server run test
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
 
   typescript-changes:
     runs-on: ubuntu-latest
