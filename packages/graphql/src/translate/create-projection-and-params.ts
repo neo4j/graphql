@@ -32,7 +32,7 @@ import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
-import { generateMissingFields, filterFieldsInSelection } from "./utils/resolveTree";
+import { generateMissingOrAliasedFields, filterFieldsInSelection } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 
 interface Res {
@@ -603,8 +603,8 @@ function createProjectionAndParams({
 
     const fields = {
         ...selectedFields,
-        ...generateMissingSortFields({ selection: selectedFields, resolveTree }),
-        ...generateMissingRequiredFields({ selection: selectedFields, node }),
+        ...generateMissingOrAliasedSortFields({ selection: selectedFields, resolveTree }),
+        ...generateMissingOrAliasedRequiredFields({ selection: selectedFields, node }),
     };
 
     const { projection, params, meta } = Object.values(fields).reduce(reducer, {
@@ -619,7 +619,7 @@ function createProjectionAndParams({
 export default createProjectionAndParams;
 
 // Generates any missing fields required for sorting
-const generateMissingSortFields = ({
+const generateMissingOrAliasedSortFields = ({
     selection,
     resolveTree,
 }: {
@@ -630,24 +630,22 @@ const generateMissingSortFields = ({
         ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat()
     );
 
-    return generateMissingFields({ fieldNames: sortFieldNames, selection });
+    return generateMissingOrAliasedFields({ fieldNames: sortFieldNames, selection });
 };
 
 // Generated any missing fields required for custom resolvers
-const generateMissingRequiredFields = ({
+const generateMissingOrAliasedRequiredFields = ({
     node,
     selection,
 }: {
     node: Node;
     selection: Record<string, ResolveTree>;
 }): Record<string, ResolveTree> => {
-    const filterFields = filterFieldsInSelection(selection);
-
     const requiredFields = removeDuplicates(
-        filterFields(node.ignoredFields)
+        filterFieldsInSelection({ fields: node.ignoredFields, selection })
             .map((f) => f.requiredFields)
             .flat()
     );
 
-    return generateMissingFields({ fieldNames: requiredFields, selection });
+    return generateMissingOrAliasedFields({ fieldNames: requiredFields, selection });
 };

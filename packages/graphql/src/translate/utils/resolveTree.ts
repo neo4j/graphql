@@ -21,48 +21,71 @@ import { ResolveTree } from "graphql-parse-resolve-info";
 import { BaseField } from "../../types";
 import { removeDuplicates } from "../../utils/utils";
 
-/* Finds a field of selection based on field name */
-export const fieldNameExistsInSelection = (selection: Record<string, ResolveTree>) => (fieldName: string) =>
-    Object.values(selection).find((resolveTree) => resolveTree.name === fieldName);
+/** Finds a resolve tree of selection based on field name */
+export function getResolveTreeByFieldName({
+    fieldName,
+    selection,
+}: {
+    fieldName: string;
+    selection: Record<string, ResolveTree>;
+}) {
+    return Object.values(selection).find((resolveTree) => resolveTree.name === fieldName);
+}
 
-/* Finds a aliased field of selection based on field name */
-export const fieldNameAliasedInSelection = (selection: Record<string, ResolveTree>) => (fieldName: string) =>
-    Object.values(selection).find((resolveTree) => resolveTree.name === fieldName && resolveTree.alias !== fieldName);
+/** Finds an aliased resolve tree of selection based on field name */
+export function getAliasedResolveTreeByFieldName({
+    fieldName,
+    selection,
+}: {
+    fieldName: string;
+    selection: Record<string, ResolveTree>;
+}) {
+    return Object.values(selection).find(
+        (resolveTree) => resolveTree.name === fieldName && resolveTree.alias !== fieldName
+    );
+}
 
-export const filterFieldsInSelection =
-    (selection: Record<string, ResolveTree>) =>
-    <T extends BaseField>(fields: T[]) =>
-        fields.filter((field) => Object.values(selection).find((f) => f.name === field.fieldName));
+export function filterFieldsInSelection<T extends BaseField>({
+    fields,
+    selection,
+}: {
+    fields: T[];
+    selection: Record<string, ResolveTree>;
+}) {
+    return fields.filter((field) => Object.values(selection).find((f) => f.name === field.fieldName));
+}
 
-/* Generates a field to be used in creating projections */
-export const generateProjectionField = ({ name }: { name: string }): Record<string, ResolveTree> => {
+/** Generates a field to be used in creating projections */
+export function generateProjectionField({
+    name,
+    alias,
+    args = {},
+    fieldsByTypeName = {},
+}: Pick<ResolveTree, "name"> & Partial<ResolveTree>): Record<string, ResolveTree> {
     return {
         [name]: {
-            alias: name,
-            args: {},
-            fieldsByTypeName: {},
             name,
+            alias: alias ?? name,
+            args,
+            fieldsByTypeName,
         },
     };
-};
+}
 
-/* Generates missing fields based on an array of fieldNames */
-export const generateMissingFields = ({
+/** Generates missing fields based on an array of fieldNames */
+export function generateMissingOrAliasedFields({
     fieldNames,
     selection,
 }: {
     selection: Record<string, ResolveTree>;
     fieldNames: string[];
-}): Record<string, ResolveTree> => {
-    const fieldNameExists = fieldNameExistsInSelection(selection);
-    const fieldNameAliased = fieldNameAliasedInSelection(selection);
-
+}): Record<string, ResolveTree> {
     return removeDuplicates(fieldNames).reduce((acc, fieldName) => {
-        const exists = fieldNameExists(fieldName);
-        const aliased = fieldNameAliased(fieldName);
+        const exists = getResolveTreeByFieldName({ fieldName, selection });
+        const aliased = getAliasedResolveTreeByFieldName({ fieldName, selection });
         if (!exists || aliased) {
             return { ...acc, ...generateProjectionField({ name: fieldName }) };
         }
         return acc;
     }, {});
-};
+}
