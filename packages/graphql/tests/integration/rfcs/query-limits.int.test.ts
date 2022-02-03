@@ -82,6 +82,40 @@ describe("integration/rfcs/query-limits", () => {
                 await session.close();
             }
         });
+        test("should throw if limit is higher than max", async () => {
+            const session = driver.session();
+            const randomType = generateUniqueType("Movie");
+
+            const typeDefs = `
+                type ${randomType.name} @queryOptions(limit: {max:2}) {
+                    id: ID!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                const query = `
+                        {
+                            ${randomType.plural}(options: {limit: 4}) {
+                                id
+                            }
+                        }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect(gqlResult.errors).toHaveLength(1);
+                const error = (gqlResult.errors as any)[0] as Error;
+                expect(error.message).toBe("Invalid limit 4");
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("Field Level Query Limits", () => {

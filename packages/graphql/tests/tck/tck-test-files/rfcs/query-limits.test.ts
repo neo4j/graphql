@@ -30,12 +30,16 @@ describe("tck/rfcs/query-limits", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie @queryOptions(limit: { default: 3 }) {
+            type Movie @queryOptions(limit: { default: 3, max: 5 }) {
                 id: ID!
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Person @queryOptions(limit: { default: 2 }) {
+                id: ID!
+            }
+
+            type Show @queryOptions(limit: { max: 2 }) {
                 id: ID!
             }
         `;
@@ -47,7 +51,7 @@ describe("tck/rfcs/query-limits", () => {
     });
 
     describe("Top Level Query Limits", () => {
-        test("should limit the top level query", async () => {
+        test("should limit the top level query with default value", async () => {
             const query = gql`
                 query {
                     movies {
@@ -71,6 +75,36 @@ describe("tck/rfcs/query-limits", () => {
                 "{
                     \\"this_limit\\": {
                         \\"low\\": 3,
+                        \\"high\\": 0
+                    }
+                }"
+            `);
+        });
+
+        test("should limit the top level query with max value if not default is available", async () => {
+            const query = gql`
+                query {
+                    shows {
+                        id
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:Show)
+                RETURN this { .id } as this
+                LIMIT $this_limit"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"this_limit\\": {
+                        \\"low\\": 2,
                         \\"high\\": 0
                     }
                 }"
@@ -154,6 +188,39 @@ describe("tck/rfcs/query-limits", () => {
                     }
                 }"
             `);
+        });
+
+        test("should limit the relationship field level query", async () => {
+            const query = gql`
+                query {
+                    movies {
+                        id
+                        actors {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+"MATCH (this:Movie)
+RETURN this { .id, actors: [ (this)<-[:ACTED_IN]-(this_actors:Person)   | this_actors { .id } ][..2] } as this
+LIMIT $this_limit"
+`);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+"{
+    \\"this_limit\\": {
+        \\"low\\": 3,
+        \\"high\\": 0
+    }
+}"
+`);
         });
     });
 });
