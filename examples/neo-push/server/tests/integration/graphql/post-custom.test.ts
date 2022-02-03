@@ -56,7 +56,7 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,
@@ -107,7 +107,7 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,
@@ -157,7 +157,7 @@ describe("post-custom", () => {
                            (:Post {id: "${postId}"})<-[:HAS_POST]-(:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,
@@ -212,7 +212,7 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,
@@ -265,7 +265,7 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,
@@ -316,7 +316,7 @@ describe("post-custom", () => {
                     <-[:HAS_POST]-(:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,
@@ -371,7 +371,7 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,

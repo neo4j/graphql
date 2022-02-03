@@ -50,7 +50,7 @@ describe("blog-custom", () => {
                     CREATE (u:User {id: "${userId}"})-[:HAS_BLOG]->(:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,
@@ -96,7 +96,7 @@ describe("blog-custom", () => {
                     CREATE (:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,
@@ -143,7 +143,7 @@ describe("blog-custom", () => {
                     CREATE (u:User {id: "${userId}"})-[:CAN_POST]->(:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,
@@ -189,7 +189,7 @@ describe("blog-custom", () => {
                     CREATE (:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,
