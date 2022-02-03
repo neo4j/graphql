@@ -138,12 +138,13 @@ function createProjectionAndParams({
     resolveType?: boolean;
     inRelationshipProjection?: boolean;
 }): [string, any, ProjectionMeta?] {
-    function reducer(res: Res, [key, field]: [string, ResolveTree]): Res {
+    function reducer(res: Res, field: ResolveTree): Res {
+        const alias = field.alias;
         let param = "";
         if (chainStr) {
-            param = `${chainStr}_${key}`;
+            param = `${chainStr}_${alias}`;
         } else {
-            param = `${varName}_${key}`;
+            param = `${varName}_${alias}`;
         }
 
         const whereInput = field.args.where as GraphQLWhereArg;
@@ -192,7 +193,7 @@ function createProjectionAndParams({
                     resolveTree: field,
                     node: referenceNode || node,
                     context,
-                    varName: `${varName}_${key}`,
+                    varName: `${varName}_${alias}`,
                     chainStr: param,
                     inRelationshipProjection: true,
                 });
@@ -216,11 +217,11 @@ function createProjectionAndParams({
                     if (refNode) {
                         const labelsStatements = refNode
                             .getLabels(context)
-                            .map((label) => `"${label}" IN labels(${varName}_${key})`);
+                            .map((label) => `"${label}" IN labels(${varName}_${alias})`);
                         unionWheres.push(`(${labelsStatements.join("AND")})`);
 
                         const innerHeadStr: string[] = [
-                            `[ ${varName}_${key} IN [${varName}_${key}] WHERE (${labelsStatements.join(" AND ")})`,
+                            `[ ${varName}_${alias} IN [${varName}_${alias}] WHERE (${labelsStatements.join(" AND ")})`,
                         ];
 
                         if (fieldFields[refNode.name]) {
@@ -228,12 +229,12 @@ function createProjectionAndParams({
                                 resolveTree: field,
                                 node: refNode,
                                 context,
-                                varName: `${varName}_${key}`,
+                                varName: `${varName}_${alias}`,
                             });
 
                             innerHeadStr.push(
                                 [
-                                    `| ${varName}_${key} { __resolveType: "${refNode.name}", `,
+                                    `| ${varName}_${alias} { __resolveType: "${refNode.name}", `,
                                     ...str.replace("{", "").split(""),
                                 ].join("")
                             );
@@ -243,7 +244,7 @@ function createProjectionAndParams({
                                 projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
                             }
                         } else {
-                            innerHeadStr.push(`| ${varName}_${key} { __resolveType: "${refNode.name}" } `);
+                            innerHeadStr.push(`| ${varName}_${alias} { __resolveType: "${refNode.name}" } `);
                         }
 
                         innerHeadStr.push(`]`);
@@ -306,18 +307,18 @@ function createProjectionAndParams({
             }`;
 
             if (cypherField.isScalar || cypherField.isEnum) {
-                res.projection.push(`${key}: ${apocStr}`);
+                res.projection.push(`${alias}: ${apocStr}`);
 
                 return res;
             }
 
             if (cypherField.typeMeta.array) {
-                res.projection.push(`${key}: [${apocStr}]`);
+                res.projection.push(`${alias}: [${apocStr}]`);
 
                 return res;
             }
 
-            res.projection.push(`${key}: head([${apocStr}])`);
+            res.projection.push(`${alias}: head([${apocStr}])`);
 
             return res;
         }
@@ -366,7 +367,7 @@ function createProjectionAndParams({
                 );
 
                 const unionStrs: string[] = [
-                    `${key}: ${!isArray ? "head(" : ""} [${param} IN [(${
+                    `${alias}: ${!isArray ? "head(" : ""} [${param} IN [(${
                         chainStr || varName
                     })${inStr}${relTypeStr}${outStr}(${param})`,
                     `WHERE ${referenceNodes
@@ -458,7 +459,7 @@ function createProjectionAndParams({
                 resolveTree: field,
                 node: referenceNode || node,
                 context,
-                varName: `${varName}_${key}`,
+                varName: `${varName}_${alias}`,
                 chainStr: param,
                 inRelationshipProjection: true,
             });
@@ -468,7 +469,7 @@ function createProjectionAndParams({
             let whereStr = "";
             const nodeWhereAndParams = createNodeWhereAndParams({
                 whereInput,
-                varName: `${varName}_${key}`,
+                varName: `${varName}_${alias}`,
                 node: referenceNode,
                 context,
                 authValidateStrs: recurse[2]?.authValidateStrs,
@@ -499,14 +500,14 @@ function createProjectionAndParams({
                         ];
                     }, []);
 
-                    nestedQuery = `${key}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
+                    nestedQuery = `${alias}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
                 } else {
-                    nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${offsetLimit}${
+                    nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${offsetLimit}${
                         !isArray ? ")" : ""
                     }`;
                 }
             } else {
-                nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
+                nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
             }
 
             res.projection.push(nestedQuery);
@@ -522,7 +523,7 @@ function createProjectionAndParams({
         });
 
         if (aggregationFieldProjection) {
-            res.projection.push(`${key}: ${aggregationFieldProjection.query}`);
+            res.projection.push(`${alias}: ${aggregationFieldProjection.query}`);
             res.params = { ...res.params, ...aggregationFieldProjection.params };
             return res;
         }
@@ -534,7 +535,7 @@ function createProjectionAndParams({
                 }
 
                 res.meta.connectionFields.push(field);
-                res.projection.push(literalElements ? `${field.alias}: ${field.alias}` : `${field.alias}`);
+                res.projection.push(literalElements ? `${alias}: ${alias}` : `${alias}`);
 
                 return res;
             }
@@ -571,23 +572,18 @@ function createProjectionAndParams({
         } else if (temporalField?.typeMeta.name === "DateTime") {
             res.projection.push(createDatetimeElement({ resolveTree: field, field: temporalField, variable: varName }));
         } else {
+            // In the case of using the @alias directive (map a GraphQL field to a db prop)
+            // the output will be RETURN varName {GraphQLfield: varName.dbAlias}
+            const dbFieldName = mapToDbProperty(node, field.name);
+
             // If field is aliased, rename projected field to alias and set to varName.fieldName
             // e.g. RETURN varname { .fieldName } -> RETURN varName { alias: varName.fieldName }
             let aliasedProj: string;
 
-            if (field.alias !== field.name) {
-                aliasedProj = `${field.alias}: ${varName}`;
-            } else if (literalElements) {
-                aliasedProj = `${key}: ${varName}`;
+            if (alias !== field.name || dbFieldName !== field.name || literalElements) {
+                aliasedProj = `${alias}: ${varName}`;
             } else {
                 aliasedProj = "";
-            }
-
-            // In the case of using the @alias directive (map a GraphQL field to a db prop)
-            // the output will be RETURN varName {GraphQLfield: varName.dbAlias}
-            const dbFieldName = mapToDbProperty(node, field.name);
-            if (dbFieldName !== field.name) {
-                aliasedProj = !aliasedProj ? `${key}: ${varName}` : aliasedProj;
             }
 
             res.projection.push(`${aliasedProj}.${dbFieldName}`);
@@ -611,7 +607,7 @@ function createProjectionAndParams({
         ...generateMissingRequiredFields({ selection: selectedFields, node }),
     };
 
-    const { projection, params, meta } = Object.entries(fields).reduce(reducer, {
+    const { projection, params, meta } = Object.values(fields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
         params: {},
         meta: {},
