@@ -88,7 +88,7 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(directed: Boolean = true, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -561,7 +561,7 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(directed: Boolean = true, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -1784,7 +1784,7 @@ describe("Interface Relationships", () => {
             interface Interface1 {
               field1: String!
               interface2(directed: Boolean = true, options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(directed: Boolean = true, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2Connection(after: String, directed: Boolean = true, first: Int, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             input Interface1ConnectInput {
@@ -2011,7 +2011,7 @@ describe("Interface Relationships", () => {
             type Type1 {
               field1: String!
               interface1(directed: Boolean = true, options: QueryOptions, where: Interface1Where): [Interface1!]!
-              interface1Connection(directed: Boolean = true, where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
+              interface1Connection(after: String, directed: Boolean = true, first: Int, where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
             type Type1AggregateSelection {
@@ -2039,7 +2039,7 @@ describe("Interface Relationships", () => {
             type Type1Interface1 implements Interface1 {
               field1: String!
               interface2(directed: Boolean = true, options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(directed: Boolean = true, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2Connection(after: String, directed: Boolean = true, first: Int, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             type Type1Interface1AggregateSelection {
@@ -2283,7 +2283,7 @@ describe("Interface Relationships", () => {
             type Type2Interface1 implements Interface1 {
               field1: String!
               interface2(directed: Boolean = true, options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(directed: Boolean = true, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2Connection(after: String, directed: Boolean = true, first: Int, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             type Type2Interface1AggregateSelection {
@@ -3316,7 +3316,7 @@ describe("Interface Relationships", () => {
 
             type User {
               content(directed: Boolean = true, options: QueryOptions, where: ContentWhere): [Content!]!
-              contentConnection(directed: Boolean = true, where: UserContentConnectionWhere): UserContentConnection!
+              contentConnection(after: String, directed: Boolean = true, first: Int, where: UserContentConnectionWhere): UserContentConnection!
               id: ID
               name: String
             }
