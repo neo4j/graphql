@@ -103,7 +103,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
@@ -157,7 +157,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
@@ -225,7 +225,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
@@ -304,7 +304,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
@@ -374,7 +374,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     RETURN edge
                     }
                     WITH edge ORDER BY edge.screenTime ASC
-                    WITH collect(edge) as edges, count(edge) as totalCount
+                    WITH collect(edge) as edges
                     RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
@@ -427,7 +427,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     RETURN edge
                     }
                     WITH edge ORDER BY edge.node.title ASC
-                    WITH collect(edge) as edges, count(edge) as totalCount
+                    WITH collect(edge) as edges
                     RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
@@ -481,7 +481,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     RETURN edge
                     }
                     WITH edge ORDER BY edge.screenTime ASC
-                    WITH collect(edge) as edges, count(edge) as totalCount
+                    WITH collect(edge) as edges
                     RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
@@ -533,7 +533,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     RETURN edge
                     }
                     WITH edge ORDER BY edge.node.title ASC
-                    WITH collect(edge) as edges, count(edge) as totalCount
+                    WITH collect(edge) as edges
                     RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
