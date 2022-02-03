@@ -60,9 +60,9 @@ type User {
 }
 
 extend type User @auth(rules: [
-    { 
+    {
         roles: ["user"]
-        where: { id: "$jwt.id" } 
+        where: { id: "$jwt.id" }
     }
     {
         roles: ["admin"]
@@ -86,7 +86,7 @@ extend type User @auth(rules: [
         OR: [
             {
                 roles: ["user"]
-                where: { id: "$jwt.id" } 
+                where: { id: "$jwt.id" }
             },
             {
                 roles: ["admin"]
