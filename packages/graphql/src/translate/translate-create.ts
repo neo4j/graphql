@@ -26,10 +26,11 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import { upperFirst } from "../utils/upper-first";
 
-function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
+function translateCreate({ context, node, args }: { context: Context; node: Node, args?: any }): [string, any] {
     const { resolveTree } = context;
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
+    const rootArgs = { ...resolveTree.args, ...args };
     let connectionParams: any;
     let interfaceParams: any;
 
@@ -37,7 +38,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
 
-    const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
+    const { createStrs, params } = (rootArgs.input as any[]).reduce(
         (res, input, index) => {
             const varName = `this${index}`;
 

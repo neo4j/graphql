@@ -30,7 +30,7 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info);
-        const [cypher, params] = translateUpdate({ context, node });
+        const [cypher, params] = translateUpdate({ context, node, args: _args });
         const executeResult = await execute({
             cypher,
             params,
