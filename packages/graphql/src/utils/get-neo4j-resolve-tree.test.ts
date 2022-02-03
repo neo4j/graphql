@@ -28,7 +28,7 @@ describe("getNeo4jResolveTree", () => {
             aQuery(test: String): String
         }
         type Mutation {
-            aMutation(test: String): String
+            aMutation(test: String, test2: String, test3: Int): String
         }
         type Subscription {
             aSubscription(test: String): String
@@ -101,7 +101,40 @@ describe("getNeo4jResolveTree", () => {
                 test: 'test',
             },
             fieldsByTypeName: {
-                
+
+            },
+        });
+    });
+    test("parses resolver args if passed in", () => {
+
+        const resolveTree = getNeo4jResolveTree({
+            schema,
+        } as any, {
+            resolveTree: {
+                name: 'aMutation',
+                args: {
+                    test: 'test',
+                    test2: 'test2',
+                },
+                fieldsByTypeName: {},
+            },
+            args: {
+                test2: 'test2 from resolver',
+                test3: 42,
+            }
+        } as any);
+        expect(resolveTree).toEqual({
+            name: 'aMutation',
+            args: {
+                test: 'test',
+                test2: 'test2 from resolver',
+                test3: {
+                    high: 0,
+                    low: 42,
+                }
+            },
+            fieldsByTypeName: {
+
             },
         });
     });
