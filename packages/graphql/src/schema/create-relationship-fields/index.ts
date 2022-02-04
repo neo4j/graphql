@@ -52,10 +52,10 @@ function createRelationshipFields({
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
     const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
 
-    let nodeConnectInput: InputTypeComposer;
-    let nodeDeleteInput: InputTypeComposer;
-    let nodeDisconnectInput: InputTypeComposer;
-    let nodeRelationInput: InputTypeComposer;
+    let nodeConnectInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
+    let nodeDeleteInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
+    let nodeDisconnectInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
+    let nodeRelationInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
 
     if (relationshipFields.length) {
         [nodeConnectInput, nodeDeleteInput, nodeDisconnectInput, nodeRelationInput] = [
