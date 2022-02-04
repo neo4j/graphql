@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { UnionTypeDefinitionNode } from "graphql/language/ast";
+import { UnionTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql/language/ast";
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
@@ -175,7 +175,7 @@ function createProjectionAndParams({
 
         if (cypherField) {
             const projectionAuthStrs: string[] = [];
-            const unionWheres: string[] = [];
+            const unionOrInterfaceWheres: string[] = [];
             let projectionStr = "";
 
             const isArray = cypherField.typeMeta.array;
@@ -190,12 +190,9 @@ function createProjectionAndParams({
                 (x) => x.kind === "ScalarTypeDefinition" && x.name.value === cypherField.typeMeta.name
             );
 
-            const referenceNode = context.neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
-            const unions = context.neoSchema.document.definitions.filter(
-                (x) => x.kind === "UnionTypeDefinition"
-            ) as UnionTypeDefinitionNode[];
-            const referenceUnion = unions.find((u) => u.name.value === cypherField.typeMeta.name);
+            let expectMultipleValues = "false";
 
+            const referenceNode = context.neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
             if (referenceNode) {
                 const recurse = createProjectionAndParams({
                     resolveTree: field,
@@ -211,8 +208,15 @@ function createProjectionAndParams({
                 if (meta?.authValidateStrs?.length) {
                     projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
                 }
+
+                expectMultipleValues = cypherField.typeMeta.array ? "true" : "false";
             }
 
+            // Resolve fields on unions returned by custom cypher
+            const unions = context.neoSchema.document.definitions.filter(
+                (x) => x.kind === "UnionTypeDefinition"
+            ) as UnionTypeDefinitionNode[];
+            const referenceUnion = unions.find((u) => u.name.value === cypherField.typeMeta.name);
             if (referenceUnion) {
                 const headStrs: string[] = [];
                 const referencedNodes =
@@ -226,7 +230,7 @@ function createProjectionAndParams({
                         const labelsStatements = refNode
                             .getLabels(context)
                             .map((label) => `"${label}" IN labels(${varName}_${key})`);
-                        unionWheres.push(`(${labelsStatements.join("AND")})`);
+                        unionOrInterfaceWheres.push(`(${labelsStatements.join("AND")})`);
 
                         const innerHeadStr: string[] = [
                             `[ ${varName}_${key} IN [${varName}_${key}] WHERE (${labelsStatements.join(" AND ")})`,
@@ -262,8 +266,62 @@ function createProjectionAndParams({
                 });
 
                 projectionStr = `${!isArray ? "head(" : ""} ${headStrs.join(" + ")} ${!isArray ? ")" : ""}`;
+
+                expectMultipleValues = cypherField.typeMeta.array ? "true" : "false";
             }
 
+            //Resolve fields on interfaces returned by custom cypher
+            const interfaces = context.neoSchema.document.definitions
+                .filter((d) => d.kind === "InterfaceTypeDefinition") as InterfaceTypeDefinitionNode[]
+            const referenceInterface = interfaces
+                .find((i) => i.name.value === cypherField.typeMeta.name)
+
+            if (referenceInterface) {
+                const headStrs: string[] = [];
+                const referencedNodes = 
+                    context.neoSchema.nodes
+                        .filter((n) => n.interfaces.some((i) => i.name.value === referenceInterface.name.value));
+                referencedNodes.forEach((refNode) => {
+                    if (refNode) {
+                        const labelsStatements = `"${refNode.name}" IN labels(${varName}_${key})`;
+                        unionOrInterfaceWheres.push(labelsStatements);
+
+                        const innerHeadStr: string[] = [`[ ${varName}_${key} IN [${varName}_${key}] WHERE (${varName}_${key}:${refNode.getMainLabel()})`];
+
+                        const [str, p, meta] = createProjectionAndParams({
+                            resolveTree,
+                            node: refNode,
+                            context,
+                            varName: `${varName}_${key}`,
+                        });
+
+                        if (str.slice(1, -1).trim().length > 0) {
+                            innerHeadStr.push(
+                                [
+                                    `| ${varName}_${key} { __resolveType: "${refNode.name}", `,
+                                    ...str.replace("{", "").split(""),
+                                ].join("")
+                            );
+                        } else {
+                            innerHeadStr.push(`| ${varName}_${key} { __resolveType: "${refNode.name}" } `);
+                        }
+
+                        res.params = { ...res.params, ...p };
+
+                        if (meta?.authValidateStrs?.length) {
+                            projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
+                        }
+
+                        innerHeadStr.push(`]`);
+
+                        headStrs.push(innerHeadStr.join(" "));
+                    }
+                });
+                projectionStr = `${!isArray ? "head(" : ""} ${headStrs.join(" + ")} ${!isArray ? ")" : ""}`;
+
+                expectMultipleValues = cypherField.typeMeta.array ? "true" : "false";
+            }
+            
             const initApocParamsStrs = [
                 ...(context.auth ? ["auth: $auth"] : []),
                 ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
@@ -296,13 +354,12 @@ function createProjectionAndParams({
                 ...(context.cypherParams ? { cypherParams: context.cypherParams } : {}),
             };
 
-            const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
             const apocWhere = projectionAuthStrs.length
                 ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStrs.join(
                       " AND "
                   )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                 : "";
-            const unionWhere = unionWheres.length ? `WHERE ${unionWheres.join(" OR ")}` : "";
+            const unionWhere = unionOrInterfaceWheres.length ? `WHERE ${unionOrInterfaceWheres.join(" OR ")}` : "";
             const apocParamsStr = `{this: ${chainStr || varName}${
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}`;
@@ -310,7 +367,7 @@ function createProjectionAndParams({
                 cypherField.statement
             }", ${apocParamsStr}, ${expectMultipleValues})${apocWhere ? ` ${apocWhere}` : ""}${
                 unionWhere ? ` ${unionWhere} ` : ""
-            }${projectionStr ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""}`;
+            }${projectionStr ? ` | ${!referenceUnion && !referenceInterface ? param : ""} ${projectionStr}` : ""}`;
 
             if (isPrimitive || isEnum || isScalar) {
                 res.projection.push(`${key}: ${apocStr}`);
@@ -319,8 +376,12 @@ function createProjectionAndParams({
             }
 
             if (cypherField.typeMeta.array) {
-                res.projection.push(`${key}: [${apocStr}]`);
-
+                if (referenceUnion || referenceInterface) {
+                    res.projection.push(`${key}: apoc.coll.flatten([${apocStr}])`);
+                } else {
+                    res.projection.push(`${key}: [${apocStr}]`);
+                }
+                
                 return res;
             }
 

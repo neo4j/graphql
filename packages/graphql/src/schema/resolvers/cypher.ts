@@ -18,7 +18,7 @@
  */
 
 import { GraphQLResolveInfo } from "graphql";
-import { UnionTypeDefinitionNode } from "graphql/language/ast";
+import { UnionTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql/language/ast";
 import { execute } from "../../utils";
 import { BaseField, ConnectionField, Context } from "../../types";
 import { graphqlArgsToCompose } from "../to-compose";
@@ -46,7 +46,7 @@ export default function cypherResolver({
         const cypherStrs: string[] = [];
         const connectionProjectionStrs: string[] = [];
         let projectionStr = "";
-        const unionWhere: string[] = [];
+        const unionOrInterfaceWheres: string[] = [];
         const projectionAuthStrs: string[] = [];
         let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
 
@@ -69,11 +69,6 @@ export default function cypherResolver({
         }
 
         const referenceNode = context.neoSchema.nodes.find((x) => x.name === field.typeMeta.name);
-        const unions = context.neoSchema.document.definitions.filter(
-            (x) => x.kind === "UnionTypeDefinition"
-        ) as UnionTypeDefinitionNode[];
-        const referenceUnion = unions.find((u) => u.name.value === field.typeMeta.name);
-
         if (referenceNode) {
             const recurse = createProjectionAndParams({
                 resolveTree,
@@ -108,6 +103,11 @@ export default function cypherResolver({
             }
         }
 
+        // Resolve fields on unions returned by custom cypher
+        const unions = context.neoSchema.document.definitions.filter((x) => 
+            x.kind === "UnionTypeDefinition") as UnionTypeDefinitionNode[];
+        const referenceUnion = unions.find((u) => u.name.value === field.typeMeta.name);
+
         if (referenceUnion) {
             const headStrs: string[] = [];
             const referencedNodes =
@@ -119,7 +119,7 @@ export default function cypherResolver({
             referencedNodes.forEach((node) => {
                 if (node) {
                     const labelsStatements = node.getLabels(context).map((label) => `"${label}" IN labels(this)`);
-                    unionWhere.push(`(${labelsStatements.join("AND")})`);
+                    unionOrInterfaceWheres.push(`(${labelsStatements.join("AND")})`);
 
                     const innerHeadStr: string[] = [`[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`];
 
@@ -151,6 +151,49 @@ export default function cypherResolver({
 
             projectionStr = `${headStrs.join(" + ")}`;
         }
+
+        //Resolve fields on interfaces returned by custom cypher
+        const interfaces = context.neoSchema.document.definitions
+            .filter((d) => d.kind === "InterfaceTypeDefinition") as InterfaceTypeDefinitionNode[]
+        const referenceInterface = interfaces
+            .find((i) => i.name.value === field.typeMeta.name)
+
+        if (referenceInterface) {
+            const referencedNodes = context.neoSchema.nodes
+                .filter((n) => n.interfaces.some((i) => i.name.value === referenceInterface.name.value));
+
+            let subqueries: string[] = [];
+            referencedNodes.forEach((refNode) => {
+                if (refNode) {
+                    let subquery: string[] = [];
+                    subquery.push(`WITH this`);
+                    subquery.push(`MATCH (this:${refNode.getLabels(context).join(":")})`);
+
+                    const [str, p, meta] = createProjectionAndParams({
+                        resolveTree,
+                        node: refNode,
+                        context,
+                        varName: "this",
+                    });
+
+                    if (str.slice(1, -1).trim().length > 0) {
+                        subquery.push(`RETURN this { __resolveType: "${refNode.name}", ${str.slice(1, -1)} } AS ${field.fieldName}`)
+                    } else {
+                        subquery.push(`RETURN this { __resolveType: "${refNode.name}" } AS ${field.fieldName}`)
+                    }
+
+                    subqueries.push(subquery.join(" "));
+
+                    params = { ...params, ...p };
+
+                    if (meta?.authValidateStrs?.length) {
+                        projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
+                    }
+                }
+            });
+            projectionStr = `${subqueries.join(" UNION ")}`;
+        }
+
 
         const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
 
@@ -190,8 +233,8 @@ export default function cypherResolver({
             `);
         }
 
-        if (unionWhere.length) {
-            cypherStrs.push(`WHERE ${unionWhere.join(" OR ")}`);
+        if (unionOrInterfaceWheres.length) {
+            cypherStrs.push(`WHERE ${unionOrInterfaceWheres.join(" OR ")}`);
         }
 
         if (projectionAuthStrs.length) {
@@ -206,7 +249,7 @@ export default function cypherResolver({
 
         if (isPrimitive || isEnum || isScalar) {
             cypherStrs.push(`RETURN this`);
-        } else if (referenceUnion) {
+        } else if (referenceUnion || referenceInterface) {
             cypherStrs.push(`RETURN head( ${projectionStr} ) AS this`);
         } else {
             cypherStrs.push(`RETURN this ${projectionStr} AS this`);
