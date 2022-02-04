@@ -204,10 +204,10 @@ describe("Interface Relationships", () => {
             input ActorWhere {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
-              actedInConnection: ActorActedInConnectionWhere
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               actedInConnection_ALL: ActorActedInConnectionWhere
               actedInConnection_NONE: ActorActedInConnectionWhere
-              actedInConnection_NOT: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               actedInConnection_SINGLE: ActorActedInConnectionWhere
               actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
@@ -688,10 +688,10 @@ describe("Interface Relationships", () => {
             input ActorWhere {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
-              actedInConnection: ActorActedInConnectionWhere
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               actedInConnection_ALL: ActorActedInConnectionWhere
               actedInConnection_NONE: ActorActedInConnectionWhere
-              actedInConnection_NOT: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               actedInConnection_SINGLE: ActorActedInConnectionWhere
               actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
@@ -1096,10 +1096,10 @@ describe("Interface Relationships", () => {
               OR: [MovieWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
-              actorsConnection: ProductionActorsConnectionWhere
+              actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               actorsConnection_ALL: ProductionActorsConnectionWhere
               actorsConnection_NONE: ProductionActorsConnectionWhere
-              actorsConnection_NOT: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               actorsConnection_SINGLE: ProductionActorsConnectionWhere
               actorsConnection_SOME: ProductionActorsConnectionWhere
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
@@ -1352,10 +1352,10 @@ describe("Interface Relationships", () => {
               _on: ProductionImplementationsWhere
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: ProductionActorsAggregateInput
-              actorsConnection: ProductionActorsConnectionWhere
+              actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               actorsConnection_ALL: ProductionActorsConnectionWhere
               actorsConnection_NONE: ProductionActorsConnectionWhere
-              actorsConnection_NOT: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               actorsConnection_SINGLE: ProductionActorsConnectionWhere
               actorsConnection_SOME: ProductionActorsConnectionWhere
               \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
@@ -1662,10 +1662,10 @@ describe("Interface Relationships", () => {
               OR: [SeriesWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: SeriesActorsAggregateInput
-              actorsConnection: ProductionActorsConnectionWhere
+              actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               actorsConnection_ALL: ProductionActorsConnectionWhere
               actorsConnection_NONE: ProductionActorsConnectionWhere
-              actorsConnection_NOT: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               actorsConnection_SINGLE: ProductionActorsConnectionWhere
               actorsConnection_SOME: ProductionActorsConnectionWhere
               \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
@@ -1687,10 +1687,10 @@ describe("Interface Relationships", () => {
               episodeCount_NOT_IN: [Int!]
               episodes: EpisodeWhere @deprecated(reason: \\"Use \`episodes_SOME\` instead.\\")
               episodesAggregate: SeriesEpisodesAggregateInput
-              episodesConnection: SeriesEpisodesConnectionWhere
+              episodesConnection: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Use \`episodesConnection_SOME\` instead.\\")
               episodesConnection_ALL: SeriesEpisodesConnectionWhere
               episodesConnection_NONE: SeriesEpisodesConnectionWhere
-              episodesConnection_NOT: SeriesEpisodesConnectionWhere
+              episodesConnection_NOT: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Use \`episodesConnection_NONE\` instead.\\")
               episodesConnection_SINGLE: SeriesEpisodesConnectionWhere
               episodesConnection_SOME: SeriesEpisodesConnectionWhere
               \\"\\"\\"Return Series where all of the related Episodes match this filter\\"\\"\\"
@@ -1962,10 +1962,10 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!]
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
-              interface2Connection: Interface1Interface2ConnectionWhere
+              interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               interface2Connection_ALL: Interface1Interface2ConnectionWhere
               interface2Connection_NONE: Interface1Interface2ConnectionWhere
-              interface2Connection_NOT: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
               interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
             }
@@ -2246,10 +2246,10 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!]
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
-              interface2Connection: Interface1Interface2ConnectionWhere
+              interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               interface2Connection_ALL: Interface1Interface2ConnectionWhere
               interface2Connection_NONE: Interface1Interface2ConnectionWhere
-              interface2Connection_NOT: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
               interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
             }
@@ -2340,10 +2340,10 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!]
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
-              interface1Connection: Type1Interface1ConnectionWhere
+              interface1Connection: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_SOME\` instead.\\")
               interface1Connection_ALL: Type1Interface1ConnectionWhere
               interface1Connection_NONE: Type1Interface1ConnectionWhere
-              interface1Connection_NOT: Type1Interface1ConnectionWhere
+              interface1Connection_NOT: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_NONE\` instead.\\")
               interface1Connection_SINGLE: Type1Interface1ConnectionWhere
               interface1Connection_SOME: Type1Interface1ConnectionWhere
             }
@@ -2443,10 +2443,10 @@ describe("Interface Relationships", () => {
               field1_NOT_IN: [String!]
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
-              interface2Connection: Interface1Interface2ConnectionWhere
+              interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               interface2Connection_ALL: Interface1Interface2ConnectionWhere
               interface2Connection_NONE: Interface1Interface2ConnectionWhere
-              interface2Connection_NOT: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
               interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
             }
@@ -3307,10 +3307,10 @@ describe("Interface Relationships", () => {
               OR: [PostWhere!]
               comments: CommentWhere @deprecated(reason: \\"Use \`comments_SOME\` instead.\\")
               commentsAggregate: PostCommentsAggregateInput
-              commentsConnection: PostCommentsConnectionWhere
+              commentsConnection: PostCommentsConnectionWhere @deprecated(reason: \\"Use \`commentsConnection_SOME\` instead.\\")
               commentsConnection_ALL: PostCommentsConnectionWhere
               commentsConnection_NONE: PostCommentsConnectionWhere
-              commentsConnection_NOT: PostCommentsConnectionWhere
+              commentsConnection_NOT: PostCommentsConnectionWhere @deprecated(reason: \\"Use \`commentsConnection_NONE\` instead.\\")
               commentsConnection_SINGLE: PostCommentsConnectionWhere
               commentsConnection_SOME: PostCommentsConnectionWhere
               \\"\\"\\"Return Posts where all of the related Comments match this filter\\"\\"\\"
@@ -3518,10 +3518,10 @@ describe("Interface Relationships", () => {
             input UserWhere {
               AND: [UserWhere!]
               OR: [UserWhere!]
-              contentConnection: UserContentConnectionWhere
+              contentConnection: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_SOME\` instead.\\")
               contentConnection_ALL: UserContentConnectionWhere
               contentConnection_NONE: UserContentConnectionWhere
-              contentConnection_NOT: UserContentConnectionWhere
+              contentConnection_NOT: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_NONE\` instead.\\")
               contentConnection_SINGLE: UserContentConnectionWhere
               contentConnection_SOME: UserContentConnectionWhere
               id: ID

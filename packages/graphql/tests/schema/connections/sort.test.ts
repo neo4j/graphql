@@ -216,10 +216,10 @@ describe("Sort", () => {
               property_STARTS_WITH: String
               relatedTo: Node2Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
               relatedToAggregate: Node1RelatedToAggregateInput
-              relatedToConnection: Node1RelatedToConnectionWhere
+              relatedToConnection: Node1RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_SOME\` instead.\\")
               relatedToConnection_ALL: Node1RelatedToConnectionWhere
               relatedToConnection_NONE: Node1RelatedToConnectionWhere
-              relatedToConnection_NOT: Node1RelatedToConnectionWhere
+              relatedToConnection_NOT: Node1RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
               relatedToConnection_SINGLE: Node1RelatedToConnectionWhere
               relatedToConnection_SOME: Node1RelatedToConnectionWhere
               \\"\\"\\"Return Node1s where all of the related Node2s match this filter\\"\\"\\"
@@ -385,10 +385,10 @@ describe("Sort", () => {
               OR: [Node2Where!]
               relatedTo: Node1Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
               relatedToAggregate: Node2RelatedToAggregateInput
-              relatedToConnection: Node2RelatedToConnectionWhere
+              relatedToConnection: Node2RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_SOME\` instead.\\")
               relatedToConnection_ALL: Node2RelatedToConnectionWhere
               relatedToConnection_NONE: Node2RelatedToConnectionWhere
-              relatedToConnection_NOT: Node2RelatedToConnectionWhere
+              relatedToConnection_NOT: Node2RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
               relatedToConnection_SINGLE: Node2RelatedToConnectionWhere
               relatedToConnection_SOME: Node2RelatedToConnectionWhere
               \\"\\"\\"Return Node2s where all of the related Node1s match this filter\\"\\"\\"

@@ -248,10 +248,10 @@ describe("Interfaces", () => {
               id_STARTS_WITH: ID
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: MovieMoviesAggregateInput
-              moviesConnection: MovieNodeMoviesConnectionWhere
+              moviesConnection: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
               moviesConnection_ALL: MovieNodeMoviesConnectionWhere
               moviesConnection_NONE: MovieNodeMoviesConnectionWhere
-              moviesConnection_NOT: MovieNodeMoviesConnectionWhere
+              moviesConnection_NOT: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
               moviesConnection_SOME: MovieNodeMoviesConnectionWhere
               \\"\\"\\"Return Movies where all of the related Movies match this filter\\"\\"\\"

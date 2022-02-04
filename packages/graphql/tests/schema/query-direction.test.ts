@@ -268,10 +268,10 @@ describe("Query Direction", () => {
               OR: [UserWhere!]
               friends: UserWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsAggregate: UserFriendsAggregateInput
-              friendsConnection: UserFriendsConnectionWhere
+              friendsConnection: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               friendsConnection_ALL: UserFriendsConnectionWhere
               friendsConnection_NONE: UserFriendsConnectionWhere
-              friendsConnection_NOT: UserFriendsConnectionWhere
+              friendsConnection_NOT: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_NONE\` instead.\\")
               friendsConnection_SINGLE: UserFriendsConnectionWhere
               friendsConnection_SOME: UserFriendsConnectionWhere
               \\"\\"\\"Return Users where all of the related Users match this filter\\"\\"\\"
@@ -541,10 +541,10 @@ describe("Query Direction", () => {
               OR: [UserWhere!]
               friends: UserWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsAggregate: UserFriendsAggregateInput
-              friendsConnection: UserFriendsConnectionWhere
+              friendsConnection: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               friendsConnection_ALL: UserFriendsConnectionWhere
               friendsConnection_NONE: UserFriendsConnectionWhere
-              friendsConnection_NOT: UserFriendsConnectionWhere
+              friendsConnection_NOT: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_NONE\` instead.\\")
               friendsConnection_SINGLE: UserFriendsConnectionWhere
               friendsConnection_SOME: UserFriendsConnectionWhere
               \\"\\"\\"Return Users where all of the related Users match this filter\\"\\"\\"
@@ -814,10 +814,10 @@ describe("Query Direction", () => {
               OR: [UserWhere!]
               friends: UserWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsAggregate: UserFriendsAggregateInput
-              friendsConnection: UserFriendsConnectionWhere
+              friendsConnection: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               friendsConnection_ALL: UserFriendsConnectionWhere
               friendsConnection_NONE: UserFriendsConnectionWhere
-              friendsConnection_NOT: UserFriendsConnectionWhere
+              friendsConnection_NOT: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_NONE\` instead.\\")
               friendsConnection_SINGLE: UserFriendsConnectionWhere
               friendsConnection_SOME: UserFriendsConnectionWhere
               \\"\\"\\"Return Users where all of the related Users match this filter\\"\\"\\"

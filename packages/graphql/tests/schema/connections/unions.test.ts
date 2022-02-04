@@ -274,10 +274,10 @@ describe("Unions", () => {
               name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
-              publicationsConnection: AuthorPublicationsConnectionWhere
+              publicationsConnection: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_SOME\` instead.\\")
               publicationsConnection_ALL: AuthorPublicationsConnectionWhere
               publicationsConnection_NONE: AuthorPublicationsConnectionWhere
-              publicationsConnection_NOT: AuthorPublicationsConnectionWhere
+              publicationsConnection_NOT: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_NONE\` instead.\\")
               publicationsConnection_SINGLE: AuthorPublicationsConnectionWhere
               publicationsConnection_SOME: AuthorPublicationsConnectionWhere
             }
@@ -492,10 +492,10 @@ describe("Unions", () => {
               OR: [BookWhere!]
               author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: BookAuthorAggregateInput
-              authorConnection: BookAuthorConnectionWhere
+              authorConnection: BookAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_SOME\` instead.\\")
               authorConnection_ALL: BookAuthorConnectionWhere
               authorConnection_NONE: BookAuthorConnectionWhere
-              authorConnection_NOT: BookAuthorConnectionWhere
+              authorConnection_NOT: BookAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_NONE\` instead.\\")
               authorConnection_SINGLE: BookAuthorConnectionWhere
               authorConnection_SOME: BookAuthorConnectionWhere
               \\"\\"\\"Return Books where all of the related Authors match this filter\\"\\"\\"
@@ -763,10 +763,10 @@ describe("Unions", () => {
               OR: [JournalWhere!]
               author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: JournalAuthorAggregateInput
-              authorConnection: JournalAuthorConnectionWhere
+              authorConnection: JournalAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_SOME\` instead.\\")
               authorConnection_ALL: JournalAuthorConnectionWhere
               authorConnection_NONE: JournalAuthorConnectionWhere
-              authorConnection_NOT: JournalAuthorConnectionWhere
+              authorConnection_NOT: JournalAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_NONE\` instead.\\")
               authorConnection_SINGLE: JournalAuthorConnectionWhere
               authorConnection_SOME: JournalAuthorConnectionWhere
               \\"\\"\\"Return Journals where all of the related Authors match this filter\\"\\"\\"

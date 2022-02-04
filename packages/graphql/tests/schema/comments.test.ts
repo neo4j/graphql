@@ -507,10 +507,10 @@ describe("Comments", () => {
                   OR: [MovieWhere!]
                   actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsAggregate: MovieActorsAggregateInput
-                  actorsConnection: MovieActorsConnectionWhere
+                  actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   actorsConnection_ALL: MovieActorsConnectionWhere
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere
+                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   actorsConnection_SINGLE: MovieActorsConnectionWhere
                   actorsConnection_SOME: MovieActorsConnectionWhere
                   \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
@@ -773,10 +773,10 @@ describe("Comments", () => {
                 input ActorWhere {
                   AND: [ActorWhere!]
                   OR: [ActorWhere!]
-                  actedInConnection: ActorActedInConnectionWhere
+                  actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
                   actedInConnection_ALL: ActorActedInConnectionWhere
                   actedInConnection_NONE: ActorActedInConnectionWhere
-                  actedInConnection_NOT: ActorActedInConnectionWhere
+                  actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
                   actedInConnection_SINGLE: ActorActedInConnectionWhere
                   actedInConnection_SOME: ActorActedInConnectionWhere
                   name: String
@@ -1364,10 +1364,10 @@ describe("Comments", () => {
                   id_NOT_IN: [ID]
                   id_NOT_STARTS_WITH: ID
                   id_STARTS_WITH: ID
-                  searchConnection: MovieSearchConnectionWhere
+                  searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
                   searchConnection_ALL: MovieSearchConnectionWhere
                   searchConnection_NONE: MovieSearchConnectionWhere
-                  searchConnection_NOT: MovieSearchConnectionWhere
+                  searchConnection_NOT: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
                   searchConnection_SINGLE: MovieSearchConnectionWhere
                   searchConnection_SOME: MovieSearchConnectionWhere
                 }

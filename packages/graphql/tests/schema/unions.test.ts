@@ -327,10 +327,10 @@ describe("Unions", () => {
               id_NOT_IN: [ID]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
-              searchConnection: MovieSearchConnectionWhere
+              searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
               searchConnection_ALL: MovieSearchConnectionWhere
               searchConnection_NONE: MovieSearchConnectionWhere
-              searchConnection_NOT: MovieSearchConnectionWhere
+              searchConnection_NOT: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
               searchConnection_SINGLE: MovieSearchConnectionWhere
               searchConnection_SOME: MovieSearchConnectionWhere
             }

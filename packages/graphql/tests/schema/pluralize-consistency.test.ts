@@ -322,10 +322,10 @@ describe("Pluralize consistency", () => {
               OR: [super_userWhere!]
               my_friend: super_friendWhere @deprecated(reason: \\"Use \`my_friend_SOME\` instead.\\")
               my_friendAggregate: super_userMy_friendAggregateInput
-              my_friendConnection: super_userMy_friendConnectionWhere
+              my_friendConnection: super_userMy_friendConnectionWhere @deprecated(reason: \\"Use \`my_friendConnection_SOME\` instead.\\")
               my_friendConnection_ALL: super_userMy_friendConnectionWhere
               my_friendConnection_NONE: super_userMy_friendConnectionWhere
-              my_friendConnection_NOT: super_userMy_friendConnectionWhere
+              my_friendConnection_NOT: super_userMy_friendConnectionWhere @deprecated(reason: \\"Use \`my_friendConnection_NONE\` instead.\\")
               my_friendConnection_SINGLE: super_userMy_friendConnectionWhere
               my_friendConnection_SOME: super_userMy_friendConnectionWhere
               \\"\\"\\"
