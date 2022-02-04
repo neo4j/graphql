@@ -18,6 +18,7 @@
  */
 
 import { Neo4jGraphQL, Neo4jGraphQLConstructor } from "@neo4j/graphql";
+import { GraphQLSchema } from "graphql";
 import Model from "./Model";
 import { filterDocument } from "../utils";
 
@@ -30,8 +31,14 @@ class OGM<ModelMap = {}> {
 
     public neoSchema: Neo4jGraphQL;
 
+    private _schema?: GraphQLSchema;
+
+    private initializer?: Promise<void>;
+
     constructor(input: OGMConstructor) {
         const { typeDefs, ...rest } = input;
+
+        this.models = [];
 
         this.neoSchema = new Neo4jGraphQL({
             ...rest,
@@ -44,35 +51,79 @@ class OGM<ModelMap = {}> {
                 ...(rest.config?.driverConfig ? { driverConfig: rest.config.driverConfig } : {}),
             });
         };
+    }
 
-        this.models = this.neoSchema.nodes.map((n) => {
-            const selectionSet = `
-                {
-                    ${[n.primitiveFields, n.scalarFields, n.enumFields, n.temporalFields].reduce(
-                        (res: string[], v) => [...res, ...v.map((x) => x.fieldName)],
-                        []
-                    )}
-                }
-            `;
+    public get schema() {
+        return this._schema;
+    }
 
-            return new Model({
-                neoSchema: this.neoSchema,
-                name: n.name,
-                selectionSet,
+    async init(): Promise<void> {
+        if (this.initializer) {
+            return this.initializer;
+        }
+
+        this.initializer = new Promise((resolve) => {
+            this.neoSchema.getSchema().then((schema) => {
+                this._schema = schema;
+
+                this.models.forEach((model) => {
+                    const node = this.neoSchema.nodes?.find((n) => n.name === model.name);
+
+                    if (!node) {
+                        throw new Error(`Invalid Model found: ${model.name}`);
+                    }
+
+                    const selectionSet = `
+                    {
+                        ${[node.primitiveFields, node.scalarFields, node.enumFields, node.temporalFields].reduce(
+                            (res: string[], v) => [...res, ...v.map((x) => x.fieldName)],
+                            []
+                        )}
+                    }
+                `;
+
+                    model.init({ schema, selectionSet });
+                });
+
+                resolve();
             });
         });
+
+        return this.initializer;
     }
 
     model<M extends T extends keyof ModelMap ? ModelMap[T] : Model, T extends keyof ModelMap | string = string>(
         name: T
     ): M {
-        const found = this.models.find((n) => n.name === name);
+        let model = this.models.find((n) => n.name === name);
 
-        if (!found) {
-            throw new Error(`Could not find model ${name}`);
+        if (model) {
+            return model as M;
         }
 
-        return found as M;
+        model = new Model(name as string);
+
+        if (this.schema) {
+            const node = this.neoSchema.nodes?.find((n) => n.name === name);
+
+            if (!node) {
+                throw new Error(`Could not find model ${name}`);
+            }
+
+            const selectionSet = `
+                    {
+                        ${[node.primitiveFields, node.scalarFields, node.enumFields, node.temporalFields].reduce(
+                            (res: string[], v) => [...res, ...v.map((x) => x.fieldName)],
+                            []
+                        )}
+                    }
+                    `;
+
+            model.init({ schema: this.schema, selectionSet });
+        }
+
+        this.models.push(model);
+        return model as M;
     }
 }
 

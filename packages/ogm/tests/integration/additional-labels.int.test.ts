@@ -47,6 +47,8 @@ describe("Additional Labels", () => {
     test("should find nodes with jwt labels passed as a request", async () => {
         const ogm = new OGM({ typeDefs, driver, config: { jwt: { secret } } });
 
+        await ogm.init();
+
         const req = createJwtRequest(secret, { tenant_id: tenantID });
 
         const Task = ogm.model(taskType.name);
@@ -59,6 +61,8 @@ describe("Additional Labels", () => {
 
     test("should find nodes with jwt labels passed as part of context", async () => {
         const ogm = new OGM({ typeDefs, driver, config: { jwt: { secret } } });
+
+        await ogm.init();
 
         const Task = ogm.model(taskType.name);
         const tasks = await Task.find({

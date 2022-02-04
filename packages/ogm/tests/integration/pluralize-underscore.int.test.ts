@@ -37,6 +37,8 @@ describe("pluralize with underscore", () => {
         const ogm = new OGM({ typeDefs, driver });
         const Task = ogm.model(taskType.name);
 
+        await ogm.init();
+
         const testString = generate({
             charset: "alphabetic",
         });
@@ -58,6 +60,8 @@ describe("pluralize with underscore", () => {
     test("should find super_task", async () => {
         const ogm = new OGM({ typeDefs, driver });
         const Task = ogm.model(taskType.name);
+
+        await ogm.init();
 
         const testString = generate({
             charset: "alphabetic",
