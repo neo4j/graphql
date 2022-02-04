@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { mergeDeep } from "@graphql-tools/utils";
 import { GraphQLWhereArg, Context, RelationField } from "../types";
 import { Node, Relationship } from "../classes";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
@@ -68,9 +69,9 @@ function createWhereAndParams({
             const [fieldName] = key.split("Aggregate");
             const relationField = node.relationFields.find((x) => x.fieldName === fieldName) as RelationField;
             const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-            const relationship = (context.neoSchema.relationships.find(
+            const relationship = context.neoSchema.relationships.find(
                 (x) => x.properties === relationField.properties
-            ) as unknown) as Relationship;
+            ) as unknown as Relationship;
 
             const aggregateWhereAndParams = createAggregateWhereAndParams({
                 node: refNode,
@@ -668,7 +669,7 @@ function createWhereAndParams({
                 });
                 if (recurse[0]) {
                     innerClauses.push(`${recurse[0]}`);
-                    res.params = { ...res.params, ...recurse[1] };
+                    res.params = mergeDeep([res.params, recurse[1]]);
                 }
             });
 
