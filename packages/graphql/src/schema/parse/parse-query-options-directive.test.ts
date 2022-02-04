@@ -22,6 +22,7 @@ import { gql } from "apollo-server-core";
 import * as neo4j from "neo4j-driver";
 import { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
 import { parseQueryOptionsDirective } from "./parse-query-options-directive";
+import { QueryOptionsDirective } from "../../classes/QueryOptionsDirective";
 
 describe("parseQueryOptionsDirective", () => {
     test("max and default argument", () => {
@@ -42,7 +43,9 @@ describe("parseQueryOptionsDirective", () => {
             definition,
         });
 
-        expect(result.limit).toEqual({ max: neo4j.int(maxLimit), default: neo4j.int(defaultLimit) });
+        expect(result).toEqual(
+            new QueryOptionsDirective({ limit: { max: neo4j.int(maxLimit), default: neo4j.int(defaultLimit) } })
+        );
     });
 
     test("should return correct object if default limit is undefined", () => {
@@ -59,10 +62,11 @@ describe("parseQueryOptionsDirective", () => {
             directive,
             definition,
         });
-        expect(result.limit).toEqual({
-            default: undefined,
-            max: undefined,
-        });
+        expect(result).toEqual(
+            new QueryOptionsDirective({
+                limit: {},
+            })
+        );
     });
 
     test("fail if default argument is bigger than max", () => {
@@ -109,49 +113,9 @@ describe("parseQueryOptionsDirective", () => {
                 );
             });
         });
-
-        test("should parse and return correct meta data", () => {
-            const defaultLimit = 100;
-
-            const typeDefs = gql`
-                type Movie @queryOptions(limit: {default: ${defaultLimit}} ) {
-                    id: ID
-                }
-            `;
-
-            const definition = typeDefs.definitions[0] as ObjectTypeDefinitionNode;
-            const directive = (definition.directives || [])[0] as DirectiveNode;
-
-            const result = parseQueryOptionsDirective({
-                directive,
-                definition,
-            });
-
-            expect(result.limit).toEqual({ default: neo4j.int(defaultLimit) });
-        });
     });
 
     describe("max argument", () => {
-        test("should parse max metadata", () => {
-            const maxLimit = 100;
-
-            const typeDefs = gql`
-                type Movie @queryOptions(limit: {max: ${maxLimit}} ) {
-                    id: ID
-                }
-            `;
-
-            const definition = typeDefs.definitions[0] as ObjectTypeDefinitionNode;
-            const directive = (definition.directives || [])[0] as DirectiveNode;
-
-            const result = parseQueryOptionsDirective({
-                directive,
-                definition,
-            });
-
-            expect(result.limit).toEqual({ max: neo4j.int(maxLimit) });
-        });
-
         test("should fail if value is 0", () => {
             const typeDefs = gql`
                 type Movie @queryOptions(limit: { max: 0 }) {

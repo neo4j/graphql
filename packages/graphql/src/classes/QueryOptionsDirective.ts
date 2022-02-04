@@ -28,7 +28,7 @@ type QueryOptionsDirectiveConstructor = {
 };
 
 export class QueryOptionsDirective {
-    public readonly limit: QueryOptionsDirectiveConstructor["limit"];
+    private limit: QueryOptionsDirectiveConstructor["limit"];
 
     constructor(args: QueryOptionsDirectiveConstructor) {
         this.limit = args.limit;
