@@ -22,6 +22,7 @@ import { ResolveTree } from "graphql-parse-resolve-info";
 import { JwtPayload } from "jsonwebtoken";
 import { Driver, Integer } from "neo4j-driver";
 import { Neo4jGraphQL } from "./classes";
+import { RelationshipQueryDirectionOption } from "./constants";
 
 export type DriverConfig = {
     database?: string;
@@ -134,6 +135,7 @@ export interface RelationField extends BaseField {
     properties?: string;
     union?: UnionField;
     interface?: InterfaceField;
+    queryDirection: RelationshipQueryDirectionOption;
 }
 
 export interface ConnectionField extends BaseField {
@@ -311,3 +313,9 @@ export interface CypherQueryOptions {
 
 /** Nested Records helper type, supports any level of recursion. Ending in properties of type T */
 export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {} // Using interface to allow recursive types
+
+export type QueryOptions = {
+    limit: {
+        default?: Integer;
+    };
+};

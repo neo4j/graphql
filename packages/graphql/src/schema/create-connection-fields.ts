@@ -22,6 +22,7 @@ import { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graph
 import { Node, Relationship } from "../classes";
 import { ConnectionField, ConnectionQueryArgs } from "../types";
 import { ObjectFields } from "./get-obj-field-meta";
+import { addDirectedArgument } from "./directed-argument";
 import { connectionFieldResolver } from "./pagination";
 
 function createConnectionFields({
@@ -92,14 +93,22 @@ function createConnectionFields({
                 : {}),
         });
 
-        let composeNodeArgs: {
+        const composeNodeBaseArgs: {
             where: any;
             sort?: any;
             first?: any;
             after?: any;
         } = {
             where: connectionWhere,
+            first: {
+                type: "Int",
+            },
+            after: {
+                type: "String",
+            },
         };
+
+        const composeNodeArgs = addDirectedArgument(composeNodeBaseArgs, connectionField.relationship);
 
         if (connectionField.relationship.properties) {
             const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);
@@ -131,12 +140,18 @@ function createConnectionFields({
             const relatedNodes = nodes.filter((n) => connectionField.relationship.union?.nodes?.includes(n.name));
 
             relatedNodes.forEach((n) => {
-                const unionWhereName = `${connectionField.typeMeta.name}${n.name}Where`;
+                const connectionName = connectionField.typeMeta.name;
+
+                // Append union member name before "ConnectionWhere"
+                const unionWhereName = `${connectionName.substring(0, connectionName.length - "Connection".length)}${
+                    n.name
+                }ConnectionWhere`;
+
                 const unionWhere = schemaComposer.createInputTC({
                     name: unionWhereName,
                     fields: {
-                        OR: `[${unionWhereName}]`,
-                        AND: `[${unionWhereName}]`,
+                        OR: `[${unionWhereName}!]`,
+                        AND: `[${unionWhereName}!]`,
                     },
                 });
 
@@ -177,16 +192,6 @@ function createConnectionFields({
                     composeNodeArgs.sort = connectionSort.NonNull.List;
                 }
             }
-
-            composeNodeArgs = {
-                ...composeNodeArgs,
-                first: {
-                    type: "Int",
-                },
-                after: {
-                    type: "String",
-                },
-            };
         }
 
         if (!connectionField.relationship.writeonly) {

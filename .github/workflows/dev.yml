@@ -22,6 +22,36 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
 
+  neo-push-tests:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    services:
+      neo4j:
+        image: neo4j:latest
+        env:
+          NEO4J_AUTH: neo4j/password
+          NEO4JLABS_PLUGINS: '["apoc"]'
+        ports:
+          - 7687:7687
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run neo-push tests
+        run: yarn --cwd examples/neo-push/server run test
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
   unit-tests:
     needs:
       - cache-dependencies
@@ -201,8 +231,6 @@ jobs:
           - ogm
           - introspector
         neo4j-version:
-          - 4.1.5
-          - 4.1
           - 4.2.9
           - 4.2
           - 4.3.2

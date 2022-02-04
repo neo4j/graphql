@@ -110,7 +110,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -215,7 +215,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             \\"\\"\\"
@@ -342,7 +342,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -472,7 +472,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -578,7 +578,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             \\"\\"\\"
@@ -625,9 +625,9 @@ describe("@exclude directive", () => {
             }
 
             type Movie {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-              actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String
             }
 
@@ -760,7 +760,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
@@ -891,7 +891,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             \\"\\"\\"
@@ -1030,7 +1030,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -1096,7 +1096,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [SeriesSort]
+              sort: [SeriesSort!]
             }
 
             \\"\\"\\"

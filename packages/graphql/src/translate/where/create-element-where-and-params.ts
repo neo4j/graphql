@@ -17,9 +17,12 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg, Context } from "../../types";
-import { GraphElement, Node } from "../../classes";
+import { GraphQLWhereArg, ConnectionWhereArg, Context } from "../../types";
+import { GraphElement, Node, Relationship } from "../../classes";
+import createConnectionWhereAndParams from "./create-connection-where-and-params";
 import { whereRegEx, WhereRegexGroups, createWhereClause, getListPredicate } from "./utils";
+import { wrapInApocRunFirstColumn } from "../utils/apoc-run";
+import mapToDbProperty from "../../utils/map-to-db-property";
 
 interface Res {
     clauses: string[];
@@ -47,9 +50,19 @@ function createElementWhereAndParams({
         const param = `${parameterPrefix}.${key}`;
 
         const match = whereRegEx.exec(key);
+        if (!match) {
+            throw new Error(`Failed to match key in filter: ${key}`);
+        }
 
-        const { fieldName, operator } = match?.groups as WhereRegexGroups;
+        const { fieldName, operator } = match.groups as WhereRegexGroups;
+
+        if (!fieldName) {
+            throw new Error(`Failed to find field name in filter: ${key}`);
+        }
+
         const isNot = operator?.startsWith("NOT") ?? false;
+
+        const dbProperty = mapToDbProperty(element, fieldName);
 
         const coalesceValue = [...element.primitiveFields, ...element.temporalFields].find(
             (f) => fieldName === f.fieldName
@@ -57,8 +70,8 @@ function createElementWhereAndParams({
 
         const property =
             coalesceValue !== undefined
-                ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
-                : `${varName}.${fieldName}`;
+                ? `coalesce(${varName}.${dbProperty}, ${coalesceValue})`
+                : `${varName}.${dbProperty}`;
 
         if (["AND", "OR"].includes(fieldName)) {
             const innerClauses: string[] = [];
@@ -92,6 +105,7 @@ function createElementWhereAndParams({
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
                 const relatedNodeVariable = `${varName}_${relationField.fieldName}`;
+                const labels = refNode.getLabelString(context);
 
                 if (value === null) {
                     res.clauses.push(
@@ -106,9 +120,7 @@ function createElementWhereAndParams({
                     `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
                     `AND ${getListPredicate(
                         operator
-                    )}(${relatedNodeVariable} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}:${
-                        relationField.typeMeta.name
-                    }) | ${relatedNodeVariable}] INNER_WHERE `,
+                    )}(${relatedNodeVariable} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}${labels}) | ${relatedNodeVariable}] INNER_WHERE `,
                 ].join(" ");
 
                 const recurse = createElementWhereAndParams({
@@ -123,6 +135,75 @@ function createElementWhereAndParams({
                 resultStr += ")"; // close NONE/ANY
                 res.clauses.push(resultStr);
                 res.params = { ...res.params, fieldName: recurse[1] };
+                return res;
+            }
+            const connectionField = element.connectionFields.find((x) => fieldName === x.fieldName);
+
+            if (connectionField) {
+                let nodeEntries: Record<string, ConnectionWhereArg> = value;
+
+                if (!connectionField?.relationship.union) {
+                    nodeEntries = { [connectionField.relationship.typeMeta.name]: value };
+                }
+
+                Object.entries(nodeEntries).forEach((entry) => {
+                    const refNode = context.neoSchema.nodes.find((x) => x.name === entry[0]) as Node;
+                    const relationship = context.neoSchema.relationships.find(
+                        (x) => x.name === connectionField.relationshipTypeName
+                    ) as Relationship;
+
+                    const safeNodeVariable = `${varName.replace(/\./g, "_")}`;
+
+                    const relatedNodeVariable = `${safeNodeVariable}_${refNode.name}`;
+
+                    const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
+                    const relationshipVariable = `${relatedNodeVariable}_${connectionField.relationshipTypeName}`;
+                    const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
+                    const labels = refNode.getLabelString(context);
+
+                    const collectedMap = `${relatedNodeVariable}_map`;
+
+                    const rootParam = parameterPrefix.split(".", 1)[0];
+
+                    const existsStr = `EXISTS((${safeNodeVariable})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`;
+
+                    if (value === null) {
+                        res.clauses.push(isNot ? `NOT ${existsStr}` : existsStr);
+                        return;
+                    }
+
+                    const resultArr = [
+                        `RETURN ${existsStr}`,
+                        `AND ${getListPredicate(
+                            operator
+                        )}(${collectedMap} IN [(${safeNodeVariable})${inStr}[${relationshipVariable}:${
+                            connectionField.relationship.type
+                        }]${outStr}(${relatedNodeVariable}${labels}) | { node: ${relatedNodeVariable}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+                    ];
+
+                    const connectionWhere = createConnectionWhereAndParams({
+                        whereInput: entry[1],
+                        context,
+                        node: refNode,
+                        nodeVariable: `${collectedMap}.node`,
+                        relationship,
+                        relationshipVariable: `${collectedMap}.relationship`,
+                        parameterPrefix: `${parameterPrefix}.${fieldName}`,
+                    });
+
+                    resultArr.push(connectionWhere[0]);
+                    resultArr.push(")"); // close NONE/ANY
+
+                    const apocRunFirstColumn = wrapInApocRunFirstColumn(resultArr.join("\n"), {
+                        [safeNodeVariable]: varName,
+                        [rootParam]: `$${rootParam}`,
+                    });
+
+                    res.clauses.push(apocRunFirstColumn);
+
+                    res.params = { ...res.params, [fieldName]: connectionWhere[1] };
+                });
+
                 return res;
             }
         }

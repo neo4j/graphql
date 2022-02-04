@@ -73,15 +73,15 @@ describe("Enums", () => {
               AND: [ActedInWhere!]
               OR: [ActedInWhere!]
               roleType: RoleType
-              roleType_IN: [RoleType]
+              roleType_IN: [RoleType!]
               roleType_NOT: RoleType
-              roleType_NOT_IN: [RoleType]
+              roleType_NOT_IN: [RoleType!]
             }
 
             type Actor {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
-              moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
 
@@ -228,7 +228,7 @@ describe("Enums", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
@@ -270,11 +270,11 @@ describe("Enums", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -302,9 +302,9 @@ describe("Enums", () => {
             }
 
             type Movie {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-              actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
 
@@ -451,7 +451,7 @@ describe("Enums", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
@@ -493,11 +493,11 @@ describe("Enums", () => {
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }

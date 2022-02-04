@@ -26,6 +26,7 @@ describe("@private directive", () => {
     test("does not add fields to schema", () => {
         const typeDefs = gql`
             interface UserInterface {
+                id: ID
                 private: String @private
             }
 
@@ -110,7 +111,9 @@ describe("@private directive", () => {
               id: ID
             }
 
-            interface UserInterface
+            interface UserInterface {
+              id: ID
+            }
 
             input UserOptions {
               limit: Int
@@ -118,7 +121,7 @@ describe("@private directive", () => {
               \\"\\"\\"
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [UserSort]
+              sort: [UserSort!]
             }
 
             \\"\\"\\"

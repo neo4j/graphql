@@ -25,6 +25,7 @@ import filterInterfaceNodes from "../utils/filter-interface-nodes";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
+import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
 import createElementWhereAndParams from "./where/create-element-where-and-params";
 
 function createInterfaceProjectionAndParams({
@@ -45,9 +46,9 @@ function createInterfaceProjectionAndParams({
     let globalParams = {};
     let params: { args?: any } = {};
 
-    const inStr = field.direction === "IN" ? "<-" : "-";
     const relTypeStr = `[:${field.type}]`;
-    const outStr = field.direction === "OUT" ? "->" : "-";
+
+    const { inStr, outStr } = getRelationshipDirection(field, resolveTree.args);
 
     const whereInput = resolveTree.args.where as InterfaceWhereArg;
 

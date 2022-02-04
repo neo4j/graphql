@@ -27,7 +27,13 @@ import {
     GraphQLInputObjectType,
     GraphQLInt,
 } from "graphql";
-import { ExcludeOperationEnum, RelationshipDirectionEnum, TimestampOperationEnum } from "./enums";
+import { RelationshipQueryDirectionOption } from "../../constants";
+import {
+    ExcludeOperationEnum,
+    RelationshipDirectionEnum,
+    RelationshipQueryDirectionEnum,
+    TimestampOperationEnum,
+} from "./enums";
 import { ScalarType } from "./scalars";
 
 export const aliasDirective = new GraphQLDirective({
@@ -163,6 +169,11 @@ export const relationshipDirective = new GraphQLDirective({
         type: {
             type: new GraphQLNonNull(GraphQLString),
         },
+        queryDirection: {
+            type: RelationshipQueryDirectionEnum,
+            defaultValue: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
+            description: "Valid and default directions for this relationship.",
+        },
         direction: {
             type: new GraphQLNonNull(RelationshipDirectionEnum),
         },
@@ -238,6 +249,26 @@ export const fulltextDirective = new GraphQLDirective({
                     })
                 )
             ),
+        },
+    },
+    locations: [DirectiveLocation.OBJECT],
+});
+
+export const queryOptions = new GraphQLDirective({
+    name: "queryOptions",
+    description: "Instructs @neo4j/graphql to inject default values into a query such as a default limit.",
+    args: {
+        limit: {
+            description: "Limit options.",
+            type: new GraphQLInputObjectType({
+                name: "LimitInput",
+                fields: {
+                    default: {
+                        description: "If no limit argument is supplied on query will fallback to this value.",
+                        type: GraphQLInt,
+                    },
+                },
+            }),
         },
     },
     locations: [DirectiveLocation.OBJECT],
