@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import * as neo4j from "neo4j-driver";
 import { Integer } from "neo4j-driver";
 
 type QueryOptionsDirectiveConstructor = {
@@ -33,12 +34,13 @@ export class QueryOptionsDirective {
         this.limit = args.limit;
     }
 
-    public getLimit(optionsLimit?: Integer): Integer | undefined {
+    public getLimit(optionsLimit?: Integer | number): Integer | undefined {
         if (optionsLimit) {
-            if (this.limit.max && optionsLimit.greaterThan(this.limit.max)) {
+            const integerLimit = neo4j.int(optionsLimit);
+            if (this.limit.max && integerLimit.greaterThan(this.limit.max)) {
                 return this.limit.max;
             }
-            return optionsLimit;
+            return integerLimit;
         }
 
         return this.limit.default || this.limit.max;

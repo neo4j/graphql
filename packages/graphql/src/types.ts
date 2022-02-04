@@ -207,7 +207,7 @@ export interface ConnectionQueryArgs {
  * passed to resolvers.
  */
 export interface GraphQLOptionsArg {
-    limit?: Integer;
+    limit?: number | Integer;
     offset?: number | Integer;
     sort?: GraphQLSortArg[];
 }
