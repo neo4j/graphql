@@ -406,7 +406,7 @@ function createConnectionAndParams({
 
     const returnValues: string[] = [];
 
-    if (relatedNode && relatedNode?.queryOptions?.getLimit()) {
+    if (relatedNode && relatedNode.queryOptions?.getLimit()) {
         subquery = [
             ...subquery,
             ...createLimitedReturnSubquery(resolveTree.alias, relatedNode.queryOptions.getLimit(), afterInput),

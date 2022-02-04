@@ -39,7 +39,11 @@ export function parseQueryOptionsDirective({
     const maxLimit = parseArgumentToInt(maxLimitArgument);
 
     const queryOptionsLimit = { default: defaultLimit, max: maxLimit };
-    validateLimitArguments(queryOptionsLimit, definition.name.value);
+
+    const queryOptionsError = validateLimitArguments(queryOptionsLimit, definition.name.value);
+    if (queryOptionsError) {
+        throw queryOptionsError;
+    }
 
     return new QueryOptionsDirective({ limit: queryOptionsLimit });
 }
@@ -52,25 +56,26 @@ function parseArgumentToInt(field: ObjectFieldNode | undefined): neo4j.Integer |
     return undefined;
 }
 
-function validateLimitArguments(arg: QueryOptionsDirective["limit"], typeName: string): void {
+function validateLimitArguments(arg: QueryOptionsDirective["limit"], typeName: string): Neo4jGraphQLError | undefined {
     const maxLimit = arg.max?.toNumber();
     const defaultLimit = arg.default?.toNumber();
 
     if (defaultLimit !== undefined && defaultLimit <= 0) {
-        throw new Neo4jGraphQLError(
+        return new Neo4jGraphQLError(
             `${typeName} @queryOptions(limit: {default: ${defaultLimit}}) invalid value: '${defaultLimit}' try a number greater than 0`
         );
     }
     if (maxLimit !== undefined && maxLimit <= 0) {
-        throw new Neo4jGraphQLError(
+        return new Neo4jGraphQLError(
             `${typeName} @queryOptions(limit: {max: ${maxLimit}}) invalid value: '${maxLimit}' try a number greater than 0`
         );
     }
     if (maxLimit && defaultLimit) {
         if (maxLimit < defaultLimit) {
-            throw new Neo4jGraphQLError(
+            return new Neo4jGraphQLError(
                 `${typeName} @queryOptions(limit: {max: ${maxLimit}, default: ${defaultLimit}}) invalid default value, 'default' must be smaller than 'max'`
             );
         }
     }
+    return undefined;
 }
