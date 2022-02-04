@@ -139,7 +139,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
 
         const aggregationInput = createAggregationInput({
             basedOnSearch: `export type ${node.name}AggregateSelection = {`,
-            typeName: `${node.name}AggregateInput`,
+            typeName: `${node.name}AggregateSelectionInput`,
             aggregateSelections,
             input: output,
         });
@@ -187,7 +187,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                 public aggregate(args: {
                     where?: ${node.name}Where;
                     ${hasFulltextArg ? `fulltext?: ${node.name}Fulltext;` : ""}
-                    aggregate: ${node.name}AggregateInput;
+                    aggregate: ${node.name}AggregateSelectionInput;
                     context?: any;
                     rootValue?: any;
                 }): Promise<${node.name}AggregateSelection>
