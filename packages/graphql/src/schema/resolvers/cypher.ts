@@ -249,8 +249,15 @@ export default function cypherResolver({
 
         if (isPrimitive || isEnum || isScalar) {
             cypherStrs.push(`RETURN this`);
-        } else if (referenceUnion || referenceInterface) {
+        } else if (referenceUnion) {
             cypherStrs.push(`RETURN head( ${projectionStr} ) AS this`);
+        } else if (referenceInterface) {
+            cypherStrs.push(`CALL { ${projectionStr} }`);
+            if (expectMultipleValues) {
+                cypherStrs.push(`RETURN ${field.fieldName} AS this`)
+            } else {
+                cypherStrs.push(`RETURN head(collect( ${field.fieldName} )) AS this`)
+            }
         } else {
             cypherStrs.push(`RETURN this ${projectionStr} AS this`);
         }
