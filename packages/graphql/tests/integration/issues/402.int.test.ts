@@ -60,7 +60,7 @@ describe("402", () => {
 
         // testing the missing non non-null array
         const query = `
-            query ($area: [ID]) {
+            query ($area: [ID!]) {
                events (
                  where: {
                    id: "${eventId}"

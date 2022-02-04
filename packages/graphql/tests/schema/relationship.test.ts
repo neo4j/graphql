@@ -66,7 +66,7 @@ describe("Relationship", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             \\"\\"\\"
@@ -258,7 +258,7 @@ describe("Relationship", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
@@ -403,7 +403,7 @@ describe("Relationship", () => {
             \\"\\"\\"
             Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
             \\"\\"\\"
-            sort: [ActorSort]
+            sort: [ActorSort!]
           }
 
           \\"\\"\\"
@@ -428,11 +428,11 @@ describe("Relationship", () => {
             id: ID
             id_CONTAINS: ID
             id_ENDS_WITH: ID
-            id_IN: [ID]
+            id_IN: [ID!]
             id_NOT: ID
             id_NOT_CONTAINS: ID
             id_NOT_ENDS_WITH: ID
-            id_NOT_IN: [ID]
+            id_NOT_IN: [ID!]
             id_NOT_STARTS_WITH: ID
             id_STARTS_WITH: ID
             name: String
@@ -651,7 +651,7 @@ describe("Relationship", () => {
             \\"\\"\\"
             Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
             \\"\\"\\"
-            sort: [MovieSort]
+            sort: [MovieSort!]
           }
 
           input MovieRelationInput {
@@ -891,7 +891,7 @@ describe("Relationship", () => {
             \\"\\"\\"
             Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
             \\"\\"\\"
-            sort: [ActorSort]
+            sort: [ActorSort!]
           }
 
           input ActorRelationInput {
@@ -1100,7 +1100,7 @@ describe("Relationship", () => {
             \\"\\"\\"
             Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
             \\"\\"\\"
-            sort: [MovieSort]
+            sort: [MovieSort!]
           }
 
           input MovieRelationInput {
@@ -1358,7 +1358,7 @@ describe("Relationship", () => {
             \\"\\"\\"
             Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
             \\"\\"\\"
-            sort: [ActorSort]
+            sort: [ActorSort!]
           }
 
           input ActorRelationInput {
@@ -1567,7 +1567,7 @@ describe("Relationship", () => {
             \\"\\"\\"
             Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
             \\"\\"\\"
-            sort: [MovieSort]
+            sort: [MovieSort!]
           }
 
           input MovieRelationInput {
@@ -1816,7 +1816,7 @@ describe("Relationship", () => {
             \\"\\"\\"
             Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
             \\"\\"\\"
-            sort: [ActorSort]
+            sort: [ActorSort!]
           }
 
           input ActorRelationInput {
@@ -2006,7 +2006,7 @@ describe("Relationship", () => {
             \\"\\"\\"
             Specify one or more DirectorSort objects to sort Directors by. The sorts will be applied in the order in which they are arranged in the array.
             \\"\\"\\"
-            sort: [DirectorSort]
+            sort: [DirectorSort!]
           }
 
           input DirectorRelationInput {
@@ -2059,7 +2059,7 @@ describe("Relationship", () => {
             directorConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieDirectorConnectionSort!], where: MovieDirectorConnectionWhere): MovieDirectorConnection!
             id: ID
             people(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
-            peopleConnection(directed: Boolean = true, where: MoviePeopleConnectionWhere): MoviePeopleConnection!
+            peopleConnection(after: String, directed: Boolean = true, first: Int, where: MoviePeopleConnectionWhere): MoviePeopleConnection!
           }
 
           type MovieActorActorsAggregationSelection {
@@ -2310,7 +2310,7 @@ describe("Relationship", () => {
             \\"\\"\\"
             Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
             \\"\\"\\"
-            sort: [MovieSort]
+            sort: [MovieSort!]
           }
 
           input MoviePeopleActorConnectFieldInput {
@@ -2372,27 +2372,9 @@ describe("Relationship", () => {
             totalCount: Int!
           }
 
-          input MoviePeopleConnectionActorWhere {
-            AND: [MoviePeopleConnectionActorWhere]
-            OR: [MoviePeopleConnectionActorWhere]
-            edge: MoviePeopleRelationshipWhere
-            edge_NOT: MoviePeopleRelationshipWhere
-            node: ActorWhere
-            node_NOT: ActorWhere
-          }
-
-          input MoviePeopleConnectionDirectorWhere {
-            AND: [MoviePeopleConnectionDirectorWhere]
-            OR: [MoviePeopleConnectionDirectorWhere]
-            edge: MoviePeopleRelationshipWhere
-            edge_NOT: MoviePeopleRelationshipWhere
-            node: DirectorWhere
-            node_NOT: DirectorWhere
-          }
-
           input MoviePeopleConnectionWhere {
-            Actor: MoviePeopleConnectionActorWhere
-            Director: MoviePeopleConnectionDirectorWhere
+            Actor: MoviePeopleActorConnectionWhere
+            Director: MoviePeopleDirectorConnectionWhere
           }
 
           input MoviePeopleCreateFieldInput {

@@ -75,7 +75,7 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(directed: Boolean = true, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -133,11 +133,11 @@ describe("Interface Relationships", () => {
               screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
-              screenTime_IN: [Int]
+              screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
               screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
+              screenTime_NOT_IN: [Int!]
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -182,7 +182,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
@@ -209,11 +209,11 @@ describe("Interface Relationships", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -274,7 +274,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -296,19 +296,19 @@ describe("Interface Relationships", () => {
               runtime: Int
               runtime_GT: Int
               runtime_GTE: Int
-              runtime_IN: [Int]
+              runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
               runtime_NOT: Int
-              runtime_NOT_IN: [Int]
+              runtime_NOT_IN: [Int!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -366,11 +366,11 @@ describe("Interface Relationships", () => {
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -411,7 +411,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [SeriesSort]
+              sort: [SeriesSort!]
             }
 
             \\"\\"\\"
@@ -433,19 +433,19 @@ describe("Interface Relationships", () => {
               episodes: Int
               episodes_GT: Int
               episodes_GTE: Int
-              episodes_IN: [Int]
+              episodes_IN: [Int!]
               episodes_LT: Int
               episodes_LTE: Int
               episodes_NOT: Int
-              episodes_NOT_IN: [Int]
+              episodes_NOT_IN: [Int!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -548,7 +548,7 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(directed: Boolean = true, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -609,11 +609,11 @@ describe("Interface Relationships", () => {
               screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
-              screenTime_IN: [Int]
+              screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
               screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
+              screenTime_NOT_IN: [Int!]
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -662,7 +662,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
@@ -689,11 +689,11 @@ describe("Interface Relationships", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -769,7 +769,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [EpisodeSort]
+              sort: [EpisodeSort!]
             }
 
             input EpisodeRelationInput {
@@ -924,11 +924,11 @@ describe("Interface Relationships", () => {
               runtime: Int
               runtime_GT: Int
               runtime_GTE: Int
-              runtime_IN: [Int]
+              runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
               runtime_NOT: Int
-              runtime_NOT_IN: [Int]
+              runtime_NOT_IN: [Int!]
               series: SeriesWhere
               seriesAggregate: EpisodeSeriesAggregateInput
               seriesConnection: EpisodeSeriesConnectionWhere
@@ -1062,7 +1062,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
@@ -1094,19 +1094,19 @@ describe("Interface Relationships", () => {
               runtime: Int
               runtime_GT: Int
               runtime_GTE: Int
-              runtime_IN: [Int]
+              runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
               runtime_NOT: Int
-              runtime_NOT_IN: [Int]
+              runtime_NOT_IN: [Int!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -1269,11 +1269,11 @@ describe("Interface Relationships", () => {
               screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
-              screenTime_IN: [Int]
+              screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
               screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
+              screenTime_NOT_IN: [Int!]
             }
 
             input ProductionActorsUpdateConnectionInput {
@@ -1355,11 +1355,11 @@ describe("Interface Relationships", () => {
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -1619,7 +1619,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [SeriesSort]
+              sort: [SeriesSort!]
             }
 
             input SeriesRelationInput {
@@ -1653,11 +1653,11 @@ describe("Interface Relationships", () => {
               episodeCount: Int
               episodeCount_GT: Int
               episodeCount_GTE: Int
-              episodeCount_IN: [Int]
+              episodeCount_IN: [Int!]
               episodeCount_LT: Int
               episodeCount_LTE: Int
               episodeCount_NOT: Int
-              episodeCount_NOT_IN: [Int]
+              episodeCount_NOT_IN: [Int!]
               episodes: EpisodeWhere
               episodesAggregate: SeriesEpisodesAggregateInput
               episodesConnection: SeriesEpisodesConnectionWhere
@@ -1666,11 +1666,11 @@ describe("Interface Relationships", () => {
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -1801,7 +1801,7 @@ describe("Interface Relationships", () => {
             interface Interface1 {
               field1: String!
               interface2(directed: Boolean = true, options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(directed: Boolean = true, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2Connection(after: String, directed: Boolean = true, first: Int, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             input Interface1ConnectInput {
@@ -1816,7 +1816,6 @@ describe("Interface Relationships", () => {
             input Interface1CreateInput {
               Type1Interface1: Type1Interface1CreateInput
               Type2Interface1: Type2Interface1CreateInput
-              interface2: Interface1Interface2FieldInput
             }
 
             input Interface1DeleteInput {
@@ -1917,11 +1916,11 @@ describe("Interface Relationships", () => {
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
-              field1_IN: [String]
+              field1_IN: [String!]
               field1_NOT: String
               field1_NOT_CONTAINS: String
               field1_NOT_ENDS_WITH: String
-              field1_NOT_IN: [String]
+              field1_NOT_IN: [String!]
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
               interface2Connection: Interface1Interface2ConnectionWhere
@@ -2029,7 +2028,7 @@ describe("Interface Relationships", () => {
             type Type1 {
               field1: String!
               interface1(directed: Boolean = true, options: QueryOptions, where: Interface1Where): [Interface1!]!
-              interface1Connection(directed: Boolean = true, where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
+              interface1Connection(after: String, directed: Boolean = true, first: Int, where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
             type Type1AggregateSelection {
@@ -2057,7 +2056,7 @@ describe("Interface Relationships", () => {
             type Type1Interface1 implements Interface1 {
               field1: String!
               interface2(directed: Boolean = true, options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(directed: Boolean = true, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2Connection(after: String, directed: Boolean = true, first: Int, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             type Type1Interface1AggregateSelection {
@@ -2154,7 +2153,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more Type1Interface1Sort objects to sort Type1Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Type1Interface1Sort]
+              sort: [Type1Interface1Sort!]
             }
 
             input Type1Interface1RelationInput {
@@ -2197,11 +2196,11 @@ describe("Interface Relationships", () => {
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
-              field1_IN: [String]
+              field1_IN: [String!]
               field1_NOT: String
               field1_NOT_CONTAINS: String
               field1_NOT_ENDS_WITH: String
-              field1_NOT_IN: [String]
+              field1_NOT_IN: [String!]
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
               interface2Connection: Interface1Interface2ConnectionWhere
@@ -2227,7 +2226,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more Type1Interface2Sort objects to sort Type1Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Type1Interface2Sort]
+              sort: [Type1Interface2Sort!]
             }
 
             \\"\\"\\"
@@ -2247,11 +2246,11 @@ describe("Interface Relationships", () => {
               field2: String
               field2_CONTAINS: String
               field2_ENDS_WITH: String
-              field2_IN: [String]
+              field2_IN: [String!]
               field2_NOT: String
               field2_NOT_CONTAINS: String
               field2_NOT_ENDS_WITH: String
-              field2_NOT_IN: [String]
+              field2_NOT_IN: [String!]
               field2_NOT_STARTS_WITH: String
               field2_STARTS_WITH: String
             }
@@ -2262,7 +2261,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more Type1Sort objects to sort Type1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Type1Sort]
+              sort: [Type1Sort!]
             }
 
             input Type1RelationInput {
@@ -2287,11 +2286,11 @@ describe("Interface Relationships", () => {
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
-              field1_IN: [String]
+              field1_IN: [String!]
               field1_NOT: String
               field1_NOT_CONTAINS: String
               field1_NOT_ENDS_WITH: String
-              field1_NOT_IN: [String]
+              field1_NOT_IN: [String!]
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
               interface1Connection: Type1Interface1ConnectionWhere
@@ -2301,7 +2300,7 @@ describe("Interface Relationships", () => {
             type Type2Interface1 implements Interface1 {
               field1: String!
               interface2(directed: Boolean = true, options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(directed: Boolean = true, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2Connection(after: String, directed: Boolean = true, first: Int, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             type Type2Interface1AggregateSelection {
@@ -2361,7 +2360,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Type2Interface1Sort]
+              sort: [Type2Interface1Sort!]
             }
 
             input Type2Interface1RelationInput {
@@ -2386,11 +2385,11 @@ describe("Interface Relationships", () => {
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
-              field1_IN: [String]
+              field1_IN: [String!]
               field1_NOT: String
               field1_NOT_CONTAINS: String
               field1_NOT_ENDS_WITH: String
-              field1_NOT_IN: [String]
+              field1_NOT_IN: [String!]
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
               interface2Connection: Interface1Interface2ConnectionWhere
@@ -2416,7 +2415,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more Type2Interface2Sort objects to sort Type2Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Type2Interface2Sort]
+              sort: [Type2Interface2Sort!]
             }
 
             \\"\\"\\"
@@ -2436,11 +2435,11 @@ describe("Interface Relationships", () => {
               field2: String
               field2_CONTAINS: String
               field2_ENDS_WITH: String
-              field2_IN: [String]
+              field2_IN: [String!]
               field2_NOT: String
               field2_NOT_CONTAINS: String
               field2_NOT_ENDS_WITH: String
-              field2_NOT_IN: [String]
+              field2_NOT_IN: [String!]
               field2_NOT_STARTS_WITH: String
               field2_STARTS_WITH: String
             }
@@ -2609,7 +2608,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more CommentSort objects to sort Comments by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [CommentSort]
+              sort: [CommentSort!]
             }
 
             input CommentPostAggregateInput {
@@ -3215,7 +3214,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [PostSort]
+              sort: [PostSort!]
             }
 
             input PostRelationInput {
@@ -3334,7 +3333,7 @@ describe("Interface Relationships", () => {
 
             type User {
               content(directed: Boolean = true, options: QueryOptions, where: ContentWhere): [Content!]!
-              contentConnection(directed: Boolean = true, where: UserContentConnectionWhere): UserContentConnection!
+              contentConnection(after: String, directed: Boolean = true, first: Int, where: UserContentConnectionWhere): UserContentConnection!
               id: ID
               name: String
             }
@@ -3428,7 +3427,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [UserSort]
+              sort: [UserSort!]
             }
 
             input UserRelationInput {

@@ -216,7 +216,7 @@ describe("Connect Or Create", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
@@ -246,11 +246,11 @@ describe("Connect Or Create", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -307,7 +307,7 @@ describe("Connect Or Create", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -333,21 +333,21 @@ describe("Connect Or Create", () => {
               isan: String
               isan_CONTAINS: String
               isan_ENDS_WITH: String
-              isan_IN: [String]
+              isan_IN: [String!]
               isan_NOT: String
               isan_NOT_CONTAINS: String
               isan_NOT_ENDS_WITH: String
-              isan_NOT_IN: [String]
+              isan_NOT_IN: [String!]
               isan_NOT_STARTS_WITH: String
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -687,11 +687,11 @@ describe("Connect Or Create", () => {
               screentime: Int
               screentime_GT: Int
               screentime_GTE: Int
-              screentime_IN: [Int]
+              screentime_IN: [Int!]
               screentime_LT: Int
               screentime_LTE: Int
               screentime_NOT: Int
-              screentime_NOT_IN: [Int]
+              screentime_NOT_IN: [Int!]
             }
 
             input ActorMoviesUpdateConnectionInput {
@@ -715,7 +715,7 @@ describe("Connect Or Create", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
@@ -745,11 +745,11 @@ describe("Connect Or Create", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -813,7 +813,7 @@ describe("Connect Or Create", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -839,21 +839,21 @@ describe("Connect Or Create", () => {
               isan: String
               isan_CONTAINS: String
               isan_ENDS_WITH: String
-              isan_IN: [String]
+              isan_IN: [String!]
               isan_NOT: String
               isan_NOT_CONTAINS: String
               isan_NOT_ENDS_WITH: String
-              isan_NOT_IN: [String]
+              isan_NOT_IN: [String!]
               isan_NOT_STARTS_WITH: String
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }

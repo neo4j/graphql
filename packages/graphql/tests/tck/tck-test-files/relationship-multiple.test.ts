@@ -111,8 +111,8 @@ describe("Relationship - Multiple", () => {
             WITH { _type: type(this_directed_acted_in_relationship), node: { __resolveType: \\"Actor\\", name: this_Actor.name } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS peopleConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS peopleConnection
             }
             RETURN this { .title, people:  [this_people IN [(this)<-[:DIRECTED|ACTED_IN]-(this_people) WHERE (\\"Director\\" IN labels(this_people)) OR (\\"Actor\\" IN labels(this_people)) | head( [ this_people IN [this_people] WHERE (\\"Director\\" IN labels(this_people)) | this_people { __resolveType: \\"Director\\",  .name } ] + [ this_people IN [this_people] WHERE (\\"Actor\\" IN labels(this_people)) | this_people { __resolveType: \\"Actor\\",  .name } ] ) ] WHERE this_people IS NOT NULL] , peopleConnection } as this"
         `);

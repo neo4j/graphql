@@ -1,11 +1,10 @@
 [[queries]]
 = Queries
 
-Each node defined in type definitions will have three Query fields generated for it:
+Each node defined in type definitions will have two Query fields generated for it:
 
 1. One for querying data
-2. One for counting data
-3. One for aggregating data
+2. One for aggregating data
 
 The examples in this chapter will use the following type definitions:
 
@@ -36,11 +35,9 @@ For which the following Query fields will be generated:
 ----
 type Query {
     posts(where: PostWhere, options: PostOptions): [Post!]!
-    postsCount(where: PostWhere): Int!
     postsAggregate(where: PostWhere): PostAggregationSelection!
 
     users(where: UserWhere, options: UserOptions): [User!]!
-    usersCount(where: UserWhere): Int!
     usersAggregate(where: UserWhere): UserAggregationSelection!
 }
 ----
@@ -124,6 +121,8 @@ query Query {
 
 Note that _undirected relationships_ are only supported in queries.
 
+The xref:type-definitions/relationships.adoc#_querydirection[type definitions] for a relationship may define
+a different behaviour, so the `directed` option may not be available in some cases.
 
 [[queries-aggregate]]
 == Aggregate

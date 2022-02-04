@@ -66,11 +66,13 @@ const neoSchema = new Neo4jGraphQL({
     config: {
         jwt: {
             jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json",
-            rolesPath: "https://YOUR_DOMAIN/claims\\.https://YOUR_DOMAIN/claims/roles"
+            rolesPath: "https://auth0\\.mysite\\.com/claims.https://auth0\\.mysite\\.com/claims/roles"
         }
     }
 });
 ----
+
+Note that `.` characters within a key of the JWT must be escaped with `\\`, whilst a `.` character indicating traversal into a value must not be escaped.
 
 [[auth-setup-passing-in]]
 == Passing in JWTs

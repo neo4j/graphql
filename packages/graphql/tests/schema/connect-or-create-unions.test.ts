@@ -69,7 +69,7 @@ describe("Connect Or Create", () => {
 
             type Actor {
               actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(directed: Boolean = true, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -89,31 +89,13 @@ describe("Connect Or Create", () => {
               totalCount: Int!
             }
 
-            input ActorActedInConnectionMovieWhere {
-              AND: [ActorActedInConnectionMovieWhere]
-              OR: [ActorActedInConnectionMovieWhere]
-              edge: ActorActedInRelationshipWhere
-              edge_NOT: ActorActedInRelationshipWhere
-              node: MovieWhere
-              node_NOT: MovieWhere
-            }
-
-            input ActorActedInConnectionSeriesWhere {
-              AND: [ActorActedInConnectionSeriesWhere]
-              OR: [ActorActedInConnectionSeriesWhere]
-              edge: ActorActedInRelationshipWhere
-              edge_NOT: ActorActedInRelationshipWhere
-              node: SeriesWhere
-              node_NOT: SeriesWhere
-            }
-
             input ActorActedInConnectionSort {
               edge: ActedInSort
             }
 
             input ActorActedInConnectionWhere {
-              Movie: ActorActedInConnectionMovieWhere
-              Series: ActorActedInConnectionSeriesWhere
+              Movie: ActorActedInMovieConnectionWhere
+              Series: ActorActedInSeriesConnectionWhere
             }
 
             input ActorActedInCreateFieldInput {
@@ -210,11 +192,11 @@ describe("Connect Or Create", () => {
               screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
-              screenTime_IN: [Int]
+              screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
               screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
+              screenTime_NOT_IN: [Int!]
             }
 
             input ActorActedInSeriesConnectFieldInput {
@@ -312,7 +294,7 @@ describe("Connect Or Create", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
@@ -339,11 +321,11 @@ describe("Connect Or Create", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -405,7 +387,7 @@ describe("Connect Or Create", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -431,21 +413,21 @@ describe("Connect Or Create", () => {
               isan: String
               isan_CONTAINS: String
               isan_ENDS_WITH: String
-              isan_IN: [String]
+              isan_IN: [String!]
               isan_NOT: String
               isan_NOT_CONTAINS: String
               isan_NOT_ENDS_WITH: String
-              isan_NOT_IN: [String]
+              isan_NOT_IN: [String!]
               isan_NOT_STARTS_WITH: String
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -521,7 +503,7 @@ describe("Connect Or Create", () => {
               \\"\\"\\"
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [SeriesSort]
+              sort: [SeriesSort!]
             }
 
             \\"\\"\\"
@@ -547,21 +529,21 @@ describe("Connect Or Create", () => {
               isan: String
               isan_CONTAINS: String
               isan_ENDS_WITH: String
-              isan_IN: [String]
+              isan_IN: [String!]
               isan_NOT: String
               isan_NOT_CONTAINS: String
               isan_NOT_ENDS_WITH: String
-              isan_NOT_IN: [String]
+              isan_NOT_IN: [String!]
               isan_NOT_STARTS_WITH: String
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }

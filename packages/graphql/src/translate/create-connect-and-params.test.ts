@@ -22,6 +22,7 @@ import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
+import { RelationshipQueryDirectionOption } from "../constants";
 
 describe("createConnectAndParams", () => {
     test("should return the correct connection", () => {
@@ -39,6 +40,7 @@ describe("createConnectAndParams", () => {
                     paramName: "similar",
                     multiple: false,
                     fieldName: "similarMovies",
+                    queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                     inherited: false,
                     typeMeta: {
                         name: "Movie",
