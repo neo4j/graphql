@@ -19,6 +19,7 @@
 
 import { UnionTypeDefinitionNode } from "graphql/language/ast";
 import { ResolveTree } from "graphql-parse-resolve-info";
+import { mergeDeep } from "@graphql-tools/utils";
 import { Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
@@ -594,20 +595,20 @@ function createProjectionAndParams({
 
     // Include fields of implemented interfaces to allow for fragments on interfaces
     // cf. https://github.com/neo4j/graphql/issues/476
-    const selectedFields = node.interfaces
-        .map((implementedInterface) => implementedInterface.name.value)
-        .reduce(
-            (prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }),
-            resolveTree.fieldsByTypeName[node.name]
-        );
+    const mergedSelectedFields = mergeDeep<Record<string, ResolveTree>[]>([
+        resolveTree.fieldsByTypeName[node.name],
+        ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value]),
+    ]);
 
-    const fields = {
-        ...selectedFields,
-        ...generateMissingOrAliasedSortFields({ selection: selectedFields, resolveTree }),
-        ...generateMissingOrAliasedRequiredFields({ selection: selectedFields, node }),
-    };
+    // Merge fields for final projection to account for multiple fragments
+    // cf. https://github.com/neo4j/graphql/issues/920
+    const mergedFields = mergeDeep<Record<string, ResolveTree>[]>([
+        mergedSelectedFields,
+        generateMissingOrAliasedSortFields({ selection: mergedSelectedFields, resolveTree }),
+        generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
+    ]);
 
-    const { projection, params, meta } = Object.values(fields).reduce(reducer, {
+    const { projection, params, meta } = Object.values(mergedFields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
         params: {},
         meta: {},
