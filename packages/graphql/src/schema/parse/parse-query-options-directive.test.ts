@@ -109,7 +109,7 @@ describe("parseQueryOptionsDirective", () => {
                         definition,
                     })
                 ).toThrow(
-                    `Movie @queryOptions(limit: {default: ${i}}) invalid value: '${i}' try a number greater than 0`
+                    `Movie @queryOptions(limit: {default: ${i}}) invalid value: '${i}', it should be a number greater than 0`
                 );
             });
         });
@@ -130,7 +130,7 @@ describe("parseQueryOptionsDirective", () => {
                     directive,
                     definition,
                 })
-            ).toThrow(`Movie @queryOptions(limit: {max: 0}) invalid value: '0' try a number greater than 0`);
+            ).toThrow(`Movie @queryOptions(limit: {max: 0}) invalid value: '0', it should be a number greater than 0`);
         });
 
         test("should fail if value is less 0", () => {
@@ -147,7 +147,9 @@ describe("parseQueryOptionsDirective", () => {
                     directive,
                     definition,
                 })
-            ).toThrow(`Movie @queryOptions(limit: {max: -10}) invalid value: '-10' try a number greater than 0`);
+            ).toThrow(
+                `Movie @queryOptions(limit: {max: -10}) invalid value: '-10', it should be a number greater than 0`
+            );
         });
     });
 });
