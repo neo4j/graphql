@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { GraphQLResolveInfo } from "graphql";
 import { UnionTypeDefinitionNode } from "graphql/language/ast";
 import { execute } from "../../utils";
 import { BaseField, ConnectionField, Context } from "../../types";
@@ -27,6 +28,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import createProjectionAndParams from "../../translate/create-projection-and-params";
 import createConnectionAndParams from "../../translate/connection/create-connection-and-params";
 import { isNeoInt } from "../../utils/utils";
+import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 
 export default function cypherResolver({
     field,
@@ -37,8 +39,9 @@ export default function cypherResolver({
     statement: string;
     type: "Query" | "Mutation";
 }) {
-    async function resolve(_root: any, args: any, _context: unknown) {
+    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
+        context.resolveTree = getNeo4jResolveTree(info);
         const { resolveTree } = context;
         const cypherStrs: string[] = [];
         const connectionProjectionStrs: string[] = [];
@@ -73,7 +76,7 @@ export default function cypherResolver({
 
         if (referenceNode) {
             const recurse = createProjectionAndParams({
-                fieldsByTypeName: resolveTree.fieldsByTypeName,
+                resolveTree,
                 node: referenceNode,
                 context,
                 varName: `this`,
@@ -122,7 +125,7 @@ export default function cypherResolver({
 
                     if (resolveTree.fieldsByTypeName[node.name]) {
                         const [str, p, meta] = createProjectionAndParams({
-                            fieldsByTypeName: resolveTree.fieldsByTypeName,
+                            resolveTree,
                             node,
                             context,
                             varName: "this",
@@ -150,13 +153,22 @@ export default function cypherResolver({
         }
 
         const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
-        const apocParams = Object.entries(resolveTree.args).reduce(
-            (r: { strs: string[]; params: any }, entry) => {
-                return {
-                    strs: [...r.strs, `${entry[0]}: $${entry[0]}`],
-                    params: { ...r.params, [entry[0]]: entry[1] },
-                };
-            },
+
+        // Null default argument values are not passed into the resolve tree therefore these are not being passed to
+        // `apocParams` below causing a runtime error when executing.
+        const nullArgumentValues = field.arguments.reduce(
+            (res, argument) => ({
+                ...res,
+                ...{ [argument.name.value]: null },
+            }),
+            {}
+        );
+
+        const apocParams = Object.entries({ ...nullArgumentValues, ...resolveTree.args }).reduce(
+            (r: { strs: string[]; params: any }, entry) => ({
+                strs: [...r.strs, `${entry[0]}: $${entry[0]}`],
+                params: { ...r.params, [entry[0]]: entry[1] },
+            }),
             { strs: initApocParamsStrs, params }
         ) as { strs: string[]; params: any };
 

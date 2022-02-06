@@ -20,8 +20,8 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../src";
-import { createJwtRequest } from "../../../../../../../src/utils/test/utils";
 import { formatCypher, translateQuery, formatParams } from "../../../../../utils/tck-test-utils";
+import { createJwtRequest } from "../../../../../../utils/create-jwt-request";
 
 describe("Cypher Auth Roles", () => {
     const secret = "secret";
@@ -37,21 +37,21 @@ describe("Cypher Auth Roles", () => {
             type Comment {
                 id: String
                 content: String
-                post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+                post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
             }
 
             type Post {
                 id: String
                 content: String
-                creator: User @relationship(type: "HAS_POST", direction: OUT)
-                comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+                creator: User! @relationship(type: "HAS_POST", direction: OUT)
+                comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 
             type User {
                 id: ID
                 name: String
                 password: String
-                posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
             extend type User

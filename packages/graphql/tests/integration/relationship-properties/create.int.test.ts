@@ -39,12 +39,12 @@ describe("Relationship properties - create", () => {
         const typeDefs = gql`
             type Movie {
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
             type Actor {
                 name: String!
-                movies: [Movie] @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
             interface ActedIn {
@@ -98,7 +98,7 @@ describe("Relationship properties - create", () => {
             variableValues: { movieTitle, actorName, screenTime },
         });
         expect(result.errors).toBeFalsy();
-        expect(result.data?.createMovies.movies).toEqual([
+        expect((result.data as any)?.createMovies.movies).toEqual([
             {
                 title: movieTitle,
                 actorsConnection: { edges: [{ screenTime, node: { name: actorName } }] },
@@ -183,7 +183,7 @@ describe("Relationship properties - create", () => {
             variableValues: { movieTitle, actorName, words },
         });
         expect(result.errors).toBeFalsy();
-        expect(result.data?.createActors.actors).toEqual([
+        expect((result.data as any)?.createActors.actors).toEqual([
             {
                 name: actorName,
                 publications: [{ title: movieTitle }],

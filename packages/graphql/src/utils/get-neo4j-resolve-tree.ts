@@ -100,9 +100,7 @@ function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4j
             ...queryType?.getFields(),
             ...mutationType?.getFields(),
             ...subscriptionType?.getFields(),
-        }).find(
-            (f) => f.name === resolveTree.name
-        ) as GraphQLField<any, any>;
+        }).find((f) => f.name === resolveTree.name) as GraphQLField<any, any>;
     }
 
     const args = Object.entries(resolveTree.args).reduce((res, [name, value]) => {

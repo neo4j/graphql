@@ -21,7 +21,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery } from "../../utils/tck-test-utils";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("Cypher -> fulltext -> Auth", () => {
     test("simple match with auth where", async () => {
@@ -30,7 +30,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                 @auth(rules: [{ where: { director: { id: "$jwt.sub" } } }]) {
                 title: String
-                director: [Person] @relationship(type: "DIRECTED", direction: IN)
+                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Person {
@@ -87,7 +87,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                 @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }]) {
                 title: String
-                director: [Person] @relationship(type: "DIRECTED", direction: IN)
+                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Person {

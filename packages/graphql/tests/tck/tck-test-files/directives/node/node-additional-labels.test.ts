@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Node directive with additionalLabels", () => {
@@ -32,13 +32,13 @@ describe("Node directive with additionalLabels", () => {
         typeDefs = gql`
             type Actor @node(additionalLabels: ["Person"]) {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie @node(label: "Film", additionalLabels: ["Multimedia"]) {
                 id: ID
                 title: String
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -206,25 +206,5 @@ describe("Node directive with additionalLabels", () => {
                 \\"this_update_id\\": \\"2\\"
             }"
         `);
-    });
-
-    test("Count movies with additional labels", async () => {
-        const query = gql`
-            {
-                moviesCount
-            }
-        `;
-
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`:\`Multimedia\`)
-            RETURN count(this)"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import { GraphQLResolveInfo } from "graphql";
 import defaultFieldResolver from "./defaultField";
 import { isNeoInt } from "../../utils/utils";
 
-function numerical(source, args, context, info) {
+function numerical(source, args, context, info: GraphQLResolveInfo) {
     const value = defaultFieldResolver(source, args, context, info);
 
     if (isNeoInt(value)) {

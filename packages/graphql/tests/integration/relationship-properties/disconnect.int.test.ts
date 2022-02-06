@@ -39,12 +39,12 @@ describe("Relationship properties - disconnect", () => {
         const typeDefs = gql`
             type Movie {
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
             type Actor {
                 name: String!
-                movies: [Movie] @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
             interface ActedIn {
@@ -92,7 +92,7 @@ describe("Relationship properties - disconnect", () => {
                 variableValues: { movieTitle, actorName },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.updateMovies.movies).toEqual([
+            expect((gqlResult.data as any)?.updateMovies.movies).toEqual([
                 {
                     title: movieTitle,
                     actors: [],
@@ -182,7 +182,7 @@ describe("Relationship properties - disconnect", () => {
                 variableValues: { actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.updateActors.actors).toEqual([
+            expect((gqlResult.data as any)?.updateActors.actors).toEqual([
                 {
                     name: actorName,
                     actedIn: [],

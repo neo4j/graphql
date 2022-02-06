@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#402", () => {
@@ -32,7 +32,7 @@ describe("#402", () => {
         typeDefs = gql`
             type Event {
                 id: ID!
-                area: Area @relationship(type: "HAPPENS_IN", direction: OUT)
+                area: Area! @relationship(type: "HAPPENS_IN", direction: OUT)
             }
 
             type Area {
@@ -48,7 +48,7 @@ describe("#402", () => {
 
     test("Should ignore the empty array and not include any where", async () => {
         const query = gql`
-            query($area: [ID]) {
+            query ($area: [ID!]) {
                 events(where: { area: { id_IN: $area } }) {
                     id
                     area {

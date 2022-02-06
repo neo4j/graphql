@@ -36,8 +36,8 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
 
         type User {
             id: ID!
-            friends: [User] @relationship(type: "HAS_FRIEND", direction: OUT)
-            posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+            friends: [User!]! @relationship(type: "HAS_FRIEND", direction: OUT)
+            posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
         }
 
         type Query {
@@ -219,11 +219,11 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
 
             expect(mutationResult.errors).toBeFalsy();
 
-            expect(mutationResult?.data?.createUsers?.users[0].id).toEqual(userID);
-            expect(mutationResult?.data?.createUsers?.users[0].friends).toHaveLength(3);
-            expect(mutationResult?.data?.createUsers?.users[0].posts).toHaveLength(3);
+            expect((mutationResult?.data as any)?.createUsers?.users[0].id).toEqual(userID);
+            expect((mutationResult?.data as any)?.createUsers?.users[0].friends).toHaveLength(3);
+            expect((mutationResult?.data as any)?.createUsers?.users[0].posts).toHaveLength(3);
 
-            mutationResult?.data?.createUsers?.users[0].friends.forEach((friend) => {
+            (mutationResult?.data as any)?.createUsers?.users[0].friends.forEach((friend) => {
                 expect(friend.posts).toHaveLength(3);
             });
 

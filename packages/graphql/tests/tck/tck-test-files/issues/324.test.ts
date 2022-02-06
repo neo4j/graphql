@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#324", () => {
@@ -32,17 +32,17 @@ describe("#324", () => {
         typeDefs = gql`
             type Person {
                 identifier: ID!
-                car: Car @relationship(type: "CAR", direction: OUT)
+                car: Car! @relationship(type: "CAR", direction: OUT)
             }
 
             type Car {
                 identifier: ID!
-                manufacturer: Manufacturer @relationship(type: "MANUFACTURER", direction: OUT)
+                manufacturer: Manufacturer! @relationship(type: "MANUFACTURER", direction: OUT)
             }
 
             type Manufacturer {
                 identifier: ID!
-                logo: Logo @relationship(type: "LOGO", direction: OUT)
+                logo: Logo! @relationship(type: "LOGO", direction: OUT)
                 name: String
             }
 

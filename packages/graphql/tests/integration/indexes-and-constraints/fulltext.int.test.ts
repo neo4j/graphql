@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../../src/utils/test/graphql-types";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("assertIndexesAndConstraints/fulltext", () => {
     let driver: Driver;
@@ -107,14 +107,14 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         const session = driver.session({ database: databaseName });
 
         const cypher = `
-            CALL db.indexes() yield 
-                name AS name, 
-                type AS type, 
-                entityType AS entityType, 
+            CALL db.indexes() yield
+                name AS name,
+                type AS type,
+                entityType AS entityType,
                 labelsOrTypes AS labelsOrTypes,
                 properties AS properties
             WHERE name = "${indexName}"
-            RETURN { 
+            RETURN {
                  name: name,
                  type: type,
                  entityType: entityType,
@@ -135,8 +135,8 @@ describe("assertIndexesAndConstraints/fulltext", () => {
             };
 
             expect(record.name).toEqual(indexName);
-            expect(record.type).toEqual("FULLTEXT");
-            expect(record.entityType).toEqual("NODE");
+            expect(record.type).toBe("FULLTEXT");
+            expect(record.entityType).toBe("NODE");
             expect(record.labelsOrTypes).toEqual([type.name]);
             expect(record.properties).toEqual(["title"]);
 
@@ -253,14 +253,14 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         const session = driver.session({ database: databaseName });
 
         const cypher = `
-            CALL db.indexes() yield 
-                name AS name, 
-                type AS type, 
-                entityType AS entityType, 
+            CALL db.indexes() yield
+                name AS name,
+                type AS type,
+                entityType AS entityType,
                 labelsOrTypes AS labelsOrTypes,
                 properties AS properties
             WHERE name = "${indexName}"
-            RETURN { 
+            RETURN {
                  name: name,
                  type: type,
                  entityType: entityType,
@@ -281,8 +281,8 @@ describe("assertIndexesAndConstraints/fulltext", () => {
             };
 
             expect(record.name).toEqual(indexName);
-            expect(record.type).toEqual("FULLTEXT");
-            expect(record.entityType).toEqual("NODE");
+            expect(record.type).toBe("FULLTEXT");
+            expect(record.entityType).toBe("NODE");
             expect(record.labelsOrTypes).toEqual([label]);
             expect(record.properties).toEqual(["title"]);
 
@@ -349,14 +349,14 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         const session = driver.session({ database: databaseName });
 
         const cypher = `
-            CALL db.indexes() yield 
-                name AS name, 
-                type AS type, 
-                entityType AS entityType, 
+            CALL db.indexes() yield
+                name AS name,
+                type AS type,
+                entityType AS entityType,
                 labelsOrTypes AS labelsOrTypes,
                 properties AS properties
             WHERE name = "${indexName}"
-            RETURN { 
+            RETURN {
                  name: name,
                  type: type,
                  entityType: entityType,
@@ -377,8 +377,8 @@ describe("assertIndexesAndConstraints/fulltext", () => {
             };
 
             expect(record.name).toEqual(indexName);
-            expect(record.type).toEqual("FULLTEXT");
-            expect(record.entityType).toEqual("NODE");
+            expect(record.type).toBe("FULLTEXT");
+            expect(record.entityType).toBe("NODE");
             expect(record.labelsOrTypes).toEqual([label]);
             expect(record.properties).toEqual(["newTitle"]);
 
@@ -528,6 +528,134 @@ describe("assertIndexesAndConstraints/fulltext", () => {
             })
         ).rejects.toThrow(
             `@fulltext index '${indexName}' on Node '${type.name}' is missing field 'description' aliased to field '${alias}'`
+        );
+    });
+
+    test("should create index if it doesn't exist and not throw if it does exist, and then query using the index", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
+        const title = generate({ readable: true, charset: "alphabetic" });
+        const indexName = generate({ readable: true, charset: "alphabetic" });
+        const type = generateUniqueType("Movie");
+
+        const typeDefs = gql`
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
+                title: String!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        await expect(
+            neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            })
+        ).resolves.not.toThrow();
+
+        // Previously this would have thrown, but the operation should be idempotent
+        await expect(
+            neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            })
+        ).resolves.not.toThrow();
+
+        const session = driver.session({ database: databaseName });
+
+        const cypher = `
+            CALL db.indexes() yield
+                name AS name,
+                type AS type,
+                entityType AS entityType,
+                labelsOrTypes AS labelsOrTypes,
+                properties AS properties
+            WHERE name = "${indexName}"
+            RETURN {
+                 name: name,
+                 type: type,
+                 entityType: entityType,
+                 labelsOrTypes: labelsOrTypes,
+                 properties: properties
+            } as result
+        `;
+
+        try {
+            const result = await session.run(cypher);
+
+            const record = result.records[0].get("result") as {
+                name: string;
+                type: string;
+                entityType: string;
+                labelsOrTypes: string[];
+                properties: string[];
+            };
+
+            expect(record.name).toEqual(indexName);
+            expect(record.type).toBe("FULLTEXT");
+            expect(record.entityType).toBe("NODE");
+            expect(record.labelsOrTypes).toEqual([type.name]);
+            expect(record.properties).toEqual(["title"]);
+
+            await session.run(`
+                CREATE (:${type.name} { title: "${title}" })
+            `);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should throw when index is missing fields when used with create option", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
+        const indexName = generate({ readable: true, charset: "alphabetic" });
+        const type = generateUniqueType("Movie");
+
+        const typeDefs = gql`
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
+                title: String!
+                description: String!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const session = driver.session({ database: databaseName });
+
+        try {
+            await session.run(
+                [
+                    `CALL db.index.fulltext.createNodeIndex(`,
+                    `"${indexName}",`,
+                    `["${type.name}"],`,
+                    `["title"]`,
+                    `)`,
+                ].join(" ")
+            );
+        } finally {
+            await session.close();
+        }
+
+        await expect(
+            neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            })
+        ).rejects.toThrow(
+            `@fulltext index '${indexName}' on Node '${type.name}' already exists, but is missing field 'description'`
         );
     });
 });

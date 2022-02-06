@@ -82,6 +82,26 @@ interface ActedIn @relationshipProperties {
 }
 ----
 
+=== QueryDirection
+All relationships have a direction, however, when querying it is possible to perform xref:queries.adoc#_undirected_queries[undirected queries].
+When defining a relationship you can define the default behaviour when performing queries over this relationship with the argument `queryDirection`:
+
+[source, graphql, indent=0]
+----
+type Person {
+    name: String!
+    born: Int!
+    actedInMovies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, queryDirection: DEFAULT_DIRECTED)
+}
+----
+
+`queryDirection` can have the following values:
+
+* `DEFAULT_DIRECTED` (default): All queries will be **directed** by default, but users may perform undirected queries.
+* `DEFAULT_UNDIRECTED`: All queries will be **undirected** by default, but users may perform directed queries.
+* `DIRECTED_ONLY`: Only directed queries can be perform on this relationship.
+* `UNDIRECTED_ONLY`: Only undirected queries can be perform on this relationship.
+
 == Inserting data
 
 Nested mutations mean that there are many ways in which you can insert data into your database through the GraphQL schema. You can't create a Movie without adding a director, and you can do that by either creating the director first and then creating and connecting the movie, or you can create both the Movie and the director in the same mutation. With the latter approach:
@@ -240,3 +260,21 @@ query {
     }
 }
 ----
+
+== Cardinality
+
+The Neo4j GraphQL Library has type definition requirements for "many" relationships, so given this example:
+
+[source, graphql, indent=0]
+----
+type User {
+    name: String!
+    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+}
+
+type Post {
+    name: String!
+}
+----
+
+The relationship at `User.posts` is considered a "many" relationship. Relationships such as the one above should always be of type `NonNullListType` and `NonNullNamedType`, meaning both the array and the type inside of it should have a `!`.

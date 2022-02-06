@@ -88,7 +88,7 @@ describe("auth/allow-unauthenticated", () => {
             expect(gqlResult.errors).toBeUndefined();
 
             // Check if returned data is what we really want
-            expect(gqlResult.data?.posts?.[0]?.id).toBe(postId);
+            expect((gqlResult.data as any)?.posts?.[0]?.id).toBe(postId);
         });
 
         test("should throw a Forbidden error", async () => {
@@ -135,7 +135,7 @@ describe("auth/allow-unauthenticated", () => {
             });
 
             // Check that a Forbidden error have been throwed
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             expect(gqlResult.errors as any[]).toHaveLength(1);
 
             // Check if returned data is what we really want
@@ -188,7 +188,7 @@ describe("auth/allow-unauthenticated", () => {
             });
 
             // Check that a Forbidden error have been throwed
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             expect(gqlResult.errors as any[]).toHaveLength(1);
 
             // Check if returned data is what we really want
@@ -244,7 +244,7 @@ describe("auth/allow-unauthenticated", () => {
             expect(gqlResult.errors).toBeUndefined();
 
             // Check if returned data is what we really want
-            expect(gqlResult.data?.posts?.[0]?.id).toBe(postId);
+            expect((gqlResult.data as any)?.posts?.[0]?.id).toBe(postId);
         });
 
         test("should return an empty array without errors", async () => {
@@ -388,7 +388,7 @@ describe("auth/allow-unauthenticated", () => {
             });
 
             // Check that a Forbidden error have been throwed
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             expect(gqlResult.errors as any[]).toHaveLength(1);
 
             // Check if returned data is what we really want

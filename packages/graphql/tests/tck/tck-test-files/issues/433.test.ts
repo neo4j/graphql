@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#413", () => {
@@ -33,7 +33,7 @@ describe("#413", () => {
             # Cannot use 'type Node'
             type Movie {
                 title: String
-                actors: [Person] @relationship(type: "ACTED_IN", direction: OUT)
+                actors: [Person!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Person {

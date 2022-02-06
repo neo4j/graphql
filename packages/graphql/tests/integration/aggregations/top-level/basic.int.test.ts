@@ -19,11 +19,9 @@
 
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { generate } from "randomstring";
-import pluralize from "pluralize";
-import camelCase from "camelcase";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { generateUniqueType } from "../../../utils/graphql-types";
 
 describe("aggregations-top_level-basic", () => {
     let driver: Driver;
@@ -39,15 +37,10 @@ describe("aggregations-top_level-basic", () => {
     test("should count nodes", async () => {
         const session = driver.session();
 
-        const randomType = `${generate({
-            charset: "alphabetic",
-            readable: true,
-        })}Movie`;
-
-        const pluralRandomType = pluralize(camelCase(randomType));
+        const randomType = generateUniqueType("Movie");
 
         const typeDefs = `
-            type ${randomType} {
+            type ${randomType.name} {
                 id: ID
             }
         `;
@@ -57,14 +50,14 @@ describe("aggregations-top_level-basic", () => {
         try {
             await session.run(
                 `
-                    CREATE (:${randomType} {id: randomUUID()})
-                    CREATE (:${randomType} {id: randomUUID()})
+                    CREATE (:${randomType.name} {id: randomUUID()})
+                    CREATE (:${randomType.name} {id: randomUUID()})
                 `
             );
 
             const query = `
                 {
-                    ${pluralRandomType}Aggregate {
+                    ${randomType.operations.aggregate} {
                         count
                     }
                 }
@@ -82,7 +75,7 @@ describe("aggregations-top_level-basic", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`${pluralRandomType}Aggregate`]).toEqual({
+            expect((gqlResult.data as any)[randomType.operations.aggregate]).toEqual({
                 count: 2,
             });
         } finally {

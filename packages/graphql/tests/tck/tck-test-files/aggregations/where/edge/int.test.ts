@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
-import { createJwtRequest } from "../../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where edge with Int", () => {
@@ -36,7 +36,7 @@ describe("Cypher Aggregations where edge with Int", () => {
 
             type Post {
                 content: String!
-                likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Liked")
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Liked")
             }
 
             interface Liked {

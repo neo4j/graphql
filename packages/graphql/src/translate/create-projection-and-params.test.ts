@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import { ResolveTree } from "graphql-parse-resolve-info";
 import createProjectionAndParams from "./create-projection-and-params";
 import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
-import { NodeBuilder } from "../utils/test/builders/node-builder";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {
@@ -28,15 +29,20 @@ describe("createProjectionAndParams", () => {
     });
 
     test("should return the correct projection with 1 selection", () => {
-        const fieldsByTypeName = {
-            Movie: {
-                title: {
-                    name: "title",
-                    alias: "title",
-                    args: {},
-                    fieldsByTypeName: {},
+        const resolveTree: ResolveTree = {
+            alias: "movies",
+            name: "movies",
+            fieldsByTypeName: {
+                Movie: {
+                    title: {
+                        name: "title",
+                        alias: "title",
+                        args: {},
+                        fieldsByTypeName: {},
+                    },
                 },
             },
+            args: {},
         };
 
         const node = new NodeBuilder({
@@ -71,11 +77,11 @@ describe("createProjectionAndParams", () => {
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema };
+        const context: Context = { neoSchema, resolveTree };
 
-        const result = createProjectionAndParams({ fieldsByTypeName, node, context, varName: "this" });
+        const result = createProjectionAndParams({ resolveTree, node, context, varName: "this" });
 
-        expect(result[0]).toEqual(`{ .title }`);
+        expect(result[0]).toBe(`{ .title }`);
         expect(result[1]).toMatchObject({});
     });
 });

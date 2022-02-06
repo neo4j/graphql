@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher relationship", () => {
@@ -32,20 +32,20 @@ describe("Cypher relationship", () => {
         typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             interface MovieInterface {
                 id: ID
                 title: String
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie implements MovieInterface {
                 id: ID
                 title: String
-                actors: [Actor]
-                topActor: Actor @relationship(type: "TOP_ACTOR", direction: OUT)
+                actors: [Actor!]!
+                topActor: Actor! @relationship(type: "TOP_ACTOR", direction: OUT)
             }
         `;
 

@@ -5,18 +5,21 @@ labels:
   - label: fix
     title: ^(?:[bB]ugfix|[fF]ix):.*
   - label: feature
-    branch: ^(?:[fF]eature|[fF]eat)/.*
+    branch: ^(?:[fF]eature|[fF]eat)[-/].*
   - label: fix
-    branch: ^(?:[bB]ugfix|[fF]ix)/.*
+    branch: ^(?:[bB]ugfix|[fF]ix)[-/].*
   - label: documentation
     files:
       - docs/modules/ROOT/.*
+  - label: rfc
+    files:
+      - docs/rfcs/.*
   - label: graphql
     files:
-      - packages/graphql/.*
+      - packages/graphql/src/.*
   - label: ogm
     files:
-      - packages/ogm/.*
+      - packages/ogm/src/.*
   - label: introspector
     files:
-      - packages/introspector/.*
+      - packages/introspector/src/.*

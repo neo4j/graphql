@@ -28,21 +28,25 @@ import translateTopLevelMatch from "./translate-top-level-match";
 
 function translateRead({ node, context }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
-    const { fieldsByTypeName } = resolveTree;
-    const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
     const varName = "this";
 
     let matchAndWhereStr = "";
     let authStr = "";
-    let offsetStr = "";
-    let limitStr = "";
-    let sortStr = "";
     let projAuth = "";
     let projStr = "";
+
+    const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
+    let limitStr = "";
+    let offsetStr = "";
+    let sortStr = "";
 
     let cypherParams: { [k: string]: any } = {};
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
+
+    if (node.queryOptions?.limit?.default && !optionsInput.limit) {
+        optionsInput.limit = node.queryOptions.limit.default;
+    }
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });
     matchAndWhereStr = topLevelMatch[0];
@@ -51,7 +55,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     const projection = createProjectionAndParams({
         node,
         context,
-        fieldsByTypeName,
+        resolveTree,
         varName,
     });
     [projStr] = projection;

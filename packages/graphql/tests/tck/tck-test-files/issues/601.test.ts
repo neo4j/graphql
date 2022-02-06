@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#601", () => {
@@ -39,7 +39,7 @@ describe("#601", () => {
                 id: ID! @id
                 stakeholder: Stakeholder! @relationship(type: "REQUIRES", direction: OUT)
 
-                customerContact: CustomerContact
+                customerContact: CustomerContact!
                     @relationship(type: "UPLOADED", properties: "UploadedDocument", direction: IN)
             }
 

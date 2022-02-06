@@ -18,9 +18,10 @@
  */
 
 import { buildNodeStatement } from "./build-node-statement";
-import { ContextBuilder } from "../../utils/test/builders/context-builder";
 import { Context } from "../../types";
-import { NodeBuilder } from "../../utils/test/builders/node-builder";
+import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import { ContextBuilder } from "../../../tests/utils/builders/context-builder";
+import { Neo4jGraphQLCypherBuilderError } from "../../classes/Error";
 
 describe("build node statement", () => {
     let context: Context;
@@ -35,7 +36,7 @@ describe("build node statement", () => {
             context,
         });
 
-        expect(statement[0]).toEqual("(this)");
+        expect(statement[0]).toBe("(this)");
         expect(statement[1]).toEqual({});
     });
 
@@ -47,7 +48,7 @@ describe("build node statement", () => {
             node,
         });
 
-        expect(statement[0]).toEqual("(this:TestLabel)");
+        expect(statement[0]).toBe("(this:TestLabel)");
         expect(statement[1]).toEqual({});
     });
 
@@ -63,10 +64,30 @@ describe("build node statement", () => {
             },
         });
 
-        expect(statement[0]).toEqual(`(this:TestLabel { name: $this_node_name, age: $this_node_age })`);
+        expect(statement[0]).toBe(`(this:TestLabel { name: $this_node_name, age: $this_node_age })`);
         expect(statement[1]).toEqual({
             this_node_name: "User",
             this_node_age: 34,
         });
+    });
+
+    test("build node statement with labels and no varName", () => {
+        const node = new NodeBuilder({ name: "TestLabel" }).instance();
+        const statement = buildNodeStatement({
+            node,
+            context,
+        });
+
+        expect(statement[0]).toBe("(:TestLabel)");
+        expect(statement[1]).toEqual({});
+    });
+
+    test("should throw if called with empty varName and no node", () => {
+        expect(() => {
+            buildNodeStatement({
+                context,
+                varName: "",
+            });
+        }).toThrow(Neo4jGraphQLCypherBuilderError);
     });
 });

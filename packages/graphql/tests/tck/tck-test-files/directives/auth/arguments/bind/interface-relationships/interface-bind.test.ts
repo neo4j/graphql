@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../../src";
-import { createJwtRequest } from "../../../../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../../../utils/tck-test-utils";
 
 describe("Cypher Auth Allow", () => {
@@ -33,23 +33,23 @@ describe("Cypher Auth Allow", () => {
             interface Content
                 @auth(rules: [{ operations: [CREATE, CONNECT, DISCONNECT], bind: { creator: { id: "$jwt.sub" } } }]) {
                 id: ID
-                creator: User @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             type Comment implements Content {
                 id: ID
-                creator: User
+                creator: User!
             }
 
             type Post implements Content {
                 id: ID
-                creator: User
+                creator: User!
             }
 
             type User {
                 id: ID
                 name: String
-                content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+                content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
 
             extend type User

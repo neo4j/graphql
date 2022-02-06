@@ -128,9 +128,9 @@ describe("GraphQL - Infer Schema on graphs", () => {
         await wSession.writeTransaction((tx) =>
             tx.run(
                 `CREATE (m:Movie {title: $props.title})
-                CREATE (p:Play {title: $props.title})
-                CREATE (a:Actor {name: $props.name})
-                CREATE (d:Dog {name: $props.name})
+                CREATE (p:Play:Theater {title: $props.title})
+                CREATE (a:Actor:Person {name: $props.name})
+                CREATE (d:Dog:K9 {name: $props.name})
                 MERGE (a)-[:ACTED_IN]->(p)
                 MERGE (a)-[:ACTED_IN]->(m)
                 MERGE (a)-[:DIRECTED]->(m)
@@ -144,14 +144,14 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type Actor {
+            "type Actor @node(additionalLabels: [\\"Person\\"]) {
             	actedInMovies: [Movie!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	actedInPlays: [Play!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	directedMovies: [Movie!]! @relationship(type: \\"DIRECTED\\", direction: OUT)
             	name: String!
             }
 
-            type Dog {
+            type Dog @node(additionalLabels: [\\"K9\\"]) {
             	actedInMovies: [Movie!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	name: String!
             }
@@ -163,7 +163,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
             	title: String!
             }
 
-            type Play {
+            type Play @node(additionalLabels: [\\"Theater\\"]) {
             	actorsActedIn: [Actor!]! @relationship(type: \\"ACTED_IN\\", direction: IN)
             	title: String!
             }"

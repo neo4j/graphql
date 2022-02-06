@@ -1,8 +1,8 @@
 ---
 name: "\U0001F41B  Bug report"
-about: Report a bug to help us improve
+about: Report a bug to help us improve. If you have a support agreement with Neo4j, please raise a bug report here, then link the GitHub issue to a new or existing Zendesk ticket.
 title: ""
-labels: bug report, inbox
+labels: bug report
 assignees: ""
 ---
 
@@ -28,9 +28,9 @@ If applicable, add screenshots to help explain your problem.
 
 **System (please complete the following information):**
 
--   OS: [e.g. macOS, Windows]
--   Version: [e.g. @neo4j/graphql@1.0.0]
--   Node.js version: [e.g. 14.16.0]
+* OS: [e.g. macOS, Windows]
+* Version: [e.g. @neo4j/graphql@1.0.0]
+* Node.js version: [e.g. 14.16.0]
 
 **Additional context**
 Add any other context about the problem here.

@@ -20,3 +20,17 @@ RETURN m
 If you use a causal cluster or an Aura Professional instance, there is a chance that the created data is not yet present on the server which gets connected to on the next GraphQL query.
 
 You can ensure that the data is available to query by passing a bookmark into your request - see xref::driver-configuration.adoc[Specifying Neo4j Bookmarks] for more information.
+
+== What is `_emptyInput` in my update and create inputs?
+
+`_emptyInput` will appear in your update and create inputs if you define a type with only auto-generated and/or relationship properties. It is a placeholder property and therefore giving it a value in neither update nor create will give it a value on the node. `_emptyInput` will be removed if you add a user-provided property.
+
+The following example will create inputs with `_emptyInput`:
+
+```graphql
+type Cookie {
+    id: ID! @id
+    owner: Owner!  @relationship(type: "HAS_OWNER", direction: OUT)
+    # f: String # If you don't want _emptyInput, uncomment this line.
+}
+```

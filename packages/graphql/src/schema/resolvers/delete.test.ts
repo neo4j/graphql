@@ -18,7 +18,7 @@
  */
 
 import deleteResolver from "./delete";
-import { NodeBuilder } from "../../utils/test/builders/node-builder";
+import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
 
 describe("Delete resolver", () => {
     test("should return the correct; type, args and resolve", () => {
@@ -28,7 +28,7 @@ describe("Delete resolver", () => {
         }).instance();
 
         const result = deleteResolver({ node });
-        expect(result.type).toEqual(`DeleteInfo!`);
+        expect(result.type).toBe(`DeleteInfo!`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
             where: `MovieWhere`,

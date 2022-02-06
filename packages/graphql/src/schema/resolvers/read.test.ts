@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { NodeBuilder } from "../../utils/test/builders/node-builder";
+import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
 import findResolver from "./read";
 
 describe("Read resolver", () => {
@@ -27,7 +27,7 @@ describe("Read resolver", () => {
         }).instance();
 
         const result = findResolver({ node });
-        expect(result.type).toEqual(`[Movie!]!`);
+        expect(result.type).toBe(`[Movie!]!`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
             where: `MovieWhere`,

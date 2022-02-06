@@ -19,7 +19,7 @@
 
 import { SchemaComposer } from "graphql-compose";
 import updateResolver from "./update";
-import { NodeBuilder } from "../../utils/test/builders/node-builder";
+import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
 
 describe("Update resolver", () => {
     test("should return the correct; type, args and resolve", () => {
@@ -32,7 +32,7 @@ describe("Update resolver", () => {
         const schemaComposer = new SchemaComposer();
 
         const result = updateResolver({ node, schemaComposer });
-        expect(result.type).toEqual("UpdateMoviesMutationResponse!");
+        expect(result.type).toBe("UpdateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
             where: "MovieWhere",

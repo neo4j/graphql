@@ -30,8 +30,8 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
-import createRelationshipValidationStr from "./create-relationship-validation-str";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
+import { upperFirst } from "../utils/upper-first";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
@@ -61,12 +61,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const interfaceStrs: string[] = [];
     let updateArgs = {};
 
-    const mutationResponse =
-        resolveTree.fieldsByTypeName[`Update${node.getPlural({ camelCase: false })}MutationResponse`];
+    const mutationResponse = resolveTree.fieldsByTypeName[`Update${upperFirst(node.plural)}MutationResponse`];
 
-    const nodeProjection = Object.values(mutationResponse).find(
-        (field) => field.name === node.getPlural({ camelCase: true })
-    );
+    const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
 
     if (updateInput) {
         const updateAndParams = createUpdateAndParams({
@@ -77,7 +74,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             parentVar: varName,
             withVars: [varName],
             parameterPrefix: `${resolveTree.name}.args.update`,
-            fromTopLevel: true,
         });
         [updateStr] = updateAndParams;
         cypherParams = {
@@ -340,7 +336,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         const projection = createProjectionAndParams({
             node,
             context,
-            fieldsByTypeName: nodeProjection.fieldsByTypeName,
+            resolveTree: nodeProjection,
             varName,
         });
         [projStr] = projection;
@@ -385,8 +381,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         }
     }
 
-    const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
-
     const returnStatement = nodeProjection
         ? `RETURN ${varName} ${projStr} AS ${varName}`
         : `RETURN 'Query cannot conclude with CALL'`;
@@ -400,7 +394,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         deleteStr,
         ...(connectionStrs.length || projAuth ? [`WITH ${varName}`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
         ...(projAuth ? [projAuth] : []),
-        ...(relationshipValidationStr ? [`WITH ${varName}`, relationshipValidationStr] : []),
         ...connectionStrs,
         ...interfaceStrs,
         returnStatement,

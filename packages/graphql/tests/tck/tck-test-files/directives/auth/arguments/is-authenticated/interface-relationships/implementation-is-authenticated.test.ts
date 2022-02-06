@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../../src";
-import { createJwtRequest } from "../../../../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../../../utils/tck-test-utils";
 
 describe("Cypher Auth isAuthenticated", () => {
@@ -56,7 +56,7 @@ describe("Cypher Auth isAuthenticated", () => {
                 id: ID
                 name: String
                 password: String
-                content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+                content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
         `;
 

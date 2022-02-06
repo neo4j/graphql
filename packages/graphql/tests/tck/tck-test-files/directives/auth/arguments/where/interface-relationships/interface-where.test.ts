@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../../src";
-import { createJwtRequest } from "../../../../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../../../utils/tck-test-utils";
 
 describe("Cypher Auth Where", () => {
@@ -41,25 +41,25 @@ describe("Cypher Auth Where", () => {
                 ) {
                 id: ID
                 content: String
-                creator: User @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             type User {
                 id: ID
                 name: String
-                content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+                content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
 
             type Comment implements Content {
                 id: ID
                 content: String
-                creator: User
+                creator: User!
             }
 
             type Post implements Content {
                 id: ID
                 content: String
-                creator: User
+                creator: User!
             }
 
             extend type User
@@ -222,7 +222,7 @@ describe("Cypher Auth Where", () => {
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
             RETURN this { .id, contentConnection } as this"
@@ -278,7 +278,7 @@ describe("Cypher Auth Where", () => {
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
             RETURN this { .id, contentConnection } as this"

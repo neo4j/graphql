@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Cypher Where Aggregations with @node directive", () => {
@@ -36,7 +36,7 @@ describe("Cypher Where Aggregations with @node directive", () => {
 
             type Post @node(label: "_Post", additionalLabels: ["additionalPost"]) {
                 content: String!
-                likes: [User] @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 

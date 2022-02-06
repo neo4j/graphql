@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#583", () => {
@@ -41,7 +41,7 @@ describe("#583", () => {
             type Actor implements Awardable {
                 name: String
                 awardsGiven: Int!
-                actedIn: [Show!] @relationship(type: "ACTED_IN", direction: OUT)
+                actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie implements Show & Awardable {

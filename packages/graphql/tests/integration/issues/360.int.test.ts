@@ -19,11 +19,9 @@
 
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { generate } from "randomstring";
-import camelcase from "camelcase";
-import pluralize from "pluralize";
 import { Neo4jGraphQL } from "../../../src/classes";
 import neo4j from "../neo4j";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("360", () => {
     let driver: Driver;
@@ -39,15 +37,10 @@ describe("360", () => {
     test("should return all nodes when AND is used and members are optional", async () => {
         const session = driver.session();
 
-        const type = `${generate({
-            charset: "alphabetic",
-            readable: true,
-        })}Event`;
-
-        const pluralType = pluralize(camelcase(type));
+        const type = generateUniqueType("Event");
 
         const typeDefs = `
-            type ${type} {
+            type ${type.name} {
                 id: ID!
                 name: String
                 start: DateTime
@@ -62,7 +55,7 @@ describe("360", () => {
 
         const query = `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                ${pluralType}(where: { AND: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }) {
+                ${type.plural}(where: { AND: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }) {
                     id
                 }
             }
@@ -71,9 +64,9 @@ describe("360", () => {
         try {
             await session.run(
                 `
-                    CREATE (:${type} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
-                    CREATE (:${type} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
-                    CREATE (:${type} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
+                    CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
+                    CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
+                    CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                 `
             );
 
@@ -84,7 +77,7 @@ describe("360", () => {
             });
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)[pluralType]).toHaveLength(3);
+            expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
         } finally {
             await session.close();
         }
@@ -93,15 +86,10 @@ describe("360", () => {
     test("should return all nodes when OR is used and members are optional", async () => {
         const session = driver.session();
 
-        const type = `${generate({
-            charset: "alphabetic",
-            readable: true,
-        })}Event`;
-
-        const pluralType = pluralize(camelcase(type));
+        const type = generateUniqueType("Event");
 
         const typeDefs = `
-            type ${type} {
+            type ${type.name} {
                 id: ID!
                 name: String
                 start: DateTime
@@ -116,7 +104,7 @@ describe("360", () => {
 
         const query = `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                ${pluralType}(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }) {
+                ${type.plural}(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }) {
                     id
                 }
             }
@@ -125,9 +113,9 @@ describe("360", () => {
         try {
             await session.run(
                 `
-                    CREATE (:${type} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
-                    CREATE (:${type} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
-                    CREATE (:${type} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
+                    CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
+                    CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
+                    CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                 `
             );
 
@@ -138,7 +126,7 @@ describe("360", () => {
             });
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)[pluralType]).toHaveLength(3);
+            expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
         } finally {
             await session.close();
         }
@@ -147,15 +135,10 @@ describe("360", () => {
     test("should recreate given test in issue and return correct results", async () => {
         const session = driver.session();
 
-        const type = `${generate({
-            charset: "alphabetic",
-            readable: true,
-        })}Event`;
-
-        const pluralType = pluralize(camelcase(type));
+        const type = generateUniqueType("Event");
 
         const typeDefs = `
-            type ${type} {
+            type ${type.name} {
                 id: ID!
                 name: String
                 start: DateTime
@@ -173,7 +156,7 @@ describe("360", () => {
 
         const query = `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                ${pluralType}(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }) {
+                ${type.plural}(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }) {
                     id
                 }
             }
@@ -182,9 +165,9 @@ describe("360", () => {
         try {
             await session.run(
                 `
-                    CREATE (:${type} {id: randomUUID(), name: randomUUID(), start: datetime($rangeStart), end: datetime($rangeEnd)})
-                    CREATE (:${type} {id: randomUUID(), name: randomUUID(), start: datetime($rangeStart), end: datetime($rangeEnd)})
-                    CREATE (:${type} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
+                    CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime($rangeStart), end: datetime($rangeEnd)})
+                    CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime($rangeStart), end: datetime($rangeEnd)})
+                    CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                 `,
                 { rangeStart, rangeEnd }
             );
@@ -197,7 +180,7 @@ describe("360", () => {
             });
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)[pluralType]).toHaveLength(3);
+            expect((gqlResult.data as any)[type.plural]).toHaveLength(3);
         } finally {
             await session.close();
         }

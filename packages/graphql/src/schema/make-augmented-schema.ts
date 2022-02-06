@@ -18,20 +18,21 @@
  */
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
-import { forEachField } from "@graphql-tools/utils";
+import { TypeSource } from "@graphql-tools/utils";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
     DirectiveNode,
+    DocumentNode,
     EnumTypeDefinitionNode,
     GraphQLInt,
     GraphQLNonNull,
-    GraphQLSchema,
     GraphQLString,
     InputObjectTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
+    Kind,
     NamedTypeNode,
+    NameNode,
     ObjectTypeDefinitionNode,
     parse,
     print,
@@ -39,48 +40,48 @@ import {
     UnionTypeDefinitionNode,
 } from "graphql";
 import {
-    SchemaComposer,
-    ObjectTypeComposer,
+    InputTypeComposer,
     InputTypeComposerFieldConfigAsObjectDefinition,
-    upperFirst,
+    ObjectTypeComposer,
+    SchemaComposer,
 } from "graphql-compose";
-import pluralize from "pluralize";
-import { Node, Exclude } from "../classes";
+import { Exclude, Node } from "../classes";
+import { NodeDirective } from "../classes/NodeDirective";
+import Relationship from "../classes/Relationship";
+import * as constants from "../constants";
+import { Auth, BaseField, FullText, PrimitiveField, QueryOptions } from "../types";
+import { isString } from "../utils/utils";
+import createConnectionFields from "./create-connection-fields";
+import createRelationshipFields from "./create-relationship-fields";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth, FullText } from "../types";
+import getCustomResolvers from "./get-custom-resolvers";
+import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
+import getWhereFields from "./get-where-fields";
+import parseExcludeDirective from "./parse-exclude-directive";
+import parseNodeDirective from "./parse-node-directive";
+import parseFulltextDirective from "./parse/parse-fulltext-directive";
+import * as point from "./point";
 import {
     aggregateResolver,
-    countResolver,
     createResolver,
     cypherResolver,
-    defaultFieldResolver,
     deleteResolver,
     findResolver,
     updateResolver,
     numericalResolver,
 } from "./resolvers";
 import * as Scalars from "./scalars";
-import parseExcludeDirective from "./parse-exclude-directive";
-import getCustomResolvers from "./get-custom-resolvers";
-import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
-import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
-import Relationship from "../classes/Relationship";
-import getWhereFields from "./get-where-fields";
 import { validateDocument } from "./validation";
-import * as constants from "../constants";
-import createRelationshipFields from "./create-relationship-fields";
-import createConnectionFields from "./create-connection-fields";
-import { NodeDirective } from "../classes/NodeDirective";
-import parseNodeDirective from "./parse-node-directive";
-import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import { upperFirst } from "../utils/upper-first";
+import parseQueryOptionsDirective from "./parse/parse-query-options-directive";
 
 function makeAugmentedSchema(
-    { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
+    typeDefs: TypeSource,
     { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
-): { schema: GraphQLSchema; nodes: Node[]; relationships: Relationship[] } {
+): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
     if (!skipValidateTypeDefs) {
@@ -205,17 +206,20 @@ function makeAugmentedSchema(
     Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
 
     if (extraDefinitions.length) {
-        composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
+        composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
     const nodes = objectNodes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude", "node", "fulltext"].includes(x.name.value)
+            (x) => !["auth", "exclude", "node", "fulltext", "queryOptions"].includes(x.name.value)
         );
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
         const fulltextDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "fulltext");
+        const queryOptionsDirectiveDefinition = (definition.directives || []).find(
+            (x) => x.name.value === "queryOptions"
+        );
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
         const { interfaceAuthDirectives, interfaceExcludeDirectives } = nodeInterfaces.reduce<{
@@ -288,6 +292,14 @@ function makeAugmentedSchema(
             });
         }
 
+        let queryOptionsDirective: QueryOptions | undefined;
+        if (queryOptionsDirectiveDefinition) {
+            queryOptionsDirective = parseQueryOptionsDirective({
+                directive: queryOptionsDirectiveDefinition,
+                definition,
+            });
+        }
+
         nodeFields.relationFields.forEach((relationship) => {
             if (relationship.properties) {
                 const propertiesInterface = interfaces.find((i) => i.name.value === relationship.properties);
@@ -323,6 +335,7 @@ function makeAugmentedSchema(
             nodeDirective,
             // @ts-ignore we can be sure it's defined
             fulltextDirective,
+            queryOptionsDirective,
             description: definition.description?.value,
         });
 
@@ -377,9 +390,9 @@ function makeAugmentedSchema(
 
         relationshipFields.set(relationship.name.value, relFields);
 
-        const objectComposeFields = objectFieldsToComposeFields(
-            Object.values(relFields).reduce((acc, x) => [...acc, ...x], [])
-        );
+        const baseFields: BaseField[][] = Object.values(relFields);
+
+        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
 
         const propertiesInterface = composer.createInterfaceTC({
             name: relationship.name.value,
@@ -452,6 +465,22 @@ function makeAugmentedSchema(
         });
     });
 
+    function ensureNonEmptyInput(nameOrInput: string | InputTypeComposer<any>) {
+        const input = isString(nameOrInput) ? composer.getITC(nameOrInput) : nameOrInput;
+
+        if (input.getFieldNames().length === 0) {
+            const faqURL = `https://neo4j.com/docs/graphql-manual/current/troubleshooting/faqs/`;
+            input.addFields({
+                _emptyInput: {
+                    type: "Boolean",
+                    description:
+                        `Appears because this input type would be empty otherwise because this type is ` +
+                        `composed of just generated and/or relationship properties. See ${faqURL}`,
+                },
+            });
+        }
+    }
+
     interfaceRelationships.forEach((interfaceRelationship) => {
         const implementations = objectNodes.filter((n) =>
             n.interfaces?.some((i) => i.name.value === interfaceRelationship.name.value)
@@ -475,9 +504,8 @@ function makeAugmentedSchema(
             );
         }
 
-        const objectComposeFields = objectFieldsToComposeFields(
-            Object.values(interfaceFields).reduce((acc, x) => [...acc, ...x], [])
-        );
+        const baseFields: BaseField[][] = Object.values(interfaceFields);
+        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
 
         const composeInterface = composer.createInterfaceTC({
             name: interfaceRelationship.name.value,
@@ -630,6 +658,16 @@ function makeAugmentedSchema(
             );
             interfaceDisconnectInput.setField("_on", implementationsDisconnectInput);
         }
+
+        ensureNonEmptyInput(`${interfaceRelationship.name.value}CreateInput`);
+        ensureNonEmptyInput(`${interfaceRelationship.name.value}UpdateInput`);
+        [
+            implementationsConnectInput,
+            implementationsDeleteInput,
+            implementationsDisconnectInput,
+            implementationsUpdateInput,
+            implementationsWhereInput,
+        ].forEach((c) => ensureNonEmptyInput(c));
     });
 
     if (pointInTypeDefs) {
@@ -695,8 +733,8 @@ function makeAugmentedSchema(
             const sortInput = composer.createInputTC({
                 name: `${node.name}Sort`,
                 fields: sortFields,
-                description: `Fields to sort ${pluralize(
-                    node.name
+                description: `Fields to sort ${upperFirst(
+                    node.plural
                 )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${node.name}Sort`} object.`,
             });
 
@@ -704,10 +742,10 @@ function makeAugmentedSchema(
                 name: `${node.name}Options`,
                 fields: {
                     sort: {
-                        description: `Specify one or more ${`${node.name}Sort`} objects to sort ${pluralize(
-                            node.name
+                        description: `Specify one or more ${`${node.name}Sort`} objects to sort ${upperFirst(
+                            node.plural
                         )} by. The sorts will be applied in the order in which they are arranged in the array.`,
-                        type: sortInput.List,
+                        type: sortInput.NonNull.List,
                     },
                     limit: "Int",
                     offset: "Int",
@@ -766,8 +804,8 @@ function makeAugmentedSchema(
         });
 
         if (node.fulltextDirective) {
-            const fields = node.fulltextDirective.indexes.reduce((res, index) => {
-                return {
+            const fields = node.fulltextDirective.indexes.reduce(
+                (res, index) => ({
                     ...res,
                     [index.name]: composer.createInputTC({
                         name: `${node.name}${upperFirst(index.name)}Fulltext`,
@@ -776,8 +814,9 @@ function makeAugmentedSchema(
                             score_EQUAL: "Int",
                         },
                     }),
-                };
-            }, {});
+                }),
+                {}
+            );
 
             composer.createInputTC({
                 name: `${node.name}Fulltext`,
@@ -842,10 +881,10 @@ function makeAugmentedSchema(
 
         ["Create", "Update"].map((operation) =>
             composer.createObjectTC({
-                name: `${operation}${node.getPlural({ camelCase: false })}MutationResponse`,
+                name: `${operation}${upperFirst(node.plural)}MutationResponse`,
                 fields: {
                     info: `${operation}Info!`,
-                    [node.getPlural({ camelCase: true })]: `[${node.name}!]!`,
+                    [node.plural]: `[${node.name}!]!`,
                 },
             })
         );
@@ -870,35 +909,37 @@ function makeAugmentedSchema(
             }),
         ];
 
+        ensureNonEmptyInput(`${node.name}UpdateInput`);
+        ensureNonEmptyInput(`${node.name}CreateInput`);
+
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [node.getPlural({ camelCase: true })]: findResolver({ node }),
+                [node.plural]: findResolver({ node }),
             });
 
             composer.Query.addFields({
-                [`${node.getPlural({ camelCase: true })}Count`]: countResolver({ node }),
-            });
-
-            composer.Query.addFields({
-                [`${node.getPlural({ camelCase: true })}Aggregate`]: aggregateResolver({ node }),
+                [`${node.plural}Aggregate`]: aggregateResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${node.getPlural({ camelCase: false })}`]: createResolver({ node }),
+                [`create${upperFirst(node.plural)}`]: createResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${node.getPlural({ camelCase: false })}`]: deleteResolver({ node }),
+                [`delete${upperFirst(node.plural)}`]: deleteResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node, schemaComposer: composer }),
+                [`update${upperFirst(node.plural)}`]: updateResolver({
+                    node,
+                    schemaComposer: composer,
+                }),
             });
         }
     });
@@ -947,9 +988,8 @@ function makeAugmentedSchema(
     interfaces.forEach((inter) => {
         const objectFields = getObjFieldMeta({ obj: inter, scalars, enums, interfaces, unions, objects: objectNodes });
 
-        const objectComposeFields = objectFieldsToComposeFields(
-            Object.values(objectFields).reduce((acc, x) => [...acc, ...x], [])
-        );
+        const baseFields: BaseField[][] = Object.values(objectFields);
+        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
 
         composer.createInterfaceTC({
             name: inter.name.value,
@@ -967,8 +1007,28 @@ function makeAugmentedSchema(
 
     const generatedTypeDefs = composer.toSDL();
     let parsedDoc = parse(generatedTypeDefs);
-    // @ts-ignore
-    const documentNames = parsedDoc.definitions.filter((x) => "name" in x).map((x) => x.name.value);
+
+    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
+        return "name" in x;
+    }
+
+    const emptyObjectsInterfaces = (
+        parsedDoc.definitions.filter(
+            (x) =>
+                (x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)) ||
+                x.kind === "InterfaceTypeDefinition"
+        ) as (InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode)[]
+    ).filter((x) => !x.fields?.length);
+
+    if (emptyObjectsInterfaces.length) {
+        throw new Error(
+            `Objects and Interfaces must have one or more fields: ${emptyObjectsInterfaces
+                .map((x) => x.name.value)
+                .join(", ")}`
+        );
+    }
+
+    const documentNames = parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value);
 
     const generatedResolvers = {
         ...Object.entries(composer.getResolveMethods()).reduce((res, [key, value]) => {
@@ -1020,24 +1080,11 @@ function makeAugmentedSchema(
         }),
     };
 
-    const schema = makeExecutableSchema({
-        ...schemaDefinition,
-        typeDefs: parsedDoc,
-        resolvers: generatedResolvers,
-    });
-
-    // Assign a default field resolver to account for aliasing of fields
-    forEachField(schema, (field) => {
-        if (!field.resolve) {
-            // eslint-disable-next-line no-param-reassign
-            field.resolve = defaultFieldResolver;
-        }
-    });
-
     return {
         nodes,
         relationships,
-        schema,
+        typeDefs: parsedDoc,
+        resolvers: generatedResolvers,
     };
 }
 

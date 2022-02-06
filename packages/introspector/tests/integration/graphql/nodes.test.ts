@@ -224,12 +224,12 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type Test_Label2 @node(label: \\"Test-Label\\") {
-            	singleProp: BigInt!
+            "type Test_Label @node(label: \\"Test\`Label\\") {
+            	strProp: String!
             }
 
-            type Test_Label @node(label: \\"Test\`Label\\") {
-            	strProp: String!
+            type Test_Label2 @node(label: \\"Test-Label\\") {
+            	singleProp: BigInt!
             }"
         `);
 
@@ -293,7 +293,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
     });
-    test("Should not include types with no fields", async () => {
+    test("Should not include types with no fields or no labels", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
@@ -302,7 +302,9 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         }
 
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) => tx.run("CREATE (:EmptyNode) CREATE (:FullNode {prop: 1})"));
+        await wSession.writeTransaction((tx) =>
+            tx.run("CREATE ({prop: 1}) CREATE ({prop: 2}) CREATE (:EmptyNode) CREATE (:FullNode {prop: 1})")
+        );
         const bm = wSession.lastBookmark();
         await wSession.close();
 

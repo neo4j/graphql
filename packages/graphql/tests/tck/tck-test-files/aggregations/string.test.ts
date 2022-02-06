@@ -20,8 +20,8 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("Cypher Aggregations String", () => {
     const secret = "secret";

@@ -125,7 +125,7 @@ describe("Default values", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).field).toEqual(100);
+            expect((gqlResult.data as any).field).toBe(100);
         } finally {
             await session.close();
         }
