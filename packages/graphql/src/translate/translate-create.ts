@@ -49,7 +49,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                 context,
                 varName,
                 withVars: [varName],
-                topLevel: true,
+                includeRelationshipValidation: true,
             });
             create.push(`${createAndParams[0]}`);
             create.push(`RETURN ${varName}`);

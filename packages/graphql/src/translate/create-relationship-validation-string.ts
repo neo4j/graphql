@@ -36,9 +36,9 @@ function createRelationshipValidationString({
         }
 
         const isRequired = field.typeMeta.required;
-        const isNotUnionOrInterface = Boolean(field.union) || Boolean(field.interface);
+        const isUnionOrInterface = Boolean(field.union) || Boolean(field.interface);
 
-        return isRequired && !isNotUnionOrInterface;
+        return isRequired && !isUnionOrInterface;
     });
 
     if (!nonNullRelationFields.length) {
@@ -50,12 +50,11 @@ function createRelationshipValidationString({
         const inStr = field.direction === "IN" ? "<-" : "-";
         const outStr = field.direction === "OUT" ? "->" : "-";
         const relVarname = `${varName}_${field.fieldName}_${toNode.name}_unique`;
-        const relTypeStr = `[${relVarname}:${field.type}]`;
 
         const subQuery = [
             `CALL {`,
             `\tWITH ${varName}`,
-            `\tMATCH (${varName})${inStr}${relTypeStr}${outStr}(${toNode.getLabelString(context)})`,
+            `\tMATCH (${varName})${inStr}[${relVarname}:${field.type}]${outStr}(${toNode.getLabelString(context)})`,
             `\tWITH count(${relVarname}) as c`,
             `\tCALL apoc.util.validate(NOT(c = 1), '${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} required', [0])`,
             `\tRETURN c AS ${relVarname}_ignored`,

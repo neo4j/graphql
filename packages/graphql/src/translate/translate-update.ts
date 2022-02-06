@@ -53,6 +53,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     let projAuth = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
+    const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "UPDATE" });
     matchAndWhereStr = topLevelMatch[0];
@@ -75,7 +76,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             parentVar: varName,
             withVars: [varName],
             parameterPrefix: `${resolveTree.name}.args.update`,
-            fromTopLevel: true,
+            includeRelationshipValidation: true,
         });
         [updateStr] = updateAndParams;
         cypherParams = {
@@ -177,6 +178,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     withVars: [varName],
                     parentNode: node,
                     labelOverride: "",
+                    includeRelationshipValidation: !!assumeReconnecting,
                 });
                 connectStrs.push(connectAndParams[0]);
                 cypherParams = { ...cypherParams, ...connectAndParams[1] };
@@ -256,15 +258,16 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                         input: create.node,
                         varName: nodeName,
                         withVars: [varName, nodeName],
+                        includeRelationshipValidation: false,
                     });
                     createStrs.push(createAndParams[0]);
                     cypherParams = { ...cypherParams, ...createAndParams[1] };
                     createStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                     if (relationField.properties) {
-                        const relationship = (context.neoSchema.relationships.find(
+                        const relationship = context.neoSchema.relationships.find(
                             (x) => x.properties === relationField.properties
-                        ) as unknown) as Relationship;
+                        ) as unknown as Relationship;
 
                         const setA = createSetRelationshipPropertiesAndParams({
                             properties: create.edge ?? {},
@@ -383,11 +386,11 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         }
     }
 
-    const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
-
     const returnStatement = nodeProjection
         ? `RETURN ${varName} ${projStr} AS ${varName}`
         : `RETURN 'Query cannot conclude with CALL'`;
+
+    const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";
 
     const cypher = [
         matchAndWhereStr,

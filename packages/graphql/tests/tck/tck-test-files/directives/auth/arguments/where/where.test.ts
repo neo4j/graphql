@@ -519,8 +519,8 @@ describe("Cypher Auth Where", () => {
             WITH this, this_posts0
             CALL {
             	WITH this_posts0
-            	MATCH p=(this_posts0)<-[:HAS_POST]-(:User)
-            	WITH count(nodes(p)) AS c
+            	MATCH (this_posts0)<-[this_posts0_creator_User_unique:HAS_POST]-(:User)
+            	WITH count(this_posts0_creator_User_unique) as c
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
             	RETURN c AS this_posts0_creator_User_unique_ignored
             }

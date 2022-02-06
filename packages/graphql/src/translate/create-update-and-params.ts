@@ -54,7 +54,7 @@ function createUpdateAndParams({
     withVars,
     context,
     parameterPrefix,
-    fromTopLevel,
+    includeRelationshipValidation,
 }: {
     parentVar: string;
     updateInput: any;
@@ -65,7 +65,7 @@ function createUpdateAndParams({
     insideDoWhen?: boolean;
     context: Context;
     parameterPrefix: string;
-    fromTopLevel?: boolean;
+    includeRelationshipValidation?: boolean;
 }): [string, any] {
     let hasAppliedTimeStamps = false;
 
@@ -85,9 +85,9 @@ function createUpdateAndParams({
         if (relationField) {
             const refNodes: Node[] = [];
 
-            const relationship = (context.neoSchema.relationships.find(
+            const relationship = context.neoSchema.relationships.find(
                 (x) => x.properties === relationField.properties
-            ) as unknown) as Relationship;
+            ) as unknown as Relationship;
 
             if (relationField.union) {
                 Object.keys(value).forEach((unionTypeName) => {
@@ -203,6 +203,7 @@ function createUpdateAndParams({
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.node`,
+                                includeRelationshipValidation: true,
                             });
                             res.params = { ...res.params, ...updateAndParams[1], auth };
                             innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
@@ -391,6 +392,8 @@ function createUpdateAndParams({
                                 });
                                 subquery.push(setA);
                             }
+
+                            // TODO relationship validation
                         });
                     }
 
@@ -486,7 +489,11 @@ function createUpdateAndParams({
     }
 
     // eslint-disable-next-line prefer-const
-    let { strs, params, meta = { preAuthStrs: [], postAuthStrs: [] } } = Object.entries(updateInput).reduce(reducer, {
+    let {
+        strs,
+        params,
+        meta = { preAuthStrs: [], postAuthStrs: [] },
+    } = Object.entries(updateInput).reduce(reducer, {
         strs: [],
         params: {},
     });
@@ -528,7 +535,9 @@ function createUpdateAndParams({
 
     let preAuthStr = "";
     let postAuthStr = "";
-    const relationshipValidationStr = !fromTopLevel ? createRelationshipValidationStr({ node, context, varName }) : "";
+    const relationshipValidationStr = includeRelationshipValidation
+        ? createRelationshipValidationStr({ node, context, varName })
+        : "";
 
     const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
 

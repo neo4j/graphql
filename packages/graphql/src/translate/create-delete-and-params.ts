@@ -57,9 +57,9 @@ function createDeleteAndParams({
         if (relationField) {
             const refNodes: Node[] = [];
 
-            const relationship = (context.neoSchema.relationships.find(
+            const relationship = context.neoSchema.relationships.find(
                 (x) => x.properties === relationField.properties
-            ) as unknown) as Relationship;
+            ) as unknown as Relationship;
 
             if (relationField.union) {
                 Object.keys(value).forEach((unionTypeName) => {
@@ -212,6 +212,8 @@ function createDeleteAndParams({
                         `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`].join(", ")}`
                     );
                     res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
+
+                    // TODO relationship validation
                 });
             });
 

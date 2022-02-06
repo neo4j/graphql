@@ -219,15 +219,15 @@ describe("@auth allow with interface relationships", () => {
             WITH this, this_content0
             CALL {
             	WITH this_content0
-            	MATCH p=(this_content0)<-[:HAS_CONTENT]-(:User)
-            	WITH count(nodes(p)) AS c
+            	MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
+            	WITH count(this_content0_creator_User_unique) as c
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required', [0])
             	RETURN c AS this_content0_creator_User_unique_ignored
             }
             CALL {
             	WITH this_content0
-            	MATCH p=(this_content0)<-[:HAS_COMMENT]-(:Post)
-            	WITH count(nodes(p)) AS c
+            	MATCH (this_content0)<-[this_content0_post_Post_unique:HAS_COMMENT]-(:Post)
+            	WITH count(this_content0_post_Post_unique) as c
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required', [0])
             	RETURN c AS this_content0_post_Post_unique_ignored
             }
@@ -245,8 +245,8 @@ describe("@auth allow with interface relationships", () => {
             WITH this, this_content0
             CALL {
             	WITH this_content0
-            	MATCH p=(this_content0)<-[:HAS_CONTENT]-(:User)
-            	WITH count(nodes(p)) AS c
+            	MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
+            	WITH count(this_content0_creator_User_unique) as c
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
             	RETURN c AS this_content0_creator_User_unique_ignored
             }
@@ -345,8 +345,8 @@ describe("@auth allow with interface relationships", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH p=(this)<-[:HAS_CONTENT]-(:User)
-            	WITH count(nodes(p)) AS c
+            	MATCH (this)<-[this_creator_User_unique:HAS_CONTENT]-(:User)
+            	WITH count(this_creator_User_unique) as c
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }

@@ -117,8 +117,8 @@ describe("Cypher Auth Allow", () => {
             WITH this0, this0_contentPost0_node
             CALL {
             	WITH this0_contentPost0_node
-            	MATCH p=(this0_contentPost0_node)<-[:HAS_CONTENT]-(:User)
-            	WITH count(nodes(p)) AS c
+            	MATCH (this0_contentPost0_node)<-[this0_contentPost0_node_creator_User_unique:HAS_CONTENT]-(:User)
+            	WITH count(this0_contentPost0_node_creator_User_unique) as c
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
             	RETURN c AS this0_contentPost0_node_creator_User_unique_ignored
             }
@@ -188,8 +188,8 @@ describe("Cypher Auth Allow", () => {
             WITH this, this_content0
             CALL {
             	WITH this_content0
-            	MATCH p=(this_content0)<-[:HAS_CONTENT]-(:User)
-            	WITH count(nodes(p)) AS c
+            	MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
+            	WITH count(this_content0_creator_User_unique) as c
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required', [0])
             	RETURN c AS this_content0_creator_User_unique_ignored
             }
@@ -214,8 +214,8 @@ describe("Cypher Auth Allow", () => {
             WITH this, this_content0
             CALL {
             	WITH this_content0
-            	MATCH p=(this_content0)<-[:HAS_CONTENT]-(:User)
-            	WITH count(nodes(p)) AS c
+            	MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
+            	WITH count(this_content0_creator_User_unique) as c
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
             	RETURN c AS this_content0_creator_User_unique_ignored
             }
