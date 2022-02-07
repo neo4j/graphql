@@ -213,7 +213,7 @@ function createDeleteAndParams({
                     );
                     res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
 
-                    // TODO relationship validation
+                    // TODO - relationship validation
                 });
             });
 
