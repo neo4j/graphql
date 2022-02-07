@@ -371,6 +371,7 @@ function createUpdateAndParams({
                                 varName: nodeName,
                                 withVars: [...withVars, nodeName],
                                 insideDoWhen,
+                                includeRelationshipValidation: false,
                             });
                             subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
@@ -393,7 +394,15 @@ function createUpdateAndParams({
                                 subquery.push(setA);
                             }
 
-                            // TODO relationship validation
+                            const relationshipValidationStr = createRelationshipValidationStr({
+                                node: refNode,
+                                context,
+                                varName: nodeName,
+                            });
+                            if (relationshipValidationStr) {
+                                subquery.push(`WITH ${[...withVars, nodeName].join(", ")}`);
+                                subquery.push(relationshipValidationStr);
+                            }
                         });
                     }
 

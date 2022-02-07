@@ -234,6 +234,66 @@ describe("integration/rfs/003", () => {
                         await session.close();
                     }
                 });
+
+                test("should throw error when creating a node without a required relationship through a nested mutation", async () => {
+                    const session = driver.session();
+
+                    const typeDefs = gql`
+                        type Address {
+                            street: String!
+                        }
+
+                        type Director {
+                            id: ID!
+                            address: Address! @relationship(type: "HAS_ADDRESS", direction: OUT)
+                        }
+
+                        type Movie {
+                            id: ID!
+                            director: Director! @relationship(type: "DIRECTED", direction: IN)
+                        }
+                    `;
+
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                    const movieId = generate({
+                        charset: "alphabetic",
+                    });
+
+                    const directorId = generate({
+                        charset: "alphabetic",
+                    });
+
+                    const mutation = `
+                        mutation {
+                            updateMovies(
+                              where: { id: "${movieId}" }
+                              update: { director: { create: { node: { id: "${directorId}" } } } }
+                            ) {
+                              info {
+                                nodesCreated
+                              }
+                            }
+                        }
+                    `;
+
+                    try {
+                        await session.run(`
+                            CREATE (:Movie {id: "${movieId}"})
+                        `);
+
+                        const result = await graphql({
+                            schema: neoSchema.schema,
+                            source: mutation,
+                            contextValue: { driver },
+                        });
+
+                        expect(result.errors).toBeTruthy();
+                        expect((result.errors as any[])[0].message).toBe("Director.address required");
+                    } finally {
+                        await session.close();
+                    }
+                });
             });
         });
 

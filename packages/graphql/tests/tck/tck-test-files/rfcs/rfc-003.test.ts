@@ -301,6 +301,79 @@ describe("integration/rfs/003", () => {
                             }"
                         `);
                     });
+
+                    test("should add validation when creating a node with a required relationship through a nested mutation", async () => {
+                        const typeDefs = gql`
+                            type Address {
+                                street: String!
+                            }
+
+                            type Director {
+                                id: ID!
+                                address: Address! @relationship(type: "HAS_ADDRESS", direction: OUT)
+                            }
+
+                            type Movie {
+                                id: ID!
+                                director: Director! @relationship(type: "DIRECTED", direction: IN)
+                            }
+                        `;
+
+                        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                        const movieId = "movieId-4";
+                        const directorId = "directorId-3";
+
+                        const mutation = gql`
+                        mutation {
+                            updateMovies(
+                              where: { id: "${movieId}" }
+                              update: { director: { create: { node: { id: "${directorId}" } } } }
+                            ) {
+                              info {
+                                nodesCreated
+                              }
+                            }
+                        }
+                    `;
+
+                        const result = await translateQuery(neoSchema, mutation, {
+                            req: createJwtRequest("secret", {}),
+                        });
+
+                        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                            "MATCH (this:Movie)
+                            WHERE this.id = $this_id
+                            WITH this
+                            CREATE (this_director0_create0_node:Director)
+                            SET this_director0_create0_node.id = $this_director0_create0_node_id
+                            MERGE (this)<-[:DIRECTED]-(this_director0_create0_node)
+                            WITH this, this_director0_create0_node
+                            CALL {
+                            	WITH this_director0_create0_node
+                            	MATCH (this_director0_create0_node)-[this_director0_create0_node_address_Address_unique:HAS_ADDRESS]->(:Address)
+                            	WITH count(this_director0_create0_node_address_Address_unique) as c
+                            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
+                            	RETURN c AS this_director0_create0_node_address_Address_unique_ignored
+                            }
+                            WITH this
+                            CALL {
+                            	WITH this
+                            	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
+                            	WITH count(this_director_Director_unique) as c
+                            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                            	RETURN c AS this_director_Director_unique_ignored
+                            }
+                            RETURN 'Query cannot conclude with CALL'"
+                        `);
+
+                        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                            "{
+                                \\"this_id\\": \\"movieId-4\\",
+                                \\"this_director0_create0_node_id\\": \\"directorId-3\\"
+                            }"
+                        `);
+                    });
                 });
             });
 
