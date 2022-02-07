@@ -381,7 +381,7 @@ function createWhereAndParams({
                         `NOT EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(${labels}))`
                     );
 
-                    return res;
+                    return;
                 }
 
                 let resultStr = [
@@ -669,10 +669,7 @@ function createWhereAndParams({
                 });
                 if (recurse[0]) {
                     innerClauses.push(`${recurse[0]}`);
-                    // TODO: mergeDeep function signature has changed from @graphql-tools/utils 7->8
-                    // Replace code below with commented line when merging in version 8 of library
-                    // res.params = mergeDeep([res.params, recurse[1]]);
-                    res.params = mergeDeep(res.params, recurse[1]);
+                    res.params = mergeDeep([res.params, recurse[1]]);
                 }
             });
 
