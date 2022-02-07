@@ -21,29 +21,31 @@
 import { gql } from "apollo-server-core";
 import * as neo4j from "neo4j-driver";
 import { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
-import parseQueryOptionsDirective from "./parse-query-options-directive";
+import { parseQueryOptionsDirective } from "./parse-query-options-directive";
+import { QueryOptionsDirective } from "../../classes/QueryOptionsDirective";
 
 describe("parseQueryOptionsDirective", () => {
-    test("should throw error when default limit is less than or equal to 0", () => {
-        [-10, -100, 0].forEach((i) => {
-            const typeDefs = gql`
-                type Movie @queryOptions(limit: {default: ${i}}) {
-                    id: ID
-                }
-            `;
+    test("max and default argument", () => {
+        const maxLimit = 100;
+        const defaultLimit = 10;
 
-            const definition = typeDefs.definitions[0] as unknown as ObjectTypeDefinitionNode;
-            const directive = (definition.directives || [])[0] as DirectiveNode;
+        const typeDefs = gql`
+            type Movie @queryOptions(limit: {max: ${maxLimit}, default: ${defaultLimit}} ) {
+                id: ID
+            }
+        `;
 
-            expect(() =>
-                parseQueryOptionsDirective({
-                    directive,
-                    definition,
-                })
-            ).toThrow(
-                `${definition.name.value} @queryOptions(limit: {default: ${i}}) invalid value: '${i}' try a number greater than 0`
-            );
+        const definition = typeDefs.definitions[0] as ObjectTypeDefinitionNode;
+        const directive = (definition.directives || [])[0] as DirectiveNode;
+
+        const result = parseQueryOptionsDirective({
+            directive,
+            definition,
         });
+
+        expect(result).toEqual(
+            new QueryOptionsDirective({ limit: { max: neo4j.int(maxLimit), default: neo4j.int(defaultLimit) } })
+        );
     });
 
     test("should return correct object if default limit is undefined", () => {
@@ -53,37 +55,101 @@ describe("parseQueryOptionsDirective", () => {
             }
         `;
 
-        const definition = typeDefs.definitions[0] as unknown as ObjectTypeDefinitionNode;
+        const definition = typeDefs.definitions[0] as ObjectTypeDefinitionNode;
         const directive = (definition.directives || [])[0] as DirectiveNode;
 
         const result = parseQueryOptionsDirective({
             directive,
             definition,
         });
-        expect(result).toEqual({
-            limit: {
-                default: undefined,
-            },
-        });
+        expect(result).toEqual(
+            new QueryOptionsDirective({
+                limit: {},
+            })
+        );
     });
 
-    test("should parse and return correct meta data", () => {
+    test("fail if default argument is bigger than max", () => {
+        const maxLimit = 10;
         const defaultLimit = 100;
 
         const typeDefs = gql`
-                type Movie @queryOptions(limit: {default: ${defaultLimit}} ) {
+            type Movie @queryOptions(limit: {max: ${maxLimit}, default: ${defaultLimit}} ) {
+                id: ID
+            }
+        `;
+
+        const definition = typeDefs.definitions[0] as ObjectTypeDefinitionNode;
+        const directive = (definition.directives || [])[0] as DirectiveNode;
+
+        expect(() =>
+            parseQueryOptionsDirective({
+                directive,
+                definition,
+            })
+        ).toThrow(
+            `Movie @queryOptions(limit: {max: ${maxLimit}, default: ${defaultLimit}}) invalid default value, 'default' must be smaller than 'max'`
+        );
+    });
+
+    describe("default argument", () => {
+        test("should throw error when default limit is less than or equal to 0", () => {
+            [-10, -100, 0].forEach((i) => {
+                const typeDefs = gql`
+                type Movie @queryOptions(limit: {default: ${i}}) {
                     id: ID
                 }
             `;
 
-        const definition = typeDefs.definitions[0] as unknown as ObjectTypeDefinitionNode;
-        const directive = (definition.directives || [])[0] as DirectiveNode;
+                const definition = typeDefs.definitions[0] as ObjectTypeDefinitionNode;
+                const directive = (definition.directives || [])[0] as DirectiveNode;
+                expect(() =>
+                    parseQueryOptionsDirective({
+                        directive,
+                        definition,
+                    })
+                ).toThrow(
+                    `Movie @queryOptions(limit: {default: ${i}}) invalid value: '${i}', it should be a number greater than 0`
+                );
+            });
+        });
+    });
 
-        const result = parseQueryOptionsDirective({
-            directive,
-            definition,
+    describe("max argument", () => {
+        test("should fail if value is 0", () => {
+            const typeDefs = gql`
+                type Movie @queryOptions(limit: { max: 0 }) {
+                    id: ID
+                }
+            `;
+
+            const definition = typeDefs.definitions[0] as ObjectTypeDefinitionNode;
+            const directive = (definition.directives || [])[0] as DirectiveNode;
+            expect(() =>
+                parseQueryOptionsDirective({
+                    directive,
+                    definition,
+                })
+            ).toThrow(`Movie @queryOptions(limit: {max: 0}) invalid value: '0', it should be a number greater than 0`);
         });
 
-        expect(result).toEqual({ limit: { default: neo4j.int(defaultLimit) } });
+        test("should fail if value is less 0", () => {
+            const typeDefs = gql`
+                type Movie @queryOptions(limit: { max: -10 }) {
+                    id: ID
+                }
+            `;
+
+            const definition = typeDefs.definitions[0] as ObjectTypeDefinitionNode;
+            const directive = (definition.directives || [])[0] as DirectiveNode;
+            expect(() =>
+                parseQueryOptionsDirective({
+                    directive,
+                    definition,
+                })
+            ).toThrow(
+                `Movie @queryOptions(limit: {max: -10}) invalid value: '-10', it should be a number greater than 0`
+            );
+        });
     });
 });
