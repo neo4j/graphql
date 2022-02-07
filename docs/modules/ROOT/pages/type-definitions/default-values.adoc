@@ -53,6 +53,13 @@ directive @queryOptions(
     """If no limit argument is supplied on query will fallback to this value."""
     limit: {
         default: Int
+        max: Int
     }
 ) on OBJECT
 ----
+
+=== Limit
+Limit has 2 arguments:
+
+* `default` - If no `limit` argument is passed to the query, the default limit will be used. The query may still pass a higher or lower `limit`.
+* `max` - Defines the maximum limit to be passed to the query. If a higher value is passed, this will be used instead. If no `default` value is set, `max` will be used for queries without limit.

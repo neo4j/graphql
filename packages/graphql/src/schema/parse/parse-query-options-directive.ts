@@ -17,38 +17,65 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, ObjectTypeDefinitionNode, ObjectValueNode } from "graphql";
+import { DirectiveNode, ObjectFieldNode, ObjectTypeDefinitionNode, ObjectValueNode } from "graphql";
 import * as neo4j from "neo4j-driver";
-import { QueryOptions } from "../../types";
+import { QueryOptionsDirective } from "../../classes/QueryOptionsDirective";
+import { Neo4jGraphQLError } from "../../classes/Error";
 import parseValueNode from "../parse-value-node";
 
-function parseQueryOptionsDirective({
+export function parseQueryOptionsDirective({
     directive,
     definition,
 }: {
     directive: DirectiveNode;
     definition: ObjectTypeDefinitionNode;
-}): QueryOptions {
+}): QueryOptionsDirective {
     const limitArgument = directive.arguments?.find((direc) => direc.name.value === "limit");
     const limitValue = limitArgument?.value as ObjectValueNode | undefined;
     const defaultLimitArgument = limitValue?.fields.find((field) => field.name.value === "default");
+    const maxLimitArgument = limitValue?.fields.find((field) => field.name.value === "max");
 
-    let defaultLimit: neo4j.Integer | undefined;
-    if (defaultLimitArgument) {
-        const parsed = parseValueNode(defaultLimitArgument.value) as number;
+    const defaultLimit = parseArgumentToInt(defaultLimitArgument);
+    const maxLimit = parseArgumentToInt(maxLimitArgument);
 
-        if (parsed <= 0) {
-            throw new Error(
-                `${definition.name.value} @queryOptions(limit: {default: ${parsed}}) invalid value: '${parsed}' try a number greater than 0`
-            );
-        }
+    const queryOptionsLimit = { default: defaultLimit, max: maxLimit };
 
-        defaultLimit = neo4j.int(parsed);
+    const queryOptionsError = validateLimitArguments(queryOptionsLimit, definition.name.value);
+    if (queryOptionsError) {
+        throw queryOptionsError;
     }
 
-    return {
-        limit: { default: defaultLimit },
-    };
+    return new QueryOptionsDirective({ limit: queryOptionsLimit });
 }
 
-export default parseQueryOptionsDirective;
+function parseArgumentToInt(field: ObjectFieldNode | undefined): neo4j.Integer | undefined {
+    if (field) {
+        const parsed = parseValueNode(field.value) as number;
+        return neo4j.int(parsed);
+    }
+    return undefined;
+}
+
+function validateLimitArguments(arg: QueryOptionsDirective["limit"], typeName: string): Neo4jGraphQLError | undefined {
+    const maxLimit = arg.max?.toNumber();
+    const defaultLimit = arg.default?.toNumber();
+
+    if (defaultLimit !== undefined && defaultLimit <= 0) {
+        return new Neo4jGraphQLError(
+            `${typeName} @queryOptions(limit: {default: ${defaultLimit}}) invalid value: '${defaultLimit}', it should be a number greater than 0`
+        );
+    }
+    if (maxLimit !== undefined && maxLimit <= 0) {
+        return new Neo4jGraphQLError(
+            `${typeName} @queryOptions(limit: {max: ${maxLimit}}) invalid value: '${maxLimit}', it should be a number greater than 0`
+        );
+    }
+    if (maxLimit && defaultLimit) {
+        if (maxLimit < defaultLimit) {
+            return new Neo4jGraphQLError(
+                `${typeName} @queryOptions(limit: {max: ${maxLimit}, default: ${defaultLimit}}) invalid default value, 'default' must be smaller than 'max'`
+            );
+        }
+    }
+    return undefined;
+}
