@@ -488,15 +488,14 @@ function createUpdateAndParams({
         return res;
     }
 
-    // eslint-disable-next-line prefer-const
-    let {
-        strs,
-        params,
-        meta = { preAuthStrs: [], postAuthStrs: [] },
-    } = Object.entries(updateInput).reduce(reducer, {
+    const reducedUpdate = Object.entries(updateInput as Record<string, unknown>).reduce(reducer, {
         strs: [],
         params: {},
     });
+
+    const { strs, meta = { preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
+    let params = reducedUpdate;
+    // eslint-disable-next-line prefer-const
 
     let preAuthStrs: string[] = [];
     let postAuthStrs: string[] = [];

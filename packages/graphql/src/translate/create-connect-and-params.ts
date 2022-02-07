@@ -224,17 +224,16 @@ function createConnectAndParams({
 
         if (includeRelationshipValidation) {
             const relValidationStrs: string[] = [];
+            const matrixItems = [
+                [parentNode, parentVar],
+                [relatedNode, nodeName],
+            ] as [Node, string][];
 
-            (
-                [
-                    [parentNode, parentVar],
-                    [relatedNode, nodeName],
-                ] as [Node, string][]
-            ).forEach(([node, varName]) => {
+            matrixItems.forEach((mi) => {
                 const relValidationStr = createRelationshipValidationString({
-                    node,
+                    node: mi[0],
                     context,
-                    varName,
+                    varName: mi[1],
                 });
                 if (relValidationStr) {
                     relValidationStrs.push(relValidationStr);
