@@ -23,10 +23,14 @@ import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import neo4j from "../../neo4j";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("auth/where", () => {
     let driver: Driver;
     const secret = "secret";
+    const jwtPlugin = new JWTPlugin({
+        secret: "secret",
+    });
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -60,7 +64,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { jwt: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -120,7 +124,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { jwt: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -197,7 +201,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { jwt: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -274,7 +278,7 @@ describe("auth/where", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+                const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { jwt: jwtPlugin } });
 
                 try {
                     await session.run(`
@@ -352,7 +356,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { jwt: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -415,7 +419,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { jwt: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -464,7 +468,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { jwt: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -532,7 +536,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { jwt: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -593,7 +597,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { jwt: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -656,7 +660,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { jwt: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -716,7 +720,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { jwt: jwtPlugin } });
 
             try {
                 await session.run(`

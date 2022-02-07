@@ -33,18 +33,10 @@ import assertIndexesAndConstraints, {
 } from "./utils/asserts-indexes-and-constraints";
 import { wrapResolver } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers";
-import { Neo4jGraphQLJWTPlugin } from ".";
-
-export interface Neo4jGraphQLJWT {
-    jwksEndpoint?: string;
-    secret?: string;
-    noVerify?: boolean;
-    rolesPath?: string;
-}
+import Neo4jGraphQLJWTPlugin from "./Neo4jGraphQLJWTPlugin";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
-    jwt?: Neo4jGraphQLJWT;
     enableRegex?: boolean;
     skipValidateTypeDefs?: boolean;
     queryOptions?: CypherQueryOptions;
