@@ -32,6 +32,7 @@ describe("Update -> ConnectOrCreate", () => {
     let session: Session;
     let typeDefs: DocumentNode;
     let query: DocumentNode;
+    let query2: DocumentNode;
 
     const typeMovie = generateUniqueType("Movie");
     const typeGenre = generateUniqueType("Genre");
@@ -70,6 +71,29 @@ describe("Update -> ConnectOrCreate", () => {
                 }
               }
             }
+            `;
+
+        query2 = gql`
+        mutation {
+            create${pluralize(typeMovie.name)}(
+                input: [
+                    {
+                        title: "Cool Movie"
+                        genres: {
+                            connectOrCreate: [
+                                { where: { node: { name: "Comedy" } }, onCreate: { node: { name: "Comedy" } } }
+                            ]
+                        }
+                    }
+                ]
+            ) {
+                ${typeMovie.plural} {
+                    title
+                }
+            }
+        }
+
+            
             `;
 
         neoSchema = new Neo4jGraphQL({
@@ -118,6 +142,24 @@ describe("Update -> ConnectOrCreate", () => {
 
         const genreCount = await session.run(`
           MATCH (m:${typeGenre.name} {name: "Horror"})
+          RETURN COUNT(m) as count
+        `);
+        expect((genreCount.records[0].toObject().count as Integer).toNumber()).toEqual(1);
+    });
+
+    test.only("create with ConnectOrCreate auth", async () => {
+        const req = createJwtRequest(secret, { roles: ["admin"] });
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: getQuerySource(query2),
+            contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+        expect(gqlResult.errors).toBeUndefined();
+        console.log(gqlResult);
+
+        const genreCount = await session.run(`
+          MATCH (m:${typeGenre.name} {name: "Comedy"})
           RETURN COUNT(m) as count
         `);
         expect((genreCount.records[0].toObject().count as Integer).toNumber()).toEqual(1);

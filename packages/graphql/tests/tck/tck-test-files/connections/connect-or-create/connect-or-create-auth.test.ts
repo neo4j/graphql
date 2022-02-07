@@ -379,7 +379,7 @@ describe("connectOrCreate", () => {
             `);
         });
 
-        test("Create with createOrConnect and DELETE operation rule", async () => {
+        test.only("Create with createOrConnect and DELETE operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[DELETE]"),
                 config: { enableRegex: true, jwt: { secret } },

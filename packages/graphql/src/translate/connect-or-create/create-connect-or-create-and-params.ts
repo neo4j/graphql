@@ -51,20 +51,18 @@ export function createConnectOrCreateAndParams({
     refNode: Node;
     context: Context;
 }): CypherStatement {
-    const statements = asArray(input).map(
-        (inputItem, index): CypherStatement => {
-            const subqueryBaseName = `${varName}${index}`;
-            return createConnectOrCreatePartialStatement({
-                input: inputItem,
-                baseName: subqueryBaseName,
-                parentVar,
-                relationField,
-                refNode,
-                context,
-            });
-        }
-    );
-
+    const statements = asArray(input).map((inputItem, index): CypherStatement => {
+        const subqueryBaseName = `${varName}${index}`;
+        return createConnectOrCreatePartialStatement({
+            input: inputItem,
+            baseName: subqueryBaseName,
+            parentVar,
+            relationField,
+            refNode,
+            context,
+        });
+    });
+    console.log("8", statements);
     return joinStatements(statements);
 }
 
@@ -103,6 +101,7 @@ function createConnectOrCreatePartialStatement({
         context,
         nodeName: baseName,
     });
+    console.log("9", authStatement, mergeRelatedNodeStatement, mergeRelationStatement);
 
     return joinStatements([authStatement, mergeRelatedNodeStatement, mergeRelationStatement]);
 }

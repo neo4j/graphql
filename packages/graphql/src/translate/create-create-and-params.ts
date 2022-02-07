@@ -112,9 +112,9 @@ function createCreateAndParams({
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                         if (relationField.properties) {
-                            const relationship = (context.neoSchema.relationships.find(
+                            const relationship = context.neoSchema.relationships.find(
                                 (x) => x.properties === relationField.properties
-                            ) as unknown) as Relationship;
+                            ) as unknown as Relationship;
 
                             const setA = createSetRelationshipPropertiesAndParams({
                                 properties: create.edge ?? {},
@@ -154,6 +154,11 @@ function createCreateAndParams({
                         refNode,
                         context,
                     });
+                    console.log("7", connectOrCreateQuery);
+                    if (connectOrCreateQuery.startsWith("CALL")) {
+                        res.creates.push(`WITH ${varName}`);
+                    }
+
                     res.creates.push(connectOrCreateQuery);
                     res.params = { ...res.params, ...connectOrCreateParams };
                 }
@@ -208,7 +213,7 @@ function createCreateAndParams({
 
             return res;
         }
-
+        console.log("3");
         res.creates.push(`SET ${varName}.${dbFieldName} = $${varNameKey}`);
         res.params[varNameKey] = value;
 
@@ -236,6 +241,7 @@ function createCreateAndParams({
         creates: initial,
         params: {},
     });
+    console.log("6", creates, params, meta);
 
     const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
 
@@ -248,12 +254,13 @@ function createCreateAndParams({
             escapeQuotes: Boolean(insideDoWhen),
         });
         if (bindAndParams[0]) {
+            console.log("5");
+
             creates.push(`WITH ${withVars.join(", ")}`);
             creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), ${forbiddenString}, [0])`);
             params = { ...params, ...bindAndParams[1] };
         }
     }
-
     if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
         creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
