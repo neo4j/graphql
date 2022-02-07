@@ -495,7 +495,6 @@ function createUpdateAndParams({
 
     const { strs, meta = { preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
     let params = reducedUpdate.params;
-    // eslint-disable-next-line prefer-const
 
     let preAuthStrs: string[] = [];
     let postAuthStrs: string[] = [];
