@@ -35,12 +35,12 @@ import type {
     Context,
     FullText,
     IgnoredField,
-    QueryOptions,
 } from "../types";
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
 import { lowerFirst } from "../utils/lower-first";
+import { QueryOptionsDirective } from "./QueryOptionsDirective";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -63,7 +63,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     exclude?: Exclude;
     nodeDirective?: NodeDirective;
     description?: string;
-    queryOptionsDirective?: QueryOptions;
+    queryOptionsDirective?: QueryOptionsDirective;
 }
 
 type MutableField =
@@ -104,7 +104,7 @@ class Node extends GraphElement {
     public fulltextDirective?: FullText;
     public auth?: Auth;
     public description?: string;
-    public queryOptions?: QueryOptions;
+    public queryOptions?: QueryOptionsDirective;
 
     constructor(input: NodeConstructor) {
         super(input);
