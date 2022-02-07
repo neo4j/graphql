@@ -60,8 +60,8 @@ class Neo4jGraphQL {
 
     private schemaDefinition: IExecutableSchemaDefinition;
 
-    public nodes?: Node[];
-    public relationships?: Relationship[];
+    private _nodes?: Node[];
+    private _relationships?: Relationship[];
 
     private schema?: Promise<GraphQLSchema>;
 
@@ -86,8 +86,8 @@ class Neo4jGraphQL {
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
             });
 
-            this.nodes = nodes;
-            this.relationships = relationships;
+            this._nodes = nodes;
+            this._relationships = relationships;
 
             const resolversComposition = {
                 "Query.*": [
@@ -123,6 +123,22 @@ class Neo4jGraphQL {
         });
 
         return this.schema;
+    }
+
+    public get nodes(): Node[] {
+        if (!this._nodes) {
+            throw new Error("You must await `.getSchema()` before accessing `nodes`");
+        }
+
+        return this._nodes;
+    }
+
+    public get relationships(): Relationship[] {
+        if (!this._relationships) {
+            throw new Error("You must await `.getSchema()` before accessing `relationships`");
+        }
+
+        return this._relationships;
     }
 
     async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {

@@ -58,7 +58,7 @@ class OGM<ModelMap = {}> {
     }
 
     private initModel(model: Model) {
-        const node = this.neoSchema.nodes?.find((n) => n.name === model.name);
+        const node = this.neoSchema.nodes.find((n) => n.name === model.name);
 
         if (!node) {
             throw new Error(`Could not find model ${model.name}`);

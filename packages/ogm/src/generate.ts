@@ -133,7 +133,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
     const aggregateSelections: any = {};
     const modeMap: Record<string, string> = {};
 
-    options.ogm.neoSchema.nodes?.forEach((node) => {
+    options.ogm.neoSchema.nodes.forEach((node) => {
         const modelName = `${node.name}Model`;
         const hasFulltextArg = Boolean(node.fulltextDirective);
 
