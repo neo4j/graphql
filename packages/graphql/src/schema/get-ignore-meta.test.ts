@@ -49,7 +49,7 @@ describe("getIgnoreMeta", () => {
         expect(result).toBeUndefined();
     });
 
-    test("should throw if require not a list", () => {
+    test("should throw if dependsOn not a list", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -61,7 +61,7 @@ describe("getIgnoreMeta", () => {
                     arguments: [
                         {
                             // @ts-ignore
-                            name: { value: "require" },
+                            name: { value: "dependsOn" },
                             // @ts-ignore
                             value: { kind: Kind.BOOLEAN },
                         },
@@ -85,7 +85,7 @@ describe("getIgnoreMeta", () => {
         expect(() => getIgnoreMeta(field)).toThrow(ERROR_MESSAGE);
     });
 
-    test("should throw if require not a list of strings", () => {
+    test("should throw if dependsOn not a list of strings", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -97,7 +97,7 @@ describe("getIgnoreMeta", () => {
                     arguments: [
                         {
                             // @ts-ignore
-                            name: { value: "require" },
+                            name: { value: "dependsOn" },
                             // @ts-ignore
                             value: {
                                 kind: Kind.LIST,
@@ -128,7 +128,7 @@ describe("getIgnoreMeta", () => {
         expect(() => getIgnoreMeta(field)).toThrow(ERROR_MESSAGE);
     });
 
-    test("should return the correct meta if no require argument", () => {
+    test("should return the correct meta if no dependsOn argument", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -160,7 +160,7 @@ describe("getIgnoreMeta", () => {
         });
     });
 
-    test("should return the correct meta with require argument", () => {
+    test("should return the correct meta with dependsOn argument", () => {
         const requiredFields = ["field1", "field2", "field3"];
         const field: FieldDefinitionNode = {
             directives: [
@@ -173,7 +173,7 @@ describe("getIgnoreMeta", () => {
                     arguments: [
                         {
                             // @ts-ignore
-                            name: { value: "require" },
+                            name: { value: "dependsOn" },
                             // @ts-ignore
                             value: {
                                 kind: Kind.LIST,

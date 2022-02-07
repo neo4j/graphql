@@ -79,7 +79,7 @@ type User @exclude(operations: [CREATE, READ, UPDATE, DELETE]) {
 
 This field will essentially be completely ignored during the generation of Query and Mutation fields, and will require another way to resolve the field, such as through the use of a custom resolver.
 
-Any fields that will be required in the custom resolver should be passed to the `require` argument to ensure that during the Cypher generation process those properties are selected from the database. Allowable fields are any returning a Scalar or Enum type including those defined using the xref::type-definitions/cypher.adoc#type-definitions-cypher[`@cypher`] directive.
+Any fields that the custom resolver depends on should be passed to the `dependsOn` argument to ensure that during the Cypher generation process those properties are selected from the database. Allowable fields are any returning a Scalar or Enum type including those defined using the xref::type-definitions/cypher.adoc#type-definitions-cypher[`@cypher`] directive.
 
 === Definition
 
@@ -87,7 +87,7 @@ Any fields that will be required in the custom resolver should be passed to the 
 ----
 """Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers."""
 directive @ignore(
-    require: [String!]
+    dependsOn: [String!]
 ) on FIELD_DEFINITION
 ----
 

@@ -34,17 +34,17 @@ function getIgnoreMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinit
         return undefined;
     }
 
-    const requireDirective = directive.arguments?.find((arg) => arg.name.value === "require");
+    const directiveDependsOn = directive.arguments?.find((arg) => arg.name.value === "dependsOn");
 
-    if (!requireDirective) {
+    if (!directiveDependsOn) {
         return {
             requiredFields: [],
         };
     }
 
     if (
-        requireDirective?.value.kind !== Kind.LIST ||
-        requireDirective?.value.values.some((value) => value.kind !== Kind.STRING)
+        directiveDependsOn?.value.kind !== Kind.LIST ||
+        directiveDependsOn?.value.values.some((value) => value.kind !== Kind.STRING)
     ) {
         throw new Error(ERROR_MESSAGE);
     }
@@ -52,7 +52,7 @@ function getIgnoreMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinit
     // `@ignore(require: [String!])`
     // Create a set from array of argument `require`
     const requiredFields = removeDuplicates(
-        (requireDirective.value.values.map((v) => (v as StringValueNode).value) as string[]) ?? []
+        (directiveDependsOn.value.values.map((v) => (v as StringValueNode).value) as string[]) ?? []
     );
 
     return {

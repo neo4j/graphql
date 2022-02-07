@@ -41,7 +41,7 @@ describe("@ignore directive", () => {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                fullName: String @ignore(require: ["firstName", "lastName"])
+                fullName: String @ignore(dependsOn: ["firstName", "lastName"])
             }
         `;
 
@@ -165,7 +165,7 @@ describe("@ignore directive", () => {
                 id: ID!
                 firstName: String! @cypher(statement: "RETURN '${user.firstName}'")
                 lastName: String! @cypher(statement: "RETURN '${user.lastName}'")
-                fullName: String @ignore(require: ["firstName", "lastName"])
+                fullName: String @ignore(dependsOn: ["firstName", "lastName"])
             }
         `;
 
