@@ -22,6 +22,7 @@ async function server(driver, context = {}) {
     });
 
     const schema = await neoSchema.getSchema();
+    await ogm.init();
 
     const apolloServer = new ApolloServer({
         schema,
