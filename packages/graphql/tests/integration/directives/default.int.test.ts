@@ -77,4 +77,86 @@ describe("@default directive", () => {
                 })
         ).toThrow("Default value for User.verifiedAt is not a valid DateTime");
     });
+
+    test("on enum field with incorrect value should throw an error", () => {
+        const typeDefs = `
+            type User {
+                name: String!
+                location: Location! @default(value: DIFFERENT)
+            }
+
+            enum Location {
+                HERE
+                THERE
+                EVERYWHERE
+            }
+        `;
+
+        expect(
+            () =>
+                new Neo4jGraphQL({
+                    typeDefs,
+                })
+        ).toThrow("Enum \"Location\" cannot represent value: \"DIFFERENT\"");
+    });
+
+    test("on enum field with incorrect type should throw an error", () => {
+        const typeDefs = `
+            type User {
+                name: String!
+                location: Location! @default(value: 2)
+            }
+
+            enum Location {
+                HERE
+                THERE
+                EVERYWHERE
+            }
+        `;
+
+        expect(
+            () =>
+                new Neo4jGraphQL({
+                    typeDefs,
+                })
+        ).toThrow("@default value on enum fields must be an enum value");
+    });
+
+    test("on primitive field should not throw an error", () => {
+        const typeDefs = `
+            type User {
+                name: String!
+                location: String! @default(value: "somewhere")
+            }
+        `;
+
+        expect(
+            () =>
+                new Neo4jGraphQL({
+                    typeDefs,
+                })
+        ).not.toThrow();
+    });
+
+    test("on enum field should not throw an error", () => {
+        const typeDefs = `
+            type User {
+                name: String!
+                location: Location! @default(value: HERE)
+            }
+
+            enum Location {
+                HERE
+                THERE
+                EVERYWHERE
+            }
+        `;
+
+        expect(
+            () =>
+                new Neo4jGraphQL({
+                    typeDefs,
+                })
+        ).not.toThrow();
+    });
 });
