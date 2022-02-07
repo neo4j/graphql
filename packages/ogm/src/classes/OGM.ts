@@ -57,6 +57,25 @@ class OGM<ModelMap = {}> {
         return this._schema;
     }
 
+    private initModel(model: Model) {
+        const node = this.neoSchema.nodes?.find((n) => n.name === model.name);
+
+        if (!node) {
+            throw new Error(`Could not find model ${model.name}`);
+        }
+
+        const selectionSet = `
+                    {
+                        ${[node.primitiveFields, node.scalarFields, node.enumFields, node.temporalFields].reduce(
+                            (res: string[], v) => [...res, ...v.map((x) => x.fieldName)],
+                            []
+                        )}
+                    }
+                `;
+
+        model.init({ schema: this.schema!, selectionSet });
+    }
+
     async init(): Promise<void> {
         if (this.initializer) {
             return this.initializer;
@@ -66,24 +85,7 @@ class OGM<ModelMap = {}> {
             this.neoSchema.getSchema().then((schema) => {
                 this._schema = schema;
 
-                this.models.forEach((model) => {
-                    const node = this.neoSchema.nodes?.find((n) => n.name === model.name);
-
-                    if (!node) {
-                        throw new Error(`Invalid Model found: ${model.name}`);
-                    }
-
-                    const selectionSet = `
-                    {
-                        ${[node.primitiveFields, node.scalarFields, node.enumFields, node.temporalFields].reduce(
-                            (res: string[], v) => [...res, ...v.map((x) => x.fieldName)],
-                            []
-                        )}
-                    }
-                `;
-
-                    model.init({ schema, selectionSet });
-                });
+                this.models.forEach((model) => this.initModel(model));
 
                 resolve();
             });
@@ -104,22 +106,7 @@ class OGM<ModelMap = {}> {
         model = new Model(name as string);
 
         if (this.schema) {
-            const node = this.neoSchema.nodes?.find((n) => n.name === name);
-
-            if (!node) {
-                throw new Error(`Could not find model ${name}`);
-            }
-
-            const selectionSet = `
-                    {
-                        ${[node.primitiveFields, node.scalarFields, node.enumFields, node.temporalFields].reduce(
-                            (res: string[], v) => [...res, ...v.map((x) => x.fieldName)],
-                            []
-                        )}
-                    }
-                    `;
-
-            model.init({ schema: this.schema, selectionSet });
+            this.initModel(model);
         }
 
         this.models.push(model);
