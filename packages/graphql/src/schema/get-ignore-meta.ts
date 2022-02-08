@@ -49,7 +49,7 @@ function getIgnoreMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinit
         throw new Error(ERROR_MESSAGE);
     }
 
-    // `@ignore(require: [String!])`
+    // `@ignore(dependsOn: [String!])`
     // Create a set from array of argument `require`
     const requiredFields = removeDuplicates(
         (directiveDependsOn.value.values.map((v) => (v as StringValueNode).value) as string[]) ?? []
