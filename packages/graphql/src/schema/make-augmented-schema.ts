@@ -71,7 +71,7 @@ import {
     numericalResolver,
 } from "./resolvers";
 import * as Scalars from "./scalars";
-import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
+import { graphqlDirectivesToCompose, objectFieldsToComposeFields, objectFieldsToInputFields } from "./to-compose";
 import { validateDocument } from "./validation";
 import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
@@ -434,18 +434,15 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${relationship.name.value}UpdateInput`,
-            fields: [
-                ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.readonly),
-                ...relFields.scalarFields,
-                ...relFields.enumFields,
-                ...relFields.temporalFields.filter((field) => !field.timestamps),
-                ...relFields.pointFields,
-            ].reduce(
-                (res, f) => ({
-                    ...res,
-                    [f.fieldName]: f.typeMeta.input.update.pretty,
-                }),
-                {}
+            fields: objectFieldsToInputFields(
+                [
+                    ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.readonly),
+                    ...relFields.scalarFields,
+                    ...relFields.enumFields,
+                    ...relFields.temporalFields.filter((field) => !field.timestamps),
+                    ...relFields.pointFields,
+                ],
+                "update"
             ),
         });
 

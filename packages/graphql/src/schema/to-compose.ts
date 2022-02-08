@@ -49,9 +49,9 @@ export function graphqlDirectivesToCompose(directives: DirectiveNode[]): Directi
     }));
 }
 
-export function objectFieldsToComposeFields(
-    fields: BaseField[]
-): { [k: string]: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> } {
+export function objectFieldsToComposeFields(fields: BaseField[]): {
+    [k: string]: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
+} {
     return fields.reduce((res, field) => {
         if (field.writeonly) {
             return res;
@@ -81,4 +81,14 @@ export function objectFieldsToComposeFields(
 
         return { ...res, [field.fieldName]: newField };
     }, {});
+}
+
+export function objectFieldsToInputFields(fields: BaseField[], inputType: "create" | "update"): Record<string, string> {
+    return fields.reduce(
+        (res, f) => ({
+            ...res,
+            [f.fieldName]: f.typeMeta.input[inputType].pretty,
+        }),
+        {}
+    );
 }
