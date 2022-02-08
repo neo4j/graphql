@@ -21,7 +21,7 @@ import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 import { DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition, Directive } from "graphql-compose";
 import getFieldTypeMeta from "./get-field-type-meta";
 import parseValueNode from "./parse-value-node";
-import { BaseField } from "../types";
+import { BaseField, InputField, PrimitiveField } from "../types";
 import { numericalResolver, idResolver } from "./resolvers";
 
 export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
@@ -83,12 +83,35 @@ export function objectFieldsToComposeFields(fields: BaseField[]): {
     }, {});
 }
 
-export function objectFieldsToInputFields(fields: BaseField[], inputType: "create" | "update"): Record<string, string> {
-    return fields.reduce(
-        (res, f) => ({
-            ...res,
-            [f.fieldName]: f.typeMeta.input[inputType].pretty,
-        }),
-        {}
-    );
+export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<string, InputField> {
+    return fields.reduce((res, f) => {
+        const fieldType = f.typeMeta.input.create.pretty;
+        const defaultValue = (f as PrimitiveField)?.defaultValue;
+
+        if (defaultValue !== undefined) {
+            res[f.fieldName] = {
+                type: fieldType,
+                defaultValue: defaultValue,
+            };
+        } else {
+            res[f.fieldName] = fieldType;
+        }
+
+        return res;
+    }, {});
+}
+
+export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<string, InputField> {
+    return fields.reduce((res, f) => {
+        const staticField = f.readonly || (f as PrimitiveField)?.autogenerate;
+        if (staticField) {
+            return res;
+        }
+
+        const fieldType = f.typeMeta.input.update.pretty;
+
+        res[f.fieldName] = fieldType;
+
+        return res;
+    }, {});
 }

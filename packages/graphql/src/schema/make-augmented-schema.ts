@@ -71,7 +71,12 @@ import {
     numericalResolver,
 } from "./resolvers";
 import * as Scalars from "./scalars";
-import { graphqlDirectivesToCompose, objectFieldsToComposeFields, objectFieldsToInputFields } from "./to-compose";
+import {
+    graphqlDirectivesToCompose,
+    objectFieldsToComposeFields,
+    objectFieldsToCreateInputFields,
+    objectFieldsToUpdateInputFields,
+} from "./to-compose";
 import { validateDocument } from "./validation";
 import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
@@ -434,16 +439,13 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${relationship.name.value}UpdateInput`,
-            fields: objectFieldsToInputFields(
-                [
-                    ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.readonly),
-                    ...relFields.scalarFields,
-                    ...relFields.enumFields,
-                    ...relFields.temporalFields.filter((field) => !field.timestamps),
-                    ...relFields.pointFields,
-                ],
-                "update"
-            ),
+            fields: objectFieldsToUpdateInputFields([
+                ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.readonly),
+                ...relFields.scalarFields,
+                ...relFields.enumFields,
+                ...relFields.temporalFields.filter((field) => !field.timestamps),
+                ...relFields.pointFields,
+            ]),
         });
 
         const relationshipWhereFields = getWhereFields({
@@ -465,26 +467,13 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${relationship.name.value}CreateInput`,
-            // TODO - This reduce duplicated when creating node CreateInput - put into shared function?
-            fields: [
+            fields: objectFieldsToCreateInputFields([
                 ...relFields.primitiveFields.filter((field) => !field.autogenerate),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields.filter((field) => !field.timestamps),
                 ...relFields.pointFields,
-            ].reduce((res, f) => {
-                if ((f as PrimitiveField)?.defaultValue !== undefined) {
-                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
-                        type: f.typeMeta.input.create.pretty,
-                        defaultValue: (f as PrimitiveField)?.defaultValue,
-                    };
-                    res[f.fieldName] = field;
-                } else {
-                    res[f.fieldName] = f.typeMeta.input.create.pretty;
-                }
-
-                return res;
-            }, {}),
+            ]),
         });
     });
 
@@ -570,22 +559,13 @@ function makeAugmentedSchema(
 
         composer.getOrCreateITC(`${interfaceRelationship.name.value}UpdateInput`, (tc) => {
             tc.addFields({
-                ...[
+                ...objectFieldsToUpdateInputFields([
                     ...interfaceFields.primitiveFields,
                     ...interfaceFields.scalarFields,
                     ...interfaceFields.enumFields,
                     ...interfaceFields.temporalFields.filter((field) => !field.timestamps),
                     ...interfaceFields.pointFields,
-                ].reduce(
-                    (res, f) =>
-                        f.readonly || (f as PrimitiveField)?.autogenerate
-                            ? res
-                            : {
-                                  ...res,
-                                  [f.fieldName]: f.typeMeta.input.update.pretty,
-                              },
-                    {}
-                ),
+                ]),
                 _on: implementationsUpdateInput,
             });
         });
@@ -884,22 +864,13 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${node.name}UpdateInput`,
-            fields: [
+            fields: objectFieldsToUpdateInputFields([
                 ...node.primitiveFields,
                 ...node.scalarFields,
                 ...node.enumFields,
                 ...node.temporalFields.filter((field) => !field.timestamps),
                 ...node.pointFields,
-            ].reduce(
-                (res, f) =>
-                    f.readonly || (f as PrimitiveField)?.autogenerate
-                        ? res
-                        : {
-                              ...res,
-                              [f.fieldName]: f.typeMeta.input.update.pretty,
-                          },
-                {}
-            ),
+            ]),
         });
 
         ["Create", "Update"].map((operation) =>
