@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import { SessionMode, Transaction, QueryResult, Neo4jError } from "neo4j-driver";
+import {SessionMode, Transaction, QueryResult, Neo4jError} from "neo4j-driver";
 import Debug from "debug";
 import {
     Neo4jGraphQLForbiddenError,
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLConstraintValidationError,
 } from "../classes";
-import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR, DEBUG_EXECUTE } from "../constants";
+import {AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR, DEBUG_EXECUTE} from "../constants";
 import createAuthParam from "../translate/create-auth-param";
-import { Context, DriverConfig } from "../types";
+import {Context, DriverConfig} from "../types";
 import environment from "../environment";
 
 const debug = Debug(DEBUG_EXECUTE);
@@ -48,7 +48,7 @@ async function execute(input: {
         defaultAccessMode?: SessionMode;
         bookmarks?: string | string[];
         database?: string;
-    } = { defaultAccessMode: input.defaultAccessMode };
+    } = {defaultAccessMode: input.defaultAccessMode};
 
     const driverConfig = input.context.driverConfig as DriverConfig;
     if (driverConfig) {
@@ -73,7 +73,7 @@ async function execute(input: {
     // @ts-ignore: (driver <= 4.2)
     input.context.driver._userAgent = userAgent; // eslint-disable-line no-underscore-dangle
 
-    const session = input.context.driver.session(sessionParams);
+    const session = input.context.existingConnection?.session || input.context.driver.session(sessionParams);
 
     // Its really difficult to know when users are using the `auth` param. For Simplicity it better to do the check here
     if (
@@ -81,22 +81,24 @@ async function execute(input: {
         input.cypher.includes("auth: $auth") ||
         input.cypher.includes("auth:$auth")
     ) {
-        input.params.auth = createAuthParam({ context: input.context });
+        input.params.auth = createAuthParam({context: input.context});
     }
 
     const cypher =
         input.context.queryOptions && Object.keys(input.context.queryOptions).length
             ? `CYPHER ${Object.entries(input.context.queryOptions)
-                  .map(([key, value]) => `${key}=${value}`)
-                  .join(" ")}\n${input.cypher}`
+                .map(([key, value]) => `${key}=${value}`)
+                .join(" ")}\n${input.cypher}`
             : input.cypher;
 
     try {
         debug("%s", `About to execute Cypher:\nCypher:\n${cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`);
 
-        const result: QueryResult = await session[
-            `${input.defaultAccessMode.toLowerCase()}Transaction`
-        ]((tx: Transaction) => tx.run(cypher, input.params));
+        const result: QueryResult = input.context.existingConnection
+            ? input.context.existingConnection?.transaction.run(cypher, input.params)
+            : await session[
+                `${input.defaultAccessMode.toLowerCase()}Transaction`
+                ]((tx: Transaction) => tx.run(cypher, input.params));
 
         const records = result.records.map((r) => r.toObject());
 
@@ -130,7 +132,8 @@ async function execute(input: {
 
         throw error;
     } finally {
-        await session.close();
+        if (!input.context.existingConnection)
+            await session.close();
     }
 }
 

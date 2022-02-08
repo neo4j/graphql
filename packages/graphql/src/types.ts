@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { InputValueDefinitionNode, DirectiveNode, TypeNode } from "graphql";
-import { ResolveTree } from "graphql-parse-resolve-info";
-import { JwtPayload } from "jsonwebtoken";
-import { Driver, Integer } from "neo4j-driver";
-import { Neo4jGraphQL } from "./classes";
-import { RelationshipQueryDirectionOption } from "./constants";
+import {InputValueDefinitionNode, DirectiveNode, TypeNode} from "graphql";
+import {ResolveTree} from "graphql-parse-resolve-info";
+import {JwtPayload} from "jsonwebtoken";
+import {Driver, Integer, Session, Transaction} from "neo4j-driver";
+import {Neo4jGraphQL} from "./classes";
+import {RelationshipQueryDirectionOption} from "./constants";
 
 export type DriverConfig = {
     database?: string;
@@ -43,6 +43,11 @@ export interface Context {
     jwt?: JwtPayload;
     auth?: AuthContext;
     queryOptions?: CypherQueryOptions;
+    existingConnection?: {
+        transaction: Transaction;
+        session: Session;
+    }
+
     [k: string]: any;
 }
 
@@ -218,6 +223,7 @@ export interface GraphQLOptionsArg {
  */
 export interface GraphQLWhereArg {
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
+
     AND?: GraphQLWhereArg[];
     OR?: GraphQLWhereArg[];
 }
@@ -233,6 +239,7 @@ export interface ConnectionWhereArg {
 
 export interface InterfaceWhereArg {
     _on?: GraphQLWhereArg[];
+
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
 }
 
@@ -312,4 +319,5 @@ export interface CypherQueryOptions {
 }
 
 /** Nested Records helper type, supports any level of recursion. Ending in properties of type T */
-export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {} // Using interface to allow recursive types
+export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {
+} // Using interface to allow recursive types
