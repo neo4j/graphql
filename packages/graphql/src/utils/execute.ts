@@ -95,7 +95,7 @@ async function execute(input: {
         debug("%s", `About to execute Cypher:\nCypher:\n${cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`);
 
         const result: QueryResult = input.context.existingConnection
-            ? input.context.existingConnection?.transaction.run(cypher, input.params)
+            ? await input.context.existingConnection?.transaction.run(cypher, input.params)
             : await session[
                 `${input.defaultAccessMode.toLowerCase()}Transaction`
                 ]((tx: Transaction) => tx.run(cypher, input.params));
