@@ -18,8 +18,8 @@
  */
 
 import { Driver } from "neo4j-driver";
-import { DocumentNode, GraphQLSchema, parse, printSchema } from "graphql";
-import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
+import { GraphQLSchema } from "graphql";
+import { addResolversToSchema, IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import { forEachField } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
@@ -33,10 +33,11 @@ import assertIndexesAndConstraints, {
 } from "./utils/asserts-indexes-and-constraints";
 import { wrapResolver } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers";
+import { Secret } from "jsonwebtoken";
 
 export interface Neo4jGraphQLJWT {
     jwksEndpoint?: string;
-    secret?: string;
+    secret?: Secret;
     noVerify?: boolean;
     rolesPath?: string;
 }
@@ -55,7 +56,7 @@ export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
 }
 
 class Neo4jGraphQL {
-    public config: Neo4jGraphQLConfig;
+    private config: Neo4jGraphQLConfig;
     private driver?: Driver;
 
     private schemaDefinition: IExecutableSchemaDefinition;
@@ -64,8 +65,6 @@ class Neo4jGraphQL {
     private _relationships?: Relationship[];
 
     private schema?: Promise<GraphQLSchema>;
-
-    public document?: DocumentNode;
 
     constructor(input: Neo4jGraphQLConstructor) {
         const { config = {}, driver, ...schemaDefinition } = input;
@@ -89,13 +88,24 @@ class Neo4jGraphQL {
             this._nodes = nodes;
             this._relationships = relationships;
 
+            // Create a lightweight schema without resolvers
+            const resolverlessSchema = makeExecutableSchema({
+                ...this.schemaDefinition,
+                typeDefs,
+            });
+
+            // Compose resolvers, adding the lightweight schema to the context
+            const wrapResolverArgs = {
+                driver: this.driver,
+                config: this.config,
+                nodes,
+                relationships,
+                schema: resolverlessSchema,
+            };
+
             const resolversComposition = {
-                "Query.*": [
-                    wrapResolver({ driver: this.driver, config: this.config, neoSchema: this, nodes, relationships }),
-                ],
-                "Mutation.*": [
-                    wrapResolver({ driver: this.driver, config: this.config, neoSchema: this, nodes, relationships }),
-                ],
+                "Query.*": [wrapResolver(wrapResolverArgs)],
+                "Mutation.*": [wrapResolver(wrapResolverArgs)],
             };
 
             // Merge generated and custom resolvers
@@ -103,11 +113,8 @@ class Neo4jGraphQL {
 
             const composedResolvers = composeResolvers(allResolvers, resolversComposition);
 
-            const schema = makeExecutableSchema({
-                ...this.schemaDefinition,
-                typeDefs,
-                resolvers: composedResolvers,
-            });
+            // Now that we have resolvers with the right context, add them to the schema
+            const schema = addResolversToSchema(resolverlessSchema, composedResolvers);
 
             // Assign a default field resolver to account for aliasing of fields
             forEachField(schema, (field) => {
@@ -118,8 +125,6 @@ class Neo4jGraphQL {
             });
 
             resolve(schema);
-
-            this.document = parse(printSchema(schema));
         });
 
         return this.schema;
@@ -168,7 +173,7 @@ class Neo4jGraphQL {
             throw new Error("neo4j-driver Driver missing");
         }
 
-        await assertIndexesAndConstraints({ driver, driverConfig, nodes: this.nodes!, options: input.options });
+        await assertIndexesAndConstraints({ driver, driverConfig, nodes: this.nodes, options: input.options });
     }
 }
 

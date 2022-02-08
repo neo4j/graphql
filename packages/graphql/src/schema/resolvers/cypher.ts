@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo } from "graphql";
-import { UnionTypeDefinitionNode } from "graphql/language/ast";
+import { GraphQLEnumType, GraphQLResolveInfo, GraphQLScalarType, GraphQLUnionType } from "graphql";
 import { execute } from "../../utils";
 import { BaseField, ConnectionField, Context } from "../../types";
 import { graphqlArgsToCompose } from "../to-compose";
@@ -55,12 +54,11 @@ export default function cypherResolver({
         const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
             field.typeMeta.name
         );
-        const isEnum = context.neoSchema.document?.definitions.find(
-            (x) => x.kind === "EnumTypeDefinition" && x.name.value === field.typeMeta.name
-        );
-        const isScalar = context.neoSchema.document?.definitions.find(
-            (x) => x.kind === "ScalarTypeDefinition" && x.name.value === field.typeMeta.name
-        );
+
+        const graphqlType = context.schema.getType(field.typeMeta.name);
+
+        const isEnum = graphqlType instanceof GraphQLEnumType;
+        const isScalar = graphqlType instanceof GraphQLScalarType;
 
         const preAuth = createAuthAndParams({ entity: field, context });
         if (preAuth[0]) {
@@ -69,10 +67,8 @@ export default function cypherResolver({
         }
 
         const referenceNode = context.nodes.find((x) => x.name === field.typeMeta.name);
-        const unions = context.neoSchema.document?.definitions.filter(
-            (x) => x.kind === "UnionTypeDefinition"
-        ) as UnionTypeDefinitionNode[];
-        const referenceUnion = unions.find((u) => u.name.value === field.typeMeta.name);
+
+        const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
 
         if (referenceNode) {
             const recurse = createProjectionAndParams({

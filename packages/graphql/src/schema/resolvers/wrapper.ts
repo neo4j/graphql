@@ -21,7 +21,7 @@ import Debug from "debug";
 import { GraphQLResolveInfo, GraphQLSchema, print } from "graphql";
 import { Driver } from "neo4j-driver";
 import { getJWT } from "../../auth/get-jwt";
-import { Neo4jGraphQL, Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
+import { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
 import { Context } from "../../types";
@@ -32,19 +32,19 @@ export const wrapResolver =
     ({
         driver,
         config,
-        neoSchema,
         nodes,
         relationships,
+        schema,
     }: {
         driver?: Driver;
         config: Neo4jGraphQLConfig;
-        neoSchema: Neo4jGraphQL;
         nodes: Node[];
         relationships: Relationship[];
+        schema: GraphQLSchema;
     }) =>
     (next) =>
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
-        const { driverConfig } = config;
+        const { driverConfig, jwt } = config;
 
         if (debug.enabled) {
             const query = print(info.operation);
@@ -68,9 +68,13 @@ export const wrapResolver =
             context.driverConfig = driverConfig;
         }
 
-        context.neoSchema = neoSchema;
+        if (!context?.jwtConfig) {
+            context.jwtConfig = jwt;
+        }
+
         context.nodes = nodes;
         context.relationships = relationships;
+        context.schema = schema;
 
         if (!context.jwt) {
             context.jwt = await getJWT(context);

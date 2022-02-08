@@ -25,11 +25,11 @@ import { filterDocument } from "../utils";
 export type OGMConstructor = Neo4jGraphQLConstructor;
 
 class OGM<ModelMap = {}> {
-    public models: Model[];
+    private models: Model[];
 
-    checkNeo4jCompat: () => Promise<void>;
+    public checkNeo4jCompat: () => Promise<void>;
 
-    public neoSchema: Neo4jGraphQL;
+    private neoSchema: Neo4jGraphQL;
 
     private _schema?: GraphQLSchema;
 
@@ -53,8 +53,20 @@ class OGM<ModelMap = {}> {
         };
     }
 
-    public get schema() {
+    public get schema(): GraphQLSchema {
+        if (!this._schema) {
+            throw new Error("You must await `.init()` before accessing `schema`");
+        }
+
         return this._schema;
+    }
+
+    public get nodes() {
+        try {
+            return this.neoSchema.nodes;
+        } catch {
+            throw new Error("You must await `.init()` before accessing `nodes`");
+        }
     }
 
     private initModel(model: Model) {
@@ -105,7 +117,7 @@ class OGM<ModelMap = {}> {
 
         model = new Model(name as string);
 
-        if (this.schema) {
+        if (this._schema) {
             this.initModel(model);
         }
 
