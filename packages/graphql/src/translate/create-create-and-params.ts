@@ -25,7 +25,6 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
-import { wrapInCall } from "./utils/wrap-in-call";
 
 interface Res {
     creates: string[];
@@ -155,7 +154,7 @@ function createCreateAndParams({
                         refNode,
                         context,
                     });
-                    res.creates.push(wrapInCall(connectOrCreateQuery, varName));
+                    res.creates.push(connectOrCreateQuery);
                     res.params = { ...res.params, ...connectOrCreateParams };
                 }
             });

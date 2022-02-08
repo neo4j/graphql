@@ -466,12 +466,17 @@ describe("connectOrCreate", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
-                CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH this
+                CALL {
+                	WITH this
+                	CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 MERGE (this_connectOrCreate_genres0:Genre { name: $this_connectOrCreate_genres0_node_name })
                 ON CREATE
                 SET
                 this_connectOrCreate_genres0.name = $this_connectOrCreate_genres0_on_create_name
                 MERGE (this)-[this_relationship_this_connectOrCreate_genres0:IN_GENRE]->(this_connectOrCreate_genres0)
+                	RETURN COUNT(*)
+                }
                 RETURN this { .title } AS this"
             `);
 
@@ -505,12 +510,17 @@ describe("connectOrCreate", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
-                CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH this
+                CALL {
+                	WITH this
+                	CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 MERGE (this_connectOrCreate_genres0:Genre { name: $this_connectOrCreate_genres0_node_name })
                 ON CREATE
                 SET
                 this_connectOrCreate_genres0.name = $this_connectOrCreate_genres0_on_create_name
                 MERGE (this)-[this_relationship_this_connectOrCreate_genres0:IN_GENRE]->(this_connectOrCreate_genres0)
+                	RETURN COUNT(*)
+                }
                 RETURN this { .title } AS this"
             `);
 
@@ -544,12 +554,17 @@ describe("connectOrCreate", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
-                CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH this
+                CALL {
+                	WITH this
+                	CALL apoc.util.validate(NOT(ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 MERGE (this_connectOrCreate_genres0:Genre { name: $this_connectOrCreate_genres0_node_name })
                 ON CREATE
                 SET
                 this_connectOrCreate_genres0.name = $this_connectOrCreate_genres0_on_create_name
                 MERGE (this)-[this_relationship_this_connectOrCreate_genres0:IN_GENRE]->(this_connectOrCreate_genres0)
+                	RETURN COUNT(*)
+                }
                 RETURN this { .title } AS this"
             `);
 
@@ -583,11 +598,16 @@ describe("connectOrCreate", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
-                MERGE (this_connectOrCreate_genres0:Genre { name: $this_connectOrCreate_genres0_node_name })
+                WITH this
+                CALL {
+                	WITH this
+                	MERGE (this_connectOrCreate_genres0:Genre { name: $this_connectOrCreate_genres0_node_name })
                 ON CREATE
                 SET
                 this_connectOrCreate_genres0.name = $this_connectOrCreate_genres0_on_create_name
                 MERGE (this)-[this_relationship_this_connectOrCreate_genres0:IN_GENRE]->(this_connectOrCreate_genres0)
+                	RETURN COUNT(*)
+                }
                 RETURN this { .title } AS this"
             `);
 
