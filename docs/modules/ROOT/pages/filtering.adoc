@@ -148,7 +148,7 @@ query {
 }
 ----
 === `n..m` Relationships
-In the above, an `posts` represents a `n..m` relationship on `User` where a given `User` can have any number of `Post` s.
+In the above, `posts` represents a `n..m` relationship on `User` where a given `User` can have any number of `posts`.
 
 ==== Find all users where all of their posts contain search term: `"neo4j"`
 [source, graphql, indent=0]
