@@ -107,7 +107,10 @@ describe("Create or connect with unions", () => {
             "CALL {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
-            MERGE (this0_actedIn_Movie_connectOrCreate0:Movie { isan: $this0_actedIn_Movie_connectOrCreate0_node_isan })
+            WITH this0
+            CALL {
+            	WITH this0
+            	MERGE (this0_actedIn_Movie_connectOrCreate0:Movie { isan: $this0_actedIn_Movie_connectOrCreate0_node_isan })
             ON CREATE
             SET
             this0_actedIn_Movie_connectOrCreate0.title = $this0_actedIn_Movie_connectOrCreate0_on_create_title,
@@ -116,7 +119,12 @@ describe("Create or connect with unions", () => {
             ON CREATE
             SET
             this0_relationship_this0_actedIn_Movie_connectOrCreate0.screentime = $this0_relationship_this0_actedIn_Movie_connectOrCreate0_on_create_screentime
-            MERGE (this0_actedIn_Series_connectOrCreate0:Series { isan: $this0_actedIn_Series_connectOrCreate0_node_isan })
+            	RETURN COUNT(*)
+            }
+            WITH this0
+            CALL {
+            	WITH this0
+            	MERGE (this0_actedIn_Series_connectOrCreate0:Series { isan: $this0_actedIn_Series_connectOrCreate0_node_isan })
             ON CREATE
             SET
             this0_actedIn_Series_connectOrCreate0.title = $this0_actedIn_Series_connectOrCreate0_on_create_title,
@@ -125,6 +133,8 @@ describe("Create or connect with unions", () => {
             ON CREATE
             SET
             this0_relationship_this0_actedIn_Series_connectOrCreate0.screentime = $this0_relationship_this0_actedIn_Series_connectOrCreate0_on_create_screentime
+            	RETURN COUNT(*)
+            }
             RETURN this0
             }
             RETURN

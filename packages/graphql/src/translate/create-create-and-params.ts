@@ -113,9 +113,9 @@ function createCreateAndParams({
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                         if (relationField.properties) {
-                            const relationship = context.neoSchema.relationships.find(
+                            const relationship = (context.neoSchema.relationships.find(
                                 (x) => x.properties === relationField.properties
-                            ) as unknown as Relationship;
+                            ) as unknown) as Relationship;
 
                             const setA = createSetRelationshipPropertiesAndParams({
                                 properties: create.edge ?? {},
@@ -155,16 +155,7 @@ function createCreateAndParams({
                         refNode,
                         context,
                     });
-                    // if (connectOrCreateQuery.startsWith("CALL")) {
-                    //     res.creates.push(`WITH ${varName}`);
-                    // }
-
-                    let connectOrCreateQueryStatement = connectOrCreateQuery;
-                    // if (connectOrCreateQuery.startsWith("CALL")) {
-                    connectOrCreateQueryStatement = wrapInCall(connectOrCreateQuery, varName);
-                    // }
-
-                    res.creates.push(connectOrCreateQueryStatement);
+                    res.creates.push(wrapInCall(connectOrCreateQuery, varName));
                     res.params = { ...res.params, ...connectOrCreateParams };
                 }
             });
