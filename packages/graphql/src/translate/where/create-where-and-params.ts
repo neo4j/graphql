@@ -90,8 +90,9 @@ function createWhereAndParams({
 
         const dbFieldName = mapToDbProperty(node, fieldName);
 
-        const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find((f) => fieldName === f.fieldName)
-            ?.coalesceValue;
+        const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
+            (f) => fieldName === f.fieldName
+        )?.coalesceValue;
 
         const property =
             coalesceValue !== undefined
@@ -196,7 +197,7 @@ function createWhereAndParams({
                             connectionField.relationship.type
                         }]${outStr}(${labels}))`
                     );
-                    return res;
+                    return;
                 }
 
                 let resultStr = [
