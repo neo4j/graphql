@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { OGM } from "src";
+import { OGM } from "../";
 
 export { default as filterDocument } from "./filter-document";
 

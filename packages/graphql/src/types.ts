@@ -152,6 +152,8 @@ export interface ConnectionField extends BaseField {
  */
 export interface CypherField extends BaseField {
     statement: string;
+    isEnum: boolean;
+    isScalar: boolean;
 }
 
 /**
@@ -174,6 +176,10 @@ export interface CustomEnumField extends BaseField {
 
 export interface UnionField extends BaseField {
     nodes?: string[];
+}
+
+export interface IgnoredField extends BaseField {
+    requiredFields: string[];
 }
 
 export interface InterfaceField extends BaseField {
