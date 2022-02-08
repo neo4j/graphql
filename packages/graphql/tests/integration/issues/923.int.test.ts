@@ -18,7 +18,7 @@
  */
 
 import { graphql, GraphQLSchema } from "graphql";
-import { Driver, Session } from "neo4j-driver";
+import { Driver, Session, Integer } from "neo4j-driver";
 import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
@@ -116,5 +116,11 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
             },
         });
         expect(result.errors).toBeUndefined();
+
+        const blogPostCount = await session.run(`
+          MATCH (m:${testBlogpost.name} { slug: "myslug" })
+          RETURN COUNT(m) as count
+        `);
+        expect((blogPostCount.records[0].toObject().count as Integer).toNumber()).toBe(1);
     });
 });
