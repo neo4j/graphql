@@ -25,6 +25,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
+import { wrapInCall } from "./utils/wrap-in-call";
 
 interface Res {
     creates: string[];
@@ -154,12 +155,16 @@ function createCreateAndParams({
                         refNode,
                         context,
                     });
-                    console.log("7", connectOrCreateQuery);
-                    if (connectOrCreateQuery.startsWith("CALL")) {
-                        res.creates.push(`WITH ${varName}`);
-                    }
+                    // if (connectOrCreateQuery.startsWith("CALL")) {
+                    //     res.creates.push(`WITH ${varName}`);
+                    // }
 
-                    res.creates.push(connectOrCreateQuery);
+                    let connectOrCreateQueryStatement = connectOrCreateQuery;
+                    // if (connectOrCreateQuery.startsWith("CALL")) {
+                    connectOrCreateQueryStatement = wrapInCall(connectOrCreateQuery, varName);
+                    // }
+
+                    res.creates.push(connectOrCreateQueryStatement);
                     res.params = { ...res.params, ...connectOrCreateParams };
                 }
             });
@@ -213,7 +218,7 @@ function createCreateAndParams({
 
             return res;
         }
-        console.log("3");
+
         res.creates.push(`SET ${varName}.${dbFieldName} = $${varNameKey}`);
         res.params[varNameKey] = value;
 
@@ -241,7 +246,6 @@ function createCreateAndParams({
         creates: initial,
         params: {},
     });
-    console.log("6", creates, params, meta);
 
     const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
 
@@ -254,8 +258,6 @@ function createCreateAndParams({
             escapeQuotes: Boolean(insideDoWhen),
         });
         if (bindAndParams[0]) {
-            console.log("5");
-
             creates.push(`WITH ${withVars.join(", ")}`);
             creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), ${forbiddenString}, [0])`);
             params = { ...params, ...bindAndParams[1] };

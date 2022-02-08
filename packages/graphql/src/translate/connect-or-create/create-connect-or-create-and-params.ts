@@ -62,7 +62,6 @@ export function createConnectOrCreateAndParams({
             context,
         });
     });
-    console.log("8", statements);
     return joinStatements(statements);
 }
 
@@ -101,8 +100,6 @@ function createConnectOrCreatePartialStatement({
         context,
         nodeName: baseName,
     });
-    console.log("9", authStatement, mergeRelatedNodeStatement, mergeRelationStatement);
-
     return joinStatements([authStatement, mergeRelatedNodeStatement, mergeRelationStatement]);
 }
 

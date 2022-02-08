@@ -82,9 +82,9 @@ function createUpdateAndParams({
         if (relationField) {
             const refNodes: Node[] = [];
 
-            const relationship = (context.neoSchema.relationships.find(
+            const relationship = context.neoSchema.relationships.find(
                 (x) => x.properties === relationField.properties
-            ) as unknown) as Relationship;
+            ) as unknown as Relationship;
 
             if (relationField.union) {
                 Object.keys(value).forEach((unionTypeName) => {
@@ -483,7 +483,11 @@ function createUpdateAndParams({
     }
 
     // eslint-disable-next-line prefer-const
-    let { strs, params, meta = { preAuthStrs: [], postAuthStrs: [] } } = Object.entries(updateInput).reduce(reducer, {
+    let {
+        strs,
+        params,
+        meta = { preAuthStrs: [], postAuthStrs: [] },
+    } = Object.entries(updateInput).reduce(reducer, {
         strs: [],
         params: {},
     });

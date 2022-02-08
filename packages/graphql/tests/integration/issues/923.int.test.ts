@@ -72,8 +72,8 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
     });
 
     afterEach(async () => {
-        await session.run(`MATCH (node:${testBlogpost.name}) DETACH DELETE node`);
-        await session.run(`MATCH (n:${testCategory.name}) DETACH DELETE n`);
+        await session.run(`MATCH (b:${testBlogpost.name}) DETACH DELETE b`);
+        await session.run(`MATCH (c:${testCategory.name}) DETACH DELETE c`);
 
         await session.close();
     });
