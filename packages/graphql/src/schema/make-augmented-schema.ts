@@ -836,30 +836,15 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${node.name}CreateInput`,
-            // TODO - This reduce duplicated when creating relationship CreateInput - put into shared function?
-            fields: [
-                ...node.primitiveFields,
-                ...node.scalarFields,
-                ...node.enumFields,
-                ...node.temporalFields.filter((field) => !field.timestamps),
-                ...node.pointFields,
-            ].reduce((res, f) => {
-                if ((f as PrimitiveField)?.autogenerate) {
-                    return res;
-                }
-
-                if ((f as PrimitiveField)?.defaultValue !== undefined) {
-                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
-                        type: f.typeMeta.input.create.pretty,
-                        defaultValue: (f as PrimitiveField)?.defaultValue,
-                    };
-                    res[f.fieldName] = field;
-                } else {
-                    res[f.fieldName] = f.typeMeta.input.create.pretty;
-                }
-
-                return res;
-            }, {}),
+            fields: objectFieldsToCreateInputFields(
+                [
+                    ...node.primitiveFields,
+                    ...node.scalarFields,
+                    ...node.enumFields,
+                    ...node.temporalFields.filter((field) => !field.timestamps),
+                    ...node.pointFields,
+                ].filter((f) => !(f as PrimitiveField)?.autogenerate)
+            ),
         });
 
         composer.createInputTC({
