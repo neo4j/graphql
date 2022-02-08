@@ -108,7 +108,12 @@ describe("Connect Or Create", () => {
             }
 
             input ActorMoviesConnectOrCreateFieldInputOnCreate {
-              node: MovieCreateInput!
+              node: ActorMoviesConnectOrCreateFieldInputOnCreateNode!
+            }
+
+            input ActorMoviesConnectOrCreateFieldInputOnCreateNode {
+              isan: String
+              title: String
             }
 
             type ActorMoviesConnection {
@@ -550,7 +555,12 @@ describe("Connect Or Create", () => {
 
             input ActorMoviesConnectOrCreateFieldInputOnCreate {
               edge: ActedInCreateInput!
-              node: MovieCreateInput!
+              node: ActorMoviesConnectOrCreateFieldInputOnCreateNode!
+            }
+
+            input ActorMoviesConnectOrCreateFieldInputOnCreateNode {
+              isan: String
+              title: String
             }
 
             type ActorMoviesConnection {

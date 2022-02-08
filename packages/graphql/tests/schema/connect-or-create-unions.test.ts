@@ -147,7 +147,12 @@ describe("Connect Or Create", () => {
 
             input ActorActedInMovieConnectOrCreateFieldInputOnCreate {
               edge: ActedInCreateInput!
-              node: MovieCreateInput!
+              node: ActorActedInMovieConnectOrCreateFieldInputOnCreateNode!
+            }
+
+            input ActorActedInMovieConnectOrCreateFieldInputOnCreateNode {
+              isan: String
+              title: String
             }
 
             input ActorActedInMovieConnectionWhere {
@@ -211,7 +216,12 @@ describe("Connect Or Create", () => {
 
             input ActorActedInSeriesConnectOrCreateFieldInputOnCreate {
               edge: ActedInCreateInput!
-              node: SeriesCreateInput!
+              node: ActorActedInSeriesConnectOrCreateFieldInputOnCreateNode!
+            }
+
+            input ActorActedInSeriesConnectOrCreateFieldInputOnCreateNode {
+              isan: String
+              title: String
             }
 
             input ActorActedInSeriesConnectionWhere {

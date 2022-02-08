@@ -83,9 +83,15 @@ export function objectFieldsToComposeFields(fields: BaseField[]): {
     }, {});
 }
 
-export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<string, InputField> {
+export function objectFieldsToCreateInputFields(
+    fields: BaseField[],
+    optional: boolean = false
+): Record<string, InputField> {
     return fields.reduce((res, f) => {
-        const fieldType = f.typeMeta.input.create.pretty;
+        let fieldType = f.typeMeta.input.create.pretty;
+        if (optional) {
+            fieldType = f.typeMeta.input.create.type;
+        }
         const defaultValue = (f as PrimitiveField)?.defaultValue;
 
         if (defaultValue !== undefined) {
