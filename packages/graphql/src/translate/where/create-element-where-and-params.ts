@@ -20,7 +20,8 @@
 import { GraphQLWhereArg, ConnectionWhereArg, Context } from "../../types";
 import { GraphElement, Node, Relationship } from "../../classes";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
-import { whereRegEx, WhereRegexGroups, createWhereClause, getListPredicate } from "./utils";
+import createWhereClause from "./create-where-clause";
+import { whereRegEx, WhereRegexGroups, getListPredicate } from "./utils";
 import { wrapInApocRunFirstColumn } from "../utils/apoc-run";
 import mapToDbProperty from "../../utils/map-to-db-property";
 

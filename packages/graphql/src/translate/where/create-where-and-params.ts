@@ -22,7 +22,8 @@ import { Node, Relationship } from "../../classes";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
-import { createWhereClause, getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
+import createWhereClause from "./create-where-clause";
+import { getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
 
 interface Res {
     clauses: string[];
