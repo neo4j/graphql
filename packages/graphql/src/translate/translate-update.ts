@@ -262,9 +262,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     createStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                     if (relationField.properties) {
-                        const relationship = context.neoSchema.relationships.find(
+                        const relationship = (context.neoSchema.relationships.find(
                             (x) => x.properties === relationField.properties
-                        ) as unknown as Relationship;
+                        ) as unknown) as Relationship;
 
                         const setA = createSetRelationshipPropertiesAndParams({
                             properties: create.edge ?? {},
