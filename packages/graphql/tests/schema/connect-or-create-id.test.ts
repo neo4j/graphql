@@ -108,7 +108,12 @@ describe("connect or create with id", () => {
             }
 
             input ActorMoviesConnectOrCreateFieldInputOnCreate {
-              node: MovieCreateInput!
+              node: ActorMoviesConnectOrCreateFieldInputOnCreateNode!
+            }
+
+            input ActorMoviesConnectOrCreateFieldInputOnCreateNode {
+              id: ID
+              title: String
             }
 
             type ActorMoviesConnection {
@@ -528,7 +533,12 @@ describe("connect or create with id", () => {
             }
 
             input PostCreatorConnectOrCreateFieldInputOnCreate {
-              node: UserCreateInput!
+              node: PostCreatorConnectOrCreateFieldInputOnCreateNode!
+            }
+
+            input PostCreatorConnectOrCreateFieldInputOnCreateNode {
+              id: ID
+              name: String
             }
 
             type PostCreatorConnection {
@@ -824,7 +834,12 @@ describe("connect or create with id", () => {
             }
 
             input UserPostsConnectOrCreateFieldInputOnCreate {
-              node: PostCreateInput!
+              node: UserPostsConnectOrCreateFieldInputOnCreateNode!
+            }
+
+            input UserPostsConnectOrCreateFieldInputOnCreateNode {
+              content: String
+              id: ID
             }
 
             type UserPostsConnection {

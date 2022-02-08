@@ -21,6 +21,7 @@ import { SchemaComposer, InputTypeComposer } from "graphql-compose";
 import { Node } from "../../classes";
 import { RelationField } from "../../types";
 import { upperFirst } from "../../utils/upper-first";
+import { objectFieldsToCreateInputFields } from "../to-compose";
 
 export function createConnectOrCreateField({
     node,
@@ -79,14 +80,17 @@ function createOnCreateITC({
     hasNonNullNonGeneratedProperties: boolean;
     relationField: RelationField;
 }): InputTypeComposer {
+    const onCreateName = `${prefix}OnCreate`;
+
     const onCreateFields = getOnCreateFields({
         node,
         hasNonGeneratedProperties,
         relationField,
         hasNonNullNonGeneratedProperties,
+        schemaComposer,
+        prefix: onCreateName,
     });
 
-    const onCreateName = `${prefix}OnCreate`;
     return schemaComposer.getOrCreateITC(onCreateName, (tc) => {
         tc.addFields(onCreateFields);
     });
@@ -107,22 +111,29 @@ function getOnCreateFields({
     hasNonGeneratedProperties,
     relationField,
     hasNonNullNonGeneratedProperties,
+    schemaComposer,
+    prefix,
 }: {
     node: Node;
     hasNonGeneratedProperties: boolean;
     relationField: RelationField;
     hasNonNullNonGeneratedProperties: boolean;
+    schemaComposer: SchemaComposer;
+    prefix: string;
 }): { node: string } | { node: string; edge: string } {
-    const nodeField = `${node.name}CreateInput!`;
+    const nodeFields = objectFieldsToCreateInputFields([...node.primitiveFields, ...node.scalarFields], true);
+    const nodeCreateInput = schemaComposer.getOrCreateITC(`${prefix}Node`);
+    nodeCreateInput.addFields(nodeFields);
+    const nodeCreateInputFieldName = `${nodeCreateInput.getTypeName()}!`;
 
     if (hasNonGeneratedProperties) {
         const edgeField = `${relationField.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`;
         return {
-            node: nodeField,
+            node: nodeCreateInputFieldName,
             edge: edgeField,
         };
     }
     return {
-        node: nodeField,
+        node: nodeCreateInputFieldName,
     };
 }
