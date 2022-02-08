@@ -168,6 +168,7 @@ export const readonlyDirective = new GraphQLDirective({
         enableCreation: {
             defaultValue: true,
             type: GraphQLBoolean,
+            description: "Set to false to exclude this field from the generated input type as well."
         }
     }
 });
