@@ -308,4 +308,288 @@ describe("@readonly directive", () => {
             }"
         `);
     });
+
+    test("removes a readonly field from create input", () => {
+        const typeDefs = gql`
+            type User {
+                id: ID! @readonly(enableCreation: false)
+                username: String!
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [User!]!
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
+            }
+
+            type Mutation {
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deleteUsers(where: UserWhere): DeleteInfo!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
+
+            type Query {
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [User!]!
+            }
+
+            type User {
+              id: ID!
+              username: String!
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNonNullable!
+              username: StringAggregateSelectionNonNullable!
+            }
+
+            input UserCreateInput {
+              username: String!
+            }
+
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
+            input UserSort {
+              id: SortDirection
+              username: SortDirection
+            }
+
+            input UserUpdateInput {
+              username: String
+            }
+
+            input UserWhere {
+              AND: [UserWhere!]
+              OR: [UserWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID!]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID!]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+              username: String
+              username_CONTAINS: String
+              username_ENDS_WITH: String
+              username_IN: [String!]
+              username_NOT: String
+              username_NOT_CONTAINS: String
+              username_NOT_ENDS_WITH: String
+              username_NOT_IN: [String!]
+              username_NOT_STARTS_WITH: String
+              username_STARTS_WITH: String
+            }"
+        `);
+    });
+
+    test("removes an inherited readonly field from create input", () => {
+        const typeDefs = gql`
+            interface UserInterface {
+                id: ID! @readonly(enableCreation: false)
+                username: String!
+            }
+
+            type User implements UserInterface {
+                id: ID!
+                username: String!
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [User!]!
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
+            }
+
+            type Mutation {
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deleteUsers(where: UserWhere): DeleteInfo!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
+
+            type Query {
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [User!]!
+            }
+
+            type User implements UserInterface {
+              id: ID!
+              username: String!
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNonNullable!
+              username: StringAggregateSelectionNonNullable!
+            }
+
+            input UserCreateInput {
+              username: String!
+            }
+
+            interface UserInterface {
+              id: ID!
+              username: String!
+            }
+
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
+            input UserSort {
+              id: SortDirection
+              username: SortDirection
+            }
+
+            input UserUpdateInput {
+              username: String
+            }
+
+            input UserWhere {
+              AND: [UserWhere!]
+              OR: [UserWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID!]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID!]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+              username: String
+              username_CONTAINS: String
+              username_ENDS_WITH: String
+              username_IN: [String!]
+              username_NOT: String
+              username_NOT_CONTAINS: String
+              username_NOT_ENDS_WITH: String
+              username_NOT_IN: [String!]
+              username_NOT_STARTS_WITH: String
+              username_STARTS_WITH: String
+            }"
+        `);
+    });
 });

@@ -470,7 +470,7 @@ function makeAugmentedSchema(
             name: `${relationship.name.value}CreateInput`,
             // TODO - This reduce duplicated when creating node CreateInput - put into shared function?
             fields: [
-                ...relFields.primitiveFields.filter((field) => !field.autogenerate),
+                ...relFields.primitiveFields.filter((field) => !field.autogenerate && field.enableCreation !== false),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields.filter((field) => !field.timestamps),
@@ -867,7 +867,7 @@ function makeAugmentedSchema(
                 ...node.temporalFields.filter((field) => !field.timestamps),
                 ...node.pointFields,
             ].reduce((res, f) => {
-                if ((f as PrimitiveField)?.autogenerate) {
+                if (f?.enableCreation === false || (f as PrimitiveField)?.autogenerate) {
                     return res;
                 }
 

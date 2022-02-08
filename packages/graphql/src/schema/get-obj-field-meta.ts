@@ -37,6 +37,7 @@ import getCypherMeta from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getIgnoreMeta from "./get-ignore-meta";
 import getRelationshipMeta from "./get-relationship-meta";
+import getReadonlyMeta from "./parse/get-readonly-meta";
 import getUniqueMeta from "./parse/get-unique-meta";
 import { SCALAR_TYPES } from "../constants";
 import {
@@ -122,10 +123,10 @@ function getObjFieldMeta({
             const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
-            const readonlyDirective = directives.find((x) => x.name.value === "readonly");
             const writeonlyDirective = directives.find((x) => x.name.value === "writeonly");
 
             const unique = getUniqueMeta(directives, obj, field.name.value);
+            const readonly = getReadonlyMeta(directives);
 
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
             const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
@@ -157,7 +158,8 @@ function getObjFieldMeta({
                 arguments: [...(field.arguments || [])],
                 ...(authDirective ? { auth: getAuth(authDirective) } : {}),
                 description: field.description?.value,
-                readonly: !!readonlyDirective,
+                readonly: !!readonly,
+                ...(readonly ? { enableCreation: readonly.enableCreation } : {}),
                 writeonly: !!writeonlyDirective,
                 ...(unique ? { unique } : {}),
             };

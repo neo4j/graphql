@@ -118,6 +118,7 @@ export interface BaseField {
     auth?: Auth;
     description?: string;
     readonly?: boolean;
+    enableCreation?: boolean;
     writeonly?: boolean;
     ignored?: boolean;
     dbPropertyName?: string;

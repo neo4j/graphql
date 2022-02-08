@@ -164,6 +164,12 @@ export const readonlyDirective = new GraphQLDirective({
     description:
         "Instructs @neo4j/graphql to only include a field in generated input type for creating, and in the object type within which the directive is applied.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        enableCreation: {
+            defaultValue: true,
+            type: GraphQLBoolean,
+        }
+    }
 });
 
 export const relationshipDirective = new GraphQLDirective({
