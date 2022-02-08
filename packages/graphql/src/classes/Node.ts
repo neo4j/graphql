@@ -32,9 +32,9 @@ import type {
     TemporalField,
     PointField,
     Auth,
-    BaseField,
     Context,
     FullText,
+    IgnoredField,
 } from "../types";
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
@@ -57,7 +57,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    ignoredFields: BaseField[];
+    ignoredFields: IgnoredField[];
     auth?: Auth;
     fulltextDirective?: FullText;
     exclude?: Exclude;
@@ -160,22 +160,7 @@ class Node extends GraphElement {
             ...this.enumFields,
             ...this.temporalFields,
             ...this.pointFields,
-            ...this.cypherFields.filter((field) =>
-                [
-                    "Boolean",
-                    "ID",
-                    "Int",
-                    "BigInt",
-                    "Float",
-                    "String",
-                    "DateTime",
-                    "LocalDateTime",
-                    "Time",
-                    "LocalTime",
-                    "Date",
-                    "Duration",
-                ].includes(field.typeMeta.name)
-            ),
+            ...this.cypherFields.filter((field) => field.isScalar || field.isEnum),
         ].filter((field) => !field.typeMeta.array);
     }
 

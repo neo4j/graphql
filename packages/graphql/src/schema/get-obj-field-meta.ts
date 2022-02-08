@@ -31,11 +31,14 @@ import {
     StringValueNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import getFieldTypeMeta from "./get-field-type-meta";
-import getCypherMeta from "./get-cypher-meta";
-import getAliasMeta from "./get-alias-meta";
 import getAuth from "./get-auth";
+import getAliasMeta from "./get-alias-meta";
+import getCypherMeta from "./get-cypher-meta";
+import getFieldTypeMeta from "./get-field-type-meta";
+import getIgnoreMeta from "./get-ignore-meta";
 import getRelationshipMeta from "./get-relationship-meta";
+import getUniqueMeta from "./parse/get-unique-meta";
+import { SCALAR_TYPES } from "../constants";
 import {
     RelationField,
     CypherField,
@@ -50,10 +53,10 @@ import {
     PointField,
     TimeStampOperations,
     ConnectionField,
+    IgnoredField,
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
-import getUniqueMeta from "./parse/get-unique-meta";
 import { upperFirst } from "../utils/upper-first";
 
 export interface ObjectFields {
@@ -68,7 +71,7 @@ export interface ObjectFields {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    ignoredFields: BaseField[];
+    ignoredFields: IgnoredField[];
 }
 
 function getObjFieldMeta({
@@ -111,6 +114,7 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
+            const ignoreMeta = getIgnoreMeta(field, interfaceField);
             const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
@@ -295,8 +299,12 @@ function getObjFieldMeta({
                 const cypherField: CypherField = {
                     ...baseField,
                     ...cypherMeta,
+                    isEnum: !!fieldEnum,
+                    isScalar: !!fieldScalar || SCALAR_TYPES.includes(typeMeta.name),
                 };
                 res.cypherFields.push(cypherField);
+            } else if (ignoreMeta) {
+                res.ignoredFields.push({ ...baseField, ...ignoreMeta });
             } else if (fieldScalar) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
@@ -357,11 +365,6 @@ function getObjFieldMeta({
                     ...baseField,
                 };
                 res.objectFields.push(objectField);
-            } else if (
-                field.directives?.some((d) => d.name.value === "ignore") ||
-                interfaceField?.directives?.some((d) => d.name.value === "ignore")
-            ) {
-                res.ignoredFields.push(baseField);
             } else {
                 // eslint-disable-next-line no-lonely-if
                 if (["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeMeta.name)) {
