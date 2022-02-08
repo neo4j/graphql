@@ -23,11 +23,9 @@ import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/923", () => {
-    // const testBlogpost = generateUniqueType("Blogpost");
-    //const testCategory = generateUniqueType("Category");
+    // TODO: convert to use generateUniqueType()
     const testBlogpost = {
         name: "BlogPost923",
     };

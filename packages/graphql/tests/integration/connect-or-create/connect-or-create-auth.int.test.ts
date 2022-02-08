@@ -93,8 +93,6 @@ describe("Update -> ConnectOrCreate", () => {
                     }
                 }
             }
-
-            
             `;
 
         neoSchema = new Neo4jGraphQL({
