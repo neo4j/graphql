@@ -122,6 +122,8 @@ function getObjFieldMeta({
             const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
+            const readonlyDirective = directives.find((x) => x.name.value === "readonly");
+            const writeonlyDirective = directives.find((x) => x.name.value === "writeonly");
 
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
@@ -155,12 +157,8 @@ function getObjFieldMeta({
                 arguments: [...(field.arguments || [])],
                 ...(authDirective ? { auth: getAuth(authDirective) } : {}),
                 description: field.description?.value,
-                readonly:
-                    directives.some((d) => d.name.value === "readonly") ||
-                    interfaceField?.directives?.some((x) => x.name.value === "readonly"),
-                writeonly:
-                    directives.some((d) => d.name.value === "writeonly") ||
-                    interfaceField?.directives?.some((x) => x.name.value === "writeonly"),
+                readonly: !!readonlyDirective,
+                writeonly: !!writeonlyDirective,
                 ...(unique ? { unique } : {}),
             };
 
