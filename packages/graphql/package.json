@@ -80,7 +80,7 @@
         "camelcase": "^6.2.0",
         "debug": "^4.3.2",
         "deep-equal": "^2.0.5",
-        "dot-prop": "^6.0.1",
+        "dot-prop": "^7.0.0",
         "graphql-compose": "^9.0.6",
         "graphql-parse-resolve-info": "^4.12.0",
         "graphql-relay": "^0.10.0",
