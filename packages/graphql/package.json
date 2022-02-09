@@ -44,7 +44,7 @@
     "author": "Neo4j Inc.",
     "devDependencies": {
         "@types/deep-equal": "1.0.1",
-        "@types/faker": "5.5.9",
+        "@types/faker": "6.6.8",
         "@types/is-uuid": "1.0.0",
         "@types/jest": "27.4.0",
         "@types/jsonwebtoken": "8.5.7",
