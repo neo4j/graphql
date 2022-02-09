@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { mergeDeep } from "@graphql-tools/utils";
 import { GraphQLWhereArg, Context } from "../../types";
 import { Node, Relationship } from "../../classes";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
@@ -73,7 +74,7 @@ function createWhereAndParams({
                 });
                 if (recurse[0]) {
                     innerClauses.push(`${recurse[0]}`);
-                    res.params = { ...res.params, ...recurse[1] };
+                    res.params = mergeDeep([res.params, recurse[1]]);
                 }
             });
 
