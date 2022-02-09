@@ -20,7 +20,7 @@
 import * as neo4j from "neo4j-driver";
 import * as util from "util";
 
-let driver;
+let driver: neo4j.Driver;
 
 async function connect(): Promise<neo4j.Driver> {
     if (driver) {
@@ -39,7 +39,7 @@ async function connect(): Promise<neo4j.Driver> {
 
     try {
         await driver.verifyConnectivity();
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${error.message}`);
     }
 
