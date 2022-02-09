@@ -184,6 +184,8 @@ export interface ConnectionField extends BaseField {
  */
 export interface CypherField extends BaseField {
     statement: string;
+    isEnum: boolean;
+    isScalar: boolean;
 }
 
 /**
@@ -206,6 +208,10 @@ export interface CustomEnumField extends BaseField {
 
 export interface UnionField extends BaseField {
     nodes?: string[];
+}
+
+export interface IgnoredField extends BaseField {
+    requiredFields: string[];
 }
 
 export interface InterfaceField extends BaseField {
@@ -349,9 +355,3 @@ export interface CypherQueryOptions {
 
 /** Nested Records helper type, supports any level of recursion. Ending in properties of type T */
 export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {} // Using interface to allow recursive types
-
-export type QueryOptions = {
-    limit: {
-        default?: Integer;
-    };
-};

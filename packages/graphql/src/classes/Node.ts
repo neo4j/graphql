@@ -32,15 +32,15 @@ import type {
     TemporalField,
     PointField,
     Auth,
-    BaseField,
     Context,
     FullText,
-    QueryOptions,
+    IgnoredField,
 } from "../types";
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
 import { lowerFirst } from "../utils/lower-first";
+import { QueryOptionsDirective } from "./QueryOptionsDirective";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -57,13 +57,13 @@ export interface NodeConstructor extends GraphElementConstructor {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    ignoredFields: BaseField[];
+    ignoredFields: IgnoredField[];
     auth?: Auth;
     fulltextDirective?: FullText;
     exclude?: Exclude;
     nodeDirective?: NodeDirective;
     description?: string;
-    queryOptionsDirective?: QueryOptions;
+    queryOptionsDirective?: QueryOptionsDirective;
 }
 
 type MutableField =
@@ -104,7 +104,7 @@ class Node extends GraphElement {
     public fulltextDirective?: FullText;
     public auth?: Auth;
     public description?: string;
-    public queryOptions?: QueryOptions;
+    public queryOptions?: QueryOptionsDirective;
 
     constructor(input: NodeConstructor) {
         super(input);
@@ -160,22 +160,7 @@ class Node extends GraphElement {
             ...this.enumFields,
             ...this.temporalFields,
             ...this.pointFields,
-            ...this.cypherFields.filter((field) =>
-                [
-                    "Boolean",
-                    "ID",
-                    "Int",
-                    "BigInt",
-                    "Float",
-                    "String",
-                    "DateTime",
-                    "LocalDateTime",
-                    "Time",
-                    "LocalTime",
-                    "Date",
-                    "Duration",
-                ].includes(field.typeMeta.name)
-            ),
+            ...this.cypherFields.filter((field) => field.isScalar || field.isEnum),
         ].filter((field) => !field.typeMeta.array);
     }
 

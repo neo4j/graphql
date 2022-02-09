@@ -36,6 +36,7 @@ export const REQUIRED_APOC_PROCEDURES = ["apoc.util.validate", "apoc.do.when", "
 export const DEBUG_AUTH = `${DEBUG_PREFIX}:auth`;
 export const DEBUG_GRAPHQL = `${DEBUG_PREFIX}:graphql`;
 export const DEBUG_EXECUTE = `${DEBUG_PREFIX}:execute`;
+export const RELATIONSHIP_REQUIREMENT_PREFIX = "@neo4j/graphql/RELATIONSHIP-REQUIRED";
 
 export const RESERVED_TYPE_NAMES = [
     {
@@ -62,6 +63,21 @@ export const RESERVED_INTERFACE_FIELDS = [
         RELATIONSHIP_TYPE_FIELD,
         `Interface field name '${RELATIONSHIP_TYPE_FIELD}' reserved to support multiple relationship types`,
     ],
+];
+
+export const SCALAR_TYPES = [
+    "Boolean",
+    "ID",
+    "String",
+    "Int",
+    "BigInt",
+    "Float",
+    "DateTime",
+    "LocalDateTime",
+    "Time",
+    "LocalTime",
+    "Date",
+    "Duration",
 ];
 
 export const WHERE_AGGREGATION_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];

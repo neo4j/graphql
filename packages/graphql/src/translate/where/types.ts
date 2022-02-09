@@ -17,18 +17,20 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
+export type NumericalWhereOperator = "GT" | "GTE" | "LT" | "LTE";
+export type SpatialWhereOperator = "DISTANCE";
+export type StringWhereOperator = "CONTAINS" | "STARTS_WITH" | "ENDS_WITH";
+export type RegexWhereOperator = "MATCHES";
+export type ArrayWhereOperator = "IN" | "INCLUDES";
+export type RelationshipWhereOperator = "ALL" | "NONE" | "SINGLE" | "SOME";
 
-/**
- * Generates a field to be used in creating projections
- */
-export function generateProjectionField({ name }: { name: string }): Record<string, ResolveTree> {
-    return {
-        [name]: {
-            alias: name,
-            args: {},
-            fieldsByTypeName: {},
-            name,
-        },
-    };
-}
+export type WhereOperator =
+    | "NOT"
+    | NumericalWhereOperator
+    | SpatialWhereOperator
+    | StringWhereOperator
+    | `NOT_${StringWhereOperator}`
+    | RegexWhereOperator
+    | ArrayWhereOperator
+    | `NOT_${ArrayWhereOperator}`
+    | RelationshipWhereOperator;

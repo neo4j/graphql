@@ -97,6 +97,28 @@ function createConnectionFields({
             [`${connectionField.fieldName}_NOT`]: connectionWhere,
         });
 
+        // n..m Relationships
+        if (connectionField.relationship.typeMeta.array) {
+            // Add filters for each list predicate
+            whereInput.addFields(
+                (["ALL", "NONE", "SINGLE", "SOME"] as const).reduce(
+                    (acc, filter) => ({
+                        ...acc,
+                        [`${connectionField.fieldName}_${filter}`]: connectionWhere,
+                    }),
+                    {}
+                )
+            );
+
+            // Deprecate existing filters
+            whereInput.setFieldDirectiveByName(connectionField.fieldName, "deprecated", {
+                reason: `Use \`${connectionField.fieldName}_SOME\` instead.`,
+            });
+            whereInput.setFieldDirectiveByName(`${connectionField.fieldName}_NOT`, "deprecated", {
+                reason: `Use \`${connectionField.fieldName}_NONE\` instead.`,
+            });
+        }
+
         const composeNodeBaseArgs: {
             where: any;
             sort?: any;

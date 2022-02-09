@@ -55,7 +55,10 @@ describe("composite-where", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            const actorName = generate({
+            const actorName1 = generate({
+                charset: "alphabetic",
+            });
+            const actorName2 = generate({
                 charset: "alphabetic",
             });
             const movieId = generate({
@@ -64,7 +67,7 @@ describe("composite-where", () => {
             const screenTime = 60;
 
             const query = `
-                mutation($movieId: ID, $actorName: String, $screenTime: Int) {
+                mutation($movieId: ID, $actorName1: String, $screenTime: Int) {
                     updateMovies(
                         where: {
                             id: $movieId
@@ -73,7 +76,7 @@ describe("composite-where", () => {
                             actors: {
                                 where: {
                                     node: {
-                                        name: $actorName
+                                        name: $actorName1
                                     }
                                     edge: {
                                         screenTime: $screenTime
@@ -95,21 +98,25 @@ describe("composite-where", () => {
             try {
                 await session.run(
                     `
-                        CREATE (:Movie {id: $movieId})<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName})
+                        CREATE (m:Movie {id: $movieId})
+                        CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName1})
+                        CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName2})
                     `,
-                    { movieId, screenTime, actorName }
+                    { movieId, screenTime, actorName1, actorName2 }
                 );
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    variableValues: { movieId, actorName, screenTime },
+                    variableValues: { movieId, actorName1, screenTime },
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect(gqlResult?.data?.updateMovies).toEqual({ movies: [{ id: movieId, actors: [] }] });
+                expect(gqlResult?.data?.updateMovies).toEqual({
+                    movies: [{ id: movieId, actors: [{ name: actorName2 }] }],
+                });
             } finally {
                 await session.close();
             }
@@ -137,7 +144,10 @@ describe("composite-where", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            const actorName = generate({
+            const actorName1 = generate({
+                charset: "alphabetic",
+            });
+            const actorName2 = generate({
                 charset: "alphabetic",
             });
             const movieId = generate({
@@ -146,7 +156,7 @@ describe("composite-where", () => {
             const screenTime = 60;
 
             const query = `
-                mutation($movieId: ID, $actorName: String, $screenTime: Int) {
+                mutation($movieId: ID, $actorName1: String, $screenTime: Int) {
                     updateMovies(
                         where: {
                             id: $movieId
@@ -155,7 +165,7 @@ describe("composite-where", () => {
                             actors: {
                                 where: {
                                     node: {
-                                        name: $actorName
+                                        name: $actorName1
                                     }
                                     edge: {
                                         screenTime: $screenTime
@@ -177,21 +187,25 @@ describe("composite-where", () => {
             try {
                 await session.run(
                     `
-                        CREATE (:Movie {id: $movieId})<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName})
+                        CREATE (m:Movie {id: $movieId})
+                        CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName1})
+                        CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName2})
                     `,
-                    { movieId, screenTime, actorName }
+                    { movieId, screenTime, actorName1, actorName2 }
                 );
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    variableValues: { movieId, actorName, screenTime },
+                    variableValues: { movieId, actorName1, screenTime },
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect(gqlResult?.data?.updateMovies).toEqual({ movies: [{ id: movieId, actors: [] }] });
+                expect(gqlResult?.data?.updateMovies).toEqual({
+                    movies: [{ id: movieId, actors: [{ name: actorName2 }] }],
+                });
             } finally {
                 await session.close();
             }

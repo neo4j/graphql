@@ -280,11 +280,23 @@ describe("Relationship", () => {
             input MovieWhere {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
-              actors: ActorWhere
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
-              actorsConnection: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere
-              actors_NOT: ActorWhere
+              actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -673,11 +685,23 @@ describe("Relationship", () => {
           input MovieWhere {
             AND: [MovieWhere!]
             OR: [MovieWhere!]
-            actors: ActorWhere
+            actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
             actorsAggregate: MovieActorsAggregateInput
-            actorsConnection: MovieActorsConnectionWhere
-            actorsConnection_NOT: MovieActorsConnectionWhere
-            actors_NOT: ActorWhere
+            actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+            actorsConnection_ALL: MovieActorsConnectionWhere
+            actorsConnection_NONE: MovieActorsConnectionWhere
+            actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+            actorsConnection_SINGLE: MovieActorsConnectionWhere
+            actorsConnection_SOME: MovieActorsConnectionWhere
+            \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+            actors_ALL: ActorWhere
+            \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+            actors_NONE: ActorWhere
+            actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+            \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+            actors_SINGLE: ActorWhere
+            \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+            actors_SOME: ActorWhere
             id: ID
             id_CONTAINS: ID
             id_ENDS_WITH: ID
@@ -913,11 +937,23 @@ describe("Relationship", () => {
           input ActorWhere {
             AND: [ActorWhere!]
             OR: [ActorWhere!]
-            movies: MovieWhere
+            movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
             moviesAggregate: ActorMoviesAggregateInput
-            moviesConnection: ActorMoviesConnectionWhere
-            moviesConnection_NOT: ActorMoviesConnectionWhere
-            movies_NOT: MovieWhere
+            moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+            moviesConnection_ALL: ActorMoviesConnectionWhere
+            moviesConnection_NONE: ActorMoviesConnectionWhere
+            moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+            moviesConnection_SINGLE: ActorMoviesConnectionWhere
+            moviesConnection_SOME: ActorMoviesConnectionWhere
+            \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+            movies_ALL: MovieWhere
+            \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+            movies_NONE: MovieWhere
+            movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
+            \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+            movies_SINGLE: MovieWhere
+            \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+            movies_SOME: MovieWhere
             name: String
             name_CONTAINS: String
             name_ENDS_WITH: String
@@ -1122,11 +1158,23 @@ describe("Relationship", () => {
           input MovieWhere {
             AND: [MovieWhere!]
             OR: [MovieWhere!]
-            actors: ActorWhere
+            actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
             actorsAggregate: MovieActorsAggregateInput
-            actorsConnection: MovieActorsConnectionWhere
-            actorsConnection_NOT: MovieActorsConnectionWhere
-            actors_NOT: ActorWhere
+            actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+            actorsConnection_ALL: MovieActorsConnectionWhere
+            actorsConnection_NONE: MovieActorsConnectionWhere
+            actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+            actorsConnection_SINGLE: MovieActorsConnectionWhere
+            actorsConnection_SOME: MovieActorsConnectionWhere
+            \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+            actors_ALL: ActorWhere
+            \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+            actors_NONE: ActorWhere
+            actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+            \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+            actors_SINGLE: ActorWhere
+            \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+            actors_SOME: ActorWhere
             id: ID
             id_CONTAINS: ID
             id_ENDS_WITH: ID
@@ -1380,11 +1428,23 @@ describe("Relationship", () => {
           input ActorWhere {
             AND: [ActorWhere!]
             OR: [ActorWhere!]
-            movies: MovieWhere
+            movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
             moviesAggregate: ActorMoviesAggregateInput
-            moviesConnection: ActorMoviesConnectionWhere
-            moviesConnection_NOT: ActorMoviesConnectionWhere
-            movies_NOT: MovieWhere
+            moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+            moviesConnection_ALL: ActorMoviesConnectionWhere
+            moviesConnection_NONE: ActorMoviesConnectionWhere
+            moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+            moviesConnection_SINGLE: ActorMoviesConnectionWhere
+            moviesConnection_SOME: ActorMoviesConnectionWhere
+            \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+            movies_ALL: MovieWhere
+            \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+            movies_NONE: MovieWhere
+            movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
+            \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+            movies_SINGLE: MovieWhere
+            \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+            movies_SOME: MovieWhere
             name: String
             name_CONTAINS: String
             name_ENDS_WITH: String
@@ -1589,11 +1649,23 @@ describe("Relationship", () => {
           input MovieWhere {
             AND: [MovieWhere!]
             OR: [MovieWhere!]
-            currentActors: ActorWhere
+            currentActors: ActorWhere @deprecated(reason: \\"Use \`currentActors_SOME\` instead.\\")
             currentActorsAggregate: MovieCurrentActorsAggregateInput
-            currentActorsConnection: MovieCurrentActorsConnectionWhere
-            currentActorsConnection_NOT: MovieCurrentActorsConnectionWhere
-            currentActors_NOT: ActorWhere
+            currentActorsConnection: MovieCurrentActorsConnectionWhere @deprecated(reason: \\"Use \`currentActorsConnection_SOME\` instead.\\")
+            currentActorsConnection_ALL: MovieCurrentActorsConnectionWhere
+            currentActorsConnection_NONE: MovieCurrentActorsConnectionWhere
+            currentActorsConnection_NOT: MovieCurrentActorsConnectionWhere @deprecated(reason: \\"Use \`currentActorsConnection_NONE\` instead.\\")
+            currentActorsConnection_SINGLE: MovieCurrentActorsConnectionWhere
+            currentActorsConnection_SOME: MovieCurrentActorsConnectionWhere
+            \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+            currentActors_ALL: ActorWhere
+            \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+            currentActors_NONE: ActorWhere
+            currentActors_NOT: ActorWhere @deprecated(reason: \\"Use \`currentActors_NONE\` instead.\\")
+            \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+            currentActors_SINGLE: ActorWhere
+            \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+            currentActors_SOME: ActorWhere
             id: ID
             id_CONTAINS: ID
             id_ENDS_WITH: ID
@@ -1838,11 +1910,23 @@ describe("Relationship", () => {
           input ActorWhere {
             AND: [ActorWhere!]
             OR: [ActorWhere!]
-            movies: MovieWhere
+            movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
             moviesAggregate: ActorMoviesAggregateInput
-            moviesConnection: ActorMoviesConnectionWhere
-            moviesConnection_NOT: ActorMoviesConnectionWhere
-            movies_NOT: MovieWhere
+            moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+            moviesConnection_ALL: ActorMoviesConnectionWhere
+            moviesConnection_NONE: ActorMoviesConnectionWhere
+            moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+            moviesConnection_SINGLE: ActorMoviesConnectionWhere
+            moviesConnection_SOME: ActorMoviesConnectionWhere
+            \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+            movies_ALL: MovieWhere
+            \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+            movies_NONE: MovieWhere
+            movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
+            \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+            movies_SINGLE: MovieWhere
+            \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+            movies_SOME: MovieWhere
             name: String
             name_CONTAINS: String
             name_ENDS_WITH: String
@@ -2028,11 +2112,23 @@ describe("Relationship", () => {
           input DirectorWhere {
             AND: [DirectorWhere!]
             OR: [DirectorWhere!]
-            directed: MovieWhere
+            directed: MovieWhere @deprecated(reason: \\"Use \`directed_SOME\` instead.\\")
             directedAggregate: DirectorDirectedAggregateInput
-            directedConnection: DirectorDirectedConnectionWhere
-            directedConnection_NOT: DirectorDirectedConnectionWhere
-            directed_NOT: MovieWhere
+            directedConnection: DirectorDirectedConnectionWhere @deprecated(reason: \\"Use \`directedConnection_SOME\` instead.\\")
+            directedConnection_ALL: DirectorDirectedConnectionWhere
+            directedConnection_NONE: DirectorDirectedConnectionWhere
+            directedConnection_NOT: DirectorDirectedConnectionWhere @deprecated(reason: \\"Use \`directedConnection_NONE\` instead.\\")
+            directedConnection_SINGLE: DirectorDirectedConnectionWhere
+            directedConnection_SOME: DirectorDirectedConnectionWhere
+            \\"\\"\\"Return Directors where all of the related Movies match this filter\\"\\"\\"
+            directed_ALL: MovieWhere
+            \\"\\"\\"Return Directors where none of the related Movies match this filter\\"\\"\\"
+            directed_NONE: MovieWhere
+            directed_NOT: MovieWhere @deprecated(reason: \\"Use \`directed_NONE\` instead.\\")
+            \\"\\"\\"Return Directors where one of the related Movies match this filter\\"\\"\\"
+            directed_SINGLE: MovieWhere
+            \\"\\"\\"Return Directors where some of the related Movies match this filter\\"\\"\\"
+            directed_SOME: MovieWhere
             name: String
             name_CONTAINS: String
             name_ENDS_WITH: String
@@ -2492,11 +2588,23 @@ describe("Relationship", () => {
           input MovieWhere {
             AND: [MovieWhere!]
             OR: [MovieWhere!]
-            actors: ActorWhere
+            actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
             actorsAggregate: MovieActorsAggregateInput
-            actorsConnection: MovieActorsConnectionWhere
-            actorsConnection_NOT: MovieActorsConnectionWhere
-            actors_NOT: ActorWhere
+            actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+            actorsConnection_ALL: MovieActorsConnectionWhere
+            actorsConnection_NONE: MovieActorsConnectionWhere
+            actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+            actorsConnection_SINGLE: MovieActorsConnectionWhere
+            actorsConnection_SOME: MovieActorsConnectionWhere
+            \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+            actors_ALL: ActorWhere
+            \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+            actors_NONE: ActorWhere
+            actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+            \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+            actors_SINGLE: ActorWhere
+            \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+            actors_SOME: ActorWhere
             director: DirectorWhere
             directorAggregate: MovieDirectorAggregateInput
             directorConnection: MovieDirectorConnectionWhere
@@ -2512,8 +2620,12 @@ describe("Relationship", () => {
             id_NOT_IN: [ID]
             id_NOT_STARTS_WITH: ID
             id_STARTS_WITH: ID
-            peopleConnection: MoviePeopleConnectionWhere
-            peopleConnection_NOT: MoviePeopleConnectionWhere
+            peopleConnection: MoviePeopleConnectionWhere @deprecated(reason: \\"Use \`peopleConnection_SOME\` instead.\\")
+            peopleConnection_ALL: MoviePeopleConnectionWhere
+            peopleConnection_NONE: MoviePeopleConnectionWhere
+            peopleConnection_NOT: MoviePeopleConnectionWhere @deprecated(reason: \\"Use \`peopleConnection_NONE\` instead.\\")
+            peopleConnection_SINGLE: MoviePeopleConnectionWhere
+            peopleConnection_SOME: MoviePeopleConnectionWhere
           }
 
           type Mutation {

@@ -18,6 +18,7 @@
  */
 
 import { InputTypeComposer, InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import pluralize from "pluralize";
 import { Node } from "../../classes";
 import {
     RELATIONSHIP_TYPE_FIELD,
@@ -730,6 +731,34 @@ function createRelationshipFields({
                 [`${rel.fieldName}Aggregate`]: whereAggregateInput,
             },
         });
+
+        // n..m Relationships
+        if (rel.typeMeta.array) {
+            // Add filters for each list predicate
+            whereInput.addFields(
+                (["ALL", "NONE", "SINGLE", "SOME"] as const).reduce(
+                    (acc, filter) => ({
+                        ...acc,
+                        [`${rel.fieldName}_${filter}`]: {
+                            type: `${n.name}Where`,
+                            // e.g. "Return Movies where all of the related Actors match this filter"
+                            description: `Return ${pluralize(sourceName)} where ${
+                                filter !== "SINGLE" ? filter.toLowerCase() : "one"
+                            } of the related ${pluralize(rel.typeMeta.name)} match this filter`,
+                        },
+                    }),
+                    {}
+                )
+            );
+
+            // Deprecate existing filters
+            whereInput.setFieldDirectiveByName(rel.fieldName, "deprecated", {
+                reason: `Use \`${rel.fieldName}_SOME\` instead.`,
+            });
+            whereInput.setFieldDirectiveByName(`${rel.fieldName}_NOT`, "deprecated", {
+                reason: `Use \`${rel.fieldName}_NONE\` instead.`,
+            });
+        }
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;
         const create = rel.typeMeta.array ? `[${createName}!]` : createName;

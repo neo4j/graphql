@@ -125,6 +125,12 @@ export const ignoreDirective = new GraphQLDirective({
     description:
         "Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        dependsOn: {
+            description: "Fields that the custom resolver will depend on",
+            type: new GraphQLList(new GraphQLNonNull(GraphQLString)),
+        },
+    },
 });
 
 export const nodeDirective = new GraphQLDirective({
@@ -265,6 +271,10 @@ export const queryOptions = new GraphQLDirective({
                 fields: {
                     default: {
                         description: "If no limit argument is supplied on query will fallback to this value.",
+                        type: GraphQLInt,
+                    },
+                    max: {
+                        description: "Maximum limit to be used for queries.",
                         type: GraphQLInt,
                     },
                 },
