@@ -61,6 +61,7 @@ Additionally, prerelease version numbers may have additional suffixes, for examp
 
 `NUMBER` in the suffix is simply an incrementing release number in each phase.
 
+[[introduction-requirements]]
 == Requirements
 
 1. https://neo4j.com/[Neo4j Database] with https://neo4j.com/developer/neo4j-apoc/[APOC] plugin:
