@@ -25,6 +25,7 @@ import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { generateUniqueType } from "../../../utils/graphql-types";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("Aggregate -> count", () => {
     let driver: Driver;
@@ -167,7 +168,14 @@ describe("Aggregate -> count", () => {
 
         const secret = "secret";
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         const query = `
             query {

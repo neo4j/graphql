@@ -25,6 +25,7 @@ import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 import { createJwtRequest } from "../../utils/create-jwt-request";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("Update -> ConnectOrCreate", () => {
     let driver: Driver;
@@ -73,10 +74,10 @@ describe("Update -> ConnectOrCreate", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                jwt: {
-                    secret,
-                },
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
             },
         });
     });

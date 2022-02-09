@@ -23,6 +23,7 @@ import { generate } from "randomstring";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("auth/object-path", () => {
     let driver: Driver;
@@ -59,7 +60,14 @@ describe("auth/object-path", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -123,7 +131,14 @@ describe("auth/object-path", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -172,8 +187,11 @@ describe("auth/object-path", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                jwt: { secret, rolesPath: "https://github\\.com/claims.https://github\\.com/claims/roles" },
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret,
+                    rolesPath: "https://github\\.com/claims.https://github\\.com/claims/roles",
+                }),
             },
         });
 
@@ -227,8 +245,10 @@ describe("auth/object-path", () => {
         // Pass the well-known JWKS Endpoint
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                jwt: { jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json" },
+            plugins: {
+                jwt: new JWTPlugin({
+                    jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json",
+                }),
             },
         });
 

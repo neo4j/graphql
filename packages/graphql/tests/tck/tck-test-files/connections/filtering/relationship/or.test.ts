@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
@@ -48,7 +49,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 

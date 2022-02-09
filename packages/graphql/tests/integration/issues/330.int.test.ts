@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 // Reference: https://github.com/neo4j/graphql/pull/330
 // Reference: https://github.com/neo4j/graphql/pull/303#discussion_r671148932
@@ -54,7 +55,14 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         const req = createJwtRequest(secret);
 
@@ -84,7 +92,14 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         const req = createJwtRequest(secret);
 
@@ -116,7 +131,14 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         const req = createJwtRequest(secret);
 

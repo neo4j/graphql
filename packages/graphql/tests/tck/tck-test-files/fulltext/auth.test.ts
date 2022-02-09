@@ -22,6 +22,7 @@ import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery } from "../../utils/tck-test-utils";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("Cypher -> fulltext -> Auth", () => {
     test("simple match with auth where", async () => {
@@ -47,10 +48,10 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                jwt: {
+            plugins: {
+                jwt: new JWTPlugin({
                     secret,
-                },
+                }),
             },
         });
 
@@ -104,10 +105,10 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                jwt: {
+            plugins: {
+                jwt: new JWTPlugin({
                     secret,
-                },
+                }),
             },
         });
 

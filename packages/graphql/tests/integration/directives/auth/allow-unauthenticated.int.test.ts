@@ -25,6 +25,7 @@ import { generate } from "randomstring";
 
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 // Reference: https://github.com/neo4j/graphql/pull/355
 // Reference: https://github.com/neo4j/graphql/issues/345
@@ -69,7 +70,14 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: true})
@@ -119,7 +127,14 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
@@ -171,7 +186,14 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
@@ -225,7 +247,14 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: true})
@@ -275,7 +304,14 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
@@ -326,7 +362,14 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
@@ -376,7 +419,14 @@ describe("auth/allow-unauthenticated", () => {
             `;
 
             const secret = "secret";
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);

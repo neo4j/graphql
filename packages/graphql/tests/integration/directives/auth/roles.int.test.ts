@@ -24,6 +24,7 @@ import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { generateUniqueType } from "../../../utils/graphql-types";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("auth/roles", () => {
     let driver: Driver;
@@ -76,7 +77,14 @@ describe("auth/roles", () => {
             }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
@@ -111,7 +119,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
@@ -149,7 +164,14 @@ describe("auth/roles", () => {
             }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
@@ -191,7 +213,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
@@ -231,7 +260,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
@@ -273,7 +309,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
@@ -313,7 +356,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
@@ -379,7 +429,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -468,7 +525,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -539,7 +603,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -628,7 +699,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -672,7 +750,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret, { roles: [] });
@@ -724,7 +809,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
             try {
                 await session.run(`
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
@@ -768,7 +860,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret, { roles: [] });
@@ -807,7 +906,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret, { roles: [] });
@@ -850,7 +956,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret, { roles: [] });
@@ -913,7 +1026,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    jwt: new JWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -994,11 +1114,11 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: {
-                    jwt: {
+                plugins: {
+                    jwt: new JWTPlugin({
                         secret,
                         rolesPath: "https://auth0\\.mysite\\.com/claims.https://auth0\\.mysite\\.com/claims/roles",
-                    },
+                    }),
                 },
             });
 

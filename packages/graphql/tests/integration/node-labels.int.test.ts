@@ -23,6 +23,7 @@ import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../utils/graphql-types";
 import { createJwtRequest } from "../utils/create-jwt-request";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("Node directive labels", () => {
     let driver: Driver;
@@ -81,10 +82,10 @@ describe("Node directive labels", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                jwt: {
+            plugins: {
+                jwt: new JWTPlugin({
                     secret,
-                },
+                }),
             },
         });
 

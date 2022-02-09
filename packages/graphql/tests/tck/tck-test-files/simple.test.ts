@@ -22,6 +22,7 @@ import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createJwtRequest } from "../../utils/create-jwt-request";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("Simple Cypher tests", () => {
     const secret = "secret";
@@ -38,7 +39,12 @@ describe("Simple Cypher tests", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -99,7 +105,7 @@ describe("Simple Cypher tests", () => {
 
     test("Multi selection, Movie by title via variable", async () => {
         const query = gql`
-            query($title: String) {
+            query ($title: String) {
                 movies(where: { title: $title }) {
                     id
                     title

@@ -30,7 +30,6 @@ import {
 } from "../../utils/tck-test-utils";
 
 describe("Cypher coalesce()", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -54,7 +53,7 @@ describe("Cypher coalesce()", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
         setTestEnvVars("NEO4J_GRAPHQL_ENABLE_REGEX=1");
     });
@@ -64,7 +63,7 @@ describe("Cypher coalesce()", () => {
     });
     test("Simple coalesce", async () => {
         const query = gql`
-            query(
+            query (
                 $id: ID
                 $name: String
                 $verified: Boolean

@@ -24,6 +24,7 @@ import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { generateUniqueType } from "../../../utils/graphql-types";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("aggregations-top_level-auth", () => {
     let driver: Driver;
@@ -62,7 +63,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -112,7 +120,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -173,7 +188,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -228,7 +250,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -283,7 +312,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -338,7 +374,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -393,7 +436,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -448,7 +498,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -503,7 +560,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`

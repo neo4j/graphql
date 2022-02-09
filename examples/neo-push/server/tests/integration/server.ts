@@ -4,6 +4,7 @@ import { Neo4jGraphQL } from "@neo4j/graphql";
 import { typeDefs, resolvers } from "../../src/gql";
 import { Context } from "../../src/types";
 import * as config from "../../src/config";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 function server(driver, context = {}) {
     const ogm = new OGM({
@@ -14,10 +15,10 @@ function server(driver, context = {}) {
     const neoSchema = new Neo4jGraphQL({
         typeDefs,
         resolvers,
-        config: {
-            jwt: {
+        plugins: {
+            jwt: new JWTPlugin({
                 secret: config.NEO4J_GRAPHQL_JWT_SECRET,
-            },
+            }),
         },
     });
 

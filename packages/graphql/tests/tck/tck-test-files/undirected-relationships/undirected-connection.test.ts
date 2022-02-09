@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
@@ -38,7 +39,11 @@ describe("Undirected connections", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { jwt: { secret } },
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret,
+                }),
+            },
         });
         const query = gql`
             query FriendsAggregate {

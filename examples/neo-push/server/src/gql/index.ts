@@ -1,6 +1,7 @@
 import { ApolloServer } from "apollo-server-express";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { OGM } from "@neo4j/graphql-ogm";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { driver } from "../neo4j";
 import { Context } from "../types";
 import * as User from "./User";
@@ -23,10 +24,10 @@ export const ogm = new OGM({
 export const neoSchema = new Neo4jGraphQL({
     typeDefs,
     resolvers,
-    config: {
-        jwt: {
+    plugins: {
+        jwt: new JWTPlugin({
             secret: config.NEO4J_GRAPHQL_JWT_SECRET,
-        },
+        }),
     },
 });
 

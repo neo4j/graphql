@@ -3,6 +3,7 @@ import gql from "graphql-tag";
 import neo4j from "./neo4j";
 import { OGM } from "../../src";
 import { createJwtRequest, generateUniqueType } from "../utils";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("Additional Labels", () => {
     const secret = "secret";
@@ -45,7 +46,15 @@ describe("Additional Labels", () => {
     });
 
     test("should find nodes with jwt labels passed as a request", async () => {
-        const ogm = new OGM({ typeDefs, driver, config: { jwt: { secret } } });
+        const ogm = new OGM({
+            typeDefs,
+            driver,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret,
+                }),
+            },
+        });
 
         const req = createJwtRequest(secret, { tenant_id: tenantID });
 
@@ -58,7 +67,15 @@ describe("Additional Labels", () => {
     });
 
     test("should find nodes with jwt labels passed as part of context", async () => {
-        const ogm = new OGM({ typeDefs, driver, config: { jwt: { secret } } });
+        const ogm = new OGM({
+            typeDefs,
+            driver,
+            plugins: {
+                jwt: new JWTPlugin({
+                    secret,
+                }),
+            },
+        });
 
         const Task = ogm.model(taskType.name);
         const tasks = await Task.find({
