@@ -100,6 +100,7 @@ describe("Node Directive", () => {
                 }
 
                 input TechOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"
@@ -237,6 +238,7 @@ describe("Node Directive", () => {
                 }
 
                 input TechOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"
@@ -374,6 +376,7 @@ describe("Node Directive", () => {
                 }
 
                 input TechOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"
@@ -508,6 +511,7 @@ describe("Node Directive", () => {
                 }
 
                 input TechsOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"
@@ -643,6 +647,7 @@ describe("Node Directive", () => {
                 }
 
                 input UserOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"
@@ -765,6 +770,7 @@ describe("Node Directive", () => {
                 }
 
                 input UserOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"
@@ -887,6 +893,7 @@ describe("Node Directive", () => {
                 }
 
                 input UsersOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"

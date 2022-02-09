@@ -116,6 +116,7 @@ describe("@private directive", () => {
             }
 
             input UserOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

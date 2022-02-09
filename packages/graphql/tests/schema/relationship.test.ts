@@ -61,6 +61,7 @@ describe("Relationship", () => {
             }
 
             input ActorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -253,6 +254,7 @@ describe("Relationship", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -493,6 +495,7 @@ describe("Relationship", () => {
             }
 
             input ActorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -702,6 +705,7 @@ describe("Relationship", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

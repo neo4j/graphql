@@ -174,6 +174,7 @@ describe("Aggregations", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -1126,6 +1127,7 @@ describe("Aggregations", () => {
             }
 
             input PostOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -1292,6 +1294,7 @@ describe("Aggregations", () => {
             }
 
             input UserOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

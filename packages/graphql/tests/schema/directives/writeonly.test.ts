@@ -108,6 +108,7 @@ describe("@writeonly directive", () => {
             }
 
             input UserOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -250,6 +251,7 @@ describe("@writeonly directive", () => {
             }
 
             input UserOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -336,6 +338,7 @@ describe("@writeonly directive", () => {
             }
 
             input ActorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -501,6 +504,7 @@ describe("@writeonly directive", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

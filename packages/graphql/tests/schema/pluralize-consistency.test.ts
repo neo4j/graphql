@@ -137,6 +137,7 @@ describe("Pluralize consistency", () => {
             }
 
             input super_friendOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -293,6 +294,7 @@ describe("Pluralize consistency", () => {
             }
 
             input super_userOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

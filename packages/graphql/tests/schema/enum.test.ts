@@ -74,6 +74,7 @@ describe("Enum", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

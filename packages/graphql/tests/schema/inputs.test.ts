@@ -82,6 +82,7 @@ describe("Inputs", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

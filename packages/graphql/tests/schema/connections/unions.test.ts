@@ -88,6 +88,7 @@ describe("Unions", () => {
             }
 
             input AuthorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -459,6 +460,7 @@ describe("Unions", () => {
             }
 
             input BookOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -718,6 +720,7 @@ describe("Unions", () => {
             }
 
             input JournalOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -799,6 +802,7 @@ describe("Unions", () => {
             }
 
             input QueryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }

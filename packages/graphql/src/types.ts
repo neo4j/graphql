@@ -216,6 +216,7 @@ export interface GraphQLOptionsArg {
     limit?: number | Integer;
     offset?: number | Integer;
     sort?: GraphQLSortArg[];
+    distinct?: boolean;
 }
 
 /**

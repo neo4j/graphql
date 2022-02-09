@@ -130,6 +130,7 @@ describe("@ignore directive", () => {
             }
 
             input UserOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

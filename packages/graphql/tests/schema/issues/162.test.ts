@@ -170,6 +170,7 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -270,6 +271,7 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Part1Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -484,6 +486,7 @@ describe("162", () => {
             }
 
             input TigerOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

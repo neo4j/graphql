@@ -69,6 +69,7 @@ describe("609", () => {
             }
 
             input DeprecatedOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

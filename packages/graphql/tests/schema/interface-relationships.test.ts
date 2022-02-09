@@ -177,6 +177,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -269,6 +270,7 @@ describe("Interface Relationships", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -385,6 +387,7 @@ describe("Interface Relationships", () => {
             }
 
             input QueryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }
@@ -406,6 +409,7 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -657,6 +661,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -764,6 +769,7 @@ describe("Interface Relationships", () => {
             }
 
             input EpisodeOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -1057,6 +1063,7 @@ describe("Interface Relationships", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -1359,6 +1366,7 @@ describe("Interface Relationships", () => {
             }
 
             input QueryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }
@@ -1597,6 +1605,7 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -1992,6 +2001,7 @@ describe("Interface Relationships", () => {
             }
 
             input QueryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }
@@ -2131,6 +2141,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -2204,6 +2215,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface2Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -2239,6 +2251,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -2338,6 +2351,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -2393,6 +2407,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface2Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -2586,6 +2601,7 @@ describe("Interface Relationships", () => {
             }
 
             input CommentOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -3192,6 +3208,7 @@ describe("Interface Relationships", () => {
             }
 
             input PostOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -3275,6 +3292,7 @@ describe("Interface Relationships", () => {
             }
 
             input QueryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }
@@ -3405,6 +3423,7 @@ describe("Interface Relationships", () => {
             }
 
             input UserOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

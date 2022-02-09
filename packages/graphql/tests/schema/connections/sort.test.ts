@@ -112,6 +112,7 @@ describe("Sort", () => {
             }
 
             input Node1Options {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -261,6 +262,7 @@ describe("Sort", () => {
             }
 
             input Node2Options {
+              distinct: Boolean
               limit: Int
               offset: Int
             }

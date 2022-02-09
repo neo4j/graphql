@@ -86,6 +86,7 @@ describe("Unions", () => {
             }
 
             input GenreOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -159,6 +160,7 @@ describe("Unions", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -356,6 +358,7 @@ describe("Unions", () => {
             }
 
             input QueryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }

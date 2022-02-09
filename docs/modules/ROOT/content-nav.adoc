@@ -24,6 +24,7 @@
 ** xref:pagination/index.adoc[]
 *** xref:pagination/offset-based.adoc[]
 *** xref:pagination/cursor-based.adoc[]
+** xref:distinct.adoc[]
 ** xref:custom-resolvers.adoc[]
 ** xref:auth/index.adoc[]
 *** xref:auth/setup.adoc[]

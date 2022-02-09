@@ -39,6 +39,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     let limitStr = "";
     let offsetStr = "";
     let sortStr = "";
+    let distinctStr = "";
 
     let cypherParams: { [k: string]: any } = {};
     const connectionStrs: string[] = [];
@@ -138,6 +139,9 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
 
             sortStr = `ORDER BY ${sortArr.join(", ")}`;
         }
+        if (optionsInput.distinct) {
+            distinctStr = "DISTINCT ";
+        }
     }
 
     const cypher = [
@@ -146,7 +150,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
         ...connectionStrs,
         ...interfaceStrs,
-        `RETURN ${varName} ${projStr} as ${varName}`,
+        `RETURN ${distinctStr}${varName} ${projStr} as ${varName}`,
         ...(sortStr ? [sortStr] : []),
         offsetStr,
         limitStr,

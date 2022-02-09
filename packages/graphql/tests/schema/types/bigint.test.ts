@@ -85,6 +85,7 @@ describe("Bigint", () => {
             }
 
             input FileOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

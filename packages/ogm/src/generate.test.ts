@@ -173,9 +173,10 @@ describe("generate", () => {
 
             export type UserOptions = {
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<UserSort>>;
-              limit?: InputMaybe<Scalars[\\"Int\\"]>;
-              offset?: InputMaybe<Scalars[\\"Int\\"]>;
+              sort?: Maybe<Array<Maybe<UserSort>>>;
+              limit?: Maybe<Scalars[\\"Int\\"]>;
+              offset?: Maybe<Scalars[\\"Int\\"]>;
+              distinct?: Maybe<Scalars[\\"Boolean\\"]>;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
@@ -410,9 +411,10 @@ describe("generate", () => {
 
             export type UserOptions = {
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<UserSort>>;
-              limit?: InputMaybe<Scalars[\\"Int\\"]>;
-              offset?: InputMaybe<Scalars[\\"Int\\"]>;
+              sort?: Maybe<Array<Maybe<UserSort>>>;
+              limit?: Maybe<Scalars[\\"Int\\"]>;
+              offset?: Maybe<Scalars[\\"Int\\"]>;
+              distinct?: Maybe<Scalars[\\"Boolean\\"]>;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
@@ -655,9 +657,10 @@ describe("generate", () => {
 
             export type UserOptions = {
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<UserSort>>;
-              limit?: InputMaybe<Scalars[\\"Int\\"]>;
-              offset?: InputMaybe<Scalars[\\"Int\\"]>;
+              sort?: Maybe<Array<Maybe<UserSort>>>;
+              limit?: Maybe<Scalars[\\"Int\\"]>;
+              offset?: Maybe<Scalars[\\"Int\\"]>;
+              distinct?: Maybe<Scalars[\\"Boolean\\"]>;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
@@ -1177,9 +1180,10 @@ describe("generate", () => {
 
             export type MovieOptions = {
               /** Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<MovieSort>>;
-              limit?: InputMaybe<Scalars[\\"Int\\"]>;
-              offset?: InputMaybe<Scalars[\\"Int\\"]>;
+              sort?: Maybe<Array<Maybe<MovieSort>>>;
+              limit?: Maybe<Scalars[\\"Int\\"]>;
+              offset?: Maybe<Scalars[\\"Int\\"]>;
+              distinct?: Maybe<Scalars[\\"Boolean\\"]>;
             };
 
             export type MovieRelationInput = {
@@ -1226,9 +1230,10 @@ describe("generate", () => {
 
             export type PersonOptions = {
               /** Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<PersonSort>>;
-              limit?: InputMaybe<Scalars[\\"Int\\"]>;
-              offset?: InputMaybe<Scalars[\\"Int\\"]>;
+              sort?: Maybe<Array<Maybe<PersonSort>>>;
+              limit?: Maybe<Scalars[\\"Int\\"]>;
+              offset?: Maybe<Scalars[\\"Int\\"]>;
+              distinct?: Maybe<Scalars[\\"Boolean\\"]>;
             };
 
             /** Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object. */

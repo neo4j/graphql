@@ -289,6 +289,7 @@ describe("Connect Or Create", () => {
             }
 
             input ActorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -382,6 +383,7 @@ describe("Connect Or Create", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -469,6 +471,7 @@ describe("Connect Or Create", () => {
             }
 
             input QueryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }
@@ -498,6 +501,7 @@ describe("Connect Or Create", () => {
             }
 
             input SeriesOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

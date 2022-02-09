@@ -88,6 +88,7 @@ describe("Localtime", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

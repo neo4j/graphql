@@ -81,6 +81,7 @@ describe("Directive-preserve", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

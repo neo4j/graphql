@@ -68,6 +68,7 @@ describe("Point", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -218,6 +219,7 @@ describe("Point", () => {
             }
 
             input MachineOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -329,6 +331,7 @@ describe("Point", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }
@@ -445,6 +448,7 @@ describe("Point", () => {
             }
 
             input MachineOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
             }

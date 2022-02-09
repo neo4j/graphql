@@ -105,6 +105,7 @@ describe("@exclude directive", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -210,6 +211,7 @@ describe("@exclude directive", () => {
             }
 
             input ActorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -337,6 +339,7 @@ describe("@exclude directive", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -467,6 +470,7 @@ describe("@exclude directive", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -573,6 +577,7 @@ describe("@exclude directive", () => {
             }
 
             input ActorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -755,6 +760,7 @@ describe("@exclude directive", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -874,6 +880,7 @@ describe("@exclude directive", () => {
             }
 
             input ActorOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -1013,6 +1020,7 @@ describe("@exclude directive", () => {
             }
 
             input MovieOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -1079,6 +1087,7 @@ describe("@exclude directive", () => {
             }
 
             input SeriesOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

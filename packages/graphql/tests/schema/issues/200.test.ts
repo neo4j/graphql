@@ -62,6 +62,7 @@ describe("200", () => {
             }
 
             input CategoryOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
