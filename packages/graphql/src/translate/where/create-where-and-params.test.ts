@@ -18,8 +18,8 @@
  */
 
 import createWhereAndParams from "./create-where-and-params";
-import { Context } from "../types";
-import { NodeBuilder } from "../../tests/utils/builders/node-builder";
+import { Context } from "../../types";
+import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
 
 describe("createWhereAndParams", () => {
     test("should be a function", () => {
