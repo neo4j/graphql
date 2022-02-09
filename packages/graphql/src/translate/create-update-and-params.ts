@@ -30,7 +30,6 @@ import createSetRelationshipProperties from "./create-set-relationship-propertie
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
-import { wrapInCall } from "./utils/wrap-in-call";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 
 interface Res {
@@ -328,7 +327,7 @@ function createUpdateAndParams({
                             refNode,
                             context,
                         });
-                        subquery.push(wrapInCall(connectOrCreateQuery, varName));
+                        subquery.push(connectOrCreateQuery);
                         res.params = { ...res.params, ...connectOrCreateParams };
                     }
 

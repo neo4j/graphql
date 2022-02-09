@@ -261,7 +261,6 @@ function createCreateAndParams({
             params = { ...params, ...bindAndParams[1] };
         }
     }
-
     if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
         creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
