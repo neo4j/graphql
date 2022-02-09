@@ -1,8 +1,28 @@
 {
-    "extends": [
-        "config:js-lib"
-    ],
-    "baseBranches": [
-        "dev"
+    "extends": ["config:js-lib"],
+    "baseBranches": ["dev"],
+    "rebaseWhen": "auto",
+    "automerge": true,
+    "packageRules": [
+        {
+            "matchDepTypes": ["dependencies"],
+            "matchFiles": ["packages/graphql/package.json"],
+            "labels": ["dependency upgrade", "graphql"]
+        },
+        {
+            "matchDepTypes": ["dependencies"],
+            "matchFiles": ["packages/introspector/package.json"],
+            "labels": ["dependency upgrade", "introspector"]
+        },
+        {
+            "matchDepTypes": ["dependencies"],
+            "matchFiles": ["packages/ogm/package.json"],
+            "labels": ["dependency upgrade", "ogm"]
+        },
+        {
+            "matchDepTypes": ["dependencies"],
+            "matchUpdateTypes": ["major"],
+            "automerge": false
+        }
     ]
 }

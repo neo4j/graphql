@@ -22,6 +22,7 @@ import createAuthAndParams from "./create-auth-and-params";
 import { Neo4jGraphQL } from "../classes";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 
 describe("createAuthAndParams", () => {
     describe("operations", () => {
@@ -92,6 +93,79 @@ describe("createAuthAndParams", () => {
 
             expect(result[1]).toMatchObject({
                 this_auth_allow0_id: sub,
+            });
+        });
+
+        test("should combine roles with where across rules", () => {
+            const idField = {
+                fieldName: "id",
+                typeMeta: {
+                    name: "ID",
+                    array: false,
+                    required: false,
+                    pretty: "String",
+                    input: {
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                    },
+                },
+                otherDirectives: [],
+                arguments: [],
+            };
+
+            const node = new NodeBuilder({
+                name: "Movie",
+                primitiveFields: [idField],
+                auth: {
+                    rules: [
+                        {
+                            operations: ["READ"],
+                            roles: ["admin"],
+                        },
+                        {
+                            operations: ["READ"],
+                            roles: ["member"],
+                            where: { id: "$jwt.sub" },
+                        },
+                    ],
+                    type: "JWT",
+                },
+            }).instance();
+
+            const sub = generate({
+                charset: "alphabetic",
+            });
+
+            const context = new ContextBuilder({
+                jwt: {
+                    sub,
+                },
+            }).instance();
+
+            const result = createAuthAndParams({
+                context,
+                entity: node,
+                where: { node, varName: "this" },
+            });
+
+            expect(trimmer(result[0])).toEqual(
+                trimmer(`
+                    ((ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR ((ANY(r IN ["member"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_where1_id)))
+                `)
+            );
+
+            expect(result[1]).toMatchObject({
+                this_auth_where1_id: sub,
             });
         });
     });

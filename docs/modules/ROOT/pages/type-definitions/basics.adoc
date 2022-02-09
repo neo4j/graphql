@@ -26,12 +26,12 @@ Add a second node type, "Actor", and connect the two together:
 ----
 type Movie {
     title: String
-    actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
 }
 
 type Actor {
     name: String
-    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
 }
 ----
 
@@ -45,12 +45,12 @@ In order to add relationship properties to a relationship, you need to add a new
 ----
 type Movie {
     title: String
-    actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
 }
 
 type Actor {
     name: String
-    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
 }
 
 interface ActedIn @relationshipProperties {

@@ -41,25 +41,25 @@ describe("Cypher Auth Where", () => {
                 ) {
                 id: ID
                 content: String
-                creator: User @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             type User {
                 id: ID
                 name: String
-                content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+                content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
 
             type Comment implements Content {
                 id: ID
                 content: String
-                creator: User
+                creator: User!
             }
 
             type Post implements Content {
                 id: ID
                 content: String
-                creator: User
+                creator: User!
             }
 
             extend type User
@@ -222,7 +222,7 @@ describe("Cypher Auth Where", () => {
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
             RETURN this { .id, contentConnection } as this"
@@ -278,7 +278,7 @@ describe("Cypher Auth Where", () => {
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
             RETURN this { .id, contentConnection } as this"

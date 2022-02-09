@@ -31,6 +31,9 @@ import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
+import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
+import { CypherStatement } from "../types";
+import { isString } from "../../utils/utils";
 
 function createConnectionAndParams({
     resolveTree,
@@ -44,11 +47,11 @@ function createConnectionAndParams({
     context: Context;
     nodeVariable: string;
     parameterPrefix?: string;
-}): [string, any] {
+}): CypherStatement {
     let globalParams = {};
     let nestedConnectionFieldParams;
 
-    const subquery = ["CALL {", `WITH ${nodeVariable}`];
+    let subquery = ["CALL {", `WITH ${nodeVariable}`];
 
     const sortInput = resolveTree.args.sort as ConnectionSortArg[];
     const afterInput = resolveTree.args.after;
@@ -59,10 +62,11 @@ function createConnectionAndParams({
     const relationship = context.neoSchema.relationships.find(
         (r) => r.name === field.relationshipTypeName
     ) as Relationship;
+    const relatedNode = context.neoSchema.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
 
-    const inStr = field.relationship.direction === "IN" ? "<-" : "-";
     const relTypeStr = `[${relationshipVariable}:${field.relationship.type}]`;
-    const outStr = field.relationship.direction === "OUT" ? "->" : "-";
+
+    const { inStr, outStr } = getRelationshipDirection(field.relationship, resolveTree.args);
 
     let relationshipProperties: ResolveTree[] = [];
     let node: ResolveTree | undefined;
@@ -122,7 +126,7 @@ function createConnectionAndParams({
                     };
 
                     const nodeProjectionAndParams = createProjectionAndParams({
-                        fieldsByTypeName: nodeFieldsByTypeName,
+                        resolveTree: { ...node, fieldsByTypeName: nodeFieldsByTypeName },
                         node: n,
                         context,
                         varName: relatedNodeVariable,
@@ -256,30 +260,18 @@ function createConnectionAndParams({
 
         if (sortInput && sortInput.length) {
             const sort = sortInput.map((s) =>
-                Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`).join(", ")
+                Object.entries(s.edge || [])
+                    .map(([f, direction]) => `edge.${f} ${direction}`)
+                    .join(", ")
             );
             subqueryCypher.push(`WITH edge ORDER BY ${sort.join(", ")}`);
         }
 
-        const withValues: string[] = [];
-        if (!firstInput && !afterInput) {
-            if (connection.edges || connection.pageInfo) {
-                withValues.push("collect(edge) as edges");
-            }
-            withValues.push("count(edge) as totalCount");
-            subqueryCypher.push(`WITH ${withValues.join(", ")}`);
-        } else {
-            const offsetLimitStr = createOffsetLimitStr({
-                offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
-                limit: firstInput as Integer | number | undefined,
-            });
-            subqueryCypher.push("WITH collect(edge) AS allEdges");
-            subqueryCypher.push(`WITH allEdges, size(allEdges) as totalCount, allEdges${offsetLimitStr} AS edges`);
-        }
+        subqueryCypher.push("WITH collect(edge) as edges");
+
         subquery.push(subqueryCypher.join("\n"));
     } else {
         const relatedNodeVariable = `${nodeVariable}_${field.relationship.typeMeta.name.toLowerCase()}`;
-        const relatedNode = context.neoSchema.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
         const labels = relatedNode.getLabelString(context);
         const nodeOutStr = `(${relatedNodeVariable}${labels})`;
         subquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
@@ -350,7 +342,7 @@ function createConnectionAndParams({
 
         if (node) {
             const nodeProjectionAndParams = createProjectionAndParams({
-                fieldsByTypeName: node?.fieldsByTypeName,
+                resolveTree: node,
                 node: relatedNode,
                 context,
                 varName: relatedNodeVariable,
@@ -413,19 +405,23 @@ function createConnectionAndParams({
     }
 
     const returnValues: string[] = [];
-    if (!firstInput && !afterInput) {
+
+    if (relatedNode && relatedNode.queryOptions?.getLimit()) {
+        subquery = [
+            ...subquery,
+            ...createLimitedReturnSubquery(resolveTree.alias, relatedNode.queryOptions.getLimit(), afterInput),
+        ];
+    } else if (!firstInput && !afterInput) {
         if (connection.edges || connection.pageInfo) {
             returnValues.push("edges: edges");
         }
-        returnValues.push(`totalCount: ${field.relationship.union ? "totalCount" : "size(edges)"}`);
+        returnValues.push("totalCount: size(edges)");
         subquery.push(`RETURN { ${returnValues.join(", ")} } AS ${resolveTree.alias}`);
     } else {
-        const offsetLimitStr = createOffsetLimitStr({
-            offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
-            limit: firstInput as Integer | number | undefined,
-        });
-        subquery.push(`WITH size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`);
-        subquery.push(`RETURN { edges: limitedSelection, totalCount: totalCount } AS ${resolveTree.alias}`);
+        subquery = [
+            ...subquery,
+            ...createLimitedReturnSubquery(resolveTree.alias, firstInput as Integer | number | undefined, afterInput),
+        ];
     }
     subquery.push("}");
 
@@ -443,3 +439,19 @@ function createConnectionAndParams({
 }
 
 export default createConnectionAndParams;
+
+function createLimitedReturnSubquery(
+    alias: string,
+    limit: Integer | number | undefined,
+    afterInput: unknown
+): string[] {
+    const offset = isString(afterInput) ? cursorToOffset(afterInput) + 1 : undefined;
+    const offsetLimitStr = createOffsetLimitStr({
+        offset,
+        limit,
+    });
+    return [
+        `WITH size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`,
+        `RETURN { edges: limitedSelection, totalCount: totalCount } AS ${alias}`,
+    ];
+}

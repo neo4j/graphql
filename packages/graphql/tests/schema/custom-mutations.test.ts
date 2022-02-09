@@ -78,7 +78,7 @@ describe("Custom-mutations", () => {
               id: ID
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
             }
@@ -89,7 +89,7 @@ describe("Custom-mutations", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -99,11 +99,15 @@ describe("Custom-mutations", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               id: SortDirection
             }
@@ -138,7 +142,6 @@ describe("Custom-mutations", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
               testCypherQuery(input: ExampleInput): String
               testQuery(input: ExampleInput): String
             }
@@ -165,8 +168,7 @@ describe("Custom-mutations", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 });

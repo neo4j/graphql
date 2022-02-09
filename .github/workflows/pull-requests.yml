@@ -40,11 +40,62 @@ jobs:
           fail_on_error: true
           eslint_flags: "."
 
+  package-tests:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Build graphql
+        run: yarn build
+        working-directory: packages/graphql
+      - name: Run @neo4j/graphql package tests
+        run: yarn --cwd packages/graphql run test:package-tests
+
+  neo-push-tests:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    services:
+      neo4j:
+        image: neo4j:latest
+        env:
+          NEO4J_AUTH: neo4j/password
+          NEO4JLABS_PLUGINS: '["apoc"]'
+        ports:
+          - 7687:7687
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run neo-push tests
+        run: yarn --cwd examples/neo-push/server run test
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
   typescript-changes:
     runs-on: ubuntu-latest
 
     outputs:
       typescript: ${{ steps.filter.outputs.typescript }}
+      typescript_files: ${{ steps.filter.outputs.typescript_files }}
 
     steps:
       - uses: actions/checkout@v2
@@ -54,7 +105,7 @@ jobs:
           list-files: shell
           filters: |
             typescript:
-              - added|modified: '*.ts'
+              - added|modified: 'packages/**/*.ts'
 
   license-header-check:
     needs: typescript-changes
@@ -65,17 +116,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.17.0"
       - name: Install addlicense
         run: go install github.com/google/addlicense@latest
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          list-files: shell
-          filters: |
-            typescript:
-              - added|modified: '*.ts'
       - name: Run addlicense
-        run: addlicense -f ./addlicense -check ${{ steps.filter.outputs.typescript_files }}
+        run: addlicense -f ./addlicense -check ${{ needs.typescript-changes.outputs.typescript_files }}
 
   unit-tests:
     needs:
@@ -87,6 +133,9 @@ jobs:
           - graphql
           - ogm
           - introspector
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
@@ -98,6 +147,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run packages/${{ matrix.package }} unit tests
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
@@ -144,6 +195,12 @@ jobs:
         ports:
           - 7687:7687
 
+    strategy:
+      matrix:
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -151,13 +208,20 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable && yarn build
+        run: yarn --immutable
+      - name: Build and pack @neo4j/graphql
+        run: |
+          yarn build
+          yarn pack
+        working-directory: packages/graphql
       - name: Setup Nextjs app
         run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
       - name: Install dependencies
         run: |
-          cd packages/neo4j-graphql-nextjs
           chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
+          npm install ../graphql/package.tgz
+          npm install graphql@${{ matrix.graphql-version }}
+        working-directory: packages/neo4j-graphql-nextjs
       - name: Copy .env file
         run: cp docs/modules/ROOT/examples/code-partials/nextjs/env.example packages/neo4j-graphql-nextjs/.env.local
       - name: Create GraphQL endpoint
@@ -177,6 +241,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -185,6 +255,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run TCK tests
         run: yarn --cwd packages/graphql run test:tck --coverage
       - name: Archive coverage report
@@ -205,13 +277,14 @@ jobs:
           - ogm
           - introspector
         neo4j-version:
-          - 4.1.5
-          - 4.1
           - 4.2.9
           - 4.2
           - 4.3.2
           - 4.3
           - 4.4
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
@@ -234,6 +307,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --coverage

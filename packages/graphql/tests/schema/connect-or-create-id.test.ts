@@ -45,15 +45,15 @@ describe("connect or create with id", () => {
             }
 
             type Actor {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
-              moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input ActorConnectInput {
@@ -83,8 +83,8 @@ describe("connect or create with id", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection!
-              title: StringAggregateSelection!
+              id: IDAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input ActorMoviesAggregateInput {
@@ -194,15 +194,19 @@ describe("connect or create with id", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [ActorSort]
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
               movies: [ActorMoviesCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -223,11 +227,11 @@ describe("connect or create with id", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -254,9 +258,9 @@ describe("connect or create with id", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
             }
 
             type Movie {
@@ -266,8 +270,8 @@ describe("connect or create with id", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
-              title: StringAggregateSelection!
+              id: IDAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectOrCreateWhere {
@@ -285,11 +289,15 @@ describe("connect or create with id", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               id: SortDirection
               title: SortDirection
@@ -309,21 +317,21 @@ describe("connect or create with id", () => {
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_IN: [ID]
+              id_IN: [ID!]
               id_NOT: ID
               id_NOT_CONTAINS: ID
               id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
+              id_NOT_IN: [ID!]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -348,10 +356,8 @@ describe("connect or create with id", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -361,9 +367,9 @@ describe("connect or create with id", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
@@ -382,8 +388,7 @@ describe("connect or create with id", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
     test("connect or create with non-autogenerated id", () => {
@@ -429,9 +434,9 @@ describe("connect or create with id", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelection {
-              max: DateTime
-              min: DateTime
+            type DateTimeAggregateSelectionNonNullable {
+              max: DateTime!
+              min: DateTime!
             }
 
             type DeleteInfo {
@@ -440,9 +445,9 @@ describe("connect or create with id", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
             }
 
             type Mutation {
@@ -465,17 +470,17 @@ describe("connect or create with id", () => {
             type Post {
               content: String!
               createdAt: DateTime!
-              creator(options: UserOptions, where: UserWhere): User!
-              creatorAggregate(where: UserWhere): PostUserCreatorAggregationSelection
-              creatorConnection(after: String, first: Int, sort: [PostCreatorConnectionSort!], where: PostCreatorConnectionWhere): PostCreatorConnection!
+              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              creatorAggregate(directed: Boolean = true, where: UserWhere): PostUserCreatorAggregationSelection
+              creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostCreatorConnectionSort!], where: PostCreatorConnectionWhere): PostCreatorConnection!
               id: ID!
             }
 
             type PostAggregateSelection {
-              content: StringAggregateSelection!
+              content: StringAggregateSelectionNonNullable!
               count: Int!
-              createdAt: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
+              createdAt: DateTimeAggregateSelectionNonNullable!
+              id: IDAggregateSelectionNonNullable!
             }
 
             input PostConnectInput {
@@ -619,15 +624,19 @@ describe("connect or create with id", () => {
             input PostOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [PostSort]
+              \\"\\"\\"
+              Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [PostSort!]
             }
 
             input PostRelationInput {
               creator: PostCreatorCreateFieldInput
             }
 
-            \\"\\"\\"Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.
+            \\"\\"\\"
             input PostSort {
               content: SortDirection
               createdAt: SortDirection
@@ -651,8 +660,8 @@ describe("connect or create with id", () => {
             }
 
             type PostUserCreatorNodeAggregateSelection {
-              id: IDAggregateSelection!
-              name: StringAggregateSelection!
+              id: IDAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input PostWhere {
@@ -661,21 +670,21 @@ describe("connect or create with id", () => {
               content: String
               content_CONTAINS: String
               content_ENDS_WITH: String
-              content_IN: [String]
+              content_IN: [String!]
               content_NOT: String
               content_NOT_CONTAINS: String
               content_NOT_ENDS_WITH: String
-              content_NOT_IN: [String]
+              content_NOT_IN: [String!]
               content_NOT_STARTS_WITH: String
               content_STARTS_WITH: String
               createdAt: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
-              createdAt_IN: [DateTime]
+              createdAt_IN: [DateTime!]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
               createdAt_NOT: DateTime
-              createdAt_NOT_IN: [DateTime]
+              createdAt_NOT_IN: [DateTime!]
               creator: UserWhere
               creatorAggregate: PostCreatorAggregateInput
               creatorConnection: PostCreatorConnectionWhere
@@ -684,11 +693,11 @@ describe("connect or create with id", () => {
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_IN: [ID]
+              id_IN: [ID!]
               id_NOT: ID
               id_NOT_CONTAINS: ID
               id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
+              id_NOT_IN: [ID!]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
             }
@@ -696,10 +705,8 @@ describe("connect or create with id", () => {
             type Query {
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsCount(where: PostWhere): Int!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersCount(where: UserWhere): Int!
             }
 
             enum SortDirection {
@@ -709,9 +716,9 @@ describe("connect or create with id", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -735,15 +742,15 @@ describe("connect or create with id", () => {
             type User {
               id: ID!
               name: String!
-              posts(options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): UserPostPostsAggregationSelection
-              postsConnection(after: String, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
+              posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
+              postsAggregate(directed: Boolean = true, where: PostWhere): UserPostPostsAggregationSelection
+              postsConnection(after: String, directed: Boolean = true, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
             }
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
-              name: StringAggregateSelection!
+              id: IDAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input UserConnectInput {
@@ -778,8 +785,10 @@ describe("connect or create with id", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [UserSort]
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
             }
 
             type UserPostPostsAggregationSelection {
@@ -788,9 +797,9 @@ describe("connect or create with id", () => {
             }
 
             type UserPostPostsNodeAggregateSelection {
-              content: StringAggregateSelection!
-              createdAt: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
+              content: StringAggregateSelectionNonNullable!
+              createdAt: DateTimeAggregateSelectionNonNullable!
+              id: IDAggregateSelectionNonNullable!
             }
 
             input UserPostsAggregateInput {
@@ -919,7 +928,9 @@ describe("connect or create with id", () => {
               posts: [UserPostsCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
             input UserSort {
               id: SortDirection
               name: SortDirection
@@ -940,21 +951,21 @@ describe("connect or create with id", () => {
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_IN: [ID]
+              id_IN: [ID!]
               id_NOT: ID
               id_NOT_CONTAINS: ID
               id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
+              id_NOT_IN: [ID!]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
               posts: PostWhere
@@ -962,8 +973,7 @@ describe("connect or create with id", () => {
               postsConnection: UserPostsConnectionWhere
               postsConnection_NOT: UserPostsConnectionWhere
               posts_NOT: PostWhere
-            }
-            "
+            }"
         `);
     });
 });

@@ -29,12 +29,12 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
     const typeDefs = gql`
         type Movie {
             title: String
-            tags: [Tag] @relationship(type: "HAS", direction: OUT)
+            tags: [Tag!]! @relationship(type: "HAS", direction: OUT)
         }
 
         type Tag {
             name: String!
-            papers: [Movie] @relationship(type: "HAS", direction: IN)
+            papers: [Movie!]! @relationship(type: "HAS", direction: IN)
         }
 
         type Query {

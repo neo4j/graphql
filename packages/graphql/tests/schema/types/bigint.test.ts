@@ -39,14 +39,16 @@ describe("Bigint", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
+            \\"\\"\\"
+            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
+            \\"\\"\\"
             scalar BigInt
 
-            type BigIntAggregateSelection {
-              average: BigInt
-              max: BigInt
-              min: BigInt
-              sum: BigInt
+            type BigIntAggregateSelectionNonNullable {
+              average: BigInt!
+              max: BigInt!
+              min: BigInt!
+              sum: BigInt!
             }
 
             type CreateFilesMutationResponse {
@@ -73,8 +75,8 @@ describe("Bigint", () => {
 
             type FileAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
-              size: BigIntAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
+              size: BigIntAggregateSelectionNonNullable!
             }
 
             input FileCreateInput {
@@ -85,11 +87,15 @@ describe("Bigint", () => {
             input FileOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [FileSort]
+              \\"\\"\\"
+              Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [FileSort!]
             }
 
-            \\"\\"\\"Fields to sort Files by. The order in which sorts are applied is not guaranteed when specifying many fields in one FileSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Files by. The order in which sorts are applied is not guaranteed when specifying many fields in one FileSort object.
+            \\"\\"\\"
             input FileSort {
               name: SortDirection
               size: SortDirection
@@ -106,21 +112,21 @@ describe("Bigint", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
               size: BigInt
               size_GT: BigInt
               size_GTE: BigInt
-              size_IN: [BigInt]
+              size_IN: [BigInt!]
               size_LT: BigInt
               size_LTE: BigInt
               size_NOT: BigInt
-              size_NOT_IN: [BigInt]
+              size_NOT_IN: [BigInt!]
             }
 
             type Mutation {
@@ -132,7 +138,6 @@ describe("Bigint", () => {
             type Query {
               files(options: FileOptions, where: FileWhere): [File!]!
               filesAggregate(where: FileWhere): FileAggregateSelection!
-              filesCount(where: FileWhere): Int!
             }
 
             enum SortDirection {
@@ -142,9 +147,9 @@ describe("Bigint", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateFilesMutationResponse {
@@ -158,8 +163,7 @@ describe("Bigint", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }
-            "
+            }"
         `);
     });
 });

@@ -273,7 +273,7 @@ describe("Float", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).movies[0].fakeFloat).toEqual(12345);
+            expect((gqlResult.data as any).movies[0].fakeFloat).toBe(12345);
         } finally {
             await session.close();
         }

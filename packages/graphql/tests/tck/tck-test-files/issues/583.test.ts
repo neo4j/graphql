@@ -41,7 +41,7 @@ describe("#583", () => {
             type Actor implements Awardable {
                 name: String
                 awardsGiven: Int!
-                actedIn: [Show!] @relationship(type: "ACTED_IN", direction: OUT)
+                actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie implements Show & Awardable {

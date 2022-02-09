@@ -45,7 +45,7 @@ describe("aggregations-where-node-id", () => {
           
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 

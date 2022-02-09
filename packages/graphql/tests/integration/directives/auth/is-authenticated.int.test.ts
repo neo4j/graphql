@@ -73,7 +73,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -112,7 +112,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -158,7 +158,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -202,7 +202,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -248,7 +248,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -292,7 +292,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -313,7 +313,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -368,7 +368,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -389,7 +389,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -444,7 +444,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -488,7 +488,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -501,7 +501,7 @@ describe("auth/is-authenticated", () => {
                 type User {
                     id: ID
                     name: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post @auth(rules: [{
@@ -548,7 +548,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -593,7 +593,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -636,7 +636,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -683,7 +683,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
