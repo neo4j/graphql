@@ -17,9 +17,20 @@
  * limitations under the License.
  */
 
-export { default as Node, NodeConstructor } from "./Node";
-export { default as Relationship } from "./Relationship";
-export { GraphElement } from "./GraphElement";
-export { default as Exclude, ExcludeConstructor } from "./Exclude";
-export { default as Neo4jGraphQL, Neo4jGraphQLConstructor, Neo4jGraphQLConfig } from "./Neo4jGraphQL";
-export * from "./Error";
+export type NumericalWhereOperator = "GT" | "GTE" | "LT" | "LTE";
+export type SpatialWhereOperator = "DISTANCE";
+export type StringWhereOperator = "CONTAINS" | "STARTS_WITH" | "ENDS_WITH";
+export type RegexWhereOperator = "MATCHES";
+export type ArrayWhereOperator = "IN" | "INCLUDES";
+export type RelationshipWhereOperator = "ALL" | "NONE" | "SINGLE" | "SOME";
+
+export type WhereOperator =
+    | "NOT"
+    | NumericalWhereOperator
+    | SpatialWhereOperator
+    | StringWhereOperator
+    | `NOT_${StringWhereOperator}`
+    | RegexWhereOperator
+    | ArrayWhereOperator
+    | `NOT_${ArrayWhereOperator}`
+    | RelationshipWhereOperator;
