@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { mergeDeep } from "@graphql-tools/utils";
 import { GraphQLWhereArg, Context, RelationField } from "../types";
 import { Node, Relationship } from "../classes";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
@@ -380,7 +381,7 @@ function createWhereAndParams({
                         `NOT EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(${labels}))`
                     );
 
-                    return res;
+                    return;
                 }
 
                 let resultStr = [
@@ -668,7 +669,7 @@ function createWhereAndParams({
                 });
                 if (recurse[0]) {
                     innerClauses.push(`${recurse[0]}`);
-                    res.params = { ...res.params, ...recurse[1] };
+                    res.params = mergeDeep([res.params, recurse[1]]);
                 }
             });
 
