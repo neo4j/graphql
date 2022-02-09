@@ -32,6 +32,7 @@ import createInterfaceProjectionAndParams from "./create-interface-projection-an
 import translateTopLevelMatch from "./translate-top-level-match";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 import { upperFirst } from "../utils/upper-first";
+import createRelationshipValidationStr from "./create-relationship-validation-string";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
@@ -52,6 +53,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     let projAuth = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
+    const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "UPDATE" });
     matchAndWhereStr = topLevelMatch[0];
@@ -74,6 +76,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             parentVar: varName,
             withVars: [varName],
             parameterPrefix: `${resolveTree.name}.args.update`,
+            includeRelationshipValidation: true,
         });
         [updateStr] = updateAndParams;
         cypherParams = {
@@ -175,6 +178,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     withVars: [varName],
                     parentNode: node,
                     labelOverride: "",
+                    includeRelationshipValidation: !!assumeReconnecting,
                 });
                 connectStrs.push(connectAndParams[0]);
                 cypherParams = { ...cypherParams, ...connectAndParams[1] };
@@ -254,15 +258,16 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                         input: create.node,
                         varName: nodeName,
                         withVars: [varName, nodeName],
+                        includeRelationshipValidation: false,
                     });
                     createStrs.push(createAndParams[0]);
                     cypherParams = { ...cypherParams, ...createAndParams[1] };
                     createStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                     if (relationField.properties) {
-                        const relationship = (context.neoSchema.relationships.find(
+                        const relationship = context.neoSchema.relationships.find(
                             (x) => x.properties === relationField.properties
-                        ) as unknown) as Relationship;
+                        ) as unknown as Relationship;
 
                         const setA = createSetRelationshipPropertiesAndParams({
                             properties: create.edge ?? {},
@@ -385,6 +390,8 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         ? `RETURN ${varName} ${projStr} AS ${varName}`
         : `RETURN 'Query cannot conclude with CALL'`;
 
+    const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";
+
     const cypher = [
         matchAndWhereStr,
         updateStr,
@@ -394,6 +401,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         deleteStr,
         ...(connectionStrs.length || projAuth ? [`WITH ${varName}`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
         ...(projAuth ? [projAuth] : []),
+        ...(relationshipValidationStr ? [`WITH ${varName}`, relationshipValidationStr] : []),
         ...connectionStrs,
         ...interfaceStrs,
         returnStatement,
