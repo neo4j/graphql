@@ -18,32 +18,8 @@
  */
 
 import { PointField, PrimitiveField } from "../../types";
-import { RelationshipWhereOperator, WhereOperator } from "./types";
-
-const comparisonMap: Record<Exclude<WhereOperator, RelationshipWhereOperator>, string> = {
-    NOT: "=",
-    // Numerical
-    GT: ">",
-    GTE: ">=",
-    LT: "<",
-    LTE: "<=",
-    // Distance
-    DISTANCE: "=",
-    // String
-    NOT_CONTAINS: "CONTAINS",
-    CONTAINS: "CONTAINS",
-    NOT_STARTS_WITH: "STARTS WITH",
-    STARTS_WITH: "STARTS WITH",
-    NOT_ENDS_WITH: "ENDS WITH",
-    ENDS_WITH: "ENDS WITH",
-    // Regex
-    MATCHES: "=~",
-    // Array
-    NOT_IN: "IN",
-    IN: "IN",
-    NOT_INCLUDES: "IN",
-    INCLUDES: "IN",
-};
+import { WhereOperator } from "./types";
+import { comparisonMap } from "./utils";
 
 export default function createWhereClause({
     property,
