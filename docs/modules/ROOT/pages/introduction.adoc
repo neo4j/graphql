@@ -61,6 +61,7 @@ Additionally, prerelease version numbers may have additional suffixes, for examp
 
 `NUMBER` in the suffix is simply an incrementing release number in each phase.
 
+[[introduction-requirements]]
 == Requirements
 
 1. https://neo4j.com/[Neo4j Database] with https://neo4j.com/developer/neo4j-apoc/[APOC] plugin:
@@ -68,6 +69,8 @@ Additionally, prerelease version numbers may have additional suffixes, for examp
   - *4.3:* 4.3.2+ with APOC 4.3.0.3+
   - *4.4:* 4.4.0+ with APOC 4.4.0.1+
 2. https://nodejs.org/en/[Node.js] 12+
+
+For help installing the APOC plugin, see https://neo4j.com/labs/apoc/4.4/installation/[this page.]
 
 == Resources
 
