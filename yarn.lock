@@ -1736,7 +1736,7 @@ __metadata:
     dot-prop: ^6.0.1
     faker: 6.6.6
     graphql-compose: ^9.0.6
-    graphql-middleware: ^6.1.13
+    graphql-middleware: 6.1.13
     graphql-parse-resolve-info: ^4.12.0
     graphql-relay: ^0.10.0
     graphql-tag: 2.12.6
@@ -8132,7 +8132,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graphql-middleware@npm:^6.1.13":
+"graphql-middleware@npm:6.1.13":
   version: 6.1.13
   resolution: "graphql-middleware@npm:6.1.13"
   dependencies:
