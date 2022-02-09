@@ -31,6 +31,7 @@ import {
     StringValueNode,
     EnumValueNode,
     UnionTypeDefinitionNode,
+    ValueNode,
 } from "graphql";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
@@ -317,13 +318,13 @@ function getObjFieldMeta({
                 };
 
                 if (defaultDirective) {
-                    const value = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
+                    const defaultValue = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
-                    if (value?.kind !== Kind.ENUM) {
+                    if (!defaultValue || !isEnumValue(defaultValue)) {
                         throw new Error("@default value on enum fields must be an enum value");
                     }
 
-                    enumField.defaultValue = (value as EnumValueNode).value;
+                    enumField.defaultValue = defaultValue.value;
                 }
 
                 res.enumFields.push(enumField);
@@ -539,6 +540,10 @@ function getObjFieldMeta({
             ignoredFields: [],
         }
     ) as ObjectFields;
+}
+
+function isEnumValue(value: ValueNode): value is EnumValueNode {
+     return value.kind === Kind.ENUM;
 }
 
 export default getObjFieldMeta;
