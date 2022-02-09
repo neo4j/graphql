@@ -58,6 +58,21 @@ export const RESERVED_INTERFACE_FIELDS = [
     ["cursor", "Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"],
 ];
 
+export const SCALAR_TYPES = [
+    "Boolean",
+    "ID",
+    "String",
+    "Int",
+    "BigInt",
+    "Float",
+    "DateTime",
+    "LocalDateTime",
+    "Time",
+    "LocalTime",
+    "Date",
+    "Duration",
+];
+
 export const WHERE_AGGREGATION_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
 
 // Types that you can average
