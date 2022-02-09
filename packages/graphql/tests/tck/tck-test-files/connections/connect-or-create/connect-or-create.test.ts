@@ -84,7 +84,10 @@ describe("Create or Connect", () => {
                 "CALL {
                 CREATE (this0:Actor)
                 SET this0.name = $this0_name
-                MERGE (this0_movies_connectOrCreate0:Movie { title: $this0_movies_connectOrCreate0_node_title })
+                WITH this0
+                CALL {
+                	WITH this0
+                	MERGE (this0_movies_connectOrCreate0:Movie { title: $this0_movies_connectOrCreate0_node_title })
                 ON CREATE
                 SET
                 this0_movies_connectOrCreate0.title = $this0_movies_connectOrCreate0_on_create_title
@@ -92,6 +95,8 @@ describe("Create or Connect", () => {
                 ON CREATE
                 SET
                 this0_relationship_this0_movies_connectOrCreate0.screentime = $this0_relationship_this0_movies_connectOrCreate0_on_create_screentime
+                	RETURN COUNT(*)
+                }
                 RETURN this0
                 }
                 RETURN
@@ -235,7 +240,10 @@ describe("Create or Connect", () => {
                 "CALL {
                 CREATE (this0:Actor)
                 SET this0.name = $this0_name
-                MERGE (this0_movies_connectOrCreate0:Movie { title: $this0_movies_connectOrCreate0_node_title })
+                WITH this0
+                CALL {
+                	WITH this0
+                	MERGE (this0_movies_connectOrCreate0:Movie { title: $this0_movies_connectOrCreate0_node_title })
                 ON CREATE
                 SET
                 this0_movies_connectOrCreate0.id = randomUUID(),
@@ -245,6 +253,8 @@ describe("Create or Connect", () => {
                 ON CREATE
                 SET
                 this0_relationship_this0_movies_connectOrCreate0.screentime = $this0_relationship_this0_movies_connectOrCreate0_on_create_screentime
+                	RETURN COUNT(*)
+                }
                 RETURN this0
                 }
                 RETURN
@@ -296,7 +306,10 @@ describe("Create or Connect", () => {
                 "CALL {
                 CREATE (this0:Actor)
                 SET this0.name = $this0_name
-                MERGE (this0_movies_connectOrCreate0:Movie { id: $this0_movies_connectOrCreate0_node_id })
+                WITH this0
+                CALL {
+                	WITH this0
+                	MERGE (this0_movies_connectOrCreate0:Movie { id: $this0_movies_connectOrCreate0_node_id })
                 ON CREATE
                 SET
                 this0_movies_connectOrCreate0.createdAt = datetime(),
@@ -305,6 +318,8 @@ describe("Create or Connect", () => {
                 ON CREATE
                 SET
                 this0_relationship_this0_movies_connectOrCreate0.screentime = $this0_relationship_this0_movies_connectOrCreate0_on_create_screentime
+                	RETURN COUNT(*)
+                }
                 RETURN this0
                 }
                 RETURN
@@ -513,7 +528,10 @@ describe("Create or Connect", () => {
                 "CALL {
                 CREATE (this0:Actor)
                 SET this0.name = $this0_name
-                MERGE (this0_movies_connectOrCreate0:Movie { title: $this0_movies_connectOrCreate0_node_title })
+                WITH this0
+                CALL {
+                	WITH this0
+                	MERGE (this0_movies_connectOrCreate0:Movie { title: $this0_movies_connectOrCreate0_node_title })
                 ON CREATE
                 SET
                 this0_movies_connectOrCreate0.title = $this0_movies_connectOrCreate0_on_create_title
@@ -523,6 +541,8 @@ describe("Create or Connect", () => {
                 this0_relationship_this0_movies_connectOrCreate0.id = randomUUID(),
                 this0_relationship_this0_movies_connectOrCreate0.createdAt = datetime(),
                 this0_relationship_this0_movies_connectOrCreate0.screentime = $this0_relationship_this0_movies_connectOrCreate0_on_create_screentime
+                	RETURN COUNT(*)
+                }
                 RETURN this0
                 }
                 RETURN
