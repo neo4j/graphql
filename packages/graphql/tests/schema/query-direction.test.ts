@@ -230,6 +230,7 @@ describe("Query Direction", () => {
             }
 
             input UserOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -491,6 +492,7 @@ describe("Query Direction", () => {
             }
 
             input UserOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"
@@ -752,6 +754,7 @@ describe("Query Direction", () => {
             }
 
             input UserOptions {
+              distinct: Boolean
               limit: Int
               offset: Int
               \\"\\"\\"

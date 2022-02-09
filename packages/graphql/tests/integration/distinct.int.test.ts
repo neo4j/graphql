@@ -100,7 +100,7 @@ describe("distinct", () => {
             const typeDefs = `
                         type Movie {
                             id: ID
-                            genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
+                            genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
                         }
 
                         type Genre {
@@ -297,7 +297,7 @@ describe("distinct", () => {
             const typeDefs = `
                 type Movie {
                     id: ID
-                    genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
+                    genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 }
 
                 type Genre {
@@ -359,7 +359,7 @@ describe("distinct", () => {
             const typeDefs = `
                 type Movie {
                     id: ID
-                    genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
+                    genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 }
 
                 type Genre {
@@ -557,7 +557,7 @@ describe("distinct", () => {
             const typeDefs = `
                 type Movie {
                     id: ID
-                    genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
+                    genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 }
 
                 type Genre {
@@ -618,7 +618,7 @@ describe("distinct", () => {
             const typeDefs = `
                 type Movie {
                     id: ID
-                    genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
+                    genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 }
 
                 type Genre {

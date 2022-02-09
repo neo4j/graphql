@@ -286,6 +286,7 @@ describe("Comments", () => {
                 }
 
                 input ActorOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"
@@ -479,6 +480,7 @@ describe("Comments", () => {
                 }
 
                 input MovieOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"
@@ -735,6 +737,7 @@ describe("Comments", () => {
                 }
 
                 input ActorOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"
@@ -827,6 +830,7 @@ describe("Comments", () => {
                 }
 
                 input MovieOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"
@@ -943,6 +947,7 @@ describe("Comments", () => {
                 }
 
                 input QueryOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                 }
@@ -964,6 +969,7 @@ describe("Comments", () => {
                 }
 
                 input SeriesOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"
@@ -1108,6 +1114,7 @@ describe("Comments", () => {
                 }
 
                 input GenreOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"
@@ -1181,6 +1188,7 @@ describe("Comments", () => {
                 }
 
                 input MovieOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                   \\"\\"\\"
@@ -1378,6 +1386,7 @@ describe("Comments", () => {
                 }
 
                 input QueryOptions {
+                  distinct: Boolean
                   limit: Int
                   offset: Int
                 }
