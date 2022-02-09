@@ -55,3 +55,8 @@ export function haveSharedElement(arr1: Array<any>, arr2: Array<any>): boolean {
     }
     return false;
 }
+
+/** Removes duplicate elements of an array */
+export function removeDuplicates<T>(arr: T[]): T[] {
+    return Array.from(new Set(arr));
+}
