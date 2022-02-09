@@ -19,6 +19,7 @@
 
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
+import { mergeDeep } from "@graphql-tools/utils";
 import { Integer } from "neo4j-driver";
 import { ConnectionField, ConnectionSortArg, ConnectionWhereArg, Context } from "../../types";
 import { Node } from "../../classes";
@@ -34,6 +35,7 @@ import filterInterfaceNodes from "../../utils/filter-interface-nodes";
 import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
 import { CypherStatement } from "../types";
 import { isString } from "../../utils/utils";
+import { generateMissingOrAliasedFields } from "../utils/resolveTree";
 
 function createConnectionAndParams({
     resolveTree,
@@ -135,42 +137,26 @@ function createConnectionAndParams({
                 const nestedSubqueries: string[] = [];
 
                 if (node) {
-                    const selectedFields: Record<string, ResolveTree> = n.interfaces
-                        // Map over the implemented interfaces of the node and extract the names
-                        .map((implementedInterface) => implementedInterface.name.value)
-                        .reduce(
-                            // Combine the fields of the interfaces...
-                            (prevFields, interfaceName) => ({
-                                ...prevFields,
-                                ...node?.fieldsByTypeName[interfaceName],
-                            }),
-                            // with the fields of the node
-                            node.fieldsByTypeName[n.name]
-                        );
+                    const selectedFields: Record<string, ResolveTree> = mergeDeep([
+                        node.fieldsByTypeName[n.name],
+                        ...n.interfaces.map((i) => node?.fieldsByTypeName[i.name.value]),
+                    ]);
 
-                    const missingOrAliasedSortFields = nodeSortFields.reduce((acc, sortField) => {
-                        // For every sort field on node check to see if the field is in selection set
-                        if (
-                            !Object.values(selectedFields).find((r) => r.name === sortField) ||
-                            Object.values(selectedFields).find((r) => r.name === sortField && r.alias !== sortField)
-                        ) {
-                            // if it doesn't exist add a basic resolve tree to FieldsByTypeName on reference node
-                            return {
-                                ...acc,
-                                [sortField]: { alias: sortField, args: {}, fieldsByTypeName: {}, name: sortField },
-                            };
-                        }
-                        return acc;
-                    }, {});
-
-                    const nodeProjectionAndParams = createProjectionAndParams({
-                        resolveTree: {
+                    const mergedResolveTree: ResolveTree = mergeDeep<ResolveTree[]>([
+                        node,
+                        {
                             ...node,
                             fieldsByTypeName: {
-                                ...node.fieldsByTypeName,
-                                [n.name]: { ...selectedFields, ...missingOrAliasedSortFields },
+                                [n.name]: generateMissingOrAliasedFields({
+                                    fieldNames: nodeSortFields,
+                                    selection: selectedFields,
+                                }),
                             },
                         },
+                    ]);
+
+                    const nodeProjectionAndParams = createProjectionAndParams({
+                        resolveTree: mergedResolveTree,
                         node: n,
                         context,
                         varName: relatedNodeVariable,
