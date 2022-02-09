@@ -246,11 +246,23 @@ describe("Interfaces", () => {
               id_NOT_IN: [ID]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
-              movies: MovieWhere
+              movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: MovieMoviesAggregateInput
-              moviesConnection: MovieNodeMoviesConnectionWhere
-              moviesConnection_NOT: MovieNodeMoviesConnectionWhere
-              movies_NOT: MovieWhere
+              moviesConnection: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              moviesConnection_ALL: MovieNodeMoviesConnectionWhere
+              moviesConnection_NONE: MovieNodeMoviesConnectionWhere
+              moviesConnection_NOT: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              moviesConnection_SOME: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Movies match this filter\\"\\"\\"
+              movies_ALL: MovieWhere
+              \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
+              movies_NONE: MovieWhere
+              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
+              movies_SINGLE: MovieWhere
+              \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
+              movies_SOME: MovieWhere
             }
 
             type Mutation {
