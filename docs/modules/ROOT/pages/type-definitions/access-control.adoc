@@ -94,14 +94,16 @@ directive @ignore(
 [[type-definitions-access-control-readonly]]
 == `@readonly`
 
-The field will only feature in mutations for creating, and object types for querying, and will not be mutable after creation.
+The field will only feature in mutations for creating, and object types for querying, and will not be mutable after creation. If `enableCreation: false` is specified, the field will also not be included in mutations for creating.
 
 === Definition
 
 [source, graphql, indent=0]
 ----
-"""Instructs @neo4j/graphql to only include a field in generated input type for creating, and in the object type within which the directive is applied."""
-directive @readonly on FIELD_DEFINITION
+"""Instructs @neo4j/graphql to only include a field in the object type within which the directive is applied. If used without an argument, the field will also be included in mutations for creating."""
+directive @readonly(
+    enableCreation: Boolean = true
+) on FIELD_DEFINITION
 ----
 
 [[type-definitions-access-control-writeonly]]

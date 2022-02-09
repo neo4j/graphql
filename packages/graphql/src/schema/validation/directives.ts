@@ -162,13 +162,13 @@ export const privateDirective = new GraphQLDirective({
 export const readonlyDirective = new GraphQLDirective({
     name: "readonly",
     description:
-        "Instructs @neo4j/graphql to only include a field in generated input type for creating, and in the object type within which the directive is applied.",
+        "Instructs @neo4j/graphql to only include a field in the object type within which the directive is applied. If used without an argument, the field will also be included in mutations for creating.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
     args: {
         enableCreation: {
             defaultValue: true,
             type: GraphQLBoolean,
-            description: "Set to false to exclude this field from the generated input type as well."
+            description: "If set to false, the field will not be included in mutations for creating."
         }
     }
 });
