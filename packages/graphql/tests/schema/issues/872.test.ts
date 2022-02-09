@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/872", () => {
-    test("@deprecated directive should remain in output", () => {
+    test("a single type should be created for multiple actorOnCreate", () => {
         const typeDefs = gql`
             type Movie {
                 title: String!
