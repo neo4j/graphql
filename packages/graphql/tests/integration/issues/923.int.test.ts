@@ -22,17 +22,12 @@ import { Driver, Session, Integer } from "neo4j-driver";
 import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
+import { generateUniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/923", () => {
-    // TODO: convert to use generateUniqueType()
-    const testBlogpost = {
-        name: "BlogPost923",
-    };
-    const testCategory = {
-        name: "Category923",
-        operations: { create: "createCategory923s" },
-    };
+    const testBlogpost = generateUniqueType("BlogPost");
+    const testCategory = generateUniqueType("Category");
 
     let schema: GraphQLSchema;
     let driver: Driver;

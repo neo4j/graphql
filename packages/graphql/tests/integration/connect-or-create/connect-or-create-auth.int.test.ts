@@ -74,7 +74,7 @@ describe("Update -> ConnectOrCreate", () => {
 
         queryCreate = gql`
             mutation {
-                create${pluralize(typeMovie.name)}(
+                ${typeMovie.operations.create}(
                     input: [
                         {
                             title: "Cool Movie"
