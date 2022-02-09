@@ -595,14 +595,14 @@ function createProjectionAndParams({
 
     // Include fields of implemented interfaces to allow for fragments on interfaces
     // cf. https://github.com/neo4j/graphql/issues/476
-    const mergedSelectedFields = mergeDeep<Record<string, ResolveTree>[]>([
+    const mergedSelectedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
         resolveTree.fieldsByTypeName[node.name],
         ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value]),
     ]);
 
     // Merge fields for final projection to account for multiple fragments
     // cf. https://github.com/neo4j/graphql/issues/920
-    const mergedFields = mergeDeep<Record<string, ResolveTree>[]>([
+    const mergedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
         mergedSelectedFields,
         generateMissingOrAliasedSortFields({ selection: mergedSelectedFields, resolveTree }),
         generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
