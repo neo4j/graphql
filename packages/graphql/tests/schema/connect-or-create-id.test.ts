@@ -219,11 +219,23 @@ describe("connect or create with id", () => {
             input ActorWhere {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
-              movies: MovieWhere
+              movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
-              moviesConnection: ActorMoviesConnectionWhere
-              moviesConnection_NOT: ActorMoviesConnectionWhere
-              movies_NOT: MovieWhere
+              moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              moviesConnection_ALL: ActorMoviesConnectionWhere
+              moviesConnection_NONE: ActorMoviesConnectionWhere
+              moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              moviesConnection_SOME: ActorMoviesConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              movies_ALL: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              movies_NONE: MovieWhere
+              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              movies_SINGLE: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              movies_SOME: MovieWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -968,11 +980,23 @@ describe("connect or create with id", () => {
               name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
-              posts: PostWhere
+              posts: PostWhere @deprecated(reason: \\"Use \`posts_SOME\` instead.\\")
               postsAggregate: UserPostsAggregateInput
-              postsConnection: UserPostsConnectionWhere
-              postsConnection_NOT: UserPostsConnectionWhere
-              posts_NOT: PostWhere
+              postsConnection: UserPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_SOME\` instead.\\")
+              postsConnection_ALL: UserPostsConnectionWhere
+              postsConnection_NONE: UserPostsConnectionWhere
+              postsConnection_NOT: UserPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              postsConnection_SINGLE: UserPostsConnectionWhere
+              postsConnection_SOME: UserPostsConnectionWhere
+              \\"\\"\\"Return Users where all of the related Posts match this filter\\"\\"\\"
+              posts_ALL: PostWhere
+              \\"\\"\\"Return Users where none of the related Posts match this filter\\"\\"\\"
+              posts_NONE: PostWhere
+              posts_NOT: PostWhere @deprecated(reason: \\"Use \`posts_NONE\` instead.\\")
+              \\"\\"\\"Return Users where one of the related Posts match this filter\\"\\"\\"
+              posts_SINGLE: PostWhere
+              \\"\\"\\"Return Users where some of the related Posts match this filter\\"\\"\\"
+              posts_SOME: PostWhere
             }"
         `);
     });

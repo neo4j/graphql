@@ -19,7 +19,7 @@
 
 import { Node, Relationship } from "../classes";
 import { RelationField, Context } from "../types";
-import createWhereAndParams from "./create-where-and-params";
+import createWhereAndParams from "./where/create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
