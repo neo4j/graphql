@@ -71,6 +71,8 @@ Additionally, prerelease version numbers may have additional suffixes, for examp
   - *4.4:* 4.4.0+ with APOC 4.4.0.1+
 2. https://nodejs.org/en/[Node.js] 12+
 
+For help installing the APOC plugin, see https://neo4j.com/labs/apoc/4.4/installation/[this page.]
+
 == Resources
 
 1. https://github.com/neo4j/graphql[GitHub]
