@@ -19,7 +19,7 @@
 
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "../../neo4j";
@@ -86,8 +86,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const movieNewTitle = generate({
             readable: true,
@@ -98,7 +98,7 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation UpdateUpdate($name: String, $oldTitle: String, $newTitle: String) {
@@ -191,8 +191,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const movieNewTitle = generate({
             readable: true,
@@ -203,7 +203,7 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation UpdateUpdate($name: String, $newName: String, $oldTitle: String, $newTitle: String) {
@@ -304,15 +304,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const movieNewTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
 
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation UpdateUpdate(
@@ -465,15 +465,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const movieNewTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
 
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation UpdateUpdate($name: String, $newName: String, $oldName: String, $oldTitle: String, $newTitle: String) {
