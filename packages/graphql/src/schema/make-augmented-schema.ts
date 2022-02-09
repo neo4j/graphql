@@ -48,7 +48,7 @@ import {
 import pluralize from "pluralize";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
 import { validateDocument } from "./validation";
-import { Auth, BaseField, FullText, PrimitiveField, QueryOptions } from "../types";
+import { Auth, BaseField, FullText, PrimitiveField } from "../types";
 import {
     aggregateResolver,
     createResolver,
@@ -78,7 +78,8 @@ import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
 import { isString } from "../utils/utils";
 import { upperFirst } from "../utils/upper-first";
-import parseQueryOptionsDirective from "./parse/parse-query-options-directive";
+import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
+import { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -285,6 +286,31 @@ function makeAugmentedSchema(
             objects: objectNodes,
         });
 
+        // Ensure that all required fields are returning either a scalar type or an enum
+
+        const violativeRequiredField = nodeFields.ignoredFields
+            .filter((f) => f.requiredFields.length)
+            .map((f) => f.requiredFields)
+            .flat()
+            .find(
+                (requiredField) =>
+                    ![
+                        ...nodeFields.primitiveFields,
+                        ...nodeFields.scalarFields,
+                        ...nodeFields.enumFields,
+                        ...nodeFields.temporalFields,
+                        ...nodeFields.cypherFields.filter((field) => field.isScalar || field.isEnum),
+                    ]
+                        .map((x) => x.fieldName)
+                        .includes(requiredField)
+            );
+
+        if (violativeRequiredField) {
+            throw new Error(
+                `Cannot have ${violativeRequiredField} as a required field on node ${definition.name.value}. Required fields must return a scalar type.`
+            );
+        }
+
         let fulltextDirective: FullText;
         if (fulltextDirectiveDefinition) {
             fulltextDirective = parseFulltextDirective({
@@ -294,7 +320,7 @@ function makeAugmentedSchema(
             });
         }
 
-        let queryOptionsDirective: QueryOptions | undefined;
+        let queryOptionsDirective: QueryOptionsDirective | undefined;
         if (queryOptionsDirectiveDefinition) {
             queryOptionsDirective = parseQueryOptionsDirective({
                 directive: queryOptionsDirectiveDefinition,

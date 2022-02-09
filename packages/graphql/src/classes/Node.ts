@@ -21,18 +21,17 @@ import { DirectiveNode, NamedTypeNode } from "graphql";
 import pluralize from "pluralize";
 import type {
     Auth,
-    BaseField,
     ConnectionField,
     Context,
     CustomEnumField,
     CustomScalarField,
     CypherField,
     FullText,
+    IgnoredField,
     InterfaceField,
     ObjectField,
     PointField,
     PrimitiveField,
-    QueryOptions,
     RelationField,
     TemporalField,
     UnionField,
@@ -41,6 +40,7 @@ import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
 import { lowerFirst } from "../utils/lower-first";
+import { QueryOptionsDirective } from "./QueryOptionsDirective";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -57,13 +57,13 @@ export interface NodeConstructor extends GraphElementConstructor {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    ignoredFields: BaseField[];
+    ignoredFields: IgnoredField[];
     auth?: Auth;
     fulltextDirective?: FullText;
     exclude?: Exclude;
     nodeDirective?: NodeDirective;
     description?: string;
-    queryOptionsDirective?: QueryOptions;
+    queryOptionsDirective?: QueryOptionsDirective;
 }
 
 type MutableField =
@@ -102,7 +102,7 @@ class Node extends GraphElement {
     public fulltextDirective?: FullText;
     public auth?: Auth;
     public description?: string;
-    public queryOptions?: QueryOptions;
+    public queryOptions?: QueryOptionsDirective;
 
     constructor(input: NodeConstructor) {
         super(input);
