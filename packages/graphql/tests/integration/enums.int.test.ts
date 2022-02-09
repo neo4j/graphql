@@ -98,6 +98,8 @@ describe("enums", () => {
         const typeDefs = `
             enum Status {
                 ACTIVE
+                INACTIVE
+                EATING
             }
 
             type Movie {
