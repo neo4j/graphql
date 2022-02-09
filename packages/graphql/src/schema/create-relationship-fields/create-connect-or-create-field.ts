@@ -88,7 +88,6 @@ function createOnCreateITC({
         relationField,
         hasNonNullNonGeneratedProperties,
         schemaComposer,
-        prefix: onCreateName,
     });
 
     return schemaComposer.getOrCreateITC(onCreateName, (tc) => {
@@ -112,18 +111,17 @@ function getOnCreateFields({
     relationField,
     hasNonNullNonGeneratedProperties,
     schemaComposer,
-    prefix,
 }: {
     node: Node;
     hasNonGeneratedProperties: boolean;
     relationField: RelationField;
     hasNonNullNonGeneratedProperties: boolean;
     schemaComposer: SchemaComposer;
-    prefix: string;
 }): { node: string } | { node: string; edge: string } {
-    const nodeFields = objectFieldsToCreateInputFields([...node.primitiveFields, ...node.scalarFields], true);
-    const nodeCreateInput = schemaComposer.getOrCreateITC(`${prefix}Node`);
-    nodeCreateInput.addFields(nodeFields);
+    const nodeCreateInput = schemaComposer.getOrCreateITC(`${node.name}OnCreateInput`, (tc) => {
+        const nodeFields = objectFieldsToCreateInputFields([...node.primitiveFields, ...node.scalarFields], true);
+        tc.addFields(nodeFields);
+    });
     const nodeCreateInputFieldName = `${nodeCreateInput.getTypeName()}!`;
 
     if (hasNonGeneratedProperties) {

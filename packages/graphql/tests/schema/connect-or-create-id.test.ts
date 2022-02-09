@@ -108,12 +108,7 @@ describe("connect or create with id", () => {
             }
 
             input ActorMoviesConnectOrCreateFieldInputOnCreate {
-              node: ActorMoviesConnectOrCreateFieldInputOnCreateNode!
-            }
-
-            input ActorMoviesConnectOrCreateFieldInputOnCreateNode {
-              id: ID
-              title: String
+              node: MovieOnCreateInput!
             }
 
             type ActorMoviesConnection {
@@ -289,6 +284,11 @@ describe("connect or create with id", () => {
 
             input MovieCreateInput {
               title: String!
+            }
+
+            input MovieOnCreateInput {
+              id: ID
+              title: String
             }
 
             input MovieOptions {
@@ -533,12 +533,7 @@ describe("connect or create with id", () => {
             }
 
             input PostCreatorConnectOrCreateFieldInputOnCreate {
-              node: PostCreatorConnectOrCreateFieldInputOnCreateNode!
-            }
-
-            input PostCreatorConnectOrCreateFieldInputOnCreateNode {
-              id: ID
-              name: String
+              node: UserOnCreateInput!
             }
 
             type PostCreatorConnection {
@@ -629,6 +624,11 @@ describe("connect or create with id", () => {
 
             input PostDisconnectInput {
               creator: PostCreatorDisconnectFieldInput
+            }
+
+            input PostOnCreateInput {
+              content: String
+              id: ID
             }
 
             input PostOptions {
@@ -792,6 +792,11 @@ describe("connect or create with id", () => {
               posts: [UserPostsDisconnectFieldInput!]
             }
 
+            input UserOnCreateInput {
+              id: ID
+              name: String
+            }
+
             input UserOptions {
               limit: Int
               offset: Int
@@ -834,12 +839,7 @@ describe("connect or create with id", () => {
             }
 
             input UserPostsConnectOrCreateFieldInputOnCreate {
-              node: UserPostsConnectOrCreateFieldInputOnCreateNode!
-            }
-
-            input UserPostsConnectOrCreateFieldInputOnCreateNode {
-              content: String
-              id: ID
+              node: PostOnCreateInput!
             }
 
             type UserPostsConnection {
