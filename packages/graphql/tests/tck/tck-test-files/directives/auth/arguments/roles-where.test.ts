@@ -680,6 +680,14 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this, this_posts0
             CALL apoc.util.validate(NOT(((ANY(r IN [\\\\\\"user\\\\\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR (ANY(r IN [\\\\\\"admin\\\\\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             SET this_posts0.id = $this_update_posts0_id
+            WITH this, this_posts0
+            CALL {
+            	WITH this_posts0
+            	MATCH (this_posts0)<-[this_posts0_creator_User_unique:HAS_POST]-(:User)
+            	WITH count(this_posts0_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator must be less than or equal to one', [0])
+            	RETURN c AS this_posts0_creator_User_unique_ignored
+            }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id})
             YIELD value as _
