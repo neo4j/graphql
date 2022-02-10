@@ -18,7 +18,7 @@
  */
 
 import { Driver, int, Session } from "neo4j-driver";
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
@@ -52,9 +52,9 @@ describe("CartesianPoint", () => {
     });
 
     test("enables creation of a node with a cartesian point", async () => {
-        const serial = faker.random.uuid();
-        const x = faker.random.float();
-        const y = faker.random.float();
+        const serial = faker.datatype.uuid();
+        const x = faker.datatype.float();
+        const y = faker.datatype.float();
 
         const create = `
             mutation CreateParts($serial: String!, $x: Float!, $y: Float!) {
@@ -101,10 +101,10 @@ describe("CartesianPoint", () => {
     });
 
     test("enables creation of a node with a cartesian-3d point", async () => {
-        const serial = faker.random.uuid();
-        const x = faker.random.float();
-        const y = faker.random.float();
-        const z = faker.random.float();
+        const serial = faker.datatype.uuid();
+        const x = faker.datatype.float();
+        const y = faker.datatype.float();
+        const z = faker.datatype.float();
 
         const create = `
             mutation CreateParts($serial: String!, $x: Float!, $y: Float!, $z: Float!) {
@@ -152,10 +152,10 @@ describe("CartesianPoint", () => {
     });
 
     test("enables update of a node with a cartesian point", async () => {
-        const serial = faker.random.uuid();
-        const x = faker.random.float();
-        const y = faker.random.float();
-        const newY = faker.random.float();
+        const serial = faker.datatype.uuid();
+        const x = faker.datatype.float();
+        const y = faker.datatype.float();
+        const newY = faker.datatype.float();
 
         const beforeResult = await session.run(`
             CALL {
@@ -217,11 +217,11 @@ describe("CartesianPoint", () => {
     });
 
     test("enables update of a node with a cartesian-3d point", async () => {
-        const serial = faker.random.uuid();
-        const x = faker.random.float();
-        const y = faker.random.float();
-        const z = faker.random.float();
-        const newY = faker.random.float();
+        const serial = faker.datatype.uuid();
+        const x = faker.datatype.float();
+        const y = faker.datatype.float();
+        const z = faker.datatype.float();
+        const newY = faker.datatype.float();
 
         const beforeResult = await session.run(`
             CALL {
@@ -285,9 +285,9 @@ describe("CartesianPoint", () => {
     });
 
     test("enables query of a node with a cartesian point", async () => {
-        const serial = faker.random.uuid();
-        const x = faker.random.float();
-        const y = faker.random.float();
+        const serial = faker.datatype.uuid();
+        const x = faker.datatype.float();
+        const y = faker.datatype.float();
 
         const result = await session.run(`
             CALL {
@@ -338,10 +338,10 @@ describe("CartesianPoint", () => {
     });
 
     test("enables query of a node with a cartesian-3d point", async () => {
-        const serial = faker.random.uuid();
-        const x = faker.random.float();
-        const y = faker.random.float();
-        const z = faker.random.float();
+        const serial = faker.datatype.uuid();
+        const x = faker.datatype.float();
+        const y = faker.datatype.float();
+        const z = faker.datatype.float();
 
         const result = await session.run(`
             CALL {
