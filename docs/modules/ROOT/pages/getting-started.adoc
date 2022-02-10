@@ -53,6 +53,8 @@ Additionally, you will need to install a GraphQL server package which will host 
 npm install @neo4j/graphql graphql neo4j-driver apollo-server
 ----
 
+Make sure the database fulfills the requirements stated xref::introduction.adoc#introduction-requirements[here], including the necessary plugins.
+
 == Define your GraphQL type definitions
 
 The Neo4j GraphQL Library is primarily driven by type definitions which map to the nodes and relationships in your Neo4j database. To get started, use a simple example with two node types, one with label "Actor" and the other "Movie".
