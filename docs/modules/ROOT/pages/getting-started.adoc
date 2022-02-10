@@ -104,13 +104,15 @@ Add the following to the bottom of `index.js`:
 
 [source, javascript, indent=0]
 ----
-const server = new ApolloServer({
-    schema: neoSchema.schema,
-});
+neoSchema.getSchema().then((schema) => {
+  const server = new ApolloServer({
+      schema,
+  });
 
-server.listen().then(({ url }) => {
-    console.log(`🚀 Server ready at ${url}`);
-});
+  server.listen().then(({ url }) => {
+      console.log(`🚀 Server ready at ${url}`);
+  });
+})
 ----
 
 == Start the server
