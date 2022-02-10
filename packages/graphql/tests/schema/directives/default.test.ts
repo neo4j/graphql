@@ -39,6 +39,13 @@ describe("@default directive", () => {
                 verifiedDate: DateTime! @default(value: "1970-01-01T00:00:00.000Z")
                 fromInterface: String!
                 toBeOverridden: String! @default(value: "Overridden value")
+                location: Location! @default(value: HERE)
+            }
+
+            enum Location {
+                HERE
+                THERE
+                EVERYWHERE
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -94,6 +101,12 @@ describe("@default directive", () => {
               sum: Int!
             }
 
+            enum Location {
+              EVERYWHERE
+              HERE
+              THERE
+            }
+
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(where: UserWhere): DeleteInfo!
@@ -133,6 +146,7 @@ describe("@default directive", () => {
             type User implements UserInterface {
               fromInterface: String!
               id: ID!
+              location: Location!
               name: String!
               numberOfFriends: Int!
               rating: Float!
@@ -155,6 +169,7 @@ describe("@default directive", () => {
             input UserCreateInput {
               fromInterface: String! = \\"Interface default value\\"
               id: ID! = \\"00000000-00000000-00000000-00000000\\"
+              location: Location! = HERE
               name: String! = \\"Jane Smith\\"
               numberOfFriends: Int! = 0
               rating: Float! = 0
@@ -183,6 +198,7 @@ describe("@default directive", () => {
             input UserSort {
               fromInterface: SortDirection
               id: SortDirection
+              location: SortDirection
               name: SortDirection
               numberOfFriends: SortDirection
               rating: SortDirection
@@ -194,6 +210,7 @@ describe("@default directive", () => {
             input UserUpdateInput {
               fromInterface: String
               id: ID
+              location: Location
               name: String
               numberOfFriends: Int
               rating: Float
@@ -225,6 +242,10 @@ describe("@default directive", () => {
               id_NOT_IN: [ID!]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
+              location: Location
+              location_IN: [Location!]
+              location_NOT: Location
+              location_NOT_IN: [Location!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
