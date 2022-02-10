@@ -45,22 +45,9 @@ import {
     ObjectTypeComposer,
     SchemaComposer,
 } from "graphql-compose";
-import { Exclude, Node } from "../classes";
-import { NodeDirective } from "../classes/NodeDirective";
-import Relationship from "../classes/Relationship";
-import * as constants from "../constants";
+import pluralize from "pluralize";
+import { validateDocument } from "./validation";
 import { Auth, BaseField, FullText, PrimitiveField } from "../types";
-import { isString } from "../utils/utils";
-import createConnectionFields from "./create-connection-fields";
-import createRelationshipFields from "./create-relationship-fields";
-import getAuth from "./get-auth";
-import getCustomResolvers from "./get-custom-resolvers";
-import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
-import getWhereFields from "./get-where-fields";
-import parseExcludeDirective from "./parse-exclude-directive";
-import parseNodeDirective from "./parse-node-directive";
-import parseFulltextDirective from "./parse/parse-fulltext-directive";
-import * as point from "./point";
 import {
     aggregateResolver,
     createResolver,
@@ -70,16 +57,31 @@ import {
     updateResolver,
     numericalResolver,
 } from "./resolvers";
+import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import * as constants from "../constants";
 import * as Scalars from "./scalars";
+import * as point from "./point";
+import { Exclude, Node } from "../classes";
+import { NodeDirective } from "../classes/NodeDirective";
+import Relationship from "../classes/Relationship";
+import createConnectionFields from "./create-connection-fields";
+import createRelationshipFields from "./create-relationship-fields";
+import parseExcludeDirective from "./parse-exclude-directive";
+import parseFulltextDirective from "./parse/parse-fulltext-directive";
+import parseNodeDirective from "./parse-node-directive";
+import getAuth from "./get-auth";
+import getCustomResolvers from "./get-custom-resolvers";
+import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
+import getSortableFields from "./get-sortable-fields";
 import {
     graphqlDirectivesToCompose,
     objectFieldsToComposeFields,
     objectFieldsToCreateInputFields,
     objectFieldsToUpdateInputFields,
 } from "./to-compose";
-import { validateDocument } from "./validation";
 import getUniqueFields from "./get-unique-fields";
-import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import getWhereFields from "./get-where-fields";
+import { isString } from "../utils/utils";
 import { upperFirst } from "../utils/upper-first";
 import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
 import { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
@@ -524,6 +526,41 @@ function makeAugmentedSchema(
             fields: objectComposeFields,
         });
 
+        const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Options`, (tc) => {
+            tc.addFields({
+                limit: "Int",
+                offset: "Int",
+            });
+        });
+
+        const interfaceSortableFields = getSortableFields(interfaceFields).reduce(
+            (res, f) => ({
+                ...res,
+                [f.fieldName]: sortDirection.getTypeName(),
+            }),
+            {}
+        );
+
+        if (Object.keys(interfaceSortableFields).length) {
+            const interfaceSortInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Sort`, (tc) => {
+                tc.addFields(interfaceSortableFields);
+                tc.setDescription(
+                    `Fields to sort ${pluralize(
+                        interfaceRelationship.name.value
+                    )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${interfaceRelationship.name.value}Sort`} object.`
+                );
+            });
+
+            interfaceOptionsInput.addFields({
+                sort: {
+                    description: `Specify one or more ${`${interfaceRelationship.name.value}Sort`} objects to sort ${pluralize(
+                        interfaceRelationship.name.value
+                    )} by. The sorts will be applied in the order in which they are arranged in the array.`,
+                    type: interfaceSortInput.List,
+                },
+            });
+        }
+
         const interfaceWhereFields = getWhereFields({
             typeName: interfaceRelationship.name.value,
             fields: {
@@ -724,7 +761,7 @@ function makeAugmentedSchema(
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
-        const sortFields = node.sortableFields.reduce(
+        const sortFields = getSortableFields(node).reduce(
             (res, f) => ({
                 ...res,
                 [f.fieldName]: sortDirection.getTypeName(),
