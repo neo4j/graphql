@@ -316,8 +316,12 @@ describe("Connect Or Create", () => {
             input ActorWhere {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
-              actedInConnection: ActorActedInConnectionWhere
-              actedInConnection_NOT: ActorActedInConnectionWhere
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

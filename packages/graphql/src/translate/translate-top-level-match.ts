@@ -21,7 +21,7 @@ import { dedent } from "graphql-compose";
 import { Node } from "../classes";
 import { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
-import createWhereAndParams from "./create-where-and-params";
+import createWhereAndParams from "./where/create-where-and-params";
 
 function translateTopLevelMatch({
     node,
