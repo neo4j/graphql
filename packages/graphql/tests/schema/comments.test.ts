@@ -656,7 +656,7 @@ describe("Comments", () => {
 
                 type Actor {
                   \\"\\"\\"Acted in Production\\"\\"\\"
-                  actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
+                  actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -674,6 +674,7 @@ describe("Comments", () => {
 
                 input ActorActedInConnectionSort {
                   edge: ActedInSort
+                  node: ProductionSort
                 }
 
                 input ActorActedInConnectionWhere {
@@ -929,6 +930,22 @@ describe("Comments", () => {
                   Series: SeriesWhere
                 }
 
+                input ProductionOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [ProductionSort]
+                }
+
+                \\"\\"\\"
+                Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+                \\"\\"\\"
+                input ProductionSort {
+                  title: SortDirection
+                }
+
                 input ProductionUpdateInput {
                   _on: ProductionImplementationsUpdateInput
                   title: String
@@ -955,11 +972,6 @@ describe("Comments", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-                }
-
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
                 }
 
                 type Series implements Production {
