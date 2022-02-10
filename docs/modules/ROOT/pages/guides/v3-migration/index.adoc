@@ -1,0 +1,93 @@
+[[v3-migration]]
+= 3.0.0 Migration
+
+Version 3.0.0 of `@neo4j/graphql` contains several breaking changes over 2.x.y. This document lists all braking changes
+and how to update from 2.x.y.
+
+== How to Upgrade
+
+Simply update `@neo4j/graphql` using npm or your package manager of choice:
+
+[source, bash, indent=0]
+----
+npm update @neo4j/graphql
+----
+
+== Async Schema Generation
+https://github.com/neo4j/graphql/pull/896
+
+== Auth Plugin System
+https://github.com/neo4j/graphql/pull/954
+
+
+* QueryDirection [889](https://github.com/neo4j/graphql/pull/889) & [888](https://github.com/neo4j/graphql/pull/888)
+* Relationships types ([Movie] -> [Movie!]!) - https://github.com/neo4j/graphql/pull/736
+* Relationship cardinality
+* [Relationship filters](https://github.com/neo4j/graphql/pull/796/files)
+* [Remove top level count](https://github.com/neo4j/graphql/pull/784)
+
+== Count query no longer supported
+Queries using `count` at the root level are no longer supported. For example:
+[source, graphql, indent=0]
+----
+Query {
+    usersCount
+}
+----
+
+The same operation, can now be achieved with a xref::queries#_counting_using_aggregation[count aggregation] query:
+
+[source, graphql, indent=0]
+----
+Query {
+    usersAggregate {
+        count
+    }
+}
+----
+
+== Types Plurals Changes
+To improve consistency, some automatically generated plurals (e.g. `createActors`) have changed. This may cause issues if
+your types use conventions such as `snake_case`.
+
+Because of this, you may find generated queries and mutations may have different names. If you encounter this problem,
+please update your clients to use the new query names, or use the `plural` option in the xref::type-definitions/database-mapping.adoc#_plural[`@node directive`]
+to force a custom plural value.
+
+== Types Changes
+Some automatically generated types have changed to improve consistency.
+These should not require any changes from the developer in most cases, unless in cases where types names are directly used.
+
+=== OnCreate Node Types
+Input types for `onCreate` in `connectOrCreate` mutations no longer accept relation fields.
+
+=== Non Nullable Aggregation Results
+Aggregation results may now be non-nullable for required fields, yielding more accurate types.
+
+For example, for the following types:
+[source, graphql, indent=0]
+----
+type User {
+    name: String!
+    lastName: String
+}
+----
+
+Will yield different types for aggregations over `name` and `lastName`:
+[source, graphql, indent=0]
+----
+type UserAggregateSelection {
+  count: Int!
+  name: StringAggregateSelectionNonNullable!
+  lastName: StringAggregateSelectionNullable!
+}
+----
+
+=== ConnectionWhere types renamed
+`ConnectionWhere` types renamed to improve consistency with other similarly named types.
+
+== Neo4j Support
+Neo4j 4.1 is no longer supported in 3.0
+
+== GraphQL Support
+GraphQL 15 is no longer supported, please migrate to GraphQL 16
