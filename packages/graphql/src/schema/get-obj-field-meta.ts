@@ -29,7 +29,9 @@ import {
     ObjectTypeDefinitionNode,
     ScalarTypeDefinitionNode,
     StringValueNode,
+    EnumValueNode,
     UnionTypeDefinitionNode,
+    ValueNode,
 } from "graphql";
 import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
@@ -314,10 +316,6 @@ function getObjFieldMeta({
                 };
                 res.scalarFields.push(scalarField);
             } else if (fieldEnum) {
-                if (defaultDirective) {
-                    throw new Error("@default directive can only be used on primitive type fields");
-                }
-
                 if (coalesceDirective) {
                     throw new Error("@coalesce directive can only be used on primitive type fields");
                 }
@@ -326,6 +324,17 @@ function getObjFieldMeta({
                     kind: "Enum",
                     ...baseField,
                 };
+
+                if (defaultDirective) {
+                    const defaultValue = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
+
+                    if (!defaultValue || !isEnumValue(defaultValue)) {
+                        throw new Error("@default value on enum fields must be an enum value");
+                    }
+
+                    enumField.defaultValue = defaultValue.value;
+                }
+
                 res.enumFields.push(enumField);
             } else if (fieldUnion) {
                 if (defaultDirective) {
@@ -534,6 +543,10 @@ function getObjFieldMeta({
             ignoredFields: [],
         }
     ) as ObjectFields;
+}
+
+function isEnumValue(value: ValueNode): value is EnumValueNode {
+     return value.kind === Kind.ENUM;
 }
 
 export default getObjFieldMeta;
