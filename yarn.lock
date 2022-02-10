@@ -8168,7 +8168,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:^16.2.0":
+"graphql@npm:16.3.0, graphql@npm:^16.2.0":
   version: 16.3.0
   resolution: "graphql@npm:16.3.0"
   checksum: ba540641e9cd2a8de5b989ff1433b015f232fa73aaef478d6709c1339cd43113347917acb965a5799c004667687852fc8ff0cfaa935eb26374c91c1fd7fdaeb1
@@ -11873,7 +11873,7 @@ __metadata:
     debug: 4.3.1
     dotenv: ^10.0.0
     express: 4.17.1
-    graphql: 16.2.0
+    graphql: 16.3.0
     jest: 27.4.7
     jsonwebtoken: 8.5.1
     neo4j-driver: 4.4.2
@@ -11934,7 +11934,7 @@ __metadata:
     eslint-plugin-jest: 26.1.0
     eslint-plugin-jsx-a11y: 6.5.1
     eslint-plugin-react: 7.28.0
-    graphql: 16.2.0
+    graphql: 16.3.0
     husky: 7.0.4
     jest: 27.5.1
     lint-staged: 12.3.3
