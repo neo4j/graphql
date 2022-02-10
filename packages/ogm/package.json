@@ -46,7 +46,7 @@
     },
     "devDependencies": {
         "@types/jest": "27.4.0",
-        "@types/node": "16.11.22",
+        "@types/node": "16.11.24",
         "graphql-tag": "2.12.6",
         "jest": "27.5.1",
         "jsonwebtoken": "8.5.1",
