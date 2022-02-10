@@ -1754,7 +1754,7 @@ __metadata:
     koa-jwt: 4.0.3
     koa-router: 10.1.1
     libnpmsearch: 4.0.1
-    mock-jwks: 1.0.1
+    mock-jwks: 1.0.3
     nock: 13.2.4
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
@@ -11682,17 +11682,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mock-jwks@npm:1.0.1":
-  version: 1.0.1
-  resolution: "mock-jwks@npm:1.0.1"
+"mock-jwks@npm:1.0.3":
+  version: 1.0.3
+  resolution: "mock-jwks@npm:1.0.3"
   dependencies:
     base64-url: ^2.2.0
     jsonwebtoken: ^8.2.0
-    node-forge: ^0.10.0
+    node-forge: ^1.0.0
     node-rsa: ^0.4.2
   peerDependencies:
     nock: ^11 || ^12 || ^13
-  checksum: 231b41c8d298af5dbf9c2cb149c4814019464b428b45988374567b2a2cb2773d050d8f09367b6db39f99880e614b51a0d7821467f05049ca3bc5d31a00e9b3b2
+  checksum: 92e5bc02d9f0dc7e4ba246e1bdf98cee3c8b8a5a029bacf071af7b9b789e832bf1ea10f41a82ea33970ed22180bf3cc74388ab31678bad59750e7ec20ec832e5
   languageName: node
   linkType: hard
 
@@ -12012,6 +12012,13 @@ __metadata:
   version: 0.10.0
   resolution: "node-forge@npm:0.10.0"
   checksum: 5aa6dc9922e424a20ef101d2f517418e2bc9cfc0255dd22e0701c0fad1568445f510ee67f6f3fcdf085812c4ca1b847b8ba45683b34776828e41f5c1794e42e1
+  languageName: node
+  linkType: hard
+
+"node-forge@npm:^1.0.0":
+  version: 1.2.1
+  resolution: "node-forge@npm:1.2.1"
+  checksum: af4f88c3f69362359f35f6a9e231b35c96d906eeb6e976fb92742afe7fcdd76439dc22b41ce3755389d171f6320756ec7505bdfa7b252466c091b8c519a22674
   languageName: node
   linkType: hard
 
