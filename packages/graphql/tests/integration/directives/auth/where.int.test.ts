@@ -643,13 +643,16 @@ describe("auth/where", () => {
             const userId = generate({
                 charset: "alphabetic",
             });
-            const postId = generate({
+            const postId1 = generate({
+                charset: "alphabetic",
+            });
+            const postId2 = generate({
                 charset: "alphabetic",
             });
 
             const query = `
                 mutation {
-                    updateUsers(update: { posts: { disconnect: { where: { node: { id: "${postId}" } } } } }) {
+                    updateUsers(update: { posts: { disconnect: { where: { node: { id: "${postId1}" } } } } }) {
                         users {
                             id
                             posts {
@@ -664,7 +667,9 @@ describe("auth/where", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                    CREATE (u:User {id: "${userId}"})
+                    CREATE (u)-[:HAS_POST]->(:Post {id: "${postId1}"})
+                    CREATE (u)-[:HAS_POST]->(:Post {id: "${postId2}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: userId });
@@ -677,7 +682,7 @@ describe("auth/where", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
                 const users = (gqlResult.data as any).updateUsers.users as any[];
-                expect(users).toEqual([{ id: userId, posts: [] }]);
+                expect(users).toEqual([{ id: userId, posts: [{ id: postId2 }] }]);
             } finally {
                 await session.close();
             }
@@ -703,13 +708,16 @@ describe("auth/where", () => {
             const userId = generate({
                 charset: "alphabetic",
             });
-            const postId = generate({
+            const postId1 = generate({
+                charset: "alphabetic",
+            });
+            const postId2 = generate({
                 charset: "alphabetic",
             });
 
             const query = `
                 mutation {
-                    updateUsers(disconnect: { posts: { where: {node: { id : "${postId}"}}}}) {
+                    updateUsers(disconnect: { posts: { where: {node: { id : "${postId1}"}}}}) {
                         users {
                             id
                             posts {
@@ -724,7 +732,9 @@ describe("auth/where", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                    CREATE (u:User {id: "${userId}"})
+                    CREATE(u)-[:HAS_POST]->(:Post {id: "${postId1}"})
+                    CREATE(u)-[:HAS_POST]->(:Post {id: "${postId2}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: userId });
@@ -737,7 +747,7 @@ describe("auth/where", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
                 const users = (gqlResult.data as any).updateUsers.users as any[];
-                expect(users).toEqual([{ id: userId, posts: [] }]);
+                expect(users).toEqual([{ id: userId, posts: [{ id: postId2 }] }]);
             } finally {
                 await session.close();
             }

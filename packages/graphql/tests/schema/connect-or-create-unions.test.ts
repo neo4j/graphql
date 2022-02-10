@@ -147,7 +147,7 @@ describe("Connect Or Create", () => {
 
             input ActorActedInMovieConnectOrCreateFieldInputOnCreate {
               edge: ActedInCreateInput!
-              node: MovieCreateInput!
+              node: MovieOnCreateInput!
             }
 
             input ActorActedInMovieConnectionWhere {
@@ -211,7 +211,7 @@ describe("Connect Or Create", () => {
 
             input ActorActedInSeriesConnectOrCreateFieldInputOnCreate {
               edge: ActedInCreateInput!
-              node: SeriesCreateInput!
+              node: SeriesOnCreateInput!
             }
 
             input ActorActedInSeriesConnectionWhere {
@@ -316,8 +316,12 @@ describe("Connect Or Create", () => {
             input ActorWhere {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
-              actedInConnection: ActorActedInConnectionWhere
-              actedInConnection_NOT: ActorActedInConnectionWhere
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -379,6 +383,11 @@ describe("Connect Or Create", () => {
             input MovieCreateInput {
               isan: String!
               title: String!
+            }
+
+            input MovieOnCreateInput {
+              isan: String
+              title: String
             }
 
             input MovieOptions {
@@ -495,6 +504,11 @@ describe("Connect Or Create", () => {
             input SeriesCreateInput {
               isan: String!
               title: String!
+            }
+
+            input SeriesOnCreateInput {
+              isan: String
+              title: String
             }
 
             input SeriesOptions {

@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-plugin-auth",
-    "version": "2.5.7",
+    "version": "2.5.8",
     "description": "Auth Plugins for Neo4j GraphQL",
     "keywords": [
         "neo4j",
@@ -26,7 +26,7 @@
     },
     "author": "Neo4j Inc.",
     "dependencies": {
-        "@neo4j/graphql": "^2.5.7",
+        "@neo4j/graphql": "^2.5.8",
         "jsonwebtoken": "^8.5.1",
         "jwks-rsa": "^2.0.5"
     },

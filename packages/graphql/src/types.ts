@@ -168,6 +168,7 @@ export type CustomScalarField = BaseField;
 export interface CustomEnumField extends BaseField {
     // TODO Must be "Enum" - really needs refactoring into classes
     kind: string;
+    defaultValue?: string;
 }
 
 export interface UnionField extends BaseField {
@@ -189,6 +190,14 @@ export interface TemporalField extends PrimitiveField {
 }
 
 export type PointField = BaseField;
+
+export type SortableField =
+    | PrimitiveField
+    | CustomScalarField
+    | CustomEnumField
+    | TemporalField
+    | PointField
+    | CypherField;
 
 export type SortDirection = "ASC" | "DESC";
 
@@ -319,3 +328,6 @@ export interface CypherQueryOptions {
 
 /** Nested Records helper type, supports any level of recursion. Ending in properties of type T */
 export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {} // Using interface to allow recursive types
+
+/** Input field for graphql-compose */
+export type InputField = { type: string; defaultValue?: string } | string;
