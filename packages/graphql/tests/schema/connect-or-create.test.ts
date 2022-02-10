@@ -108,7 +108,7 @@ describe("Connect Or Create", () => {
             }
 
             input ActorMoviesConnectOrCreateFieldInputOnCreate {
-              node: MovieCreateInput!
+              node: MovieOnCreateInput!
             }
 
             type ActorMoviesConnection {
@@ -311,6 +311,11 @@ describe("Connect Or Create", () => {
             input MovieCreateInput {
               isan: String!
               title: String!
+            }
+
+            input MovieOnCreateInput {
+              isan: String
+              title: String
             }
 
             input MovieOptions {
@@ -562,7 +567,7 @@ describe("Connect Or Create", () => {
 
             input ActorMoviesConnectOrCreateFieldInputOnCreate {
               edge: ActedInCreateInput!
-              node: MovieCreateInput!
+              node: MovieOnCreateInput!
             }
 
             type ActorMoviesConnection {
@@ -829,6 +834,11 @@ describe("Connect Or Create", () => {
             input MovieCreateInput {
               isan: String!
               title: String!
+            }
+
+            input MovieOnCreateInput {
+              isan: String
+              title: String
             }
 
             input MovieOptions {

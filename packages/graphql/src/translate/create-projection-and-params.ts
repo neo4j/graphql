@@ -344,17 +344,31 @@ function createProjectionAndParams({
                     res.meta.interfaceFields = [];
                 }
 
-                const f = field;
-
-                res.meta.interfaceFields.push(f);
+                res.meta.interfaceFields.push(field);
 
                 let offsetLimitStr = "";
                 if (optionsInput) {
-                    offsetLimitStr = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
+                    offsetLimitStr = createOffsetLimitStr({
+                        offset: optionsInput.offset,
+                        limit: optionsInput.limit,
+                    });
+
+                    if (optionsInput.sort) {
+                        const sorts = optionsInput.sort.reduce(sortReducer, []);
+
+                        res.projection.push(
+                            `${field.alias}: apoc.coll.sortMulti(collect(${field.alias}), [${sorts.join(
+                                ", "
+                            )}])${offsetLimitStr}`
+                        );
+                        return res;
+                    }
                 }
 
                 res.projection.push(
-                    `${f.alias}: ${!isArray ? "head(" : ""}collect(${f.alias})${offsetLimitStr}${!isArray ? ")" : ""}`
+                    `${field.alias}: ${!isArray ? "head(" : ""}collect(${field.alias})${offsetLimitStr}${
+                        !isArray ? ")" : ""
+                    }`
                 );
 
                 return res;
@@ -488,18 +502,7 @@ function createProjectionAndParams({
                 const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
 
                 if (optionsInput.sort) {
-                    const sorts = optionsInput.sort.reduce((s: string[], sort: GraphQLSortArg) => {
-                        return [
-                            ...s,
-                            ...Object.entries(sort).map(([fieldName, direction]) => {
-                                if (direction === "DESC") {
-                                    return `'${fieldName}'`;
-                                }
-
-                                return `'^${fieldName}'`;
-                            }),
-                        ];
-                    }, []);
+                    const sorts = optionsInput.sort.reduce(sortReducer, []);
 
                     nestedQuery = `${alias}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
                 } else {
@@ -615,6 +618,19 @@ function createProjectionAndParams({
     });
 
     return [`{ ${projection.join(", ")} }`, params, meta];
+}
+
+function sortReducer(s: string[], sort: GraphQLSortArg) {
+    return [
+        ...s,
+        ...Object.entries(sort).map(([fieldName, direction]) => {
+            if (direction === "DESC") {
+                return `'${fieldName}'`;
+            }
+
+            return `'^${fieldName}'`;
+        }),
+    ];
 }
 
 export default createProjectionAndParams;

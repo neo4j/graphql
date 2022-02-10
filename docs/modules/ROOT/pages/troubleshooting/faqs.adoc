@@ -87,3 +87,5 @@ mutation {
 ----
 
 No error is thrown, even though the schema states that all movies must have a director thus technically rendering the movie node invalid. 
+
+Finally, we do not enforce relationship cardinality on union or interface relationships.
