@@ -315,13 +315,6 @@ describe("create", () => {
                 id: generate({
                     charset: "alphabetic",
                 }),
-                description: "Outdoor photo",
-                url: "outdoor.png",
-            },
-            {
-                id: generate({
-                    charset: "alphabetic",
-                }),
                 description: "Green photo",
                 url: "g.png",
             },
@@ -335,15 +328,15 @@ describe("create", () => {
         ];
 
         const mutation = `
-        mutation($input: [ProductCreateInput!]!) {
-            createProducts(
-              input: $input
-            ) {
-                products {
-                    id
+            mutation($input: [ProductCreateInput!]!) {
+                createProducts(
+                  input: $input
+                ) {
+                    products {
+                        id
+                    }
                 }
             }
-          }
         `;
 
         const gqlResult = await graphql({
@@ -357,16 +350,15 @@ describe("create", () => {
                         colors: { create: colors.map((x) => ({ node: x })) },
                         photos: {
                             create: [
-                                { node: photos[0] },
                                 {
                                     node: {
-                                        ...photos[1],
+                                        ...photos[0],
                                         color: { connect: { where: { node: { id: colors[0].id } } } },
                                     },
                                 },
                                 {
                                     node: {
-                                        ...photos[2],
+                                        ...photos[1],
                                         color: { connect: { where: { node: { id: colors[1].id } } } },
                                     },
                                 },

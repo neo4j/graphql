@@ -152,12 +152,14 @@ function createDisconnectAndParams({
         }
 
         /*
-           Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
-           https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
+        Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
+        https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
         subquery.push(`FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END | `);
         subquery.push(`DELETE ${_varName}_rel`);
         subquery.push(`)`); // close FOREACH
+
+        // TODO - relationship validation - Blocking, if this were to be enforced it would stop someone from 'reconnecting'
 
         if (disconnect.disconnect) {
             const disconnects = Array.isArray(disconnect.disconnect) ? disconnect.disconnect : [disconnect.disconnect];

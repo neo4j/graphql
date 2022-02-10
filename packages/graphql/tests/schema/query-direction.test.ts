@@ -266,11 +266,23 @@ describe("Query Direction", () => {
             input UserWhere {
               AND: [UserWhere!]
               OR: [UserWhere!]
-              friends: UserWhere
+              friends: UserWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsAggregate: UserFriendsAggregateInput
-              friendsConnection: UserFriendsConnectionWhere
-              friendsConnection_NOT: UserFriendsConnectionWhere
-              friends_NOT: UserWhere
+              friendsConnection: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
+              friendsConnection_ALL: UserFriendsConnectionWhere
+              friendsConnection_NONE: UserFriendsConnectionWhere
+              friendsConnection_NOT: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_NONE\` instead.\\")
+              friendsConnection_SINGLE: UserFriendsConnectionWhere
+              friendsConnection_SOME: UserFriendsConnectionWhere
+              \\"\\"\\"Return Users where all of the related Users match this filter\\"\\"\\"
+              friends_ALL: UserWhere
+              \\"\\"\\"Return Users where none of the related Users match this filter\\"\\"\\"
+              friends_NONE: UserWhere
+              friends_NOT: UserWhere @deprecated(reason: \\"Use \`friends_NONE\` instead.\\")
+              \\"\\"\\"Return Users where one of the related Users match this filter\\"\\"\\"
+              friends_SINGLE: UserWhere
+              \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
+              friends_SOME: UserWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -527,11 +539,23 @@ describe("Query Direction", () => {
             input UserWhere {
               AND: [UserWhere!]
               OR: [UserWhere!]
-              friends: UserWhere
+              friends: UserWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsAggregate: UserFriendsAggregateInput
-              friendsConnection: UserFriendsConnectionWhere
-              friendsConnection_NOT: UserFriendsConnectionWhere
-              friends_NOT: UserWhere
+              friendsConnection: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
+              friendsConnection_ALL: UserFriendsConnectionWhere
+              friendsConnection_NONE: UserFriendsConnectionWhere
+              friendsConnection_NOT: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_NONE\` instead.\\")
+              friendsConnection_SINGLE: UserFriendsConnectionWhere
+              friendsConnection_SOME: UserFriendsConnectionWhere
+              \\"\\"\\"Return Users where all of the related Users match this filter\\"\\"\\"
+              friends_ALL: UserWhere
+              \\"\\"\\"Return Users where none of the related Users match this filter\\"\\"\\"
+              friends_NONE: UserWhere
+              friends_NOT: UserWhere @deprecated(reason: \\"Use \`friends_NONE\` instead.\\")
+              \\"\\"\\"Return Users where one of the related Users match this filter\\"\\"\\"
+              friends_SINGLE: UserWhere
+              \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
+              friends_SOME: UserWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -788,11 +812,23 @@ describe("Query Direction", () => {
             input UserWhere {
               AND: [UserWhere!]
               OR: [UserWhere!]
-              friends: UserWhere
+              friends: UserWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsAggregate: UserFriendsAggregateInput
-              friendsConnection: UserFriendsConnectionWhere
-              friendsConnection_NOT: UserFriendsConnectionWhere
-              friends_NOT: UserWhere
+              friendsConnection: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
+              friendsConnection_ALL: UserFriendsConnectionWhere
+              friendsConnection_NONE: UserFriendsConnectionWhere
+              friendsConnection_NOT: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_NONE\` instead.\\")
+              friendsConnection_SINGLE: UserFriendsConnectionWhere
+              friendsConnection_SOME: UserFriendsConnectionWhere
+              \\"\\"\\"Return Users where all of the related Users match this filter\\"\\"\\"
+              friends_ALL: UserWhere
+              \\"\\"\\"Return Users where none of the related Users match this filter\\"\\"\\"
+              friends_NONE: UserWhere
+              friends_NOT: UserWhere @deprecated(reason: \\"Use \`friends_NONE\` instead.\\")
+              \\"\\"\\"Return Users where one of the related Users match this filter\\"\\"\\"
+              friends_SINGLE: UserWhere
+              \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
+              friends_SOME: UserWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

@@ -26,7 +26,7 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import createAuthAndParams from "./create-auth-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
-import createNodeWhereAndParams from "./where/create-node-where-and-params";
+import createElementWhereAndParams from "./where/create-element-where-and-params";
 
 function createInterfaceProjectionAndParams({
     resolveTree,
@@ -83,7 +83,7 @@ function createInterfaceProjectionAndParams({
 
         if (resolveTree.args.where) {
             // For root filters
-            const rootNodeWhereAndParams = createNodeWhereAndParams({
+            const rootNodeWhereAndParams = createElementWhereAndParams({
                 whereInput: {
                     ...Object.entries(whereInput).reduce((args, [k, v]) => {
                         if (k !== "_on") {
@@ -98,8 +98,8 @@ function createInterfaceProjectionAndParams({
                     }, {}),
                 },
                 context,
-                node: refNode,
-                nodeVariable: param,
+                element: refNode,
+                varName: param,
                 parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                     resolveTree.alias
                 }.args.where`,
@@ -111,7 +111,7 @@ function createInterfaceProjectionAndParams({
 
             // For _on filters
             if (whereInput?._on?.[refNode.name]) {
-                const onTypeNodeWhereAndParams = createNodeWhereAndParams({
+                const onTypeNodeWhereAndParams = createElementWhereAndParams({
                     whereInput: {
                         ...Object.entries(whereInput).reduce((args, [k, v]) => {
                             if (k !== "_on") {
@@ -126,8 +126,8 @@ function createInterfaceProjectionAndParams({
                         }, {}),
                     },
                     context,
-                    node: refNode,
-                    nodeVariable: param,
+                    element: refNode,
+                    varName: param,
                     parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                         resolveTree.alias
                     }.args.where._on.${refNode.name}`,

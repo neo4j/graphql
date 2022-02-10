@@ -212,6 +212,8 @@ function createDeleteAndParams({
                         `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`].join(", ")}`
                     );
                     res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
+
+                    // TODO - relationship validation
                 });
             });
 

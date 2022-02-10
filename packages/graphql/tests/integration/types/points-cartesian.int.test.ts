@@ -18,8 +18,8 @@
  */
 
 import { Driver, int, Session } from "neo4j-driver";
-import faker from "faker";
 import { graphql } from "graphql";
+import { faker } from "@faker-js/faker";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
@@ -52,10 +52,10 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables creation of a node with multiple cartesian points", async () => {
-        const id = faker.random.uuid();
-        const locations = [...new Array(faker.random.number({ min: 2, max: 10 }))].map(() => ({
-            x: faker.random.float(),
-            y: faker.random.float(),
+        const id = faker.datatype.uuid();
+        const locations = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
+            x: faker.datatype.float(),
+            y: faker.datatype.float(),
         }));
 
         const create = `
@@ -106,11 +106,11 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables creation of a node with multiple cartesian-3d points", async () => {
-        const id = faker.random.uuid();
-        const locations = [...new Array(faker.random.number({ min: 2, max: 10 }))].map(() => ({
-            x: faker.random.float(),
-            y: faker.random.float(),
-            z: faker.random.float(),
+        const id = faker.datatype.uuid();
+        const locations = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
+            x: faker.datatype.float(),
+            y: faker.datatype.float(),
+            z: faker.datatype.float(),
         }));
 
         const create = `
@@ -162,13 +162,13 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables update of a node with multiple cartesian points", async () => {
-        const id = faker.random.uuid();
-        const locations = [...new Array(faker.random.number({ min: 2, max: 10 }))].map(() => ({
-            x: faker.random.float(),
-            y: faker.random.float(),
+        const id = faker.datatype.uuid();
+        const locations = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
+            x: faker.datatype.float(),
+            y: faker.datatype.float(),
         }));
         const newLocations = locations.map((location) => ({
-            x: faker.random.float(),
+            x: faker.datatype.float(),
             y: location.y,
         }));
 
@@ -247,14 +247,14 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables update of a node with multiple cartesian-3d points", async () => {
-        const id = faker.random.uuid();
-        const locations = [...new Array(faker.random.number({ min: 2, max: 10 }))].map(() => ({
-            x: faker.random.float(),
-            y: faker.random.float(),
-            z: faker.random.float(),
+        const id = faker.datatype.uuid();
+        const locations = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
+            x: faker.datatype.float(),
+            y: faker.datatype.float(),
+            z: faker.datatype.float(),
         }));
         const newLocations = locations.map((location) => ({
-            x: faker.random.float(),
+            x: faker.datatype.float(),
             y: location.y,
             z: location.z,
         }));
@@ -336,10 +336,10 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables query of a node with multiple cartesian points", async () => {
-        const id = faker.random.uuid();
-        const locations = [...new Array(faker.random.number({ min: 2, max: 10 }))].map(() => ({
-            x: faker.random.float(),
-            y: faker.random.float(),
+        const id = faker.datatype.uuid();
+        const locations = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
+            x: faker.datatype.float(),
+            y: faker.datatype.float(),
         }));
 
         await session.run(
@@ -386,11 +386,11 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables query of a node with multiple cartesian-3d points", async () => {
-        const id = faker.random.uuid();
-        const locations = [...new Array(faker.random.number({ min: 2, max: 10 }))].map(() => ({
-            x: faker.random.float(),
-            y: faker.random.float(),
-            z: faker.random.float(),
+        const id = faker.datatype.uuid();
+        const locations = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
+            x: faker.datatype.float(),
+            y: faker.datatype.float(),
+            z: faker.datatype.float(),
         }));
 
         await session.run(

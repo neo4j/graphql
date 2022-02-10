@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
 import neo4jDriver, { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
@@ -113,7 +113,7 @@ describe("LocalDateTime", () => {
             const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
-            const localDTs = [...new Array(faker.random.number({ min: 2, max: 4 }))].map(
+            const localDTs = [...new Array(faker.datatype.number({ min: 2, max: 4 }))].map(
                 () => faker.date.past().toISOString().split("Z")[0]
             );
             const parsedLocalDateTimes = localDTs.map((localDT) => parseLocalDateTime(localDT));
