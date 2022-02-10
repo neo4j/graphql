@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/neo4j/graphql/issues"
     },
-    "homepage": "https://github.com/neo4j/graphql/tree/master/packages/ogm",
+    "homepage": "https://github.com/neo4j/graphql/tree/dev/packages/ogm",
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
