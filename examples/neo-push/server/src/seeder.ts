@@ -1,4 +1,4 @@
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { ogm } from "./gql";
 import * as neo4j from "./neo4j";
 import createDebug from "./debugger";

@@ -275,8 +275,12 @@ describe("Unions", () => {
               name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
-              publicationsConnection: AuthorPublicationsConnectionWhere
-              publicationsConnection_NOT: AuthorPublicationsConnectionWhere
+              publicationsConnection: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_SOME\` instead.\\")
+              publicationsConnection_ALL: AuthorPublicationsConnectionWhere
+              publicationsConnection_NONE: AuthorPublicationsConnectionWhere
+              publicationsConnection_NOT: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_NONE\` instead.\\")
+              publicationsConnection_SINGLE: AuthorPublicationsConnectionWhere
+              publicationsConnection_SOME: AuthorPublicationsConnectionWhere
             }
 
             type Book {
@@ -488,11 +492,23 @@ describe("Unions", () => {
             input BookWhere {
               AND: [BookWhere!]
               OR: [BookWhere!]
-              author: AuthorWhere
+              author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: BookAuthorAggregateInput
-              authorConnection: BookAuthorConnectionWhere
-              authorConnection_NOT: BookAuthorConnectionWhere
-              author_NOT: AuthorWhere
+              authorConnection: BookAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_SOME\` instead.\\")
+              authorConnection_ALL: BookAuthorConnectionWhere
+              authorConnection_NONE: BookAuthorConnectionWhere
+              authorConnection_NOT: BookAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_NONE\` instead.\\")
+              authorConnection_SINGLE: BookAuthorConnectionWhere
+              authorConnection_SOME: BookAuthorConnectionWhere
+              \\"\\"\\"Return Books where all of the related Authors match this filter\\"\\"\\"
+              author_ALL: AuthorWhere
+              \\"\\"\\"Return Books where none of the related Authors match this filter\\"\\"\\"
+              author_NONE: AuthorWhere
+              author_NOT: AuthorWhere @deprecated(reason: \\"Use \`author_NONE\` instead.\\")
+              \\"\\"\\"Return Books where one of the related Authors match this filter\\"\\"\\"
+              author_SINGLE: AuthorWhere
+              \\"\\"\\"Return Books where some of the related Authors match this filter\\"\\"\\"
+              author_SOME: AuthorWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -748,11 +764,23 @@ describe("Unions", () => {
             input JournalWhere {
               AND: [JournalWhere!]
               OR: [JournalWhere!]
-              author: AuthorWhere
+              author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: JournalAuthorAggregateInput
-              authorConnection: JournalAuthorConnectionWhere
-              authorConnection_NOT: JournalAuthorConnectionWhere
-              author_NOT: AuthorWhere
+              authorConnection: JournalAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_SOME\` instead.\\")
+              authorConnection_ALL: JournalAuthorConnectionWhere
+              authorConnection_NONE: JournalAuthorConnectionWhere
+              authorConnection_NOT: JournalAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_NONE\` instead.\\")
+              authorConnection_SINGLE: JournalAuthorConnectionWhere
+              authorConnection_SOME: JournalAuthorConnectionWhere
+              \\"\\"\\"Return Journals where all of the related Authors match this filter\\"\\"\\"
+              author_ALL: AuthorWhere
+              \\"\\"\\"Return Journals where none of the related Authors match this filter\\"\\"\\"
+              author_NONE: AuthorWhere
+              author_NOT: AuthorWhere @deprecated(reason: \\"Use \`author_NONE\` instead.\\")
+              \\"\\"\\"Return Journals where one of the related Authors match this filter\\"\\"\\"
+              author_SINGLE: AuthorWhere
+              \\"\\"\\"Return Journals where some of the related Authors match this filter\\"\\"\\"
+              author_SOME: AuthorWhere
               subject: String
               subject_CONTAINS: String
               subject_ENDS_WITH: String
