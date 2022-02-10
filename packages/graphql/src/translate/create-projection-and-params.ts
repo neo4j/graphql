@@ -19,6 +19,7 @@
 
 import { UnionTypeDefinitionNode } from "graphql/language/ast";
 import { ResolveTree } from "graphql-parse-resolve-info";
+import { mergeDeep } from "@graphql-tools/utils";
 import { Node } from "../classes";
 import createWhereAndParams from "./where/create-where-and-params";
 import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
@@ -343,17 +344,31 @@ function createProjectionAndParams({
                     res.meta.interfaceFields = [];
                 }
 
-                const f = field;
-
-                res.meta.interfaceFields.push(f);
+                res.meta.interfaceFields.push(field);
 
                 let offsetLimitStr = "";
                 if (optionsInput) {
-                    offsetLimitStr = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
+                    offsetLimitStr = createOffsetLimitStr({
+                        offset: optionsInput.offset,
+                        limit: optionsInput.limit,
+                    });
+
+                    if (optionsInput.sort) {
+                        const sorts = optionsInput.sort.reduce(sortReducer, []);
+
+                        res.projection.push(
+                            `${field.alias}: apoc.coll.sortMulti(collect(${field.alias}), [${sorts.join(
+                                ", "
+                            )}])${offsetLimitStr}`
+                        );
+                        return res;
+                    }
                 }
 
                 res.projection.push(
-                    `${f.alias}: ${!isArray ? "head(" : ""}collect(${f.alias})${offsetLimitStr}${!isArray ? ")" : ""}`
+                    `${field.alias}: ${!isArray ? "head(" : ""}collect(${field.alias})${offsetLimitStr}${
+                        !isArray ? ")" : ""
+                    }`
                 );
 
                 return res;
@@ -487,18 +502,7 @@ function createProjectionAndParams({
                 const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
 
                 if (optionsInput.sort) {
-                    const sorts = optionsInput.sort.reduce((s: string[], sort: GraphQLSortArg) => {
-                        return [
-                            ...s,
-                            ...Object.entries(sort).map(([fieldName, direction]) => {
-                                if (direction === "DESC") {
-                                    return `'${fieldName}'`;
-                                }
-
-                                return `'^${fieldName}'`;
-                            }),
-                        ];
-                    }, []);
+                    const sorts = optionsInput.sort.reduce(sortReducer, []);
 
                     nestedQuery = `${alias}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
                 } else {
@@ -594,26 +598,39 @@ function createProjectionAndParams({
 
     // Include fields of implemented interfaces to allow for fragments on interfaces
     // cf. https://github.com/neo4j/graphql/issues/476
-    const selectedFields = node.interfaces
-        .map((implementedInterface) => implementedInterface.name.value)
-        .reduce(
-            (prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }),
-            resolveTree.fieldsByTypeName[node.name]
-        );
+    const mergedSelectedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
+        resolveTree.fieldsByTypeName[node.name],
+        ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value]),
+    ]);
 
-    const fields = {
-        ...selectedFields,
-        ...generateMissingOrAliasedSortFields({ selection: selectedFields, resolveTree }),
-        ...generateMissingOrAliasedRequiredFields({ selection: selectedFields, node }),
-    };
+    // Merge fields for final projection to account for multiple fragments
+    // cf. https://github.com/neo4j/graphql/issues/920
+    const mergedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
+        mergedSelectedFields,
+        generateMissingOrAliasedSortFields({ selection: mergedSelectedFields, resolveTree }),
+        generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
+    ]);
 
-    const { projection, params, meta } = Object.values(fields).reduce(reducer, {
+    const { projection, params, meta } = Object.values(mergedFields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
         params: {},
         meta: {},
     });
 
     return [`{ ${projection.join(", ")} }`, params, meta];
+}
+
+function sortReducer(s: string[], sort: GraphQLSortArg) {
+    return [
+        ...s,
+        ...Object.entries(sort).map(([fieldName, direction]) => {
+            if (direction === "DESC") {
+                return `'${fieldName}'`;
+            }
+
+            return `'^${fieldName}'`;
+        }),
+    ];
 }
 
 export default createProjectionAndParams;

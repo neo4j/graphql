@@ -20,21 +20,21 @@
 import { DirectiveNode, NamedTypeNode } from "graphql";
 import pluralize from "pluralize";
 import type {
-    RelationField,
+    Auth,
     ConnectionField,
-    CypherField,
-    PrimitiveField,
+    Context,
     CustomEnumField,
     CustomScalarField,
-    UnionField,
-    InterfaceField,
-    ObjectField,
-    TemporalField,
-    PointField,
-    Auth,
-    Context,
+    CypherField,
     FullText,
     IgnoredField,
+    InterfaceField,
+    ObjectField,
+    PointField,
+    PrimitiveField,
+    RelationField,
+    TemporalField,
+    UnionField,
 } from "../types";
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
@@ -85,8 +85,6 @@ type AuthableField =
     | TemporalField
     | PointField
     | CypherField;
-
-type SortableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | PointField | CypherField;
 
 type ConstrainableField = PrimitiveField | TemporalField | PointField;
 
@@ -150,18 +148,6 @@ class Node extends GraphElement {
             ...this.pointFields,
             ...this.cypherFields,
         ];
-    }
-
-    /** Fields you can sort on */
-    public get sortableFields(): SortableField[] {
-        return [
-            ...this.primitiveFields,
-            ...this.scalarFields,
-            ...this.enumFields,
-            ...this.temporalFields,
-            ...this.pointFields,
-            ...this.cypherFields.filter((field) => field.isScalar || field.isEnum),
-        ].filter((field) => !field.typeMeta.array);
     }
 
     public get constrainableFields(): ConstrainableField[] {
