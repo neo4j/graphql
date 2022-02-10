@@ -147,7 +147,7 @@ describe("Connect Or Create", () => {
 
             input ActorActedInMovieConnectOrCreateFieldInputOnCreate {
               edge: ActedInCreateInput!
-              node: MovieCreateInput!
+              node: MovieOnCreateInput!
             }
 
             input ActorActedInMovieConnectionWhere {
@@ -211,7 +211,7 @@ describe("Connect Or Create", () => {
 
             input ActorActedInSeriesConnectOrCreateFieldInputOnCreate {
               edge: ActedInCreateInput!
-              node: SeriesCreateInput!
+              node: SeriesOnCreateInput!
             }
 
             input ActorActedInSeriesConnectionWhere {
@@ -385,6 +385,11 @@ describe("Connect Or Create", () => {
               title: String!
             }
 
+            input MovieOnCreateInput {
+              isan: String
+              title: String
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -499,6 +504,11 @@ describe("Connect Or Create", () => {
             input SeriesCreateInput {
               isan: String!
               title: String!
+            }
+
+            input SeriesOnCreateInput {
+              isan: String
+              title: String
             }
 
             input SeriesOptions {

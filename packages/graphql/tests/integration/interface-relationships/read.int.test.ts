@@ -19,7 +19,7 @@
 
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
@@ -79,15 +79,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesEpisodes = faker.random.number();
-        const seriesScreenTime = faker.random.number();
+        const seriesEpisodes = faker.datatype.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             query Actors($name: String) {
@@ -243,21 +243,21 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesEpisodes = faker.random.number();
-        const seriesScreenTime = faker.random.number();
+        const seriesEpisodes = faker.datatype.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const newMovieTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const newMovieRuntime = faker.random.number();
+        const newMovieRuntime = faker.datatype.number();
 
         const query = `
             query Actors($name: String) {
@@ -334,11 +334,11 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
-        const seriesEpisodes = faker.random.number();
-        const seriesScreenTime = faker.random.number();
+        const seriesEpisodes = faker.datatype.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             query Actors($name: String, $title: String) {
@@ -412,11 +412,11 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
-        const seriesEpisodes = faker.random.number();
-        const seriesScreenTime = faker.random.number();
+        const seriesEpisodes = faker.datatype.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             query Actors($name: String, $title: String) {
@@ -482,11 +482,11 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
-        const seriesEpisodes = faker.random.number();
-        const seriesScreenTime = faker.random.number();
+        const seriesEpisodes = faker.datatype.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             query Actors($name: String, $title: String, $movieTitle: String) {

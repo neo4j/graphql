@@ -23,6 +23,7 @@ import { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { Context } from "../types";
 import { DEBUG_AUTH } from "../constants";
+import { Neo4jGraphQLAuthenticationError } from "../classes/Error";
 
 const debug = Debug(DEBUG_AUTH);
 
@@ -88,9 +89,7 @@ export async function getJWT(context: Context): Promise<JwtPayload | undefined> 
         } else if (jwtConfig.secret) {
             debug("Verifying JWT using secret");
 
-            result = jsonwebtoken.verify(token, jwtConfig.secret, {
-                algorithms: ["HS256", "RS256"],
-            });
+            result = verifyToken(token, jwtConfig.secret);
         }
     } catch (error) {
         debug("%s", error);
@@ -119,8 +118,20 @@ async function verifyJWKS(client: JwksClient, token: string): Promise<JwtPayload
             },
             (err, decoded) => {
                 if (err) reject(err);
-                else resolve(decoded);
+                if (typeof decoded === "string") {
+                    reject(new Neo4jGraphQLAuthenticationError("JWT payload cannot be a string"));
+                } else resolve(decoded);
             }
         );
     });
+}
+
+function verifyToken(token: string, secret: string): JwtPayload | undefined {
+    const result = jsonwebtoken.verify(token, secret, {
+        algorithms: ["HS256", "RS256"],
+    });
+    if (typeof result === "string") {
+        throw new Neo4jGraphQLAuthenticationError("JWT payload cannot be a string");
+    }
+    return result;
 }
