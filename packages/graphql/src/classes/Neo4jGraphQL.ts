@@ -34,6 +34,7 @@ import assertIndexesAndConstraints, {
 import { wrapResolver } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers";
 import { Secret } from "jsonwebtoken";
+import { asArray } from "src/utils/utils";
 
 export interface Neo4jGraphQLJWT {
     jwksEndpoint?: string;
@@ -142,18 +143,8 @@ class Neo4jGraphQL {
             "Mutation.*": [wrapResolver(wrapResolverArgs)],
         };
 
-        // this.schemaDefinition.resolvers can either be undefined, IResolvers or IResolvers[]
-        let allResolvers = [resolvers];
-        if (this.schemaDefinition.resolvers) {
-            if (Array.isArray(this.schemaDefinition.resolvers)) {
-                allResolvers = [...allResolvers, ...this.schemaDefinition.resolvers];
-            } else {
-                allResolvers.push(this.schemaDefinition.resolvers);
-            }
-        }
-
         // Merge generated and custom resolvers
-        const mergedResolvers = mergeResolvers(allResolvers);
+        const mergedResolvers = mergeResolvers(resolvers, ...asArray(this.schemaDefinition.resolvers));
 
         return composeResolvers(mergedResolvers, resolversComposition);
     }
