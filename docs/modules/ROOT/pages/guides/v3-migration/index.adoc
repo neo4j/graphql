@@ -1,11 +1,8 @@
 [[v3-migration]]
 = 3.0.0 Migration
-
-Version 3.0.0 of `@neo4j/graphql` contains several breaking changes over 2.x.y. This document lists all braking changes
-and how to update from 2.x.y.
+This document lists all breaking changes from version 2.x.y to 3.0.0 and how to update.
 
 == How to upgrade
-
 Simply update `@neo4j/graphql` using npm or your package manager of choice:
 
 [source, bash, indent=0]
@@ -18,7 +15,7 @@ Schema generation is now asynchronous. Instead of using the property `schema`, n
 as a _Promise_. This means that creating a server now requires awaiting for that method:
 
 Instead of
-[source, typescript, indent=0]
+[source, JavaScript, indent=0]
 ----
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 const server = new ApolloServer({
@@ -28,12 +25,12 @@ const server = new ApolloServer({
 
 Now you'll need to do the following:
 
-[source, typescript, indent=0]
+[source, JavaScript, indent=0]
 ----
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-const schema = await neoSchema.getSchema()
+const schema = await neoSchema.getSchema();
 const server = new ApolloServer({
-    schema
+    schema: schema
 });
 ----
 
@@ -41,7 +38,7 @@ const server = new ApolloServer({
 This release contains an overhaul of our relationship validations, this will require a few changes to the schema.
 
 === Many to * relationships
-To improve consistency and validation, **all** many to * relationships need to be defined as required in the schema:
+To improve consistency and validation, **all** "many to *" relationships need to be defined as _required_ in the schema:
 
 [source, graphql, indent=0]
 ----
@@ -51,14 +48,14 @@ type Movie {
 }
 ----
 
-Note that any other notation, such as `[Actor]` or `[Actor!]` will **not** be valid. One to one relationships
+Note that any other notation, such as `[Actor]` or `[Actor!]` will **not** be valid. "One to one" relationships
 such as `director` remain unchanged.
 
 === Relationship cardinality
-Runtime checks for relationships, to ensure relationships have the expected number of connections
-have been rolled in with this release, this means that some databases with inconsistent relationships between
-the schema definition and the actual data may now throw in some instances. For those cases, please ensure that the database
-is following your schema definition or update the schema to reflect the actual existing relationships.
+Runtime checks for relationships number of connections have been rolled in with this release, this means that some
+databases with inconsistent relationships between the schema definition and the actual data may now fail in some queries.
+For those cases, please ensure that the database is following your schema definition or update the schema to reflect the
+actual existing relationships.
 
 == Count query no longer supported
 Queries using `count` at the root level are no longer supported. For example:
@@ -81,9 +78,9 @@ Query {
 ----
 
 == Relationship filters
-`where` filters for relationship queries will explicitly state `ALL`, `NONE`, `SINGLE`, and `SOME` in the filter name.
+`where` filters for relationship queries now explicitly state `ALL`, `NONE`, `SINGLE`, and `SOME` as part of filter name.
 
-So, queries using old relationship filters, will now need to use `{relationship}_NONE`. For example:
+Queries using old relationship filters, will now need to use `{relationship}_NONE`. For example:
 
 [source, graphql, indent=0]
 ----
@@ -115,25 +112,24 @@ Query {
 
 And, instead of `_NOT`, `_NONE` should be used.
 
-Note that old queries will still work in this release, but are marked as `@deprecated` and will not be available in the future.
+NOTE: Old queries will still work in this release, but are marked as `@deprecated` and will not be available in the future.
 
 == `@ignore` directive renamed to `@computed`
-To better reflect its usage, the `@ignore` directive is now named `@computed`, behaviour is unchanged, so you just need to
+To better reflect its intended usage, the `@ignore` directive is now named `@computed`, behaviour is unchanged, so you just need to
 rename this directive in your schema.
 
 == Auth plugin system
-https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets[JSON Web Key Sets] support through `jwksEndpoint` option is no longer supported
-directly by `@neo4j/graphql`.
+https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets[JSON Web Key Sets] support through `jwksEndpoint` option is no longer
+provided directly by `@neo4j/graphql`.
 
 This feature is now available as a plugin `@neo4j/graphql-plugin-auth` that can be installed if needed:
 
-[source, typescript, indent=0]
+[source, JavaScript, indent=0]
 ----
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
+const { JWTPlugin } = require("@neo4j/graphql-plugin-auth");
 
 const neoSchema = new Neo4jGraphQL({
      typeDefs,
-     config: { enableRegex: true },
      plugins: {
          jwt: new JWTPlugin({
              secret: "secret",
@@ -147,11 +143,11 @@ To improve consistency, some automatically generated plurals (e.g. `createActors
 your types use conventions such as `snake_case`.
 
 Because of this, you may find generated queries and mutations may have different names. If you encounter this problem,
-please update your clients to use the new query names, or use the `plural` option in the xref::type-definitions/database-mapping.adoc#_plural[`@node directive`]
+please update your clients to use the new query names or use the `plural` option in the xref::type-definitions/database-mapping.adoc#_plural[`@node directive`]
 to force a custom plural value.
 
 == Types changes
-some automatically generated types have changed to improve consistency.
+Some automatically generated types have changed to improve consistency.
 These should not require any changes from most developers, unless types names are directly used.
 
 If you are using auto-generated type names, please check the full list of xref::guides/v3-migration/generated-types.adoc[generated types changes].

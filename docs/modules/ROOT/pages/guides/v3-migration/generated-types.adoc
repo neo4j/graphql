@@ -31,6 +31,3 @@ type UserAggregateSelection {
 
 === ConnectionWhere types renamed
 `ConnectionWhere` types renamed to improve consistency with other similarly named types.
-
-=== ScalarOrEnum
-TODO
