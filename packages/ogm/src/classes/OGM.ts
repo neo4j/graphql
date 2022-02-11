@@ -85,7 +85,7 @@ class OGM<ModelMap = {}> {
                     }
                 `;
 
-        model.init({ schema: this.schema!, selectionSet });
+        model.init({ schema: this.schema, selectionSet });
     }
 
     async init(): Promise<void> {
