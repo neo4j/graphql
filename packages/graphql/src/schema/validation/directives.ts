@@ -62,6 +62,19 @@ export const coalesceDirective = new GraphQLDirective({
     },
 });
 
+export const computedDirective = new GraphQLDirective({
+    name: "computed",
+    description:
+        "Informs @neo4j/graphql that a field will be resolved by a custom resolver, and allows specification of any field dependencies.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        from: {
+            description: "Fields that the custom resolver will depend on.",
+            type: new GraphQLList(new GraphQLNonNull(GraphQLString)),
+        },
+    },
+});
+
 export const cypherDirective = new GraphQLDirective({
     name: "cypher",
     description:
@@ -103,6 +116,35 @@ export const excludeDirective = new GraphQLDirective({
     },
 });
 
+export const fulltextDirective = new GraphQLDirective({
+    name: "fulltext",
+    description:
+        "Informs @neo4j/graphql that there should be a fulltext index in the database, allows users to search by the index in the generated schema.",
+    args: {
+        indexes: {
+            type: new GraphQLNonNull(
+                new GraphQLList(
+                    new GraphQLInputObjectType({
+                        name: "FullTextInput",
+                        fields: {
+                            name: {
+                                type: new GraphQLNonNull(GraphQLString),
+                            },
+                            fields: {
+                                type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
+                            },
+                            defaultThreshold: {
+                                type: GraphQLInt,
+                            },
+                        },
+                    })
+                )
+            ),
+        },
+    },
+    locations: [DirectiveLocation.OBJECT],
+});
+
 export const idDirective = new GraphQLDirective({
     name: "id",
     description:
@@ -116,19 +158,6 @@ export const idDirective = new GraphQLDirective({
         unique: {
             defaultValue: true,
             type: new GraphQLNonNull(GraphQLBoolean),
-        },
-    },
-});
-
-export const ignoreDirective = new GraphQLDirective({
-    name: "ignore",
-    description:
-        "Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers.",
-    locations: [DirectiveLocation.FIELD_DEFINITION],
-    args: {
-        dependsOn: {
-            description: "Fields that the custom resolver will depend on",
-            type: new GraphQLList(new GraphQLNonNull(GraphQLString)),
         },
     },
 });
@@ -157,6 +186,30 @@ export const privateDirective = new GraphQLDirective({
     name: "private",
     description: "Instructs @neo4j/graphql to only expose a field through the Neo4j GraphQL OGM.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
+});
+
+export const queryOptions = new GraphQLDirective({
+    name: "queryOptions",
+    description: "Instructs @neo4j/graphql to inject default values into a query such as a default limit.",
+    args: {
+        limit: {
+            description: "Limit options.",
+            type: new GraphQLInputObjectType({
+                name: "LimitInput",
+                fields: {
+                    default: {
+                        description: "If no limit argument is supplied on query will fallback to this value.",
+                        type: GraphQLInt,
+                    },
+                    max: {
+                        description: "Maximum limit to be used for queries.",
+                        type: GraphQLInt,
+                    },
+                },
+            }),
+        },
+    },
+    locations: [DirectiveLocation.OBJECT],
 });
 
 export const readonlyDirective = new GraphQLDirective({
@@ -229,57 +282,4 @@ export const writeonlyDirective = new GraphQLDirective({
     description:
         "Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
-});
-
-export const fulltextDirective = new GraphQLDirective({
-    name: "fulltext",
-    description:
-        "Informs @neo4j/graphql that there should be a fulltext index in the database, allows users to search by the index in the generated schema.",
-    args: {
-        indexes: {
-            type: new GraphQLNonNull(
-                new GraphQLList(
-                    new GraphQLInputObjectType({
-                        name: "FullTextInput",
-                        fields: {
-                            name: {
-                                type: new GraphQLNonNull(GraphQLString),
-                            },
-                            fields: {
-                                type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
-                            },
-                            defaultThreshold: {
-                                type: GraphQLInt,
-                            },
-                        },
-                    })
-                )
-            ),
-        },
-    },
-    locations: [DirectiveLocation.OBJECT],
-});
-
-export const queryOptions = new GraphQLDirective({
-    name: "queryOptions",
-    description: "Instructs @neo4j/graphql to inject default values into a query such as a default limit.",
-    args: {
-        limit: {
-            description: "Limit options.",
-            type: new GraphQLInputObjectType({
-                name: "LimitInput",
-                fields: {
-                    default: {
-                        description: "If no limit argument is supplied on query will fallback to this value.",
-                        type: GraphQLInt,
-                    },
-                    max: {
-                        description: "Maximum limit to be used for queries.",
-                        type: GraphQLInt,
-                    },
-                },
-            }),
-        },
-    },
-    locations: [DirectiveLocation.OBJECT],
 });

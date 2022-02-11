@@ -18,9 +18,9 @@
  */
 
 import { FieldDefinitionNode, Kind } from "graphql";
-import getIgnoreMeta, { ERROR_MESSAGE } from "./get-ignore-meta";
+import getComputedMeta, { ERROR_MESSAGE } from "./get-computed-meta";
 
-describe("getIgnoreMeta", () => {
+describe("getComputedMeta", () => {
     test("should return undefined if no directive found", () => {
         // @ts-ignore
         const field: FieldDefinitionNode = {
@@ -44,24 +44,24 @@ describe("getIgnoreMeta", () => {
             ],
         };
 
-        const result = getIgnoreMeta(field);
+        const result = getComputedMeta(field);
 
         expect(result).toBeUndefined();
     });
 
-    test("should throw if dependsOn not a list", () => {
+    test("should throw if from not a list", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
                     // @ts-ignore
                     name: {
-                        value: "ignore",
+                        value: "computed",
                         // @ts-ignore
                     },
                     arguments: [
                         {
                             // @ts-ignore
-                            name: { value: "dependsOn" },
+                            name: { value: "from" },
                             // @ts-ignore
                             value: { kind: Kind.BOOLEAN },
                         },
@@ -82,22 +82,22 @@ describe("getIgnoreMeta", () => {
             ],
         };
 
-        expect(() => getIgnoreMeta(field)).toThrow(ERROR_MESSAGE);
+        expect(() => getComputedMeta(field)).toThrow(ERROR_MESSAGE);
     });
 
-    test("should throw if dependsOn not a list of strings", () => {
+    test("should throw if from not a list of strings", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
                     // @ts-ignore
                     name: {
-                        value: "ignore",
+                        value: "computed",
                         // @ts-ignore
                     },
                     arguments: [
                         {
                             // @ts-ignore
-                            name: { value: "dependsOn" },
+                            name: { value: "from" },
                             // @ts-ignore
                             value: {
                                 kind: Kind.LIST,
@@ -125,16 +125,16 @@ describe("getIgnoreMeta", () => {
             ],
         };
 
-        expect(() => getIgnoreMeta(field)).toThrow(ERROR_MESSAGE);
+        expect(() => getComputedMeta(field)).toThrow(ERROR_MESSAGE);
     });
 
-    test("should return the correct meta if no dependsOn argument", () => {
+    test("should return the correct meta if no from argument", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
                     // @ts-ignore
                     name: {
-                        value: "ignore",
+                        value: "computed",
                         // @ts-ignore
                     },
                 },
@@ -153,27 +153,27 @@ describe("getIgnoreMeta", () => {
             ],
         };
 
-        const result = getIgnoreMeta(field);
+        const result = getComputedMeta(field);
 
         expect(result).toMatchObject({
             requiredFields: [],
         });
     });
 
-    test("should return the correct meta with dependsOn argument", () => {
+    test("should return the correct meta with from argument", () => {
         const requiredFields = ["field1", "field2", "field3"];
         const field: FieldDefinitionNode = {
             directives: [
                 {
                     // @ts-ignore
                     name: {
-                        value: "ignore",
+                        value: "computed",
                         // @ts-ignore
                     },
                     arguments: [
                         {
                             // @ts-ignore
-                            name: { value: "dependsOn" },
+                            name: { value: "from" },
                             // @ts-ignore
                             value: {
                                 kind: Kind.LIST,
@@ -200,7 +200,7 @@ describe("getIgnoreMeta", () => {
             ],
         };
 
-        const result = getIgnoreMeta(field);
+        const result = getComputedMeta(field);
 
         expect(result).toMatchObject({
             requiredFields,
