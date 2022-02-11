@@ -155,7 +155,7 @@ class Neo4jGraphQL {
         };
 
         // Merge generated and custom resolvers
-        const mergedResolvers = mergeResolvers(resolvers, ...asArray(this.schemaDefinition.resolvers));
+        const mergedResolvers = mergeResolvers([resolvers, ...asArray(this.schemaDefinition.resolvers)]);
 
         return composeResolvers(mergedResolvers, resolversComposition);
     }
