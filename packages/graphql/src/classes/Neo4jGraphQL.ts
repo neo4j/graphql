@@ -74,6 +74,60 @@ class Neo4jGraphQL {
         this.schemaDefinition = schemaDefinition;
     }
 
+    public get nodes(): Node[] {
+        if (!this._nodes) {
+            throw new Error("You must await `.getSchema()` before accessing `nodes`");
+        }
+
+        return this._nodes;
+    }
+
+    public get relationships(): Relationship[] {
+        if (!this._relationships) {
+            throw new Error("You must await `.getSchema()` before accessing `relationships`");
+        }
+
+        return this._relationships;
+    }
+
+    async getSchema(): Promise<GraphQLSchema> {
+        if (!this.schema) {
+            this.schema = this.generateSchema();
+        }
+
+        return this.schema;
+    }
+
+    async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
+        const driver = input.driver || this.driver;
+        const driverConfig = input.driverConfig || this.config?.driverConfig;
+
+        if (!driver) {
+            throw new Error("neo4j-driver Driver missing");
+        }
+
+        return checkNeo4jCompat({ driver, driverConfig });
+    }
+
+    async assertIndexesAndConstraints(
+        input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
+    ): Promise<void> {
+        if (!this.schema) {
+            throw new Error("You must call `.getSchema()` before `.assertIndexesAndConstraints()`");
+        }
+
+        await this.schema;
+
+        const driver = input.driver || this.driver;
+        const driverConfig = input.driverConfig || this.config?.driverConfig;
+
+        if (!driver) {
+            throw new Error("neo4j-driver Driver missing");
+        }
+
+        await assertIndexesAndConstraints({ driver, driverConfig, nodes: this.nodes, options: input.options });
+    }
+
     private generateSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(this.schemaDefinition.typeDefs, {
@@ -122,60 +176,6 @@ class Neo4jGraphQL {
 
             resolve(schema);
         });
-    }
-
-    async getSchema(): Promise<GraphQLSchema> {
-        if (!this.schema) {
-            this.schema = this.generateSchema();
-        }
-
-        return this.schema;
-    }
-
-    public get nodes(): Node[] {
-        if (!this._nodes) {
-            throw new Error("You must await `.getSchema()` before accessing `nodes`");
-        }
-
-        return this._nodes;
-    }
-
-    public get relationships(): Relationship[] {
-        if (!this._relationships) {
-            throw new Error("You must await `.getSchema()` before accessing `relationships`");
-        }
-
-        return this._relationships;
-    }
-
-    async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
-        const driver = input.driver || this.driver;
-        const driverConfig = input.driverConfig || this.config?.driverConfig;
-
-        if (!driver) {
-            throw new Error("neo4j-driver Driver missing");
-        }
-
-        return checkNeo4jCompat({ driver, driverConfig });
-    }
-
-    async assertIndexesAndConstraints(
-        input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
-    ): Promise<void> {
-        if (!this.schema) {
-            throw new Error("You must call `.getSchema()` before `.assertIndexesAndConstraints()`");
-        }
-
-        await this.schema;
-
-        const driver = input.driver || this.driver;
-        const driverConfig = input.driverConfig || this.config?.driverConfig;
-
-        if (!driver) {
-            throw new Error("neo4j-driver Driver missing");
-        }
-
-        await assertIndexesAndConstraints({ driver, driverConfig, nodes: this.nodes, options: input.options });
     }
 }
 

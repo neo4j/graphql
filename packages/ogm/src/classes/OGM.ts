@@ -25,9 +25,9 @@ import { filterDocument } from "../utils";
 export type OGMConstructor = Neo4jGraphQLConstructor;
 
 class OGM<ModelMap = {}> {
-    private models: Model[];
-
     public checkNeo4jCompat: () => Promise<void>;
+
+    private models: Model[];
 
     private neoSchema: Neo4jGraphQL;
 
@@ -69,6 +69,33 @@ class OGM<ModelMap = {}> {
         }
     }
 
+    public async init(): Promise<void> {
+        if (!this.initializer) {
+            this.initializer = this.createInitializer();
+        }
+
+        return this.initializer;
+    }
+
+    public model<M extends T extends keyof ModelMap ? ModelMap[T] : Model, T extends keyof ModelMap | string = string>(
+        name: T
+    ): M {
+        let model = this.models.find((n) => n.name === name);
+
+        if (model) {
+            return model as M;
+        }
+
+        model = new Model(name as string);
+
+        if (this._schema) {
+            this.initModel(model);
+        }
+
+        this.models.push(model);
+        return model as M;
+    }
+
     private initModel(model: Model) {
         const node = this.neoSchema.nodes.find((n) => n.name === model.name);
 
@@ -98,33 +125,6 @@ class OGM<ModelMap = {}> {
                 resolve();
             });
         });
-    }
-
-    async init(): Promise<void> {
-        if (!this.initializer) {
-            this.initializer = this.createInitializer();
-        }
-
-        return this.initializer;
-    }
-
-    model<M extends T extends keyof ModelMap ? ModelMap[T] : Model, T extends keyof ModelMap | string = string>(
-        name: T
-    ): M {
-        let model = this.models.find((n) => n.name === name);
-
-        if (model) {
-            return model as M;
-        }
-
-        model = new Model(name as string);
-
-        if (this._schema) {
-            this.initModel(model);
-        }
-
-        this.models.push(model);
-        return model as M;
     }
 }
 
