@@ -213,6 +213,65 @@ describe("Custom Resolvers", () => {
         expect(next.value.id).toEqual(id);
     });
 
+    test("should accept an array of custom resolvers", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Movie {
+              id: ID
+              custom1: String
+              custom2: String
+            }
+        `;
+
+        function customResolver1(root) {
+            return (root.id as string).toUpperCase();
+        }
+
+        function customResolver2(root) {
+            return (root.id as string).toLowerCase();
+        }
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers: [{ Movie: { custom1: customResolver1 } }, { Movie: { custom2: customResolver2 } }],
+        });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const create = `
+            mutation {
+                createMovies(input:[{id: "${id}"}]) {
+                    movies {
+                        id
+                        custom1
+                        custom2
+                    }
+                }
+            }
+        `;
+
+        try {
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: create,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({
+                id,
+                custom1: id.toUpperCase(),
+                custom2: id.toLowerCase(),
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
     describe("@cypher", () => {
         test("should define custom Query (with cypher directive) and resolve each value", async () => {
             await Promise.all(
