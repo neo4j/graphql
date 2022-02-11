@@ -204,6 +204,7 @@ input Actor2MoviesUpdateFieldInput {
 }
 
 input Actor2Options {
+  distinct: Boolean
   limit: Int
   offset: Int
   \\"\\"\\"
@@ -401,6 +402,7 @@ input ActorMoviesUpdateFieldInput {
 }
 
 input ActorOptions {
+  distinct: Boolean
   limit: Int
   offset: Int
   \\"\\"\\"
@@ -518,6 +520,7 @@ input MovieOnCreateInput {
 }
 
 input MovieOptions {
+  distinct: Boolean
   limit: Int
   offset: Int
   \\"\\"\\"
