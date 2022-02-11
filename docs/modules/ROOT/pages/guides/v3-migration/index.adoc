@@ -80,10 +80,46 @@ Query {
 }
 ----
 
+== Relationship filters
+`where` filters for relationship queries will explicitly state `ALL`, `NONE`, `SINGLE`, and `SOME` in the filter name.
+
+So, queries using old relationship filters, will now need to use `{relationship}_NONE`. For example:
+
+[source, graphql, indent=0]
+----
+Query {
+  movies(where: {
+    actors: {
+      name: "John"
+    }
+  }) {
+    title
+  }
+}
+----
+
+Should be:
+
+[source, graphql, indent=0]
+----
+Query {
+  movies(where: {
+    actors_SOME: {
+      name: "John"
+    }
+  }) {
+    title
+  }
+}
+----
+
+And, instead of `_NOT`, `_NONE` should be used.
+
+Note that old queries will still work in this release, but are marked as `@deprecated` and will not be available in the future.
+
 == `@ignore` directive renamed to `@computed`
 To better reflect its usage, the `@ignore` directive is now named `@computed`, behaviour is unchanged, so you just need to
 rename this directive in your schema.
-
 
 == Auth plugin system
 https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets[JSON Web Key Sets] support through `jwksEndpoint` option is no longer supported
@@ -105,12 +141,6 @@ const neoSchema = new Neo4jGraphQL({
      },
  });
 ----
-
-
-* [Relationship filters](https://github.com/neo4j/graphql/pull/796/files)
-
-
-
 
 == Types plurals changes
 To improve consistency, some automatically generated plurals (e.g. `createActors`) have changed. This may cause issues if
