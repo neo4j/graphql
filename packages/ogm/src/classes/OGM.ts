@@ -88,12 +88,8 @@ class OGM<ModelMap = {}> {
         model.init({ schema: this.schema, selectionSet });
     }
 
-    async init(): Promise<void> {
-        if (this.initializer) {
-            return this.initializer;
-        }
-
-        this.initializer = new Promise((resolve) => {
+    private createInitializer(): Promise<void> {
+        return new Promise((resolve) => {
             this.neoSchema.getSchema().then((schema) => {
                 this._schema = schema;
 
@@ -102,6 +98,12 @@ class OGM<ModelMap = {}> {
                 resolve();
             });
         });
+    }
+
+    async init(): Promise<void> {
+        if (!this.initializer) {
+            this.initializer = this.createInitializer();
+        }
 
         return this.initializer;
     }

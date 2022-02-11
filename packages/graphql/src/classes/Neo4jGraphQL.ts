@@ -74,12 +74,8 @@ class Neo4jGraphQL {
         this.schemaDefinition = schemaDefinition;
     }
 
-    async getSchema(): Promise<GraphQLSchema> {
-        if (this.schema) {
-            return this.schema;
-        }
-
-        this.schema = new Promise((resolve) => {
+    private generateSchema(): Promise<GraphQLSchema> {
+        return new Promise((resolve) => {
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(this.schemaDefinition.typeDefs, {
                 enableRegex: this.config?.enableRegex,
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
@@ -126,6 +122,12 @@ class Neo4jGraphQL {
 
             resolve(schema);
         });
+    }
+
+    async getSchema(): Promise<GraphQLSchema> {
+        if (!this.schema) {
+            this.schema = this.generateSchema();
+        }
 
         return this.schema;
     }
