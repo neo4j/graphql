@@ -123,7 +123,6 @@ export interface BaseField {
     description?: string;
     readonly?: boolean;
     writeonly?: boolean;
-    // ignored?: boolean;
     dbPropertyName?: string;
     unique?: Unique;
 }
