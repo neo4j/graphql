@@ -199,7 +199,7 @@ const { CypherRuntime } = require("@neo4j/graphql");
 [[api-reference-getschema]]
 == `getSchema`
 
-Asynchronous method which generates the GraphQL schema to be used in a server. Thr result is memoized, so if this is called twice, the schema is only generated once.
+An asynchronous method that generates the GraphQL schema to be used in a server. The result is memoized, so if this is called twice, the schema is only generated once.
 
 [[api-reference-checkneo4jcompat]]
 == `checkNeo4jCompat`
