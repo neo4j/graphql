@@ -18,7 +18,7 @@
  */
 
 import { IncomingMessage } from "http";
-import jsonwebtoken, { JwtHeader, JwtPayload, SigningKeyCallback } from "jsonwebtoken";
+import jsonwebtoken, { JwtHeader, JwtPayload, Secret, SigningKeyCallback } from "jsonwebtoken";
 import { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { Context } from "../types";
@@ -28,7 +28,7 @@ import { Neo4jGraphQLAuthenticationError } from "../classes/Error";
 const debug = Debug(DEBUG_AUTH);
 
 export async function getJWT(context: Context): Promise<JwtPayload | undefined> {
-    const jwtConfig = context.neoSchema.config?.jwt;
+    const jwtConfig = context.jwtConfig;
     let result: JwtPayload | undefined;
     let client: JwksClient;
 
@@ -126,7 +126,7 @@ async function verifyJWKS(client: JwksClient, token: string): Promise<JwtPayload
     });
 }
 
-function verifyToken(token: string, secret: string): JwtPayload | undefined {
+function verifyToken(token: string, secret: Secret): JwtPayload | undefined {
     const result = jsonwebtoken.verify(token, secret, {
         algorithms: ["HS256", "RS256"],
     });

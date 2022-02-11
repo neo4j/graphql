@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@readonly directive", () => {
-    test("makes a field readonly", () => {
+    test("makes a field readonly", async () => {
         const typeDefs = gql`
             type User {
                 id: ID! @readonly
@@ -31,7 +31,7 @@ describe("@readonly directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -161,7 +161,7 @@ describe("@readonly directive", () => {
         `);
     });
 
-    test("makes an inherited field readonly", () => {
+    test("makes an inherited field readonly", async () => {
         const typeDefs = gql`
             interface UserInterface {
                 id: ID! @readonly
@@ -174,7 +174,7 @@ describe("@readonly directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

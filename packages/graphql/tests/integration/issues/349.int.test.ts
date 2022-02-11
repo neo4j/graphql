@@ -46,25 +46,29 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
     const { disallowDirectiveTypeDefs, disallowDirectiveTransformer } = disallowDirective("disallow");
 
     describe("https://github.com/neo4j/graphql/issues/349#issuecomment-885295157", () => {
-        const neo4jGraphQL = new Neo4jGraphQL({
-            typeDefs: [
-                disallowDirectiveTypeDefs,
-                gql`
-                    type Mutation {
-                        doStuff: String! @disallow
-                    }
+        let schema: GraphQLSchema;
 
-                    type Query {
-                        noop: Boolean
-                    }
-                `,
-            ],
+        beforeAll(async () => {
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs: [
+                    disallowDirectiveTypeDefs,
+                    gql`
+                        type Mutation {
+                            doStuff: String! @disallow
+                        }
 
-            driver: neo4j.driver("bolt://localhost:7687"),
-            resolvers: { Mutation: { doStuff: () => "OK" } },
+                        type Query {
+                            noop: Boolean
+                        }
+                    `,
+                ],
+
+                driver: neo4j.driver("bolt://localhost:7687"),
+                resolvers: { Mutation: { doStuff: () => "OK" } },
+            });
+
+            schema = disallowDirectiveTransformer(await neoSchema.getSchema());
         });
-
-        const schema = disallowDirectiveTransformer(neo4jGraphQL.schema as GraphQLSchema);
 
         test("DisallowDirective", async () => {
             const gqlResult = await graphql({
@@ -83,45 +87,49 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
     });
 
     describe("https://github.com/neo4j/graphql/issues/349#issuecomment-885311918", () => {
-        const neo4jGraphQL = new Neo4jGraphQL({
-            typeDefs: [
-                disallowDirectiveTypeDefs,
-                gql`
-                    type NestedResult {
-                        stuff: String! @disallow
-                    }
+        let schema: GraphQLSchema;
 
-                    type Mutation {
-                        doStuff: String! @disallow
-                        doNestedStuff: NestedResult!
-                    }
+        beforeAll(async () => {
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs: [
+                    disallowDirectiveTypeDefs,
+                    gql`
+                        type NestedResult {
+                            stuff: String! @disallow
+                        }
 
-                    type Query {
-                        getStuff: String! @disallow
-                        getNestedStuff: NestedResult!
-                    }
-                `,
-            ],
+                        type Mutation {
+                            doStuff: String! @disallow
+                            doNestedStuff: NestedResult!
+                        }
 
-            driver: neo4j.driver("bolt://localhost:7687"),
-            resolvers: {
-                NestedResult: {
-                    stuff: (parent: string) => parent,
+                        type Query {
+                            getStuff: String! @disallow
+                            getNestedStuff: NestedResult!
+                        }
+                    `,
+                ],
+
+                driver: neo4j.driver("bolt://localhost:7687"),
+                resolvers: {
+                    NestedResult: {
+                        stuff: (parent: string) => parent,
+                    },
+
+                    Mutation: {
+                        doStuff: () => "OK",
+                        doNestedStuff: () => "OK",
+                    },
+
+                    Query: {
+                        getStuff: () => "OK",
+                        getNestedStuff: () => "OK",
+                    },
                 },
+            });
 
-                Mutation: {
-                    doStuff: () => "OK",
-                    doNestedStuff: () => "OK",
-                },
-
-                Query: {
-                    getStuff: () => "OK",
-                    getNestedStuff: () => "OK",
-                },
-            },
+            schema = disallowDirectiveTransformer(await neoSchema.getSchema());
         });
-
-        const schema = disallowDirectiveTransformer(neo4jGraphQL.schema as GraphQLSchema);
 
         test("mutation top - DisallowDirective", async () => {
             const gqlResult = await graphql({
@@ -211,7 +219,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
 
         test("DisallowDirective", async () => {
             const gqlResult = await graphql({
-                schema: neo4jGraphQL.schema,
+                schema: await neo4jGraphQL.getSchema(),
                 source: /* GraphQL */ `
                     mutation {
                         doStuff

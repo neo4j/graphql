@@ -72,7 +72,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -122,7 +122,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -183,7 +183,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -238,7 +238,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -293,7 +293,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -348,7 +348,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -403,7 +403,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -458,7 +458,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -513,7 +513,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });

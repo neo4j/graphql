@@ -89,7 +89,7 @@ describe(`Field Level Auth Where Requests`, () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -110,7 +110,7 @@ describe(`Field Level Auth Where Requests`, () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -131,7 +131,7 @@ describe(`Field Level Auth Where Requests`, () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

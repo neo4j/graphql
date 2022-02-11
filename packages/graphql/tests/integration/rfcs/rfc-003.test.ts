@@ -66,7 +66,7 @@ describe("integration/rfs/003", () => {
                 `;
 
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: mutation,
                     contextValue: { driver },
                 });
@@ -114,7 +114,7 @@ describe("integration/rfs/003", () => {
                     `;
 
                     const result = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: mutation,
                         contextValue: { driver },
                     });
@@ -162,7 +162,7 @@ describe("integration/rfs/003", () => {
                     `);
 
                     const result = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: mutation,
                         contextValue: { driver },
                     });
@@ -223,7 +223,7 @@ describe("integration/rfs/003", () => {
                         `);
 
                         const result = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: mutation,
                             contextValue: { driver },
                         });
@@ -283,7 +283,7 @@ describe("integration/rfs/003", () => {
                         `);
 
                         const result = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: mutation,
                             contextValue: { driver },
                         });
@@ -331,7 +331,7 @@ describe("integration/rfs/003", () => {
                     const mutation = `
                         mutation {
                             updateMovies(
-                                where: { id: "${movieId}" }, 
+                                where: { id: "${movieId}" },
                                 delete: { director: { where: { node: { id: "${directorId}" } } } }
                             ) {
                                 info {
@@ -347,7 +347,7 @@ describe("integration/rfs/003", () => {
                         `);
 
                         const result = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: mutation,
                             contextValue: { driver },
                         });
@@ -395,7 +395,7 @@ describe("integration/rfs/003", () => {
                 `;
 
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: mutation,
                     contextValue: { driver },
                 });
@@ -462,7 +462,7 @@ describe("integration/rfs/003", () => {
                         `);
 
                         const result = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: mutation,
                             contextValue: { driver },
                         });
@@ -518,7 +518,7 @@ describe("integration/rfs/003", () => {
                         `);
 
                         const result = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: mutation,
                             contextValue: { driver },
                         });
@@ -565,10 +565,10 @@ describe("integration/rfs/003", () => {
                     mutation {
                         updateMovies(
                             where: { id: "${movieId}" },
-                            disconnect: { 
+                            disconnect: {
                                 director: { where: { node: { id: "${directorId1}" } } }
                             }
-                            connect: { 
+                            connect: {
                                 director: { where: { node: { id: "${directorId2}" } } }
                             }
                         ) {
@@ -589,7 +589,7 @@ describe("integration/rfs/003", () => {
                     `);
 
                     const result = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: mutation,
                         contextValue: { driver },
                     });
@@ -641,10 +641,10 @@ describe("integration/rfs/003", () => {
                     mutation {
                         updateMovies(
                             where: { id: "${movieId}" },
-                            disconnect: { 
+                            disconnect: {
                                 director: { where: { node: { id: "${directorId1}" } } }
                             }
-                            connect: { 
+                            connect: {
                                 director: { where: { node: { id: "${directorId2}" } } }
                             }
                         ) {
@@ -665,7 +665,7 @@ describe("integration/rfs/003", () => {
                     `);
 
                     const result = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: mutation,
                         contextValue: { driver },
                     });
@@ -719,7 +719,7 @@ describe("integration/rfs/003", () => {
                     mutation {
                         updateMovies(
                             where: { id: "${movieId}" },
-                            connect: { 
+                            connect: {
                                 director: { where: { node: { id_IN: ["${directorId1}", "${directorId2}"] } } }
                             }
                         ) {
@@ -741,7 +741,7 @@ describe("integration/rfs/003", () => {
                     `);
 
                     const result = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: mutation,
                         contextValue: { driver },
                     });

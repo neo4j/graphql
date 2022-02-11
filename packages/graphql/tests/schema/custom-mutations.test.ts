@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Custom-mutations", () => {
-    test("Custom Mutations", () => {
+    test("Custom Mutations", async () => {
         const typeDefs = gql`
             input ExampleInput {
                 id: ID
@@ -48,7 +48,7 @@ describe("Custom-mutations", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

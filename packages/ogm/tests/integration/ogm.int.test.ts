@@ -45,6 +45,8 @@ describe("OGM", () => {
 
         const ogm = new OGM({ typeDefs, driver, config: { driverConfig: { database: "another-random-db" } } });
 
+        await ogm.init();
+
         await expect(ogm.model("Movie").find()).rejects.toThrow();
 
         await session.close();
@@ -60,6 +62,8 @@ describe("OGM", () => {
         `;
 
         const ogm = new OGM({ typeDefs, driver });
+
+        await ogm.init();
 
         const id = generate({
             charset: "alphabetic",
@@ -95,6 +99,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -126,6 +132,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const id = generate({
                 charset: "alphabetic",
@@ -175,6 +183,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -208,6 +218,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const id = generate({
                 charset: "alphabetic",
@@ -244,6 +256,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const id1 = generate({
                 charset: "alphabetic",
@@ -295,6 +309,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const product = {
                 id: generate({
@@ -434,6 +450,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -478,6 +496,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const id1 = generate({
                 charset: "alphabetic",
@@ -539,6 +559,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const movieId = generate({
                 charset: "alphabetic",
             });
@@ -599,6 +621,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const movieId = generate({
                 charset: "alphabetic",
             });
@@ -656,6 +680,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const movieId = generate({
                 charset: "alphabetic",
@@ -715,6 +741,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -749,6 +777,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const movieId = generate({
                 charset: "alphabetic",
@@ -790,6 +820,8 @@ describe("OGM", () => {
             const ogm = new OGM({ typeDefs, driver });
             const User = (ogm.model("User") as unknown) as Model;
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -822,6 +854,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const testId = generate({
                 charset: "alphabetic",
@@ -864,6 +898,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const testId = generate({
                 charset: "alphabetic",

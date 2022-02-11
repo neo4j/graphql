@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/200", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { catOne, catTwo, exampleImageLocations: [] },
             contextValue: { driver },

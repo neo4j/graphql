@@ -5,7 +5,7 @@ import { typeDefs, resolvers } from "../../src/gql";
 import { Context } from "../../src/types";
 import * as config from "../../src/config";
 
-function server(driver, context = {}) {
+async function server(driver, context = {}) {
     const ogm = new OGM({
         typeDefs,
         driver,
@@ -21,8 +21,11 @@ function server(driver, context = {}) {
         },
     });
 
+    const schema = await neoSchema.getSchema();
+    await ogm.init();
+
     const apolloServer = new ApolloServer({
-        schema: neoSchema.schema,
+        schema,
         context: () => ({ ...context, driver, ogm } as Context),
     });
 

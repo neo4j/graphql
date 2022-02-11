@@ -122,7 +122,7 @@ describe("Update -> ConnectOrCreate", () => {
     test("cannot update with ConnectOrCreate auth", async () => {
         await session.run(`CREATE (:${typeMovie.name} { title: "RandomMovie1"})`);
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: getQuerySource(queryUpdate),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -135,7 +135,7 @@ describe("Update -> ConnectOrCreate", () => {
         const req = createJwtRequest(secret, { roles: ["admin"] });
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: getQuerySource(queryUpdate),
             contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -152,7 +152,7 @@ describe("Update -> ConnectOrCreate", () => {
         const req = createJwtRequest(secret, { roles: ["admin"] });
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: getQuerySource(queryCreate),
             contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

@@ -18,7 +18,7 @@
  */
 
 import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
+import { graphql, GraphQLSchema } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
@@ -51,16 +51,20 @@ describe("@ignore directive", () => {
             lastName: generate({ charset: "alphabetic" }),
         };
 
+        let schema: GraphQLSchema;
+
         const fullName = ({ firstName, lastName }) => `${firstName} ${lastName}`;
 
         const resolvers = {
             User: { fullName },
         };
 
-        const { schema } = new Neo4jGraphQL({ typeDefs, resolvers });
-
         beforeAll(async () => {
             const session = driver.session();
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
+            schema = await neoSchema.getSchema();
+
             await session.run(
                 `
                 CREATE (user:User:${testLabel}) SET user = $user
@@ -175,10 +179,14 @@ describe("@ignore directive", () => {
             User: { fullName },
         };
 
-        const { schema } = new Neo4jGraphQL({ typeDefs, resolvers });
+        let schema: GraphQLSchema;
 
         beforeAll(async () => {
             const session = driver.session();
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
+            schema = await neoSchema.getSchema();
+
             await session.run(
                 `
                 CREATE (user:User:${testLabel}) SET user.id = $userId

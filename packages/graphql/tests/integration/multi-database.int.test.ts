@@ -102,7 +102,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
             contextValue: { driver, driverConfig: { database: "non-existing-db" } },
@@ -134,7 +134,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
             contextValue: { driver, driverConfig: { database: dbName } },
@@ -171,7 +171,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
             contextValue: {}, // This is needed, otherwise the context in resolvers will be undefined
@@ -211,7 +211,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
             contextValue: {}, // This is needed, otherwise the context in resolvers will be undefined

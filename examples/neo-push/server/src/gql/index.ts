@@ -20,17 +20,23 @@ export const ogm = new OGM({
     driver,
 });
 
-export const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    resolvers,
-    config: {
-        jwt: {
-            secret: config.NEO4J_GRAPHQL_JWT_SECRET,
-        },
-    },
-});
+export async function getServer(): Promise<ApolloServer> {
+    await ogm.init();
 
-export const server: ApolloServer = new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ req }) => ({ ogm, driver, req } as Context),
-});
+    const neoSchema = new Neo4jGraphQL({
+        typeDefs,
+        resolvers,
+        config: {
+            jwt: {
+                secret: config.NEO4J_GRAPHQL_JWT_SECRET,
+            },
+        },
+    });
+
+    const server: ApolloServer = new ApolloServer({
+        schema: await neoSchema.getSchema(),
+        context: ({ req }) => ({ ogm, driver, req } as Context),
+    });
+
+    return server;
+}

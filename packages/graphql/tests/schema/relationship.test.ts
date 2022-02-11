@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Relationship", () => {
-    test("Single Relationship", () => {
+    test("Single Relationship", async () => {
         const typeDefs = gql`
             type Actor {
                 name: String
@@ -35,7 +35,7 @@ describe("Relationship", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -365,7 +365,7 @@ describe("Relationship", () => {
         `);
     });
 
-    test("Multi Relationship", () => {
+    test("Multi Relationship", async () => {
         const typeDefs = gql`
             type Actor {
                 name: String
@@ -378,7 +378,7 @@ describe("Relationship", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

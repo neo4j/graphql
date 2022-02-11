@@ -90,7 +90,7 @@ describe("413", () => {
             });
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -98,7 +98,7 @@ describe("413", () => {
             expect(result.errors).toBeFalsy();
 
             expect(result.data as any).toEqual({
-                jobPlansAggregate: {count: 3},
+                jobPlansAggregate: { count: 3 },
             });
         } finally {
             await session.close();

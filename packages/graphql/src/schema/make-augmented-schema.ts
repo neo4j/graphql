@@ -18,7 +18,7 @@
  */
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { TypeSource } from "@graphql-tools/utils";
+import { IResolvers, TypeSource } from "@graphql-tools/utils";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
@@ -39,12 +39,7 @@ import {
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import {
-    InputTypeComposer,
-    InputTypeComposerFieldConfigAsObjectDefinition,
-    ObjectTypeComposer,
-    SchemaComposer,
-} from "graphql-compose";
+import { InputTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
 import { Auth, BaseField, FullText, PrimitiveField } from "../types";
@@ -89,7 +84,7 @@ import { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
 function makeAugmentedSchema(
     typeDefs: TypeSource,
     { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
-): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers } {
+): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers: IResolvers } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
     if (!skipValidateTypeDefs) {

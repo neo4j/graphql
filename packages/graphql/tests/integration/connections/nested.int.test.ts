@@ -18,13 +18,14 @@
  */
 
 import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
+import { graphql, GraphQLSchema } from "graphql";
 import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("Connections Alias", () => {
     let driver: Driver;
+    let schema: GraphQLSchema;
 
     const movieTitle = "Forrest Gump";
     const actorName = "Tom Hanks";
@@ -46,10 +47,10 @@ describe("Connections Alias", () => {
         }
     `;
 
-    const { schema } = new Neo4jGraphQL({ typeDefs });
-
     beforeAll(async () => {
         driver = await neo4j();
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        schema = await neoSchema.getSchema();
     });
 
     afterAll(async () => {

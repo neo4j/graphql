@@ -96,7 +96,7 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
             `);
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver },
             });

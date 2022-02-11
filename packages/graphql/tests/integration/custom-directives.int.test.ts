@@ -79,7 +79,7 @@ describe("Custom Directives", () => {
             driver,
         });
 
-        const schema = upperDirectiveTransformer(neoSchema.schema as GraphQLSchema);
+        const schema = upperDirectiveTransformer(await neoSchema.getSchema());
 
         const name = generate({
             charset: "alphabetic",

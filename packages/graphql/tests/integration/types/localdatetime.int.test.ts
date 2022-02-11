@@ -47,9 +47,8 @@ describe("LocalDateTime", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const localDT = faker.date.past().toISOString().split("Z")[0];
@@ -110,9 +109,8 @@ describe("LocalDateTime", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const localDTs = [...new Array(faker.datatype.number({ min: 2, max: 4 }))].map(
@@ -194,9 +192,8 @@ describe("LocalDateTime", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const localDT = faker.date.past().toISOString().split("Z")[0];
@@ -267,9 +264,8 @@ describe("LocalDateTime", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const date = faker.date.future();
@@ -324,7 +320,8 @@ describe("LocalDateTime", () => {
                         }
                     `;
 
-                    const { schema } = new Neo4jGraphQL({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
                     const future = faker.date.future(100).toISOString().split("Z")[0];
@@ -459,7 +456,8 @@ describe("LocalDateTime", () => {
                         }
                     `;
 
-                    const { schema } = new Neo4jGraphQL({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
                     const future = faker.date.future(100).toISOString().split("Z")[0];

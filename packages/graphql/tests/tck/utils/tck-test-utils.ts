@@ -81,7 +81,7 @@ export async function translateQuery(
     const driverBuilder = new DriverBuilder();
 
     const { errors } = await graphql({
-        schema: neoSchema.schema,
+        schema: await neoSchema.getSchema(),
         source: getQuerySource(query),
         contextValue: {
             req: options.req,
