@@ -129,6 +129,17 @@ class Neo4jGraphQL {
         await assertIndexesAndConstraints({ driver, driverConfig, nodes: this.nodes, options: input.options });
     }
 
+    private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
+        forEachField(schema, (field) => {
+            if (!field.resolve) {
+                // eslint-disable-next-line no-param-reassign
+                field.resolve = defaultFieldResolver;
+            }
+        });
+
+        return schema;
+    }
+
     private wrapResolvers(resolvers: IResolvers, { schema }: { schema: GraphQLSchema }) {
         const wrapResolverArgs = {
             driver: this.driver,
@@ -152,15 +163,7 @@ class Neo4jGraphQL {
     private addWrappedResolversToSchema(resolverlessSchema: GraphQLSchema, resolvers: IResolvers): GraphQLSchema {
         const schema = addResolversToSchema(resolverlessSchema, resolvers);
 
-        // Assign a default field resolver to account for aliasing of fields
-        forEachField(schema, (field) => {
-            if (!field.resolve) {
-                // eslint-disable-next-line no-param-reassign
-                field.resolve = defaultFieldResolver;
-            }
-        });
-
-        return schema;
+        return this.addDefaultFieldResolvers(schema);
     }
 
     private generateSchema(): Promise<GraphQLSchema> {
