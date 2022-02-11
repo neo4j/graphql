@@ -71,16 +71,16 @@ describe("fragments", () => {
         readable: true,
         charset: "alphabetic",
     });
-    const movieRuntime = faker.random.number();
-    const movieScreenTime = faker.random.number();
+    const movieRuntime = faker.datatype.number();
+    const movieScreenTime = faker.datatype.number();
 
     const seriesTitle = generate({
         readable: true,
         charset: "alphabetic",
     });
-    const seriesRuntime = faker.random.number();
-    const seriesEpisodes = faker.random.number();
-    const seriesScreenTime = faker.random.number();
+    const seriesRuntime = faker.datatype.number();
+    const seriesEpisodes = faker.datatype.number();
+    const seriesScreenTime = faker.datatype.number();
 
     beforeAll(async () => {
         driver = await neo4j();

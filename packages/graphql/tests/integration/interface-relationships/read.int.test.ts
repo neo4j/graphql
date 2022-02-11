@@ -160,26 +160,26 @@ describe("interface relationships", () => {
 
         const movie1 = {
             title: "A",
-            runtime: faker.random.number(),
-            screenTime: faker.random.number(),
+            runtime: faker.datatype.number(),
+            screenTime: faker.datatype.number(),
         };
 
         const movie2 = {
             title: "B",
-            runtime: faker.random.number(),
-            screenTime: faker.random.number(),
+            runtime: faker.datatype.number(),
+            screenTime: faker.datatype.number(),
         };
 
         const series1 = {
             title: "C",
-            episodes: faker.random.number(),
-            screenTime: faker.random.number(),
+            episodes: faker.datatype.number(),
+            screenTime: faker.datatype.number(),
         };
 
         const series2 = {
             title: "D",
-            episodes: faker.random.number(),
-            screenTime: faker.random.number(),
+            episodes: faker.datatype.number(),
+            screenTime: faker.datatype.number(),
         };
 
         const query = gql`
