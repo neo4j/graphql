@@ -37,9 +37,11 @@ To learn more on how to; setup, test and contribute to Neo4j GraphQL then please
 visit the [Contributing Guide](./CONTRIBUTING.md).
 
 1. [`@neo4j/graphql`](./packages/graphql) - Familiar GraphQL generation, for usage
-with an API such as [Apollo Server](https://www.apollographql.com/docs/apollo-server/)
+   with an API such as [Apollo Server](https://www.apollographql.com/docs/apollo-server/)
 2. [`@neo4j/graphql-ogm`](./packages/ogm) - Use GraphQL Type Definitions to drive
-interactions with the database
+   interactions with the database
+3. [`@neo4j/introspector`](./packages/introspector) - Introspect schema from an existing Neo4j database
+4. [`@neo4j/graphql-plugin-auth`](./packages/graphql-plugin-auth) - Auth decode plugins for @neo4j/graphql
 
 ## Media
 
