@@ -17,14 +17,9 @@
  * limitations under the License.
  */
 
-import { JWTPlugin, JWKSPlugin } from "../src";
+// import * as jsonwebtoken from "jsonwebtoken";
+// import JWTPlugin from "../src/JWTPlugin";
 
-describe("index", () => {
-    test("JWTPlugin", () => {
-        expect(JWTPlugin).toBeDefined();
-    });
-
-    test("JWKSPlugin", () => {
-        expect(JWKSPlugin).toBeDefined();
-    });
+describe("JWKSPlugin", () => {
+    test.todo("todo");
 });
