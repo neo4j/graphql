@@ -1,13 +1,16 @@
-import { Neo4jGraphQLJWTPlugin } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLJWTPlugin } from "@neo4j/graphql";
 import { IncomingMessage } from "http";
 import jsonwebtoken from "jsonwebtoken";
 import { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { DEBUG_AUTH } from "./constants";
+import { Secret, JwtPayload } from "jsonwebtoken";
 
 const debug = Debug(DEBUG_AUTH);
 
-async function verifyJWKS(client: JwksClient, token: string) {
+type Result = JwtPayload | undefined;
+
+async function verifyJWKS(client: JwksClient, token: string): Promise<Result> {
     function getKey(header, callback) {
         client.getSigningKey(header.kid, (err, key) => {
             const signingKey = key?.getPublicKey();
@@ -24,10 +27,22 @@ async function verifyJWKS(client: JwksClient, token: string) {
                 algorithms: ["HS256", "RS256"],
             },
             function verifyCallback(err, decoded) {
-                return err ? reject(err) : resolve(decoded);
+                return err ? reject(err) : resolve(decoded as Result);
             }
         )
     );
+}
+
+function verifyToken(token: string, secret: Secret): Result {
+    const result = jsonwebtoken.verify(token, secret, {
+        algorithms: ["HS256", "RS256"],
+    });
+
+    if (typeof result === "string") {
+        throw new Neo4jGraphQLAuthenticationError("JWT payload cannot be a string");
+    }
+
+    return result;
 }
 
 export interface JWTPluginInput {
@@ -52,7 +67,7 @@ class JWTPlugin extends Neo4jGraphQLJWTPlugin {
     }
 
     async decode(context: any): Promise<any> {
-        let result;
+        let result: Result;
 
         const req = context instanceof IncomingMessage ? context : context.req || context.request;
 
@@ -86,7 +101,7 @@ class JWTPlugin extends Neo4jGraphQLJWTPlugin {
             if (this.noVerify) {
                 debug("Skipping verifying JWT as noVerify is not set");
 
-                result = jsonwebtoken.decode(token);
+                result = jsonwebtoken.decode(token, { json: true }) || undefined;
             } else if (this.jwksEndpoint) {
                 debug("Verifying JWT using OpenID Public Key Set Endpoint");
 
@@ -103,9 +118,7 @@ class JWTPlugin extends Neo4jGraphQLJWTPlugin {
             } else if (this.secret) {
                 debug("Verifying JWT using secret");
 
-                result = jsonwebtoken.verify(token, this.secret, {
-                    algorithms: ["HS256", "RS256"],
-                });
+                result = verifyToken(token, this.secret);
             }
         } catch (error) {
             debug("%s", error);
