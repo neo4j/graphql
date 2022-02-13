@@ -24,35 +24,35 @@ type IgnoreMeta = {
     requiredFields: string[];
 };
 
-export const ERROR_MESSAGE = "Required fields of @ignore must be a list of strings";
+export const ERROR_MESSAGE = "Required fields of @computed must be a list of strings";
 
-function getIgnoreMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinitionNode): IgnoreMeta | undefined {
+function getComputedMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinitionNode): IgnoreMeta | undefined {
     const directive =
-        field.directives?.find((x) => x.name.value === "ignore") ||
-        interfaceField?.directives?.find((x) => x.name.value === "ignore");
+        field.directives?.find((x) => x.name.value === "computed") ||
+        interfaceField?.directives?.find((x) => x.name.value === "computed");
     if (!directive) {
         return undefined;
     }
 
-    const directiveDependsOn = directive.arguments?.find((arg) => arg.name.value === "dependsOn");
+    const directiveFromArgument = directive.arguments?.find((arg) => arg.name.value === "from");
 
-    if (!directiveDependsOn) {
+    if (!directiveFromArgument) {
         return {
             requiredFields: [],
         };
     }
 
     if (
-        directiveDependsOn?.value.kind !== Kind.LIST ||
-        directiveDependsOn?.value.values.some((value) => value.kind !== Kind.STRING)
+        directiveFromArgument?.value.kind !== Kind.LIST ||
+        directiveFromArgument?.value.values.some((value) => value.kind !== Kind.STRING)
     ) {
         throw new Error(ERROR_MESSAGE);
     }
 
-    // `@ignore(dependsOn: [String!])`
+    // `@computed(from: [String!])`
     // Create a set from array of argument `require`
     const requiredFields = removeDuplicates(
-        (directiveDependsOn.value.values.map((v) => (v as StringValueNode).value) as string[]) ?? []
+        (directiveFromArgument.value.values.map((v) => (v as StringValueNode).value) as string[]) ?? []
     );
 
     return {
@@ -60,4 +60,4 @@ function getIgnoreMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinit
     };
 }
 
-export default getIgnoreMeta;
+export default getComputedMeta;

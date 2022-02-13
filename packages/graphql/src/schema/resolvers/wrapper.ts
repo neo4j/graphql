@@ -18,17 +18,31 @@
  */
 
 import Debug from "debug";
-import { GraphQLResolveInfo, print } from "graphql";
+import { GraphQLResolveInfo, GraphQLSchema, print } from "graphql";
 import { Driver } from "neo4j-driver";
-import { Neo4jGraphQL, Neo4jGraphQLConfig } from "../../classes";
+import { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import { Context } from "../../types";
+import { Context, Neo4jGraphQLPlugins } from "../../types";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
 export const wrapResolver =
-    ({ driver, config, neoSchema }: { driver?: Driver; config: Neo4jGraphQLConfig; neoSchema: Neo4jGraphQL }) =>
+    ({
+        driver,
+        config,
+        nodes,
+        relationships,
+        schema,
+        plugins,
+    }: {
+        driver?: Driver;
+        config: Neo4jGraphQLConfig;
+        nodes: Node[];
+        relationships: Relationship[];
+        schema: GraphQLSchema;
+        plugins?: Neo4jGraphQLPlugins;
+    }) =>
     (next) =>
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const { driverConfig } = config;
@@ -55,11 +69,14 @@ export const wrapResolver =
             context.driverConfig = driverConfig;
         }
 
-        context.neoSchema = neoSchema;
+        context.nodes = nodes;
+        context.relationships = relationships;
+        context.schema = schema;
+        context.plugins = plugins;
 
         if (!context.jwt) {
-            if (context.neoSchema.plugins?.jwt) {
-                context.jwt = await context.neoSchema.plugins?.jwt.decode(context);
+            if (context.plugins?.jwt) {
+                context.jwt = await context.plugins.jwt.decode(context);
             }
         }
 

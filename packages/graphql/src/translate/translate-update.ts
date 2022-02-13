@@ -96,14 +96,14 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
             if (relationField.union) {
                 Object.keys(entry[1]).forEach((unionTypeName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
             } else if (relationField.interface) {
                 relationField.interface?.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
                 });
             } else {
-                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             if (relationField.interface) {
@@ -157,14 +157,14 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
             if (relationField.union) {
                 Object.keys(entry[1]).forEach((unionTypeName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
             } else if (relationField.interface) {
                 relationField.interface?.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
                 });
             } else {
-                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             if (relationField.interface) {
@@ -210,14 +210,14 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
             if (relationField.union) {
                 Object.keys(entry[1]).forEach((unionTypeName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
             } else if (relationField.interface) {
                 relationField.interface?.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
                 });
             } else {
-                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             const inStr = relationField.direction === "IN" ? "<-" : "-";
@@ -265,7 +265,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     createStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                     if (relationField.properties) {
-                        const relationship = context.neoSchema.relationships.find(
+                        const relationship = context.relationships.find(
                             (x) => x.properties === relationField.properties
                         ) as unknown as Relationship;
 
@@ -312,14 +312,14 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
             if (relationField.union) {
                 Object.keys(input).forEach((unionTypeName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
             } else if (relationField.interface) {
                 relationField.interface?.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
                 });
             } else {
-                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             refNodes.forEach((refNode) => {

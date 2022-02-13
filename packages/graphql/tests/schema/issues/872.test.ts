@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/872", () => {
-    test("a single type should be created for multiple actorOnCreate", () => {
+    test("a single type should be created for multiple actorOnCreate", async () => {
         const typeDefs = gql`
             type Movie {
                 title: String!
@@ -41,7 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
 "schema {

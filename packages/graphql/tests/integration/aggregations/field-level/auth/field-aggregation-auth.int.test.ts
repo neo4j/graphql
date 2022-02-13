@@ -104,7 +104,7 @@ describe("Field Level Aggregations Auth", () => {
                 }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -121,7 +121,7 @@ describe("Field Level Aggregations Auth", () => {
                 }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -138,7 +138,7 @@ describe("Field Level Aggregations Auth", () => {
                 }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -155,7 +155,7 @@ describe("Field Level Aggregations Auth", () => {
                 }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -192,7 +192,7 @@ describe("Field Level Aggregations Auth", () => {
 
                 const req = createJwtRequest(secret, { sub: 1234 });
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -209,7 +209,7 @@ describe("Field Level Aggregations Auth", () => {
                     }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -227,7 +227,7 @@ describe("Field Level Aggregations Auth", () => {
                 const invalidReq = createJwtRequest(secret, { sub: 2222 });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req: invalidReq, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });

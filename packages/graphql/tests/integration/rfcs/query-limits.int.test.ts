@@ -67,7 +67,7 @@ describe("integration/rfcs/query-limits", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -129,7 +129,7 @@ describe("integration/rfcs/query-limits", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -193,7 +193,7 @@ describe("integration/rfcs/query-limits", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });

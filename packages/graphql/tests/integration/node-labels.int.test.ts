@@ -60,7 +60,7 @@ describe("Node directive labels", () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -96,7 +96,7 @@ describe("Node directive labels", () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -123,7 +123,7 @@ describe("Node directive labels", () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, filmLabel: typeFilm.name, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

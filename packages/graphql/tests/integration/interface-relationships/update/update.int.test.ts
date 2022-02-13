@@ -139,7 +139,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -247,7 +247,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -379,7 +379,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -530,7 +530,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {

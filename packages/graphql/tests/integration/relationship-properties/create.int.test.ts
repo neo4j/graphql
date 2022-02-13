@@ -92,7 +92,7 @@ describe("Relationship properties - create", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { movieTitle, actorName, screenTime },
@@ -177,7 +177,7 @@ describe("Relationship properties - create", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { movieTitle, actorName, words },

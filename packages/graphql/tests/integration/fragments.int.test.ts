@@ -18,7 +18,7 @@
  */
 
 import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
+import { graphql, GraphQLSchema } from "graphql";
 import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
@@ -29,6 +29,7 @@ const testLabel = generate({ charset: "alphabetic" });
 
 describe("fragments", () => {
     let driver: Driver;
+    let schema: GraphQLSchema;
 
     const typeDefs = gql`
         interface Production {
@@ -61,8 +62,6 @@ describe("fragments", () => {
         }
     `;
 
-    const { schema } = new Neo4jGraphQL({ typeDefs });
-
     const actorName = generate({
         readable: true,
         charset: "alphabetic",
@@ -72,20 +71,24 @@ describe("fragments", () => {
         readable: true,
         charset: "alphabetic",
     });
-    const movieRuntime = faker.random.number();
-    const movieScreenTime = faker.random.number();
+    const movieRuntime = faker.datatype.number();
+    const movieScreenTime = faker.datatype.number();
 
     const seriesTitle = generate({
         readable: true,
         charset: "alphabetic",
     });
-    const seriesRuntime = faker.random.number();
-    const seriesEpisodes = faker.random.number();
-    const seriesScreenTime = faker.random.number();
+    const seriesRuntime = faker.datatype.number();
+    const seriesEpisodes = faker.datatype.number();
+    const seriesScreenTime = faker.datatype.number();
 
     beforeAll(async () => {
         driver = await neo4j();
         const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        schema = await neoSchema.getSchema();
+
         await session.run(
             `
             CREATE (a:Actor:${testLabel} { name: $actorName })

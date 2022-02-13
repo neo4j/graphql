@@ -114,7 +114,7 @@ describe("Relationship properties - update", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
@@ -187,7 +187,7 @@ describe("Relationship properties - update", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
@@ -259,7 +259,7 @@ describe("Relationship properties - update", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
@@ -335,7 +335,7 @@ describe("Relationship properties - update", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });

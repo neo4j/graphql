@@ -116,7 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });

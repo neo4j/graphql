@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { UnionTypeDefinitionNode } from "graphql/language/ast";
 import { ResolveTree } from "graphql-parse-resolve-info";
+import { GraphQLUnionType } from "graphql";
 import { mergeDeep } from "@graphql-tools/utils";
 import { Node } from "../classes";
 import createWhereAndParams from "./where/create-where-and-params";
@@ -183,11 +183,11 @@ function createProjectionAndParams({
 
             const isArray = cypherField.typeMeta.array;
 
-            const referenceNode = context.neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
-            const unions = context.neoSchema.document.definitions.filter(
-                (x) => x.kind === "UnionTypeDefinition"
-            ) as UnionTypeDefinitionNode[];
-            const referenceUnion = unions.find((u) => u.name.value === cypherField.typeMeta.name);
+            const graphqlType = context.schema.getType(cypherField.typeMeta.name);
+
+            const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
+
+            const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
 
             if (referenceNode) {
                 const recurse = createProjectionAndParams({
@@ -210,7 +210,7 @@ function createProjectionAndParams({
                 const headStrs: string[] = [];
                 const referencedNodes =
                     referenceUnion?.types
-                        ?.map((u) => context.neoSchema.nodes.find((n) => n.name === u.name.value))
+                        ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
                         ?.filter((b) => b !== undefined)
                         ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? "")) || [];
 
@@ -325,7 +325,7 @@ function createProjectionAndParams({
         }
 
         if (relationField) {
-            const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const referenceNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
             if (referenceNode?.queryOptions) {
                 optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
@@ -375,7 +375,7 @@ function createProjectionAndParams({
             }
 
             if (relationField.union) {
-                const referenceNodes = context.neoSchema.nodes.filter(
+                const referenceNodes = context.nodes.filter(
                     (x) =>
                         relationField.union?.nodes?.includes(x.name) &&
                         (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
@@ -659,7 +659,7 @@ const generateMissingOrAliasedRequiredFields = ({
     selection: Record<string, ResolveTree>;
 }): Record<string, ResolveTree> => {
     const requiredFields = removeDuplicates(
-        filterFieldsInSelection({ fields: node.ignoredFields, selection })
+        filterFieldsInSelection({ fields: node.computedFields, selection })
             .map((f) => f.requiredFields)
             .flat()
     );

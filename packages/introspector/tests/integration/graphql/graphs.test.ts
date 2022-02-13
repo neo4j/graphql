@@ -113,7 +113,9 @@ describe("GraphQL - Infer Schema on graphs", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Can introspect and generate multiple relationships (even with the same type)", async () => {
         // Skip if multi-db not supported
@@ -169,7 +171,9 @@ describe("GraphQL - Infer Schema on graphs", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Can introspect and generate relationships with properties", async () => {
         // Skip if multi-db not supported
@@ -233,7 +237,9 @@ describe("GraphQL - Infer Schema on graphs", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Can handle the larger character set from Neo4j", async () => {
         // Skip if multi-db not supported
@@ -281,6 +287,8 @@ describe("GraphQL - Infer Schema on graphs", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
 });

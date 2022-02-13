@@ -79,7 +79,7 @@ describe("createDisconnectAndParams", () => {
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema };
+        const context: Context = { neoSchema, nodes: [node], relationships: [] };
 
         const result = createDisconnectAndParams({
             withVars: ["this"],

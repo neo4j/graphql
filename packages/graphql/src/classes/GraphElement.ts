@@ -24,7 +24,7 @@ import type {
     CustomScalarField,
     TemporalField,
     PointField,
-    IgnoredField,
+    ComputedField,
 } from "../types";
 
 export interface GraphElementConstructor {
@@ -36,7 +36,7 @@ export interface GraphElementConstructor {
     enumFields: CustomEnumField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    ignoredFields: IgnoredField[];
+    computedFields: ComputedField[];
 }
 
 export abstract class GraphElement {
@@ -47,7 +47,7 @@ export abstract class GraphElement {
     public enumFields: CustomEnumField[];
     public temporalFields: TemporalField[];
     public pointFields: PointField[];
-    public ignoredFields: IgnoredField[];
+    public computedFields: ComputedField[];
 
     constructor(input: GraphElementConstructor) {
         this.name = input.name;
@@ -57,6 +57,6 @@ export abstract class GraphElement {
         this.enumFields = input.enumFields;
         this.temporalFields = input.temporalFields;
         this.pointFields = input.pointFields;
-        this.ignoredFields = input.ignoredFields;
+        this.computedFields = input.computedFields;
     }
 }

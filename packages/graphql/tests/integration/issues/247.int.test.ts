@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
         `;
 
         const createUsersResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: createUsers,
             variableValues: { name },
             contextValue: { driver },
@@ -103,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
         expect((createUsersResult.data as any)?.createUsers.users).toEqual([{ name }]);
 
         const createMoviesResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: createMovies,
             variableValues: { title1, title2, title3 },
             contextValue: { driver },
@@ -117,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
         ]);
 
         const connectResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: connect,
             variableValues: { name, title2, title3 },
             contextValue: { driver },

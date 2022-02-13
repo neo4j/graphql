@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Pluralize consistency", () => {
-    test("Schema with underscore types", () => {
+    test("Schema with underscore types", async () => {
         const typeDefs = gql`
             type super_user {
                 name: String!
@@ -35,7 +35,7 @@ describe("Pluralize consistency", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

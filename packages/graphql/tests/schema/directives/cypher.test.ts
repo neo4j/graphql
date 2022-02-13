@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Cypher", () => {
-    test("Custom Directive Simple", () => {
+    test("Custom Directive Simple", async () => {
         const typeDefs = gql`
             type Actor {
                 name: String
@@ -42,7 +42,7 @@ describe("Cypher", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -222,7 +222,7 @@ describe("Cypher", () => {
         `);
     });
 
-    test("Sort On Primitive Field", () => {
+    test("Sort On Primitive Field", async () => {
         const typeDefs = gql`
             type Actor {
                 name: String
@@ -248,7 +248,7 @@ describe("Cypher", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

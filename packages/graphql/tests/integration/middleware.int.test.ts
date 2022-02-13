@@ -53,8 +53,8 @@ describe("Middleware Resolvers", () => {
         function middlewareResolver(resolve, root, args, context, info) {
             const newArgs = {
                 where: {
-                    custom: args.where.custom.replace("original", "modified")
-                }
+                    custom: args.where.custom.replace("original", "modified"),
+                },
             } as any;
 
             return resolve(root, newArgs, context, info);
@@ -62,11 +62,11 @@ describe("Middleware Resolvers", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const schemaWithMiddleware = applyMiddleware(neoSchema.schema, {
+        const schemaWithMiddleware = applyMiddleware(await neoSchema.getSchema(), {
             Query: {
-                movies: middlewareResolver
-            }
-        })
+                movies: middlewareResolver,
+            },
+        });
 
         const query = `
             {
@@ -81,7 +81,7 @@ describe("Middleware Resolvers", () => {
             `,
                 {
                     id,
-                    custom
+                    custom,
                 }
             );
 
@@ -116,10 +116,10 @@ describe("Middleware Resolvers", () => {
             const originalObject = args.input[0];
             const newObject = {
                 id: originalObject.id,
-                custom: originalObject.custom.replace("original", "modified")
+                custom: originalObject.custom.replace("original", "modified"),
             };
             const newArgs = {
-                input: [newObject]
+                input: [newObject],
             } as any;
 
             return resolve(root, newArgs, context, info);
@@ -127,11 +127,11 @@ describe("Middleware Resolvers", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const schemaWithMiddleware = applyMiddleware(neoSchema.schema, {
+        const schemaWithMiddleware = applyMiddleware(await neoSchema.getSchema(), {
             Mutation: {
-                createMovies: middlewareResolver
-            }
-        })
+                createMovies: middlewareResolver,
+            },
+        });
 
         const mutation = `
             mutation {

@@ -23,14 +23,14 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("609", () => {
-    test("@deprecated directive should remain in output", () => {
+    test("@deprecated directive should remain in output", async () => {
         const typeDefs = gql`
             type Deprecated {
                 deprecatedField: String @deprecated
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

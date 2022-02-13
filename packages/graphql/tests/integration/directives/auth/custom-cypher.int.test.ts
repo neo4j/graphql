@@ -67,7 +67,7 @@ describe("should inject the auth into cypher directive", () => {
             const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query as string,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -111,7 +111,7 @@ describe("should inject the auth into cypher directive", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query as string,
                 contextValue: { driver, jwt },
             });
@@ -155,7 +155,7 @@ describe("should inject the auth into cypher directive", () => {
             const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query as string,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -203,7 +203,7 @@ describe("should inject the auth into cypher directive", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query as string,
                 contextValue: { driver, jwt },
             });
@@ -251,7 +251,7 @@ describe("should inject the auth into cypher directive", () => {
             const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -303,7 +303,7 @@ describe("should inject the auth into cypher directive", () => {
             `);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, jwt },
             });

@@ -107,8 +107,8 @@ function createWhereAndParams({
 
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
-            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-            const relationship = context.neoSchema.relationships.find(
+            const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const relationship = context.relationships.find(
                 (x) => x.properties === relationField.properties
             ) as Relationship;
 
@@ -132,7 +132,7 @@ function createWhereAndParams({
         const listPredicate = getListPredicate(operator);
 
         if (relationField) {
-            const refNode = context.neoSchema.nodes.find((n) => n.name === relationField.typeMeta.name);
+            const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
             if (!refNode) throw new Error("Relationship filters must reference nodes");
             const labels = refNode.getLabelString(context);
 
@@ -181,8 +181,8 @@ function createWhereAndParams({
             }
 
             Object.entries(nodeEntries).forEach((entry) => {
-                const refNode = context.neoSchema.nodes.find((x) => x.name === entry[0]) as Node;
-                const relationship = context.neoSchema.relationships.find(
+                const refNode = context.nodes.find((x) => x.name === entry[0]) as Node;
+                const relationship = context.relationships.find(
                     (x) => x.name === connectionField.relationshipTypeName
                 ) as Relationship;
 

@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Unions", () => {
-    test("Relationship Properties", () => {
+    test("Relationship Properties", async () => {
         const typeDefs = gql`
             union Publication = Book | Journal
 
@@ -47,7 +47,7 @@ describe("Unions", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

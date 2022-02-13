@@ -85,7 +85,7 @@ describe("auth/object-path", () => {
             });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -148,7 +148,7 @@ describe("auth/object-path", () => {
             const req = createJwtRequest(secret);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req, userId },
             });
@@ -205,7 +205,7 @@ describe("auth/object-path", () => {
             });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -261,7 +261,7 @@ describe("auth/object-path", () => {
             const req = createJwtRequest(secret);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
