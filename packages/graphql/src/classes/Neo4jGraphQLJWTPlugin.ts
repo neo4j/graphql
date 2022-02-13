@@ -2,7 +2,7 @@ abstract class Neo4jGraphQLJWTPlugin {
     rolesPath?: string;
     secret?: string;
 
-    abstract decode(context: any): Promise<any>;
+    abstract decode<T = any>(jwt: string): Promise<T>;
 }
 
 export default Neo4jGraphQLJWTPlugin;
