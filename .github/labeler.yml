@@ -1,25 +1,28 @@
 version: 1
 labels:
-  - label: feature
-    title: ^(?:[fF]eature|[fF]eat):.*
-  - label: fix
-    title: ^(?:[bB]ugfix|[fF]ix):.*
-  - label: feature
-    branch: ^(?:[fF]eature|[fF]eat)[-/].*
-  - label: fix
-    branch: ^(?:[bB]ugfix|[fF]ix)[-/].*
-  - label: documentation
-    files:
-      - docs/modules/ROOT/.*
-  - label: rfc
-    files:
-      - docs/rfcs/.*
-  - label: graphql
-    files:
-      - packages/graphql/src/.*
-  - label: ogm
-    files:
-      - packages/ogm/src/.*
-  - label: introspector
-    files:
-      - packages/introspector/src/.*
+    - label: feature
+      title: ^(?:[fF]eature|[fF]eat):.*
+    - label: fix
+      title: ^(?:[bB]ugfix|[fF]ix):.*
+    - label: feature
+      branch: ^(?:[fF]eature|[fF]eat)[-/].*
+    - label: fix
+      branch: ^(?:[bB]ugfix|[fF]ix)[-/].*
+    - label: documentation
+      files:
+          - docs/modules/ROOT/.*
+    - label: rfc
+      files:
+          - docs/rfcs/.*
+    - label: graphql
+      files:
+          - packages/graphql/src/.*
+    - label: ogm
+      files:
+          - packages/ogm/src/.*
+    - label: graphql-plugin-auth
+      files:
+          - packages/graphql-plugin-auth/src/.*
+    - label: introspector
+      files:
+          - packages/introspector/src/.*
