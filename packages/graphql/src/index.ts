@@ -30,6 +30,7 @@ export {
     CypherPlanner,
     CypherReplanning,
     CypherRuntime,
+    Neo4jGraphQLJWTPlugin,
     CypherUpdateStrategy,
 } from "./types";
 export {
@@ -37,5 +38,4 @@ export {
     Neo4jGraphQLConstructor,
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLForbiddenError,
-    Neo4jGraphQLJWTPlugin,
 } from "./classes";

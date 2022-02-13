@@ -20,10 +20,11 @@
 import Debug from "debug";
 import { GraphQLResolveInfo, GraphQLSchema, print } from "graphql";
 import { Driver } from "neo4j-driver";
-import { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
+import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
 import { Context, Neo4jGraphQLPlugins } from "../../types";
+import { getToken } from "../../utils/get-token";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -76,7 +77,17 @@ export const wrapResolver =
 
         if (!context.jwt) {
             if (context.plugins?.jwt) {
-                context.jwt = await context.plugins.jwt.decode(context);
+                const token = getToken(context);
+
+                if (token) {
+                    const jwt = await context.plugins.jwt.decode(token);
+
+                    if (typeof jwt === "string") {
+                        throw new Neo4jGraphQLAuthenticationError("JWT payload cannot be a string");
+                    }
+
+                    context.jwt = jwt;
+                }
             }
         }
 

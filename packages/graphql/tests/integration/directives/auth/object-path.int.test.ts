@@ -23,7 +23,7 @@ import { generate } from "randomstring";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
+import { JWTPlugin, JWKSPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("auth/object-path", () => {
     let driver: Driver;
@@ -246,7 +246,7 @@ describe("auth/object-path", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
-                jwt: new JWTPlugin({
+                jwt: new JWKSPlugin({
                     jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json",
                 }),
             },

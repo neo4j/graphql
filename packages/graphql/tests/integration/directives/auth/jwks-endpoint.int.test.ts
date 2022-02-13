@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
+import { JWTPlugin, JWKSPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
-                jwt: new JWTPlugin({
+                jwt: new JWKSPlugin({
                     jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
                 }),
             },
@@ -143,7 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
-                jwt: new JWTPlugin({
+                jwt: new JWKSPlugin({
                     jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
                     rolesPath: "https://myAuthTest\\.auth0\\.com/jwt/claims.my-auth-roles",
                 }),
@@ -211,7 +211,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
-                jwt: new JWTPlugin({
+                jwt: new JWKSPlugin({
                     jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
                     rolesPath: "https://myAuthTest\\.auth0\\.com/jwt/claims.my-auth-roles",
                 }),

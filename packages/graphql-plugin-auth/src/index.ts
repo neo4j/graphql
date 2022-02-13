@@ -18,3 +18,4 @@
  */
 
 export { default as JWTPlugin } from "./JWTPlugin";
+export { default as JWKSPlugin } from "./JWKSPlugin";

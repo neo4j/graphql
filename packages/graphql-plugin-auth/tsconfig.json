@@ -3,11 +3,7 @@
     "compilerOptions": {
         "rootDir": ".",
         "baseUrl": ".",
-        "outDir": "dist",
-        "paths": {
-            "@neo4j/graphql": ["../graphql/src"]
-        }
+        "outDir": "dist"
     },
-    "include": ["src/**/*", "tests/**/*"],
-    "references": [{ "path": "../graphql/tsconfig.json" }]
+    "include": ["src/**/*", "tests/**/*"]
 }

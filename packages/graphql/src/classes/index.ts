@@ -22,5 +22,4 @@ export { default as Relationship } from "./Relationship";
 export { GraphElement } from "./GraphElement";
 export { default as Exclude, ExcludeConstructor } from "./Exclude";
 export { default as Neo4jGraphQL, Neo4jGraphQLConstructor, Neo4jGraphQLConfig } from "./Neo4jGraphQL";
-export { default as Neo4jGraphQLJWTPlugin } from "./Neo4jGraphQLJWTPlugin";
 export * from "./Error";
