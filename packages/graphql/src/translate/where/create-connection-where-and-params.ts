@@ -37,7 +37,7 @@ function createConnectionWhereAndParams({
     relationship: Relationship;
     relationshipVariable: string;
     parameterPrefix: string;
-}): [string, any] {
+}): [string, Record<string, any>] {
     const reduced = Object.entries(whereInput).reduce<{ whereStrs: string[]; params: any }>(
         (res, [k, v]) => {
             if (["AND", "OR"].includes(k)) {

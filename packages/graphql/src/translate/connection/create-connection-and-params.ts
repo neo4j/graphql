@@ -33,9 +33,12 @@ import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
 import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
-import { CypherStatement } from "../types";
 import { isString } from "../../utils/utils";
-import { generateMissingOrAliasedFields } from "../utils/resolveTree";
+import {
+    generateMissingOrAliasedFields,
+    generateProjectionField,
+    getResolveTreeByFieldName,
+} from "../utils/resolveTree";
 
 function createConnectionAndParams({
     resolveTree,
@@ -49,438 +52,212 @@ function createConnectionAndParams({
     context: Context;
     nodeVariable: string;
     parameterPrefix?: string;
-}): CypherStatement {
-    let globalParams = {};
-    let nestedConnectionFieldParams;
+}): [string, Record<string, any>] {
+    const param = `${nodeVariable}_${resolveTree.alias}`;
+    const isAbstractType = Boolean(field.relationship.union || field.relationship.interface);
 
-    let subquery = ["CALL {", `WITH ${nodeVariable}`];
-
+    const whereInput = (resolveTree.args.where ?? {}) as ConnectionWhereArg;
+    const firstInput = resolveTree.args.first as number | Integer | undefined;
+    const afterInput = resolveTree.args.after;
     const sortInput = (resolveTree.args.sort ?? []) as ConnectionSortArg[];
     // Fields of {edge, node} to sort on. A simple resolve tree will be added if not in selection set
     // Since nodes of abstract types and edges are constructed sort will not work if field is not in selection set
     const edgeSortFields = sortInput.map(({ edge = {} }) => Object.keys(edge)).flat();
     const nodeSortFields = sortInput.map(({ node = {} }) => Object.keys(node)).flat();
 
-    const afterInput = resolveTree.args.after;
-    const firstInput = resolveTree.args.first;
-    const whereInput = resolveTree.args.where as ConnectionWhereArg;
-
     const relationshipVariable = `${nodeVariable}_${field.relationship.type.toLowerCase()}_relationship`;
-    const relationship = context.relationships.find((r) => r.name === field.relationshipTypeName) as Relationship;
     const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
-
-    const relTypeStr = `[${relationshipVariable}:${field.relationship.type}]`;
-
-    const { inStr, outStr } = getRelationshipDirection(field.relationship, resolveTree.args);
-
-    let relationshipProperties: ResolveTree[] = [];
-    let node: ResolveTree | undefined;
+    const relatedRelationship = context.relationships.find(
+        (r) => r.name === field.relationshipTypeName
+    ) as Relationship;
 
     const connection = resolveTree.fieldsByTypeName[field.typeMeta.name];
 
-    if (connection.edges) {
-        const relationshipFieldsByTypeName = connection.edges.fieldsByTypeName[field.relationshipTypeName];
+    const relationshipFieldsByTypeName = connection.edges?.fieldsByTypeName[field.relationshipTypeName] ?? {};
 
-        relationshipProperties = Object.values(relationshipFieldsByTypeName).filter((v) => v.name !== "node");
+    const relationshipProperties = Object.values(relationshipFieldsByTypeName).filter((v) => v.name !== "node");
 
-        edgeSortFields.forEach((sortField) => {
-            // For every sort field on edge check to see if the field is in selection set
-            if (
-                !relationshipProperties.find((rt) => rt.name === sortField) ||
-                relationshipProperties.find((rt) => rt.name === sortField && rt.alias !== sortField)
-            ) {
-                // if it doesn't exist add a basic resolve tree to relationshipProperties
-                relationshipProperties.push({ alias: sortField, args: {}, fieldsByTypeName: {}, name: sortField });
-            }
-        });
-
-        node = Object.values(relationshipFieldsByTypeName).find((v) => v.name === "node") as ResolveTree;
-    }
-
-    const elementsToCollect: string[] = [];
-
-    if (relationshipProperties.length) {
-        const relationshipPropertyEntries = relationshipProperties
-            .filter((p) => p.name !== "cursor")
-            .map((v) => createRelationshipPropertyElement({ resolveTree: v, relationship, relationshipVariable }));
-        elementsToCollect.push(relationshipPropertyEntries.join(", "));
-    }
-
-    if (field.relationship.union || field.relationship.interface) {
-        const relatedNodes = field.relationship.union
-            ? context.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
-            : context.nodes.filter(
-                  (x) =>
-                      field.relationship?.interface?.implementations?.includes(x.name) &&
-                      filterInterfaceNodes({ node: x, whereInput: whereInput?.node })
-              );
-        const subqueries: string[] = [];
-
-        relatedNodes.forEach((n) => {
-            if (
-                !whereInput ||
-                Object.prototype.hasOwnProperty.call(whereInput, n.name) ||
-                (field.relationship.interface &&
-                    !field.relationship.interface?.implementations?.some((i) =>
-                        Object.prototype.hasOwnProperty.call(resolveTree.args.where, i)
-                    ))
-            ) {
-                const labels = n.getLabelString(context);
-                const relatedNodeVariable = `${nodeVariable}_${n.name}`;
-                const nodeOutStr = `(${relatedNodeVariable}${labels})`;
-
-                const unionInterfaceSubquery: string[] = [];
-                const subqueryElementsToCollect = [...elementsToCollect];
-
-                const nestedSubqueries: string[] = [];
-
-                if (node) {
-                    const selectedFields: Record<string, ResolveTree> = mergeDeep([
-                        node.fieldsByTypeName[n.name],
-                        ...n.interfaces.map((i) => node?.fieldsByTypeName[i.name.value]),
-                    ]);
-
-                    const mergedResolveTree: ResolveTree = mergeDeep<ResolveTree[]>([
-                        node,
-                        {
-                            ...node,
-                            fieldsByTypeName: {
-                                [n.name]: generateMissingOrAliasedFields({
-                                    fieldNames: nodeSortFields,
-                                    selection: selectedFields,
-                                }),
-                            },
-                        },
-                    ]);
-
-                    const nodeProjectionAndParams = createProjectionAndParams({
-                        resolveTree: mergedResolveTree,
-                        node: n,
-                        context,
-                        varName: relatedNodeVariable,
-                        literalElements: true,
-                        resolveType: true,
-                    });
-                    const [nodeProjection, nodeProjectionParams] = nodeProjectionAndParams;
-                    subqueryElementsToCollect.push(`node: ${nodeProjection}`);
-                    globalParams = {
-                        ...globalParams,
-                        ...nodeProjectionParams,
-                    };
-
-                    if (nodeProjectionAndParams[2]?.connectionFields?.length) {
-                        nodeProjectionAndParams[2].connectionFields.forEach((connectionResolveTree) => {
-                            const connectionField = n.connectionFields.find(
-                                (x) => x.fieldName === connectionResolveTree.name
-                            ) as ConnectionField;
-                            const nestedConnection = createConnectionAndParams({
-                                resolveTree: connectionResolveTree,
-                                field: connectionField,
-                                context,
-                                nodeVariable: relatedNodeVariable,
-                                parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-                                    resolveTree.alias
-                                }.edges.node`,
-                            });
-                            nestedSubqueries.push(nestedConnection[0]);
-
-                            globalParams = {
-                                ...globalParams,
-                                ...Object.entries(nestedConnection[1]).reduce<Record<string, unknown>>(
-                                    (res, [k, v]) => {
-                                        if (k !== `${relatedNodeVariable}_${connectionResolveTree.alias}`) {
-                                            res[k] = v;
-                                        }
-                                        return res;
-                                    },
-                                    {}
-                                ),
-                            };
-
-                            if (nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.alias}`]) {
-                                if (!nestedConnectionFieldParams) nestedConnectionFieldParams = {};
-                                nestedConnectionFieldParams = {
-                                    ...nestedConnectionFieldParams,
-                                    ...{
-                                        [connectionResolveTree.alias]:
-                                            nestedConnection[1][
-                                                `${relatedNodeVariable}_${connectionResolveTree.alias}`
-                                            ],
-                                    },
-                                };
-                            }
-                        });
-                    }
-                } else {
-                    // This ensures that totalCount calculation is accurate if edges not asked for
-                    subqueryElementsToCollect.push(`node: { __resolveType: "${n.name}" }`);
-                }
-
-                unionInterfaceSubquery.push(`WITH ${nodeVariable}`);
-                unionInterfaceSubquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
-
-                const allowAndParams = createAuthAndParams({
-                    operations: "READ",
-                    entity: n,
-                    context,
-                    allow: {
-                        parentNode: n,
-                        varName: relatedNodeVariable,
-                    },
-                });
-                if (allowAndParams[0]) {
-                    globalParams = { ...globalParams, ...allowAndParams[1] };
-                    unionInterfaceSubquery.push(
-                        `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-                    );
-                }
-
-                const whereStrs: string[] = [];
-                const unionInterfaceWhere = field.relationship.union ? (whereInput || {})[n.name] : whereInput || {};
-
-                if (unionInterfaceWhere) {
-                    const where = createConnectionWhereAndParams({
-                        whereInput: unionInterfaceWhere,
-                        node: n,
-                        nodeVariable: relatedNodeVariable,
-                        relationship,
-                        relationshipVariable,
-                        context,
-                        parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-                            resolveTree.alias
-                        }.args.where${field.relationship.union ? `.${n.name}` : ""}`,
-                    });
-                    const [whereClause] = where;
-                    if (whereClause) {
-                        if (whereClause) {
-                            whereStrs.push(whereClause);
-                        }
-                    }
-                }
-
-                const whereAuth = createAuthAndParams({
-                    operations: "READ",
-                    entity: n,
-                    context,
-                    where: { varName: relatedNodeVariable, node: n },
-                });
-                if (whereAuth[0]) {
-                    whereStrs.push(whereAuth[0]);
-                    globalParams = { ...globalParams, ...whereAuth[1] };
-                }
-
-                if (whereStrs.length) {
-                    unionInterfaceSubquery.push(`WHERE ${whereStrs.join(" AND ")}`);
-                }
-
-                if (nestedSubqueries.length) {
-                    unionInterfaceSubquery.push(nestedSubqueries.join("\n"));
-                }
-
-                unionInterfaceSubquery.push(`WITH { ${subqueryElementsToCollect.join(", ")} } AS edge`);
-                unionInterfaceSubquery.push("RETURN edge");
-
-                subqueries.push(unionInterfaceSubquery.join("\n"));
-            }
-        });
-
-        const subqueryCypher = ["CALL {", subqueries.join("\nUNION\n"), "}"];
-
-        if (sortInput.length) {
-            const sort = sortInput.map((s) =>
-                [
-                    ...Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`),
-                    ...Object.entries(s.node || []).map(([f, direction]) => `edge.node.${f} ${direction}`),
-                ].join(", ")
-            );
-            subqueryCypher.push(`WITH edge ORDER BY ${sort.join(", ")}`);
+    edgeSortFields.forEach((sortField) => {
+        // For every sort field on edge check to see if the field is in selection set
+        if (
+            !relationshipProperties.find((rt) => rt.name === sortField) ||
+            relationshipProperties.find((rt) => rt.name === sortField && rt.alias !== sortField)
+        ) {
+            // if it doesn't exist add a basic resolve tree to relationshipProperties
+            relationshipProperties.push({ alias: sortField, args: {}, fieldsByTypeName: {}, name: sortField });
         }
+    });
 
-        subqueryCypher.push("WITH collect(edge) as edges");
+    const relationshipPropertyEntries = relationshipProperties
+        .filter((p) => p.name !== "cursor")
+        .map((v) =>
+            createRelationshipPropertyElement({
+                resolveTree: v,
+                relationship: relatedRelationship,
+                relationshipVariable,
+            })
+        );
 
-        subquery.push(subqueryCypher.join("\n"));
-    } else {
-        const relatedNodeVariable = `${nodeVariable}_${field.relationship.typeMeta.name.toLowerCase()}`;
-        const labels = relatedNode.getLabelString(context);
-        const nodeOutStr = `(${relatedNodeVariable}${labels})`;
-        subquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
+    const nodeResolveTree = Object.values(relationshipFieldsByTypeName).find((v) => v.name === "node");
 
-        const whereStrs: string[] = [];
+    // TODO: Rework params
+    let params = Object.keys(whereInput).length ? { [param]: { args: { where: whereInput } } } : {};
+    const nodeSubquery = context.nodes
+        .filter(
+            (node) =>
+                node.name === field.relationship.typeMeta.name ||
+                (field.relationship.interface?.implementations?.includes(node.name) &&
+                    filterInterfaceNodes({ node, whereInput })) ||
+                (field.relationship.union?.nodes?.includes(node.name) &&
+                    (!resolveTree.args.where ||
+                        Object.prototype.hasOwnProperty.call(resolveTree.args.where, node.name)))
+        )
+        .map((node) => {
+            const sourceNode = `(${nodeVariable})`;
 
-        if (whereInput) {
-            const where = createConnectionWhereAndParams({
-                whereInput,
-                node: relatedNode,
-                nodeVariable: relatedNodeVariable,
-                relationship,
+            const { inStr, outStr } = getRelationshipDirection(field.relationship, resolveTree.args);
+            const targetRelationship = `${inStr}[${relationshipVariable}:${field.relationship.type}]${outStr}`;
+            const edgeElements: string[] = [relationshipPropertyEntries.join(", ")];
+
+            const labels = node.getLabelString(context);
+            // TODO: Why
+            const targetNodeVariable = isAbstractType
+                ? `${nodeVariable}_${node.name}`
+                : `${nodeVariable}_${field.relationship.typeMeta.name.toLowerCase()}`;
+            const targetNode = `(${targetNodeVariable}${labels})`;
+
+            // TODO: query limits
+
+            const [authAllow, authAllowParams] = createAuthAndParams({
+                operations: "READ",
+                entity: node,
+                context,
+                allow: {
+                    parentNode: node,
+                    varName: targetNodeVariable,
+                },
+            });
+
+            const [authWhere, authWhereParams] = createAuthAndParams({
+                operations: "READ",
+                entity: node,
+                context,
+                where: { varName: targetNodeVariable, node },
+            });
+
+            const [connectionWhere, connectionWhereParams] = createConnectionWhereAndParams({
+                whereInput: field.relationship.union ? whereInput[node.name] ?? {} : whereInput,
+                node,
+                nodeVariable: targetNodeVariable,
+                relationship: relatedRelationship,
                 relationshipVariable,
                 context,
                 parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                     resolveTree.alias
-                }.args.where`,
+                }.args.where${field.relationship.union ? `.${node.name}` : ""}`,
             });
-            const [whereClause] = where;
-            if (whereClause) {
-                whereStrs.push(`${whereClause}`);
-            }
-        }
 
-        const whereAuth = createAuthAndParams({
-            operations: "READ",
-            entity: relatedNode,
-            context,
-            where: { varName: relatedNodeVariable, node: relatedNode },
-        });
-        if (whereAuth[0]) {
-            whereStrs.push(whereAuth[0]);
-            globalParams = { ...globalParams, ...whereAuth[1] };
-        }
+            const resTree = nodeResolveTree ?? generateProjectionField({ name: "node" }).node;
 
-        if (whereStrs.length) {
-            subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
-        }
+            const selectedFields: Record<string, ResolveTree> = mergeDeep([
+                resTree.fieldsByTypeName[node.name],
+                ...node.interfaces.map((i) => resTree.fieldsByTypeName[i.name.value]),
+            ]);
+            const mergedResolveTree: ResolveTree = mergeDeep([
+                resTree,
+                {
+                    fieldsByTypeName: {
+                        [node.name]: generateMissingOrAliasedFields({
+                            fieldNames: nodeSortFields,
+                            selection: selectedFields,
+                        }),
+                    },
+                },
+            ]);
 
-        const allowAndParams = createAuthAndParams({
-            operations: "READ",
-            entity: relatedNode,
-            context,
-            allow: {
-                parentNode: relatedNode,
-                varName: relatedNodeVariable,
-            },
-        });
-        if (allowAndParams[0]) {
-            globalParams = { ...globalParams, ...allowAndParams[1] };
-            subquery.push(`CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-        }
-
-        if (sortInput.length) {
-            const sort = sortInput.map((s) =>
-                [
-                    ...Object.entries(s.edge || []).map(
-                        ([f, direction]) => `${relationshipVariable}.${f} ${direction}`
-                    ),
-                    ...Object.entries(s.node || []).map(([f, direction]) => `${relatedNodeVariable}.${f} ${direction}`),
-                ].join(", ")
-            );
-            subquery.push(`WITH ${relationshipVariable}, ${relatedNodeVariable}`);
-            subquery.push(`ORDER BY ${sort.join(", ")}`);
-        }
-
-        const nestedSubqueries: string[] = [];
-
-        if (node) {
-            const nodeProjectionAndParams = createProjectionAndParams({
-                resolveTree: node,
-                node: relatedNode,
+            const [nodeProjection, nodeProjectionParams, nodeProjectionMeta] = createProjectionAndParams({
+                resolveTree: mergedResolveTree,
+                node,
                 context,
-                varName: relatedNodeVariable,
+                varName: targetNodeVariable,
                 literalElements: true,
+                resolveType: true,
             });
-            const [nodeProjection, nodeProjectionParams, projectionMeta] = nodeProjectionAndParams;
-            elementsToCollect.push(`node: ${nodeProjection}`);
-            globalParams = { ...globalParams, ...nodeProjectionParams };
 
-            if (projectionMeta?.authValidateStrs?.length) {
-                subquery.push(
-                    `CALL apoc.util.validate(NOT(${projectionMeta.authValidateStrs.join(
-                        " AND "
-                    )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-                );
-            }
+            edgeElements.push(`node: ${nodeProjection}`);
 
-            if (projectionMeta?.connectionFields?.length) {
-                projectionMeta.connectionFields.forEach((connectionResolveTree) => {
-                    const connectionField = relatedNode.connectionFields.find(
-                        (x) => x.fieldName === connectionResolveTree.name
-                    ) as ConnectionField;
-                    const nestedConnection = createConnectionAndParams({
-                        resolveTree: connectionResolveTree,
-                        field: connectionField,
-                        context,
-                        nodeVariable: relatedNodeVariable,
-                        parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-                            resolveTree.alias
-                        }.edges.node`,
-                    });
-                    nestedSubqueries.push(nestedConnection[0]);
+            const where = [
+                authAllow ? `CALL apoc.util.validate(NOT(${authAllow}), "${AUTH_FORBIDDEN_ERROR}", [0])` : "",
+                authWhere,
+                connectionWhere,
+                nodeProjectionMeta.authValidateStrs.length
+                    ? `apoc.util.validatePredicate(NOT(${nodeProjectionMeta.authValidateStrs.join(
+                          " AND "
+                      )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                    : "",
+            ]
+                .filter(Boolean)
+                .join(" AND ");
 
-                    globalParams = {
-                        ...globalParams,
-                        ...Object.entries(nestedConnection[1]).reduce<Record<string, unknown>>((res, [k, v]) => {
-                            if (k !== `${relatedNodeVariable}_${connectionResolveTree.alias}`) {
-                                res[k] = v;
-                            }
-                            return res;
-                        }, {}),
-                    };
+            params = mergeDeep([
+                params,
+                nodeProjectionParams,
+                authAllowParams,
+                authWhereParams,
+                Object.keys(connectionWhereParams).length
+                    ? {
+                          [targetNodeVariable]: isAbstractType
+                              ? { [node.name]: connectionWhereParams }
+                              : connectionWhereParams,
+                      }
+                    : {},
+            ]);
 
-                    if (nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.alias}`]) {
-                        if (!nestedConnectionFieldParams) nestedConnectionFieldParams = {};
-                        nestedConnectionFieldParams = {
-                            ...nestedConnectionFieldParams,
-                            ...{
-                                [connectionResolveTree.alias]:
-                                    nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.alias}`],
-                            },
-                        };
-                    }
-                });
-            }
-        }
+            return [
+                isAbstractType ? `WITH ${nodeVariable}` : "",
+                `MATCH ${sourceNode}${targetRelationship}${targetNode}`,
+                where ? `WHERE ${where}` : "",
+                nodeProjectionMeta.subQueries.join("\n"),
+                `${isAbstractType ? "RETURN" : "WITH"} { ${edgeElements.filter(Boolean).join(", ")} } AS edge`,
+                // TODO: implement query limit
+            ]
+                .filter(Boolean)
+                .join("\n");
+        })
+        .join("\nUNION\n");
 
-        if (nestedSubqueries.length) subquery.push(nestedSubqueries.join("\n"));
-        subquery.push(`WITH collect({ ${elementsToCollect.join(", ")} }) AS edges`);
-    }
+    const sort = sortInput.map((s) =>
+        [
+            ...Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`),
+            ...Object.entries(s.node || []).map(([f, direction]) => `edge.node.${f} ${direction}`),
+        ].join(", ")
+    );
+
+    const splice = createOffsetLimitStr({
+        offset: isString(afterInput) ? cursorToOffset(afterInput) + 1 : undefined,
+        limit: relatedNode?.queryOptions?.getLimit() ?? firstInput,
+    });
 
     const returnValues: string[] = [];
 
-    if (relatedNode && relatedNode.queryOptions?.getLimit()) {
-        subquery = [
-            ...subquery,
-            ...createLimitedReturnSubquery(resolveTree.alias, relatedNode.queryOptions.getLimit(), afterInput),
-        ];
-    } else if (!firstInput && !afterInput) {
-        if (connection.edges || connection.pageInfo) {
-            returnValues.push("edges: edges");
-        }
-        returnValues.push("totalCount: size(edges)");
-        subquery.push(`RETURN { ${returnValues.join(", ")} } AS ${resolveTree.alias}`);
-    } else {
-        subquery = [
-            ...subquery,
-            ...createLimitedReturnSubquery(resolveTree.alias, firstInput as Integer | number | undefined, afterInput),
-        ];
+    if (getResolveTreeByFieldName({ fieldName: "edges", selection: connection }) || connection.pageInfo) {
+        returnValues.push(`edges: edges${splice}`);
     }
-    subquery.push("}");
+    returnValues.push("totalCount: size(edges)");
 
-    const params = {
-        ...globalParams,
-        ...((whereInput || nestedConnectionFieldParams) && {
-            [`${nodeVariable}_${resolveTree.alias}`]: {
-                ...(whereInput && { args: { where: whereInput } }),
-                ...(nestedConnectionFieldParams && { edges: { node: { ...nestedConnectionFieldParams } } }),
-            },
-        }),
-    };
+    const subQuery = [
+        "CALL {",
+        `WITH ${nodeVariable}`,
+        isAbstractType ? ["CALL {", nodeSubquery, "}"].join("\n") : nodeSubquery,
+        sort.length ? `WITH edge ORDER BY ${sort.join(", ")}` : "",
+        // TODO: possibly below as the concrete nodeSubquery ends with WITH {} AS edge
+        // sort.length ? `${isAbstractType ? "WITH edge " : ""}ORDER BY ${sort.join(", ")}` : "",
+        `WITH collect(edge) AS edges`,
+        `RETURN { ${returnValues.join(", ")} } AS ${param}`,
+        "}",
+    ].join("\n");
 
-    return [subquery.join("\n"), params];
+    return [subQuery, params];
 }
 
 export default createConnectionAndParams;
-
-function createLimitedReturnSubquery(
-    alias: string,
-    limit: Integer | number | undefined,
-    afterInput: unknown
-): string[] {
-    const offset = isString(afterInput) ? cursorToOffset(afterInput) + 1 : undefined;
-    const offsetLimitStr = createOffsetLimitStr({
-        offset,
-        limit,
-    });
-    return [
-        `WITH size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`,
-        `RETURN { edges: limitedSelection, totalCount: totalCount } AS ${alias}`,
-    ];
-}

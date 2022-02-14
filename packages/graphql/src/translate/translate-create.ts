@@ -20,18 +20,12 @@
 import { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { Context, ConnectionField, RelationField } from "../types";
+import { Context } from "../types";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createConnectionAndParams from "./connection/create-connection-and-params";
-import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import { upperFirst } from "../utils/upper-first";
 
 function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
-    const connectionStrs: string[] = [];
-    const interfaceStrs: string[] = [];
-    let connectionParams: any;
-    let interfaceParams: any;
 
     const mutationResponse = resolveTree.fieldsByTypeName[`Create${upperFirst(node.plural)}MutationResponse`];
 
@@ -66,136 +60,60 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
         params: any;
     };
 
-    let replacedProjectionParams: Record<string, unknown> = {};
-    let projectionStr: string | undefined;
-    let authCalls: string | undefined;
-
-    if (nodeProjection) {
-        let projAuth = "";
-        const projection = createProjectionAndParams({
-            node,
-            context,
-            resolveTree: nodeProjection,
-            varName: "REPLACE_ME",
-        });
-        if (projection[2]?.authValidateStrs?.length) {
-            projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
-                " AND "
-            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-        }
-
-        replacedProjectionParams = Object.entries(projection[1]).reduce((res, [key, value]) => {
-            return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
-        }, {});
-
-        projectionStr = createStrs
-            .map(
-                (_, i) =>
-                    `\nthis${i} ${projection[0]
-                        // First look to see if projection param is being reassigned
-                        // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
-                        .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                        .replace(/\$REPLACE_ME/g, "$projection")
-                        .replace(/REPLACE_ME/g, `this${i}`)} AS this${i}`
-            )
-            .join(", ");
-
-        authCalls = createStrs
-            .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
-            .join("\n");
-
-        if (projection[2]?.connectionFields?.length) {
-            projection[2].connectionFields.forEach((connectionResolveTree) => {
-                const connectionField = node.connectionFields.find(
-                    (x) => x.fieldName === connectionResolveTree.name
-                ) as ConnectionField;
-                const connection = createConnectionAndParams({
-                    resolveTree: connectionResolveTree,
-                    field: connectionField,
-                    context,
-                    nodeVariable: "REPLACE_ME",
-                });
-                connectionStrs.push(connection[0]);
-                if (!connectionParams) connectionParams = {};
-                connectionParams = { ...connectionParams, ...connection[1] };
-            });
-        }
-
-        if (projection[2]?.interfaceFields?.length) {
-            projection[2].interfaceFields.forEach((interfaceResolveTree) => {
-                const relationshipField = node.relationFields.find(
-                    (x) => x.fieldName === interfaceResolveTree.name
-                ) as RelationField;
-                const interfaceProjection = createInterfaceProjectionAndParams({
-                    resolveTree: interfaceResolveTree,
-                    field: relationshipField,
-                    context,
-                    node,
-                    nodeVariable: "REPLACE_ME",
-                });
-                interfaceStrs.push(interfaceProjection.cypher);
-                if (!interfaceParams) interfaceParams = {};
-                interfaceParams = { ...interfaceParams, ...interfaceProjection.params };
-            });
-        }
+    let projAuth = "";
+    const projection = nodeProjection
+        ? createProjectionAndParams({
+              node,
+              context,
+              resolveTree: nodeProjection,
+              varName: "REPLACE_ME",
+          })
+        : (["", {}, { authValidateStrs: [], subQueries: [] }] as ReturnType<typeof createProjectionAndParams>);
+    if (projection[2].authValidateStrs.length) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
+            " AND "
+        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
-    const replacedConnectionStrs = connectionStrs.length
-        ? createStrs.map((_, i) => {
-              return connectionStrs
-                  .map((connectionStr) => {
-                      return connectionStr.replace(/REPLACE_ME/g, `this${i}`);
-                  })
-                  .join("\n");
-          })
-        : [];
+    const projectionStr = createStrs
+        .map(
+            (_, i) =>
+                `\nthis${i} ${projection[0]
+                    // First look to see if projection param is being reassigned
+                    // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
+                    .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
+                    .replace(/\$REPLACE_ME/g, "$projection")
+                    .replace(/REPLACE_ME/g, `this${i}`)} AS this${i}`
+        )
+        .join(", ");
 
-    const replacedInterfaceStrs = interfaceStrs.length
-        ? createStrs.map((_, i) => {
-              return interfaceStrs
-                  .map((interfaceStr) => {
-                      return interfaceStr.replace(/REPLACE_ME/g, `this${i}`);
-                  })
-                  .join("\n");
-          })
-        : [];
-
-    const replacedConnectionParams = connectionParams
-        ? createStrs.reduce((res1, _, i) => {
-              return {
-                  ...res1,
-                  ...Object.entries(connectionParams).reduce((res2, [key, value]) => {
-                      return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
-                  }, {}),
-              };
-          }, {})
-        : {};
-
-    const replacedInterfaceParams = interfaceParams
-        ? createStrs.reduce((res1, _, i) => {
-              return {
-                  ...res1,
-                  ...Object.entries(interfaceParams).reduce((res2, [key, value]) => {
-                      return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
-                  }, {}),
-              };
-          }, {})
-        : {};
+    const authCalls = createStrs
+        .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
+        .join("\n");
 
     const returnStatement = nodeProjection ? `RETURN ${projectionStr}` : "RETURN 'Query cannot conclude with CALL'";
+
+    const replacedProjectionParams = Object.entries(projection[1]).reduce((res, [key, value]) => {
+        return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
+    }, {});
 
     const cypher = [
         `${createStrs.join("\n")}`,
         authCalls,
-        ...replacedConnectionStrs,
-        ...replacedInterfaceStrs,
+        createStrs
+            .map((_, i) =>
+                projection[2].subQueries
+                    .map((subquery) =>
+                        subquery.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`)
+                    )
+                    .join("\n")
+            )
+            .filter(Boolean)
+            .join("\n"),
         returnStatement,
     ];
 
-    return [
-        cypher.filter(Boolean).join("\n"),
-        { ...params, ...replacedProjectionParams, ...replacedConnectionParams, ...replacedInterfaceParams },
-    ];
+    return [cypher.filter(Boolean).join("\n"), { ...params, ...replacedProjectionParams }];
 }
 
 export default translateCreate;

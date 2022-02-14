@@ -21,18 +21,17 @@ import { ResolveTree } from "graphql-parse-resolve-info";
 import { GraphQLUnionType } from "graphql";
 import { mergeDeep } from "@graphql-tools/utils";
 import { Node } from "../classes";
-import createWhereAndParams from "./where/create-where-and-params";
-import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
+import { GraphQLOptionsArg, Context } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
 // eslint-disable-next-line import/no-cycle
+import createRelationshipFieldSubqueryAndParams from "./create-relationship-field-subquery-and-params";
+// eslint-disable-next-line import/no-cycle
 import createConnectionAndParams from "./connection/create-connection-and-params";
-import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
-import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 
@@ -43,81 +42,10 @@ interface Res {
 }
 
 interface ProjectionMeta {
-    authValidateStrs?: string[];
+    authValidateStrs: string[];
     connectionFields?: ResolveTree[];
     interfaceFields?: ResolveTree[];
-}
-
-function createNodeWhereAndParams({
-    whereInput,
-    varName,
-    context,
-    node,
-    authValidateStrs,
-    chainStr,
-}: {
-    whereInput?: any;
-    context: Context;
-    node: Node;
-    varName: string;
-    authValidateStrs?: string[];
-    chainStr?: string;
-}): [string, any] {
-    const whereStrs: string[] = [];
-    let params = {};
-
-    if (whereInput) {
-        const whereAndParams = createWhereAndParams({
-            context,
-            node,
-            varName,
-            whereInput,
-            chainStr,
-            recursing: true,
-        });
-        if (whereAndParams[0]) {
-            whereStrs.push(whereAndParams[0]);
-            params = { ...params, ...whereAndParams[1] };
-        }
-    }
-
-    const whereAuth = createAuthAndParams({
-        entity: node,
-        operations: "READ",
-        context,
-        where: {
-            varName,
-            chainStr,
-            node,
-        },
-    });
-    if (whereAuth[0]) {
-        whereStrs.push(whereAuth[0]);
-        params = { ...params, ...whereAuth[1] };
-    }
-
-    const preAuth = createAuthAndParams({
-        entity: node,
-        operations: "READ",
-        context,
-        allow: {
-            parentNode: node,
-            varName,
-            chainStr,
-        },
-    });
-    if (preAuth[0]) {
-        whereStrs.push(`apoc.util.validatePredicate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-        params = { ...params, ...preAuth[1] };
-    }
-
-    if (authValidateStrs?.length) {
-        whereStrs.push(
-            `apoc.util.validatePredicate(NOT(${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-        );
-    }
-
-    return [whereStrs.join(" AND "), params];
+    subQueries: string[];
 }
 
 function createProjectionAndParams({
@@ -128,7 +56,6 @@ function createProjectionAndParams({
     varName,
     literalElements,
     resolveType,
-    inRelationshipProjection,
 }: {
     resolveTree: ResolveTree;
     node: Node;
@@ -138,7 +65,7 @@ function createProjectionAndParams({
     literalElements?: boolean;
     resolveType?: boolean;
     inRelationshipProjection?: boolean;
-}): [string, any, ProjectionMeta?] {
+}): [string, Record<string, unknown>, ProjectionMeta] {
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
         let param = "";
@@ -148,8 +75,6 @@ function createProjectionAndParams({
             param = `${varName}_${alias}`;
         }
 
-        const whereInput = field.args.where as GraphQLWhereArg;
-        const optionsInput = (field.args.options || {}) as GraphQLOptionsArg;
         const fieldFields = field.fieldsByTypeName;
         const cypherField = node.cypherFields.find((x) => x.fieldName === field.name);
         const relationField = node.relationFields.find((x) => x.fieldName === field.name);
@@ -325,196 +250,18 @@ function createProjectionAndParams({
         }
 
         if (relationField) {
-            const referenceNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-
-            if (referenceNode?.queryOptions) {
-                optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
-            }
-
-            const nodeMatchStr = `(${chainStr || varName})`;
-            const relTypeStr = `[:${relationField.type}]`;
-            const labels = referenceNode?.getLabelString(context);
-            const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
-            const { inStr, outStr } = getRelationshipDirection(relationField, field.args);
-
-            if (relationField.interface) {
-                if (!res.meta.interfaceFields) {
-                    res.meta.interfaceFields = [];
-                }
-
-                res.meta.interfaceFields.push(field);
-
-                let offsetLimitStr = "";
-                if (optionsInput) {
-                    offsetLimitStr = createOffsetLimitStr({
-                        offset: optionsInput.offset,
-                        limit: optionsInput.limit,
-                    });
-
-                    if (optionsInput.sort) {
-                        const sorts = optionsInput.sort.reduce(sortReducer, []);
-
-                        res.projection.push(
-                            `${field.alias}: apoc.coll.sortMulti(collect(${field.alias}), [${sorts.join(
-                                ", "
-                            )}])${offsetLimitStr}`
-                        );
-                        return res;
-                    }
-                }
-
-                res.projection.push(
-                    `${field.alias}: ${!isArray ? "head(" : ""}collect(${field.alias})${offsetLimitStr}${
-                        !isArray ? ")" : ""
-                    }`
-                );
-
-                return res;
-            }
-
-            if (relationField.union) {
-                const referenceNodes = context.nodes.filter(
-                    (x) =>
-                        relationField.union?.nodes?.includes(x.name) &&
-                        (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
-                );
-
-                const unionStrs: string[] = [
-                    `${alias}: ${!isArray ? "head(" : ""} [${param} IN [(${
-                        chainStr || varName
-                    })${inStr}${relTypeStr}${outStr}(${param})`,
-                    `WHERE ${referenceNodes
-                        .map((x) => {
-                            const labelsStatements = x
-                                .getLabels(context)
-                                .map((label) => `"${label}" IN labels(${param})`);
-                            return `(${labelsStatements.join(" AND ")})`;
-                        })
-                        .join(" OR ")}`,
-                    `| head(`,
-                ];
-
-                const headStrs: string[] = referenceNodes.map((refNode) => {
-                    const labelsStatements = refNode
-                        .getLabels(context)
-                        .map((label) => `"${label}" IN labels(${param})`);
-                    const innerHeadStr: string[] = [
-                        `[ ${param} IN [${param}] WHERE (${labelsStatements.join(" AND ")})`,
-                    ];
-
-                    // Extract interface names implemented by reference node
-                    const refNodeInterfaceNames = refNode.interfaces.map(
-                        (implementedInterface) => implementedInterface.name.value
-                    );
-
-                    // Determine if there are any fields to project
-                    const hasFields = Object.keys(field.fieldsByTypeName).some((fieldByTypeName) =>
-                        [refNode.name, ...refNodeInterfaceNames].includes(fieldByTypeName)
-                    );
-
-                    if (hasFields) {
-                        const recurse = createProjectionAndParams({
-                            resolveTree: field,
-                            node: refNode,
-                            context,
-                            varName: param,
-                        });
-
-                        const nodeWhereAndParams = createNodeWhereAndParams({
-                            whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
-                            context,
-                            node: refNode,
-                            varName: param,
-                            chainStr: `${param}_${refNode.name}`,
-                            authValidateStrs: recurse[2]?.authValidateStrs,
-                        });
-                        if (nodeWhereAndParams[0]) {
-                            innerHeadStr.push(`AND ${nodeWhereAndParams[0]}`);
-                            res.params = { ...res.params, ...nodeWhereAndParams[1] };
-                        }
-
-                        innerHeadStr.push(
-                            [
-                                `| ${param} { __resolveType: "${refNode.name}", `,
-                                ...recurse[0].replace("{", "").split(""),
-                            ].join("")
-                        );
-                        res.params = { ...res.params, ...recurse[1] };
-                    } else {
-                        innerHeadStr.push(`| ${param} { __resolveType: "${refNode.name}" } `);
-                    }
-
-                    innerHeadStr.push(`]`);
-
-                    return innerHeadStr.join(" ");
-                });
-                unionStrs.push(headStrs.join(" + "));
-                unionStrs.push(`) ] WHERE ${param} IS NOT NULL]`);
-
-                if (optionsInput) {
-                    const offsetLimit = createOffsetLimitStr({
-                        offset: optionsInput.offset,
-                        limit: optionsInput.limit,
-                    });
-                    if (offsetLimit) {
-                        unionStrs.push(offsetLimit);
-                    }
-                }
-
-                unionStrs.push(`${!isArray ? ")" : ""}`);
-                res.projection.push(unionStrs.join(" "));
-
-                return res;
-            }
-
-            let projectionStr = "";
-            const recurse = createProjectionAndParams({
+            const [relationshipSubquery, relationshipSubqueryParams] = createRelationshipFieldSubqueryAndParams({
                 resolveTree: field,
-                node: referenceNode || node,
+                field: relationField,
                 context,
-                varName: `${varName}_${alias}`,
-                chainStr: param,
-                inRelationshipProjection: true,
+                nodeVariable: chainStr || varName,
             });
-            [projectionStr] = recurse;
-            res.params = { ...res.params, ...recurse[1] };
 
-            let whereStr = "";
-            const nodeWhereAndParams = createNodeWhereAndParams({
-                whereInput,
-                varName: `${varName}_${alias}`,
-                node: referenceNode,
-                context,
-                authValidateStrs: recurse[2]?.authValidateStrs,
-            });
-            if (nodeWhereAndParams[0]) {
-                whereStr = `WHERE ${nodeWhereAndParams[0]}`;
-                res.params = { ...res.params, ...nodeWhereAndParams[1] };
-            }
-
-            const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
-            const innerStr = `${pathStr}  ${whereStr} | ${param} ${projectionStr}`;
-            let nestedQuery: string;
-
-            if (optionsInput) {
-                const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
-
-                if (optionsInput.sort) {
-                    const sorts = optionsInput.sort.reduce(sortReducer, []);
-
-                    nestedQuery = `${alias}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
-                } else {
-                    nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${offsetLimit}${
-                        !isArray ? ")" : ""
-                    }`;
-                }
-            } else {
-                nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
-            }
-
-            res.projection.push(nestedQuery);
+            res.meta.subQueries.push(relationshipSubquery);
+            res.params = mergeDeep([res.params, relationshipSubqueryParams]);
+            res.projection.push(`${alias}: ${!isArray ? "head(" : ""}collect(${param})${!isArray ? ")" : ""}`);
 
             return res;
         }
@@ -533,41 +280,17 @@ function createProjectionAndParams({
         }
 
         if (connectionField) {
-            if (!inRelationshipProjection) {
-                if (!res.meta.connectionFields) {
-                    res.meta.connectionFields = [];
-                }
-
-                res.meta.connectionFields.push(field);
-                res.projection.push(literalElements ? `${alias}: ${alias}` : `${alias}`);
-
-                return res;
-            }
-
-            const matchedConnectionField = node.connectionFields.find(
-                (x) => x.fieldName === field.name
-            ) as ConnectionField;
-            const connection = createConnectionAndParams({
+            const [connectionSubquery, connectionSubqueryParams] = createConnectionAndParams({
                 resolveTree: field,
-                field: matchedConnectionField,
+                field: connectionField,
                 context,
                 nodeVariable: varName,
             });
 
-            const connectionParamName = Object.keys(connection[1])[0];
-            const runFirstColumnParams = [
-                ...[`${chainStr}: ${chainStr}`],
-                ...(connectionParamName ? [`${connectionParamName}: $${connectionParamName}`] : []),
-                ...(context.auth ? ["auth: $auth"] : []),
-                ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
-            ];
+            res.meta.subQueries.push(connectionSubquery);
+            res.params = mergeDeep([res.params, connectionSubqueryParams]);
+            res.projection.push(`${alias}: ${param}`);
 
-            res.projection.push(
-                `${field.name}: apoc.cypher.runFirstColumn("${connection[0].replace(/("|')/g, "\\$1")} RETURN ${
-                    field.name
-                }", { ${runFirstColumnParams.join(", ")} }, false)`
-            );
-            res.params = { ...res.params, ...connection[1] };
             return res;
         }
 
@@ -614,23 +337,13 @@ function createProjectionAndParams({
     const { projection, params, meta } = Object.values(mergedFields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
         params: {},
-        meta: {},
+        meta: {
+            authValidateStrs: [],
+            subQueries: [],
+        },
     });
 
     return [`{ ${projection.join(", ")} }`, params, meta];
-}
-
-function sortReducer(s: string[], sort: GraphQLSortArg) {
-    return [
-        ...s,
-        ...Object.entries(sort).map(([fieldName, direction]) => {
-            if (direction === "DESC") {
-                return `'${fieldName}'`;
-            }
-
-            return `'^${fieldName}'`;
-        }),
-    ];
 }
 
 export default createProjectionAndParams;

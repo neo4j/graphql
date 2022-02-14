@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { mergeDeep } from "@graphql-tools/utils";
 import { GraphQLWhereArg, ConnectionWhereArg, Context } from "../../types";
 import { GraphElement, Node, Relationship } from "../../classes";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
@@ -42,7 +43,7 @@ function createElementWhereAndParams({
     varName: string;
     context: Context;
     parameterPrefix: string;
-}): [string, any] {
+}): [string, Record<string, any>] {
     if (!Object.keys(whereInput).length) {
         return ["", {}];
     }
@@ -92,7 +93,7 @@ function createElementWhereAndParams({
             });
 
             res.clauses.push(`(${innerClauses.join(` ${fieldName} `)})`);
-            res.params = { ...res.params, [fieldName]: nestedParams };
+            res.params = mergeDeep([res.params, { [fieldName]: nestedParams }]);
 
             return res;
         }
