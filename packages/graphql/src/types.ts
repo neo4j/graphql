@@ -123,7 +123,6 @@ export interface BaseField {
     description?: string;
     readonly?: boolean;
     writeonly?: boolean;
-    ignored?: boolean;
     dbPropertyName?: string;
     unique?: Unique;
 }
@@ -180,7 +179,7 @@ export interface UnionField extends BaseField {
     nodes?: string[];
 }
 
-export interface IgnoredField extends BaseField {
+export interface ComputedField extends BaseField {
     requiredFields: string[];
 }
 

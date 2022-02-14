@@ -37,7 +37,7 @@ import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
-import getIgnoreMeta from "./get-ignore-meta";
+import getComputedMeta from "./get-computed-meta";
 import getRelationshipMeta from "./get-relationship-meta";
 import getUniqueMeta from "./parse/get-unique-meta";
 import { SCALAR_TYPES } from "../constants";
@@ -55,7 +55,7 @@ import {
     PointField,
     TimeStampOperations,
     ConnectionField,
-    IgnoredField,
+    ComputedField,
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
@@ -73,7 +73,7 @@ export interface ObjectFields {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    ignoredFields: IgnoredField[];
+    computedFields: ComputedField[];
 }
 
 function getObjFieldMeta({
@@ -116,7 +116,7 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
-            const ignoreMeta = getIgnoreMeta(field, interfaceField);
+            const computedMeta = getComputedMeta(field, interfaceField);
             const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
@@ -146,7 +146,7 @@ function getObjFieldMeta({
                             "auth",
                             "readonly",
                             "writeonly",
-                            "ignore",
+                            "computed",
                             "default",
                             "coalesce",
                             "timestamp",
@@ -305,8 +305,8 @@ function getObjFieldMeta({
                     isScalar: !!fieldScalar || SCALAR_TYPES.includes(typeMeta.name),
                 };
                 res.cypherFields.push(cypherField);
-            } else if (ignoreMeta) {
-                res.ignoredFields.push({ ...baseField, ...ignoreMeta });
+            } else if (computedMeta) {
+                res.computedFields.push({ ...baseField, ...computedMeta });
             } else if (fieldScalar) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
@@ -547,7 +547,7 @@ function getObjFieldMeta({
             objectFields: [],
             temporalFields: [],
             pointFields: [],
-            ignoredFields: [],
+            computedFields: [],
         }
     ) as ObjectFields;
 }

@@ -288,7 +288,7 @@ function makeAugmentedSchema(
 
         // Ensure that all required fields are returning either a scalar type or an enum
 
-        const violativeRequiredField = nodeFields.ignoredFields
+        const violativeRequiredField = nodeFields.computedFields
             .filter((f) => f.requiredFields.length)
             .map((f) => f.requiredFields)
             .flat()
@@ -745,7 +745,7 @@ function makeAugmentedSchema(
             ...node.unionFields,
             ...node.temporalFields,
             ...node.pointFields,
-            ...node.ignoredFields,
+            ...node.computedFields,
         ]);
 
         const composeNode = composer.createObjectTC({
