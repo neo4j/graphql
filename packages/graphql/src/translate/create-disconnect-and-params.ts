@@ -72,7 +72,7 @@ function createDisconnectAndParams({
         subquery.push(`WITH ${withVars.join(", ")}`);
         subquery.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${label})`);
 
-        const relationship = context.neoSchema.relationships.find(
+        const relationship = context.relationships.find(
             (x) => x.properties === relationField.properties
         ) as unknown as Relationship;
 
@@ -191,12 +191,10 @@ function createDisconnectAndParams({
 
                             if (relField.union) {
                                 Object.keys(v).forEach((modelName) => {
-                                    newRefNodes.push(context.neoSchema.nodes.find((x) => x.name === modelName) as Node);
+                                    newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
                                 });
                             } else {
-                                newRefNodes.push(
-                                    context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
-                                );
+                                newRefNodes.push(context.nodes.find((x) => x.name === relField.typeMeta.name) as Node);
                             }
 
                             newRefNodes.forEach((newRefNode) => {
@@ -241,13 +239,11 @@ function createDisconnectAndParams({
 
                                 if (relField.union) {
                                     Object.keys(v).forEach((modelName) => {
-                                        newRefNodes.push(
-                                            context.neoSchema.nodes.find((x) => x.name === modelName) as Node
-                                        );
+                                        newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
                                     });
                                 } else {
                                     newRefNodes.push(
-                                        context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
+                                        context.nodes.find((x) => x.name === relField.typeMeta.name) as Node
                                     );
                                 }
 

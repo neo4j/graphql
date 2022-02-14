@@ -77,7 +77,7 @@ describe("info", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { title, name },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -119,7 +119,7 @@ describe("info", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -163,7 +163,7 @@ describe("info", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },

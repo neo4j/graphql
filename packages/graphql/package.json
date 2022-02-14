@@ -43,7 +43,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@faker-js/faker": "6.0.0-alpha.5",
+        "@faker-js/faker": "6.0.0-alpha.6",
         "@types/deep-equal": "1.0.1",
         "@types/is-uuid": "1.0.0",
         "@types/jest": "27.4.0",

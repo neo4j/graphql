@@ -68,7 +68,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -128,7 +128,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -191,7 +191,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -239,7 +239,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -307,7 +307,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -358,7 +358,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -422,7 +422,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -486,7 +486,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });

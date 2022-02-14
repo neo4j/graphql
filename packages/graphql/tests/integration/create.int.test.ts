@@ -65,7 +65,7 @@ describe("create", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -104,7 +104,8 @@ describe("create", () => {
             }
         `;
 
-        const { schema } = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
 
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
@@ -213,7 +214,7 @@ describe("create", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id1, id2 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -339,7 +340,7 @@ describe("create", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: mutation,
             variableValues: {
                 input: [

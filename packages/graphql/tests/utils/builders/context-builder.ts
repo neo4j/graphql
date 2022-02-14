@@ -22,6 +22,7 @@ import { ResolveTree } from "graphql-parse-resolve-info";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { Context } from "../../../src/types";
 import { Builder } from "./builder";
+import { GraphQLSchema } from "graphql";
 
 export class ContextBuilder extends Builder<Context, Context> {
     constructor(newOptions: Partial<Context> = {}) {
@@ -31,6 +32,9 @@ export class ContextBuilder extends Builder<Context, Context> {
             neoSchema: new Neo4jGraphQL({
                 typeDefs: "",
             }),
+            nodes: [],
+            relationships: [],
+            schema: new GraphQLSchema({}),
             ...newOptions,
         });
     }

@@ -35,7 +35,7 @@ function createAuthParam({ context }: { context: Context }): AuthContext {
     // If any role is defined in this parameter, isAuthenticated shall be true
     param.isAuthenticated = true;
 
-    const jwtConfig = context.neoSchema.config?.jwt;
+    const jwtConfig = context.jwtConfig;
 
     // Roles added to config come from the role path or a roles array
     if (jwtConfig?.rolesPath) {

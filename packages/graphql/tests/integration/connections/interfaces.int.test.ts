@@ -159,7 +159,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -235,7 +235,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -297,7 +297,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -366,7 +366,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -447,7 +447,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -487,7 +487,7 @@ describe("Connections -> Interfaces", () => {
             ]);
 
             const nextResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -555,7 +555,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {

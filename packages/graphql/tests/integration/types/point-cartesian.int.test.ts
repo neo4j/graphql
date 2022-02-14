@@ -73,7 +73,7 @@ describe("CartesianPoint", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: create,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { serial, x, y },
@@ -123,7 +123,7 @@ describe("CartesianPoint", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: create,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { serial, x, y, z },
@@ -189,7 +189,7 @@ describe("CartesianPoint", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: update,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { serial, x, y: newY },
@@ -256,7 +256,7 @@ describe("CartesianPoint", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: update,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { serial, x, y: newY, z },
@@ -319,7 +319,7 @@ describe("CartesianPoint", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: partsQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { serial },
@@ -374,7 +374,7 @@ describe("CartesianPoint", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: partsQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { serial },

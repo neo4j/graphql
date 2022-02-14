@@ -66,13 +66,13 @@ describe("https://github.com/neo4j/graphql/issues/354", () => {
         const query = `
             mutation {
                 ${testComment.operations.create}(
-                    input: [{ 
+                    input: [{
                         comment_id: "${commentId}",
                         post: {
                             connect: {
                                 where: { node: { post_id: "${missingNodeId}" } }
                             }
-                        } 
+                        }
                     }]
                 ) {
                     ${testComment.plural} {
@@ -84,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/354", () => {
 
         try {
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver },
             });

@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
             await neoSchema.checkNeo4jCompat();
 
             const createResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: createMutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
             ]);
 
             const updateResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: updateMutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });

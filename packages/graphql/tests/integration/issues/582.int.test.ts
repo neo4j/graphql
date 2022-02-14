@@ -88,7 +88,7 @@ describe("582", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: {
                 where: {
@@ -119,7 +119,7 @@ describe("582", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: {
                 where: {

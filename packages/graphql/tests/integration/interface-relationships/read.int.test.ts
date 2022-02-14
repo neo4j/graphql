@@ -117,7 +117,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { name: actorName },
@@ -160,26 +160,26 @@ describe("interface relationships", () => {
 
         const movie1 = {
             title: "A",
-            runtime: faker.random.number(),
-            screenTime: faker.random.number(),
+            runtime: faker.datatype.number(),
+            screenTime: faker.datatype.number(),
         };
 
         const movie2 = {
             title: "B",
-            runtime: faker.random.number(),
-            screenTime: faker.random.number(),
+            runtime: faker.datatype.number(),
+            screenTime: faker.datatype.number(),
         };
 
         const series1 = {
             title: "C",
-            episodes: faker.random.number(),
-            screenTime: faker.random.number(),
+            episodes: faker.datatype.number(),
+            screenTime: faker.datatype.number(),
         };
 
         const series2 = {
             title: "D",
-            episodes: faker.random.number(),
-            screenTime: faker.random.number(),
+            episodes: faker.datatype.number(),
+            screenTime: faker.datatype.number(),
         };
 
         const query = gql`
@@ -210,7 +210,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query.loc!.source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { name: actor.name },
@@ -298,7 +298,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { name: actorName },
@@ -369,7 +369,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { name: actorName, title: "Apple" },
@@ -444,7 +444,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { name: actorName, title: "Apple" },
@@ -517,7 +517,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { name: actorName, title: "Apple", movieTitle: "Pear" },

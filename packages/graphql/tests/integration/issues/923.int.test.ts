@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
                 @auth(rules: [{ operations: [CREATE, UPDATE, DELETE, DISCONNECT, CONNECT], isAuthenticated: true }])
         `;
         const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
-        schema = neoGraphql.schema;
+        schema = await neoGraphql.getSchema();
     });
 
     beforeEach(() => {

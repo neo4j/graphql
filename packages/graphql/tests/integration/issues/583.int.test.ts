@@ -18,7 +18,7 @@
  */
 
 import gql from "graphql-tag";
-import { graphql } from "graphql";
+import { graphql, GraphQLSchema } from "graphql";
 import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
@@ -28,6 +28,7 @@ const testLabel = generate({ charset: "alphabetic" });
 
 describe("583", () => {
     let driver: Driver;
+    let schema: GraphQLSchema;
 
     const typeDefs = gql`
         interface Show {
@@ -60,8 +61,6 @@ describe("583", () => {
         }
     `;
 
-    const { schema } = new Neo4jGraphQL({ typeDefs });
-
     const actor = {
         id: generate(),
         name: "aaa",
@@ -85,6 +84,9 @@ describe("583", () => {
     beforeAll(async () => {
         driver = await neo4j();
         const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        schema = await neoSchema.getSchema();
 
         await session.run(
             `

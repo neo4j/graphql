@@ -18,55 +18,71 @@
  */
 
 import Debug from "debug";
-import { GraphQLResolveInfo, print } from "graphql";
+import { GraphQLResolveInfo, GraphQLSchema, print } from "graphql";
 import { Driver } from "neo4j-driver";
 import { getJWT } from "../../auth/get-jwt";
-import { Neo4jGraphQL, Neo4jGraphQLConfig } from "../../classes";
+import { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
 import { Context } from "../../types";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
-export const wrapResolver = ({
-    driver,
-    config,
-    neoSchema,
-}: {
-    driver?: Driver;
-    config: Neo4jGraphQLConfig;
-    neoSchema: Neo4jGraphQL;
-}) => (next) => async (root, args, context: Context, info: GraphQLResolveInfo) => {
-    const { driverConfig } = config;
+export const wrapResolver =
+    ({
+        driver,
+        config,
+        nodes,
+        relationships,
+        schema,
+    }: {
+        driver?: Driver;
+        config: Neo4jGraphQLConfig;
+        nodes: Node[];
+        relationships: Relationship[];
+        schema: GraphQLSchema;
+    }) =>
+    (next) =>
+    async (root, args, context: Context, info: GraphQLResolveInfo) => {
+        const { driverConfig, jwt } = config;
 
-    if (debug.enabled) {
-        const query = print(info.operation);
+        if (debug.enabled) {
+            const query = print(info.operation);
 
-        debug("%s", `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(info.variableValues, null, 2)}`);
-    }
-
-    if (!context?.driver) {
-        if (!driver) {
-            throw new Error(
-                "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
+            debug(
+                "%s",
+                `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(info.variableValues, null, 2)}`
             );
         }
-        context.driver = driver;
-    }
 
-    if (!context?.driverConfig) {
-        context.driverConfig = driverConfig;
-    }
+        if (!context?.driver) {
+            if (!driver) {
+                throw new Error(
+                    "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
+                );
+            }
+            context.driver = driver;
+        }
 
-    context.neoSchema = neoSchema;
+        if (!context?.driverConfig) {
+            context.driverConfig = driverConfig;
+        }
 
-    if (!context.jwt) {
-        context.jwt = await getJWT(context);
-    }
+        if (!context?.jwtConfig) {
+            context.jwtConfig = jwt;
+        }
 
-    context.auth = createAuthParam({ context });
+        context.nodes = nodes;
+        context.relationships = relationships;
+        context.schema = schema;
 
-    context.queryOptions = config.queryOptions;
+        if (!context.jwt) {
+            context.jwt = await getJWT(context);
+        }
 
-    return next(root, args, context, info);
-};
+        context.auth = createAuthParam({ context });
+
+        context.queryOptions = config.queryOptions;
+
+        return next(root, args, context, info);
+    };

@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Directive-preserve", () => {
-    test("Preserve Directives", () => {
+    test("Preserve Directives", async () => {
         const typeDefs = gql`
             directive @preservedTopLevel(string: String, int: Int, float: Float, boolean: Boolean) on OBJECT
             directive @preservedFieldLevel(string: String, int: Int, float: Float, boolean: Boolean) on FIELD_DEFINITION
@@ -33,7 +33,7 @@ describe("Directive-preserve", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

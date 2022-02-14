@@ -59,7 +59,7 @@ describe("unauthenticated-requests", () => {
         const req = createJwtRequest(secret);
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, req },
         });
@@ -89,7 +89,7 @@ describe("unauthenticated-requests", () => {
         const req = createJwtRequest(secret);
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, req },
         });
@@ -121,7 +121,7 @@ describe("unauthenticated-requests", () => {
         const req = createJwtRequest(secret);
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, req },
         });

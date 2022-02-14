@@ -68,7 +68,7 @@ describe("update", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, name: updatedName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -129,7 +129,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, name: updatedName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -202,7 +202,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { updatedMovieId, actorName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -264,7 +264,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id1, id2, name: updatedName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -347,7 +347,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { movieId, updatedName, initialName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -421,7 +421,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id, actorName1 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -495,7 +495,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id, actorName1 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -586,7 +586,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { movieId1, actorName1, movieId2 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -681,7 +681,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id, name1, name3 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -760,7 +760,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -827,7 +827,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -906,7 +906,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { movieId, seriesId },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -978,7 +978,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -1070,7 +1070,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -1216,7 +1216,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -1334,7 +1334,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -1435,7 +1435,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },

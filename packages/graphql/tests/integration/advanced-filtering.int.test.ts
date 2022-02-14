@@ -19,7 +19,7 @@
 
 import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { graphql } from "graphql";
+import { graphql, GraphQLSchema } from "graphql";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../utils/graphql-types";
@@ -84,7 +84,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -140,7 +140,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -202,7 +202,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -272,7 +272,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -334,7 +334,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -399,7 +399,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -461,7 +461,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -528,7 +528,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -593,7 +593,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -658,7 +658,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -729,7 +729,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -805,7 +805,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -883,7 +883,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -946,7 +946,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -1009,7 +1009,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -1071,7 +1071,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -1134,7 +1134,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                         const gqlResult = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
@@ -1187,7 +1187,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -1236,7 +1236,7 @@ describe("Advanced Filtering", () => {
                         `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -1311,7 +1311,7 @@ describe("Advanced Filtering", () => {
                     `;
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: query,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
@@ -1375,7 +1375,7 @@ describe("Advanced Filtering", () => {
                     `;
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: query,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
@@ -1447,7 +1447,7 @@ describe("Advanced Filtering", () => {
                     `;
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: query,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
@@ -1519,7 +1519,7 @@ describe("Advanced Filtering", () => {
                     `;
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: query,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
@@ -1600,7 +1600,7 @@ describe("Advanced Filtering", () => {
                     `;
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: query,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
@@ -1675,7 +1675,7 @@ describe("Advanced Filtering", () => {
                     `;
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: query,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
@@ -1757,7 +1757,7 @@ describe("Advanced Filtering", () => {
                     `;
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: query,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
@@ -1780,6 +1780,8 @@ describe("Advanced Filtering", () => {
         });
 
         describe("List Predicates", () => {
+            let schema: GraphQLSchema;
+
             const testLabel = generate({ charset: "alphabetic" });
 
             const typeDefs = `
@@ -1796,7 +1798,7 @@ describe("Advanced Filtering", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({ typeDefs, driver });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
             const movies = [
                 ...Array(4)
@@ -1829,6 +1831,7 @@ describe("Advanced Filtering", () => {
                 `,
                     { movies, actors }
                 );
+                schema = await neoSchema.getSchema();
             });
 
             afterAll(async () => {
@@ -2087,7 +2090,7 @@ describe("Advanced Filtering", () => {
                 // Test null checking (nodes without any related nodes on the specified field)
 
                 const nullResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: nullQuery,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -2114,7 +2117,7 @@ describe("Advanced Filtering", () => {
                 `;
 
                 const notNullResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: notNullQuery,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -2185,7 +2188,7 @@ describe("Advanced Filtering", () => {
                 `;
 
                 const nullResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: nullQuery,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -2211,7 +2214,7 @@ describe("Advanced Filtering", () => {
                 `;
 
                 const notNullResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: notNullQuery,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });

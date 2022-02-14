@@ -81,7 +81,7 @@ describe("326", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -138,7 +138,7 @@ describe("326", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
