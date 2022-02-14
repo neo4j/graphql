@@ -163,11 +163,8 @@ function buildOnCreate(onCreate: Record<string, any>, varName: string, node?: No
     const parameters = {};
 
     Object.entries(onCreate).forEach(([key, value]) => {
-        let usedFieldName = key;
-        const nodeField = node?.primitiveFields.find((n) => n.fieldName === key);
-        if (nodeField) {
-            usedFieldName = nodeField.dbPropertyName || nodeField.fieldName;
-        }
+        const nodeField = node?.primitiveFields.find((f) => f.fieldName === key);
+        const usedFieldName = nodeField ? nodeField.dbPropertyName || nodeField.fieldName : key;
         queries.push(`${varName}.${usedFieldName} = $${generateParameterKey(`${varName}_on_create`, usedFieldName)}`);
         const val = nodeField?.typeMeta.array ? [value] : value;
         parameters[generateParameterKey(`${varName}_on_create`, usedFieldName)] = val;

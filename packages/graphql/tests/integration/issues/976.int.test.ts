@@ -169,12 +169,12 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
             },
         });
 
-        const conceptRes = await session.run(`
+        const conceptCount = await session.run(`
             MATCH (bibRef:${testBibliographicReference.name})-[r:isInPublication]->(concept:${testConcept.name}) RETURN bibRef.uri as bibRefUri, COUNT(concept) as conceptCount
         `);
 
-        expect(conceptRes.records).toHaveLength(1);
-        expect(conceptRes.records[0].toObject().bibRefUri as string).toBe("urn:myiri2");
-        expect((conceptRes.records[0].toObject().conceptCount as Integer).toNumber()).toBe(2);
+        expect(conceptCount.records).toHaveLength(1);
+        expect(conceptCount.records[0].toObject().bibRefUri as string).toBe("urn:myiri2");
+        expect((conceptCount.records[0].toObject().conceptCount as Integer).toNumber()).toBe(2);
     });
 });
