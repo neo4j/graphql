@@ -1059,14 +1059,12 @@ function makeAugmentedSchema(
 
     unions.forEach((union) => {
         if (!generatedResolvers[union.name.value]) {
-            // eslint-disable-next-line no-underscore-dangle
             generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
         }
     });
 
     interfaceRelationships.forEach((i) => {
         if (!generatedResolvers[i.name.value]) {
-            // eslint-disable-next-line no-underscore-dangle
             generatedResolvers[i.name.value] = { __resolveType: (root) => root.__resolveType };
         }
     });
