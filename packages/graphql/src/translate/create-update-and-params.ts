@@ -327,8 +327,6 @@ function createUpdateAndParams({
                             refNode,
                             context,
                         });
-                        console.log("update.connectOrCreate", connectOrCreateQuery, connectOrCreateParams);
-
                         subquery.push(connectOrCreateQuery);
                         res.params = { ...res.params, ...connectOrCreateParams };
                     }

@@ -18,7 +18,7 @@
  */
 
 import { DocumentNode, graphql, GraphQLSchema } from "graphql";
-import { Driver, Session } from "neo4j-driver";
+import { Driver, Integer, Session } from "neo4j-driver";
 import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
@@ -139,13 +139,13 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
         const createBibRefResult = await graphqlQuery(createBibRefQuery);
         expect(createBibRefResult.errors).toBeUndefined();
 
-        const bibRef = await session.run(`
-            MATCH (bibRef:${testBibliographicReference.name})-[r:isInPublication]->(concept:${testConcept.name}) return bibRef.uri as bibRefUri, concept.uri as conceptUri
+        const bibRefRes = await session.run(`
+            MATCH (bibRef:${testBibliographicReference.name})-[r:isInPublication]->(concept:${testConcept.name}) RETURN bibRef.uri as bibRefUri, concept.uri as conceptUri
         `);
 
-        expect(bibRef.records).toHaveLength(1);
-        expect(bibRef.records[0].toObject().bibRefUri as string).toBe("urn:myiri2");
-        expect(bibRef.records[0].toObject().conceptUri as string).toBe("new-e");
+        expect(bibRefRes.records).toHaveLength(1);
+        expect(bibRefRes.records[0].toObject().bibRefUri as string).toBe("urn:myiri2");
+        expect(bibRefRes.records[0].toObject().conceptUri as string).toBe("new-e");
 
         const updateBibRefResult = await graphqlQuery(updateBibRefQuery);
         expect(updateBibRefResult.errors).toBeUndefined();
@@ -169,11 +169,12 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
             },
         });
 
-        // const userOrgs = await session.run(`
-        //     MATCH (bibRef:${testBibliographicReference.name})-[r:isInPublication]->(concept:${testConcept.name}) return bibRef.uri as bibRefUri, concept.uri as conceptUri
-        // `);
+        const conceptRes = await session.run(`
+            MATCH (bibRef:${testBibliographicReference.name})-[r:isInPublication]->(concept:${testConcept.name}) RETURN bibRef.uri as bibRefUri, COUNT(concept) as conceptCount
+        `);
 
-        // expect(userOrgs.records).toHaveLength(1);
-        // expect(userOrgs.records[0].toObject().orgName as string).toBe("The Empire");
+        expect(conceptRes.records).toHaveLength(1);
+        expect(conceptRes.records[0].toObject().bibRefUri as string).toBe("urn:myiri2");
+        expect((conceptRes.records[0].toObject().conceptCount as Integer).toNumber()).toBe(2);
     });
 });
