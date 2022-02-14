@@ -24,13 +24,13 @@ import { DEBUG_PREFIX } from "./constants";
 const debug = Debug(DEBUG_PREFIX);
 
 export interface JWTPluginInput {
-    secret: string;
+    secret: jsonwebtoken.Secret;
     noVerify?: boolean;
     rolesPath?: string;
 }
 
 class JWTPlugin {
-    secret: string;
+    secret: jsonwebtoken.Secret;
     noVerify?: boolean;
     rolesPath?: string;
 

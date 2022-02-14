@@ -22,6 +22,7 @@ import { ResolveTree } from "graphql-parse-resolve-info";
 import { Driver, Integer } from "neo4j-driver";
 import { Node, Relationship } from "./classes";
 import { RelationshipQueryDirectionOption } from "./constants";
+import type { Secret } from "jsonwebtoken";
 
 export type DriverConfig = {
     database?: string;
@@ -334,7 +335,7 @@ export type InputField = { type: string; defaultValue?: string } | string;
 
 export interface Neo4jGraphQLJWTPlugin {
     rolesPath?: string;
-    secret?: string;
+    secret?: Secret;
 
     decode<T = any>(token: string): Promise<T | undefined>;
 }

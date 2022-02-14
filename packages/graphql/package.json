@@ -76,6 +76,7 @@
         "@graphql-tools/resolvers-composition": "^6.4.1",
         "@graphql-tools/schema": "^8.3.1",
         "@graphql-tools/utils": "^8.6.0",
+        "@types/jsonwebtoken": "^8.5.8",
         "camelcase": "^6.2.0",
         "debug": "^4.3.2",
         "deep-equal": "^2.0.5",
