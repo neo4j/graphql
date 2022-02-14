@@ -20,7 +20,7 @@
 import { GraphQLScalarType, Kind } from "graphql";
 
 export const ScalarOrEnumType = new GraphQLScalarType({
-    name: "Scalar",
+    name: "ScalarOrEnum",
     description: "Int | Float | String | Boolean | ID | DateTime | Date | Enum",
     serialize(value) {
         if (!["string", "number", "boolean"].includes(typeof value)) {
