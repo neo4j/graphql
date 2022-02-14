@@ -250,7 +250,7 @@ function createConnectionFields({
                       scalarFields: relFields.scalarFields,
                       primitiveFields: relFields.primitiveFields,
                       pointFields: relFields.pointFields,
-                      computedFields: relFields.computedFields,
+                      customFields: relFields.customFields,
                   }
                 : {}),
         });

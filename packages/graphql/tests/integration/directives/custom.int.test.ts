@@ -24,7 +24,7 @@ import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 const testLabel = generate({ charset: "alphabetic" });
-describe("@computed directive", () => {
+describe("@custom directive", () => {
     let driver: Driver;
 
     beforeAll(async () => {
@@ -41,7 +41,7 @@ describe("@computed directive", () => {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                fullName: String @computed(from: ["firstName", "lastName"])
+                fullName: String @custom(from: ["firstName", "lastName"])
             }
         `;
 
@@ -169,7 +169,7 @@ describe("@computed directive", () => {
                 id: ID!
                 firstName: String! @cypher(statement: "RETURN '${user.firstName}'")
                 lastName: String! @cypher(statement: "RETURN '${user.lastName}'")
-                fullName: String @computed(from: ["firstName", "lastName"])
+                fullName: String @custom(from: ["firstName", "lastName"])
             }
         `;
 
