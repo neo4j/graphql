@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { IncomingMessage } from "http";
@@ -24,7 +25,6 @@ import neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
 import { generateUniqueType } from "../../../../utils/graphql-types";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("Field Level Aggregations Auth", () => {
     let driver: Driver;

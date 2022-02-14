@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
@@ -24,7 +25,6 @@ import * as neo4jDriver from "neo4j-driver";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("@alias directive", () => {
     let driver: Driver;

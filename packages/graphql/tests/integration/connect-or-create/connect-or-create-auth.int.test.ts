@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { Driver, Session, Integer } from "neo4j-driver";
 import { graphql, DocumentNode } from "graphql";
@@ -25,7 +26,6 @@ import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 import { createJwtRequest } from "../../utils/create-jwt-request";
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("Update -> ConnectOrCreate", () => {
     let driver: Driver;

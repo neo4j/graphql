@@ -17,15 +17,14 @@
  * limitations under the License.
  */
 
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Socket } from "net";
 import { graphql } from "graphql";
 import { Driver } from "neo4j-driver";
 import { IncomingMessage } from "http";
 import { generate } from "randomstring";
-
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 // Reference: https://github.com/neo4j/graphql/pull/355
 // Reference: https://github.com/neo4j/graphql/issues/345
