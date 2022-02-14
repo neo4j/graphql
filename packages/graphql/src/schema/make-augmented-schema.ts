@@ -738,6 +738,7 @@ function makeAugmentedSchema(
         const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
             ...node.computedFields,
+            ...node.relatedFields,
             ...node.cypherFields,
             ...node.enumFields,
             ...node.scalarFields,

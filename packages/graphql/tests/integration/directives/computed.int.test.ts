@@ -38,8 +38,14 @@ describe("computed", () => {
             runtime: Int!
             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             numberOfActors: Int!
-                @computed(statement: "MATCH (actor:Actor)-[:ACTED_IN]->($$source) RETURN count(actor) AS $$field")
+                @computed(
+                    statement: """
+                    MATCH (actor:Actor)-[:ACTED_IN]->($$source)
+                    RETURN count(actor) AS $$field
+                    """
+                )
         }
+
         type Actor {
             id: ID!
             name: String!
@@ -52,6 +58,7 @@ describe("computed", () => {
                     """
                 )
         }
+
         interface ActedIn @relationshipProperties {
             screenTime: Int!
         }
@@ -117,17 +124,17 @@ describe("computed", () => {
     });
 
     test("on top level", async () => {
-        const source = `
-                  query ($movieIds: [ID!]!) {
-                      movies(where: { id_IN: $movieIds }) {
-                          id
-                          numberOfActors
-                      }
-                  }
-              `;
+        const source = gql`
+            query ($movieIds: [ID!]!) {
+                movies(where: { id_IN: $movieIds }) {
+                    id
+                    numberOfActors
+                }
+            }
+        `;
         const gqlResult = await graphql({
             schema,
-            source,
+            source: source.loc!.source,
             contextValue: { driver },
             variableValues: { movieIds: movies.map(({ id }) => id) },
         });

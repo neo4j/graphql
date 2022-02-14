@@ -233,6 +233,20 @@ export const readonlyDirective = new GraphQLDirective({
     locations: [DirectiveLocation.FIELD_DEFINITION],
 });
 
+export const relatedDirective = new GraphQLDirective({
+    name: "related",
+    description:
+        "Instructs @neo4j/graphql to run the specified Cypher statement in order to resolve the value of the field to which the directive is applied.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        statement: {
+            description:
+                "The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied.",
+            type: new GraphQLNonNull(GraphQLString),
+        },
+    },
+});
+
 export const relationshipDirective = new GraphQLDirective({
     name: "relationship",
     description:
