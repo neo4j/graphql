@@ -38,10 +38,12 @@ import getAliasMeta from "./get-alias-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getComputedMeta from "./get-computed-meta";
+import getRelatedMeta from "./get-related-meta";
 import getRelationshipMeta from "./get-relationship-meta";
 import getUniqueMeta from "./parse/get-unique-meta";
 import { SCALAR_TYPES } from "../constants";
 import {
+    RelatedField,
     RelationField,
     CypherField,
     PrimitiveField,
@@ -63,6 +65,7 @@ import { upperFirst } from "../utils/upper-first";
 
 export interface ObjectFields {
     relationFields: RelationField[];
+    relatedFields: RelatedField[];
     connectionFields: ConnectionField[];
     primitiveFields: PrimitiveField[];
     cypherFields: CypherField[];
@@ -115,6 +118,7 @@ function getObjFieldMeta({
             }
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
+            const relatedMeta = getRelatedMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
             const computedMeta = getComputedMeta(field, interfaceField);
             const typeMeta = getFieldTypeMeta(field.type);
@@ -141,6 +145,7 @@ function getObjFieldMeta({
                     (x) =>
                         ![
                             "relationship",
+                            "related",
                             "cypher",
                             "id",
                             "auth",
@@ -285,6 +290,55 @@ function getObjFieldMeta({
                 res.relationFields.push(relationField);
                 res.connectionFields.push(connectionField);
                 // }
+            } else if (relatedMeta) {
+                if (defaultDirective) {
+                    throw new Error("@default directive can only be used on primitive type fields");
+                }
+
+                if (coalesceDirective) {
+                    throw new Error("@coalesce directive can only be used on primitive type fields");
+                }
+
+                if (aliasDirective) {
+                    throw new Error("@alias directive cannot be used on cypher fields");
+                }
+
+                // TODO: Better validation
+                if (!(fieldObject || fieldInterface || fieldUnion)) {
+                    throw new Error("@related fields must return a named type");
+                }
+
+                const relatedField: RelatedField = {
+                    ...baseField,
+                    ...relatedMeta,
+                };
+
+                if (fieldUnion) {
+                    const nodes: string[] = [];
+
+                    fieldUnion.types?.forEach((type) => {
+                        nodes.push(type.name.value);
+                    });
+
+                    const unionField: UnionField = {
+                        ...baseField,
+                        nodes,
+                    };
+
+                    relatedField.union = unionField;
+                }
+
+                if (fieldInterface) {
+                    const implementations = objects
+                        .filter((n) => n.interfaces?.some((i) => i.name.value === fieldInterface.name.value))
+                        .map((n) => n.name.value);
+
+                    relatedField.interface = {
+                        ...baseField,
+                        implementations,
+                    };
+                }
+                res.relatedFields.push(relatedField);
             } else if (cypherMeta) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
@@ -530,6 +584,7 @@ function getObjFieldMeta({
         },
         {
             relationFields: [],
+            relatedFields: [],
             connectionFields: [],
             primitiveFields: [],
             cypherFields: [],

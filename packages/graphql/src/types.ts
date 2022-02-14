@@ -147,6 +147,15 @@ export interface ConnectionField extends BaseField {
 }
 
 /**
+ * Representation of the `@related` directive and its meta.
+ */
+export interface RelatedField extends BaseField {
+    statement: string;
+    union?: UnionField;
+    interface?: InterfaceField;
+}
+
+/**
  * Representation of the `@cypher` directive and its meta.
  */
 export interface CypherField extends BaseField {

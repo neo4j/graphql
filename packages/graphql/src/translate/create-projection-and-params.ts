@@ -27,6 +27,8 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
 // eslint-disable-next-line import/no-cycle
+import createRelatedFieldSubqueryAndParams from "./create-related-field-subquery-and-params";
+// eslint-disable-next-line import/no-cycle
 import createRelationshipFieldSubqueryAndParams from "./create-relationship-field-subquery-and-params";
 // eslint-disable-next-line import/no-cycle
 import createConnectionAndParams from "./connection/create-connection-and-params";
@@ -77,6 +79,7 @@ function createProjectionAndParams({
 
         const fieldFields = field.fieldsByTypeName;
         const cypherField = node.cypherFields.find((x) => x.fieldName === field.name);
+        const relatedField = node.relatedFields.find((x) => x.fieldName === field.name);
         const relationField = node.relationFields.find((x) => x.fieldName === field.name);
         const connectionField = node.connectionFields.find((x) => x.fieldName === field.name);
         const pointField = node.pointFields.find((x) => x.fieldName === field.name);
@@ -245,6 +248,23 @@ function createProjectionAndParams({
             }
 
             res.projection.push(`${alias}: head([${apocStr}])`);
+
+            return res;
+        }
+
+        if (relatedField) {
+            const isArray = relatedField.typeMeta.array;
+
+            const [relatedSubquery, relatedSubqueryParams] = createRelatedFieldSubqueryAndParams({
+                resolveTree: field,
+                field: relatedField,
+                context,
+                nodeVariable: chainStr || varName,
+            });
+
+            res.meta.subQueries.push(relatedSubquery);
+            res.params = mergeDeep([res.params, relatedSubqueryParams]);
+            res.projection.push(`${alias}: ${!isArray ? "head(" : ""}collect(${param})${!isArray ? ")" : ""}`);
 
             return res;
         }
