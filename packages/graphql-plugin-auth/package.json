@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-plugin-auth",
-    "version": "2.5.8",
+    "version": "0.0.1",
     "description": "Auth decode plugins for @neo4j/graphql",
     "keywords": [
         "neo4j",
