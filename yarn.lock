@@ -1706,7 +1706,7 @@ __metadata:
     "@graphql-codegen/typescript": ^2.4.2
     "@graphql-tools/merge": ^8.2.1
     "@neo4j/graphql": ^2.5.8
-    "@neo4j/graphql-plugin-auth": ^2.5.8
+    "@neo4j/graphql-plugin-auth": ^0.0.1
     "@types/jest": 27.4.0
     "@types/node": 16.11.24
     camelcase: ^6.2.0
@@ -1727,7 +1727,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql-plugin-auth@^2.5.8, @neo4j/graphql-plugin-auth@workspace:packages/graphql-plugin-auth":
+"@neo4j/graphql-plugin-auth@^0.0.1, @neo4j/graphql-plugin-auth@workspace:packages/graphql-plugin-auth":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-plugin-auth@workspace:packages/graphql-plugin-auth"
   dependencies:
@@ -1753,7 +1753,7 @@ __metadata:
     "@graphql-tools/resolvers-composition": ^6.4.1
     "@graphql-tools/schema": ^8.3.1
     "@graphql-tools/utils": ^8.6.0
-    "@neo4j/graphql-plugin-auth": ^2.5.8
+    "@neo4j/graphql-plugin-auth": ^0.0.1
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
     "@types/jest": 27.4.0
@@ -11906,7 +11906,7 @@ __metadata:
     "@faker-js/faker": ^6.0.0-alpha.5
     "@neo4j/graphql": ^2.5.8
     "@neo4j/graphql-ogm": ^2.5.8
-    "@neo4j/graphql-plugin-auth": ^2.5.8
+    "@neo4j/graphql-plugin-auth": ^0.0.1
     "@types/bcrypt": 3.0.0
     "@types/debug": 4.1.5
     "@types/dotenv": 8.2.0
