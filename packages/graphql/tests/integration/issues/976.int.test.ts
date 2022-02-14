@@ -163,10 +163,6 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
                                 iri: "new-f",
                                 prefLabel: ["pub"],
                             },
-                            {
-                                iri: "new-g",
-                                prefLabel: ["pub"],
-                            },
                         ],
                     },
                 ],

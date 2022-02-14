@@ -67,6 +67,9 @@ export function buildMergeStatement({
     const onCreateStatements: Array<CypherStatement> = [];
     let leftStatement: CypherStatement | undefined;
     let relationOnCreateStatement: CypherStatement | undefined;
+    // console.log(sourceNode);
+    // console.log(targetNode);
+    // console.log(relationship);
 
     if (sourceNode.node) {
         // Autogenerate fields for left node
@@ -78,7 +81,6 @@ export function buildMergeStatement({
             .forEach((field) => {
                 onCreateStatements.push([`${sourceNode.varName}.${field.dbPropertyName} = randomUUID(),\n`, {}]);
             });
-
         sourceNode.node.temporalFields
             .filter(
                 (field) => ["DateTime", "Time"].includes(field.typeMeta.name) && field.timestamps?.includes("CREATE")
@@ -92,10 +94,31 @@ export function buildMergeStatement({
     }
 
     if (sourceNode.onCreate) {
-        onCreateStatements.push(buildOnCreate(sourceNode.onCreate, sourceNode.varName));
+        // console.log("onCreateStatements", sourceNode.node?.primitiveFields);
+        // let t = {};
+        // const keys = Object.keys(sourceNode.onCreate).forEach((key) => {
+        //     const primitiveField = sourceNode?.node?.primitiveFields.find((n) => n.fieldName === key);
+        //     if (primitiveField) {
+        //         t[primitiveField.dbPropertyName || primitiveField.fieldName] = sourceNode?.onCreate?.[key];
+        //     }
+        // });
+        // let onCreate = sourceNode.onCreate;
+        // const fr = sourceNode?.node?.primitiveFields
+        //     .filter((f) => keys.includes(f.fieldName) && f.fieldName !== f.dbPropertyName)
+        //     .map((d) => ({ fieldName: d.fieldName, dbPropertyName: d.dbPropertyName }));
+        // console.log("fr", t);
+        // if (fr?.length) {
+        //     onCreate = {
+        //         ..onCreate,
+        //         ..fr
+        //     }
+        // }
+        onCreateStatements.push(buildOnCreate(sourceNode.onCreate, sourceNode.varName, sourceNode.node));
+        console.log(onCreateStatements);
     }
     if (targetNode?.onCreate) {
-        onCreateStatements.push(buildOnCreate(targetNode.onCreate, targetNode.varName));
+        // TODO: also here?
+        onCreateStatements.push(buildOnCreate(targetNode.onCreate, targetNode.varName, targetNode.node));
     }
 
     if (relationship || targetNode) {
@@ -159,13 +182,19 @@ export function buildMergeStatement({
     return joinStatements([mergeNodeStatement, onCreateSetQuery, ...onCreateStatements]);
 }
 
-function buildOnCreate(onCreate: Record<string, any>, varName: string): CypherStatement {
+function buildOnCreate(onCreate: Record<string, any>, varName: string, node?: Node | undefined): CypherStatement {
     const queries: string[] = [];
     const parameters = {};
 
     Object.entries(onCreate).forEach(([key, value]) => {
-        queries.push(`${varName}.${key} = $${generateParameterKey(`${varName}_on_create`, key)}`);
-        parameters[generateParameterKey(`${varName}_on_create`, key)] = value;
+        let usedFieldName = key;
+        const nodeField = node?.primitiveFields.find((n) => n.fieldName === key);
+        if (nodeField) {
+            usedFieldName = nodeField.dbPropertyName || nodeField.fieldName;
+        }
+        queries.push(`${varName}.${usedFieldName} = $${generateParameterKey(`${varName}_on_create`, usedFieldName)}`);
+        const val = nodeField?.typeMeta.array ? [value] : value;
+        parameters[generateParameterKey(`${varName}_on_create`, usedFieldName)] = val;
     });
     return [joinStrings(queries, ",\n"), parameters];
 }
