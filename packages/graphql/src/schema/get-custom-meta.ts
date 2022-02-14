@@ -24,12 +24,12 @@ type IgnoreMeta = {
     requiredFields: string[];
 };
 
-export const ERROR_MESSAGE = "Required fields of @computed must be a list of strings";
+export const ERROR_MESSAGE = "Required fields of @custom must be a list of strings";
 
-function getComputedMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinitionNode): IgnoreMeta | undefined {
+function getCustomMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinitionNode): IgnoreMeta | undefined {
     const directive =
-        field.directives?.find((x) => x.name.value === "computed") ||
-        interfaceField?.directives?.find((x) => x.name.value === "computed");
+        field.directives?.find((x) => x.name.value === "custom") ||
+        interfaceField?.directives?.find((x) => x.name.value === "custom");
     if (!directive) {
         return undefined;
     }
@@ -49,7 +49,7 @@ function getComputedMeta(field: FieldDefinitionNode, interfaceField?: FieldDefin
         throw new Error(ERROR_MESSAGE);
     }
 
-    // `@computed(from: [String!])`
+    // `@custom(from: [String!])`
     // Create a set from array of argument `require`
     const requiredFields = removeDuplicates(
         (directiveFromArgument.value.values.map((v) => (v as StringValueNode).value) as string[]) ?? []
@@ -60,4 +60,4 @@ function getComputedMeta(field: FieldDefinitionNode, interfaceField?: FieldDefin
     };
 }
 
-export default getComputedMeta;
+export default getCustomMeta;

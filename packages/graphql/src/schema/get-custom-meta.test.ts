@@ -18,9 +18,9 @@
  */
 
 import { FieldDefinitionNode, Kind } from "graphql";
-import getComputedMeta, { ERROR_MESSAGE } from "./get-computed-meta";
+import getCustomMeta, { ERROR_MESSAGE } from "./get-custom-meta";
 
-describe("getComputedMeta", () => {
+describe("getCustomMeta", () => {
     test("should return undefined if no directive found", () => {
         // @ts-ignore
         const field: FieldDefinitionNode = {
@@ -44,7 +44,7 @@ describe("getComputedMeta", () => {
             ],
         };
 
-        const result = getComputedMeta(field);
+        const result = getCustomMeta(field);
 
         expect(result).toBeUndefined();
     });
@@ -55,7 +55,7 @@ describe("getComputedMeta", () => {
                 {
                     // @ts-ignore
                     name: {
-                        value: "computed",
+                        value: "custom",
                         // @ts-ignore
                     },
                     arguments: [
@@ -82,7 +82,7 @@ describe("getComputedMeta", () => {
             ],
         };
 
-        expect(() => getComputedMeta(field)).toThrow(ERROR_MESSAGE);
+        expect(() => getCustomMeta(field)).toThrow(ERROR_MESSAGE);
     });
 
     test("should throw if from not a list of strings", () => {
@@ -91,7 +91,7 @@ describe("getComputedMeta", () => {
                 {
                     // @ts-ignore
                     name: {
-                        value: "computed",
+                        value: "custom",
                         // @ts-ignore
                     },
                     arguments: [
@@ -125,7 +125,7 @@ describe("getComputedMeta", () => {
             ],
         };
 
-        expect(() => getComputedMeta(field)).toThrow(ERROR_MESSAGE);
+        expect(() => getCustomMeta(field)).toThrow(ERROR_MESSAGE);
     });
 
     test("should return the correct meta if no from argument", () => {
@@ -134,7 +134,7 @@ describe("getComputedMeta", () => {
                 {
                     // @ts-ignore
                     name: {
-                        value: "computed",
+                        value: "custom",
                         // @ts-ignore
                     },
                 },
@@ -153,7 +153,7 @@ describe("getComputedMeta", () => {
             ],
         };
 
-        const result = getComputedMeta(field);
+        const result = getCustomMeta(field);
 
         expect(result).toMatchObject({
             requiredFields: [],
@@ -167,7 +167,7 @@ describe("getComputedMeta", () => {
                 {
                     // @ts-ignore
                     name: {
-                        value: "computed",
+                        value: "custom",
                         // @ts-ignore
                     },
                     arguments: [
@@ -200,7 +200,7 @@ describe("getComputedMeta", () => {
             ],
         };
 
-        const result = getComputedMeta(field);
+        const result = getCustomMeta(field);
 
         expect(result).toMatchObject({
             requiredFields,

@@ -22,19 +22,19 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("@computed directive", () => {
+describe("@custom directive", () => {
     test("passes fields directly through with no generation", async () => {
         const typeDefs = gql`
             interface UserInterface {
-                computed: String @computed
+                custom: String @custom
             }
 
             type User implements UserInterface {
                 id: ID!
                 username: String!
                 password: String!
-                nickname: String! @computed
-                computed: String
+                nickname: String! @custom
+                custom: String
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -105,7 +105,7 @@ describe("@computed directive", () => {
             }
 
             type User implements UserInterface {
-              computed: String
+              custom: String
               id: ID!
               nickname: String!
               password: String!
@@ -126,7 +126,7 @@ describe("@computed directive", () => {
             }
 
             interface UserInterface {
-              computed: String
+              custom: String
             }
 
             input UserOptions {

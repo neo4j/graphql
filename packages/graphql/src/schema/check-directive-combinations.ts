@@ -22,19 +22,19 @@ import { DirectiveNode } from "graphql";
 function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []) {
     const invalidCombinations = {
         // FIELD_DEFINITION
-        alias: ["cypher", "computed", "relationship"],
-        auth: ["computed"],
+        alias: ["cypher", "custom", "relationship"],
+        auth: ["custom"],
         coalesce: [],
         cypher: [],
         default: [],
-        id: ["cypher", "computed", "relationship", "timestamp", "unique"],
-        computed: ["alias", "auth", "id", "readonly", "relationship", "writeonly"],
+        id: ["cypher", "custom", "relationship", "timestamp", "unique"],
+        custom: ["alias", "auth", "id", "readonly", "relationship", "writeonly"],
         private: [],
-        readonly: ["cypher", "computed"],
-        relationship: ["alias", "coalesce", "cypher", "default", "id", "computed", "readonly"],
+        readonly: ["cypher", "custom"],
+        relationship: ["alias", "coalesce", "cypher", "default", "id", "custom", "readonly"],
         timestamp: ["id", "unique"],
-        unique: ["cypher", "id", "computed", "relationship", "timestamp"],
-        writeonly: ["cypher", "computed"],
+        unique: ["cypher", "id", "custom", "relationship", "timestamp"],
+        writeonly: ["cypher", "custom"],
         // OBJECT
         node: [],
         // INTERFACE

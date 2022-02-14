@@ -178,7 +178,7 @@ export interface UnionField extends BaseField {
     nodes?: string[];
 }
 
-export interface ComputedField extends BaseField {
+export interface CustomField extends BaseField {
     requiredFields: string[];
 }
 
