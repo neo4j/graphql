@@ -48,7 +48,7 @@ When translating from GraphQL to Cypher, any instances of fields to which this d
 
 [source, graphql, indent=0]
 ----
-"""Int | Float | String | Boolean | ID | DateTime"""
+"""Int | Float | String | Boolean | ID | DateTime | Enum"""
 scalar Scalar
 
 """Instructs @neo4j/graphql to wrap the property in a coalesce() function during queries, using the single value specified."""
@@ -56,6 +56,22 @@ directive @coalesce(
     """The value to use in the coalesce() function. Must be a scalar type and must match the type of the field with which this directive decorates."""
     value: Scalar!,
 ) on FIELD_DEFINITION
+----
+
+=== Usage with Enums
+
+`@coalesce` may be used with enums. When setting the default value for an enum field,
+the value must be one of the enumerated enum values.
+
+[source, graphql, indent=0]
+----
+enum Status {
+    ACTIVE
+    INACTIVE
+}
+type Movie {
+    status: Status @coalesce(value: ACTIVE)
+}
 ----
 
 [[type-definitions-default-values-queryoptions]]
