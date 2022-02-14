@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery } from "../../utils/tck-test-utils";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("Cypher -> fulltext -> Auth", () => {
     test("simple match with auth where", async () => {

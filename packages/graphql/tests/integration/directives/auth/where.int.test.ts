@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import neo4j from "../../neo4j";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("auth/where", () => {
     let driver: Driver;
