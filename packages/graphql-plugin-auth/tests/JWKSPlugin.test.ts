@@ -18,8 +18,14 @@
  */
 
 // import * as jsonwebtoken from "jsonwebtoken";
-// import JWTPlugin from "../src/JWTPlugin";
+import JWKSPlugin from "../src/JWKSPlugin";
 
 describe("JWKSPlugin", () => {
-    test.todo("todo");
+    test("should construct", () => {
+        const plugin = new JWKSPlugin({
+            jwksEndpoint: "endpoint.com",
+        });
+
+        expect(plugin).toBeInstanceOf(JWKSPlugin);
+    });
 });

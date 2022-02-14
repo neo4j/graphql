@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { JWTPlugin, JWKSPlugin } from "@neo4j/graphql-plugin-auth";
+import { JWKSPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -34,9 +34,6 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
     let jwksMock: JWKSMock;
     let server: any;
     let driver: Driver;
-    const jwtPlugin = new JWTPlugin({
-        secret: "secret",
-    });
 
     beforeAll(async () => {
         driver = await neo4j();

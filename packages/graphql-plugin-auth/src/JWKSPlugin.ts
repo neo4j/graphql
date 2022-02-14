@@ -18,38 +18,45 @@
  */
 
 import jsonwebtoken from "jsonwebtoken";
-import { JwksClient } from "jwks-rsa";
+import JwksRsa, { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";
 
 const debug = Debug(DEBUG_PREFIX);
 
-async function verifyJWKS<T = any>(client: JwksClient, token: string): Promise<T> {
-    function getKey(header, callback) {
-        client.getSigningKey(header.kid, (err, key) => {
+function verifyJWKS<T = any>({ client, token }: { client: JwksClient; token: string }): Promise<T> {
+    const getKey: jsonwebtoken.GetPublicKeyOrSecret = (header, callback) => {
+        const kid: string = header.kid || "";
+
+        client.getSigningKey(kid, (err, key) => {
             const signingKey = key?.getPublicKey();
-            callback(null, signingKey);
+            callback(err, signingKey);
         });
-    }
+    };
 
     // Returns a Promise with verification result or error
-    return new Promise((resolve, reject) =>
+    return new Promise((resolve, reject) => {
         jsonwebtoken.verify(
             token,
             getKey,
             {
                 algorithms: ["HS256", "RS256"],
             },
-            function verifyCallback(err, decoded) {
-                return err ? reject(err) : resolve(decoded as unknown as T);
+            (err, decoded) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(decoded as unknown as T);
+                }
             }
-        )
-    );
+        );
+    });
 }
 
 export interface JWKSPluginInput {
     jwksEndpoint: string;
     rolesPath?: string;
+    clientOptions?: JwksRsa.Options;
 }
 
 class JWKSPlugin {
@@ -60,21 +67,32 @@ class JWKSPlugin {
     constructor(input: JWKSPluginInput) {
         this.jwksEndpoint = input.jwksEndpoint;
         this.rolesPath = input.rolesPath;
-        this.client = new JwksClient({
-            jwksUri: this.jwksEndpoint,
-            rateLimit: true,
-            jwksRequestsPerMinute: 10,
-            cache: true,
-            cacheMaxEntries: 5,
-            cacheMaxAge: 600000,
-        });
+        let options: JwksRsa.Options | undefined = input.clientOptions;
+
+        if (!options) {
+            const defaultOptions: JwksRsa.Options = {
+                jwksUri: this.jwksEndpoint,
+                rateLimit: true,
+                jwksRequestsPerMinute: 10,
+                cache: true,
+                cacheMaxEntries: 5,
+                cacheMaxAge: 600000,
+            };
+
+            options = defaultOptions;
+        }
+
+        this.client = new JwksClient(options);
     }
 
     async decode<T = any>(token: string | any): Promise<T | undefined> {
         try {
             debug("Verifying JWT using OpenID Public Key Set Endpoint");
 
-            const result = await verifyJWKS<T>(this.client, token);
+            const result = await verifyJWKS<T>({
+                client: this.client,
+                token,
+            });
 
             return result;
         } catch (error) {
