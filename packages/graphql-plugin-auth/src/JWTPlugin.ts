@@ -42,7 +42,7 @@ class JWTPlugin {
 
     /* eslint-disable @typescript-eslint/require-await */
     async decode<T = any>(token: string): Promise<T | undefined> {
-        let result: T | undefined = undefined;
+        let result: T | undefined;
 
         try {
             if (this.noVerify) {

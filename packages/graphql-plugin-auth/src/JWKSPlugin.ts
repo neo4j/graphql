@@ -86,7 +86,7 @@ class JWKSPlugin {
     }
 
     async decode<T = any>(token: string): Promise<T | undefined> {
-        let result: T | undefined = undefined;
+        let result: T | undefined;
 
         try {
             debug("Verifying JWT using OpenID Public Key Set Endpoint");
