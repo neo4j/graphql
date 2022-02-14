@@ -19,9 +19,10 @@
 
 import { IncomingMessage } from "http";
 import Debug from "debug";
-import { DEBUG_AUTH } from "../constants";
-const debug = Debug(DEBUG_AUTH);
 import { Context } from "../types";
+import { DEBUG_AUTH } from "../constants";
+
+const debug = Debug(DEBUG_AUTH);
 
 export function getToken(context: Context): string | undefined {
     const req = context instanceof IncomingMessage ? context : context.req || context.request;

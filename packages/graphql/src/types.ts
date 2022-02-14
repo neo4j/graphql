@@ -336,7 +336,7 @@ export interface Neo4jGraphQLJWTPlugin {
     rolesPath?: string;
     secret?: string;
 
-    decode<T = any>(token: string | any): Promise<T | undefined>;
+    decode<T = any>(token: string): Promise<T | undefined>;
 }
 
 export interface Neo4jGraphQLPlugins {

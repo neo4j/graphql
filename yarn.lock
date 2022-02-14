@@ -1731,6 +1731,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-plugin-auth@workspace:packages/graphql-plugin-auth"
   dependencies:
+    "@types/debug": ^4.1.7
     "@types/jest": 27.4.0
     "@types/jsonwebtoken": 8.5.1
     "@types/node": 16.11.24
@@ -2171,6 +2172,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/debug@npm:^4.1.7":
+  version: 4.1.7
+  resolution: "@types/debug@npm:4.1.7"
+  dependencies:
+    "@types/ms": "*"
+  checksum: 0a7b89d8ed72526858f0b61c6fd81f477853e8c4415bb97f48b1b5545248d2ae389931680b94b393b993a7cfe893537a200647d93defe6d87159b96812305adc
+  languageName: node
+  linkType: hard
+
 "@types/deep-equal@npm:1.0.1":
   version: 1.0.1
   resolution: "@types/deep-equal@npm:1.0.1"
@@ -2243,11 +2253,11 @@ __metadata:
   linkType: hard
 
 "@types/express-unless@npm:*":
-  version: 0.5.2
-  resolution: "@types/express-unless@npm:0.5.2"
+  version: 0.5.3
+  resolution: "@types/express-unless@npm:0.5.3"
   dependencies:
     "@types/express": "*"
-  checksum: 31446f1871e29fb3c576f909c3770e167ac219f9dde94c82c236fe0da45f97bd509fd9dc8bb302caaf5b9b41589b0cb27b53309c8b8459b3904b0e3c98f215f7
+  checksum: 5c76425ff7490123f3c072c942ae6d18bb3cbf91d5d9857c52fca1f9a3d11b72413dbfb3e4af28fdd7f745d1a443f90daadbcf7daff714d608eef10bd7c8763c
   languageName: node
   linkType: hard
 
@@ -2416,6 +2426,13 @@ __metadata:
   version: 3.0.5
   resolution: "@types/minimatch@npm:3.0.5"
   checksum: c41d136f67231c3131cf1d4ca0b06687f4a322918a3a5adddc87ce90ed9dbd175a3610adee36b106ae68c0b92c637c35e02b58c8a56c424f71d30993ea220b92
+  languageName: node
+  linkType: hard
+
+"@types/ms@npm:*":
+  version: 0.7.31
+  resolution: "@types/ms@npm:0.7.31"
+  checksum: daadd354aedde024cce6f5aa873fefe7b71b22cd0e28632a69e8b677aeb48ae8caa1c60e5919bb781df040d116b01cb4316335167a3fc0ef6a63fa3614c0f6da
   languageName: node
   linkType: hard
 

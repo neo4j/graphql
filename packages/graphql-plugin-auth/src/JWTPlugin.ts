@@ -40,27 +40,31 @@ class JWTPlugin {
         this.rolesPath = input.rolesPath;
     }
 
-    async decode<T = any>(token: string | any): Promise<T | undefined> {
+    /* eslint-disable @typescript-eslint/require-await */
+    async decode<T = any>(token: string): Promise<T | undefined> {
+        let result: T | undefined = undefined;
+
         try {
             if (this.noVerify) {
                 debug("Skipping verifying JWT as noVerify is not set");
 
-                return (jsonwebtoken.decode(token, { json: true }) || undefined) as unknown as T;
+                result = jsonwebtoken.decode(token, { json: true }) as unknown as T;
             }
 
             if (this.secret) {
                 debug("Verifying JWT using secret");
 
-                const result = jsonwebtoken.verify(token, this.secret, {
+                result = jsonwebtoken.verify(token, this.secret, {
                     algorithms: ["HS256", "RS256"],
-                });
-
-                return result as unknown as T;
+                }) as unknown as T;
             }
         } catch (error) {
             debug("%s", error);
         }
+
+        return result;
     }
+    /* eslint-enable @typescript-eslint/require-await */
 }
 
 export default JWTPlugin;

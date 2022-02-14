@@ -85,19 +85,21 @@ class JWKSPlugin {
         this.client = new JwksClient(options);
     }
 
-    async decode<T = any>(token: string | any): Promise<T | undefined> {
+    async decode<T = any>(token: string): Promise<T | undefined> {
+        let result: T | undefined = undefined;
+
         try {
             debug("Verifying JWT using OpenID Public Key Set Endpoint");
 
-            const result = await verifyJWKS<T>({
+            result = await verifyJWKS<T>({
                 client: this.client,
                 token,
             });
-
-            return result;
         } catch (error) {
             debug("%s", error);
         }
+
+        return result;
     }
 }
 
