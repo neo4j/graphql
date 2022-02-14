@@ -18,7 +18,7 @@
  */
 
 import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
+import { graphql, GraphQLSchema } from "graphql";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
 import neo4j from "./neo4j";
@@ -28,6 +28,7 @@ const testLabel = generate({ charset: "alphabetic" });
 
 describe("sort", () => {
     let driver: Driver;
+    let schema: GraphQLSchema;
 
     const typeDefs = gql`
         interface Production {
@@ -111,11 +112,12 @@ describe("sort", () => {
         },
     ];
 
-    const { schema } = new Neo4jGraphQL({ typeDefs });
-
     beforeAll(async () => {
         driver = await neo4j();
         const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        schema = await neoSchema.getSchema();
 
         await session.run(
             `

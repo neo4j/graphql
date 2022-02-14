@@ -116,7 +116,7 @@ export function buildMergeStatement({
             },
         });
 
-        const relationshipFields = context.neoSchema.relationships.find(
+        const relationshipFields = context.relationships.find(
             (x) => x.properties === relationship.relationField.properties
         );
 

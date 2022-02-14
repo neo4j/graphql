@@ -35,7 +35,7 @@ describe("@coalesce directive", () => {
         await driver.close();
     });
 
-    test("on non-primitive field should throw an error", () => {
+    test("on non-primitive field should throw an error", async () => {
         const typeDefs = `
             type User {
                 name: String!
@@ -43,15 +43,16 @@ describe("@coalesce directive", () => {
             }
         `;
 
-        expect(
-            () =>
-                new Neo4jGraphQL({
-                    typeDefs,
-                })
-        ).toThrow("@coalesce directive can only be used on primitive type fields");
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(
+            "@coalesce directive can only be used on primitive type fields"
+        );
     });
 
-    test("on DateTime field should throw an error", () => {
+    test("on DateTime field should throw an error", async () => {
         const typeDefs = `
             type User {
                 name: String!
@@ -59,27 +60,29 @@ describe("@coalesce directive", () => {
             }
         `;
 
-        expect(
-            () =>
-                new Neo4jGraphQL({
-                    typeDefs,
-                })
-        ).toThrow("@coalesce is not supported by DateTime fields at this time");
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(
+            "@coalesce is not supported by DateTime fields at this time"
+        );
     });
 
-    test("with an argument with a type which doesn't match the field should throw an error", () => {
+    test("with an argument with a type which doesn't match the field should throw an error", async () => {
         const typeDefs = `
             type User {
                 name: String! @coalesce(value: 2)
             }
         `;
 
-        expect(
-            () =>
-                new Neo4jGraphQL({
-                    typeDefs,
-                })
-        ).toThrow("coalesce() value for User.name does not have matching type String");
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(
+            "coalesce() value for User.name does not have matching type String"
+        );
     });
 
     test("allows querying with null properties without affecting the returned result", async () => {
@@ -117,7 +120,7 @@ describe("@coalesce directive", () => {
             `);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });

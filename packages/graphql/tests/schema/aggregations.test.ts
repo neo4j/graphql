@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Aggregations", () => {
-    test("Top Level Aggregations", () => {
+    test("Top Level Aggregations", async () => {
         const typeDefs = gql`
             type Movie {
                 id: ID
@@ -40,7 +40,7 @@ describe("Aggregations", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -363,7 +363,7 @@ describe("Aggregations", () => {
         `);
     });
 
-    test("Where Level Aggregations", () => {
+    test("Where Level Aggregations", async () => {
         const typeDefs = gql`
             type User {
                 someId: ID
@@ -397,7 +397,7 @@ describe("Aggregations", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

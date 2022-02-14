@@ -49,7 +49,7 @@ function createRelationshipValidationString({
             errorMsg = `${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} must be less than or equal to one`;
         }
 
-        const toNode = context.neoSchema.nodes.find((n) => n.name === field.typeMeta.name) as Node;
+        const toNode = context.nodes.find((n) => n.name === field.typeMeta.name) as Node;
         const inStr = field.direction === "IN" ? "<-" : "-";
         const outStr = field.direction === "OUT" ? "->" : "-";
         const relVarname = `${varName}_${field.fieldName}_${toNode.name}_unique`;

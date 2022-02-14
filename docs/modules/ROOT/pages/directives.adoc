@@ -19,6 +19,13 @@ The `@coalesce` directive exposes a mechanism for querying against non-existent,
 
 Reference: xref::type-definitions/default-values.adoc#type-definitions-default-values-coalesce[`@coalesce`]
 
+== `@computed`
+
+The `@computed` directive specifies that a field will be resolved by a custom resolver, and allows the specification
+of any field dependencies.
+
+Reference: xref::custom-resolvers.adoc#custom-resolvers-computed[`@computed`]
+
 == `@cypher`
 
 The `@cypher` directive overrides field resolution (including `Query` and `Mutation` fields), instead resolving with the specified Cypher.
@@ -37,17 +44,17 @@ The `@exclude` directive is used on object types to instruct them to be skipped 
 
 Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-exclude[`@exclude`]
 
+== `@fulltext`
+
+The `@fulltext` directive indicates that there should be a Fulltext index inserted into the database for the specified Node and its properties.
+
+Reference: xref::type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-fulltext[Fulltext indexes]
+
 == `@id`
 
 The `@id` directive marks a field as the unique ID for an object type, and allows for autogeneration of IDs.
 
 Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-id[`@id`]
-
-== `@ignore`
-
-The `@ignore` directive ignores a field, and it will need an alternative mechanism for resolution.
-
-Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-ignore[`@ignore`]
 
 == `@node`
 
@@ -60,6 +67,12 @@ Reference: xref::type-definitions/database-mapping.adoc#type-definitions-node[`@
 The `@private` directive protects fields which should only be available through the xref::ogm/index.adoc[OGM].
 
 Reference: xref::ogm/private.adoc[`@private` Directive]
+
+== `@queryOptions`
+
+The `@queryOptions` is to be used on nodes, where applied will inject values into a query such as the `limit`.
+
+Reference: xref::type-definitions/default-values.adoc#type-definitions-default-values-queryoptions[`@queryOptions`]
 
 == `@readonly`
 
@@ -97,20 +110,8 @@ The `@unique` directive indicates that there should be a uniqueness constraint i
 
 Reference: xref::type-definitions/indexes-and-constraints.adoc#type-definitions-constraints-unique[Unique node property constraints]
 
-== `@fulltext`
-
-The `@fulltext` directive indicates that there should be a Fulltext index inserted into the database for the specified Node and its properties.
-
-Reference: xref::type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-fulltext[Fulltext indexes]
-
 == `@writeonly`
 
 The `@writeonly` directive marks fields as write-only.
 
 Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-writeonly[`@writeonly`]
-
-== `@queryOptions`
-
-The `@queryOptions` is to be used on nodes, where applied will inject values into a query such as the `limit`.
-
-Reference: xref::type-definitions/default-values.adoc#type-definitions-default-values-queryoptions[`@queryOptions`]

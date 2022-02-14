@@ -66,10 +66,8 @@ function createConnectionAndParams({
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
     const relationshipVariable = `${nodeVariable}_${field.relationship.type.toLowerCase()}_relationship`;
-    const relationship = context.neoSchema.relationships.find(
-        (r) => r.name === field.relationshipTypeName
-    ) as Relationship;
-    const relatedNode = context.neoSchema.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
+    const relationship = context.relationships.find((r) => r.name === field.relationshipTypeName) as Relationship;
+    const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
 
     const relTypeStr = `[${relationshipVariable}:${field.relationship.type}]`;
 
@@ -110,8 +108,8 @@ function createConnectionAndParams({
 
     if (field.relationship.union || field.relationship.interface) {
         const relatedNodes = field.relationship.union
-            ? context.neoSchema.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
-            : context.neoSchema.nodes.filter(
+            ? context.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
+            : context.nodes.filter(
                   (x) =>
                       field.relationship?.interface?.implementations?.includes(x.name) &&
                       filterInterfaceNodes({ node: x, whereInput: whereInput?.node })

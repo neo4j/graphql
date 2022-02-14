@@ -126,7 +126,7 @@ function createAuthPredicate({
 
             const relationField = node.relationFields.find((x) => key === x.fieldName);
             if (relationField) {
-                const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+                const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
                 const inStr = relationField.direction === "IN" ? "<-" : "-";
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
