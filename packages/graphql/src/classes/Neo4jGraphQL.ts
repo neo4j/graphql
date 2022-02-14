@@ -64,7 +64,7 @@ class Neo4jGraphQL {
 
     private _nodes?: Node[];
     private _relationships?: Relationship[];
-    private _plugins?: Neo4jGraphQLPlugins;
+    private plugins?: Neo4jGraphQLPlugins;
     private schema?: Promise<GraphQLSchema>;
 
     constructor(input: Neo4jGraphQLConstructor) {
@@ -72,7 +72,7 @@ class Neo4jGraphQL {
 
         this.driver = driver;
         this.config = config;
-        this._plugins = plugins;
+        this.plugins = plugins;
         this.schemaDefinition = schemaDefinition;
     }
 
@@ -148,7 +148,7 @@ class Neo4jGraphQL {
             nodes: this.nodes,
             relationships: this.relationships,
             schema,
-            plugins: this._plugins,
+            plugins: this.plugins,
         };
 
         const resolversComposition = {
