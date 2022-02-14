@@ -26,31 +26,32 @@ const debug = Debug(DEBUG_AUTH);
 
 export function getToken(context: Context): string | undefined {
     const req = context instanceof IncomingMessage ? context : context.req || context.request;
+    let token: string | undefined;
 
     if (!req) {
         debug("Could not get .req or .request from context");
 
-        return;
+        return token;
     }
 
     if (!req.headers && !req.cookies) {
         debug(".headers or .cookies not found on req");
 
-        return;
+        return token;
     }
 
     const authorization = (req.headers.authorization || req.headers.Authorization || req.cookies?.token) as string;
     if (!authorization) {
         debug("Could not get .authorization, .Authorization or .cookies.token from req");
 
-        return;
+        return token;
     }
 
-    const token = authorization.split("Bearer ")[1];
+    token = authorization.split("Bearer ")[1];
     if (!token) {
         debug("Authorization header was not in expected format 'Bearer <token>'");
 
-        return;
+        return token;
     }
 
     return token;

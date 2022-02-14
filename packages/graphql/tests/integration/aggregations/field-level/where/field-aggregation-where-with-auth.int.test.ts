@@ -22,10 +22,10 @@ import { graphql } from "graphql";
 import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 import neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
 import { generateUniqueType } from "../../../../utils/graphql-types";
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe(`Field Level Auth Where Requests`, () => {
     let neoSchema: Neo4jGraphQL;
