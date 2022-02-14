@@ -316,10 +316,6 @@ function getObjFieldMeta({
                 };
                 res.scalarFields.push(scalarField);
             } else if (fieldEnum) {
-                if (coalesceDirective) {
-                    throw new Error("@coalesce directive can only be used on primitive type fields");
-                }
-
                 const enumField: CustomEnumField = {
                     kind: "Enum",
                     ...baseField,
@@ -333,6 +329,17 @@ function getObjFieldMeta({
                     }
 
                     enumField.defaultValue = defaultValue.value;
+                }
+
+                if (coalesceDirective) {
+                    const coalesceValue = coalesceDirective.arguments?.find((a) => a.name.value === "value")?.value;
+
+                    if (!coalesceValue || !isEnumValue(coalesceValue)) {
+                        throw new Error("@coalesce value on enum fields must be an enum value");
+                    }
+
+                    // TODO: avoid duplication with primitives
+                    enumField.coalesceValue = `"${coalesceValue.value}"`;
                 }
 
                 res.enumFields.push(enumField);
@@ -481,7 +488,7 @@ function getObjFieldMeta({
                                 break;
                             default:
                                 throw new Error(
-                                    "@default directive can only be used on types: Int | Float | String | Boolean | ID | DateTime"
+                                    "@default directive can only be used on types: Int | Float | String | Boolean | ID | DateTime | Enum"
                                 );
                         }
                     }
@@ -546,7 +553,7 @@ function getObjFieldMeta({
 }
 
 function isEnumValue(value: ValueNode): value is EnumValueNode {
-     return value.kind === Kind.ENUM;
+    return value.kind === Kind.ENUM;
 }
 
 export default getObjFieldMeta;

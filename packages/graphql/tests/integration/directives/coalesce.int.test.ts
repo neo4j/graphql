@@ -135,4 +135,59 @@ describe("@coalesce directive", () => {
             await session.close();
         }
     });
+
+    test("with enum values", async () => {
+        const type = generateUniqueType("Movie");
+
+        const typeDefs = `
+            enum Status {
+                ACTIVE
+                INACTIVE
+            }
+            type ${type.name} {
+                id: ID
+                status: Status @coalesce(value: ACTIVE)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const query = `
+            query {
+                ${type.plural}(where: {status: ACTIVE}){
+                    id
+                    status
+                }
+            }
+        `;
+
+        const session = driver.session();
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        try {
+            await session.run(`
+                CREATE (:${type.name} {id: "${id}"})
+            `);
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect((gqlResult.data as any)[type.plural][0]).toEqual({
+                id,
+                status: null,
+            });
+        } finally {
+            await session.close();
+        }
+    });
 });
