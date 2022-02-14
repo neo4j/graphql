@@ -147,6 +147,13 @@ export interface ConnectionField extends BaseField {
 }
 
 /**
+ * Representation of the `@computed` directive and its meta.
+ */
+export interface ComputedField extends BaseField {
+    statement: string;
+}
+
+/**
  * Representation of the `@cypher` directive and its meta.
  */
 export interface CypherField extends BaseField {

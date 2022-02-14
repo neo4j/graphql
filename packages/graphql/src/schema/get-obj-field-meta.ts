@@ -35,6 +35,7 @@ import {
 } from "graphql";
 import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
+import getComputedMeta from "./get-computed-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCustomMeta from "./get-custom-meta";
@@ -56,6 +57,7 @@ import {
     TimeStampOperations,
     ConnectionField,
     CustomField,
+    ComputedField,
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
@@ -65,6 +67,7 @@ export interface ObjectFields {
     relationFields: RelationField[];
     connectionFields: ConnectionField[];
     primitiveFields: PrimitiveField[];
+    computedFields: ComputedField[];
     cypherFields: CypherField[];
     scalarFields: CustomScalarField[];
     enumFields: CustomEnumField[];
@@ -115,6 +118,7 @@ function getObjFieldMeta({
             }
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
+            const computedMeta = getComputedMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
             const customMeta = getCustomMeta(field, interfaceField);
             const typeMeta = getFieldTypeMeta(field.type);
@@ -141,6 +145,7 @@ function getObjFieldMeta({
                     (x) =>
                         ![
                             "relationship",
+                            "computed",
                             "cypher",
                             "id",
                             "auth",
@@ -285,6 +290,33 @@ function getObjFieldMeta({
                 res.relationFields.push(relationField);
                 res.connectionFields.push(connectionField);
                 // }
+            } else if (computedMeta) {
+                if (defaultDirective) {
+                    throw new Error("@default directive can only be used on primitive type fields");
+                }
+
+                if (coalesceDirective) {
+                    throw new Error("@coalesce directive can only be used on primitive type fields");
+                }
+
+                if (aliasDirective) {
+                    throw new Error("@alias directive cannot be used on cypher fields");
+                }
+
+                // TODO: Better validation
+                if (fieldUnion || fieldInterface || fieldObject) {
+                    throw new Error("@computed fields must return a scalar type");
+                }
+
+                if (!/(?<=RETURN\s+.+\s+AS\s+)\$\$field/i.test(computedMeta.statement)) {
+                    throw new Error("@computed fields must return a $$field");
+                }
+
+                const computedField: ComputedField = {
+                    ...baseField,
+                    ...computedMeta,
+                };
+                res.computedFields.push(computedField);
             } else if (cypherMeta) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
@@ -532,6 +564,7 @@ function getObjFieldMeta({
             relationFields: [],
             connectionFields: [],
             primitiveFields: [],
+            computedFields: [],
             cypherFields: [],
             scalarFields: [],
             enumFields: [],

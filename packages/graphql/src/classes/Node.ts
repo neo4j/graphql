@@ -25,6 +25,7 @@ import type {
     Context,
     CustomEnumField,
     CustomScalarField,
+    ComputedField,
     CypherField,
     FullText,
     CustomField,
@@ -46,6 +47,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     name: string;
     relationFields: RelationField[];
     connectionFields: ConnectionField[];
+    computedFields: ComputedField[];
     cypherFields: CypherField[];
     primitiveFields: PrimitiveField[];
     scalarFields: CustomScalarField[];
@@ -91,6 +93,7 @@ type ConstrainableField = PrimitiveField | TemporalField | PointField;
 class Node extends GraphElement {
     public relationFields: RelationField[];
     public connectionFields: ConnectionField[];
+    public computedFields: ComputedField[];
     public cypherFields: CypherField[];
     public otherDirectives: DirectiveNode[];
     public unionFields: UnionField[];
@@ -108,6 +111,7 @@ class Node extends GraphElement {
         super(input);
         this.relationFields = input.relationFields;
         this.connectionFields = input.connectionFields;
+        this.computedFields = input.computedFields;
         this.cypherFields = input.cypherFields;
         this.otherDirectives = input.otherDirectives;
         this.unionFields = input.unionFields;

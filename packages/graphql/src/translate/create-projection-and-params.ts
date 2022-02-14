@@ -76,6 +76,7 @@ function createProjectionAndParams({
         }
 
         const fieldFields = field.fieldsByTypeName;
+        const computedField = node.computedFields.find((x) => x.fieldName === field.name);
         const cypherField = node.cypherFields.find((x) => x.fieldName === field.name);
         const relationField = node.relationFields.find((x) => x.fieldName === field.name);
         const connectionField = node.connectionFields.find((x) => x.fieldName === field.name);
@@ -99,6 +100,19 @@ function createProjectionAndParams({
                     res.params = { ...res.params, ...allowAndParams[1] };
                 }
             }
+        }
+
+        if (computedField) {
+            const subqueryStatement = computedField.statement
+                .replace(/\$\$source/, chainStr || varName)
+                .replace(/\$\$field/, param);
+
+            const subquery = ["CALL {", `WITH ${chainStr || varName}`, subqueryStatement, "}"].join("\n");
+
+            res.meta.subQueries.push(subquery);
+            res.projection.push(`${alias}: ${param}`);
+
+            return res;
         }
 
         if (cypherField) {
