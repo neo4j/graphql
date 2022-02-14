@@ -18,7 +18,7 @@
  */
 
 // import * as jsonwebtoken from "jsonwebtoken";
-import JWKSPlugin from "../src/JWKSPlugin";
+import JWKSPlugin from "./JWKSPlugin";
 
 describe("JWKSPlugin", () => {
     test("should construct", () => {

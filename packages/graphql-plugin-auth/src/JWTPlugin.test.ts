@@ -18,7 +18,7 @@
  */
 
 import * as jsonwebtoken from "jsonwebtoken";
-import JWTPlugin from "../src/JWTPlugin";
+import JWTPlugin from "./JWTPlugin";
 
 describe("JWTPlugin", () => {
     const secret = "secret";

@@ -25,17 +25,16 @@
         "build": "tsc --build tsconfig.production.json",
         "test": "jest",
         "test:unit": "jest src/**/*.test.ts",
-        "test:unit:watch": "jest src --watch",
-        "test:int": "jest tests/integration",
-        "test:int:watch": "test:int -- --watch"
+        "test:unit:watch": "jest src --watch"
     },
     "author": "Neo4j Inc.",
     "dependencies": {
+        "debug": "^4.3.3",
         "jsonwebtoken": "^8.5.1",
         "jwks-rsa": "^2.0.5"
     },
     "devDependencies": {
-        "@types/debug": "^4.1.7",
+        "@types/debug": "^4",
         "@types/jest": "27.4.0",
         "@types/jsonwebtoken": "8.5.1",
         "@types/node": "16.11.24",

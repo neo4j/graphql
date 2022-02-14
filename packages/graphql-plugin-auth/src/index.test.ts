@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { JWTPlugin, JWKSPlugin } from "../src";
+import { JWTPlugin, JWKSPlugin } from ".";
 
 describe("index", () => {
     test("JWTPlugin", () => {
