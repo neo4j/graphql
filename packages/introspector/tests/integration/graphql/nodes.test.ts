@@ -79,8 +79,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
     test("Can introspect and generate single label with single property", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -107,8 +106,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
     test("Can introspect and generate single label with multiple properties of different types", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -141,8 +139,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
     test("Can introspect and generate multiple labels with multiple properties of different types", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -177,8 +174,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
     test("Can introspect and generate additional labels", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -213,8 +209,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
     test("Can introspect and generate label with unsupported characters in labels", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -249,8 +244,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
     test("Can introspect and generate label that starts with a number", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -274,8 +268,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
     test("Should not include properties with ambiguous types", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -309,8 +302,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
     test("Should not include types with no fields or no labels", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -336,8 +328,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
     test("Should include types with no prop fields but relationship fields", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -366,8 +357,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
     test("Can generate a readonly typeDefs and combine directives", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 

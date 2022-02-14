@@ -24,6 +24,7 @@ import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
+import { delay } from "../../../src/utils/utils";
 
 describe("assertIndexesAndConstraints/fulltext", () => {
     let driver: Driver;
@@ -58,7 +59,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
             await session.close();
         }
 
-        await new Promise((x) => setTimeout(x, 5000));
+        await delay(5000);
     });
 
     afterAll(async () => {
@@ -79,8 +80,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
     test("should create index if it doesn't exist and then query using the index", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -175,8 +175,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
     test("should create two index's if they dont exist and then throw and error when users queries both at once", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -226,8 +225,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
     test("should create index if it doesn't exist (using node label) and then query using the index", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -323,8 +321,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
     test("should create index if it doesn't exist (using field alias) and then query using the index", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -420,8 +417,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
     test("should throw when missing index", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -448,8 +444,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
     test("should throw when index is missing fields", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -493,8 +488,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
     test("should throw when index is missing fields (using field alias)", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -541,8 +535,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
     test("should create index if it doesn't exist and not throw if it does exist, and then query using the index", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -623,8 +616,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
     test("should throw when index is missing fields when used with create option", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
