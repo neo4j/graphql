@@ -80,7 +80,7 @@ Query {
 == Relationship filters
 `where` filters for relationship queries now explicitly state `ALL`, `NONE`, `SINGLE`, and `SOME` as part of filter name.
 
-Queries using old relationship filters, will now need to use `{relationship}_NONE`. For example:
+Queries using old relationship filters, will now need to use `{relationship}_SOME`. For example:
 
 [source, graphql, indent=0]
 ----
@@ -153,7 +153,7 @@ These should not require any changes from most developers, unless types names ar
 If you are using auto-generated type names, please check the full list of xref::guides/v3-migration/generated-types.adoc[generated types changes].
 
 == Neo4j support
-Neo4j 4.1 is no longer supported in 3.0
+Neo4j 4.1 is no longer supported in 3.0.0, inline with the [supported versions list](https://neo4j.com/developer/kb/neo4j-supported-versions/).
 
 == GraphQL support
-GraphQL 15 is no longer supported, please migrate to GraphQL 16
+`graphql@^15.0.0` is no longer supported, please upgrade to `graphql@^16.0.0` using `npm` or the package manager of your choice.
