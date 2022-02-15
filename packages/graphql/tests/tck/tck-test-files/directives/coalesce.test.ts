@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
+import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import {
@@ -30,11 +30,17 @@ import {
 } from "../../utils/tck-test-utils";
 
 describe("Cypher coalesce()", () => {
-    let typeDefs: DocumentNode;
-    let neoSchema: Neo4jGraphQL;
+    const secret = "secret";
 
     beforeAll(() => {
-        typeDefs = gql`
+        setTestEnvVars("NEO4J_GRAPHQL_ENABLE_REGEX=1");
+    });
+
+    afterAll(() => {
+        unsetTestEnvVars(undefined);
+    });
+    test("Simple coalesce", async () => {
+        const typeDefs = gql`
             interface UserInterface {
                 fromInterface: String! @coalesce(value: "From Interface")
                 toBeOverridden: String! @coalesce(value: "To Be Overridden")
@@ -51,17 +57,11 @@ describe("Cypher coalesce()", () => {
             }
         `;
 
-        neoSchema = new Neo4jGraphQL({
+        const neoSchema = new Neo4jGraphQL({
             typeDefs,
             config: { enableRegex: true },
         });
-        setTestEnvVars("NEO4J_GRAPHQL_ENABLE_REGEX=1");
-    });
 
-    afterAll(() => {
-        unsetTestEnvVars(undefined);
-    });
-    test("Simple coalesce", async () => {
         const query = gql`
             query (
                 $id: ID
@@ -122,5 +122,123 @@ describe("Cypher coalesce()", () => {
                 \\"this_toBeOverridden\\": \\"Some string\\"
             }"
         `);
+    });
+
+    test("Coalesce with enum in match", async () => {
+        const typeDefs = gql`
+            enum Status {
+                ACTIVE
+                INACTIVE
+            }
+            type Movie {
+                id: ID
+                status: Status @coalesce(value: ACTIVE)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: { enableRegex: true },
+            plugins: {
+                jwt: new JWTPlugin({ secret }),
+            },
+        });
+
+        const query = gql`
+            query {
+                movies(where: { status: ACTIVE }) {
+                    id
+                    status
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+"MATCH (this:Movie)
+WHERE coalesce(this.status, \\"ACTIVE\\") = $this_status
+RETURN this { .id, .status } as this"
+`);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+"{
+    \\"this_status\\": \\"ACTIVE\\"
+}"
+`);
+    });
+
+    test("Coalesce with enum in projection", async () => {
+        const typeDefs = gql`
+            enum Status {
+                ACTIVE
+                INACTIVE
+            }
+            type Movie {
+                id: ID
+                status: Status @coalesce(value: ACTIVE)
+            }
+
+            type Actor {
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: { enableRegex: true },
+            plugins: {
+                jwt: new JWTPlugin({ secret }),
+            },
+        });
+
+        const query = gql`
+            query Actors {
+                actors {
+                    moviesConnection(where: { node: { status: ACTIVE } }) {
+                        edges {
+                            node {
+                                id
+                                status
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+"MATCH (this:Actor)
+CALL {
+WITH this
+MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
+WHERE coalesce(this_movie.status, \\"ACTIVE\\") = $this_moviesConnection.args.where.node.status
+WITH collect({ node: { id: this_movie.id, status: this_movie.status } }) AS edges
+RETURN { edges: edges, totalCount: size(edges) } AS moviesConnection
+}
+RETURN this { moviesConnection } as this"
+`);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+"{
+    \\"this_moviesConnection\\": {
+        \\"args\\": {
+            \\"where\\": {
+                \\"node\\": {
+                    \\"status\\": \\"ACTIVE\\"
+                }
+            }
+        }
+    }
+}"
+`);
     });
 });
