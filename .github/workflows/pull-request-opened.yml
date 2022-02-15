@@ -9,6 +9,8 @@ on:
 
 jobs:
   add-new-pull-requests-to-triage:
+    if: "!startsWith(github.event.pull_request.head.ref, 'renovate/')"
+
     runs-on: ubuntu-latest
 
     steps:
