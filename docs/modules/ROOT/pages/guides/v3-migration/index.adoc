@@ -143,7 +143,7 @@ To improve consistency, some automatically generated plurals (e.g. `createActors
 your types use conventions such as `snake_case`.
 
 Because of this, you may find generated queries and mutations may have different names. If you encounter this problem,
-please update your clients to use the new query names or use the `plural` option in the xref::type-definitions/database-mapping.adoc#_plural[`@node directive`]
+please update your clients to use the new query names or use the `plural` option in the xref::type-definitions/database-mapping.adoc#_plural[@node directive]
 to force a custom plural value.
 
 == Types changes
