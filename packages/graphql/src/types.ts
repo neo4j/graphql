@@ -18,7 +18,6 @@
  */
 
 import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
-import type { Secret } from "jsonwebtoken";
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Driver, Integer } from "neo4j-driver";
 import { Node, Relationship } from "./classes";
@@ -336,7 +335,6 @@ export type InputField = { type: string; defaultValue?: string } | string;
 
 export interface Neo4jGraphQLJWTPlugin {
     rolesPath?: string;
-    secret?: Secret;
 
     decode<T = any>(token: string): Promise<T | undefined>;
 }

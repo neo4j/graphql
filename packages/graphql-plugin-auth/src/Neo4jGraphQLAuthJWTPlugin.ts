@@ -30,8 +30,8 @@ export interface JWTPluginInput {
 }
 
 class Neo4jGraphQLAuthJWTPlugin {
-    secret: jsonwebtoken.Secret;
-    noVerify?: boolean;
+    private secret: jsonwebtoken.Secret;
+    private noVerify?: boolean;
     rolesPath?: string;
 
     constructor(input: JWTPluginInput) {

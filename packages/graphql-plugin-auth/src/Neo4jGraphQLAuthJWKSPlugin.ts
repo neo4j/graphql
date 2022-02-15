@@ -56,31 +56,23 @@ function verifyJWKS<T = any>({ client, token }: { client: JwksClient; token: str
 export interface JWKSPluginInput {
     jwksEndpoint: string;
     rolesPath?: string;
-    clientOptions?: JwksRsa.Options;
 }
 
 class Neo4jGraphQLAuthJWKSPlugin {
-    jwksEndpoint: string;
     rolesPath?: string;
     client: JwksClient;
 
     constructor(input: JWKSPluginInput) {
-        this.jwksEndpoint = input.jwksEndpoint;
         this.rolesPath = input.rolesPath;
-        let options: JwksRsa.Options | undefined = input.clientOptions;
 
-        if (!options) {
-            const defaultOptions: JwksRsa.Options = {
-                jwksUri: this.jwksEndpoint,
-                rateLimit: true,
-                jwksRequestsPerMinute: 10,
-                cache: true,
-                cacheMaxEntries: 5,
-                cacheMaxAge: 600000,
-            };
-
-            options = defaultOptions;
-        }
+        const options: JwksRsa.Options = {
+            jwksUri: input.jwksEndpoint,
+            rateLimit: true,
+            jwksRequestsPerMinute: 10,
+            cache: true,
+            cacheMaxEntries: 5,
+            cacheMaxAge: 600000,
+        };
 
         this.client = new JwksClient(options);
     }
