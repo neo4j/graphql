@@ -77,7 +77,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
         this.client = new JwksClient(options);
     }
 
-    async decode<T = any>(token: string): Promise<T | undefined> {
+    async decode<T>(token: string): Promise<T | undefined> {
         let result: T | undefined;
 
         try {

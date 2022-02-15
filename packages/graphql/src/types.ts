@@ -336,7 +336,7 @@ export type InputField = { type: string; defaultValue?: string } | string;
 export interface Neo4jGraphQLJWTPlugin {
     rolesPath?: string;
 
-    decode<T = any>(token: string): Promise<T | undefined>;
+    decode<T>(token: string): Promise<T | undefined>;
 }
 
 export interface Neo4jGraphQLPlugins {

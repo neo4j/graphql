@@ -41,7 +41,7 @@ class Neo4jGraphQLAuthJWTPlugin {
     }
 
     /* eslint-disable @typescript-eslint/require-await */
-    async decode<T = any>(token: string): Promise<T | undefined> {
+    async decode<T>(token: string): Promise<T | undefined> {
         let result: T | undefined;
 
         try {
