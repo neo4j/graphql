@@ -35,7 +35,7 @@ function createAuthParam({ context }: { context: Context }): AuthContext {
     // If any role is defined in this parameter, isAuthenticated shall be true
     param.isAuthenticated = true;
 
-    const rolesPath = context?.plugins?.jwt?.rolesPath;
+    const rolesPath = context?.plugins?.auth?.rolesPath;
 
     // Roles added to config come from the role path or a roles array
     if (rolesPath) {

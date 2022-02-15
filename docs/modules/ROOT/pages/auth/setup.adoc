@@ -3,34 +3,34 @@
 
 == Configuration
 
-To get started with auth you must first create your own auth plugin. For most use cases you will only need to use our provided plugins at `@neo4j/graphql-plugin-auth`. Below is a basic example using the `JWTPlugin` class: 
+To get started with auth you must first create your own auth plugin. For most use cases you will only need to use our provided plugins at `@neo4j/graphql-plugin-auth`. Below is a basic example using the `Neo4jGraphQLAuthJWTPlugin` class: 
 
 [source, javascript, indent=0]
 ----
 import { Neo4jGraphQL } from "@neo4j/graphql";
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     plugins: {
-        jwt: new JWTPlugin({
+        auth: new Neo4jGraphQLAuthJWTPlugin({
             secret: "super-secret"
         })
     }
 });
 ----
 
-If you would like to use JWKS decoding then use the `JWKSPlugin` class: 
+If you would like to use JWKS decoding then use the `Neo4jGraphQLAuthJWKSPlugin` class: 
 
 [source, javascript, indent=0]
 ----
 import { Neo4jGraphQL } from "@neo4j/graphql";
-import { JWKSPlugin } from "@neo4j/graphql-plugin-auth";
+import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
 
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     plugins: {
-        jwt: new JWKSPlugin({
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
             jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
         })
     }
@@ -71,7 +71,7 @@ In order to make use of this, you must pass it in as a "dot path" into the `role
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     plugins: {
-        jwt: new JWKSPlugin({
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
             jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
             rolesPath: "https://auth0\\.mysite\\.com/claims.https://auth0\\.mysite\\.com/claims/roles"
         })

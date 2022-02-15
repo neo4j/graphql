@@ -76,11 +76,11 @@ export const wrapResolver =
         context.plugins = plugins;
 
         if (!context.jwt) {
-            if (context.plugins?.jwt) {
+            if (context.plugins?.auth) {
                 const token = getToken(context);
 
                 if (token) {
-                    const jwt = await context.plugins.jwt.decode(token);
+                    const jwt = await context.plugins.auth.decode(token);
 
                     if (typeof jwt === "string") {
                         throw new Neo4jGraphQLAuthenticationError("JWT payload cannot be a string");

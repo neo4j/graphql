@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
@@ -41,7 +41,7 @@ describe("QueryDirection in relationships aggregations", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
-                jwt: new JWTPlugin({
+                auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
                 }),
             },
@@ -79,7 +79,7 @@ RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATC
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
-                jwt: new JWTPlugin({
+                auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
                 }),
             },
@@ -117,7 +117,7 @@ RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATC
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
-                jwt: new JWTPlugin({
+                auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
                 }),
             },

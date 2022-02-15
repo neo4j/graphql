@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { JWTPlugin, JWKSPlugin } from "@neo4j/graphql-plugin-auth";
+import { Neo4jGraphQLAuthJWTPlugin, Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -63,7 +63,7 @@ describe("auth/object-path", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
-                jwt: new JWTPlugin({
+                auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
                 }),
             },
@@ -134,7 +134,7 @@ describe("auth/object-path", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
-                jwt: new JWTPlugin({
+                auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
                 }),
             },
@@ -188,7 +188,7 @@ describe("auth/object-path", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
-                jwt: new JWTPlugin({
+                auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
                     rolesPath: "https://github\\.com/claims.https://github\\.com/claims/roles",
                 }),
@@ -246,7 +246,7 @@ describe("auth/object-path", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
-                jwt: new JWKSPlugin({
+                auth: new Neo4jGraphQLAuthJWKSPlugin({
                     jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json",
                 }),
             },

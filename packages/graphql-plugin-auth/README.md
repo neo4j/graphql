@@ -12,32 +12,32 @@ $ npm install @neo4j/graphql-plugin-auth
 
 ## Usage
 
-### `JWTPlugin`
+### `Neo4jGraphQLAuthJWTPlugin`
 
 ```ts
 import { Neo4jGraphQL } from "@neo4j/graphql";
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     plugins: {
-        jwt: new JWTPlugin({
+        auth: new Neo4jGraphQLAuthJWTPlugin({
             secret: "super-secret",
         }),
     },
 });
 ```
 
-### `JWKSPlugin`
+### `Neo4jGraphQLAuthJWKSPlugin`
 
 ```ts
 import { Neo4jGraphQL } from "@neo4j/graphql";
-import { JWKSPlugin } from "@neo4j/graphql-plugin-auth";
+import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
 
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     plugins: {
-        jwt: new JWKSPlugin({
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
             jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
         }),
     },

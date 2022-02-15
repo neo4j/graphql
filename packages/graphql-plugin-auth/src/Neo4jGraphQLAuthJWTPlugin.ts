@@ -29,7 +29,7 @@ export interface JWTPluginInput {
     rolesPath?: string;
 }
 
-class JWTPlugin {
+class Neo4jGraphQLAuthJWTPlugin {
     secret: jsonwebtoken.Secret;
     noVerify?: boolean;
     rolesPath?: string;
@@ -67,4 +67,4 @@ class JWTPlugin {
     /* eslint-enable @typescript-eslint/require-await */
 }
 
-export default JWTPlugin;
+export default Neo4jGraphQLAuthJWTPlugin;

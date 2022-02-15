@@ -18,14 +18,14 @@
  */
 
 // import * as jsonwebtoken from "jsonwebtoken";
-import JWKSPlugin from "./JWKSPlugin";
+import Neo4jGraphQLAuthJWKSPlugin from "./Neo4jGraphQLAuthJWKSPlugin";
 
-describe("JWKSPlugin", () => {
+describe("Neo4jGraphQLAuthJWKSPlugin", () => {
     test("should construct", () => {
-        const plugin = new JWKSPlugin({
+        const plugin = new Neo4jGraphQLAuthJWKSPlugin({
             jwksEndpoint: "endpoint.com",
         });
 
-        expect(plugin).toBeInstanceOf(JWKSPlugin);
+        expect(plugin).toBeInstanceOf(Neo4jGraphQLAuthJWKSPlugin);
     });
 });

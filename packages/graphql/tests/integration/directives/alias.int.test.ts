@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
@@ -70,7 +70,7 @@ describe("@alias directive", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
-                jwt: new JWTPlugin({
+                auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
                 }),
             },

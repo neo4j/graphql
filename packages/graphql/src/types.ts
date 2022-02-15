@@ -342,5 +342,5 @@ export interface Neo4jGraphQLJWTPlugin {
 }
 
 export interface Neo4jGraphQLPlugins {
-    jwt?: Neo4jGraphQLJWTPlugin;
+    auth?: Neo4jGraphQLJWTPlugin;
 }

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import neo4j from "../../../neo4j";
@@ -65,7 +65,7 @@ describe(`Field Level Auth Where Requests`, () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs: extendedTypeDefs,
             plugins: {
-                jwt: new JWTPlugin({
+                auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
                 }),
             },

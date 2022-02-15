@@ -17,5 +17,5 @@
  * limitations under the License.
  */
 
-export { default as JWTPlugin } from "./JWTPlugin";
-export { default as JWKSPlugin } from "./JWKSPlugin";
+export { default as Neo4jGraphQLAuthJWTPlugin } from "./Neo4jGraphQLAuthJWTPlugin";
+export { default as Neo4jGraphQLAuthJWKSPlugin } from "./Neo4jGraphQLAuthJWKSPlugin";

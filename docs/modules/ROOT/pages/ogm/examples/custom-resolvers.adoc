@@ -26,7 +26,7 @@ Assuming a running Neo4j database at "bolt://localhost:7687" with username "neo4
 ----
 const { Neo4jGraphQL } = require("@neo4j/graphql");
 const { OGM } = require("@neo4j/graphql-ogm");
-const { JWTPlugin } = require("@neo4j/graphql-plugin-auth");
+const { Neo4jGraphQLAuthJWTPlugin } = require("@neo4j/graphql-plugin-auth");
 const { ApolloServer } = require("apollo-server");
 const neo4j = require("neo4j-driver");
 
@@ -104,7 +104,7 @@ const neoSchema = new Neo4jGraphQL({
     driver,
     resolvers,
     plugins: {
-        jwt: new JWTPlugin({
+        auth: new Neo4jGraphQLAuthJWTPlugin({
             secret: "secret"
         })
     }

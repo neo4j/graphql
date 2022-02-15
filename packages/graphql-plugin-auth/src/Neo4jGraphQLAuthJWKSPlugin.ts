@@ -59,7 +59,7 @@ export interface JWKSPluginInput {
     clientOptions?: JwksRsa.Options;
 }
 
-class JWKSPlugin {
+class Neo4jGraphQLAuthJWKSPlugin {
     jwksEndpoint: string;
     rolesPath?: string;
     client: JwksClient;
@@ -103,4 +103,4 @@ class JWKSPlugin {
     }
 }
 
-export default JWKSPlugin;
+export default Neo4jGraphQLAuthJWKSPlugin;

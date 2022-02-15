@@ -1,7 +1,7 @@
 import { ApolloServer } from "apollo-server-express";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { OGM } from "@neo4j/graphql-ogm";
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { driver } from "../neo4j";
 import { Context } from "../types";
 import * as User from "./User";
@@ -28,7 +28,7 @@ export async function getServer(): Promise<ApolloServer> {
         typeDefs,
         resolvers,
         plugins: {
-            jwt: new JWTPlugin({
+            auth: new Neo4jGraphQLAuthJWTPlugin({
                 secret: config.NEO4J_GRAPHQL_JWT_SECRET,
             }),
         },

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { JWTPlugin } from "@neo4j/graphql-plugin-auth";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
@@ -140,7 +140,7 @@ describe("Cypher coalesce()", () => {
             typeDefs,
             config: { enableRegex: true },
             plugins: {
-                jwt: new JWTPlugin({ secret }),
+                auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
             },
         });
 
@@ -191,7 +191,7 @@ RETURN this { .id, .status } as this"
             typeDefs,
             config: { enableRegex: true },
             plugins: {
-                jwt: new JWTPlugin({ secret }),
+                auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
             },
         });
 

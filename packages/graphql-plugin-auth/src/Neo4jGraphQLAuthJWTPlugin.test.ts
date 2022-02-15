@@ -18,9 +18,9 @@
  */
 
 import * as jsonwebtoken from "jsonwebtoken";
-import JWTPlugin from "./JWTPlugin";
+import Neo4jGraphQLAuthJWTPlugin from "./Neo4jGraphQLAuthJWTPlugin";
 
-describe("JWTPlugin", () => {
+describe("Neo4jGraphQLAuthJWTPlugin", () => {
     const secret = "secret";
 
     test("should decode token", async () => {
@@ -30,7 +30,7 @@ describe("JWTPlugin", () => {
 
         const encoded = jsonwebtoken.sign(payload, secret);
 
-        const plugin = new JWTPlugin({
+        const plugin = new Neo4jGraphQLAuthJWTPlugin({
             secret,
         });
 
@@ -46,7 +46,7 @@ describe("JWTPlugin", () => {
 
         const encoded = jsonwebtoken.sign(payload, secret);
 
-        const plugin = new JWTPlugin({
+        const plugin = new Neo4jGraphQLAuthJWTPlugin({
             secret,
             noVerify: true,
         });

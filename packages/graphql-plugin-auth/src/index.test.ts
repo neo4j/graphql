@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import { JWTPlugin, JWKSPlugin } from ".";
+import { Neo4jGraphQLAuthJWTPlugin, Neo4jGraphQLAuthJWKSPlugin } from ".";
 
 describe("index", () => {
-    test("JWTPlugin", () => {
-        expect(JWTPlugin).toBeDefined();
+    test("Neo4jGraphQLAuthJWTPlugin", () => {
+        expect(Neo4jGraphQLAuthJWTPlugin).toBeDefined();
     });
 
-    test("JWKSPlugin", () => {
-        expect(JWKSPlugin).toBeDefined();
+    test("Neo4jGraphQLAuthJWKSPlugin", () => {
+        expect(Neo4jGraphQLAuthJWKSPlugin).toBeDefined();
     });
 });
