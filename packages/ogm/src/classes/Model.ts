@@ -91,7 +91,8 @@ class Model {
             `${argWorthy ? ")" : ""}`,
         ];
 
-        const selection = printSelectionSet(selectionSet || this._selectionSet!);
+        const validSelectionSet = this.getSelectionSetOrDefault(selectionSet);
+        const selection = printSelectionSet(validSelectionSet);
 
         const query = `
             query ${argDefinitions.join(" ")}{
@@ -139,10 +140,11 @@ class Model {
         if (selectionSet) {
             selection = printSelectionSet(selectionSet);
         } else {
+            const validSelectionSet = this.getSelectionSetOrDefault(selectionSet);
             selection = `
                {
                    ${this.namePluralized}
-                   ${printSelectionSet(selectionSet || this._selectionSet!)}
+                   ${printSelectionSet(validSelectionSet)}
                }
            `;
         }
@@ -204,10 +206,11 @@ class Model {
         if (selectionSet) {
             selection = printSelectionSet(selectionSet);
         } else {
+            const validSelectionSet = this.getSelectionSetOrDefault(selectionSet);
             selection = `
                {
                    ${this.namePluralized}
-                   ${printSelectionSet(selectionSet || this._selectionSet!)}
+                   ${printSelectionSet(validSelectionSet)}
                }
            `;
         }
@@ -325,7 +328,7 @@ class Model {
     }: {
         where?: GraphQLWhereArg;
         fulltext?: any;
-        aggregate: any;
+        aggregate: Record<string, unknown>;
         context?: any;
         rootValue?: any;
     }): Promise<T> {
@@ -359,7 +362,7 @@ class Model {
             }
 
             const thisSelections: string[] = [];
-            Object.entries(entry[1] as any).forEach((e) => {
+            Object.entries(entry[1] as Record<string, unknown>).forEach((e) => {
                 if (Boolean(e[1]) === false) {
                     return;
                 }
@@ -397,6 +400,16 @@ class Model {
         }
 
         return (result.data as any)[queryName] as T;
+    }
+
+    private getSelectionSetOrDefault(
+        selectionSet: string | DocumentNode | SelectionSetNode | undefined
+    ): string | DocumentNode | SelectionSetNode {
+        const result = selectionSet || this._selectionSet;
+        if (!result) {
+            throw new Error("Non defined selectionSet in ogm model");
+        }
+        return result;
     }
 }
 
