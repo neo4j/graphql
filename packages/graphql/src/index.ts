@@ -30,7 +30,7 @@ export {
     CypherPlanner,
     CypherReplanning,
     CypherRuntime,
-    Neo4jGraphQLJWTPlugin,
+    Neo4jGraphQLAuthPlugin,
     CypherUpdateStrategy,
 } from "./types";
 export {

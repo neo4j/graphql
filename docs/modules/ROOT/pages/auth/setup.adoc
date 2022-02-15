@@ -41,7 +41,7 @@ If you need to create your own auth plugin then ensure it adheres to the followi
 
 [source, javascript, indent=0]
 ----
-interface Neo4jGraphQLJWTPlugin {
+interface Neo4jGraphQLAuthPlugin {
     rolesPath?: string;
 
     decode<T>(token: string | any): Promise<T | undefined>;

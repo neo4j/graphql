@@ -333,12 +333,12 @@ export interface NestedRecord<T> extends Record<string | symbol | number, T | Ne
 /** Input field for graphql-compose */
 export type InputField = { type: string; defaultValue?: string } | string;
 
-export interface Neo4jGraphQLJWTPlugin {
+export interface Neo4jGraphQLAuthPlugin {
     rolesPath?: string;
 
     decode<T>(token: string): Promise<T | undefined>;
 }
 
 export interface Neo4jGraphQLPlugins {
-    auth?: Neo4jGraphQLJWTPlugin;
+    auth?: Neo4jGraphQLAuthPlugin;
 }
