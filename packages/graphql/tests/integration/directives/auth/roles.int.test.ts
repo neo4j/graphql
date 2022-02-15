@@ -144,49 +144,49 @@ describe("auth/roles", () => {
         });
 
         // This tests reproduces the security issue related to authorization without match #195
-        test.skip("should throw if missing role on type definition and no nodes are matched", async () => {
-            const session = driver.session();
+        // test.skip("should throw if missing role on type definition and no nodes are matched", async () => {
+        //     const session = driver.session();
 
-            const typeDefs = `
-                type NotANode @auth(rules: [{
-                    operations: [READ],
-                    roles: ["admin"]
-                }]) {
-                    name: String
-                }
-            `;
+        //     const typeDefs = `
+        //         type NotANode @auth(rules: [{
+        //             operations: [READ],
+        //             roles: ["admin"]
+        //         }]) {
+        //             name: String
+        //         }
+        //     `;
 
-            const query = `
-            {
-                notANodes {
-                    name
-                }
-            }
-            `;
+        //     const query = `
+        //     {
+        //         notANodes {
+        //             name
+        //         }
+        //     }
+        //     `;
 
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                plugins: {
-                    jwt: new JWTPlugin({
-                        secret: "secret",
-                    }),
-                },
-            });
+        //     const neoSchema = new Neo4jGraphQL({
+        //         typeDefs,
+        //         plugins: {
+        //             jwt: new JWTPlugin({
+        //                 secret: "secret",
+        //             }),
+        //         },
+        //     });
 
-            try {
-                const req = createJwtRequest(secret);
+        //     try {
+        //         const req = createJwtRequest(secret);
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                });
+        //         const gqlResult = await graphql({
+        //             schema: await neoSchema.getSchema(),
+        //             source: query,
+        //             contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+        //         });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-            } finally {
-                await session.close();
-            }
-        });
+        //         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+        //     } finally {
+        //         await session.close();
+        //     }
+        // });
     });
 
     describe("create", () => {
