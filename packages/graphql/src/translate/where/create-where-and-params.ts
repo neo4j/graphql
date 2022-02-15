@@ -92,7 +92,7 @@ function createWhereAndParams({
 
         const dbFieldName = mapToDbProperty(node, fieldName);
 
-        const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
+        const coalesceValue = [...node.primitiveFields, ...node.temporalFields, ...node.enumFields].find(
             (f) => fieldName === f.fieldName
         )?.coalesceValue;
 

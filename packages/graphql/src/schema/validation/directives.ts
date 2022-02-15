@@ -34,7 +34,7 @@ import {
     RelationshipQueryDirectionEnum,
     TimestampOperationEnum,
 } from "./enums";
-import { ScalarType } from "./scalars";
+import { ScalarOrEnumType } from "./scalars";
 
 export const aliasDirective = new GraphQLDirective({
     name: "alias",
@@ -57,7 +57,7 @@ export const coalesceDirective = new GraphQLDirective({
         value: {
             description:
                 "The value to use in the coalesce() function. Must be a scalar type and must match the type of the field with which this directive decorates.",
-            type: new GraphQLNonNull(ScalarType),
+            type: new GraphQLNonNull(ScalarOrEnumType),
         },
     },
 });
@@ -98,7 +98,7 @@ export const defaultDirective = new GraphQLDirective({
         value: {
             description:
                 "The default value to use. Must be a scalar type and must match the type of the field with which this directive decorates.",
-            type: new GraphQLNonNull(ScalarType),
+            type: new GraphQLNonNull(ScalarOrEnumType),
         },
     },
 });

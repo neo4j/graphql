@@ -65,7 +65,7 @@ function createElementWhereAndParams({
 
         const dbProperty = mapToDbProperty(element, fieldName);
 
-        const coalesceValue = [...element.primitiveFields, ...element.temporalFields].find(
+        const coalesceValue = [...element.primitiveFields, ...element.temporalFields, ...element.enumFields].find(
             (f) => fieldName === f.fieldName
         )?.coalesceValue;
 
