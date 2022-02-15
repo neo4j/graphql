@@ -1430,7 +1430,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/core@npm:^27.4.7, @jest/core@npm:^27.5.1":
+"@jest/core@npm:^27.5.1":
   version: 27.5.1
   resolution: "@jest/core@npm:27.5.1"
   dependencies:
@@ -1708,7 +1708,7 @@ __metadata:
     "@neo4j/graphql": ^2.5.8
     "@neo4j/graphql-plugin-auth": ^0.0.1
     "@types/jest": 27.4.0
-    "@types/node": 16.11.24
+    "@types/node": 16.11.25
     camelcase: ^6.2.0
     graphql-tag: 2.12.6
     jest: 27.5.1
@@ -1757,7 +1757,7 @@ __metadata:
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
     "@types/jest": 27.4.0
-    "@types/jsonwebtoken": ^8.5.8
+    "@types/jsonwebtoken": 8.5.8
     "@types/node": 16.11.24
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
@@ -1801,7 +1801,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^2.5.8
     "@types/jest": 27.4.0
-    "@types/node": 16.11.24
+    "@types/node": 16.11.25
     "@types/pluralize": 0.0.29
     camelcase: ^6.2.0
     debug: ^4.3.2
@@ -2392,7 +2392,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:^8.5.8":
+"@types/jsonwebtoken@npm:8.5.8":
   version: 8.5.8
   resolution: "@types/jsonwebtoken@npm:8.5.8"
   dependencies:
@@ -2465,6 +2465,13 @@ __metadata:
   version: 16.11.24
   resolution: "@types/node@npm:16.11.24"
   checksum: d4827d548c04ca55db30901ea248ce1a1f8d2958b3143a7e71fd86d3d7b804faebfa9b80b934c7c6030a82553323dfe70f01dd0000176561a2cb3fc9db06a7b3
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:16.11.25":
+  version: 16.11.25
+  resolution: "@types/node@npm:16.11.25"
+  checksum: 0b6e25a81364be89256ad1a36341e27b387e646d3186e270108a8bb7b6ecdfdf5ae037aa1c75a5117b8a7509c80093b75431cd5cfcfbc4d553b52e7db2ca272e
   languageName: node
   linkType: hard
 
@@ -9849,7 +9856,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-cli@npm:^27.4.7, jest-cli@npm:^27.5.1":
+"jest-cli@npm:^27.5.1":
   version: 27.5.1
   resolution: "jest-cli@npm:27.5.1"
   dependencies:
@@ -10279,24 +10286,6 @@ __metadata:
     merge-stream: ^2.0.0
     supports-color: ^8.0.0
   checksum: 98cd68b696781caed61c983a3ee30bf880b5bd021c01d98f47b143d4362b85d0737f8523761e2713d45e18b4f9a2b98af1eaee77afade4111bb65c77d6f7c980
-  languageName: node
-  linkType: hard
-
-"jest@npm:27.4.7":
-  version: 27.4.7
-  resolution: "jest@npm:27.4.7"
-  dependencies:
-    "@jest/core": ^27.4.7
-    import-local: ^3.0.2
-    jest-cli: ^27.4.7
-  peerDependencies:
-    node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
-  peerDependenciesMeta:
-    node-notifier:
-      optional: true
-  bin:
-    jest: bin/jest.js
-  checksum: 28ce948b30c074907393f37553acac4422d0f60190776e62b3403e4c742d33dd6012e3a20748254a43e38b5b4ce52d813b13a3a5be1d43d6d12429bd08ce1a23
   languageName: node
   linkType: hard
 
@@ -11922,7 +11911,7 @@ __metadata:
     dotenv: ^10.0.0
     express: 4.17.1
     graphql: 16.3.0
-    jest: 27.4.7
+    jest: 27.5.1
     jsonwebtoken: 8.5.1
     neo4j-driver: 4.4.2
     nodemon: 2.0.6
