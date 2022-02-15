@@ -40,7 +40,7 @@ describe("validateDocument", () => {
         `;
 
         expect(() => validateDocument(doc)).toThrow(
-            'Directive "@coalesce" argument "value" of type "Scalar!" is required, but it was not provided.'
+            'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
         );
     });
 

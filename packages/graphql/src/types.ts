@@ -172,6 +172,7 @@ export interface CustomEnumField extends BaseField {
     // TODO Must be "Enum" - really needs refactoring into classes
     kind: string;
     defaultValue?: string;
+    coalesceValue?: string;
 }
 
 export interface UnionField extends BaseField {
