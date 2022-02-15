@@ -158,16 +158,19 @@ export function buildMergeStatement({
     return joinStatements([mergeNodeStatement, onCreateSetQuery, ...onCreateStatements]);
 }
 
-function buildOnCreate(onCreate: Record<string, any>, varName: string, node?: Node | undefined): CypherStatement {
+function buildOnCreate(onCreate: Record<string, any>, varName: string, node?: Node): CypherStatement {
     const queries: string[] = [];
     const parameters = {};
 
     Object.entries(onCreate).forEach(([key, value]) => {
         const nodeField = node?.primitiveFields.find((f) => f.fieldName === key);
-        const usedFieldName = nodeField ? nodeField.dbPropertyName || nodeField.fieldName : key;
-        queries.push(`${varName}.${usedFieldName} = $${generateParameterKey(`${varName}_on_create`, usedFieldName)}`);
-        const val = nodeField?.typeMeta.array ? [value] : value;
-        parameters[generateParameterKey(`${varName}_on_create`, usedFieldName)] = val;
+        const nodeFieldName = nodeField?.dbPropertyName || nodeField?.fieldName;
+        const fieldName = nodeFieldName || key;
+        const valueOrArray = nodeField?.typeMeta.array ? [value] : value;
+        const parameterKey = generateParameterKey(`${varName}_on_create`, fieldName);
+
+        queries.push(`${varName}.${fieldName} = $${parameterKey}`);
+        parameters[parameterKey] = valueOrArray;
     });
     return [joinStrings(queries, ",\n"), parameters];
 }

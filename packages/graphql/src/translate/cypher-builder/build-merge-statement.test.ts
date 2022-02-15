@@ -28,53 +28,11 @@ import { RelationFieldBuilder } from "../../../tests/utils/builders/relation-fie
 describe("build merge statement", () => {
     let context: Context;
     let node: Node;
-    let nodeWithAlias: Node;
 
     beforeAll(() => {
         context = new ContextBuilder().instance();
         node = new NodeBuilder({
             name: "MyLabel",
-        }).instance();
-        nodeWithAlias = new NodeBuilder({
-            name: "MyLabel2",
-            primitiveFields: [
-                {
-                    fieldName: "iri",
-                    dbPropertyName: "uri",
-                    typeMeta: {
-                        name: "ID",
-                        array: false,
-                        required: true,
-                        pretty: "ID!",
-                        input: {
-                            where: { type: "ID", pretty: "ID" },
-                            create: { type: "ID", pretty: "ID!" },
-                            update: { type: "ID", pretty: "ID" },
-                        },
-                        originalType: undefined,
-                    },
-                    otherDirectives: [],
-                    arguments: [],
-                },
-                {
-                    fieldName: "prefLabel",
-                    dbPropertyName: "prefLabel",
-                    typeMeta: {
-                        name: "String",
-                        array: true,
-                        required: true,
-                        pretty: "[String]!",
-                        input: {
-                            where: { type: "String", pretty: "[String]" },
-                            create: { type: "String", pretty: "[String]!" },
-                            update: { type: "String", pretty: "[String]" },
-                        },
-                        originalType: undefined,
-                    },
-                    otherDirectives: [],
-                    arguments: [],
-                },
-            ],
         }).instance();
     });
     describe("node merge", () => {
@@ -175,6 +133,47 @@ describe("build merge statement", () => {
 
         test("build merge relation statement with onCreate and db alias", () => {
             const relationField = new RelationFieldBuilder().instance();
+            const nodeWithAlias: Node = new NodeBuilder({
+                name: "MyLabel2",
+                primitiveFields: [
+                    {
+                        fieldName: "iri",
+                        dbPropertyName: "uri",
+                        typeMeta: {
+                            name: "ID",
+                            array: false,
+                            required: true,
+                            pretty: "ID!",
+                            input: {
+                                where: { type: "ID", pretty: "ID" },
+                                create: { type: "ID", pretty: "ID!" },
+                                update: { type: "ID", pretty: "ID" },
+                            },
+                            originalType: undefined,
+                        },
+                        otherDirectives: [],
+                        arguments: [],
+                    },
+                    {
+                        fieldName: "prefLabel",
+                        dbPropertyName: "prefLabel",
+                        typeMeta: {
+                            name: "String",
+                            array: true,
+                            required: true,
+                            pretty: "[String]!",
+                            input: {
+                                where: { type: "String", pretty: "[String]" },
+                                create: { type: "String", pretty: "[String]!" },
+                                update: { type: "String", pretty: "[String]" },
+                            },
+                            originalType: undefined,
+                        },
+                        otherDirectives: [],
+                        arguments: [],
+                    },
+                ],
+            }).instance();
             const statement = buildMergeStatement({
                 sourceNode: {
                     varName: "this",
