@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-// import * as jsonwebtoken from "jsonwebtoken";
 import Neo4jGraphQLAuthJWKSPlugin from "./Neo4jGraphQLAuthJWKSPlugin";
 
 describe("Neo4jGraphQLAuthJWKSPlugin", () => {
