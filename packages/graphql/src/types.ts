@@ -44,6 +44,7 @@ export interface Context {
     auth?: AuthContext;
     queryOptions?: CypherQueryOptions;
     plugins?: Neo4jGraphQLPlugins;
+    jwt?: any;
     [k: string]: any;
 }
 
