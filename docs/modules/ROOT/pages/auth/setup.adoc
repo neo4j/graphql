@@ -3,7 +3,7 @@
 
 == Configuration
 
-To get started with auth you must first create your own auth plugin. For most use cases you will only need to use our provided plugins at `@neo4j/graphql-plugin-auth`. Below is a basic example using the `Neo4jGraphQLAuthJWTPlugin` class: 
+To get started with auth you need an instance of an auth plugin for the Neo4j GraphQL Library. For most use cases you will only need to use our provided plugins at `@neo4j/graphql-plugin-auth`. Below is a basic example using the `Neo4jGraphQLAuthJWTPlugin` class: 
 
 [source, javascript, indent=0]
 ----
