@@ -24,35 +24,6 @@ import { DEBUG_PREFIX } from "./constants";
 
 const debug = Debug(DEBUG_PREFIX);
 
-function verifyJWKS<T = any>({ client, token }: { client: JwksClient; token: string }): Promise<T> {
-    const getKey: jsonwebtoken.GetPublicKeyOrSecret = (header, callback) => {
-        const kid: string = header.kid || "";
-
-        client.getSigningKey(kid, (err, key) => {
-            const signingKey = key?.getPublicKey();
-            callback(err, signingKey);
-        });
-    };
-
-    // Returns a Promise with verification result or error
-    return new Promise((resolve, reject) => {
-        jsonwebtoken.verify(
-            token,
-            getKey,
-            {
-                algorithms: ["HS256", "RS256"],
-            },
-            (err, decoded) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(decoded as unknown as T);
-                }
-            }
-        );
-    });
-}
-
 export interface JWKSPluginInput {
     jwksEndpoint: string;
     rolesPath?: string;
@@ -83,8 +54,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
         try {
             debug("Verifying JWT using OpenID Public Key Set Endpoint");
 
-            result = await verifyJWKS<T>({
-                client: this.client,
+            result = await this.verifyJWKS<T>({
                 token,
             });
         } catch (error) {
@@ -92,6 +62,34 @@ class Neo4jGraphQLAuthJWKSPlugin {
         }
 
         return result;
+    }
+
+    private async verifyJWKS<T>({ token }: { token: string }): Promise<T> {
+        const getKey: jsonwebtoken.GetPublicKeyOrSecret = (header, callback) => {
+            const kid: string = header.kid || "";
+
+            this.client.getSigningKey(kid, (err, key) => {
+                const signingKey = key?.getPublicKey();
+                callback(err, signingKey);
+            });
+        };
+
+        return new Promise((resolve, reject) => {
+            jsonwebtoken.verify(
+                token,
+                getKey,
+                {
+                    algorithms: ["HS256", "RS256"],
+                },
+                (err, decoded) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(decoded as unknown as T);
+                    }
+                }
+            );
+        });
     }
 }
 
