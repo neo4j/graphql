@@ -17,14 +17,11 @@
  * limitations under the License.
  */
 
-import { DocumentNode, graphql, GraphQLSchema } from "graphql";
-import { Driver, Integer, Session } from "neo4j-driver";
-import { gql } from "apollo-server";
+import { graphql, GraphQLSchema } from "graphql";
+import { Driver } from "neo4j-driver";
 import neo4j from "../neo4j";
-import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
-import { resolve } from "path/posix";
 
 describe("https://github.com/neo4j/graphql/issues/988", () => {
     const seriesType = generateUniqueType("Series");
