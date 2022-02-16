@@ -45,6 +45,7 @@
         "neo4j-driver": "^4.1.0"
     },
     "devDependencies": {
+        "@neo4j/graphql-plugin-auth": "^0.0.1",
         "@types/jest": "27.4.0",
         "@types/node": "16.11.25",
         "graphql-tag": "2.12.6",

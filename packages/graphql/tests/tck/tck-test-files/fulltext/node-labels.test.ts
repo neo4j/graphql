@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
@@ -77,10 +78,10 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                jwt: {
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
-                },
+                }),
             },
         });
 

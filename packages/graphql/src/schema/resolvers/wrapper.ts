@@ -20,11 +20,11 @@
 import Debug from "debug";
 import { GraphQLResolveInfo, GraphQLSchema, print } from "graphql";
 import { Driver } from "neo4j-driver";
-import { getJWT } from "../../auth/get-jwt";
-import { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
+import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import { Context } from "../../types";
+import { Context, Neo4jGraphQLPlugins, JwtPayload } from "../../types";
+import { getToken } from "../../utils/get-token";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -35,16 +35,18 @@ export const wrapResolver =
         nodes,
         relationships,
         schema,
+        plugins,
     }: {
         driver?: Driver;
         config: Neo4jGraphQLConfig;
         nodes: Node[];
         relationships: Relationship[];
         schema: GraphQLSchema;
+        plugins?: Neo4jGraphQLPlugins;
     }) =>
     (next) =>
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
-        const { driverConfig, jwt } = config;
+        const { driverConfig } = config;
 
         if (debug.enabled) {
             const query = print(info.operation);
@@ -68,16 +70,25 @@ export const wrapResolver =
             context.driverConfig = driverConfig;
         }
 
-        if (!context?.jwtConfig) {
-            context.jwtConfig = jwt;
-        }
-
         context.nodes = nodes;
         context.relationships = relationships;
         context.schema = schema;
+        context.plugins = plugins;
 
         if (!context.jwt) {
-            context.jwt = await getJWT(context);
+            if (context.plugins?.auth) {
+                const token = getToken(context);
+
+                if (token) {
+                    const jwt = await context.plugins.auth.decode<JwtPayload>(token);
+
+                    if (typeof jwt === "string") {
+                        throw new Neo4jGraphQLAuthenticationError("JWT payload cannot be a string");
+                    }
+
+                    context.jwt = jwt;
+                }
+            }
         }
 
         context.auth = createAuthParam({ context });
