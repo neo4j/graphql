@@ -55,7 +55,11 @@ such as `Director` remain unchanged.
 === Relationship cardinality
 Runtime checks for "one-to*" relationships have been added in this release, ensuring that the correct number of relationships exist. This means that some
 databases with inconsistent relationships between the schema definition and the actual data may now fail in some queries.
-For those cases, please ensure that the database is following your schema definition or update the schema to reflect the
+This may have happened due to different reasons such as:
+* Direct changes in the database.
+* Changes to the Type Definitions, leading to an inconsistent database.
+
+For these cases, please ensure that the database is following your schema definition or update the schema to reflect the
 actual existing relationships.
 
 == Count query no longer supported
@@ -78,7 +82,7 @@ query {
 }
 ----
 
-== Relationship filters
+=== Relationship filters
 `where` filters for relationship queries now explicitly state `ALL`, `NONE`, `SINGLE`, and `SOME` as part of filter name.
 
 Queries using old relationship filters, will now need to use `{relationship}_SOME`. For example:
@@ -124,7 +128,21 @@ Auth setup now relies on _plugins_ to setup the configuration. You'll need to in
 as shown in the xref::auth/setup.adoc[auth setup page].
 
 === JWT auth
-For JWT authorization, just pass the configuration through the `Neo4jGraphQLAuthJWTPlugin` plugin
+For JWT authorization, instead of the previous configuration:
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        jwt: {
+            secret
+        }
+    }
+});
+----
+
+Now the configuration should be passed through `Neo4jGraphQLAuthJWTPlugin`:
+
 [source, javascript, indent=0]
 ----
 import { Neo4jGraphQL } from "@neo4j/graphql";
@@ -145,7 +163,20 @@ const neoSchema = new Neo4jGraphQL({
 
 https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets[JSON Web Key Sets] are now supported through `Neo4jGraphQLAuthJWKSPlugin`.
 
+Instead of setting the endpoint directly:
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        jwt: {
+            jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json"
+        }
+    }
+});
+----
 
+Now the `Neo4jGraphQLAuthJWKSPlugin` would take care of that:
 [source, javascript, indent=0]
 ----
 import { Neo4jGraphQL } from "@neo4j/graphql";
