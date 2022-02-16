@@ -46,3 +46,8 @@ export function padLeft(str: string | undefined): string {
     if (!str) return "";
     return ` ${str}`;
 }
+
+export function escapeLabel(label: string): string {
+    const escapedLabel = label.replace(/`/g, "``");
+    return `\`${escapedLabel}\``;
+}
