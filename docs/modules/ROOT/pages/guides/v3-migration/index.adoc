@@ -10,9 +10,9 @@ Simply update `@neo4j/graphql` using npm or your package manager of choice:
 npm update @neo4j/graphql
 ----
 
-== Async schema generation
+== Asynchronous schema generation
 Schema generation is now asynchronous. Instead of using the property `schema`, now the method `getSchema` will return the schema
-as a _Promise_. This means that creating a server now requires awaiting for that method:
+as a `Promise`. This means that creating a server now requires awaiting for that method:
 
 Instead of
 [source, JavaScript, indent=0]
@@ -36,10 +36,10 @@ neoSchema.getSchema().then((schema) => {
 ----
 
 == Relationship changes
-This release contains an overhaul of our relationship validations, this will require a few changes to the schema.
+This release contains an overhaul of our relationship validations, which will require a few changes to the schema.
 
-=== Many to * relationships
-To improve consistency and validation, **all** "many to *" relationships need to be defined as _required_ in the schema:
+=== Many-to-* relationships
+To improve consistency and validation, **all** "many-to-*" relationships need to be defined as _required_ in the schema:
 
 [source, graphql, indent=0]
 ----
@@ -49,11 +49,11 @@ type Movie {
 }
 ----
 
-Note that any other notation, such as `[Actor]` or `[Actor!]` will **not** be valid. "One to one" relationships
+Note that any other notation, such as `[Actor]` or `[Actor!]` will **not** be valid. "One-to-one" relationships
 such as `Director` remain unchanged.
 
 === Relationship cardinality
-Runtime checks for relationships number of connections have been rolled in with this release, this means that some
+Runtime checks for "one-to*" relationships have been added in this release, ensuring that the correct number of relationships exist. This means that some
 databases with inconsistent relationships between the schema definition and the actual data may now fail in some queries.
 For those cases, please ensure that the database is following your schema definition or update the schema to reflect the
 actual existing relationships.
@@ -62,7 +62,7 @@ actual existing relationships.
 Queries using `count` at the root level are no longer supported. For example:
 [source, graphql, indent=0]
 ----
-Query {
+query {
     usersCount
 }
 ----
@@ -71,7 +71,7 @@ The same operation, can now be achieved with a xref::queries#_counting_using_agg
 
 [source, graphql, indent=0]
 ----
-Query {
+query {
     usersAggregate {
         count
     }
@@ -85,7 +85,7 @@ Queries using old relationship filters, will now need to use `{relationship}_SOM
 
 [source, graphql, indent=0]
 ----
-Query {
+query {
   movies(where: {
     actors: {
       name: "John"
@@ -100,7 +100,7 @@ Should be:
 
 [source, graphql, indent=0]
 ----
-Query {
+query {
   movies(where: {
     actors_SOME: {
       name: "John"
@@ -116,7 +116,7 @@ And, instead of `_NOT`, `_NONE` should be used.
 NOTE: Old queries will still work in this release, but are marked as `@deprecated` and will not be available in the future.
 
 == `@ignore` directive renamed to `@computed`
-To better reflect its intended usage, the `@ignore` directive is now named `@computed`, behaviour is unchanged, so you just need to
+To better reflect its intended usage, the `@ignore` directive is now named `@computed`. Behaviour is unchanged, so you just need to
 rename this directive in your schema.
 
 == Auth plugin system
@@ -143,7 +143,7 @@ const neoSchema = new Neo4jGraphQL({
 
 === JWKS decoding
 
-https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets[JSON Web Key Sets] support through `Neo4jGraphQLAuthJWKSPlugin`.
+https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets[JSON Web Key Sets] are now supported through `Neo4jGraphQLAuthJWKSPlugin`.
 
 
 [source, javascript, indent=0]
