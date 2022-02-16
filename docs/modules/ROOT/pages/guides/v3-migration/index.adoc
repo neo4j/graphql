@@ -28,9 +28,10 @@ Now you'll need to do the following:
 [source, JavaScript, indent=0]
 ----
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-const schema = await neoSchema.getSchema();
-const server = new ApolloServer({
-    schema: schema
+neoSchema.getSchema().then((schema) => {
+    const server = new ApolloServer({
+        schema: schema
+    });
 });
 ----
 
@@ -119,6 +120,10 @@ To better reflect its intended usage, the `@ignore` directive is now named `@com
 rename this directive in your schema.
 
 == Auth plugin system
+NOTE: This section is still a work in progress.
+
+=== jwks Endpoint
+
 https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets[JSON Web Key Sets] support through `jwksEndpoint` option is no longer
 provided directly by `@neo4j/graphql`.
 
@@ -131,7 +136,7 @@ const { JWTPlugin } = require("@neo4j/graphql-plugin-auth");
 const neoSchema = new Neo4jGraphQL({
      typeDefs,
      plugins: {
-         jwt: new JWTPlugin({
+         auth: new JWTPlugin({
              secret: "secret",
          }),
      },
@@ -146,6 +151,10 @@ Because of this, you may find generated queries and mutations may have different
 please update your clients to use the new query names or use the `plural` option in the xref::type-definitions/database-mapping.adoc#_plural[@node directive]
 to force a custom plural value.
 
+== Custom Directives
+Defining and applying custom directives has changed significantly, if you are using or plan to use custom directives, make
+sure to check the up-to-date documentation on xref::type-definitions/custom-directives.adoc[custom directives].
+
 == Types changes
 Some automatically generated types have changed to improve consistency.
 These should not require any changes from most developers, unless types names are directly used.
@@ -153,7 +162,7 @@ These should not require any changes from most developers, unless types names ar
 If you are using auto-generated type names, please check the full list of xref::guides/v3-migration/generated-types.adoc[generated types changes].
 
 == Neo4j support
-Neo4j 4.1 is no longer supported in 3.0.0, inline with the [supported versions list](https://neo4j.com/developer/kb/neo4j-supported-versions/).
+Neo4j 4.1 is no longer supported in 3.0.0, inline with the https://neo4j.com/developer/kb/neo4j-supported-versions/[supported versions list].
 
 == GraphQL support
 `graphql@^15.0.0` is no longer supported, please upgrade to `graphql@^16.0.0` using `npm` or the package manager of your choice.
