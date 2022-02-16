@@ -1,4 +1,4 @@
-import { Param } from "./cypher-builder-references";
+import { CypherContext } from "./CypherContext";
 
 type CypherResult = {
     cypher: string;
@@ -66,47 +66,5 @@ export abstract class CypherASTNode extends CypherASTElement {
 
     public getRoot(): CypherASTRoot {
         return this.parent.getRoot();
-    }
-}
-
-export abstract class CypherReference {
-    public readonly prefix: string = "ref";
-    public abstract getCypher(context: CypherContext): string;
-}
-
-export class CypherContext {
-    private references: Map<CypherReference, string> = new Map();
-
-    public getReferenceId(reference: CypherReference): string {
-        const id = this.references.get(reference);
-        if (!id) {
-            return this.addReference(reference);
-        }
-        return id;
-    }
-
-    public getParams(): Record<string, any> {
-        return this.params.reduce((acc, param: Param<any>) => {
-            const newParam = param.getParam(this);
-            acc[newParam[0]] = newParam[1];
-            return acc;
-        }, {} as Record<string, any>);
-    }
-
-    private addReference(reference: CypherReference): string {
-        const refIndex = this.getNextReferenceIndex();
-        const referenceId = `${reference.prefix}${refIndex}`;
-        this.references.set(reference, referenceId);
-        return referenceId;
-    }
-
-    private getNextReferenceIndex(): number {
-        return this.references.size;
-    }
-
-    private get params(): Array<Param<any>> {
-        return Array.from(this.references.keys()).filter((r) => {
-            return r instanceof Param;
-        }) as Array<Param<any>>;
     }
 }

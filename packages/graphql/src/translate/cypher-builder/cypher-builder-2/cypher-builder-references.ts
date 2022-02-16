@@ -1,19 +1,23 @@
 import { stringifyObject } from "../../utils/stringify-object";
-import { CypherContext, CypherReference } from "./cypher-builder-types";
 import { escapeLabel, padLeft } from "../utils";
+import { CypherContext } from "./CypherContext";
 
 type NodeInput = {
     labels?: Array<string>;
     parameters?: Record<string, Param<any>>;
 };
 
-export class Node extends CypherReference {
+export interface CypherReference {
+    readonly prefix: string;
+    getCypher(context: CypherContext): string;
+}
+
+export class Node implements CypherReference {
     public readonly prefix = "this";
     private labels: Array<string>;
     private parameters: Record<string, Param<any>>;
 
     constructor(input: NodeInput) {
-        super();
         this.labels = input.labels || [];
         this.parameters = input.parameters || {};
     }
@@ -48,21 +52,15 @@ export class Node extends CypherReference {
     }
 }
 
-export class Param<T> extends CypherReference {
+export class Param<T> {
     public readonly prefix = "param";
-    private value: T;
+    public readonly value: T;
 
     constructor(value: T) {
-        super();
         this.value = value;
     }
 
     public getCypher(context: CypherContext): string {
-        return `$${context.getReferenceId(this)}`;
-    }
-
-    public getParam(context: CypherContext): [string, T] {
-        const key = context.getReferenceId(this);
-        return [key, this.value];
+        return `$${context.getParamId(this)}`;
     }
 }

@@ -32,16 +32,16 @@ describe("CypherBuilder", () => {
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-"CALL { CREATE (this0:\`Movie\` { test: $param1, id: $param2 })
-SET this0.id = $param2
+"CALL { CREATE (this0:\`Movie\` { test: $param0, id: $param1 })
+SET this0.id = $param1
 RETURN this0 }
 RETURN this0 {.id} AS myalias"
 `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
 Object {
-  "param1": "test-value",
-  "param2": "my-id"
+  "param0": "test-value",
+  "param1": "my-id",
 }
 `);
     });

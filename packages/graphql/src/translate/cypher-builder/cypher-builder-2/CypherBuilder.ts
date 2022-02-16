@@ -18,7 +18,8 @@
  */
 
 import { Node, Param } from "./cypher-builder-references";
-import { CypherASTNode, CypherASTRoot, CypherContext } from "./cypher-builder-types";
+import { CypherASTNode, CypherASTRoot } from "./cypher-builder-types";
+import { CypherContext } from "./CypherContext";
 
 export { Node, Param } from "./cypher-builder-references";
 
