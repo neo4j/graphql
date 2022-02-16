@@ -24,7 +24,7 @@ import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import { forEachField, IResolvers } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
 import { Secret } from "jsonwebtoken";
-import type { DriverConfig, CypherQueryOptions } from "../types";
+import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
@@ -45,7 +45,6 @@ export interface Neo4jGraphQLJWT {
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
-    jwt?: Neo4jGraphQLJWT;
     enableRegex?: boolean;
     skipValidateTypeDefs?: boolean;
     queryOptions?: CypherQueryOptions;
@@ -54,6 +53,7 @@ export interface Neo4jGraphQLConfig {
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
+    plugins?: Neo4jGraphQLPlugins;
 }
 
 class Neo4jGraphQL {
@@ -64,14 +64,15 @@ class Neo4jGraphQL {
 
     private _nodes?: Node[];
     private _relationships?: Relationship[];
-
+    private plugins?: Neo4jGraphQLPlugins;
     private schema?: Promise<GraphQLSchema>;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, ...schemaDefinition } = input;
+        const { config = {}, driver, plugins, ...schemaDefinition } = input;
 
         this.driver = driver;
         this.config = config;
+        this.plugins = plugins;
         this.schemaDefinition = schemaDefinition;
     }
 
@@ -147,6 +148,7 @@ class Neo4jGraphQL {
             nodes: this.nodes,
             relationships: this.relationships,
             schema,
+            plugins: this.plugins,
         };
 
         const resolversComposition = {

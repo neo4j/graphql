@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-ogm",
-    "version": "2.5.8",
+    "version": "2.5.9",
     "description": "GraphQL powered OGM for Neo4j and Javascript applications",
     "keywords": [
         "neo4j",
@@ -35,7 +35,7 @@
         "@graphql-codegen/plugin-helpers": "^2.3.2",
         "@graphql-codegen/typescript": "^2.4.2",
         "@graphql-tools/merge": "^8.2.1",
-        "@neo4j/graphql": "^2.5.8",
+        "@neo4j/graphql": "^2.5.9",
         "camelcase": "^6.2.0",
         "pluralize": "^8.0.0",
         "prettier": "^2.5.1"
@@ -45,6 +45,7 @@
         "neo4j-driver": "^4.1.0"
     },
     "devDependencies": {
+        "@neo4j/graphql-plugin-auth": "^0.0.1",
         "@types/jest": "27.4.0",
         "@types/node": "16.11.25",
         "graphql-tag": "2.12.6",

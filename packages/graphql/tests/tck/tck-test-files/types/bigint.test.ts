@@ -38,7 +38,7 @@ describe("Cypher BigInt", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
