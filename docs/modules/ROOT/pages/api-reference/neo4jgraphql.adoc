@@ -33,6 +33,11 @@ Accepts all of the options from https://www.graphql-tools.com/docs/generate-sche
  +
  Type: `Neo4jGraphQLConfig`
 |Additional Neo4j GraphQL configuration options.
+
+|`plugins` +
+ +
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlplugins[`Neo4jGraphQLPlugins`]
+|Plugins for the Neo4j GraphQL Library.
 |===
 
 [[api-reference-neo4jgraphql-input-neo4jgraphqlconfig]]
@@ -50,11 +55,6 @@ Accepts all of the options from https://www.graphql-tools.com/docs/generate-sche
  +
  Type: `boolean`
 |Whether to enable RegEx filters, see xref::filtering.adoc#filtering-regex[RegEx matching] for more information.
-
-|`jwt` +
- +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-neo4jgraphqljwt[`Neo4jGraphQLJWT`]
-|JWT options.
 
 |`queryOptions` +
  +
@@ -82,33 +82,6 @@ Accepts all of the options from https://www.graphql-tools.com/docs/generate-sche
  +
  Type: `string` or `Array<string>`
 |One or more bookmarks to use for the connection.
-|===
-
-[[api-reference-neo4jgraphql-input-neo4jgraphqlconfig-neo4jgraphqljwt]]
-===== `Neo4jGraphQLJWT`
-
-|===
-|Name and Type |Description
-
-|`jwksEndpoint` +
- +
- Type: `string`
-|The OpenID Public Key Set Endpoint used to verify JWT tokens. The JWKS used to store the verification information is typically stored at an endpoint similar to \https://YOUR_DOMAIN/.well-known/jwks.json.
-
-|`secret` +
- +
- Type: `string`
-|The secret used to encode JWT tokens.
-
-|`noVerify` +
- +
- Type: `boolean`
-|Disable verification of JWT signatures, only decode.
-
-|`rolesPath` +
- +
- Type: `string`
-|Dot path of location of roles within JWT token.
 |===
 
 [[api-reference-neo4jgraphql-input-neo4jgraphqlconfig-cypherqueryoptions]]
@@ -194,6 +167,18 @@ const { CypherRuntime } = require("@neo4j/graphql");
  - `CypherReplanning.DEFAULT` +
  - `CypherReplanning.FORCE` +
  - `CypherReplanning.SKIP`
+|===
+
+[[api-reference-neo4jgraphql-input-neo4jgraphqlplugins]]
+==== `Neo4jGraphQLPlugins`
+
+|===
+|Name and Type |Description
+
+|`auth` +
+ +
+ Type: `Neo4jGraphQLAuthPlugin`
+|Plugin slot for auth capabilities.
 |===
 
 [[api-reference-getschema]]
