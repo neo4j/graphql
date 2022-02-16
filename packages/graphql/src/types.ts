@@ -19,6 +19,7 @@
 
 import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { JwtPayload } from "jsonwebtoken";
 import { Driver, Integer } from "neo4j-driver";
 import { Node, Relationship } from "./classes";
