@@ -1,16 +1,32 @@
-import {
-    InputTypeComposer,
-    InterfaceTypeComposer,
-    ObjectTypeComposer,
-    SchemaComposer,
-    upperFirst,
-} from "graphql-compose";
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { InputTypeComposer, InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import pluralize from "pluralize";
 import { Node } from "../../classes";
 import { WHERE_AGGREGATION_AVERAGE_TYPES, WHERE_AGGREGATION_OPERATORS, WHERE_AGGREGATION_TYPES } from "../../constants";
 import { BaseField, RelationField } from "../../types";
 import { ObjectFields } from "../get-obj-field-meta";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
+import { upperFirst } from "../../utils/upper-first";
+import { addDirectedArgument } from "../directed-argument";
 
 function createRelationshipFields({
     relationshipFields,
@@ -32,10 +48,10 @@ function createRelationshipFields({
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
     const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
 
-    let nodeConnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
-    let nodeDeleteInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
-    let nodeDisconnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
-    let nodeRelationInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
+    let nodeConnectInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
+    let nodeDeleteInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
+    let nodeDisconnectInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
+    let nodeRelationInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
 
     if (relationshipFields.length) {
         [nodeConnectInput, nodeDeleteInput, nodeDisconnectInput, nodeRelationInput] = [
@@ -77,15 +93,18 @@ function createRelationshipFields({
 
         if (rel.interface) {
             const refNodes = nodes.filter((x) => rel.interface?.implementations?.includes(x.name));
-
             if (!rel.writeonly) {
+                const baseNodeFieldArgs = {
+                    options: `${rel.typeMeta.name}Options`,
+                    where: `${rel.typeMeta.name}Where`,
+                };
+                const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
+
                 composeNode.addFields({
                     [rel.fieldName]: {
                         type: rel.typeMeta.pretty,
-                        args: {
-                            options: "QueryOptions",
-                            where: `${rel.typeMeta.name}Where`,
-                        },
+                        args: nodeFieldArgs,
+                        description: rel.description,
                     },
                 });
             }
@@ -201,9 +220,11 @@ function createRelationshipFields({
                 }
             });
 
-            nodeCreateInput.addFields({
-                [rel.fieldName]: nodeFieldInput,
-            });
+            if (!(composeNode instanceof InterfaceTypeComposer)) {
+                nodeCreateInput.addFields({
+                    [rel.fieldName]: nodeFieldInput,
+                });
+            }
 
             nodeConnectInput.addFields({
                 [rel.fieldName]: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
@@ -232,13 +253,17 @@ function createRelationshipFields({
             const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
             if (!rel.writeonly) {
+                const baseNodeFieldArgs = {
+                    options: "QueryOptions",
+                    where: `${rel.typeMeta.name}Where`,
+                };
+                const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
+
                 composeNode.addFields({
                     [rel.fieldName]: {
                         type: rel.typeMeta.pretty,
-                        args: {
-                            options: "QueryOptions",
-                            where: `${rel.typeMeta.name}Where`,
-                        },
+                        args: nodeFieldArgs,
+                        description: rel.description,
                     },
                 });
             }
@@ -478,9 +503,11 @@ function createRelationshipFields({
                 }
             });
 
-            nodeCreateInput.addFields({
-                [rel.fieldName]: unionCreateInput,
-            });
+            if (!(composeNode instanceof InterfaceTypeComposer)) {
+                nodeCreateInput.addFields({
+                    [rel.fieldName]: unionCreateInput,
+                });
+            }
 
             nodeRelationInput.addFields({
                 [rel.fieldName]: unionCreateFieldInput,
@@ -643,6 +670,34 @@ function createRelationshipFields({
             },
         });
 
+        // n..m Relationships
+        if (rel.typeMeta.array) {
+            // Add filters for each list predicate
+            whereInput.addFields(
+                (["ALL", "NONE", "SINGLE", "SOME"] as const).reduce(
+                    (acc, filter) => ({
+                        ...acc,
+                        [`${rel.fieldName}_${filter}`]: {
+                            type: `${n.name}Where`,
+                            // e.g. "Return Movies where all of the related Actors match this filter"
+                            description: `Return ${pluralize(sourceName)} where ${
+                                filter !== "SINGLE" ? filter.toLowerCase() : "one"
+                            } of the related ${pluralize(rel.typeMeta.name)} match this filter`,
+                        },
+                    }),
+                    {}
+                )
+            );
+
+            // Deprecate existing filters
+            whereInput.setFieldDirectiveByName(rel.fieldName, "deprecated", {
+                reason: `Use \`${rel.fieldName}_SOME\` instead.`,
+            });
+            whereInput.setFieldDirectiveByName(`${rel.fieldName}_NOT`, "deprecated", {
+                reason: `Use \`${rel.fieldName}_NONE\` instead.`,
+            });
+        }
+
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;
         const create = rel.typeMeta.array ? `[${createName}!]` : createName;
         schemaComposer.getOrCreateITC(createName, (tc) => {
@@ -676,13 +731,18 @@ function createRelationshipFields({
         });
 
         if (!rel.writeonly) {
+            const nodeFieldsBaseArgs = {
+                where: `${rel.typeMeta.name}Where`,
+                options: `${rel.typeMeta.name}Options`,
+            };
+
+            const nodeFieldsArgs = addDirectedArgument(nodeFieldsBaseArgs, rel);
+
             composeNode.addFields({
                 [rel.fieldName]: {
                     type: rel.typeMeta.pretty,
-                    args: {
-                        where: `${rel.typeMeta.name}Where`,
-                        options: `${rel.typeMeta.name}Options`,
-                    },
+                    args: nodeFieldsArgs,
+                    description: rel.description,
                 },
             });
 
@@ -696,12 +756,16 @@ function createRelationshipFields({
                     relFields
                 );
 
+                const aggregationFieldsBaseArgs = {
+                    where: `${rel.typeMeta.name}Where`,
+                };
+
+                const aggregationFieldsArgs = addDirectedArgument(aggregationFieldsBaseArgs, rel);
+
                 composeNode.addFields({
                     [`${rel.fieldName}Aggregate`]: {
                         type: aggregationTypeObject,
-                        args: {
-                            where: `${rel.typeMeta.name}Where`,
-                        },
+                        args: aggregationFieldsArgs,
                     },
                 });
             }

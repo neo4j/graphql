@@ -117,7 +117,7 @@ describe("Update -> ConnectOrCreate union top level", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -206,7 +206,7 @@ describe("Update -> ConnectOrCreate union top level", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

@@ -42,12 +42,12 @@ describe("Update -> ConnectOrCreate Top Level", () => {
         type ${typeMovie.name} {
             title: String!
             id: Int! @unique
-            ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
+            ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
         }
 
         type ${typeActor.name} {
             name: String
-            ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
+            ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
         }
 
         interface ActedIn {
@@ -95,7 +95,7 @@ describe("Update -> ConnectOrCreate Top Level", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -152,7 +152,7 @@ describe("Update -> ConnectOrCreate Top Level", () => {
             `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

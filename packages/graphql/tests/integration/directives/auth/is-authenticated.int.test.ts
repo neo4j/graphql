@@ -68,7 +68,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -107,7 +107,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -153,7 +153,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -197,7 +197,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -243,7 +243,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -287,7 +287,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -313,7 +313,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -363,7 +363,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -389,7 +389,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -439,7 +439,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -483,7 +483,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -501,7 +501,7 @@ describe("auth/is-authenticated", () => {
                 type User {
                     id: ID
                     name: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post @auth(rules: [{
@@ -543,7 +543,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -588,7 +588,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -631,7 +631,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -678,7 +678,7 @@ describe("auth/is-authenticated", () => {
                 req.headers.authorization = `Bearer ${token}`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -720,7 +720,7 @@ describe("auth/is-authenticated", () => {
 
             try {
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, jwt },
                 });

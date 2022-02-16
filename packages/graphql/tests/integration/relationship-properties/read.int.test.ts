@@ -111,7 +111,7 @@ describe("Relationship properties - read", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
@@ -120,23 +120,23 @@ describe("Relationship properties - read", () => {
 
             expect(result?.data?.movies).toHaveLength(1);
 
-            expect(result?.data?.movies[0].actorsConnection.totalCount).toBe(3);
-            expect(result?.data?.movies[0].actorsConnection.pageInfo).toEqual({ hasNextPage: false });
+            expect((result?.data as any)?.movies[0].actorsConnection.totalCount).toBe(3);
+            expect((result?.data as any)?.movies[0].actorsConnection.pageInfo).toEqual({ hasNextPage: false });
 
-            expect(result?.data?.movies[0].actorsConnection.edges).toHaveLength(3);
-            expect(result?.data?.movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.movies[0].actorsConnection.edges).toHaveLength(3);
+            expect((result?.data as any)?.movies[0].actorsConnection.edges).toContainEqual({
                 screenTime: 5,
                 node: {
                     name: actorC,
                 },
             });
-            expect(result?.data?.movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.movies[0].actorsConnection.edges).toContainEqual({
                 screenTime: 105,
                 node: {
                     name: actorB,
                 },
             });
-            expect(result?.data?.movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.movies[0].actorsConnection.edges).toContainEqual({
                 screenTime: 105,
                 node: {
                     name: actorA,
@@ -179,14 +179,14 @@ describe("Relationship properties - read", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.movies).toEqual([
+            expect((result?.data as any)?.movies).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -240,7 +240,7 @@ describe("Relationship properties - read", () => {
             await neoSchema.checkNeo4jCompat();
 
             const ascResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "ASC" },
@@ -281,7 +281,7 @@ describe("Relationship properties - read", () => {
             ]);
 
             const descResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "DESC" },
@@ -357,7 +357,7 @@ describe("Relationship properties - read", () => {
             await neoSchema.checkNeo4jCompat();
 
             const ascResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "ASC" },
@@ -392,7 +392,7 @@ describe("Relationship properties - read", () => {
             ]);
 
             const descResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "DESC" },
@@ -458,32 +458,32 @@ describe("Relationship properties - read", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toHaveLength(1);
-            expect(result?.data?.actors[0].name).toEqual(actorA);
+            expect((result?.data as any)?.actors).toHaveLength(1);
+            expect((result?.data as any)?.actors[0].name).toEqual(actorA);
 
-            expect(result?.data?.actors[0].movies).toHaveLength(1);
+            expect((result?.data as any)?.actors[0].movies).toHaveLength(1);
 
-            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toHaveLength(3);
-            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toHaveLength(3);
+            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
                 screenTime: 5,
                 node: {
                     name: actorC,
                 },
             });
-            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
                 screenTime: 105,
                 node: {
                     name: actorB,
                 },
             });
-            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
                 screenTime: 105,
                 node: {
                     name: actorA,
@@ -522,26 +522,26 @@ describe("Relationship properties - read", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toHaveLength(1);
-            expect(result?.data?.actors[0].name).toEqual(actorA);
+            expect((result?.data as any)?.actors).toHaveLength(1);
+            expect((result?.data as any)?.actors[0].name).toEqual(actorA);
 
-            expect(result?.data?.actors[0].movies).toHaveLength(1);
+            expect((result?.data as any)?.actors[0].movies).toHaveLength(1);
 
-            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toHaveLength(2);
-            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toHaveLength(2);
+            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
                 screenTime: 5,
                 node: {
                     name: actorC,
                 },
             });
-            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
                 screenTime: 105,
                 node: {
                     name: actorB,

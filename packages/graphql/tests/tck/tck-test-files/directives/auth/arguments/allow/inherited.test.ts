@@ -46,21 +46,21 @@ describe("@auth allow when inherited from interface", () => {
             type Comment implements Content {
                 id: ID
                 content: String
-                creator: User @relationship(type: "HAS_COMMENT", direction: IN)
-                post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+                creator: User! @relationship(type: "HAS_COMMENT", direction: IN)
+                post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
             }
 
             type Post implements Content {
                 id: ID
                 content: String
-                creator: User @relationship(type: "HAS_POST", direction: IN)
-                comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+                creator: User! @relationship(type: "HAS_POST", direction: IN)
+                comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 
             type User {
                 id: ID
                 name: String
-                posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
             extend type User
@@ -333,6 +333,14 @@ describe("@auth allow when inherited from interface", () => {
             RETURN count(*)
             \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_id:$this_update_creator0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
             YIELD value as _
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
+            	WITH count(this_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_creator_User_unique_ignored
+            }
             RETURN this { .id } AS this"
         `);
 
@@ -404,6 +412,14 @@ describe("@auth allow when inherited from interface", () => {
             RETURN count(*)
             \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
             YIELD value as _
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
+            	WITH count(this_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_creator_User_unique_ignored
+            }
             RETURN this { .id } AS this"
         `);
 
@@ -632,6 +648,21 @@ describe("@auth allow when inherited from interface", () => {
             RETURN count(*)
             }
             RETURN count(*)
+            }
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_creator_User_unique:HAS_COMMENT]-(:User)
+            	WITH count(this_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required', [0])
+            	RETURN c AS this_creator_User_unique_ignored
+            }
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_post_Post_unique:HAS_COMMENT]-(:Post)
+            	WITH count(this_post_Post_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required', [0])
+            	RETURN c AS this_post_Post_unique_ignored
             }
             RETURN this { .id } AS this"
         `);

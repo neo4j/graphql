@@ -31,9 +31,9 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         type User {
             id: ID!
             authId: String
-            workspaces: [Workspace!] @relationship(type: "MEMBER_OF", direction: OUT)
-            adminOf: [Workspace!] @relationship(type: "HAS_ADMIN", direction: IN)
-            createdPages: [Page!] @relationship(type: "CREATED_PAGE", direction: OUT)
+            workspaces: [Workspace!]! @relationship(type: "MEMBER_OF", direction: OUT)
+            adminOf: [Workspace!]! @relationship(type: "HAS_ADMIN", direction: IN)
+            createdPages: [Page!]! @relationship(type: "CREATED_PAGE", direction: OUT)
         }
 
         type Workspace
@@ -48,9 +48,9 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             @exclude(operations: [CREATE, UPDATE]) {
             id: ID!
             name: String!
-            members: [User!] @relationship(type: "MEMBER_OF", direction: IN)
-            admins: [User!] @relationship(type: "HAS_ADMIN", direction: OUT)
-            pages: [Page!] @relationship(type: "HAS_PAGE", direction: OUT)
+            members: [User!]! @relationship(type: "MEMBER_OF", direction: IN)
+            admins: [User!]! @relationship(type: "HAS_ADMIN", direction: OUT)
+            pages: [Page!]! @relationship(type: "HAS_PAGE", direction: OUT)
         }
 
         type Page
@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     async function queryTest(neoSchema: Neo4jGraphQL, variableValues: any, userId: string, session: Session) {
         async function graphqlQuery(query: string) {
             return graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: {
                     driver,
@@ -203,12 +203,12 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             );
 
             expect(usersResult?.errors).toBeFalsy();
-            expect(usersResult?.data?.users).toHaveLength(1);
-            expect(usersResult?.data?.users[0]?.createdPages).toHaveLength(2);
+            expect((usersResult?.data as any)?.users).toHaveLength(1);
+            expect((usersResult?.data as any as any)?.users[0]?.createdPages).toHaveLength(2);
 
             expect(workspacesResult?.errors).toBeFalsy();
-            expect(workspacesResult?.data?.workspaces).toHaveLength(1);
-            expect(workspacesResult?.data?.workspaces[0]?.pages).toHaveLength(2);
+            expect((workspacesResult?.data as any)?.workspaces).toHaveLength(1);
+            expect((workspacesResult?.data as any as any)?.workspaces[0]?.pages).toHaveLength(2);
 
             expect(pagesResult?.errors).toBeFalsy();
             expect(pagesResult?.data?.pages).toHaveLength(2);
@@ -278,12 +278,12 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
             expect(usersResult?.errors).toBeFalsy();
 
-            expect(usersResult?.data?.users).toHaveLength(1);
-            expect(usersResult?.data?.users[0]?.createdPages).toHaveLength(4);
+            expect((usersResult?.data as any)?.users).toHaveLength(1);
+            expect((usersResult?.data as any)?.users[0]?.createdPages).toHaveLength(4);
 
             expect(workspacesResult?.errors).toBeFalsy();
-            expect(workspacesResult?.data?.workspaces).toHaveLength(1);
-            expect(workspacesResult?.data?.workspaces[0]?.pages).toHaveLength(2);
+            expect((workspacesResult?.data as any)?.workspaces).toHaveLength(1);
+            expect((workspacesResult?.data as any)?.workspaces[0]?.pages).toHaveLength(2);
 
             expect(pagesResult?.errors).toBeFalsy();
             expect(pagesResult?.data?.pages).toHaveLength(2);
@@ -361,12 +361,12 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             );
 
             expect(usersResult?.errors).toBeFalsy();
-            expect(usersResult?.data?.users).toHaveLength(1);
-            expect(usersResult?.data?.users[0]?.createdPages).toHaveLength(0);
+            expect((usersResult?.data as any)?.users).toHaveLength(1);
+            expect((usersResult?.data as any)?.users[0]?.createdPages).toHaveLength(0);
 
             expect(workspacesResult?.errors).toBeFalsy();
-            expect(workspacesResult?.data?.workspaces).toHaveLength(1);
-            expect(workspacesResult?.data?.workspaces[0]?.pages).toHaveLength(2);
+            expect((workspacesResult?.data as any)?.workspaces).toHaveLength(1);
+            expect((workspacesResult?.data as any)?.workspaces[0]?.pages).toHaveLength(2);
 
             expect(pagesResult?.errors).toBeFalsy();
             expect(pagesResult?.data?.pages).toHaveLength(2);
@@ -444,12 +444,12 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             );
 
             expect(usersResult?.errors).toBeFalsy();
-            expect(usersResult?.data?.users).toHaveLength(1);
-            expect(usersResult?.data?.users[0]?.createdPages).toHaveLength(0);
+            expect((usersResult?.data as any)?.users).toHaveLength(1);
+            expect((usersResult?.data as any)?.users[0]?.createdPages).toHaveLength(0);
 
             expect(workspacesResult?.errors).toBeFalsy();
-            expect(workspacesResult?.data?.workspaces).toHaveLength(1);
-            expect(workspacesResult?.data?.workspaces[0]?.pages).toHaveLength(1);
+            expect((workspacesResult?.data as any)?.workspaces).toHaveLength(1);
+            expect((workspacesResult?.data as any)?.workspaces[0]?.pages).toHaveLength(1);
 
             expect(pagesResult?.errors).toBeFalsy();
             expect(pagesResult?.data?.pages).toHaveLength(1);
@@ -527,12 +527,12 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             );
 
             expect(usersResult?.errors).toBeFalsy();
-            expect(usersResult?.data?.users).toHaveLength(1);
-            expect(usersResult?.data?.users[0]?.createdPages).toHaveLength(0);
+            expect((usersResult?.data as any)?.users).toHaveLength(1);
+            expect((usersResult?.data as any)?.users[0]?.createdPages).toHaveLength(0);
 
             expect(workspacesResult?.errors).toBeFalsy();
-            expect(workspacesResult?.data?.workspaces).toHaveLength(1);
-            expect(workspacesResult?.data?.workspaces[0]?.pages).toHaveLength(0);
+            expect((workspacesResult?.data as any)?.workspaces).toHaveLength(1);
+            expect((workspacesResult?.data as any)?.workspaces[0]?.pages).toHaveLength(0);
 
             expect(pagesResult?.errors).toBeFalsy();
             expect(pagesResult?.data?.pages).toHaveLength(0);
@@ -610,11 +610,11 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             );
 
             expect(usersResult?.errors).toBeFalsy();
-            expect(usersResult?.data?.users).toHaveLength(1);
-            expect(usersResult?.data?.users[0]?.createdPages).toHaveLength(0);
+            expect((usersResult?.data as any)?.users).toHaveLength(1);
+            expect((usersResult?.data as any)?.users[0]?.createdPages).toHaveLength(0);
 
             expect(workspacesResult?.errors).toBeFalsy();
-            expect(workspacesResult?.data?.workspaces).toHaveLength(0);
+            expect((workspacesResult?.data as any)?.workspaces).toHaveLength(0);
 
             expect(pagesResult?.errors).toBeFalsy();
             expect(pagesResult?.data?.pages).toHaveLength(0);
@@ -692,12 +692,12 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             );
 
             expect(usersResult?.errors).toBeFalsy();
-            expect(usersResult?.data?.users).toHaveLength(1);
-            expect(usersResult?.data?.users[0]?.createdPages).toHaveLength(0);
+            expect((usersResult?.data as any)?.users).toHaveLength(1);
+            expect((usersResult?.data as any)?.users[0]?.createdPages).toHaveLength(0);
 
             expect(workspacesResult?.errors).toBeFalsy();
-            expect(workspacesResult?.data?.workspaces).toHaveLength(1);
-            expect(workspacesResult?.data?.workspaces[0]?.pages).toHaveLength(2);
+            expect((workspacesResult?.data as any)?.workspaces).toHaveLength(1);
+            expect((workspacesResult?.data as any)?.workspaces[0]?.pages).toHaveLength(2);
 
             expect(pagesResult?.errors).toBeFalsy();
             expect(pagesResult?.data?.pages).toHaveLength(2);
@@ -775,12 +775,12 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             );
 
             expect(usersResult?.errors).toBeFalsy();
-            expect(usersResult?.data?.users).toHaveLength(1);
-            expect(usersResult?.data?.users[0]?.createdPages).toHaveLength(0);
+            expect((usersResult?.data as any)?.users).toHaveLength(1);
+            expect((usersResult?.data as any)?.users[0]?.createdPages).toHaveLength(0);
 
             expect(workspacesResult?.errors).toBeFalsy();
-            expect(workspacesResult?.data?.workspaces).toHaveLength(1);
-            expect(workspacesResult?.data?.workspaces[0]?.pages).toHaveLength(0);
+            expect((workspacesResult?.data as any)?.workspaces).toHaveLength(1);
+            expect((workspacesResult?.data as any)?.workspaces[0]?.pages).toHaveLength(0);
 
             expect(pagesResult?.errors).toBeFalsy();
             expect(pagesResult?.data?.pages).toHaveLength(0);

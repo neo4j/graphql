@@ -32,17 +32,17 @@ describe("#324", () => {
         typeDefs = gql`
             type Person {
                 identifier: ID!
-                car: Car @relationship(type: "CAR", direction: OUT)
+                car: Car! @relationship(type: "CAR", direction: OUT)
             }
 
             type Car {
                 identifier: ID!
-                manufacturer: Manufacturer @relationship(type: "MANUFACTURER", direction: OUT)
+                manufacturer: Manufacturer! @relationship(type: "MANUFACTURER", direction: OUT)
             }
 
             type Manufacturer {
                 identifier: ID!
-                logo: Logo @relationship(type: "LOGO", direction: OUT)
+                logo: Logo! @relationship(type: "LOGO", direction: OUT)
                 name: String
             }
 
@@ -115,12 +115,36 @@ describe("#324", () => {
             	)
             	RETURN count(*)
             }
+            WITH this, this_car0, this_car0_manufacturer0
+            CALL {
+            	WITH this_car0_manufacturer0
+            	MATCH (this_car0_manufacturer0)-[this_car0_manufacturer0_logo_Logo_unique:LOGO]->(:Logo)
+            	WITH count(this_car0_manufacturer0_logo_Logo_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDManufacturer.logo required', [0])
+            	RETURN c AS this_car0_manufacturer0_logo_Logo_unique_ignored
+            }
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_car0:this_car0, updatePeople: $updatePeople, this_car0_manufacturer0:this_car0_manufacturer0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
             YIELD value as _
+            WITH this, this_car0
+            CALL {
+            	WITH this_car0
+            	MATCH (this_car0)-[this_car0_manufacturer_Manufacturer_unique:MANUFACTURER]->(:Manufacturer)
+            	WITH count(this_car0_manufacturer_Manufacturer_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDCar.manufacturer required', [0])
+            	RETURN c AS this_car0_manufacturer_Manufacturer_unique_ignored
+            }
             RETURN count(*)
             \\", \\"\\", {this:this, updatePeople: $updatePeople, this_car0:this_car0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
             YIELD value as _
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)-[this_car_Car_unique:CAR]->(:Car)
+            	WITH count(this_car_Car_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPerson.car required', [0])
+            	RETURN c AS this_car_Car_unique_ignored
+            }
             RETURN this { .identifier } AS this"
         `);
 

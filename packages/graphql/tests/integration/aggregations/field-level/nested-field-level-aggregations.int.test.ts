@@ -39,14 +39,14 @@ describe("Nested Field Level Aggregations", () => {
         typeDefs = `
         type ${typeMovie.name} {
             title: String
-            ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
+            ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
         }
 
         type ${typeActor.name} {
             name: String
             age: Int
             born: DateTime
-            ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
+            ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
         }
 
         interface ActedIn {
@@ -85,12 +85,12 @@ describe("Nested Field Level Aggregations", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        const movies = gqlResult.data?.actors[0].movies;
+        const movies = (gqlResult.data as any)?.actors[0].movies;
         expect(movies).toHaveLength(2);
         expect(movies).toContainEqual({
             title: "Terminator",

@@ -18,70 +18,73 @@
  */
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
-import { forEachField } from "@graphql-tools/utils";
+import { IResolvers, TypeSource } from "@graphql-tools/utils";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
     DirectiveNode,
+    DocumentNode,
     EnumTypeDefinitionNode,
     GraphQLInt,
     GraphQLNonNull,
-    GraphQLSchema,
     GraphQLString,
     InputObjectTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
+    Kind,
     NamedTypeNode,
+    NameNode,
     ObjectTypeDefinitionNode,
     parse,
     print,
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import {
-    InputTypeComposer,
-    InputTypeComposerFieldConfigAsObjectDefinition,
-    ObjectTypeComposer,
-    SchemaComposer,
-    upperFirst,
-} from "graphql-compose";
-import { Exclude, Node } from "../classes";
-import { NodeDirective } from "../classes/NodeDirective";
-import Relationship from "../classes/Relationship";
-import * as constants from "../constants";
-import { Auth, FullText, PrimitiveField } from "../types";
-import { isString } from "../utils/utils";
-import createConnectionFields from "./create-connection-fields";
-import createRelationshipFields from "./create-relationship-fields";
-import getAuth from "./get-auth";
-import getCustomResolvers from "./get-custom-resolvers";
-import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
-import getWhereFields from "./get-where-fields";
-import parseExcludeDirective from "./parse-exclude-directive";
-import parseNodeDirective from "./parse-node-directive";
-import parseFulltextDirective from "./parse/parse-fulltext-directive";
-import * as point from "./point";
+import { InputTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import pluralize from "pluralize";
+import { validateDocument } from "./validation";
+import { Auth, BaseField, FullText, PrimitiveField } from "../types";
 import {
     aggregateResolver,
-    countResolver,
     createResolver,
     cypherResolver,
-    defaultFieldResolver,
     deleteResolver,
     findResolver,
     updateResolver,
     numericalResolver,
 } from "./resolvers";
-import * as Scalars from "./scalars";
-import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
-import { validateDocument } from "./validation";
-import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import * as constants from "../constants";
+import * as Scalars from "./scalars";
+import * as point from "./point";
+import { Exclude, Node } from "../classes";
+import { NodeDirective } from "../classes/NodeDirective";
+import Relationship from "../classes/Relationship";
+import createConnectionFields from "./create-connection-fields";
+import createRelationshipFields from "./create-relationship-fields";
+import parseExcludeDirective from "./parse-exclude-directive";
+import parseFulltextDirective from "./parse/parse-fulltext-directive";
+import parseNodeDirective from "./parse-node-directive";
+import getAuth from "./get-auth";
+import getCustomResolvers from "./get-custom-resolvers";
+import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
+import getSortableFields from "./get-sortable-fields";
+import {
+    graphqlDirectivesToCompose,
+    objectFieldsToComposeFields,
+    objectFieldsToCreateInputFields,
+    objectFieldsToUpdateInputFields,
+} from "./to-compose";
+import getUniqueFields from "./get-unique-fields";
+import getWhereFields from "./get-where-fields";
+import { isString } from "../utils/utils";
+import { upperFirst } from "../utils/upper-first";
+import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
+import { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
 
 function makeAugmentedSchema(
-    { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
+    typeDefs: TypeSource,
     { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
-): { schema: GraphQLSchema; nodes: Node[]; relationships: Relationship[] } {
+): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers: IResolvers } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
     if (!skipValidateTypeDefs) {
@@ -206,17 +209,20 @@ function makeAugmentedSchema(
     Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
 
     if (extraDefinitions.length) {
-        composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
+        composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
     const nodes = objectNodes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude", "node", "fulltext"].includes(x.name.value)
+            (x) => !["auth", "exclude", "node", "fulltext", "queryOptions"].includes(x.name.value)
         );
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
         const fulltextDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "fulltext");
+        const queryOptionsDirectiveDefinition = (definition.directives || []).find(
+            (x) => x.name.value === "queryOptions"
+        );
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
         const { interfaceAuthDirectives, interfaceExcludeDirectives } = nodeInterfaces.reduce<{
@@ -280,11 +286,44 @@ function makeAugmentedSchema(
             objects: objectNodes,
         });
 
+        // Ensure that all required fields are returning either a scalar type or an enum
+
+        const violativeRequiredField = nodeFields.computedFields
+            .filter((f) => f.requiredFields.length)
+            .map((f) => f.requiredFields)
+            .flat()
+            .find(
+                (requiredField) =>
+                    ![
+                        ...nodeFields.primitiveFields,
+                        ...nodeFields.scalarFields,
+                        ...nodeFields.enumFields,
+                        ...nodeFields.temporalFields,
+                        ...nodeFields.cypherFields.filter((field) => field.isScalar || field.isEnum),
+                    ]
+                        .map((x) => x.fieldName)
+                        .includes(requiredField)
+            );
+
+        if (violativeRequiredField) {
+            throw new Error(
+                `Cannot have ${violativeRequiredField} as a required field on node ${definition.name.value}. Required fields must return a scalar type.`
+            );
+        }
+
         let fulltextDirective: FullText;
         if (fulltextDirectiveDefinition) {
             fulltextDirective = parseFulltextDirective({
                 directive: fulltextDirectiveDefinition,
                 nodeFields,
+                definition,
+            });
+        }
+
+        let queryOptionsDirective: QueryOptionsDirective | undefined;
+        if (queryOptionsDirectiveDefinition) {
+            queryOptionsDirective = parseQueryOptionsDirective({
+                directive: queryOptionsDirectiveDefinition,
                 definition,
             });
         }
@@ -324,6 +363,7 @@ function makeAugmentedSchema(
             nodeDirective,
             // @ts-ignore we can be sure it's defined
             fulltextDirective,
+            queryOptionsDirective,
             description: definition.description?.value,
         });
 
@@ -378,9 +418,9 @@ function makeAugmentedSchema(
 
         relationshipFields.set(relationship.name.value, relFields);
 
-        const objectComposeFields = objectFieldsToComposeFields(
-            Object.values(relFields).reduce((acc, x) => [...acc, ...x], [])
-        );
+        const baseFields: BaseField[][] = Object.values(relFields);
+
+        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
 
         const propertiesInterface = composer.createInterfaceTC({
             name: relationship.name.value,
@@ -396,19 +436,13 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${relationship.name.value}UpdateInput`,
-            fields: [
+            fields: objectFieldsToUpdateInputFields([
                 ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.readonly),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields.filter((field) => !field.timestamps),
                 ...relFields.pointFields,
-            ].reduce(
-                (res, f) => ({
-                    ...res,
-                    [f.fieldName]: f.typeMeta.input.update.pretty,
-                }),
-                {}
-            ),
+            ]),
         });
 
         const relationshipWhereFields = getWhereFields({
@@ -430,26 +464,13 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${relationship.name.value}CreateInput`,
-            // TODO - This reduce duplicated when creating node CreateInput - put into shared function?
-            fields: [
+            fields: objectFieldsToCreateInputFields([
                 ...relFields.primitiveFields.filter((field) => !field.autogenerate),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields.filter((field) => !field.timestamps),
                 ...relFields.pointFields,
-            ].reduce((res, f) => {
-                if ((f as PrimitiveField)?.defaultValue !== undefined) {
-                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
-                        type: f.typeMeta.input.create.pretty,
-                        defaultValue: (f as PrimitiveField)?.defaultValue,
-                    };
-                    res[f.fieldName] = field;
-                } else {
-                    res[f.fieldName] = f.typeMeta.input.create.pretty;
-                }
-
-                return res;
-            }, {}),
+            ]),
         });
     });
 
@@ -492,14 +513,48 @@ function makeAugmentedSchema(
             );
         }
 
-        const objectComposeFields = objectFieldsToComposeFields(
-            Object.values(interfaceFields).reduce((acc, x) => [...acc, ...x], [])
-        );
+        const baseFields: BaseField[][] = Object.values(interfaceFields);
+        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
 
         const composeInterface = composer.createInterfaceTC({
             name: interfaceRelationship.name.value,
             fields: objectComposeFields,
         });
+
+        const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Options`, (tc) => {
+            tc.addFields({
+                limit: "Int",
+                offset: "Int",
+            });
+        });
+
+        const interfaceSortableFields = getSortableFields(interfaceFields).reduce(
+            (res, f) => ({
+                ...res,
+                [f.fieldName]: sortDirection.getTypeName(),
+            }),
+            {}
+        );
+
+        if (Object.keys(interfaceSortableFields).length) {
+            const interfaceSortInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Sort`, (tc) => {
+                tc.addFields(interfaceSortableFields);
+                tc.setDescription(
+                    `Fields to sort ${pluralize(
+                        interfaceRelationship.name.value
+                    )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${interfaceRelationship.name.value}Sort`} object.`
+                );
+            });
+
+            interfaceOptionsInput.addFields({
+                sort: {
+                    description: `Specify one or more ${`${interfaceRelationship.name.value}Sort`} objects to sort ${pluralize(
+                        interfaceRelationship.name.value
+                    )} by. The sorts will be applied in the order in which they are arranged in the array.`,
+                    type: interfaceSortInput.List,
+                },
+            });
+        }
 
         const interfaceWhereFields = getWhereFields({
             typeName: interfaceRelationship.name.value,
@@ -536,22 +591,13 @@ function makeAugmentedSchema(
 
         composer.getOrCreateITC(`${interfaceRelationship.name.value}UpdateInput`, (tc) => {
             tc.addFields({
-                ...[
+                ...objectFieldsToUpdateInputFields([
                     ...interfaceFields.primitiveFields,
                     ...interfaceFields.scalarFields,
                     ...interfaceFields.enumFields,
                     ...interfaceFields.temporalFields.filter((field) => !field.timestamps),
                     ...interfaceFields.pointFields,
-                ].reduce(
-                    (res, f) =>
-                        f.readonly || (f as PrimitiveField)?.autogenerate
-                            ? res
-                            : {
-                                  ...res,
-                                  [f.fieldName]: f.typeMeta.input.update.pretty,
-                              },
-                    {}
-                ),
+                ]),
                 _on: implementationsUpdateInput,
             });
         });
@@ -699,7 +745,7 @@ function makeAugmentedSchema(
             ...node.unionFields,
             ...node.temporalFields,
             ...node.pointFields,
-            ...node.ignoredFields,
+            ...node.computedFields,
         ]);
 
         const composeNode = composer.createObjectTC({
@@ -710,7 +756,7 @@ function makeAugmentedSchema(
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
-        const sortFields = node.sortableFields.reduce(
+        const sortFields = getSortableFields(node).reduce(
             (res, f) => ({
                 ...res,
                 [f.fieldName]: sortDirection.getTypeName(),
@@ -734,7 +780,7 @@ function makeAugmentedSchema(
                         description: `Specify one or more ${`${node.name}Sort`} objects to sort ${upperFirst(
                             node.plural
                         )} by. The sorts will be applied in the order in which they are arranged in the array.`,
-                        type: sortInput.List,
+                        type: sortInput.NonNull.List,
                     },
                     limit: "Int",
                     offset: "Int",
@@ -793,8 +839,8 @@ function makeAugmentedSchema(
         });
 
         if (node.fulltextDirective) {
-            const fields = node.fulltextDirective.indexes.reduce((res, index) => {
-                return {
+            const fields = node.fulltextDirective.indexes.reduce(
+                (res, index) => ({
                     ...res,
                     [index.name]: composer.createInputTC({
                         name: `${node.name}${upperFirst(index.name)}Fulltext`,
@@ -803,8 +849,9 @@ function makeAugmentedSchema(
                             score_EQUAL: "Int",
                         },
                     }),
-                };
-            }, {});
+                }),
+                {}
+            );
 
             composer.createInputTC({
                 name: `${node.name}Fulltext`,
@@ -821,50 +868,26 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${node.name}CreateInput`,
-            // TODO - This reduce duplicated when creating relationship CreateInput - put into shared function?
-            fields: [
-                ...node.primitiveFields,
-                ...node.scalarFields,
-                ...node.enumFields,
-                ...node.temporalFields.filter((field) => !field.timestamps),
-                ...node.pointFields,
-            ].reduce((res, f) => {
-                if ((f as PrimitiveField)?.autogenerate) {
-                    return res;
-                }
-
-                if ((f as PrimitiveField)?.defaultValue !== undefined) {
-                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
-                        type: f.typeMeta.input.create.pretty,
-                        defaultValue: (f as PrimitiveField)?.defaultValue,
-                    };
-                    res[f.fieldName] = field;
-                } else {
-                    res[f.fieldName] = f.typeMeta.input.create.pretty;
-                }
-
-                return res;
-            }, {}),
+            fields: objectFieldsToCreateInputFields(
+                [
+                    ...node.primitiveFields,
+                    ...node.scalarFields,
+                    ...node.enumFields,
+                    ...node.temporalFields.filter((field) => !field.timestamps),
+                    ...node.pointFields,
+                ].filter((f) => !(f as PrimitiveField)?.autogenerate)
+            ),
         });
 
         composer.createInputTC({
             name: `${node.name}UpdateInput`,
-            fields: [
+            fields: objectFieldsToUpdateInputFields([
                 ...node.primitiveFields,
                 ...node.scalarFields,
                 ...node.enumFields,
                 ...node.temporalFields.filter((field) => !field.timestamps),
                 ...node.pointFields,
-            ].reduce(
-                (res, f) =>
-                    f.readonly || (f as PrimitiveField)?.autogenerate
-                        ? res
-                        : {
-                              ...res,
-                              [f.fieldName]: f.typeMeta.input.update.pretty,
-                          },
-                {}
-            ),
+            ]),
         });
 
         ["Create", "Update"].map((operation) =>
@@ -903,10 +926,6 @@ function makeAugmentedSchema(
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
                 [node.plural]: findResolver({ node }),
-            });
-
-            composer.Query.addFields({
-                [`${node.plural}Count`]: countResolver({ node }),
             });
 
             composer.Query.addFields({
@@ -980,9 +999,8 @@ function makeAugmentedSchema(
     interfaces.forEach((inter) => {
         const objectFields = getObjFieldMeta({ obj: inter, scalars, enums, interfaces, unions, objects: objectNodes });
 
-        const objectComposeFields = objectFieldsToComposeFields(
-            Object.values(objectFields).reduce((acc, x) => [...acc, ...x], [])
-        );
+        const baseFields: BaseField[][] = Object.values(objectFields);
+        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
 
         composer.createInterfaceTC({
             name: inter.name.value,
@@ -1000,8 +1018,28 @@ function makeAugmentedSchema(
 
     const generatedTypeDefs = composer.toSDL();
     let parsedDoc = parse(generatedTypeDefs);
-    // @ts-ignore
-    const documentNames = parsedDoc.definitions.filter((x) => "name" in x).map((x) => x.name.value);
+
+    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
+        return "name" in x;
+    }
+
+    const emptyObjectsInterfaces = (
+        parsedDoc.definitions.filter(
+            (x) =>
+                (x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)) ||
+                x.kind === "InterfaceTypeDefinition"
+        ) as (InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode)[]
+    ).filter((x) => !x.fields?.length);
+
+    if (emptyObjectsInterfaces.length) {
+        throw new Error(
+            `Objects and Interfaces must have one or more fields: ${emptyObjectsInterfaces
+                .map((x) => x.name.value)
+                .join(", ")}`
+        );
+    }
+
+    const documentNames = parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value);
 
     const generatedResolvers = {
         ...Object.entries(composer.getResolveMethods()).reduce((res, [key, value]) => {
@@ -1021,14 +1059,12 @@ function makeAugmentedSchema(
 
     unions.forEach((union) => {
         if (!generatedResolvers[union.name.value]) {
-            // eslint-disable-next-line no-underscore-dangle
             generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
         }
     });
 
     interfaceRelationships.forEach((i) => {
         if (!generatedResolvers[i.name.value]) {
-            // eslint-disable-next-line no-underscore-dangle
             generatedResolvers[i.name.value] = { __resolveType: (root) => root.__resolveType };
         }
     });
@@ -1053,24 +1089,11 @@ function makeAugmentedSchema(
         }),
     };
 
-    const schema = makeExecutableSchema({
-        ...schemaDefinition,
-        typeDefs: parsedDoc,
-        resolvers: generatedResolvers,
-    });
-
-    // Assign a default field resolver to account for aliasing of fields
-    forEachField(schema, (field) => {
-        if (!field.resolve) {
-            // eslint-disable-next-line no-param-reassign
-            field.resolve = defaultFieldResolver;
-        }
-    });
-
     return {
         nodes,
         relationships,
-        schema,
+        typeDefs: parsedDoc,
+        resolvers: generatedResolvers,
     };
 }
 

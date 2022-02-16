@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
-import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
+import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
 import neo4j from "neo4j-driver";
 
 // Matching P[nY][nM][nD][T[nH][nM][nS]]  |  PnW  |  PYYYYMMDDTHHMMSS | PYYYY-MM-DDTHH:MM:SS
 // For unit based duration a decimal value can only exist on the smallest unit(e.g. P2Y4.5M matches P2.5Y4M does not)
 // Similar constraint allows for only decimal seconds on date time based duration
-const DURATION_REGEX = /^(?<negated>-?)P(?!$)(?:(?:(?<yearUnit>-?\d+(?:\.\d+(?=Y$))?)Y)?(?:(?<monthUnit>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<dayUnit>-?\d+(?:\.\d+(?=D$))?)D)?(?:T(?=-?\d)(?:(?<hourUnit>-?\d+(?:\.\d+(?=H$))?)H)?(?:(?<minuteUnit>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<secondUnit>-?\d+(?:\.\d+(?=S$))?)S)?)?|(?<weekUnit>-?\d+(?:\.\d+)?)W|(?<yearDT>\d{4})(?<dateDelimiter>-?)(?<monthDT>[0]\d|1[0-2])\k<dateDelimiter>(?<dayDT>\d{2})T(?<hourDT>[01]\d|2[0-3])(?<timeDelimiter>(?:(?<=-\w+?):)|(?<=^-?\w+))(?<minuteDT>[0-5]\d)\k<timeDelimiter>(?<secondDT>[0-5]\d(?:\.\d+)?))$/;
+const DURATION_REGEX =
+    /^(?<negated>-?)P(?!$)(?:(?:(?<yearUnit>-?\d+(?:\.\d+(?=Y$))?)Y)?(?:(?<monthUnit>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<dayUnit>-?\d+(?:\.\d+(?=D$))?)D)?(?:T(?=-?\d)(?:(?<hourUnit>-?\d+(?:\.\d+(?=H$))?)H)?(?:(?<minuteUnit>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<secondUnit>-?\d+(?:\.\d+(?=S$))?)S)?)?|(?<weekUnit>-?\d+(?:\.\d+)?)W|(?<yearDT>\d{4})(?<dateDelimiter>-?)(?<monthDT>[0]\d|1[0-2])\k<dateDelimiter>(?<dayDT>\d{2})T(?<hourDT>[01]\d|2[0-3])(?<timeDelimiter>(?:(?<=-\w+?):)|(?<=^-?\w+))(?<minuteDT>[0-5]\d)\k<timeDelimiter>(?<secondDT>[0-5]\d(?:\.\d+)?))$/;
 
 // Normalized components per https://neo4j.com/docs/cypher-manual/current/syntax/operators/#cypher-ordering
 export const MONTHS_PER_YEAR = 12;
@@ -110,7 +111,7 @@ export const parseDuration = (value: string) => {
     };
 };
 
-const parse = (value: any) => {
+const parse = (value: string) => {
     const { months, days, seconds, nanoseconds } = parseDuration(value);
 
     return new neo4j.types.Duration(months, days, seconds, nanoseconds);
@@ -119,7 +120,7 @@ const parse = (value: any) => {
 export default new GraphQLScalarType({
     name: "Duration",
     description: "A duration, represented as an ISO 8601 duration string",
-    serialize: (value: any) => {
+    serialize: (value: unknown) => {
         if (!(typeof value === "string" || value instanceof neo4j.types.Duration)) {
             throw new TypeError(`Value must be of type string: ${value}`);
         }
@@ -134,14 +135,14 @@ export default new GraphQLScalarType({
 
         return value;
     },
-    parseValue: (value) => {
+    parseValue: (value: unknown) => {
         if (typeof value !== "string") {
             throw new GraphQLError(`Only strings can be validated as Duration, but received: ${value}`);
         }
 
         return parse(value);
     },
-    parseLiteral: (ast) => {
+    parseLiteral: (ast: ValueNode) => {
         if (ast.kind !== Kind.STRING) {
             throw new GraphQLError(`Only strings can be validated as Duration, but received: ${ast.kind}`);
         }

@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@readonly directive", () => {
-    test("makes a field readonly", () => {
+    test("makes a field readonly", async () => {
         const typeDefs = gql`
             type User {
                 id: ID! @readonly
@@ -31,7 +31,7 @@ describe("@readonly directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -70,7 +70,6 @@ describe("@readonly directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersCount(where: UserWhere): Int!
             }
 
             enum SortDirection {
@@ -117,11 +116,15 @@ describe("@readonly directive", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [UserSort]
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
             }
 
-            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
             input UserSort {
               id: SortDirection
               username: SortDirection
@@ -137,29 +140,28 @@ describe("@readonly directive", () => {
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_IN: [ID]
+              id_IN: [ID!]
               id_NOT: ID
               id_NOT_CONTAINS: ID
               id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
+              id_NOT_IN: [ID!]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
-              username_IN: [String]
+              username_IN: [String!]
               username_NOT: String
               username_NOT_CONTAINS: String
               username_NOT_ENDS_WITH: String
-              username_NOT_IN: [String]
+              username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
-            }
-            "
+            }"
         `);
     });
 
-    test("makes an inherited field readonly", () => {
+    test("makes an inherited field readonly", async () => {
         const typeDefs = gql`
             interface UserInterface {
                 id: ID! @readonly
@@ -172,7 +174,7 @@ describe("@readonly directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -211,7 +213,6 @@ describe("@readonly directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersCount(where: UserWhere): Int!
             }
 
             enum SortDirection {
@@ -263,11 +264,15 @@ describe("@readonly directive", () => {
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [UserSort]
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
             }
 
-            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
             input UserSort {
               id: SortDirection
               username: SortDirection
@@ -283,25 +288,24 @@ describe("@readonly directive", () => {
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_IN: [ID]
+              id_IN: [ID!]
               id_NOT: ID
               id_NOT_CONTAINS: ID
               id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
+              id_NOT_IN: [ID!]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
-              username_IN: [String]
+              username_IN: [String!]
               username_NOT: String
               username_NOT_CONTAINS: String
               username_NOT_ENDS_WITH: String
-              username_NOT_IN: [String]
+              username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
-            }
-            "
+            }"
         `);
     });
 });

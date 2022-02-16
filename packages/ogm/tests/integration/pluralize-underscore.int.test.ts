@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Driver, Session } from "neo4j-driver";
 import gql from "graphql-tag";
 import { generate } from "randomstring";
@@ -37,6 +56,8 @@ describe("pluralize with underscore", () => {
         const ogm = new OGM({ typeDefs, driver });
         const Task = ogm.model(taskType.name);
 
+        await ogm.init();
+
         const testString = generate({
             charset: "alphabetic",
         });
@@ -59,6 +80,8 @@ describe("pluralize with underscore", () => {
         const ogm = new OGM({ typeDefs, driver });
         const Task = ogm.model(taskType.name);
 
+        await ogm.init();
+
         const testString = generate({
             charset: "alphabetic",
         });
@@ -69,21 +92,5 @@ describe("pluralize with underscore", () => {
 
         const result = await Task.find({ where: { string: testString } });
         expect(result).toEqual([{ string: testString }]);
-    });
-
-    test("counts super_task", async () => {
-        const ogm = new OGM({ typeDefs, driver });
-        const Task = ogm.model(taskType.name);
-
-        const testString = generate({
-            charset: "alphabetic",
-        });
-
-        await session.run(`
-                    CREATE (:${taskType.name} {string: "${testString}"})
-                `);
-
-        const result = await Task.count({ where: { string: testString } });
-        expect(result).toBe(1);
     });
 });

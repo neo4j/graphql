@@ -42,10 +42,10 @@ describe("aggregations-where-node-datetime", () => {
                 testString: String!
                 someDateTime: DateTime!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -79,7 +79,7 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -109,10 +109,10 @@ describe("aggregations-where-node-datetime", () => {
                 testString: String!
                 someDateTime: DateTime!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -148,7 +148,7 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -178,10 +178,10 @@ describe("aggregations-where-node-datetime", () => {
                 testString: String!
                 someDateTime: DateTime!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -215,7 +215,7 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -245,10 +245,10 @@ describe("aggregations-where-node-datetime", () => {
                 testString: String!
                 someDateTime: DateTime!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -284,7 +284,7 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -314,10 +314,10 @@ describe("aggregations-where-node-datetime", () => {
                 testString: String!
                 someDateTime: DateTime!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -351,7 +351,7 @@ describe("aggregations-where-node-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });

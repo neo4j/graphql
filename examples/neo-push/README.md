@@ -19,8 +19,8 @@ type User {
     id: ID! @id
     email: String!
     password: String!
-    createdBlogs: [Blog] @relationship(type: "HAS_BLOG", direction: OUT)
-    authorsBlogs: [Blog] @relationship(type: "CAN_POST", direction: OUT)
+    createdBlogs: [Blog!]! @relationship(type: "HAS_BLOG", direction: OUT)
+    authorsBlogs: [Blog!]! @relationship(type: "CAN_POST", direction: OUT)
     password: String! @private
     createdAt: DateTime @timestamp(operations: [CREATE])
     updatedAt: DateTime @timestamp(operations: [UPDATE])
@@ -29,9 +29,9 @@ type User {
 type Blog {
     id: ID! @id
     name: String!
-    creator: User @relationship(type: "HAS_BLOG", direction: IN)
-    authors: [User] @relationship(type: "CAN_POST", direction: IN)
-    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+    creator: User! @relationship(type: "HAS_BLOG", direction: IN)
+    authors: [User!]! @relationship(type: "CAN_POST", direction: IN)
+    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
     createdAt: DateTime @timestamp(operations: [CREATE])
     updatedAt: DateTime @timestamp(operations: [UPDATE])
 }
@@ -40,18 +40,18 @@ type Post {
     id: ID! @id
     title: String!
     content: String!
-    blog: Blog @relationship(type: "HAS_POST", direction: IN)
-    comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
-    author: User @relationship(type: "WROTE", direction: IN)
+    blog: Blog! @relationship(type: "HAS_POST", direction: IN)
+    comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
+    author: User! @relationship(type: "WROTE", direction: IN)
     createdAt: DateTime @timestamp(operations: [CREATE])
     updatedAt: DateTime @timestamp(operations: [UPDATE])
 }
 
 type Comment {
     id: ID! @id
-    author: User @relationship(type: "COMMENTED", direction: IN)
+    author: User! @relationship(type: "COMMENTED", direction: IN)
     content: String!
-    post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+    post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
     createdAt: DateTime @timestamp(operations: [CREATE])
     updatedAt: DateTime @timestamp(operations: [UPDATE])
 }
@@ -157,11 +157,7 @@ query myBlogs($id: ID, $offset: Int, $limit: Int, $hasNextBlogsoffset: Int) {
     }
     hasNextBlogs: blogs(
         where: { OR: [{ creator: { id: $id } }, { authors: { id: $id } }] }
-        options: {
-            limit: 1
-            offset: $hasNextBlogsoffset
-            sort: { createdAt: DESC }
-        }
+        options: { limit: 1, offset: $hasNextBlogsoffset, sort: { createdAt: DESC } }
     ) {
         id
         createdAt
@@ -185,14 +181,7 @@ From the dashboard you can create a blog.
 
 ```graphql
 mutation($name: String!, $sub: ID) {
-    createBlogs(
-        input: [
-            {
-                name: $name
-                creator: { connect: { where: { node: { id: $sub } } } }
-            }
-        ]
-    ) {
+    createBlogs(input: [{ name: $name, creator: { connect: { where: { node: { id: $sub } } } } }]) {
         blogs {
             id
             name
@@ -226,10 +215,7 @@ If you are the creator of a blog you can assign other users as an author. You ca
 
 ```graphql
 mutation assignBlogAuthor($blog: ID, $authorEmail: String) {
-    updateBlogs(
-        where: { id: $blog }
-        connect: { authors: { where: { node: { email: $authorEmail } } } }
-    ) {
+    updateBlogs(where: { id: $blog }, connect: { authors: { where: { node: { email: $authorEmail } } } }) {
         blogs {
             authors {
                 email
@@ -241,10 +227,7 @@ mutation assignBlogAuthor($blog: ID, $authorEmail: String) {
 
 ```graphql
 mutation revokeBlogAuthor($blog: ID, $authorEmail: String) {
-    updateBlogs(
-        where: { id: $blog }
-        disconnect: { authors: { where: { email: $authorEmail } } }
-    ) {
+    updateBlogs(where: { id: $blog }, disconnect: { authors: { where: { email: $authorEmail } } }) {
         blogs {
             authors {
                 email
@@ -313,10 +296,7 @@ Authors and creators can edit posts belonging to the blog.
 
 ```graphql
 mutation editPost($id: ID, $content: String, $title: String) {
-    updatePosts(
-        where: { id: $id }
-        update: { content: $content, title: $title }
-    ) {
+    updatePosts(where: { id: $id }, update: { content: $content, title: $title }) {
         posts {
             id
         }

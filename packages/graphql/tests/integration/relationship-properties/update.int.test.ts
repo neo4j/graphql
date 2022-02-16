@@ -114,14 +114,14 @@ describe("Relationship properties - update", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.updateMovies?.movies).toEqual([
+            expect((result?.data as any)?.updateMovies?.movies).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -187,14 +187,14 @@ describe("Relationship properties - update", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.updateMovies?.movies).toEqual([
+            expect((result?.data as any)?.updateMovies?.movies).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -259,14 +259,14 @@ describe("Relationship properties - update", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.updateMovies?.movies).toEqual([
+            expect((result?.data as any)?.updateMovies?.movies).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -335,14 +335,14 @@ describe("Relationship properties - update", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.updateMovies?.movies).toEqual([
+            expect((result?.data as any)?.updateMovies?.movies).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {

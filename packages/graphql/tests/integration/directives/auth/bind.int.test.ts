@@ -68,7 +68,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -85,12 +85,12 @@ describe("auth/bind", () => {
             const typeDefs = `
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type Post @auth(rules: [{ operations: [CREATE], bind: { id: "$jwt.sub" } }])
@@ -128,7 +128,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -145,7 +145,7 @@ describe("auth/bind", () => {
             const typeDefs = `
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type User {
@@ -191,7 +191,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -239,7 +239,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -256,12 +256,12 @@ describe("auth/bind", () => {
             const typeDefs = `
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type Post @auth(rules: [{ operations: [UPDATE], bind: { creator: { id: "$jwt.sub" } } }])
@@ -307,7 +307,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -358,7 +358,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -381,7 +381,7 @@ describe("auth/bind", () => {
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 extend type Post @auth(rules: [{ operations: [CONNECT], bind: { creator: { id: "$jwt.sub" } } }])
@@ -422,7 +422,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -445,7 +445,7 @@ describe("auth/bind", () => {
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 extend type Post @auth(rules: [{ operations: [DISCONNECT], bind: { creator: { id: "$jwt.sub" } } }])
@@ -486,7 +486,7 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });

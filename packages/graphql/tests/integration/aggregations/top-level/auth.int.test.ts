@@ -72,7 +72,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -89,12 +89,12 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type User {
                 id: ID
-                posts: [Post] @relationship(type: "POSTED", direction: OUT)
+                posts: [Post!]! @relationship(type: "POSTED", direction: OUT)
             }
 
             type Post {
                 content: String
-                creator: User @relationship(type: "POSTED", direction: IN)
+                creator: User! @relationship(type: "POSTED", direction: IN)
             }
 
             extend type Post @auth(rules: [{ where: { creator: { id: "$jwt.sub" } } }])
@@ -122,7 +122,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -145,7 +145,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingInt: Int @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -183,7 +183,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -200,7 +200,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 someId: ID @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -238,7 +238,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -255,7 +255,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 someString: String @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -293,7 +293,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -310,7 +310,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingFloat: Float @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -348,7 +348,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -365,7 +365,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingBigInt: BigInt @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -403,7 +403,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -420,7 +420,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 createdAt: DateTime @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -458,7 +458,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -475,7 +475,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 screenTime: Duration @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -513,7 +513,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });

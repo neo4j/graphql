@@ -85,7 +85,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -145,7 +145,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -208,7 +208,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -270,7 +270,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -330,7 +330,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -390,7 +390,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -450,7 +450,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -510,7 +510,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -570,7 +570,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -632,7 +632,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -694,7 +694,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -758,7 +758,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -837,7 +837,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -877,7 +877,8 @@ describe("Connections Alias", () => {
             }
         `;
 
-        const { schema } = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
 
         const postTitle = generate({ charset: "alphabetic" });
 
@@ -959,7 +960,8 @@ describe("Connections Alias", () => {
             }
         `;
 
-        const { schema } = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
         const session = driver.session();
 
         const query = `

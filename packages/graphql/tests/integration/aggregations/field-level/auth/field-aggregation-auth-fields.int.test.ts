@@ -36,14 +36,14 @@ describe(`Field Level Auth Where Requests`, () => {
     type ${typeMovie.name} {
         name: String
         year: Int
-        ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN)
+        ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
     }
 
     type ${typeActor.name} {
         name: String @auth(rules: [{ isAuthenticated: true }])
         year: Int
         testId: Int
-        ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT)
+        ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
     }`;
     const secret = "secret";
 
@@ -89,7 +89,7 @@ describe(`Field Level Auth Where Requests`, () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -110,7 +110,7 @@ describe(`Field Level Auth Where Requests`, () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -131,7 +131,7 @@ describe(`Field Level Auth Where Requests`, () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

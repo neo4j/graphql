@@ -68,7 +68,7 @@ describe("update", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, name: updatedName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -129,7 +129,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, name: updatedName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -149,12 +149,12 @@ describe("update", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -202,7 +202,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { updatedMovieId, actorName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -264,7 +264,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id1, id2, name: updatedName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -272,9 +272,9 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.updateMovies.movies as any[]).toHaveLength(2);
+            expect((gqlResult?.data as any)?.updateMovies.movies as any[]).toHaveLength(2);
 
-            (gqlResult?.data?.updateMovies.movies as any[]).forEach((movie) => {
+            ((gqlResult?.data as any)?.updateMovies.movies as any[]).forEach((movie) => {
                 expect([id1, id2]).toContain(movie.id);
                 expect(movie.name).toEqual(updatedName);
             });
@@ -289,12 +289,12 @@ describe("update", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -347,7 +347,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { movieId, updatedName, initialName },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -369,12 +369,12 @@ describe("update", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -384,13 +384,16 @@ describe("update", () => {
             charset: "alphabetic",
         });
 
-        const name = generate({
+        const actorName1 = generate({
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
             charset: "alphabetic",
         });
 
         const mutation = `
-            mutation($id: ID, $name: String) {
-                updateMovies(where: { id: $id }, delete: { actors: { where: { node: { name: $name } } } }) {
+            mutation($id: ID, $actorName1: String) {
+                updateMovies(where: { id: $id }, delete: { actors: { where: { node: { name: $actorName1 } } } }) {
                     movies {
                         id
                         actors {
@@ -405,26 +408,29 @@ describe("update", () => {
             await session.run(
                 `
                 CREATE (m:Movie {id: $id})
-                CREATE (a:Actor {name: $name})
-                MERGE (a)-[:ACTED_IN]->(m)
+                CREATE (a1:Actor {name: $actorName1})
+                CREATE (a2:Actor {name: $actorName2})
+                MERGE (a1)-[:ACTED_IN]->(m)
+                MERGE (a2)-[:ACTED_IN]->(m)
             `,
                 {
                     id,
-                    name,
+                    actorName1,
+                    actorName2,
                 }
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
-                variableValues: { id, name },
+                variableValues: { id, actorName1 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult?.data?.updateMovies).toEqual({
-                movies: [{ id, actors: [] }],
+                movies: [{ id, actors: [{ name: actorName2 }] }],
             });
         } finally {
             await session.close();
@@ -437,12 +443,12 @@ describe("update", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -452,13 +458,16 @@ describe("update", () => {
             charset: "alphabetic",
         });
 
-        const name = generate({
+        const actorName1 = generate({
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
             charset: "alphabetic",
         });
 
         const mutation = `
-            mutation($id: ID, $name: String) {
-                updateMovies(where: { id: $id }, update: { actors: { delete: { where: { node: { name: $name } } } } }) {
+            mutation($id: ID, $actorName1: String) {
+                updateMovies(where: { id: $id }, update: { actors: { delete: { where: { node: { name: $actorName1 } } } } }) {
                     movies {
                         id
                         actors {
@@ -473,26 +482,29 @@ describe("update", () => {
             await session.run(
                 `
                 CREATE (m:Movie {id: $id})
-                CREATE (a:Actor {name: $name})
-                MERGE (a)-[:ACTED_IN]->(m)
+                CREATE (a1:Actor {name: $actorName1})
+                CREATE (a2:Actor {name: $actorName2})
+                MERGE (a1)-[:ACTED_IN]->(m)
+                MERGE (a2)-[:ACTED_IN]->(m)
             `,
                 {
                     id,
-                    name,
+                    actorName1,
+                    actorName2,
                 }
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
-                variableValues: { id, name },
+                variableValues: { id, actorName1 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult?.data?.updateMovies).toEqual({
-                movies: [{ id, actors: [] }],
+                movies: [{ id, actors: [{ name: actorName2 }] }],
             });
         } finally {
             await session.close();
@@ -505,35 +517,39 @@ describe("update", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const id1 = generate({
+        const movieId1 = generate({
             charset: "alphabetic",
         });
 
-        const name = generate({
+        const movieId2 = generate({
             charset: "alphabetic",
         });
 
-        const id2 = generate({
+        const actorName1 = generate({
+            charset: "alphabetic",
+        });
+
+        const actorName2 = generate({
             charset: "alphabetic",
         });
 
         const mutation = `
-            mutation($id1: ID, $name: String, $id2: ID) {
+            mutation($movieId1: ID, $actorName1: String, $movieId2: ID) {
                 updateMovies(
-                    where: { id: $id1 }
+                    where: { id: $movieId1 }
                     update: {
-                        actors: { delete: { where: { node: { name: $name } }, delete: { movies: { where: { node: { id: $id2 } } } } } }
+                        actors: { delete: { where: { node: { name: $actorName1 } }, delete: { movies: { where: { node: { id: $movieId2 } } } } } }
                     }
                 ) {
                     movies {
@@ -549,30 +565,37 @@ describe("update", () => {
         try {
             await session.run(
                 `
-                CREATE (m1:Movie {id: $id1})
-                CREATE (a:Actor {name: $name})
-                CREATE (m2:Movie {id: $id2})
-                MERGE (a)-[:ACTED_IN]->(m1)
-                MERGE (a)-[:ACTED_IN]->(m2)
+                CREATE (m1:Movie {id: $movieId1})
+                CREATE (m2:Movie {id: $movieId2})
+
+                CREATE (a1:Actor {name: $actorName1})
+                CREATE (a2:Actor {name: $actorName2})
+
+                MERGE (a1)-[:ACTED_IN]->(m1)
+                MERGE (a1)-[:ACTED_IN]->(m2)
+
+                MERGE (a2)-[:ACTED_IN]->(m1)
+                MERGE (a2)-[:ACTED_IN]->(m2)
             `,
                 {
-                    id1,
-                    name,
-                    id2,
+                    movieId1,
+                    actorName1,
+                    actorName2,
+                    movieId2,
                 }
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
-                variableValues: { id1, name, id2 },
+                variableValues: { movieId1, actorName1, movieId2 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult?.data?.updateMovies).toEqual({
-                movies: [{ id: id1, actors: [] }],
+                movies: [{ id: movieId1, actors: [{ name: actorName2 }] }],
             });
 
             const movie2 = await session.run(
@@ -580,7 +603,7 @@ describe("update", () => {
               MATCH (m:Movie {id: $id})
               RETURN m
             `,
-                { id: id2 }
+                { id: movieId2 }
             );
 
             expect(movie2.records).toHaveLength(0);
@@ -595,12 +618,12 @@ describe("update", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -658,7 +681,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id, name1, name3 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -680,13 +703,13 @@ describe("update", () => {
         const typeDefs = `
             type Actor {
               name: String
-              movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+              movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
               id: ID
               title: String
-              actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+              actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -737,7 +760,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -759,12 +782,12 @@ describe("update", () => {
         const typeDefs = `
             type Actor {
                 id: ID
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -804,7 +827,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -824,18 +847,18 @@ describe("update", () => {
         const typeDefs = `
             type Actor {
                 id: ID
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
-                series: [Series] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                series: [Series!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Series {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -883,7 +906,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { movieId, seriesId },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -903,12 +926,12 @@ describe("update", () => {
         const typeDefs = `
             type Actor {
                 id: ID
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -918,13 +941,16 @@ describe("update", () => {
             charset: "alphabetic",
         });
 
-        const actorId = generate({
+        const actorId1 = generate({
+            charset: "alphabetic",
+        });
+        const actorId2 = generate({
             charset: "alphabetic",
         });
 
         const query = `
         mutation {
-            updateMovies(where: { id: "${movieId}" }, disconnect: {actors: [{where: { node: { id: "${actorId}"}}}]}) {
+            updateMovies(where: { id: "${movieId}" }, disconnect: {actors: [{where: { node: { id: "${actorId1}"}}}]}) {
                 movies {
                     id
                     actors {
@@ -939,17 +965,20 @@ describe("update", () => {
             await session.run(
                 `
                 CREATE (m:Movie {id: $movieId})
-                CREATE (a:Actor {id: $actorId})
-                MERGE (m)<-[:ACTED_IN]-(a)
+                CREATE (a1:Actor {id: $actorId1})
+                CREATE (a2:Actor {id: $actorId2})
+                MERGE (m)<-[:ACTED_IN]-(a1)
+                MERGE (m)<-[:ACTED_IN]-(a2)
             `,
                 {
                     movieId,
-                    actorId,
+                    actorId1,
+                    actorId2,
                 }
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -957,7 +986,7 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.updateMovies).toEqual({ movies: [{ id: movieId, actors: [] }] });
+            expect(gqlResult?.data?.updateMovies).toEqual({ movies: [{ id: movieId, actors: [{ id: actorId2 }] }] });
         } finally {
             await session.close();
         }
@@ -969,7 +998,7 @@ describe("update", () => {
         const typeDefs = `
             type Product {
                 id: ID
-                photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+                photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
             }
 
             type Color {
@@ -1041,7 +1070,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -1064,7 +1093,7 @@ describe("update", () => {
           type Product {
              id: ID
              name: String
-             photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+             photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
            }
 
 
@@ -1076,7 +1105,7 @@ describe("update", () => {
            type Photo {
              id: ID
              name: String
-             color: Color @relationship(type: "OF_COLOR", direction: OUT)
+             color: Color! @relationship(type: "OF_COLOR", direction: OUT)
            }
         `;
 
@@ -1187,7 +1216,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -1195,9 +1224,9 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.updateProducts.products as any[]).toHaveLength(1);
+            expect((gqlResult?.data as any)?.updateProducts.products as any[]).toHaveLength(1);
 
-            const { photos } = (gqlResult?.data?.updateProducts.products as any[])[0];
+            const { photos } = ((gqlResult?.data as any)?.updateProducts.products as any[])[0];
 
             const greenPhoto = photos.find((x) => x.id === photo0Id);
 
@@ -1226,7 +1255,7 @@ describe("update", () => {
           type Product {
              id: ID
              name: String
-             photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+             photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
            }
 
 
@@ -1238,7 +1267,7 @@ describe("update", () => {
            type Photo {
              id: ID
              name: String
-             color: Color @relationship(type: "OF_COLOR", direction: OUT)
+             color: Color! @relationship(type: "OF_COLOR", direction: OUT)
            }
         `;
 
@@ -1305,7 +1334,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -1313,7 +1342,7 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult?.data?.updateProducts.products as any[])[0]).toMatchObject({
+            expect(((gqlResult?.data as any)?.updateProducts.products as any[])[0]).toMatchObject({
                 id: productId,
                 photos: [{ id: photoId, name: "Green Photo", color: { id: colorId, name: "Green" } }],
             });
@@ -1329,7 +1358,7 @@ describe("update", () => {
           type Product {
              id: ID
              name: String
-             photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+             photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
            }
 
 
@@ -1341,7 +1370,7 @@ describe("update", () => {
            type Photo {
              id: ID
              name: String
-             color: Color @relationship(type: "OF_COLOR", direction: OUT)
+             color: Color! @relationship(type: "OF_COLOR", direction: OUT)
            }
         `;
 
@@ -1406,7 +1435,7 @@ describe("update", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -1414,7 +1443,7 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult?.data?.updateProducts.products as any[])[0]).toMatchObject({
+            expect(((gqlResult?.data as any)?.updateProducts.products as any[])[0]).toMatchObject({
                 id: productId,
                 photos: [{ id: photoId, name: "Green Photo", color: { id: colorId, name: "Green" } }],
             });

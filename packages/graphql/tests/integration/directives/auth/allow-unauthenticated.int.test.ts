@@ -80,7 +80,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -88,7 +88,7 @@ describe("auth/allow-unauthenticated", () => {
             expect(gqlResult.errors).toBeUndefined();
 
             // Check if returned data is what we really want
-            expect(gqlResult.data?.posts?.[0]?.id).toBe(postId);
+            expect((gqlResult.data as any)?.posts?.[0]?.id).toBe(postId);
         });
 
         test("should throw a Forbidden error", async () => {
@@ -130,7 +130,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -183,7 +183,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -236,7 +236,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -244,7 +244,7 @@ describe("auth/allow-unauthenticated", () => {
             expect(gqlResult.errors).toBeUndefined();
 
             // Check if returned data is what we really want
-            expect(gqlResult.data?.posts?.[0]?.id).toBe(postId);
+            expect((gqlResult.data as any)?.posts?.[0]?.id).toBe(postId);
         });
 
         test("should return an empty array without errors", async () => {
@@ -286,7 +286,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -338,7 +338,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -383,7 +383,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
