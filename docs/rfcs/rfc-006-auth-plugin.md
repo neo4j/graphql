@@ -27,23 +27,65 @@ Extract the current auth decoding functionally into a new package `@neo4j/graphq
 
 ### Versioning
 
-The new package can be versioned independently from `@neo4j/graphql`, however, **note that `@neo4j/graphql` will be a dependency of `@neo4j/graphql-plugin-auth`.**
-
-### Abstract Class
-
-The current `@neo4j/graphql` library should expose an `abstract` `Neo4jGraphQLAuthPlugin` class where it can be extended to implement custom functionally and type-checked when provided.
-
-```ts
-abstract class Neo4jGraphQLAuth {
-    secret: string;
-
-    decode<T = Record<string, unknown>>(jwt: string): Promise<T>;
-}
-```
+The new package can be versioned independently from `@neo4j/graphql`.
 
 ### Neo4j GraphQL Constructor
 
-When constructing the `Neo4jGraphQL` users should specify the property 'plugins' and when inside they can set the ‘auth’ property. The auth property must be an instance of `Neo4jGraphQLAuthPlugin`:
+When constructing the `Neo4jGraphQL` users should specify the property 'plugins' and when inside they can set the ‘auth’ property. The auth property must meet the interface:
+
+```ts
+interface Neo4jGraphQLAuthPlugin {
+    rolesPath?: string;
+
+    decode<T>(token: string | any): Promise<T | undefined>;
+}
+```
+
+Users are already using the existing JWT decode functionally and it has proven to work so, instead of forcing upgrading users to write their own JWT functionally, let's expose our own `Neo4jGraphQLAuthJWTPlugin` plugin. The ‘core’ `Neo4jGraphQLAuthJWTPlugin` plugin should be exported from the new library `@neo4j/graphql-plugin-auth`:
+
+```js
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
+
+const typeDefs = `
+    type User @auth(rules: [{ isAuthenticated: true }]) {
+      id: ID!
+      username: String!
+    }
+`;
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({ secret: "super-secret" }),
+    },
+});
+```
+
+If you want to use JWKS then use the `Neo4jGraphQLAuthJWKSPlugin`:
+
+```js
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
+
+const typeDefs = `
+    type User @auth(rules: [{ isAuthenticated: true }]) {
+      id: ID!
+      username: String!
+    }
+`;
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWKSPlugin({ jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json"; }),
+    },
+});
+```
+
+Below is an example of creating your own auth plugin:
 
 ```js
 import { Neo4jGraphQL, Neo4jGraphQLAuthPlugin } from "@neo4j/graphql";
@@ -56,38 +98,20 @@ const typeDefs = `
 `;
 
 class CustomAuthPlugin extends Neo4jGraphQLAuthPlugin {
-    async decodeJWT() {}
+    private secret: string;
+
+    constructor(s) {
+        secret = s;
+    }
+
+    async decode() {}
 }
 
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
     plugins: {
-        auth: new CustomAuthPlugin(),
-    },
-});
-```
-
-### Core Plugins
-
-Users are already using the existing JWT decode functionally and it has proven to work so, instead of forcing upgrading users to write their own JWT functionally, let's expose our own `Auth` plugin that extends the `Neo4jGraphQLAuthPlugin`. The ‘core’ `Auth` plugin should be exported from the new library `@neo4j/graphql-plugin-auth`:
-
-```js
-import { Neo4jGraphQL } from "@neo4j/graphql";
-import { Auth } from "@neo4j/graphql-plugin-auth";
-
-const typeDefs = `
-    type User @auth(rules: [{ isAuthenticated: true }]) {
-      id: ID!
-      username: String!
-    }
-`;
-
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    driver,
-    plugins: {
-        auth: new Auth({ secret: "super-secret" }),
+        auth: new CustomAuthPlugin("secret"),
     },
 });
 ```
