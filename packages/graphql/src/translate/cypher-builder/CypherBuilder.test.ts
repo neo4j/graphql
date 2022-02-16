@@ -21,21 +21,15 @@ import * as CypherBuilder from "./CypherBuilder";
 
 describe("CypherBuilder", () => {
     test("simple relation", () => {
-        const movieNode = new CypherBuilder.Node({ alias: "this0", labels: ["Movie"] });
-        const idParam = new CypherBuilder.Param("this2");
+        const idParam = new CypherBuilder.Param();
+        const movieNode = new CypherBuilder.Node({
+            labels: ["Movie"],
+            parameters: { test: new CypherBuilder.Param(), id: idParam },
+        });
 
         const subQuery = new CypherBuilder.Query().create(movieNode, { id: idParam }).return(movieNode);
-        // const query = new CypherBuilder.Query().call(subQuery).return(movieNode, ["id"], "this0");
+        const query = new CypherBuilder.Query().call(subQuery).return(movieNode, ["id"], "myalias");
 
         console.log(query.getCypher());
-        //         expect(query.getCypher()).toMatchInlineSnapshot(`
-        //     CALL {
-        //         CREATE (this0:Movie)
-        //             SET this0.id = $this0_id
-        //         RETURN this0
-        //     }
-        //     RETURN this0 { .id } AS this0
-        // `)
-        //         expect(query.getParams()).toMatchInlineSnapshot()
     });
 });

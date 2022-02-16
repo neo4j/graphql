@@ -1,29 +1,37 @@
-import { CypherParams } from "../types";
+import { stringifyObject } from "../utils/stringify-object";
 import { CypherContext, CypherReference } from "./cypher-builder-types";
-import { escapeLabel, padLeft, serializeParameters } from "./utils";
+import { escapeLabel, padLeft } from "./utils";
 
 type NodeInput = {
-    alias?: string;
     labels?: Array<string>;
+    parameters?: Record<string, Param>;
 };
 
-export class Node implements CypherReference {
-    public readonly alias?: string; // TODO: automatic alias
+export class Node extends CypherReference {
+    public readonly prefix = "this";
     private labels: Array<string>;
-    private parameters?: Record<string, any>; // TODO: unused for now
+    private parameters: Record<string, Param>;
 
     constructor(input: NodeInput) {
-        this.alias = input.alias;
+        super();
         this.labels = input.labels || [];
-        if (!this.alias && this.labels.length === 0) throw new Error("Invalid Cypher Node");
+        this.parameters = input.parameters || {};
     }
 
-    // use alias if context is not provided?
     public getCypher(context: CypherContext) {
-        const referenceId = context.getReferenceId(this); // referenceId should be alias (if provided)
-        const [parametersQuery, _] = this.parseNodeParameters(referenceId, this.parameters);
+        const referenceId = context.getReferenceId(this);
+        let parametersStr = "";
+        if (this.hasParameters()) {
+            const parameters = this.serializeParameters(context);
+            parametersStr = padLeft(parameters);
+        }
+        // const [parametersQuery, _] = this.parseNodeParameters(referenceId, this.parameters);
 
-        return `(${referenceId || ""}${this.getLabelsString()}${padLeft(parametersQuery)})`;
+        return `(${referenceId || ""}${this.getLabelsString()}${parametersStr})`;
+    }
+
+    private hasParameters(): boolean {
+        return Object.keys(this.parameters).length > 0;
     }
 
     // public getParams(): NestedRecord<string> {
@@ -38,12 +46,36 @@ export class Node implements CypherReference {
         return `:${escapedLabels.join(":")}`;
     }
 
-    private parseNodeParameters(nodeVar: string, parameters: CypherParams | undefined) {
-        if (!nodeVar && parameters) throw new Error("noveVar not defined with parameters");
-        return serializeParameters(nodeVar, parameters);
+    // private parseNodeParameters(nodeVar: string, parameters: CypherParams | undefined) {
+    //     if (!nodeVar && parameters) throw new Error("noveVar not defined with parameters");
+    //     return this.serializeParameters(parameters, context);
+    // }
+
+    private serializeParameters(context: CypherContext): string {
+        // if (!parameters) return ["", {}];
+        //
+        // const cypherParameters: CypherParams = {};
+        // const nodeParameters: Record<string, string> = {};
+        //
+        // for (const [key, value] of Object.entries(parameters)) {
+        //     const paramKey = generateParameterKey(keyprefix, key);
+        //     cypherParameters[paramKey] = value;
+        //     nodeParameters[key] = `$${paramKey}`;
+        // }
+
+        const paramValues = Object.entries(this.parameters).reduce((acc, [key, param]) => {
+            acc[key] = param.getCypher(context);
+            return acc;
+        }, {} as Record<string, string>);
+
+        return stringifyObject(paramValues);
     }
 }
 
-export class Param {
-    constructor(public id: string) {}
+export class Param extends CypherReference {
+    public readonly prefix = "param";
+
+    getCypher(context: CypherContext): string {
+        return `$${context.getReferenceId(this)}`;
+    }
 }

@@ -19,103 +19,81 @@
 
 import { NestedRecord } from "src/types";
 import { Node, Param } from "./cypher-builder-references";
-import { CypherASTNode, CypherASTRoot } from "./cypher-builder-types";
+import { CypherASTNode, CypherASTRoot, CypherContext } from "./cypher-builder-types";
 
 export { Node, Param } from "./cypher-builder-references";
-
-// abstract class CypherASTNode implements CypherStatement {
-//     protected parent?: CypherASTNode;
-//     protected children: Array<CypherASTNode> = [];
-//
-//     protected addStatement<C extends CypherASTNode>(astNode: C): C {
-//         this.children.push(astNode);
-//         astNode.parent = this;
-//         return astNode;
-//     }
-//
-//     public abstract getCypher(): string;
-//     // Recursively composes the AST tree for cypher
-//     // public getCypher(): string {
-//     //     const root = this.getRoot();
-//     //     return root.getCypher();
-//     // }
-//
-//     protected getRoot(): CypherASTNode {
-//         if (this.parent) return this.parent.getRoot();
-//         else return this;
-//     }
-//
-//     public composeCypher(unionStr = "\n"): string {
-//         return this.children.map((c) => c.composeCypher()).join(unionStr);
-//     }
-//
-//     public abstract getParams(): NestedRecord<string>;
-// }
 
 type Params = Record<string, string | Param>;
 
 export class Query extends CypherASTRoot {
-    // protected children: Array<CreateStatement | CypherASTNode> = [];
-
     public create(node: Node, params: Params): CreateStatement {
-        return this.addStatement(new CreateStatement(node, params));
+        const createStatement = new CreateStatement(this, node, params);
+        return this.addStatement(createStatement);
     }
 
-    // public call(query: ReturnStatement) {
-    //     this.addStatement(new CallStatement(query));
-    //     return this;
-    // }
+    public call(query: CypherASTRoot) {
+        this.addStatement(new CallStatement(this, query));
+        return this;
+    }
 
     public return(...args: ReturnStatementArgs) {
-        this.addStatement(new ReturnStatement(args));
-        return this;
+        const returnStatement = new ReturnStatement(this, args);
+        this.addStatement(returnStatement);
+        return this.getRoot();
     }
 
     public getParams(): NestedRecord<string> {
         throw new Error("Method not implemented.");
     }
 }
-//
-// class CallStatement extends CypherASTNode {
-//     private query: CypherASTNode;
-//     constructor(query: CypherASTNode) {
-//         super();
-//         this.query = query;
-//     }
-//
-//     public composeCypher(): string {
-//         return `CALL { ${this.query.getCypher()} }`;
-//     }
-//     public getParams(): NestedRecord<string> {
-//         throw new Error("Method not implemented.");
-//     }
-// }
-//
-class CreateStatement extends CypherASTNode {
-    protected children: Array<ReturnStatement> = [];
-    constructor(private node: Node, private params: Params) {
-        super();
+
+class CallStatement extends CypherASTNode {
+    private query: CypherASTRoot;
+
+    constructor(parent: CypherASTRoot, query: CypherASTRoot) {
+        super(parent);
+        this.query = query;
+    }
+
+    public getCypher(): string {
+        return `CALL { ${this.query.getCypher()} }`;
     }
 
     public getParams(): NestedRecord<string> {
         throw new Error("Method not implemented.");
     }
-    public composeCypher(): string {
-        // TODO: throw if return not last
-        return `CREATE ${this.node.getCypher()}\n${this.composeSet()}\n${super.composeCypher("\n")}`;
+}
+
+class CreateStatement extends CypherASTNode {
+    protected children: Array<ReturnStatement> = [];
+
+    constructor(parent: CypherASTRoot, private node: Node, private params: Params) {
+        super(parent);
     }
 
-    private composeSet(): string {
-        const nodeAlias = this.node.alias!;
+    public getParams(): NestedRecord<string> {
+        throw new Error("Method not implemented.");
+    }
+
+    public getCypher(context: CypherContext): string {
+        const nodeCypher = this.node.getCypher(context);
+
+        return `CREATE ${nodeCypher}\n${this.composeSet(context)}\n${super.getCypher(context)}`;
+    }
+
+    private composeSet(context: CypherContext): string {
+        const nodeAlias = context.getReferenceId(this.node);
         const params = Object.entries(this.params).map(([key, value]) => {
-            return `${nodeAlias}.${key} = ${value instanceof Param ? value.id : value}`;
+            return `${nodeAlias}.${key} = ${value instanceof Param ? value.getCypher(context) : value}`;
         });
         if (params.length === 0) return "";
         else return `SET ${params.join(",\n")}`;
     }
 
     public return(...args: ReturnStatementArgs) {
-        return this.addStatement(new ReturnStatement(args));
+        const returnStatement = new ReturnStatement(this, args);
+        this.addStatement(returnStatement);
+        return this.getRoot();
     }
 }
 
@@ -124,15 +102,15 @@ type ReturnStatementArgs = [Node, Array<string>?, string?];
 class ReturnStatement extends CypherASTNode {
     private returnArgs: ReturnStatementArgs;
 
-    constructor(args: ReturnStatementArgs) {
-        super();
+    constructor(parent: CypherASTNode | CypherASTRoot, args: ReturnStatementArgs) {
+        super(parent);
         this.returnArgs = args;
     }
 
     public getParams(): NestedRecord<string> {
         throw new Error("Method not implemented.");
     }
-    public composeCypher(): string {
+    public getCypher(context: CypherContext): string {
         let projection = "";
         let alias = "";
         if ((this.returnArgs[1] || []).length > 0) {
@@ -142,6 +120,8 @@ class ReturnStatement extends CypherASTNode {
         if ((this.returnArgs[2] || []).length > 0) {
             alias = ` AS ${this.returnArgs[2]}`;
         }
-        return `RETURN ${this.returnArgs[0].alias}${projection}${alias}`;
+        const nodeAlias = context.getReferenceId(this.returnArgs[0]);
+
+        return `RETURN ${nodeAlias}${projection}${alias}`;
     }
 }
