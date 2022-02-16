@@ -40,7 +40,7 @@ export function getToken(context: Context): string | undefined {
         return token;
     }
 
-    const authorization = (req.headers.authorization || req.headers.Authorization || req.cookies?.token) as string;
+    const authorization = (req.headers.authorization || req.headers.Authorization || req.cookies?.token) as string | undefined;
     if (!authorization) {
         debug("Could not get .authorization, .Authorization or .cookies.token from req");
 
