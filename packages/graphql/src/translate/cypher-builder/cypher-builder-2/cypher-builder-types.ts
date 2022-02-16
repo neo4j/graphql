@@ -1,3 +1,8 @@
+type CypherResult = {
+    cypher: string;
+    params: Record<string, string>;
+};
+
 export abstract class CypherASTElement {
     protected children: Array<CypherASTNode> = [];
 }
@@ -12,14 +17,21 @@ export abstract class CypherASTRoot extends CypherASTElement {
         return this;
     }
 
-    public getCypher(separator = "\n"): string {
+    public build(): CypherResult {
         const context = this.getContext();
+        const cypher = this.getCypher(context);
+        return {
+            cypher: cypher,
+            params: context.getParams(),
+        };
+    }
+
+    public getCypher(context: CypherContext, separator = "\n"): string {
         const result = this.children
             .map((value) => {
                 return value.getCypher(context);
             })
             .join(separator);
-        console.log(context);
         return result;
     }
 
@@ -60,10 +72,6 @@ export abstract class CypherReference {
     public abstract getCypher(context: CypherContext): string;
 }
 
-export function isReference(elem: unknown): elem is CypherReference {
-    return elem instanceof CypherReference;
-}
-
 export class CypherContext {
     private references: Map<CypherReference, string> = new Map();
 
@@ -73,6 +81,10 @@ export class CypherContext {
             return this.addReference(reference);
         }
         return id;
+    }
+
+    public getParams(): Record<string, string> {
+        return {};
     }
 
     private addReference(reference: CypherReference): string {

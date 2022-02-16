@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { NestedRecord } from "src/types";
 import { Node, Param } from "./cypher-builder-references";
 import { CypherASTNode, CypherASTRoot, CypherContext } from "./cypher-builder-types";
 
@@ -26,12 +25,13 @@ export { Node, Param } from "./cypher-builder-references";
 type Params = Record<string, string | Param>;
 
 export class Query extends CypherASTRoot {
-    public create(node: Node, params: Params): CreateStatement {
+    public create(node: Node, params: Params): Query {
         const createStatement = new CreateStatement(this, node, params);
-        return this.addStatement(createStatement);
+        this.addStatement(createStatement);
+        return this;
     }
 
-    public call(query: CypherASTRoot) {
+    public call(query: CypherASTRoot): Query {
         this.addStatement(new CallStatement(this, query));
         return this;
     }
@@ -40,10 +40,6 @@ export class Query extends CypherASTRoot {
         const returnStatement = new ReturnStatement(this, args);
         this.addStatement(returnStatement);
         return this.getRoot();
-    }
-
-    public getParams(): NestedRecord<string> {
-        throw new Error("Method not implemented.");
     }
 }
 
@@ -55,30 +51,20 @@ class CallStatement extends CypherASTNode {
         this.query = query;
     }
 
-    public getCypher(): string {
-        return `CALL { ${this.query.getCypher()} }`;
-    }
-
-    public getParams(): NestedRecord<string> {
-        throw new Error("Method not implemented.");
+    public getCypher(context: CypherContext): string {
+        return `CALL { ${this.query.getCypher(context)} }`;
     }
 }
 
 class CreateStatement extends CypherASTNode {
-    protected children: Array<ReturnStatement> = [];
-
     constructor(parent: CypherASTRoot, private node: Node, private params: Params) {
         super(parent);
-    }
-
-    public getParams(): NestedRecord<string> {
-        throw new Error("Method not implemented.");
     }
 
     public getCypher(context: CypherContext): string {
         const nodeCypher = this.node.getCypher(context);
 
-        return `CREATE ${nodeCypher}\n${this.composeSet(context)}\n${super.getCypher(context)}`;
+        return `CREATE ${nodeCypher}\n${this.composeSet(context)}`;
     }
 
     private composeSet(context: CypherContext): string {
@@ -88,12 +74,6 @@ class CreateStatement extends CypherASTNode {
         });
         if (params.length === 0) return "";
         else return `SET ${params.join(",\n")}`;
-    }
-
-    public return(...args: ReturnStatementArgs) {
-        const returnStatement = new ReturnStatement(this, args);
-        this.addStatement(returnStatement);
-        return this.getRoot();
     }
 }
 
@@ -107,14 +87,11 @@ class ReturnStatement extends CypherASTNode {
         this.returnArgs = args;
     }
 
-    public getParams(): NestedRecord<string> {
-        throw new Error("Method not implemented.");
-    }
     public getCypher(context: CypherContext): string {
         let projection = "";
         let alias = "";
         if ((this.returnArgs[1] || []).length > 0) {
-            projection = ` {${(this.returnArgs[1] as Array<string>).map((s) => `"${s}"`).join(", ")}}`;
+            projection = ` {${(this.returnArgs[1] as Array<string>).map((s) => `.${s}`).join(", ")}}`;
         }
 
         if ((this.returnArgs[2] || []).length > 0) {

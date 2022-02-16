@@ -1,6 +1,6 @@
-import { stringifyObject } from "../utils/stringify-object";
+import { stringifyObject } from "../../utils/stringify-object";
 import { CypherContext, CypherReference } from "./cypher-builder-types";
-import { escapeLabel, padLeft } from "./utils";
+import { escapeLabel, padLeft } from "../utils";
 
 type NodeInput = {
     labels?: Array<string>;

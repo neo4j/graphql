@@ -20,7 +20,7 @@
 import * as CypherBuilder from "./CypherBuilder";
 
 describe("CypherBuilder", () => {
-    test("simple relation", () => {
+    test("Call with create", () => {
         const idParam = new CypherBuilder.Param();
         const movieNode = new CypherBuilder.Node({
             labels: ["Movie"],
@@ -30,6 +30,14 @@ describe("CypherBuilder", () => {
         const subQuery = new CypherBuilder.Query().create(movieNode, { id: idParam }).return(movieNode);
         const query = new CypherBuilder.Query().call(subQuery).return(movieNode, ["id"], "myalias");
 
-        console.log(query.getCypher());
+        const queryResult = query.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+"CALL { CREATE (this0:\`Movie\` { test: $param1, id: $param2 })
+SET this0.id = $param2
+RETURN this0 }
+RETURN this0 {.id} AS myalias"
+`);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
 });
