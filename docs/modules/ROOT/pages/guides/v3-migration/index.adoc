@@ -120,28 +120,48 @@ To better reflect its intended usage, the `@ignore` directive is now named `@com
 rename this directive in your schema.
 
 == Auth plugin system
-NOTE: This section is still a work in progress.
+Auth setup now relies on _plugins_ to setup the configuration. You'll need to install `@neo4j/graphql-plugin-auth` or a custom plugin
+as shown in the xref::auth/setup.adoc[auth setup page].
 
-=== jwks Endpoint
-
-https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets[JSON Web Key Sets] support through `jwksEndpoint` option is no longer
-provided directly by `@neo4j/graphql`.
-
-This feature is now available as a plugin `@neo4j/graphql-plugin-auth` that can be installed if needed:
-
-[source, JavaScript, indent=0]
+=== JWT auth
+For JWT authorization, just pass the configuration through the `Neo4jGraphQLAuthJWTPlugin` plugin
+[source, javascript, indent=0]
 ----
-const { JWTPlugin } = require("@neo4j/graphql-plugin-auth");
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 const neoSchema = new Neo4jGraphQL({
-     typeDefs,
-     plugins: {
-         auth: new JWTPlugin({
-             secret: "secret",
-         }),
-     },
- });
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({
+            secret: "super-secret"
+        })
+    }
+});
 ----
+
+
+=== JWKS decoding
+
+https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets[JSON Web Key Sets] support through `Neo4jGraphQLAuthJWKSPlugin`.
+
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
+            jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
+        })
+    }
+});
+----
+
+NOTE: Please, refer to xref::auth/setup.adoc[auth setup] before setting up auth.
 
 == Types plurals changes
 To improve consistency, some automatically generated plurals (e.g. `createActors`) have changed. This may cause issues if
