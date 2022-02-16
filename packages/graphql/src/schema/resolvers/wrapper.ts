@@ -19,13 +19,11 @@
 
 import Debug from "debug";
 import { GraphQLResolveInfo, GraphQLSchema, print } from "graphql";
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { JwtPayload } from "jsonwebtoken";
 import { Driver } from "neo4j-driver";
 import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import { Context, Neo4jGraphQLPlugins } from "../../types";
+import { Context, Neo4jGraphQLPlugins, JwtPayload } from "../../types";
 import { getToken } from "../../utils/get-token";
 
 const debug = Debug(DEBUG_GRAPHQL);
