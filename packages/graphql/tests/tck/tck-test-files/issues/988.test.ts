@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                                             current: true,
                                         },
                                         node: {
-                                            name: "Chrysler Corp.",
+                                            name: "C",
                                         },
                                     },
                                 },
@@ -110,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                                             current: false,
                                         },
                                         node: {
-                                            name: "Aston Martin Lagonda Global Holdings plc",
+                                            name: "AM",
                                         },
                                     },
                                 },
@@ -161,7 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                                 \\"current\\": true
                             },
                             \\"node\\": {
-                                \\"name\\": \\"Chrysler Corp.\\"
+                                \\"name\\": \\"C\\"
                             }
                         }
                     }
@@ -173,7 +173,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                                 \\"current\\": false
                             },
                             \\"node\\": {
-                                \\"name\\": \\"Aston Martin Lagonda Global Holdings plc\\"
+                                \\"name\\": \\"AM\\"
                             }
                         }
                     }
