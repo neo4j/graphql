@@ -20,7 +20,7 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "./neo4j";
+import neo4j, { getSession } from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
 describe("info", () => {
@@ -35,7 +35,7 @@ describe("info", () => {
     });
 
     test("should return info from a create mutation", async () => {
-        const session = driver.session();
+        const session = await getSession();
 
         const typeDefs = `
             type Actor {
@@ -95,7 +95,7 @@ describe("info", () => {
     });
 
     test("should return info from a delete mutation", async () => {
-        const session = driver.session();
+        const session = await getSession();
 
         const typeDefs = `
             type Movie {
@@ -134,7 +134,7 @@ describe("info", () => {
     });
 
     test("should return info from an update mutation", async () => {
-        const session = driver.session();
+        const session = await getSession();
 
         const typeDefs = `
             type Movie {

@@ -24,8 +24,10 @@ let driver: neo4j.Driver;
 
 async function connect(): Promise<neo4j.Driver> {
     if (driver) {
+        console.log("GGGGGGGGGGG");
         return driver;
     }
+    console.log("neo4j file", global.__TEST__);
 
     const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
@@ -38,6 +40,8 @@ async function connect(): Promise<neo4j.Driver> {
     driver = neo4j.driver(NEO_URL, auth);
 
     try {
+        console.log("HEEEEERE");
+        // TODO: use     await driver.verifyConnectivity({ database: "ggggg" });
         await driver.verifyConnectivity();
     } catch (error: any) {
         throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${error.message}`);
@@ -45,5 +49,13 @@ async function connect(): Promise<neo4j.Driver> {
 
     return driver;
 }
+
+export const getSession = async (): Promise<neo4j.Session> => {
+    if (!driver) {
+        await connect();
+    }
+
+    return driver.session({ database: "testnamefest" });
+};
 
 export default connect;
