@@ -208,6 +208,10 @@ function createWhereAndParams({
                     ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
                 ].join(" ");
 
+                const parameterPrefix = recursing
+                    ? `${chainStr || varName}_${context.resolveTree.name}.where.${key}`
+                    : `${varName}_${context.resolveTree.name}.where.${key}`;
+
                 const connectionWhere = createConnectionWhereAndParams({
                     whereInput: entry[1] as any,
                     context,
@@ -215,7 +219,7 @@ function createWhereAndParams({
                     nodeVariable: `${collectedMap}.node`,
                     relationship,
                     relationshipVariable: `${collectedMap}.relationship`,
-                    parameterPrefix: `${varName}_${context.resolveTree.name}.where.${key}`,
+                    parameterPrefix,
                 });
 
                 resultStr += connectionWhere[0];
@@ -225,7 +229,7 @@ function createWhereAndParams({
                 const whereKeySuffix = operator ? `_${operator}` : "";
                 const resolveTreeParams = recursing
                     ? {
-                          [`${varName}_${context.resolveTree.name}`]: {
+                          [`${chainStr || varName}_${context.resolveTree.name}`]: {
                               where: { [`${connectionField.fieldName}${whereKeySuffix}`]: connectionWhere[1] },
                           },
                       }
