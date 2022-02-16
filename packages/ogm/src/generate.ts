@@ -20,14 +20,13 @@
 import { codegen } from "@graphql-codegen/core";
 import * as typescriptPlugin from "@graphql-codegen/typescript";
 import { Types } from "@graphql-codegen/plugin-helpers";
-import { upperFirst, Neo4jGraphQL } from "@neo4j/graphql";
-import camelCase from "camelcase";
-import pluralize from "pluralize";
+import { Neo4jGraphQL } from "@neo4j/graphql";
 import * as fs from "fs";
 import * as graphql from "graphql";
 import prettier from "prettier";
 import { OGM } from "./index";
 import { getReferenceNode } from "./utils";
+import { upperFirst } from "./utils/upper-first";
 
 export interface IGenerateOptions {
     /**
@@ -60,7 +59,7 @@ function createAggregationInput({
 }: {
     basedOnSearch: string;
     typeName: string;
-    aggregateSelections?: any;
+    aggregateSelections?: Record<string, any>;
     input: string;
 }) {
     const interfaceStrs = [`export interface ${typeName} {`];
@@ -74,8 +73,7 @@ function createAggregationInput({
             return;
         }
 
-        if (type.endsWith(`AggregateSelection`)) {
-            // if (type.endsWith(`AggregateSelectionNonNullable`) || type.endsWith(`AggregateSelectionNullable`)) { // TODO: #605 Breaking change, uncomment for 3.0
+        if (type.endsWith(`AggregateSelectionNonNullable`) || type.endsWith(`AggregateSelectionNullable`)) {
             const newTypeName = `${type.replace(`Selection`, "Input")}`;
 
             if (!aggregateSelections[type]) {
@@ -102,15 +100,17 @@ function createAggregationInput({
     return [interfaceStrs.join("\n"), aggregateSelections];
 }
 
-function hasConnectOrCreate(node: any, schema: Neo4jGraphQL): boolean {
+function hasConnectOrCreate(node: any, ogm: OGM): boolean {
     for (const relation of node.relationFields) {
-        const refNode = getReferenceNode(schema, relation);
+        const refNode = getReferenceNode(ogm, relation);
         if (refNode && refNode.uniqueFields.length > 0) return true;
     }
     return false;
 }
 
 async function generate(options: IGenerateOptions): Promise<undefined | string> {
+    await options.ogm.init();
+
     const config: Types.GenerateOptions = {
         config: {},
         plugins: [
@@ -120,7 +120,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
         ],
         filename: options.outFile || "some-random-file-name-thats-not-used",
         documents: [],
-        schema: graphql.parse(graphql.printSchema(options.ogm.neoSchema.schema)),
+        schema: graphql.parse(graphql.printSchema(options.ogm.schema)),
         pluginMap: {
             typescript: typescriptPlugin,
         },
@@ -133,10 +133,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
     const aggregateSelections: any = {};
     const modeMap: Record<string, string> = {};
 
-    options.ogm.neoSchema.nodes.forEach((node) => {
-        const pluralized = pluralize(node.name);
-        const camelName = camelCase(pluralized);
-        const upperCamel = upperFirst(camelName);
+    options.ogm.nodes.forEach((node) => {
         const modelName = `${node.name}Model`;
         const hasFulltextArg = Boolean(node.fulltextDirective);
 
@@ -144,12 +141,12 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
 
         const aggregationInput = createAggregationInput({
             basedOnSearch: `export type ${node.name}AggregateSelection = {`,
-            typeName: `${node.name}AggregateInput`,
+            typeName: `${node.name}AggregateSelectionInput`,
             aggregateSelections,
             input: output,
         });
 
-        const nodeHasConnectOrCreate = hasConnectOrCreate(node, options.ogm.neoSchema);
+        const nodeHasConnectOrCreate = hasConnectOrCreate(node, options.ogm);
         const model = `
             ${Object.values(aggregationInput[1]).join("\n")}
             ${aggregationInput[0]}
@@ -164,17 +161,13 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     context?: any;
                     rootValue?: any;
                 }): Promise<${node.name}[]>
-                public count(args?: {
-                    where?: ${node.name}Where;
-                    ${hasFulltextArg ? `fulltext?: ${node.name}Fulltext;` : ""}
-                }): Promise<number>
                 public create(args: {
                     input: ${node.name}CreateInput[];
                     selectionSet?: string | DocumentNode | SelectionSetNode;
                     args?: any;
                     context?: any;
                     rootValue?: any;
-                }): Promise<Create${upperCamel}MutationResponse>
+                }): Promise<Create${upperFirst(node.plural)}MutationResponse>
                 public update(args: {
                     where?: ${node.name}Where;
                     update?: ${node.name}UpdateInput;
@@ -186,7 +179,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     args?: any;
                     context?: any;
                     rootValue?: any;
-                }): Promise<Update${upperCamel}MutationResponse>
+                }): Promise<Update${upperFirst(node.plural)}MutationResponse>
                 public delete(args: {
                     where?: ${node.name}Where;
                     ${node.relationFields.length ? `delete?: ${node.name}DeleteInput` : ""}
@@ -196,7 +189,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                 public aggregate(args: {
                     where?: ${node.name}Where;
                     ${hasFulltextArg ? `fulltext?: ${node.name}Fulltext;` : ""}
-                    aggregate: ${node.name}AggregateInput;
+                    aggregate: ${node.name}AggregateSelectionInput;
                     context?: any;
                     rootValue?: any;
                 }): Promise<${node.name}AggregateSelection>

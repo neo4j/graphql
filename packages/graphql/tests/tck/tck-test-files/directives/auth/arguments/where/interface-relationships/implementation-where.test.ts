@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../../src";
@@ -33,19 +34,19 @@ describe("Cypher Auth Where", () => {
             interface Content {
                 id: ID
                 content: String
-                creator: User @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             type User {
                 id: ID
                 name: String
-                content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+                content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
 
             type Comment implements Content {
                 id: ID
                 content: String
-                creator: User
+                creator: User!
             }
 
             type Post implements Content
@@ -59,7 +60,7 @@ describe("Cypher Auth Where", () => {
                 ) {
                 id: ID
                 content: String
-                creator: User
+                creator: User!
             }
 
             extend type User
@@ -76,7 +77,12 @@ describe("Cypher Auth Where", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -219,7 +225,7 @@ describe("Cypher Auth Where", () => {
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
             RETURN this { .id, contentConnection } as this"
@@ -274,7 +280,7 @@ describe("Cypher Auth Where", () => {
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
             RETURN this { .id, contentConnection } as this"
@@ -317,6 +323,14 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:Post)
             WHERE EXISTS((this)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)
             SET this.content = $this_update_content
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_creator_User_unique:HAS_CONTENT]-(:User)
+            	WITH count(this_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_creator_User_unique_ignored
+            }
             RETURN this { .id } AS this"
         `);
 
@@ -348,6 +362,14 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:Post)
             WHERE this.content = $this_content AND EXISTS((this)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)
             SET this.content = $this_update_content
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_creator_User_unique:HAS_CONTENT]-(:User)
+            	WITH count(this_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_creator_User_unique_ignored
+            }
             RETURN this { .id } AS this"
         `);
 
@@ -385,6 +407,14 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
             SET this_content0.id = $this_update_content0_id
+            WITH this, this_content0
+            CALL {
+            	WITH this_content0
+            	MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
+            	WITH count(this_content0_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required', [0])
+            	RETURN c AS this_content0_creator_User_unique_ignored
+            }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
             YIELD value as _
@@ -395,6 +425,14 @@ describe("Cypher Auth Where", () => {
             WHERE EXISTS((this_content0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_auth_where0_creator_id)
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
             SET this_content0.id = $this_update_content0_id
+            WITH this, this_content0
+            CALL {
+            	WITH this_content0
+            	MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
+            	WITH count(this_content0_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_content0_creator_User_unique_ignored
+            }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
             YIELD value as _

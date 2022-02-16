@@ -32,7 +32,7 @@ describe("Update resolver", () => {
         const schemaComposer = new SchemaComposer();
 
         const result = updateResolver({ node, schemaComposer });
-        expect(result.type).toEqual("UpdateMoviesMutationResponse!");
+        expect(result.type).toBe("UpdateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
             where: "MovieWhere",

@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
+import { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
+import { mergeDeep } from "@graphql-tools/utils";
 import { Integer } from "neo4j-driver";
 import { ConnectionField, ConnectionSortArg, ConnectionWhereArg, Context } from "../../types";
 import { Node } from "../../classes";
@@ -31,6 +32,10 @@ import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
+import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
+import { CypherStatement } from "../types";
+import { isString } from "../../utils/utils";
+import { generateMissingOrAliasedFields } from "../utils/resolveTree";
 
 function createConnectionAndParams({
     resolveTree,
@@ -44,25 +49,29 @@ function createConnectionAndParams({
     context: Context;
     nodeVariable: string;
     parameterPrefix?: string;
-}): [string, any] {
+}): CypherStatement {
     let globalParams = {};
     let nestedConnectionFieldParams;
 
-    const subquery = ["CALL {", `WITH ${nodeVariable}`];
+    let subquery = ["CALL {", `WITH ${nodeVariable}`];
 
-    const sortInput = resolveTree.args.sort as ConnectionSortArg[];
+    const sortInput = (resolveTree.args.sort ?? []) as ConnectionSortArg[];
+    // Fields of {edge, node} to sort on. A simple resolve tree will be added if not in selection set
+    // Since nodes of abstract types and edges are constructed sort will not work if field is not in selection set
+    const edgeSortFields = sortInput.map(({ edge = {} }) => Object.keys(edge)).flat();
+    const nodeSortFields = sortInput.map(({ node = {} }) => Object.keys(node)).flat();
+
     const afterInput = resolveTree.args.after;
     const firstInput = resolveTree.args.first;
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
     const relationshipVariable = `${nodeVariable}_${field.relationship.type.toLowerCase()}_relationship`;
-    const relationship = context.neoSchema.relationships.find(
-        (r) => r.name === field.relationshipTypeName
-    ) as Relationship;
+    const relationship = context.relationships.find((r) => r.name === field.relationshipTypeName) as Relationship;
+    const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
 
-    const inStr = field.relationship.direction === "IN" ? "<-" : "-";
     const relTypeStr = `[${relationshipVariable}:${field.relationship.type}]`;
-    const outStr = field.relationship.direction === "OUT" ? "->" : "-";
+
+    const { inStr, outStr } = getRelationshipDirection(field.relationship, resolveTree.args);
 
     let relationshipProperties: ResolveTree[] = [];
     let node: ResolveTree | undefined;
@@ -73,6 +82,18 @@ function createConnectionAndParams({
         const relationshipFieldsByTypeName = connection.edges.fieldsByTypeName[field.relationshipTypeName];
 
         relationshipProperties = Object.values(relationshipFieldsByTypeName).filter((v) => v.name !== "node");
+
+        edgeSortFields.forEach((sortField) => {
+            // For every sort field on edge check to see if the field is in selection set
+            if (
+                !relationshipProperties.find((rt) => rt.name === sortField) ||
+                relationshipProperties.find((rt) => rt.name === sortField && rt.alias !== sortField)
+            ) {
+                // if it doesn't exist add a basic resolve tree to relationshipProperties
+                relationshipProperties.push({ alias: sortField, args: {}, fieldsByTypeName: {}, name: sortField });
+            }
+        });
+
         node = Object.values(relationshipFieldsByTypeName).find((v) => v.name === "node") as ResolveTree;
     }
 
@@ -87,8 +108,8 @@ function createConnectionAndParams({
 
     if (field.relationship.union || field.relationship.interface) {
         const relatedNodes = field.relationship.union
-            ? context.neoSchema.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
-            : context.neoSchema.nodes.filter(
+            ? context.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
+            : context.nodes.filter(
                   (x) =>
                       field.relationship?.interface?.implementations?.includes(x.name) &&
                       filterInterfaceNodes({ node: x, whereInput: whereInput?.node })
@@ -114,15 +135,26 @@ function createConnectionAndParams({
                 const nestedSubqueries: string[] = [];
 
                 if (node) {
-                    const nodeFieldsByTypeName: FieldsByTypeName = {
-                        [n.name]: {
-                            ...node?.fieldsByTypeName[n.name],
-                            ...node?.fieldsByTypeName[field.relationship.typeMeta.name],
+                    const selectedFields: Record<string, ResolveTree> = mergeDeep([
+                        node.fieldsByTypeName[n.name],
+                        ...n.interfaces.map((i) => node?.fieldsByTypeName[i.name.value]),
+                    ]);
+
+                    const mergedResolveTree: ResolveTree = mergeDeep<ResolveTree[]>([
+                        node,
+                        {
+                            ...node,
+                            fieldsByTypeName: {
+                                [n.name]: generateMissingOrAliasedFields({
+                                    fieldNames: nodeSortFields,
+                                    selection: selectedFields,
+                                }),
+                            },
                         },
-                    };
+                    ]);
 
                     const nodeProjectionAndParams = createProjectionAndParams({
-                        fieldsByTypeName: nodeFieldsByTypeName,
+                        resolveTree: mergedResolveTree,
                         node: n,
                         context,
                         varName: relatedNodeVariable,
@@ -254,32 +286,21 @@ function createConnectionAndParams({
 
         const subqueryCypher = ["CALL {", subqueries.join("\nUNION\n"), "}"];
 
-        if (sortInput && sortInput.length) {
+        if (sortInput.length) {
             const sort = sortInput.map((s) =>
-                Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`).join(", ")
+                [
+                    ...Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`),
+                    ...Object.entries(s.node || []).map(([f, direction]) => `edge.node.${f} ${direction}`),
+                ].join(", ")
             );
             subqueryCypher.push(`WITH edge ORDER BY ${sort.join(", ")}`);
         }
 
-        const withValues: string[] = [];
-        if (!firstInput && !afterInput) {
-            if (connection.edges || connection.pageInfo) {
-                withValues.push("collect(edge) as edges");
-            }
-            withValues.push("count(edge) as totalCount");
-            subqueryCypher.push(`WITH ${withValues.join(", ")}`);
-        } else {
-            const offsetLimitStr = createOffsetLimitStr({
-                offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
-                limit: firstInput as Integer | number | undefined,
-            });
-            subqueryCypher.push("WITH collect(edge) AS allEdges");
-            subqueryCypher.push(`WITH allEdges, size(allEdges) as totalCount, allEdges${offsetLimitStr} AS edges`);
-        }
+        subqueryCypher.push("WITH collect(edge) as edges");
+
         subquery.push(subqueryCypher.join("\n"));
     } else {
         const relatedNodeVariable = `${nodeVariable}_${field.relationship.typeMeta.name.toLowerCase()}`;
-        const relatedNode = context.neoSchema.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
         const labels = relatedNode.getLabelString(context);
         const nodeOutStr = `(${relatedNodeVariable}${labels})`;
         subquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
@@ -333,7 +354,7 @@ function createConnectionAndParams({
             subquery.push(`CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
-        if (sortInput && sortInput.length) {
+        if (sortInput.length) {
             const sort = sortInput.map((s) =>
                 [
                     ...Object.entries(s.edge || []).map(
@@ -350,7 +371,7 @@ function createConnectionAndParams({
 
         if (node) {
             const nodeProjectionAndParams = createProjectionAndParams({
-                fieldsByTypeName: node?.fieldsByTypeName,
+                resolveTree: node,
                 node: relatedNode,
                 context,
                 varName: relatedNodeVariable,
@@ -413,19 +434,23 @@ function createConnectionAndParams({
     }
 
     const returnValues: string[] = [];
-    if (!firstInput && !afterInput) {
+
+    if (relatedNode && relatedNode.queryOptions?.getLimit()) {
+        subquery = [
+            ...subquery,
+            ...createLimitedReturnSubquery(resolveTree.alias, relatedNode.queryOptions.getLimit(), afterInput),
+        ];
+    } else if (!firstInput && !afterInput) {
         if (connection.edges || connection.pageInfo) {
             returnValues.push("edges: edges");
         }
-        returnValues.push(`totalCount: ${field.relationship.union ? "totalCount" : "size(edges)"}`);
+        returnValues.push("totalCount: size(edges)");
         subquery.push(`RETURN { ${returnValues.join(", ")} } AS ${resolveTree.alias}`);
     } else {
-        const offsetLimitStr = createOffsetLimitStr({
-            offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
-            limit: firstInput as Integer | number | undefined,
-        });
-        subquery.push(`WITH size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`);
-        subquery.push(`RETURN { edges: limitedSelection, totalCount: totalCount } AS ${resolveTree.alias}`);
+        subquery = [
+            ...subquery,
+            ...createLimitedReturnSubquery(resolveTree.alias, firstInput as Integer | number | undefined, afterInput),
+        ];
     }
     subquery.push("}");
 
@@ -443,3 +468,19 @@ function createConnectionAndParams({
 }
 
 export default createConnectionAndParams;
+
+function createLimitedReturnSubquery(
+    alias: string,
+    limit: Integer | number | undefined,
+    afterInput: unknown
+): string[] {
+    const offset = isString(afterInput) ? cursorToOffset(afterInput) + 1 : undefined;
+    const offsetLimitStr = createOffsetLimitStr({
+        offset,
+        limit,
+    });
+    return [
+        `WITH size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`,
+        `RETURN { edges: limitedSelection, totalCount: totalCount } AS ${alias}`,
+    ];
+}

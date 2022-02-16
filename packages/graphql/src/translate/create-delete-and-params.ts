@@ -57,20 +57,20 @@ function createDeleteAndParams({
         if (relationField) {
             const refNodes: Node[] = [];
 
-            const relationship = (context.neoSchema.relationships.find(
+            const relationship = context.relationships.find(
                 (x) => x.properties === relationField.properties
-            ) as unknown) as Relationship;
+            ) as unknown as Relationship;
 
             if (relationField.union) {
                 Object.keys(value).forEach((unionTypeName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
             } else if (relationField.interface) {
                 relationField.interface.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
                 });
             } else {
-                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             const inStr = relationField.direction === "IN" ? "<-" : "-";
@@ -212,6 +212,8 @@ function createDeleteAndParams({
                         `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`].join(", ")}`
                     );
                     res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
+
+                    // TODO - relationship validation
                 });
             });
 

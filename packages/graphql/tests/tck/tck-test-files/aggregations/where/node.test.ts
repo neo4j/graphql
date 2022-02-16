@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Cypher Where Aggregations with @node directive", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -36,13 +35,13 @@ describe("Cypher Where Aggregations with @node directive", () => {
 
             type Post @node(label: "_Post", additionalLabels: ["additionalPost"]) {
                 content: String!
-                likes: [User] @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 

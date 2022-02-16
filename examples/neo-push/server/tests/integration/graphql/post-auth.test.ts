@@ -50,10 +50,10 @@ describe("post-auth", () => {
         req.headers.authorization = `Bearer ${token}`;
 
         try {
-            const apolloServer = server(driver, { req });
+            const apolloServer = await server(driver, { req });
 
-            const response = await apolloServer.mutate({
-                mutation,
+            const response = await apolloServer.executeOperation({
+                query: mutation,
             });
 
             expect((response?.errors as any[])[0].message).toEqual("Forbidden");
@@ -92,10 +92,10 @@ describe("post-auth", () => {
                 CREATE (:Post {id: "${postId}"})
             `);
 
-            const apolloServer = server(driver, { req });
+            const apolloServer = await server(driver, { req });
 
-            const response = await apolloServer.mutate({
-                mutation,
+            const response = await apolloServer.executeOperation({
+                query: mutation,
             });
 
             expect((response?.errors as any[])[0].message).toEqual("Forbidden");

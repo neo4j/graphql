@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("413", () => {
     let driver: Driver;
@@ -36,7 +37,8 @@ describe("413", () => {
         await driver.close();
     });
 
-    test("should recreate issue and return correct count", async () => {
+    // NOTE: this test was updated to use aggregate instead of count
+    test("should recreate issue and return correct count as an aggregation", async () => {
         const session = driver.session();
 
         const typeDefs = gql`
@@ -64,11 +66,13 @@ describe("413", () => {
 
         const secret = "secret";
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret }) } });
 
         const query = `
             query {
-                jobPlansCount(where: {tenantID: "${tenantID}"})
+                jobPlansAggregate(where: {tenantID: "${tenantID}"}) {
+                  count
+                }
             }
         `;
 
@@ -87,7 +91,7 @@ describe("413", () => {
             });
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -95,7 +99,7 @@ describe("413", () => {
             expect(result.errors).toBeFalsy();
 
             expect(result.data as any).toEqual({
-                jobPlansCount: 3,
+                jobPlansAggregate: { count: 3 },
             });
         } finally {
             await session.close();

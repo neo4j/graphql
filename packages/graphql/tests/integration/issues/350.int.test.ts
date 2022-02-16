@@ -116,16 +116,16 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
             expect(result.errors).toBeFalsy();
-            expect(result?.data?.posts[0].flaggedComments).toContainEqual({
+            expect((result?.data as any)?.posts[0].flaggedComments).toContainEqual({
                 content: comment1Content,
                 flagged: true,
             });
-            expect(result?.data?.posts[0].unflaggedComments).toContainEqual({
+            expect((result?.data as any)?.posts[0].unflaggedComments).toContainEqual({
                 content: comment2Content,
                 flagged: false,
             });

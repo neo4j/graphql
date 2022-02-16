@@ -88,7 +88,7 @@ The directive can be used on nodes. Here we add a Fulltext index, called 'Produc
 ----
 type Product @fulltext(indexes: [{ name: "ProductName", fields: ["name"] }]) {
     name: String!
-    color: Color @relationship(type: "OF_COLOR", direction: OUT)
+    color: Color! @relationship(type: "OF_COLOR", direction: OUT)
 }
 ----
 
@@ -147,7 +147,7 @@ const typeDefs = gql`
 
     type Product @fulltext(indexes: [{ name: "ProductName", fields: ["name"] }]) {
         name: String!
-        color: Color @relationship(type: "OF_COLOR", direction: OUT)
+        color: Color! @relationship(type: "OF_COLOR", direction: OUT)
     }
 `;
 

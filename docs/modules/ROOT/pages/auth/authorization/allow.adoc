@@ -91,7 +91,7 @@ type User {
 
 type Post {
     content: String
-    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+    moderators: [User!]! @relationship(type: "MODERATES_POST", direction: IN)
 }
 
 extend type Post @auth(rules: [
@@ -112,8 +112,8 @@ type User {
 
 type Post {
     content: String
-    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
-    creator: User @relationship(type: "HAS_POST", direction: IN)
+    moderators: [User!]! @relationship(type: "MODERATES_POST", direction: IN)
+    creator: User! @relationship(type: "HAS_POST", direction: IN)
 }
 
 extend type Post

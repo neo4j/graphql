@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src";
@@ -30,7 +31,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                 @auth(rules: [{ where: { director: { id: "$jwt.sub" } } }]) {
                 title: String
-                director: [Person] @relationship(type: "DIRECTED", direction: IN)
+                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Person {
@@ -47,10 +48,10 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                jwt: {
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
-                },
+                }),
             },
         });
 
@@ -87,7 +88,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                 @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }]) {
                 title: String
-                director: [Person] @relationship(type: "DIRECTED", direction: IN)
+                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Person {
@@ -104,10 +105,10 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                jwt: {
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
-                },
+                }),
             },
         });
 

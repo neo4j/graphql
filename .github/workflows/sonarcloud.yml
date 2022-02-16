@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - master
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -15,6 +16,7 @@ jobs:
           - graphql
           - introspector
           - ogm
+          - graphql-plugin-auth
 
     runs-on: ubuntu-latest
 
@@ -28,6 +30,7 @@ jobs:
       - name: Uppercase package name
         run: |
           lowercase_package=${{ matrix.package }}
+          lowercase_package=$(echo "$lowercase_package" | tr - _)
           echo "SONAR_TOKEN_SECRET=SONAR_TOKEN_${lowercase_package^^}" >>"${GITHUB_ENV}"
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master

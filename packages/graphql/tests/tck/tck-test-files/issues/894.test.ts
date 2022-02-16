@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/894", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -44,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -92,6 +91,14 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             DELETE this_disconnect_activeOrganization0_rel
             )
             RETURN count(*)
+            }
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)-[this_activeOrganization_Organization_unique:ACTIVELY_MANAGING]->(:Organization)
+            	WITH count(this_activeOrganization_Organization_unique) as c
+            	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDUser.activeOrganization must be less than or equal to one', [0])
+            	RETURN c AS this_activeOrganization_Organization_unique_ignored
             }
             RETURN this { id: this._id } AS this"
         `);

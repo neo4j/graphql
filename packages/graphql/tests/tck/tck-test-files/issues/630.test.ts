@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher directive", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -50,7 +49,7 @@ describe("Cypher directive", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -75,7 +74,7 @@ describe("Cypher directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
             RETURN this { movies: [this_movies IN apoc.cypher.runFirstColumn(\\"MATCH (m:Movie {title: $title})
-            RETURN m\\", {this: this, auth: $auth}, true) | this_movies { actorsConnection: apoc.cypher.runFirstColumn(\\"CALL {
+            RETURN m\\", {this: this, auth: $auth, title: $this_movies_title}, true) | this_movies { actorsConnection: apoc.cypher.runFirstColumn(\\"CALL {
             WITH this_movies
             MATCH (this_movies)<-[this_movies_acted_in_relationship:ACTED_IN]-(this_movies_actor:Actor)
             WITH collect({  }) AS edges
@@ -85,12 +84,10 @@ describe("Cypher directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_movies_title\\": null,
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);

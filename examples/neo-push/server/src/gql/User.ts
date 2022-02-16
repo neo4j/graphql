@@ -6,8 +6,8 @@ export const typeDefs = gql`
     type User {
         id: ID! @id
         email: String!
-        createdBlogs: [Blog] @relationship(type: "HAS_BLOG", direction: OUT)
-        authorsBlogs: [Blog] @relationship(type: "CAN_POST", direction: OUT)
+        createdBlogs: [Blog!]! @relationship(type: "HAS_BLOG", direction: OUT)
+        authorsBlogs: [Blog!]! @relationship(type: "CAN_POST", direction: OUT)
         password: String! @private
         createdAt: DateTime @timestamp(operations: [CREATE])
         updatedAt: DateTime @timestamp(operations: [UPDATE])

@@ -17,16 +17,35 @@
  * limitations under the License.
  */
 
-import { GraphQLScalarType } from "graphql";
-import neo4j from "neo4j-driver";
+import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
+import neo4j, { Date as Neo4jDate, isDate } from "neo4j-driver";
 
 export default new GraphQLScalarType({
     name: "Date",
     description: "A date, represented as a 'yyyy-mm-dd' string",
-    serialize: (value: typeof neo4j.types.Date) => {
-        return new Date(value.toString()).toISOString().split("T")[0];
+    serialize: (outputValue: unknown) => {
+        if (typeof outputValue === "string") {
+            return new Date(outputValue).toISOString();
+        }
+
+        if (isDate(outputValue as object)) {
+            return new Date((outputValue as typeof Neo4jDate).toString()).toISOString().split("T")[0];
+        }
+
+        throw new GraphQLError(`Date cannot represent value: ${outputValue}`);
     },
-    parseValue: (value: string) => {
-        return neo4j.types.Date.fromStandardDate(new Date(value));
+    parseValue: (inputValue: unknown) => {
+        if (typeof inputValue !== "string") {
+            throw new GraphQLError(`Date cannot represent non string value: ${inputValue}`);
+        }
+
+        return neo4j.types.Date.fromStandardDate(new Date(inputValue));
+    },
+    parseLiteral(ast: ValueNode) {
+        if (ast.kind !== Kind.STRING) {
+            throw new GraphQLError("Date cannot represent non string value.");
+        }
+
+        return neo4j.types.Date.fromStandardDate(new Date(ast.value));
     },
 });

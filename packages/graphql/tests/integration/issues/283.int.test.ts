@@ -86,14 +86,14 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeFalsy();
 
-            expect(typeof result?.data?.createPost?.datetime).toBe("string");
+            expect(typeof (result?.data as any)?.createPost?.datetime).toBe("string");
 
             await session.run(`MATCH (p:Post) WHERE p.title = "${title}" DELETE p`);
         } finally {

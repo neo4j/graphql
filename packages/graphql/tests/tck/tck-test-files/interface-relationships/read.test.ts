@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Interface Relationships", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -50,13 +49,14 @@ describe("Interface Relationships", () => {
 
             type Actor {
                 name: String!
+                currentlyActingIn: Production @relationship(type: "CURRENTLY_ACTING_IN", direction: OUT)
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -100,11 +100,51 @@ describe("Interface Relationships", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
+    test("Simple Interface Relationship Query For Non-Array Field", async () => {
+        const query = gql`
+            query {
+                actors {
+                    currentlyActingIn {
+                        title
+                        ... on Movie {
+                            runtime
+                        }
+                        ... on Series {
+                            episodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            WITH this
+            CALL {
+            WITH this
+            MATCH (this)-[:CURRENTLY_ACTING_IN]->(this_Movie:Movie)
+            RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS currentlyActingIn
+            UNION
+            WITH this
+            MATCH (this)-[:CURRENTLY_ACTING_IN]->(this_Series:Series)
+            RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS currentlyActingIn
+            }
+            RETURN this { currentlyActingIn: head(collect(currentlyActingIn)) } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
     test("Simple Interface Relationship Query with offset and limit", async () => {
         const query = gql`
             query {
                 actors {
-                    actedIn(options: { offset: 5, limit: 10 }) {
+                    actedIn(options: { offset: 5, limit: 10, sort: [{ title: DESC }] }) {
                         title
                         ... on Movie {
                             runtime
@@ -134,7 +174,7 @@ describe("Interface Relationships", () => {
             MATCH (this)-[:ACTED_IN]->(this_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
-            RETURN this { actedIn: collect(actedIn)[5..15] } as this"
+            RETURN this { actedIn: apoc.coll.sortMulti(collect(actedIn), ['title'])[5..15] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -287,7 +327,7 @@ describe("Interface Relationships", () => {
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
@@ -340,7 +380,7 @@ describe("Interface Relationships", () => {
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
@@ -404,7 +444,7 @@ describe("Interface Relationships", () => {
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
@@ -484,7 +524,7 @@ describe("Interface Relationships", () => {
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"

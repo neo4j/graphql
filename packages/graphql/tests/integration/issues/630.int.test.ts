@@ -50,7 +50,8 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
         }
     `;
 
-        const { schema } = new Neo4jGraphQL({ typeDefs, driver });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const schema = await neoSchema.getSchema();
 
         const actors = [
             {
@@ -111,7 +112,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const gqlActor = gqlResult.data?.actors[0];
+            const gqlActor = (gqlResult.data as any)?.actors[0];
 
             expect(gqlActor).toBeDefined();
             expect(gqlActor).toEqual({
