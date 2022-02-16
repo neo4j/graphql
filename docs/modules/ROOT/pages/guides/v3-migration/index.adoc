@@ -214,7 +214,7 @@ Some automatically generated types have changed to improve consistency.
 These should not require any changes from the developer in most cases, unless in cases where types names are directly used.
 
 === OnCreate Node Types
-Input types for `onCreate` in `connectOrCreate` mutations no longer accept relation fields.
+Input types for `onCreate` in `connectOrCreate` operations no longer accept relationship fields. They were originally added in error and did not function as one would expect, so there is no regression in functionality.
 
 === Non Nullable Aggregation Results
 Aggregation results may now be non-nullable for required fields, yielding more accurate types.
