@@ -78,7 +78,6 @@ export function buildMergeStatement({
             .forEach((field) => {
                 onCreateStatements.push([`${sourceNode.varName}.${field.dbPropertyName} = randomUUID(),\n`, {}]);
             });
-
         sourceNode.node.temporalFields
             .filter(
                 (field) => ["DateTime", "Time"].includes(field.typeMeta.name) && field.timestamps?.includes("CREATE")
@@ -92,10 +91,10 @@ export function buildMergeStatement({
     }
 
     if (sourceNode.onCreate) {
-        onCreateStatements.push(buildOnCreate(sourceNode.onCreate, sourceNode.varName));
+        onCreateStatements.push(buildOnCreate(sourceNode.onCreate, sourceNode.varName, sourceNode.node));
     }
     if (targetNode?.onCreate) {
-        onCreateStatements.push(buildOnCreate(targetNode.onCreate, targetNode.varName));
+        onCreateStatements.push(buildOnCreate(targetNode.onCreate, targetNode.varName, targetNode.node));
     }
 
     if (relationship || targetNode) {
@@ -117,7 +116,7 @@ export function buildMergeStatement({
             },
         });
 
-        const relationshipFields = context.neoSchema.relationships.find(
+        const relationshipFields = context.relationships.find(
             (x) => x.properties === relationship.relationField.properties
         );
 
@@ -159,13 +158,19 @@ export function buildMergeStatement({
     return joinStatements([mergeNodeStatement, onCreateSetQuery, ...onCreateStatements]);
 }
 
-function buildOnCreate(onCreate: Record<string, any>, varName: string): CypherStatement {
+function buildOnCreate(onCreate: Record<string, any>, varName: string, node?: Node): CypherStatement {
     const queries: string[] = [];
     const parameters = {};
 
     Object.entries(onCreate).forEach(([key, value]) => {
-        queries.push(`${varName}.${key} = $${generateParameterKey(`${varName}_on_create`, key)}`);
-        parameters[generateParameterKey(`${varName}_on_create`, key)] = value;
+        const nodeField = node?.primitiveFields.find((f) => f.fieldName === key);
+        const nodeFieldName = nodeField?.dbPropertyName || nodeField?.fieldName;
+        const fieldName = nodeFieldName || key;
+        const valueOrArray = nodeField?.typeMeta.array ? [value] : value;
+        const parameterKey = generateParameterKey(`${varName}_on_create`, fieldName);
+
+        queries.push(`${varName}.${fieldName} = $${parameterKey}`);
+        parameters[parameterKey] = valueOrArray;
     });
     return [joinStrings(queries, ",\n"), parameters];
 }

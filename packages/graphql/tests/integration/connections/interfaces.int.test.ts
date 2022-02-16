@@ -22,22 +22,27 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("Connections -> Interfaces", () => {
     let driver: Driver;
     let bookmarks: string[];
+
+    const typeMovie = generateUniqueType("Movie");
+    const typeSeries = generateUniqueType("Series");
+    const typeActor = generateUniqueType("Actor");
 
     const typeDefs = gql`
         interface Production {
             title: String!
         }
 
-        type Movie implements Production {
+        type ${typeMovie.name} implements Production {
             title: String!
             runtime: Int!
         }
 
-        type Series implements Production {
+        type ${typeSeries.name} implements Production {
             title: String!
             episodes: Int!
         }
@@ -46,7 +51,7 @@ describe("Connections -> Interfaces", () => {
             screenTime: Int!
         }
 
-        type Actor {
+        type ${typeActor.name} {
             name: String!
             actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }
@@ -73,10 +78,10 @@ describe("Connections -> Interfaces", () => {
         try {
             await session.run(
                 `
-                    CREATE (actor:Actor {name: $actorName})
-                    CREATE (actor)-[:ACTED_IN {screenTime: $seriesScreenTime}]->(:Series {title: $seriesTitle, episodes: $seriesEpisodes})
-                    CREATE (actor)-[:ACTED_IN {screenTime: $movie1ScreenTime}]->(:Movie {title: $movie1Title, runtime: $movie1Runtime})
-                    CREATE (actor)-[:ACTED_IN {screenTime: $movie2ScreenTime}]->(:Movie {title: $movie2Title, runtime: $movie2Runtime})
+                    CREATE (actor:${typeActor.name} {name: $actorName})
+                    CREATE (actor)-[:ACTED_IN {screenTime: $seriesScreenTime}]->(:${typeSeries.name} {title: $seriesTitle, episodes: $seriesEpisodes})
+                    CREATE (actor)-[:ACTED_IN {screenTime: $movie1ScreenTime}]->(:${typeMovie.name} {title: $movie1Title, runtime: $movie1Runtime})
+                    CREATE (actor)-[:ACTED_IN {screenTime: $movie2ScreenTime}]->(:${typeMovie.name} {title: $movie2Title, runtime: $movie2Runtime})
                 `,
                 {
                     actorName,
@@ -103,10 +108,10 @@ describe("Connections -> Interfaces", () => {
         try {
             await session.run(
                 `
-                    MATCH (actor:Actor {name: $actorName})
-                    MATCH (series:Series {title: $seriesTitle})
-                    MATCH (movie1:Movie {title: $movie1Title})
-                    MATCH (movie2:Movie {title: $movie2Title})
+                    MATCH (actor:${typeActor.name} {name: $actorName})
+                    MATCH (series:${typeSeries.name} {title: $seriesTitle})
+                    MATCH (movie1:${typeMovie.name} {title: $movie1Title})
+                    MATCH (movie2:${typeMovie.name} {title: $movie2Title})
                     DETACH DELETE actor, series, movie1, movie2
                 `,
                 {
@@ -130,17 +135,17 @@ describe("Connections -> Interfaces", () => {
 
         const query = `
             query Actors($name: String) {
-                actors(where: { name: $name }) {
+                ${typeActor.plural}(where: { name: $name }) {
                     name
                     actedInConnection {
                         edges {
                             screenTime
                             node {
                                 title
-                                ... on Movie {
+                                ... on ${typeMovie.name} {
                                     runtime
                                 }
-                                ... on Series {
+                                ... on ${typeSeries.name} {
                                     episodes
                                 }
                             }
@@ -154,7 +159,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -164,7 +169,7 @@ describe("Connections -> Interfaces", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toEqual([
+            expect((result as any).data[typeActor.plural]).toEqual([
                 {
                     name: actorName,
                     actedInConnection: {
@@ -206,17 +211,17 @@ describe("Connections -> Interfaces", () => {
 
         const query = `
             query Actors($name: String) {
-                actors(where: { name: $name }) {
+                ${typeActor.plural}(where: { name: $name }) {
                     name
                     actedInConnection(where: { node: { title: "Game of Thrones" } }) {
                         edges {
                             screenTime
                             node {
                                 title
-                                ... on Movie {
+                                ... on ${typeMovie.name} {
                                     runtime
                                 }
-                                ... on Series {
+                                ... on ${typeSeries.name} {
                                     episodes
                                 }
                             }
@@ -230,7 +235,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -240,7 +245,7 @@ describe("Connections -> Interfaces", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toEqual([
+            expect((result as any).data[typeActor.plural]).toEqual([
                 {
                     name: actorName,
                     actedInConnection: {
@@ -268,17 +273,17 @@ describe("Connections -> Interfaces", () => {
 
         const query = `
             query Actors($name: String) {
-                actors(where: { name: $name }) {
+                ${typeActor.plural}(where: { name: $name }) {
                     name
-                    actedInConnection(where: { node: { title: "Game of Thrones", _on: { Movie: { title: "Dune" } } } }) {
+                    actedInConnection(where: { node: { title: "Game of Thrones", _on: { ${typeMovie.name}: { title: "Dune" } } } }) {
                         edges {
                             screenTime
                             node {
                                 title
-                                ... on Movie {
+                                ... on ${typeMovie.name} {
                                     runtime
                                 }
-                                ... on Series {
+                                ... on ${typeSeries.name} {
                                     episodes
                                 }
                             }
@@ -292,7 +297,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -302,7 +307,7 @@ describe("Connections -> Interfaces", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toEqual([
+            expect((result as any).data[typeActor.plural]).toEqual([
                 {
                     name: actorName,
                     actedInConnection: {
@@ -337,17 +342,17 @@ describe("Connections -> Interfaces", () => {
 
         const query = `
             query Actors($name: String) {
-                actors(where: { name: $name }) {
+                ${typeActor.plural}(where: { name: $name }) {
                     name
                     actedInConnection(sort: [{ edge: { screenTime: DESC } }]) {
                         edges {
                             screenTime
                             node {
                                 title
-                                ... on Movie {
+                                ... on ${typeMovie.name} {
                                     runtime
                                 }
-                                ... on Series {
+                                ... on ${typeSeries.name} {
                                     episodes
                                 }
                             }
@@ -361,7 +366,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -371,7 +376,7 @@ describe("Connections -> Interfaces", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toEqual([
+            expect((result as any).data[typeActor.plural]).toEqual([
                 {
                     name: actorName,
                     actedInConnection: {
@@ -413,7 +418,7 @@ describe("Connections -> Interfaces", () => {
 
         const query = `
             query Actors($name: String, $after: String) {
-                actors(where: { name: $name }) {
+                ${typeActor.plural}(where: { name: $name }) {
                     name
                     actedInConnection(first: 2, after: $after, sort: { edge: { screenTime: DESC } }) {
                         pageInfo {
@@ -425,10 +430,10 @@ describe("Connections -> Interfaces", () => {
                             screenTime
                             node {
                                 title
-                                ... on Movie {
+                                ... on ${typeMovie.name} {
                                     runtime
                                 }
-                                ... on Series {
+                                ... on ${typeSeries.name} {
                                     episodes
                                 }
                             }
@@ -442,7 +447,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -452,7 +457,7 @@ describe("Connections -> Interfaces", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toEqual([
+            expect((result as any).data[typeActor.plural]).toEqual([
                 {
                     name: actorName,
                     actedInConnection: {
@@ -482,18 +487,18 @@ describe("Connections -> Interfaces", () => {
             ]);
 
             const nextResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     name: actorName,
-                    after: (result.data?.actors as any)[0].actedInConnection.pageInfo.endCursor,
+                    after: (result as any).data[typeActor.plural][0].actedInConnection.pageInfo.endCursor,
                 },
             });
 
             expect(nextResult.errors).toBeFalsy();
 
-            expect(nextResult?.data?.actors).toEqual([
+            expect((nextResult as any).data[typeActor.plural]).toEqual([
                 {
                     name: actorName,
                     actedInConnection: {
@@ -526,17 +531,17 @@ describe("Connections -> Interfaces", () => {
 
         const query = `
         query Actors($name: String, $title: String) {
-            actors(where: { name: $name }) {
+            ${typeActor.plural}(where: { name: $name }) {
                 name
                 actedInConnection(where: { node: { title: $title } }) {
                     edges {
                         screenTime
                         node {
                             title
-                            ... on Movie {
+                            ... on ${typeMovie.name} {
                                 runtime
                             }
-                            ... on Series {
+                            ... on ${typeSeries.name} {
                                 episodes
                             }
                         }
@@ -550,7 +555,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -561,7 +566,7 @@ describe("Connections -> Interfaces", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toEqual([
+            expect((result as any).data[typeActor.plural]).toEqual([
                 {
                     name: actorName,
                     actedInConnection: {

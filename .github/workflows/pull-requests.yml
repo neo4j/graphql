@@ -128,11 +128,13 @@ jobs:
       - cache-dependencies
 
     strategy:
+      fail-fast: false
       matrix:
         package:
           - graphql
           - ogm
           - introspector
+          - graphql-plugin-auth
         graphql-version:
           - "^15.0.0"
           - "^16.0.0"

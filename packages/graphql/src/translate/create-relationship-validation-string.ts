@@ -30,23 +30,26 @@ function createRelationshipValidationString({
     context: Context;
     varName: string;
 }): string {
-    const nonNullRelationFields = node.relationFields.filter((field) => {
+    const strs: string[] = [];
+
+    node.relationFields.forEach((field) => {
         if (field.typeMeta.array) {
-            return false;
+            return;
         }
 
-        const isRequired = field.typeMeta.required;
         const isUnionOrInterface = Boolean(field.union) || Boolean(field.interface);
+        if (isUnionOrInterface) {
+            return;
+        }
 
-        return isRequired && !isUnionOrInterface;
-    });
+        let predicate = `c = 1`;
+        let errorMsg = `${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} required`;
+        if (!field.typeMeta.required) {
+            predicate = `c <= 1`;
+            errorMsg = `${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} must be less than or equal to one`;
+        }
 
-    if (!nonNullRelationFields.length) {
-        return "";
-    }
-
-    const nonNullPredicates = nonNullRelationFields.map((field) => {
-        const toNode = context.neoSchema.nodes.find((n) => n.name === field.typeMeta.name) as Node;
+        const toNode = context.nodes.find((n) => n.name === field.typeMeta.name) as Node;
         const inStr = field.direction === "IN" ? "<-" : "-";
         const outStr = field.direction === "OUT" ? "->" : "-";
         const relVarname = `${varName}_${field.fieldName}_${toNode.name}_unique`;
@@ -56,15 +59,15 @@ function createRelationshipValidationString({
             `\tWITH ${varName}`,
             `\tMATCH (${varName})${inStr}[${relVarname}:${field.type}]${outStr}(${toNode.getLabelString(context)})`,
             `\tWITH count(${relVarname}) as c`,
-            `\tCALL apoc.util.validate(NOT(c = 1), '${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} required', [0])`,
+            `\tCALL apoc.util.validate(NOT(${predicate}), '${errorMsg}', [0])`,
             `\tRETURN c AS ${relVarname}_ignored`,
             `}`,
         ].join("\n");
 
-        return subQuery;
+        strs.push(subQuery);
     });
 
-    return nonNullPredicates.join("\n");
+    return strs.join("\n");
 }
 
 export default createRelationshipValidationString;

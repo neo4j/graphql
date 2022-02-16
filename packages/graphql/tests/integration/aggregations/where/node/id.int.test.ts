@@ -42,7 +42,7 @@ describe("aggregations-where-node-id", () => {
                 id: ID
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -82,7 +82,7 @@ describe("aggregations-where-node-id", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });

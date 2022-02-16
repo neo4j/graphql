@@ -80,8 +80,7 @@ describe("multi-database", () => {
     test("should fail for non-existing database specified via context", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -102,7 +101,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
             contextValue: { driver, driverConfig: { database: "non-existing-db" } },
@@ -112,8 +111,7 @@ describe("multi-database", () => {
     test("should specify the database via context", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -134,7 +132,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
             contextValue: { driver, driverConfig: { database: dbName } },
@@ -145,8 +143,7 @@ describe("multi-database", () => {
     test("should fail for non-existing database specified via neo4j construction", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -171,7 +168,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
             contextValue: {}, // This is needed, otherwise the context in resolvers will be undefined
@@ -185,8 +182,7 @@ describe("multi-database", () => {
     test("should specify the database via neo4j construction", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -211,7 +207,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
             contextValue: {}, // This is needed, otherwise the context in resolvers will be undefined

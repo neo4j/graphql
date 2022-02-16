@@ -18,15 +18,13 @@
  */
 
 import createConnectAndParams from "./create-connect-and-params";
-import { Neo4jGraphQL } from "../classes";
-import { Context } from "../types";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { RelationshipQueryDirectionOption } from "../constants";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 
 describe("createConnectAndParams", () => {
     test("should return the correct connection", () => {
-        // @ts-ignore
         const node = new NodeBuilder({
             name: "Movie",
             enumFields: [],
@@ -70,13 +68,7 @@ describe("createConnectAndParams", () => {
             objectFields: [],
         }).instance();
 
-        // @ts-ignore
-        const neoSchema: Neo4jGraphQL = {
-            nodes: [node],
-        };
-
-        // @ts-ignore
-        const context: Context = { neoSchema };
+        const context = new ContextBuilder({ nodes: [node] }).instance();
 
         const result = createConnectAndParams({
             withVars: ["this"],

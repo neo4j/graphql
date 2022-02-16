@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Mixed nesting", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -47,7 +46,7 @@ describe("Mixed nesting", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -239,11 +238,8 @@ describe("Mixed nesting", () => {
                 },
                 \\"this_actors_name\\": \\"Tom Hanks\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);

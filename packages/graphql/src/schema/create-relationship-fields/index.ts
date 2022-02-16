@@ -95,7 +95,7 @@ function createRelationshipFields({
             const refNodes = nodes.filter((x) => rel.interface?.implementations?.includes(x.name));
             if (!rel.writeonly) {
                 const baseNodeFieldArgs = {
-                    options: "QueryOptions",
+                    options: `${rel.typeMeta.name}Options`,
                     where: `${rel.typeMeta.name}Where`,
                 };
                 const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);

@@ -18,6 +18,8 @@ async function main() {
 
     await neo4j.connect();
 
+    await ogm.init();
+
     await Promise.all([User, Blog, Post, Comment].map((m) => m.delete({})));
 
     const { users } = await User.create({

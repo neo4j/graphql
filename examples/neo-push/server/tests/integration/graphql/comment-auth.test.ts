@@ -44,7 +44,7 @@ describe("comment-auth", () => {
         req.headers.authorization = `Bearer ${token}`;
 
         try {
-            const apolloServer = server(driver, { req });
+            const apolloServer = await server(driver, { req });
 
             const response = await apolloServer.executeOperation({
                 query: mutation,

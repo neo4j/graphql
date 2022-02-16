@@ -66,7 +66,7 @@ describe("integration/rfs/003", () => {
                 `;
 
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: mutation,
                     contextValue: { driver },
                 });
@@ -114,7 +114,7 @@ describe("integration/rfs/003", () => {
                     `;
 
                     const result = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: mutation,
                         contextValue: { driver },
                     });
@@ -162,7 +162,7 @@ describe("integration/rfs/003", () => {
                     `);
 
                     const result = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: mutation,
                         contextValue: { driver },
                     });
@@ -223,7 +223,7 @@ describe("integration/rfs/003", () => {
                         `);
 
                         const result = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: mutation,
                             contextValue: { driver },
                         });
@@ -283,7 +283,7 @@ describe("integration/rfs/003", () => {
                         `);
 
                         const result = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: mutation,
                             contextValue: { driver },
                         });
@@ -331,7 +331,7 @@ describe("integration/rfs/003", () => {
                     const mutation = `
                         mutation {
                             updateMovies(
-                                where: { id: "${movieId}" }, 
+                                where: { id: "${movieId}" },
                                 delete: { director: { where: { node: { id: "${directorId}" } } } }
                             ) {
                                 info {
@@ -347,7 +347,7 @@ describe("integration/rfs/003", () => {
                         `);
 
                         const result = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: mutation,
                             contextValue: { driver },
                         });
@@ -395,7 +395,7 @@ describe("integration/rfs/003", () => {
                 `;
 
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: mutation,
                     contextValue: { driver },
                 });
@@ -462,7 +462,7 @@ describe("integration/rfs/003", () => {
                         `);
 
                         const result = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: mutation,
                             contextValue: { driver },
                         });
@@ -518,7 +518,7 @@ describe("integration/rfs/003", () => {
                         `);
 
                         const result = await graphql({
-                            schema: neoSchema.schema,
+                            schema: await neoSchema.getSchema(),
                             source: mutation,
                             contextValue: { driver },
                         });
@@ -565,10 +565,10 @@ describe("integration/rfs/003", () => {
                     mutation {
                         updateMovies(
                             where: { id: "${movieId}" },
-                            disconnect: { 
+                            disconnect: {
                                 director: { where: { node: { id: "${directorId1}" } } }
                             }
-                            connect: { 
+                            connect: {
                                 director: { where: { node: { id: "${directorId2}" } } }
                             }
                         ) {
@@ -589,7 +589,7 @@ describe("integration/rfs/003", () => {
                     `);
 
                     const result = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: mutation,
                         contextValue: { driver },
                     });
@@ -604,6 +604,152 @@ describe("integration/rfs/003", () => {
                             id: directorId2,
                         },
                     });
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should disconnect and then reconnect to a new node on a non required relationship", async () => {
+                const session = driver.session();
+
+                const typeDefs = gql`
+                    type Director {
+                        id: ID!
+                    }
+
+                    type Movie {
+                        id: ID!
+                        director: Director @relationship(type: "DIRECTED", direction: IN)
+                    }
+                `;
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const directorId1 = generate({
+                    charset: "alphabetic",
+                });
+
+                const directorId2 = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        updateMovies(
+                            where: { id: "${movieId}" },
+                            disconnect: {
+                                director: { where: { node: { id: "${directorId1}" } } }
+                            }
+                            connect: {
+                                director: { where: { node: { id: "${directorId2}" } } }
+                            }
+                        ) {
+                            movies {
+                                id
+                                director {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    await session.run(`
+                        CREATE (:Movie {id: "${movieId}"})<-[:DIRECTED]-(:Director {id: "${directorId1}"})
+                        CREATE (:Director {id: "${directorId2}"})
+                    `);
+
+                    const result = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: mutation,
+                        contextValue: { driver },
+                    });
+
+                    expect(result.errors).toBeUndefined();
+
+                    const movie = (result.data as any).updateMovies.movies[0];
+
+                    expect(movie).toEqual({
+                        id: movieId,
+                        director: {
+                            id: directorId2,
+                        },
+                    });
+                } finally {
+                    await session.close();
+                }
+            });
+        });
+
+        describe("relationship length", () => {
+            test("should throw if connecting to more than one node", async () => {
+                const session = driver.session();
+
+                const typeDefs = gql`
+                    type Director {
+                        id: ID!
+                    }
+
+                    type Movie {
+                        id: ID!
+                        director: Director @relationship(type: "DIRECTED", direction: IN)
+                    }
+                `;
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const directorId1 = generate({
+                    charset: "alphabetic",
+                });
+
+                const directorId2 = generate({
+                    charset: "alphabetic",
+                });
+
+                const mutation = `
+                    mutation {
+                        updateMovies(
+                            where: { id: "${movieId}" },
+                            connect: {
+                                director: { where: { node: { id_IN: ["${directorId1}", "${directorId2}"] } } }
+                            }
+                        ) {
+                            movies {
+                                id
+                                director {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    await session.run(`
+                        CREATE (:Movie {id: "${movieId}"})
+                        CREATE (:Director {id: "${directorId1}"})
+                        CREATE (:Director {id: "${directorId2}"})
+                    `);
+
+                    const result = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: mutation,
+                        contextValue: { driver },
+                    });
+
+                    expect(result.errors).toBeTruthy();
+                    expect((result.errors as any[])[0].message).toBe(
+                        "Movie.director must be less than or equal to one"
+                    );
                 } finally {
                     await session.close();
                 }

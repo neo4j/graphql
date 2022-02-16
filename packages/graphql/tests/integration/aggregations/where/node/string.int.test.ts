@@ -41,7 +41,7 @@ describe("aggregations-where-node-string", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -75,7 +75,7 @@ describe("aggregations-where-node-string", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -104,7 +104,7 @@ describe("aggregations-where-node-string", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -142,7 +142,7 @@ describe("aggregations-where-node-string", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -171,7 +171,7 @@ describe("aggregations-where-node-string", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -208,7 +208,7 @@ describe("aggregations-where-node-string", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -237,7 +237,7 @@ describe("aggregations-where-node-string", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -274,7 +274,7 @@ describe("aggregations-where-node-string", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -303,7 +303,7 @@ describe("aggregations-where-node-string", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -340,7 +340,7 @@ describe("aggregations-where-node-string", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -370,7 +370,7 @@ describe("aggregations-where-node-string", () => {
                 type User {
                     testString: String!
                 }
-              
+
                 type Post {
                   testString: String!
                   likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -423,7 +423,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -454,7 +454,7 @@ describe("aggregations-where-node-string", () => {
                 type User {
                     testString: String!
                 }
-              
+
                 type Post {
                   testString: String!
                   likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -507,7 +507,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -538,7 +538,7 @@ describe("aggregations-where-node-string", () => {
                 type User {
                     testString: String!
                 }
-              
+
                 type Post {
                   testString: String!
                   likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -596,7 +596,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -622,7 +622,7 @@ describe("aggregations-where-node-string", () => {
                 type User {
                     testString: String!
                 }
-              
+
                 type Post {
                   testString: String!
                   likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -681,7 +681,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -707,7 +707,7 @@ describe("aggregations-where-node-string", () => {
                 type User {
                     testString: String!
                 }
-              
+
                 type Post {
                   testString: String!
                   likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -765,7 +765,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -791,7 +791,7 @@ describe("aggregations-where-node-string", () => {
                 type User {
                     testString: String!
                 }
-              
+
                 type Post {
                   testString: String!
                   likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -850,7 +850,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -876,7 +876,7 @@ describe("aggregations-where-node-string", () => {
                 type User {
                     testString: String!
                 }
-              
+
                 type Post {
                   testString: String!
                   likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -934,7 +934,7 @@ describe("aggregations-where-node-string", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });

@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { UnionTypeDefinitionNode } from "graphql/language/ast";
 import { ResolveTree } from "graphql-parse-resolve-info";
+import { GraphQLUnionType } from "graphql";
+import { mergeDeep } from "@graphql-tools/utils";
 import { Node } from "../classes";
 import createWhereAndParams from "./where/create-where-and-params";
 import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
@@ -182,11 +183,11 @@ function createProjectionAndParams({
 
             const isArray = cypherField.typeMeta.array;
 
-            const referenceNode = context.neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
-            const unions = context.neoSchema.document.definitions.filter(
-                (x) => x.kind === "UnionTypeDefinition"
-            ) as UnionTypeDefinitionNode[];
-            const referenceUnion = unions.find((u) => u.name.value === cypherField.typeMeta.name);
+            const graphqlType = context.schema.getType(cypherField.typeMeta.name);
+
+            const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
+
+            const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
 
             if (referenceNode) {
                 const recurse = createProjectionAndParams({
@@ -209,7 +210,7 @@ function createProjectionAndParams({
                 const headStrs: string[] = [];
                 const referencedNodes =
                     referenceUnion?.types
-                        ?.map((u) => context.neoSchema.nodes.find((n) => n.name === u.name.value))
+                        ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
                         ?.filter((b) => b !== undefined)
                         ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? "")) || [];
 
@@ -324,7 +325,7 @@ function createProjectionAndParams({
         }
 
         if (relationField) {
-            const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const referenceNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
             if (referenceNode?.queryOptions) {
                 optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
@@ -343,24 +344,38 @@ function createProjectionAndParams({
                     res.meta.interfaceFields = [];
                 }
 
-                const f = field;
-
-                res.meta.interfaceFields.push(f);
+                res.meta.interfaceFields.push(field);
 
                 let offsetLimitStr = "";
                 if (optionsInput) {
-                    offsetLimitStr = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
+                    offsetLimitStr = createOffsetLimitStr({
+                        offset: optionsInput.offset,
+                        limit: optionsInput.limit,
+                    });
+
+                    if (optionsInput.sort) {
+                        const sorts = optionsInput.sort.reduce(sortReducer, []);
+
+                        res.projection.push(
+                            `${field.alias}: apoc.coll.sortMulti(collect(${field.alias}), [${sorts.join(
+                                ", "
+                            )}])${offsetLimitStr}`
+                        );
+                        return res;
+                    }
                 }
 
                 res.projection.push(
-                    `${f.alias}: ${!isArray ? "head(" : ""}collect(${f.alias})${offsetLimitStr}${!isArray ? ")" : ""}`
+                    `${field.alias}: ${!isArray ? "head(" : ""}collect(${field.alias})${offsetLimitStr}${
+                        !isArray ? ")" : ""
+                    }`
                 );
 
                 return res;
             }
 
             if (relationField.union) {
-                const referenceNodes = context.neoSchema.nodes.filter(
+                const referenceNodes = context.nodes.filter(
                     (x) =>
                         relationField.union?.nodes?.includes(x.name) &&
                         (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
@@ -487,18 +502,7 @@ function createProjectionAndParams({
                 const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
 
                 if (optionsInput.sort) {
-                    const sorts = optionsInput.sort.reduce((s: string[], sort: GraphQLSortArg) => {
-                        return [
-                            ...s,
-                            ...Object.entries(sort).map(([fieldName, direction]) => {
-                                if (direction === "DESC") {
-                                    return `'${fieldName}'`;
-                                }
-
-                                return `'^${fieldName}'`;
-                            }),
-                        ];
-                    }, []);
+                    const sorts = optionsInput.sort.reduce(sortReducer, []);
 
                     nestedQuery = `${alias}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
                 } else {
@@ -594,26 +598,39 @@ function createProjectionAndParams({
 
     // Include fields of implemented interfaces to allow for fragments on interfaces
     // cf. https://github.com/neo4j/graphql/issues/476
-    const selectedFields = node.interfaces
-        .map((implementedInterface) => implementedInterface.name.value)
-        .reduce(
-            (prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }),
-            resolveTree.fieldsByTypeName[node.name]
-        );
+    const mergedSelectedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
+        resolveTree.fieldsByTypeName[node.name],
+        ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value]),
+    ]);
 
-    const fields = {
-        ...selectedFields,
-        ...generateMissingOrAliasedSortFields({ selection: selectedFields, resolveTree }),
-        ...generateMissingOrAliasedRequiredFields({ selection: selectedFields, node }),
-    };
+    // Merge fields for final projection to account for multiple fragments
+    // cf. https://github.com/neo4j/graphql/issues/920
+    const mergedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
+        mergedSelectedFields,
+        generateMissingOrAliasedSortFields({ selection: mergedSelectedFields, resolveTree }),
+        generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
+    ]);
 
-    const { projection, params, meta } = Object.values(fields).reduce(reducer, {
+    const { projection, params, meta } = Object.values(mergedFields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
         params: {},
         meta: {},
     });
 
     return [`{ ${projection.join(", ")} }`, params, meta];
+}
+
+function sortReducer(s: string[], sort: GraphQLSortArg) {
+    return [
+        ...s,
+        ...Object.entries(sort).map(([fieldName, direction]) => {
+            if (direction === "DESC") {
+                return `'${fieldName}'`;
+            }
+
+            return `'^${fieldName}'`;
+        }),
+    ];
 }
 
 export default createProjectionAndParams;
@@ -642,7 +659,7 @@ const generateMissingOrAliasedRequiredFields = ({
     selection: Record<string, ResolveTree>;
 }): Record<string, ResolveTree> => {
     const requiredFields = removeDuplicates(
-        filterFieldsInSelection({ fields: node.ignoredFields, selection })
+        filterFieldsInSelection({ fields: node.computedFields, selection })
             .map((f) => f.requiredFields)
             .flat()
     );

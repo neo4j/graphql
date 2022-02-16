@@ -65,7 +65,7 @@ function createElementWhereAndParams({
 
         const dbProperty = mapToDbProperty(element, fieldName);
 
-        const coalesceValue = [...element.primitiveFields, ...element.temporalFields].find(
+        const coalesceValue = [...element.primitiveFields, ...element.temporalFields, ...element.enumFields].find(
             (f) => fieldName === f.fieldName
         )?.coalesceValue;
 
@@ -101,7 +101,7 @@ function createElementWhereAndParams({
             const relationField = element.relationFields.find((x) => fieldName === x.fieldName);
 
             if (relationField) {
-                const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+                const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
                 const inStr = relationField.direction === "IN" ? "<-" : "-";
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
@@ -148,8 +148,8 @@ function createElementWhereAndParams({
                 }
 
                 Object.entries(nodeEntries).forEach((entry) => {
-                    const refNode = context.neoSchema.nodes.find((x) => x.name === entry[0]) as Node;
-                    const relationship = context.neoSchema.relationships.find(
+                    const refNode = context.nodes.find((x) => x.name === entry[0]) as Node;
+                    const relationship = context.relationships.find(
                         (x) => x.name === connectionField.relationshipTypeName
                     ) as Relationship;
 

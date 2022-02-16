@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/901", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -44,13 +43,13 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
     test("conjuctions", async () => {
         const query = gql`
-            query($where: SeriesWhere) {
+            query ($where: SeriesWhere) {
                 series(where: $where) {
                     name
                     brand {
@@ -96,33 +95,37 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Series)
-            WHERE (EXISTS((this)-[:HAS_MANUFACTURER]->(:Series)) AND ANY(this_OR_manufacturerConnection_Series_map IN [(this)-[this_OR_manufacturerConnection_Series_SeriesManufacturerRelationship:HAS_MANUFACTURER]->(this_OR_manufacturerConnection_Series:Series)  | { node: this_OR_manufacturerConnection_Series, relationship: this_OR_manufacturerConnection_Series_SeriesManufacturerRelationship } ] WHERE this_OR_manufacturerConnection_Series_map.relationship.current = $this_series.where.manufacturerConnection.edge.current AND this_OR_manufacturerConnection_Series_map.node.name = $this_series.where.manufacturerConnection.node.name) OR EXISTS((this)-[:HAS_BRAND]->(:Series)) AND ANY(this_OR1_brandConnection_Series_map IN [(this)-[this_OR1_brandConnection_Series_SeriesBrandRelationship:HAS_BRAND]->(this_OR1_brandConnection_Series:Series)  | { node: this_OR1_brandConnection_Series, relationship: this_OR1_brandConnection_Series_SeriesBrandRelationship } ] WHERE this_OR1_brandConnection_Series_map.relationship.current = $this_series.where.brandConnection.edge.current AND this_OR1_brandConnection_Series_map.node.name = $this_series.where.brandConnection.node.name))
+            WHERE (EXISTS((this)-[:HAS_MANUFACTURER]->(:Series)) AND ANY(this_OR_manufacturerConnection_Series_map IN [(this)-[this_OR_manufacturerConnection_Series_SeriesManufacturerRelationship:HAS_MANUFACTURER]->(this_OR_manufacturerConnection_Series:Series)  | { node: this_OR_manufacturerConnection_Series, relationship: this_OR_manufacturerConnection_Series_SeriesManufacturerRelationship } ] WHERE this_OR_manufacturerConnection_Series_map.relationship.current = $this_OR_series.where.manufacturerConnection.edge.current AND this_OR_manufacturerConnection_Series_map.node.name = $this_OR_series.where.manufacturerConnection.node.name) OR EXISTS((this)-[:HAS_BRAND]->(:Series)) AND ANY(this_OR1_brandConnection_Series_map IN [(this)-[this_OR1_brandConnection_Series_SeriesBrandRelationship:HAS_BRAND]->(this_OR1_brandConnection_Series:Series)  | { node: this_OR1_brandConnection_Series, relationship: this_OR1_brandConnection_Series_SeriesBrandRelationship } ] WHERE this_OR1_brandConnection_Series_map.relationship.current = $this_OR1_series.where.brandConnection.edge.current AND this_OR1_brandConnection_Series_map.node.name = $this_OR1_series.where.brandConnection.node.name))
             RETURN this { .name, brand: head([ (this)-[:HAS_BRAND]->(this_brand:Series)   | this_brand { .name } ]), manufacturer: head([ (this)-[:HAS_MANUFACTURER]->(this_manufacturer:Series)   | this_manufacturer { .name } ]) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-              "{
-                  \\"this_series\\": {
-                      \\"where\\": {
-                          \\"manufacturerConnection\\": {
-                              \\"edge\\": {
-                                  \\"current\\": true
-                              },
-                              \\"node\\": {
-                                  \\"name\\": \\"abc\\"
-                              }
-                          },
-                          \\"brandConnection\\": {
-                              \\"edge\\": {
-                                  \\"current\\": true
-                              },
-                              \\"node\\": {
-                                  \\"name\\": \\"smart\\"
-                              }
-                          }
-                      }
-                  }
-              }"
-          `);
+            "{
+                \\"this_OR_series\\": {
+                    \\"where\\": {
+                        \\"manufacturerConnection\\": {
+                            \\"edge\\": {
+                                \\"current\\": true
+                            },
+                            \\"node\\": {
+                                \\"name\\": \\"abc\\"
+                            }
+                        }
+                    }
+                },
+                \\"this_OR1_series\\": {
+                    \\"where\\": {
+                        \\"brandConnection\\": {
+                            \\"edge\\": {
+                                \\"current\\": true
+                            },
+                            \\"node\\": {
+                                \\"name\\": \\"smart\\"
+                            }
+                        }
+                    }
+                }
+            }"
+        `);
     });
 });

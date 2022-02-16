@@ -24,7 +24,7 @@ import { Neo4jGraphQL } from "../../../src";
 
 describe("Node Directive", () => {
     describe("Plural option", () => {
-        test("Partial types with plural", () => {
+        test("Partial types with plural", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -35,7 +35,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -161,7 +161,7 @@ describe("Node Directive", () => {
             `);
         });
 
-        test("Partial types with same plural in both", () => {
+        test("Partial types with same plural in both", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -172,7 +172,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -298,7 +298,7 @@ describe("Node Directive", () => {
             `);
         });
 
-        test("Partial types with different plural", () => {
+        test("Partial types with different plural", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -309,7 +309,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -435,7 +435,7 @@ describe("Node Directive", () => {
             `);
         });
 
-        test("Collision between Type and plural", () => {
+        test("Collision between Type and plural", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -446,7 +446,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -557,7 +557,7 @@ describe("Node Directive", () => {
             `);
         });
 
-        test("Same plural on multiple nodes", () => {
+        test("Same plural on multiple nodes", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -568,7 +568,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -679,7 +679,7 @@ describe("Node Directive", () => {
             `);
         });
 
-        test("Collision with pluralize", () => {
+        test("Collision with pluralize", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Users") {
                     name: String
@@ -690,7 +690,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -801,7 +801,7 @@ describe("Node Directive", () => {
             `);
         });
 
-        test("Type collision with pluralize", () => {
+        test("Type collision with pluralize", async () => {
             const typeDefs = gql`
                 type User {
                     name: String
@@ -812,7 +812,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {

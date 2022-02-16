@@ -22,23 +22,23 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("@ignore directive", () => {
-    test("passes fields directly through with no generation", () => {
+describe("@computed directive", () => {
+    test("passes fields directly through with no generation", async () => {
         const typeDefs = gql`
             interface UserInterface {
-                ignored: String @ignore
+                computed: String @computed
             }
 
             type User implements UserInterface {
                 id: ID!
                 username: String!
                 password: String!
-                nickname: String! @ignore
-                ignored: String
+                nickname: String! @computed
+                computed: String
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -105,8 +105,8 @@ describe("@ignore directive", () => {
             }
 
             type User implements UserInterface {
+              computed: String
               id: ID!
-              ignored: String
               nickname: String!
               password: String!
               username: String!
@@ -126,7 +126,7 @@ describe("@ignore directive", () => {
             }
 
             interface UserInterface {
-              ignored: String
+              computed: String
             }
 
             input UserOptions {

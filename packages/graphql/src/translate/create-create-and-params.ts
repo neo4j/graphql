@@ -66,14 +66,14 @@ function createCreateAndParams({
 
             if (relationField.union) {
                 Object.keys(value).forEach((unionTypeName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
             } else if (relationField.interface) {
                 relationField.interface?.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
                 });
             } else {
-                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             refNodes.forEach((refNode) => {
@@ -110,7 +110,7 @@ function createCreateAndParams({
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                         if (relationField.properties) {
-                            const relationship = context.neoSchema.relationships.find(
+                            const relationship = context.relationships.find(
                                 (x) => x.properties === relationField.properties
                             ) as unknown as Relationship;
 

@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo } from "graphql";
-import { UnionTypeDefinitionNode } from "graphql/language/ast";
+import { GraphQLResolveInfo, GraphQLUnionType } from "graphql";
 import { execute } from "../../utils";
 import { ConnectionField, Context, CypherField } from "../../types";
 import { graphqlArgsToCompose } from "../to-compose";
@@ -52,17 +51,17 @@ export default function cypherResolver({
 
         const isArray = field.typeMeta.array;
 
+        const graphqlType = context.schema.getType(field.typeMeta.name);
+
         const preAuth = createAuthAndParams({ entity: field, context });
         if (preAuth[0]) {
             params = { ...params, ...preAuth[1] };
             cypherStrs.push(`CALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
-        const referenceNode = context.neoSchema.nodes.find((x) => x.name === field.typeMeta.name);
-        const unions = context.neoSchema.document.definitions.filter(
-            (x) => x.kind === "UnionTypeDefinition"
-        ) as UnionTypeDefinitionNode[];
-        const referenceUnion = unions.find((u) => u.name.value === field.typeMeta.name);
+        const referenceNode = context.nodes.find((x) => x.name === field.typeMeta.name);
+
+        const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
 
         if (referenceNode) {
             const recurse = createProjectionAndParams({
@@ -102,7 +101,7 @@ export default function cypherResolver({
             const headStrs: string[] = [];
             const referencedNodes =
                 referenceUnion?.types
-                    ?.map((u) => context.neoSchema.nodes.find((n) => n.name === u.name.value))
+                    ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
                     ?.filter((b) => b !== undefined)
                     ?.filter((n) => Object.keys(resolveTree.fieldsByTypeName).includes(n?.name ?? "")) || [];
 

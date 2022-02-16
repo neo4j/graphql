@@ -18,12 +18,6 @@ const driver = neo4j.driver(
     neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
 );
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-const apolloServer = new ApolloServer({ schema: neoSchema.schema });
-
-const startServer = apolloServer.start();
-
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Allow-Origin", "https://studio.apollographql.com");
@@ -33,7 +27,9 @@ export default async function handler(req, res) {
         return false;
     }
 
-    await startServer;
+    const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+    const apolloServer = new ApolloServer({ schema: await neoSchema.getSchema() });
+    await apolloServer.start();
     await apolloServer.createHandler({
         path: "/api/graphql",
     })(req, res);

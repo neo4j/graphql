@@ -23,8 +23,7 @@ import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
-describe("Cypher ignore directive", () => {
-    const secret = "secret";
+describe("Cypher computed directive", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -33,13 +32,13 @@ describe("Cypher ignore directive", () => {
             type User {
                 firstName: String!
                 lastName: String!
-                fullName: String! @ignore(dependsOn: ["firstName", "lastName"])
+                fullName: String! @computed(from: ["firstName", "lastName"])
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 

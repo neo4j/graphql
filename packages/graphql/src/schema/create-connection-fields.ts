@@ -22,6 +22,7 @@ import { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graph
 import { Node, Relationship } from "../classes";
 import { ConnectionField, ConnectionQueryArgs } from "../types";
 import { ObjectFields } from "./get-obj-field-meta";
+import getSortableFields from "./get-sortable-fields";
 import { addDirectedArgument } from "./directed-argument";
 import { connectionFieldResolver } from "./pagination";
 
@@ -140,6 +141,16 @@ function createConnectionFields({
                 node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
             });
 
+            if (schemaComposer.has(`${connectionField.relationship.typeMeta.name}Sort`)) {
+                const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);
+                connectionSort.addFields({
+                    node: `${connectionField.relationship.typeMeta.name}Sort`,
+                });
+                if (!composeNodeArgs.sort) {
+                    composeNodeArgs.sort = connectionSort.NonNull.List;
+                }
+            }
+
             if (connectionField.relationship.properties) {
                 const propertiesInterface = schemaComposer.getIFTC(connectionField.relationship.properties);
                 relationship.addInterface(propertiesInterface);
@@ -197,7 +208,7 @@ function createConnectionFields({
                 node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
             });
 
-            if (relatedNode.sortableFields.length) {
+            if (getSortableFields(relatedNode).length) {
                 const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);
                 connectionSort.addFields({
                     node: `${connectionField.relationship.typeMeta.name}Sort`,
@@ -239,7 +250,7 @@ function createConnectionFields({
                       scalarFields: relFields.scalarFields,
                       primitiveFields: relFields.primitiveFields,
                       pointFields: relFields.pointFields,
-                      ignoredFields: relFields.ignoredFields,
+                      computedFields: relFields.computedFields,
                   }
                 : {}),
         });

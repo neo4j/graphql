@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("162", () => {
-    test("2 instances of DeleteInput type created", () => {
+    test("2 instances of DeleteInput type created", async () => {
         const typeDefs = gql`
             type Tiger {
                 x: Int
@@ -40,7 +40,7 @@ describe("162", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

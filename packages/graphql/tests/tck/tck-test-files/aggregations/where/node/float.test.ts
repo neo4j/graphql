@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where node with Float", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -43,7 +42,7 @@ describe("Cypher Aggregations where node with Float", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 

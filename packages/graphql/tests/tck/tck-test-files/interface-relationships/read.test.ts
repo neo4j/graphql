@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Interface Relationships", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -57,7 +56,7 @@ describe("Interface Relationships", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -145,7 +144,7 @@ describe("Interface Relationships", () => {
         const query = gql`
             query {
                 actors {
-                    actedIn(options: { offset: 5, limit: 10 }) {
+                    actedIn(options: { offset: 5, limit: 10, sort: [{ title: DESC }] }) {
                         title
                         ... on Movie {
                             runtime
@@ -175,7 +174,7 @@ describe("Interface Relationships", () => {
             MATCH (this)-[:ACTED_IN]->(this_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
-            RETURN this { actedIn: collect(actedIn)[5..15] } as this"
+            RETURN this { actedIn: apoc.coll.sortMulti(collect(actedIn), ['title'])[5..15] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

@@ -49,7 +49,8 @@ describe("Connections Filtering", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
-        const { schema } = new Neo4jGraphQL({ typeDefs, driver });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const schema = await neoSchema.getSchema();
 
         const query = `
 			query ($movieTitle: String!) {

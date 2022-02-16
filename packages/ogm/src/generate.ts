@@ -100,15 +100,17 @@ function createAggregationInput({
     return [interfaceStrs.join("\n"), aggregateSelections];
 }
 
-function hasConnectOrCreate(node: any, schema: Neo4jGraphQL): boolean {
+function hasConnectOrCreate(node: any, ogm: OGM): boolean {
     for (const relation of node.relationFields) {
-        const refNode = getReferenceNode(schema, relation);
+        const refNode = getReferenceNode(ogm, relation);
         if (refNode && refNode.uniqueFields.length > 0) return true;
     }
     return false;
 }
 
 async function generate(options: IGenerateOptions): Promise<undefined | string> {
+    await options.ogm.init();
+
     const config: Types.GenerateOptions = {
         config: {},
         plugins: [
@@ -118,7 +120,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
         ],
         filename: options.outFile || "some-random-file-name-thats-not-used",
         documents: [],
-        schema: graphql.parse(graphql.printSchema(options.ogm.neoSchema.schema)),
+        schema: graphql.parse(graphql.printSchema(options.ogm.schema)),
         pluginMap: {
             typescript: typescriptPlugin,
         },
@@ -131,7 +133,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
     const aggregateSelections: any = {};
     const modeMap: Record<string, string> = {};
 
-    options.ogm.neoSchema.nodes.forEach((node) => {
+    options.ogm.nodes.forEach((node) => {
         const modelName = `${node.name}Model`;
         const hasFulltextArg = Boolean(node.fulltextDirective);
 
@@ -144,7 +146,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
             input: output,
         });
 
-        const nodeHasConnectOrCreate = hasConnectOrCreate(node, options.ogm.neoSchema);
+        const nodeHasConnectOrCreate = hasConnectOrCreate(node, options.ogm);
         const model = `
             ${Object.values(aggregationInput[1]).join("\n")}
             ${aggregationInput[0]}

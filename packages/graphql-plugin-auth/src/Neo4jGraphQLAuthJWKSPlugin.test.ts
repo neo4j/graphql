@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import Model, { ModelConstructor } from "./Model";
+import Neo4jGraphQLAuthJWKSPlugin from "./Neo4jGraphQLAuthJWKSPlugin";
 
-describe("Model", () => {
+describe("Neo4jGraphQLAuthJWKSPlugin", () => {
     test("should construct", () => {
-        // @ts-ignore
-        const input: ModelConstructor = { name: "Movie", selectionSet: "" };
+        const plugin = new Neo4jGraphQLAuthJWKSPlugin({
+            jwksEndpoint: "endpoint.com",
+        });
 
-        // @ts-ignore
-        expect(new Model(input)).toMatchObject({});
+        expect(plugin).toBeInstanceOf(Neo4jGraphQLAuthJWKSPlugin);
     });
 });

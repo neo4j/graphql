@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -27,6 +28,9 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 describe("should inject the auth into cypher directive", () => {
     let driver: Driver;
     const secret = "secret";
+    const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
+        secret: "secret",
+    });
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -51,7 +55,7 @@ describe("should inject the auth into cypher directive", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
         const query = `
             {
@@ -63,7 +67,7 @@ describe("should inject the auth into cypher directive", () => {
             const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query as string,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -107,7 +111,7 @@ describe("should inject the auth into cypher directive", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query as string,
                 contextValue: { driver, jwt },
             });
@@ -139,7 +143,7 @@ describe("should inject the auth into cypher directive", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
         const query = `
             mutation {
@@ -151,7 +155,7 @@ describe("should inject the auth into cypher directive", () => {
             const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query as string,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -199,7 +203,7 @@ describe("should inject the auth into cypher directive", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query as string,
                 contextValue: { driver, jwt },
             });
@@ -229,7 +233,7 @@ describe("should inject the auth into cypher directive", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
         const query = `
         {
@@ -247,7 +251,7 @@ describe("should inject the auth into cypher directive", () => {
             const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -299,7 +303,7 @@ describe("should inject the auth into cypher directive", () => {
             `);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, jwt },
             });

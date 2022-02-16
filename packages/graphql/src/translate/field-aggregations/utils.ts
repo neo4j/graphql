@@ -44,11 +44,11 @@ export function getFieldType(field: ResolveTree): AggregationType | undefined {
 }
 
 export function getReferenceNode(context: Context, relationField: RelationField): Node | undefined {
-    return context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name);
+    return context.nodes.find((x) => x.name === relationField.typeMeta.name);
 }
 
 export function getReferenceRelation(context: Context, connectionField: ConnectionField): Relationship | undefined {
-    return context.neoSchema.relationships.find((x) => x.name === connectionField.relationshipTypeName);
+    return context.relationships.find((x) => x.name === connectionField.relationshipTypeName);
 }
 
 export function getFieldByName(name: string, fields: Record<string, ResolveTree>): ResolveTree | undefined {

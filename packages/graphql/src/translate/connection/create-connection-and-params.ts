@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
+import { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
+import { mergeDeep } from "@graphql-tools/utils";
 import { Integer } from "neo4j-driver";
 import { ConnectionField, ConnectionSortArg, ConnectionWhereArg, Context } from "../../types";
 import { Node } from "../../classes";
@@ -34,6 +35,7 @@ import filterInterfaceNodes from "../../utils/filter-interface-nodes";
 import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
 import { CypherStatement } from "../types";
 import { isString } from "../../utils/utils";
+import { generateMissingOrAliasedFields } from "../utils/resolveTree";
 
 function createConnectionAndParams({
     resolveTree,
@@ -53,16 +55,19 @@ function createConnectionAndParams({
 
     let subquery = ["CALL {", `WITH ${nodeVariable}`];
 
-    const sortInput = resolveTree.args.sort as ConnectionSortArg[];
+    const sortInput = (resolveTree.args.sort ?? []) as ConnectionSortArg[];
+    // Fields of {edge, node} to sort on. A simple resolve tree will be added if not in selection set
+    // Since nodes of abstract types and edges are constructed sort will not work if field is not in selection set
+    const edgeSortFields = sortInput.map(({ edge = {} }) => Object.keys(edge)).flat();
+    const nodeSortFields = sortInput.map(({ node = {} }) => Object.keys(node)).flat();
+
     const afterInput = resolveTree.args.after;
     const firstInput = resolveTree.args.first;
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
     const relationshipVariable = `${nodeVariable}_${field.relationship.type.toLowerCase()}_relationship`;
-    const relationship = context.neoSchema.relationships.find(
-        (r) => r.name === field.relationshipTypeName
-    ) as Relationship;
-    const relatedNode = context.neoSchema.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
+    const relationship = context.relationships.find((r) => r.name === field.relationshipTypeName) as Relationship;
+    const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
 
     const relTypeStr = `[${relationshipVariable}:${field.relationship.type}]`;
 
@@ -77,6 +82,18 @@ function createConnectionAndParams({
         const relationshipFieldsByTypeName = connection.edges.fieldsByTypeName[field.relationshipTypeName];
 
         relationshipProperties = Object.values(relationshipFieldsByTypeName).filter((v) => v.name !== "node");
+
+        edgeSortFields.forEach((sortField) => {
+            // For every sort field on edge check to see if the field is in selection set
+            if (
+                !relationshipProperties.find((rt) => rt.name === sortField) ||
+                relationshipProperties.find((rt) => rt.name === sortField && rt.alias !== sortField)
+            ) {
+                // if it doesn't exist add a basic resolve tree to relationshipProperties
+                relationshipProperties.push({ alias: sortField, args: {}, fieldsByTypeName: {}, name: sortField });
+            }
+        });
+
         node = Object.values(relationshipFieldsByTypeName).find((v) => v.name === "node") as ResolveTree;
     }
 
@@ -91,8 +108,8 @@ function createConnectionAndParams({
 
     if (field.relationship.union || field.relationship.interface) {
         const relatedNodes = field.relationship.union
-            ? context.neoSchema.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
-            : context.neoSchema.nodes.filter(
+            ? context.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
+            : context.nodes.filter(
                   (x) =>
                       field.relationship?.interface?.implementations?.includes(x.name) &&
                       filterInterfaceNodes({ node: x, whereInput: whereInput?.node })
@@ -118,15 +135,26 @@ function createConnectionAndParams({
                 const nestedSubqueries: string[] = [];
 
                 if (node) {
-                    const nodeFieldsByTypeName: FieldsByTypeName = {
-                        [n.name]: {
-                            ...node?.fieldsByTypeName[n.name],
-                            ...node?.fieldsByTypeName[field.relationship.typeMeta.name],
+                    const selectedFields: Record<string, ResolveTree> = mergeDeep([
+                        node.fieldsByTypeName[n.name],
+                        ...n.interfaces.map((i) => node?.fieldsByTypeName[i.name.value]),
+                    ]);
+
+                    const mergedResolveTree: ResolveTree = mergeDeep<ResolveTree[]>([
+                        node,
+                        {
+                            ...node,
+                            fieldsByTypeName: {
+                                [n.name]: generateMissingOrAliasedFields({
+                                    fieldNames: nodeSortFields,
+                                    selection: selectedFields,
+                                }),
+                            },
                         },
-                    };
+                    ]);
 
                     const nodeProjectionAndParams = createProjectionAndParams({
-                        resolveTree: { ...node, fieldsByTypeName: nodeFieldsByTypeName },
+                        resolveTree: mergedResolveTree,
                         node: n,
                         context,
                         varName: relatedNodeVariable,
@@ -258,11 +286,12 @@ function createConnectionAndParams({
 
         const subqueryCypher = ["CALL {", subqueries.join("\nUNION\n"), "}"];
 
-        if (sortInput && sortInput.length) {
+        if (sortInput.length) {
             const sort = sortInput.map((s) =>
-                Object.entries(s.edge || [])
-                    .map(([f, direction]) => `edge.${f} ${direction}`)
-                    .join(", ")
+                [
+                    ...Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`),
+                    ...Object.entries(s.node || []).map(([f, direction]) => `edge.node.${f} ${direction}`),
+                ].join(", ")
             );
             subqueryCypher.push(`WITH edge ORDER BY ${sort.join(", ")}`);
         }
@@ -325,7 +354,7 @@ function createConnectionAndParams({
             subquery.push(`CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
-        if (sortInput && sortInput.length) {
+        if (sortInput.length) {
             const sort = sortInput.map((s) =>
                 [
                     ...Object.entries(s.edge || []).map(
