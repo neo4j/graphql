@@ -19,6 +19,7 @@
 
 import Debug from "debug";
 import { GraphQLResolveInfo, GraphQLSchema, print } from "graphql";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { JwtPayload } from "jsonwebtoken";
 import { Driver } from "neo4j-driver";
 import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
