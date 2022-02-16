@@ -24,8 +24,13 @@ import { DEBUG_AUTH } from "../constants";
 
 const debug = Debug(DEBUG_AUTH);
 
+type RequestLike = {
+    headers?: { authorization?: string; Authorization?: string };
+    cookies?: { token?: string };
+};
+
 export function getToken(context: Context): string | undefined {
-    const req = context instanceof IncomingMessage ? context : context.req || context.request;
+    const req: RequestLike = context instanceof IncomingMessage ? context : context.req || context.request;
     let token: string | undefined;
 
     if (!req) {
@@ -40,7 +45,9 @@ export function getToken(context: Context): string | undefined {
         return token;
     }
 
-    const authorization = (req.headers.authorization || req.headers.Authorization || req.cookies?.token) as string | undefined;
+    const authorization = (req?.headers?.authorization || req?.headers?.Authorization || req.cookies?.token) as
+        | string
+        | undefined;
     if (!authorization) {
         debug("Could not get .authorization, .Authorization or .cookies.token from req");
 
