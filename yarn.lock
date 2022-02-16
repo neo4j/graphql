@@ -1724,7 +1724,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-plugin-auth@workspace:packages/graphql-plugin-auth"
   dependencies:
-    "@types/debug": ^4
+    "@types/debug": 4.1.7
     "@types/jest": 27.4.0
     "@types/jsonwebtoken": 8.5.1
     "@types/node": 16.11.24
@@ -2167,7 +2167,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:^4":
+"@types/debug@npm:4.1.7":
   version: 4.1.7
   resolution: "@types/debug@npm:4.1.7"
   dependencies:
