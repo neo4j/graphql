@@ -179,7 +179,36 @@ sure to check the up-to-date documentation on xref::type-definitions/custom-dire
 Some automatically generated types have changed to improve consistency.
 These should not require any changes from most developers, unless types names are directly used.
 
-If you are using auto-generated type names, please check the full list of xref::guides/v3-migration/generated-types.adoc[generated types changes].
+Some automatically generated types have changed to improve consistency.
+These should not require any changes from the developer in most cases, unless in cases where types names are directly used.
+
+=== OnCreate Node Types
+Input types for `onCreate` in `connectOrCreate` mutations no longer accept relation fields.
+
+=== Non Nullable Aggregation Results
+Aggregation results may now be non-nullable for required fields, yielding more accurate types.
+
+For example, for the following types:
+[source, graphql, indent=0]
+----
+type User {
+    name: String!
+    lastName: String
+}
+----
+
+Will yield different types for aggregations over `name` and `lastName`:
+[source, graphql, indent=0]
+----
+type UserAggregateSelection {
+  count: Int!
+  name: StringAggregateSelectionNonNullable!
+  lastName: StringAggregateSelectionNullable!
+}
+----
+
+=== ConnectionWhere types renamed
+`ConnectionWhere` types renamed to improve consistency with other similarly named types.
 
 == Neo4j support
 Neo4j 4.1 is no longer supported in 3.0.0, inline with the https://neo4j.com/developer/kb/neo4j-supported-versions/[supported versions list].

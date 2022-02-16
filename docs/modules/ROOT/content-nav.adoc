@@ -69,7 +69,6 @@
 **** xref:guides/v2-migration/unions.adoc[]
 **** xref:guides/v2-migration/miscellaneous.adoc[]
 *** xref:guides/v3-migration/index.adoc[]
-**** xref:guides/v3-migration/generated-types.adoc[]
 ** xref:troubleshooting/index.adoc[]
 *** xref:troubleshooting/faqs.adoc[]
 *** xref:troubleshooting/security.adoc[]
