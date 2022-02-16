@@ -19,6 +19,7 @@
 
 import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
+import { JwtPayload } from "jsonwebtoken";
 import { Driver, Integer } from "neo4j-driver";
 import { Node, Relationship } from "./classes";
 import { RelationshipQueryDirectionOption } from "./constants";
@@ -31,7 +32,7 @@ export type DriverConfig = {
 export interface AuthContext {
     isAuthenticated: boolean;
     roles: string[];
-    jwt?: any;
+    jwt?: JwtPayload;
 }
 
 export interface Context {
@@ -44,7 +45,7 @@ export interface Context {
     auth?: AuthContext;
     queryOptions?: CypherQueryOptions;
     plugins?: Neo4jGraphQLPlugins;
-    jwt?: any;
+    jwt?: JwtPayload;
     [k: string]: any;
 }
 
