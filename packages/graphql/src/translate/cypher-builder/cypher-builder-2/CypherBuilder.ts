@@ -22,7 +22,7 @@ import { CypherASTNode, CypherASTRoot, CypherContext } from "./cypher-builder-ty
 
 export { Node, Param } from "./cypher-builder-references";
 
-type Params = Record<string, string | Param>;
+type Params = Record<string, Param<any>>;
 
 export class Query extends CypherASTRoot {
     public create(node: Node, params: Params): Query {

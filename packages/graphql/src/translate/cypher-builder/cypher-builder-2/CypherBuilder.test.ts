@@ -21,10 +21,10 @@ import * as CypherBuilder from "./CypherBuilder";
 
 describe("CypherBuilder", () => {
     test("Call with create", () => {
-        const idParam = new CypherBuilder.Param();
+        const idParam = new CypherBuilder.Param("my-id");
         const movieNode = new CypherBuilder.Node({
             labels: ["Movie"],
-            parameters: { test: new CypherBuilder.Param(), id: idParam },
+            parameters: { test: new CypherBuilder.Param("test-value"), id: idParam },
         });
 
         const subQuery = new CypherBuilder.Query().create(movieNode, { id: idParam }).return(movieNode);
@@ -38,6 +38,11 @@ RETURN this0 }
 RETURN this0 {.id} AS myalias"
 `);
 
-        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        expect(queryResult.params).toMatchInlineSnapshot(`
+Object {
+  "param1": "test-value",
+  "param2": "my-id"
+}
+`);
     });
 });

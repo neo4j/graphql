@@ -1,3 +1,5 @@
+import { Param } from "./cypher-builder-references";
+
 type CypherResult = {
     cypher: string;
     params: Record<string, string>;
@@ -83,8 +85,12 @@ export class CypherContext {
         return id;
     }
 
-    public getParams(): Record<string, string> {
-        return {};
+    public getParams(): Record<string, any> {
+        return this.params.reduce((acc, param: Param<any>) => {
+            const newParam = param.getParam(this);
+            acc[newParam[0]] = newParam[1];
+            return acc;
+        }, {} as Record<string, any>);
     }
 
     private addReference(reference: CypherReference): string {
@@ -96,5 +102,11 @@ export class CypherContext {
 
     private getNextReferenceIndex(): number {
         return this.references.size;
+    }
+
+    private get params(): Array<Param<any>> {
+        return Array.from(this.references.keys()).filter((r) => {
+            return r instanceof Param;
+        }) as Array<Param<any>>;
     }
 }
