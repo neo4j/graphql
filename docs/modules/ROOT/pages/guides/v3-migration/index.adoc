@@ -213,7 +213,7 @@ These should not require any changes from most developers, unless types names ar
 Some automatically generated types have changed to improve consistency.
 These should not require any changes from the developer in most cases, unless in cases where types names are directly used.
 
-=== OnCreate Node Types
+=== Removal of nested operation fields for `connectOrCreate`
 Input types for `onCreate` in `connectOrCreate` operations no longer accept relationship fields. They were originally added in error and did not function as one would expect, so there is no regression in functionality.
 
 === Non Nullable Aggregation Results
