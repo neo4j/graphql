@@ -23,3 +23,6 @@ labels:
   - label: introspector
     files:
       - packages/introspector/src/.*
+  - label: plugin-auth
+    files:
+      - packages/graphql-plugin-auth/src/.*

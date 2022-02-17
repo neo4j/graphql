@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
+import gql from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -46,7 +46,6 @@ describe("tck/rfcs/query-limits", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { jwt: { secret } },
         });
     });
 

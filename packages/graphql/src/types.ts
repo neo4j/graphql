@@ -19,10 +19,8 @@
 
 import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { JwtPayload } from "jsonwebtoken";
 import { Driver, Integer } from "neo4j-driver";
 import { Node, Relationship } from "./classes";
-import { Neo4jGraphQLJWT } from "./classes/Neo4jGraphQL";
 import { RelationshipQueryDirectionOption } from "./constants";
 
 export type DriverConfig = {
@@ -39,14 +37,14 @@ export interface AuthContext {
 export interface Context {
     driver: Driver;
     driverConfig?: DriverConfig;
-    jwtConfig?: Neo4jGraphQLJWT;
     resolveTree: ResolveTree;
     nodes: Node[];
     relationships: Relationship[];
     schema: GraphQLSchema;
-    jwt?: JwtPayload;
     auth?: AuthContext;
     queryOptions?: CypherQueryOptions;
+    plugins?: Neo4jGraphQLPlugins;
+    jwt?: JwtPayload;
     [k: string]: any;
 }
 
@@ -335,3 +333,24 @@ export interface NestedRecord<T> extends Record<string | symbol | number, T | Ne
 
 /** Input field for graphql-compose */
 export type InputField = { type: string; defaultValue?: string } | string;
+
+export interface Neo4jGraphQLAuthPlugin {
+    rolesPath?: string;
+
+    decode<T>(token: string): Promise<T | undefined>;
+}
+
+export interface Neo4jGraphQLPlugins {
+    auth?: Neo4jGraphQLAuthPlugin;
+}
+
+export interface JwtPayload {
+    [key: string]: any;
+    iss?: string | undefined;
+    sub?: string | undefined;
+    aud?: string | string[] | undefined;
+    exp?: number | undefined;
+    nbf?: number | undefined;
+    iat?: number | undefined;
+    jti?: string | undefined;
+}

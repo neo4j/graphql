@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver, Session } from "neo4j-driver";
 import gql from "graphql-tag";
 import neo4j from "./neo4j";
@@ -64,7 +65,15 @@ describe("Additional Labels", () => {
     });
 
     test("should find nodes with jwt labels passed as a request", async () => {
-        const ogm = new OGM({ typeDefs, driver, config: { jwt: { secret } } });
+        const ogm = new OGM({
+            typeDefs,
+            driver,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
+        });
 
         await ogm.init();
 
@@ -79,7 +88,15 @@ describe("Additional Labels", () => {
     });
 
     test("should find nodes with jwt labels passed as part of context", async () => {
-        const ogm = new OGM({ typeDefs, driver, config: { jwt: { secret } } });
+        const ogm = new OGM({
+            typeDefs,
+            driver,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
+        });
 
         await ogm.init();
 
