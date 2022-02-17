@@ -55,12 +55,12 @@ such as `Director` remain unchanged.
 === Relationship cardinality
 Runtime checks for "one-to*" relationships have been added in this release, ensuring that the correct number of relationships exist. This means that some
 databases with inconsistent relationships between the schema definition and the actual data may now fail in some queries.
-This may have happened due to different reasons such as:
-* Direct changes in the database.
-* Changes to the Type Definitions, leading to an inconsistent database.
+This may have happened due to different reasons such as direct changes in the database or changes to the type definitions.
+Previous versions of `@neo4j/graphql` did not have any consistency check, so normal use of these versions may have lead to
+inconsistent relationships.
 
 For these cases, please ensure that the database is following your schema definition or update the schema to reflect the
-actual existing relationships.
+actual existing relationships, taking care of which relationships are 1-to-* or many-to-many.
 
 == Count query no longer supported
 Queries using `count` at the root level are no longer supported. For example:
