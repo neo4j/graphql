@@ -16,14 +16,10 @@ Feel free to add/remove subheadings below as appropriate:
 
 What risks might cause us to go over the appetite described above?
 
-## Security prompt
+### Security consideration
 
-Reason: This can generate additional acceptance criteria, test cases, or even spin-off attacker centric use cases/stories
-
-[] (1) How can a malicious user abuse this? - Discussed
-[] (2) How can we prevent that - Discussed
-[] Tick this if you think this card has NO security impact
-[] Tick this to ask the Neo4j security team for help answering (1) or (2)
+Please take some time to think about potential security issues/considerations for the proposed solution.
+For example: How can a malicious user abuse this? How can we prevent that in such case?
 
 ## Out of Scope
 
