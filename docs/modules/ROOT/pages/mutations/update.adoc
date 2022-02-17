@@ -100,10 +100,10 @@ mutation {
 }
 ----
 
-== `connectOrCreate` relations
-If a related node has a `@unique` or `@id` directive defined, `connectOrCreate` can be used in a nested update to perform a `MERGE` operation on the related node, creating a new relation and the related node if it doesn't exists.
+== `connectOrCreate` relationships
+If a related node has a `@unique` or `@id` directive defined, `connectOrCreate` can be used in a nested update to perform a `MERGE` operation on the related node, creating a new relationship and the related node if it doesn't exist.
 
-Consider the following type definition:
+Consider the following type definitions:
 
 [source, graphql, indent=0]
 ----
@@ -115,25 +115,25 @@ type Actor {
 type Movie {
     title: String
     id: ID! @id
-    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
 }
 ----
 
-Because a movie id is unique, `connectOrCreate` can be used in an Actor mutation to ensure a movie exists before connecting, note that only `@unique` parameters can be used in `where`:
+Because a movie ID is unique, `connectOrCreate` can be used in an Actor mutation to ensure a movie exists before connecting. Note that only `@unique` or `@id` fields can be used in `where`:
 
 [source, graphql, indent=0]
 ----
-mutation Mutation {
+mutation {
   updateActors(
     update: {
         movies: {
           connectOrCreate: {
-            where: {node: {id: "1234"}}
-            onCreate: {node: {title: "Forrest Gump"}}
+            where: { node: { id: "1234" } }
+            onCreate: { node: { title: "Forrest Gump" } }
           }
         }
     },
-    where: { name: "Tom Hanks"}
+    where: { name: "Tom Hanks" }
   ) {
     info {
       nodesCreated
@@ -142,21 +142,21 @@ mutation Mutation {
 }
 ----
 
-In this case, all actors matching _"Tom Hanks"_ will be connected to the Movie with id _"1234"_. If the movie with given id does not exists, it will be created with the title _"Forrest Gump"_.
+In this case, all actors matching `"Tom Hanks"` will be connected to the Movie with id `"1234"`. If the movie with given ID does not exist, it will be created with the title `"Forrest Gump"`.
 
 For update operations, `connectOrCreate` can also be used as a top-level input:
 
 [source, graphql, indent=0]
 ----
-mutation Mutation {
+mutation {
   updateActors(
       connectOrCreate: {
         movies: {
-            where: {node: {id: "1234"}}
-            onCreate: {node: {title: "Forrest Gump"}}
+            where: { node: { id: "1234" } }
+            onCreate: { node: { title: "Forrest Gump" } }
         }
       },
-      where: { name: "Tom Hanks"}
+      where: { name: "Tom Hanks" }
   ) {
     info {
       nodesCreated

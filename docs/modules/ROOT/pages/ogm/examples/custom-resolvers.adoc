@@ -110,13 +110,15 @@ const neoSchema = new Neo4jGraphQL({
     }
 });
 
-const server = new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ req }) => ({ req }),
-});
+Promise.all([neoSchema.getSchema(), ogm.init()]).then(([schema]) => {
+    const server = new ApolloServer({
+        schema,
+        context: ({ req }) => ({ req }),
+    });
 
-server.listen().then(({ url }) => {
-    console.log(`🚀 Server ready at ${url}`);
+    server.listen().then(({ url }) => {
+        console.log(`🚀 Server ready at ${url}`);
+    });
 });
 ----
 

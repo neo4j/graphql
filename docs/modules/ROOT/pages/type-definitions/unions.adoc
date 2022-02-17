@@ -1,7 +1,7 @@
 [[type-definitions-unions]]
-= Unions
+= Union Types
 
-The Neo4j GraphQL Library supports the use of unions on relationship fields. For example, the following schema defines a `User` type, that has a relationship `HAS_CONTENT`, of type `[Content]`. `Content` is of type `union` representing either a `Blog` or a `Post`.
+The Neo4j GraphQL Library supports the use of unions on relationship fields. For example, the following schema defines a `User` type, that has a relationship `HAS_CONTENT`, of type `[Content!]!`. `Content` is of type `union` representing either a `Blog` or a `Post`.
 
 [source, graphql, indent=0]
 ----
