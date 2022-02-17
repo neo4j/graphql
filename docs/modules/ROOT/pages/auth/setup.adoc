@@ -20,7 +20,7 @@ const neoSchema = new Neo4jGraphQL({
 });
 ----
 
-If you would like to use JWKS decoding then use the `Neo4jGraphQLAuthJWKSPlugin` class: 
+If you would like to use JWKS decoding then use the `Neo4jGraphQLAuthJWKSPlugin` class:
 
 [source, javascript, indent=0]
 ----
@@ -37,7 +37,7 @@ const neoSchema = new Neo4jGraphQL({
 });
 ----
 
-If you need to create your own auth plugin then ensure it adheres to the following interface: 
+If you need to create your own auth plugin then ensure it adheres to the following interface:
 
 [source, javascript, indent=0]
 ----
