@@ -186,7 +186,7 @@ type Movie {
     title: String
     description: String
     year: Int
-    actors(limit: Int = 10): [Actor]
+    actors(limit: Int = 10): [Actor!]!
         @relationship(type: "ACTED_IN", direction: IN)
     similarMovies(limit: Int = 10): [Movie]
         @cypher(

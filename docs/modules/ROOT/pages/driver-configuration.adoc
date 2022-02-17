@@ -247,7 +247,7 @@ const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 neoSchema.getSchema().then((schema) => {
     const server = new ApolloServer({
         schema,
-        context: (req) => ({ driverConfig: { bookmarks: [req.headers["x-neo4j-bookmark"]] } }),
+        context: ({ req }) => ({ driverConfig: { bookmarks: [req.headers["x-neo4j-bookmark"]] } }),
     });
 });
 ----

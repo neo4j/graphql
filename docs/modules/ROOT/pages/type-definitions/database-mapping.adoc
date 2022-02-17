@@ -132,12 +132,15 @@ type User @node(label: "$context.appId") {
 ----
 
 When running the server with Apollo:
+
 [source, js, indent=0]
 ----
-new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ req }) => ({ req, appId: "myApp" }),
-});
+neoSchema.getSchema().then((schema) => {
+    new ApolloServer({
+        schema,
+        context: ({ req }) => ({ req, appId: "myApp" }),
+    });
+})
 ----
 
 ==== `additionalLabels`
