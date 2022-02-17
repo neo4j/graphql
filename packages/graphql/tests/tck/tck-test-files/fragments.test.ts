@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher Fragment", () => {
@@ -49,18 +50,23 @@ describe("Cypher Fragment", () => {
 
             type Tile implements Ownable {
                 id: ID! @id
-                owner: User @relationship(type: "OWNS", direction: IN)
+                owner: User! @relationship(type: "OWNS", direction: IN)
             }
 
             type Character implements Ownable {
                 id: ID! @id
-                owner: User @relationship(type: "OWNS", direction: IN)
+                owner: User! @relationship(type: "OWNS", direction: IN)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
         });
     });
 

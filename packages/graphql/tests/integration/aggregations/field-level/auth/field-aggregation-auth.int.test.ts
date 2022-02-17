@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { IncomingMessage } from "http";
 import neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
-import { generateUniqueType } from "../../../../../tests/utils/graphql-types";
+import { generateUniqueType } from "../../../../utils/graphql-types";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 
 describe("Field Level Aggregations Auth", () => {
@@ -36,14 +37,14 @@ describe("Field Level Aggregations Auth", () => {
         year: Int
         createdAt: DateTime
         testId: Int
-        ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN)
+        ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
     }
 
     type ${typeActor.name} {
         name: String
         year: Int
         createdAt: DateTime
-        ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT)
+        ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
     }`;
     const secret = "secret";
 
@@ -83,10 +84,10 @@ describe("Field Level Aggregations Auth", () => {
 
                 neoSchema = new Neo4jGraphQL({
                     typeDefs: extendedTypeDefs,
-                    config: {
-                        jwt: {
-                            secret,
-                        },
+                    plugins: {
+                        auth: new Neo4jGraphQLAuthJWTPlugin({
+                            secret: "secret",
+                        }),
                     },
                 });
 
@@ -103,7 +104,7 @@ describe("Field Level Aggregations Auth", () => {
                 }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -120,7 +121,7 @@ describe("Field Level Aggregations Auth", () => {
                 }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -137,11 +138,11 @@ describe("Field Level Aggregations Auth", () => {
                 }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
 
             test("rejects unauthenticated requests to actor -> movieAggregate", async () => {
@@ -154,11 +155,11 @@ describe("Field Level Aggregations Auth", () => {
                 }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
         });
         describe(`allow requests ~ ${testCase.name}`, () => {
@@ -172,10 +173,10 @@ describe("Field Level Aggregations Auth", () => {
 
                 neoSchema = new Neo4jGraphQL({
                     typeDefs: extendedTypeDefs,
-                    config: {
-                        jwt: {
-                            secret,
-                        },
+                    plugins: {
+                        auth: new Neo4jGraphQLAuthJWTPlugin({
+                            secret: "secret",
+                        }),
                     },
                 });
             });
@@ -191,7 +192,7 @@ describe("Field Level Aggregations Auth", () => {
 
                 const req = createJwtRequest(secret, { sub: 1234 });
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -208,11 +209,11 @@ describe("Field Level Aggregations Auth", () => {
                     }`;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
 
             test("authenticated query with wrong credentials", async () => {
@@ -226,11 +227,11 @@ describe("Field Level Aggregations Auth", () => {
                 const invalidReq = createJwtRequest(secret, { sub: 2222 });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req: invalidReq, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             });
         });
     });

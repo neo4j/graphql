@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#413", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -33,7 +32,7 @@ describe("#413", () => {
             # Cannot use 'type Node'
             type Movie {
                 title: String
-                actors: [Person] @relationship(type: "ACTED_IN", direction: OUT)
+                actors: [Person!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Person {
@@ -43,7 +42,7 @@ describe("#413", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 

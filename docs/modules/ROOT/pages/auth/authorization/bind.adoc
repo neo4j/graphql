@@ -93,7 +93,7 @@ type User {
 
 type Post {
     content: String
-    creator: User @relationship(type: "HAS_POST", direction: IN)
+    creator: User! @relationship(type: "HAS_POST", direction: IN)
 }
 
 extend type Post @auth(rules: [

@@ -23,14 +23,14 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Point", () => {
-    test("Point", () => {
+    test("Point", async () => {
         const typeDefs = gql`
             type Movie {
                 filmedAt: Point!
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -70,11 +70,15 @@ describe("Point", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               filmedAt: SortDirection
             }
@@ -90,11 +94,11 @@ describe("Point", () => {
               filmedAt_DISTANCE: PointDistance
               filmedAt_GT: PointDistance
               filmedAt_GTE: PointDistance
-              filmedAt_IN: [PointInput]
+              filmedAt_IN: [PointInput!]
               filmedAt_LT: PointDistance
               filmedAt_LTE: PointDistance
               filmedAt_NOT: PointInput
-              filmedAt_NOT_IN: [PointInput]
+              filmedAt_NOT_IN: [PointInput!]
             }
 
             type Mutation {
@@ -126,7 +130,6 @@ describe("Point", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -147,19 +150,18 @@ describe("Point", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
-    test("CartesianPoint", () => {
+    test("CartesianPoint", async () => {
         const typeDefs = gql`
             type Machine {
                 partLocation: CartesianPoint!
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -218,11 +220,15 @@ describe("Point", () => {
             input MachineOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MachineSort objects to sort Machines by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MachineSort]
+              \\"\\"\\"
+              Specify one or more MachineSort objects to sort Machines by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MachineSort!]
             }
 
-            \\"\\"\\"Fields to sort Machines by. The order in which sorts are applied is not guaranteed when specifying many fields in one MachineSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Machines by. The order in which sorts are applied is not guaranteed when specifying many fields in one MachineSort object.
+            \\"\\"\\"
             input MachineSort {
               partLocation: SortDirection
             }
@@ -238,11 +244,11 @@ describe("Point", () => {
               partLocation_DISTANCE: CartesianPointDistance
               partLocation_GT: CartesianPointDistance
               partLocation_GTE: CartesianPointDistance
-              partLocation_IN: [CartesianPointInput]
+              partLocation_IN: [CartesianPointInput!]
               partLocation_LT: CartesianPointDistance
               partLocation_LTE: CartesianPointDistance
               partLocation_NOT: CartesianPointInput
-              partLocation_NOT_IN: [CartesianPointInput]
+              partLocation_NOT_IN: [CartesianPointInput!]
             }
 
             type Mutation {
@@ -254,7 +260,6 @@ describe("Point", () => {
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
-              machinesCount(where: MachineWhere): Int!
             }
 
             enum SortDirection {
@@ -275,19 +280,18 @@ describe("Point", () => {
             type UpdateMachinesMutationResponse {
               info: UpdateInfo!
               machines: [Machine!]!
-            }
-            "
+            }"
         `);
     });
 
-    test("Points", () => {
+    test("Points", async () => {
         const typeDefs = gql`
             type Movie {
                 filmedAt: [Point!]!
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -365,7 +369,6 @@ describe("Point", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             type UpdateInfo {
@@ -379,19 +382,18 @@ describe("Point", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
-    test("CartesianPoints", () => {
+    test("CartesianPoints", async () => {
         const typeDefs = gql`
             type Machine {
                 partLocations: [CartesianPoint!]!
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -469,7 +471,6 @@ describe("Point", () => {
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
-              machinesCount(where: MachineWhere): Int!
             }
 
             type UpdateInfo {
@@ -483,8 +484,7 @@ describe("Point", () => {
             type UpdateMachinesMutationResponse {
               info: UpdateInfo!
               machines: [Machine!]!
-            }
-            "
+            }"
         `);
     });
 });

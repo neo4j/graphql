@@ -27,11 +27,19 @@ import { Neo4jGraphQL } from "../../src/classes";
 const GraphQLUpperCaseString = new GraphQLScalarType({
     name: "UpperCaseString",
     description: "The `UpperCaseString` scalar type returns all strings in lower case",
-    serialize: (value: string) => {
-        return value.toUpperCase();
+    serialize: (value) => {
+        if (typeof value === "string") {
+            return value.toUpperCase();
+        }
+
+        throw new Error("Unknown type");
     },
-    parseValue: (value: string) => {
-        return value.toUpperCase();
+    parseValue: (value) => {
+        if (typeof value === "string") {
+            return value.toUpperCase();
+        }
+
+        throw new Error("Unknown type");
     },
     parseLiteral: (ast) => {
         if (ast.kind === Kind.STRING) {
@@ -89,7 +97,7 @@ describe("scalars", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -137,7 +145,7 @@ describe("scalars", () => {
             `);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });

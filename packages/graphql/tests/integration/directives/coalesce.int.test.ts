@@ -20,10 +20,9 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import pluralize from "pluralize";
-import camelCase from "camelcase";
 import { Neo4jGraphQL } from "../../../src/classes";
 import neo4j from "../neo4j";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("@coalesce directive", () => {
     let driver: Driver;
@@ -36,7 +35,7 @@ describe("@coalesce directive", () => {
         await driver.close();
     });
 
-    test("on non-primitive field should throw an error", () => {
+    test("on non-primitive field should throw an error", async () => {
         const typeDefs = `
             type User {
                 name: String!
@@ -44,15 +43,16 @@ describe("@coalesce directive", () => {
             }
         `;
 
-        expect(
-            () =>
-                new Neo4jGraphQL({
-                    typeDefs,
-                })
-        ).toThrow("@coalesce directive can only be used on primitive type fields");
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(
+            "@coalesce directive can only be used on primitive type fields"
+        );
     });
 
-    test("on DateTime field should throw an error", () => {
+    test("on DateTime field should throw an error", async () => {
         const typeDefs = `
             type User {
                 name: String!
@@ -60,37 +60,36 @@ describe("@coalesce directive", () => {
             }
         `;
 
-        expect(
-            () =>
-                new Neo4jGraphQL({
-                    typeDefs,
-                })
-        ).toThrow("@coalesce is not supported by DateTime fields at this time");
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(
+            "@coalesce is not supported by DateTime fields at this time"
+        );
     });
 
-    test("with an argument with a type which doesn't match the field should throw an error", () => {
+    test("with an argument with a type which doesn't match the field should throw an error", async () => {
         const typeDefs = `
             type User {
                 name: String! @coalesce(value: 2)
             }
         `;
 
-        expect(
-            () =>
-                new Neo4jGraphQL({
-                    typeDefs,
-                })
-        ).toThrow("coalesce() value for User.name does not have matching type String");
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(
+            "coalesce() value for User.name does not have matching type String"
+        );
     });
 
     test("allows querying with null properties without affecting the returned result", async () => {
-        const type = `${generate({
-            charset: "alphabetic",
-        })}Movie`;
-        const pluralType = pluralize(camelCase(type));
+        const type = generateUniqueType("Movie");
 
         const typeDefs = `
-            type ${type} {
+            type ${type.name} {
                 id: ID!
                 classification: String @coalesce(value: "Unrated")
             }
@@ -102,7 +101,7 @@ describe("@coalesce directive", () => {
 
         const query = `
             query {
-                ${pluralType}(where: {classification: "Unrated"}){
+                ${type.plural}(where: {classification: "Unrated"}){
                     id
                     classification
                 }
@@ -117,20 +116,75 @@ describe("@coalesce directive", () => {
 
         try {
             await session.run(`
-                CREATE (:${type} {id: "${id}"})
+                CREATE (:${type.name} {id: "${id}"})
             `);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any)[pluralType][0]).toEqual({
+            expect((gqlResult.data as any)[type.plural][0]).toEqual({
                 id,
                 classification: null,
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("with enum values", async () => {
+        const type = generateUniqueType("Movie");
+
+        const typeDefs = `
+            enum Status {
+                ACTIVE
+                INACTIVE
+            }
+            type ${type.name} {
+                id: ID
+                status: Status @coalesce(value: ACTIVE)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const query = `
+            query {
+                ${type.plural}(where: {status: ACTIVE}){
+                    id
+                    status
+                }
+            }
+        `;
+
+        const session = driver.session();
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        try {
+            await session.run(`
+                CREATE (:${type.name} {id: "${id}"})
+            `);
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect((gqlResult.data as any)[type.plural][0]).toEqual({
+                id,
+                status: null,
             });
         } finally {
             await session.close();

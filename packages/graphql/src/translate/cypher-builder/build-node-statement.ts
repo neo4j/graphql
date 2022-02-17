@@ -19,20 +19,23 @@
 
 import { Context } from "../../types";
 import { CypherStatement, CypherParams } from "../types";
-import { Node } from "../../classes";
+import { Neo4jGraphQLCypherBuilderError, Node } from "../../classes";
 import { serializeParameters, padLeft } from "./utils";
 
-export function buildNodeStatement({
-    varName,
-    node,
-    context,
-    parameters,
-}: {
-    varName: string;
-    node?: Node;
+type NodeStatementBasicOptions = {
     context: Context;
     parameters?: Record<string, any>;
-}): CypherStatement {
+};
+
+type NodeExtraOptions = { varName?: string; node: Node } | { varName: string; node?: Node };
+
+type NodeStatementOptions = NodeStatementBasicOptions & NodeExtraOptions;
+
+export function buildNodeStatement({ varName = "", node, context, parameters }: NodeStatementOptions): CypherStatement {
+    if (!node && !varName) {
+        throw new Neo4jGraphQLCypherBuilderError("Cannot build node statement without node nor varName");
+    }
+
     const labels = node ? node.getLabelString(context) : "";
     const [parametersQuery, parsedParameters] = parseNodeParameters(varName, parameters);
 
@@ -40,5 +43,6 @@ export function buildNodeStatement({
 }
 
 function parseNodeParameters(nodeVar: string, parameters: CypherParams | undefined): CypherStatement {
+    if (!nodeVar && parameters) throw new Error("noveVar not defined with parameters");
     return serializeParameters(`${nodeVar}_node`, parameters);
 }

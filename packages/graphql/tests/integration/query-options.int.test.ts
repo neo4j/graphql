@@ -41,13 +41,13 @@ describe("query options", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: IN)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -80,7 +80,7 @@ describe("query options", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },

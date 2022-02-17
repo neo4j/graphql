@@ -39,12 +39,12 @@ describe("Errors", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
         });
 
         expect(gqlResult.errors).toHaveLength(1);
-        expect((gqlResult.errors as GraphQLError[])[0].message).toEqual(
+        expect((gqlResult.errors as GraphQLError[])[0].message).toBe(
             "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
         );
     });

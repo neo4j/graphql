@@ -22,10 +22,10 @@ import { validateSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("https://github.com/neo4j/graphql/issues/556", () => {
-    test("should compile type defs with no errors", () => {
+    test("should compile type defs with no errors", async () => {
         const typeDefs = gql`
             type Journalist {
-                articles: [Article]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle")
+                articles: [Article!]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle")
             }
 
             interface HasArticle @relationshipProperties {
@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
             type Article {
                 id: ID! @id
                 blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
-                images: [Image!] @relationship(type: "HAS_IMAGE", direction: OUT)
+                images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
             }
 
             interface HasBlock @relationshipProperties {
@@ -65,27 +65,32 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
             }
 
             type PDFImage implements Image {
-                featuredIn: [Article!] @relationship(type: "HAS_IMAGE", direction: IN)
+                featuredIn: [Article!]! @relationship(type: "HAS_IMAGE", direction: IN)
                 url: String!
             }
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        expect(neoSchema.schema).toBeDefined();
 
-        const errors = validateSchema(neoSchema.schema);
+        const schema = await neoSchema.getSchema();
+
+        expect(schema).toBeDefined();
+
+        const errors = validateSchema(schema);
         expect(errors).toEqual([]);
     });
-    test("should compile empty type def with error", () => {
+    test("should compile empty type def with error", async () => {
         const typeDefs = `
             type Journalist {
             }
 
         `;
 
-        expect(() => new Neo4jGraphQL({ typeDefs })).toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow();
     });
-    test("should compile empty input with error", () => {
+    test("should compile empty input with error", async () => {
         const typeDefs = `
             input JournalistInput {
             }
@@ -95,9 +100,11 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
 
         `;
 
-        expect(() => new Neo4jGraphQL({ typeDefs })).toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow();
     });
-    test("should compile empty interface with error", () => {
+    test("should compile empty interface with error", async () => {
         const typeDefs = `
             interface Person {
             }
@@ -108,6 +115,8 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
 
         `;
 
-        expect(() => new Neo4jGraphQL({ typeDefs })).toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow();
     });
 });

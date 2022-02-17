@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
@@ -48,7 +49,12 @@ describe("Create or Connect", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true, jwt: { secret } },
+                config: { enableRegex: true },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
         });
 
@@ -204,7 +210,12 @@ describe("Create or Connect", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true, jwt: { secret } },
+                config: { enableRegex: true },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
         });
 
@@ -492,7 +503,12 @@ describe("Create or Connect", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true, jwt: { secret } },
+                config: { enableRegex: true },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
         });
 

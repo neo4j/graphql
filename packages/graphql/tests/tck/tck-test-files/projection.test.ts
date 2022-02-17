@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher Projection", () => {
@@ -33,9 +34,9 @@ describe("Cypher Projection", () => {
             type Product {
                 id: ID!
                 name: String
-                sizes: [Size] @relationship(type: "HAS_SIZE", direction: OUT)
-                colors: [Color] @relationship(type: "HAS_COLOR", direction: OUT)
-                photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+                sizes: [Size!]! @relationship(type: "HAS_SIZE", direction: OUT)
+                colors: [Color!]! @relationship(type: "HAS_COLOR", direction: OUT)
+                photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
             }
 
             type Size {
@@ -46,21 +47,26 @@ describe("Cypher Projection", () => {
             type Color {
                 id: ID!
                 name: String!
-                photos: [Photo] @relationship(type: "OF_COLOR", direction: IN)
+                photos: [Photo!]! @relationship(type: "OF_COLOR", direction: IN)
             }
 
             type Photo {
                 id: ID!
                 description: String!
                 url: String!
-                color: Color @relationship(type: "OF_COLOR", direction: OUT)
+                color: Color! @relationship(type: "OF_COLOR", direction: OUT)
                 location: Point
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
         });
     });
 

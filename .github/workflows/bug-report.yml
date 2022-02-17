@@ -30,4 +30,6 @@ jobs:
             * Resolvers
             * Query and/or Mutation (or multiple) needed to reproduce
 
+            If you have a support agreement with Neo4j, please link this GitHub issue to a new or existing Zendesk ticket.
+
             Thanks again! :pray:

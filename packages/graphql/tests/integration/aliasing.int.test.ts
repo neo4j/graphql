@@ -18,7 +18,7 @@
  */
 
 import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
+import { graphql, GraphQLSchema } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
@@ -28,6 +28,7 @@ const testLabel = generate({ charset: "alphabetic" });
 describe("Aliasing", () => {
     let driver: Driver;
     let bookmarks: string[];
+    let schema: GraphQLSchema;
 
     const typeDefs = `
         type Movie {
@@ -37,8 +38,6 @@ describe("Aliasing", () => {
         }
     `;
 
-    const { schema } = new Neo4jGraphQL({ typeDefs });
-
     const id = generate({ readable: false });
     const budget = 63;
     const boxOffice = 465.3;
@@ -46,6 +45,8 @@ describe("Aliasing", () => {
     beforeAll(async () => {
         driver = await neo4j();
         const session = driver.session();
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        schema = await neoSchema.getSchema();
         try {
             await session.run(
                 `
@@ -101,7 +102,7 @@ describe("Aliasing", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult?.data?.movies[0]).toEqual({
+        expect((gqlResult?.data as any)?.movies[0]).toEqual({
             aliased: id,
             budget,
             boxOffice,
@@ -127,7 +128,7 @@ describe("Aliasing", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult?.data?.movies[0]).toEqual({
+        expect((gqlResult?.data as any)?.movies[0]).toEqual({
             id,
             aliased: budget,
             boxOffice,
@@ -153,7 +154,7 @@ describe("Aliasing", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult?.data?.movies[0]).toEqual({
+        expect((gqlResult?.data as any)?.movies[0]).toEqual({
             id,
             budget,
             aliased: boxOffice,

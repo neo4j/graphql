@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { generateUniqueType } from "../../tests/utils/graphql-types";
-import { createJwtRequest } from "../../tests/utils/create-jwt-request";
+import { generateUniqueType } from "../utils/graphql-types";
+import { createJwtRequest } from "../utils/create-jwt-request";
 
 describe("Node directive labels", () => {
     let driver: Driver;
@@ -59,7 +60,7 @@ describe("Node directive labels", () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -81,10 +82,10 @@ describe("Node directive labels", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                jwt: {
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
-                },
+                }),
             },
         });
 
@@ -95,7 +96,7 @@ describe("Node directive labels", () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
@@ -122,7 +123,7 @@ describe("Node directive labels", () => {
             }`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, filmLabel: typeFilm.name, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
