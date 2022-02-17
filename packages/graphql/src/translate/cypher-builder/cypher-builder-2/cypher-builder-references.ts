@@ -29,7 +29,7 @@ export class Node implements CypherReference {
             const parameters = serializeParameters(this.parameters, context);
             parametersStr = padLeft(parameters);
         }
-        return `(${referenceId || ""}${this.getLabelsString()}${parametersStr})`;
+        return `(${referenceId}${this.getLabelsString()}${parametersStr})`;
     }
 
     private hasParameters(): boolean {

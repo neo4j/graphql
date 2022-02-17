@@ -26,6 +26,8 @@ import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { asArray } from "../../utils/utils";
 import { wrapInCall } from "../utils/wrap-in-call";
 import { joinStatements } from "../cypher-builder/join-statements";
+import * as CypherBuilder from "../cypher-builder/cypher-builder-2/CypherBuilder";
+import { convertToCypherParams } from "../cypher-builder/cypher-builder-2/utils";
 
 type CreateOrConnectInput = {
     where?: {
@@ -117,17 +119,29 @@ function mergeRelatedNode({
     refNode: Node;
     context: Context;
 }): CypherStatement {
-    const whereNodeParameters = input.where?.node;
-    const onCreateNode = input.onCreate?.node;
-    return buildMergeStatement({
-        sourceNode: {
-            node: refNode,
-            varName: baseName,
-            parameters: whereNodeParameters,
-            onCreate: onCreateNode,
-        },
-        context,
+    const whereNodeParameters = convertToCypherParams(input.where?.node || {});
+    const onCreateNodeParameters = convertToCypherParams(input.onCreate?.node || {});
+    console.log(whereNodeParameters, onCreateNodeParameters);
+    const node = new CypherBuilder.Node({
+        labels: refNode.getLabels(context),
+        parameters: whereNodeParameters,
     });
+
+    const merge = new CypherBuilder.Query().merge(node).onCreate(onCreateNodeParameters);
+    const result = merge.build(baseName);
+    // console.log(merge.build(baseName));
+    //
+    // const result = buildMergeStatement({
+    //     sourceNode: {
+    //         node: refNode,
+    //         varName: baseName,
+    //         parameters: whereNodeParameters,
+    //         onCreate: onCreateNode,
+    //     },
+    //     context,
+    // });
+    // console.log("RESULT", result);
+    return [result.cypher, result.params];
 }
 
 function mergeRelation({

@@ -58,7 +58,7 @@ describe("Create or Connect", () => {
             });
         });
 
-        test("Create with createOrConnect operation", async () => {
+        test.only("Create with createOrConnect operation", async () => {
             const query = gql`
                 mutation {
                     createActors(
@@ -86,6 +86,28 @@ describe("Create or Connect", () => {
                 req,
             });
 
+            // expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            //     "CALL {
+            //     CREATE (this0:Actor)
+            //     SET this0.name = $this0_name
+            //     WITH this0
+            //     CALL {
+            //     	WITH this0
+            //     	MERGE (this0_movies_connectOrCreate0:Movie { title: $this0_movies_connectOrCreate0_node_title })
+            //     ON CREATE
+            //     SET
+            //     this0_movies_connectOrCreate0.title = $this0_movies_connectOrCreate0_on_create_title
+            //     MERGE (this0)-[this0_relationship_this0_movies_connectOrCreate0:ACTED_IN]->(this0_movies_connectOrCreate0)
+            //     ON CREATE
+            //     SET
+            //     this0_relationship_this0_movies_connectOrCreate0.screentime = $this0_relationship_this0_movies_connectOrCreate0_on_create_screentime
+            //     	RETURN COUNT(*)
+            //     }
+            //     RETURN this0
+            //     }
+            //     RETURN
+            //     this0 { .name } AS this0"
+            // `);
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL {
                 CREATE (this0:Actor)

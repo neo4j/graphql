@@ -19,8 +19,8 @@ export abstract class CypherASTRoot extends CypherASTElement {
         return this;
     }
 
-    public build(): CypherResult {
-        const context = this.getContext();
+    public build(prefix?: string): CypherResult {
+        const context = this.getContext(prefix);
         const cypher = this.getCypher(context);
         return {
             cypher: cypher,
@@ -37,8 +37,8 @@ export abstract class CypherASTRoot extends CypherASTElement {
         return result;
     }
 
-    protected getContext(): CypherContext {
-        return new CypherContext();
+    protected getContext(prefix?: string): CypherContext {
+        return new CypherContext(prefix);
     }
 }
 
@@ -64,9 +64,9 @@ export abstract class CypherASTNode extends CypherASTElement {
             .join(separator);
     }
 
-    public build(): CypherResult {
+    public build(prefix?: string): CypherResult {
         const root = this.getRoot();
-        return root.build();
+        return root.build(prefix);
     }
 
     public getRoot(): CypherASTRoot {
