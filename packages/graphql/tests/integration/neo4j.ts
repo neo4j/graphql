@@ -20,6 +20,8 @@
 import * as neo4j from "neo4j-driver";
 import * as util from "util";
 
+const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
+
 let driver: neo4j.Driver;
 let hasIntegrationDb = false;
 
@@ -36,34 +38,22 @@ async function connect(): Promise<neo4j.Driver> {
     }
 
     const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
-
     driver = neo4j.driver(NEO_URL, auth);
 
     try {
-        console.log("CONNECT");
-        await driver.verifyConnectivity({ database: "testnamefest" });
+        await driver.verifyConnectivity({ database: INT_TEST_DB_NAME });
         hasIntegrationDb = true;
     } catch (error: any) {
-        if (error instanceof Error) {
-            if (
-                error.message.includes(
-                    "Unable to get a routing table for database 'testnamefest' because this database does not exist"
-                )
-            ) {
-                console.log("FALLBACK TO default db");
-                hasIntegrationDb = false;
-                try {
-                    await driver.verifyConnectivity();
-                } catch (err: any) {
-                    throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${err.message}`);
-                }
-            } else {
-                throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${error.message}`);
+        const errMsg = `Unable to get a routing table for database ${INT_TEST_DB_NAME} because this database does not exist`;
+        if (error instanceof Error && error.message.includes(errMsg)) {
+            try {
+                await driver.verifyConnectivity();
+            } catch (err: any) {
+                throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${err.message}`);
             }
+        } else {
+            throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${error.message}`);
         }
-
-        // Could not connect to neo4j @ neo4j://localhost:7687 Error: Unable to get a routing table for database 'testnamefest' because this database does not exist
-        // throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${error.message}`);
     }
 
     return driver;
@@ -76,7 +66,7 @@ export const getSession = async (): Promise<neo4j.Session> => {
 
     let options = {};
     if (hasIntegrationDb) {
-        options = { database: "testnamefest" };
+        options = { database: INT_TEST_DB_NAME };
     }
     console.log("Options:", options);
     return driver.session(options);
