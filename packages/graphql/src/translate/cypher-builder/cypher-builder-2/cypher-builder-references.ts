@@ -26,7 +26,7 @@ export class Node implements CypherReference {
         const referenceId = context.getReferenceId(this);
         let parametersStr = "";
         if (this.hasParameters()) {
-            const parameters = this.serializeParameters(context);
+            const parameters = serializeParameters(this.parameters, context);
             parametersStr = padLeft(parameters);
         }
         return `(${referenceId || ""}${this.getLabelsString()}${parametersStr})`;
@@ -41,14 +41,59 @@ export class Node implements CypherReference {
         if (escapedLabels.length === 0) return "";
         return `:${escapedLabels.join(":")}`;
     }
+}
 
-    private serializeParameters(context: CypherContext): string {
-        const paramValues = Object.entries(this.parameters).reduce((acc, [key, param]) => {
-            acc[key] = param.getCypher(context);
-            return acc;
-        }, {} as Record<string, string>);
+export type RelationshipInput = {
+    source: Node;
+    target: Node;
+    type?: string;
+    parameters?: Record<string, Param<any>>;
+    directed?: boolean;
+};
 
-        return stringifyObject(paramValues);
+export class Relationship implements CypherReference {
+    public readonly prefix = "this";
+    public readonly source: Node;
+    public readonly target: Node;
+
+    private type?: string;
+    private parameters: Record<string, Param<any>>;
+    private directed: boolean;
+
+    constructor(input: RelationshipInput) {
+        this.type = input.type || undefined;
+        this.parameters = input.parameters || {};
+        this.source = input.source;
+        this.target = input.target;
+        this.directed = input.directed === undefined ? true : input.directed;
+    }
+
+    public getCypher(context: CypherContext) {
+        const referenceId = context.getReferenceId(this);
+        let parametersStr = "";
+        if (this.hasParameters()) {
+            const parameters = serializeParameters(this.parameters, context);
+            parametersStr = padLeft(parameters);
+        }
+
+        const sourceStr = this.source.getCypher(context);
+        const targetStr = this.target.getCypher(context);
+        const arrowStr = this.getRelationshipArrow();
+        const relationshipStr = `${referenceId || ""}${this.getTypeString()}${parametersStr}`;
+
+        return `${sourceStr}-[${relationshipStr}]${arrowStr}${targetStr}`;
+    }
+
+    private hasParameters(): boolean {
+        return Object.keys(this.parameters).length > 0;
+    }
+
+    private getRelationshipArrow(): "-" | "->" {
+        return this.directed ? "->" : "-";
+    }
+
+    private getTypeString(): string {
+        return this.type ? `:${escapeLabel(this.type)}` : "";
     }
 }
 
@@ -63,4 +108,15 @@ export class Param<T> {
     public getCypher(context: CypherContext): string {
         return `$${context.getParamId(this)}`;
     }
+}
+
+// TODO: move to a separate file?
+
+function serializeParameters(parameters: Record<string, Param<any>>, context: CypherContext): string {
+    const paramValues = Object.entries(parameters).reduce((acc, [key, param]) => {
+        acc[key] = param.getCypher(context);
+        return acc;
+    }, {} as Record<string, string>);
+
+    return stringifyObject(paramValues);
 }

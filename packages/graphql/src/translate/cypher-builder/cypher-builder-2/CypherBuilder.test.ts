@@ -18,6 +18,7 @@
  */
 
 import * as CypherBuilder from "./CypherBuilder";
+import { Param } from "./CypherBuilder";
 
 describe("CypherBuilder", () => {
     test("Call with create", () => {
@@ -42,6 +43,41 @@ RETURN this0 {.id} AS myalias"
 Object {
   "param0": "test-value",
   "param1": "my-id",
+}
+`);
+    });
+
+    test("Merge relationship", () => {
+        const node1 = new CypherBuilder.Node({
+            labels: ["MyLabel"],
+        });
+        const node2 = new CypherBuilder.Node({});
+
+        const relationship = new CypherBuilder.Relationship({ source: node1, target: node2 });
+
+        const query = new CypherBuilder.Query().merge(relationship).onCreate({
+            source: {
+                age: new Param(23),
+                name: new Param("Keanu"),
+            },
+            relationship: {
+                screentime: new Param(10),
+            },
+        });
+
+        const queryResult = query.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+"MERGE (this1:\`MyLabel\`)-[this0]->(this2)
+ON CREATE SET
+        this1.age = $param0
+this1.name = $param1
+this0.screentime = $param2"
+`);
+        expect(queryResult.params).toMatchInlineSnapshot(`
+Object {
+  "param0": 23,
+  "param1": "Keanu",
+  "param2": 10,
 }
 `);
     });

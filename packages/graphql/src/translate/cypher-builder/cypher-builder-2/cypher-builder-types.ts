@@ -64,6 +64,11 @@ export abstract class CypherASTNode extends CypherASTElement {
             .join(separator);
     }
 
+    public build(): CypherResult {
+        const root = this.getRoot();
+        return root.build();
+    }
+
     public getRoot(): CypherASTRoot {
         return this.parent.getRoot();
     }

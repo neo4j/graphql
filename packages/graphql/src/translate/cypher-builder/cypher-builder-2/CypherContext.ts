@@ -1,6 +1,6 @@
-import { Node, Param } from "./cypher-builder-references";
+import { Node, Param, Relationship } from "./cypher-builder-references";
 
-type ValidReferences = Node;
+type ValidReferences = Node | Relationship;
 
 export class CypherContext {
     private params: Map<Param<any>, string> = new Map();
@@ -14,7 +14,7 @@ export class CypherContext {
         return id;
     }
 
-    public getReferenceId(reference: Node): string {
+    public getReferenceId(reference: ValidReferences): string {
         const id = this.references.get(reference);
         if (!id) {
             return this.addReference(reference);
