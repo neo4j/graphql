@@ -23,7 +23,6 @@ import { addResolversToSchema, IExecutableSchemaDefinition, makeExecutableSchema
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import { forEachField, IResolvers } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
-import { Secret } from "jsonwebtoken";
 import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
@@ -38,7 +37,7 @@ import { asArray } from "../utils/utils";
 
 export interface Neo4jGraphQLJWT {
     jwksEndpoint?: string;
-    secret?: Secret;
+    secret?: string | Buffer | { key: string | Buffer; passphrase: string };
     noVerify?: boolean;
     rolesPath?: string;
 }
