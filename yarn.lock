@@ -11752,7 +11752,7 @@ __metadata:
     react-bootstrap: 1.4.0
     react-dom: 17.0.1
     react-markdown: 5.0.3
-    react-mde: 11.0.0
+    react-mde: 11.5.0
     react-router-dom: 5.2.0
     showdown: 1.9.1
     style-loader: 2.0.0
@@ -13963,13 +13963,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-mde@npm:11.0.0":
-  version: 11.0.0
-  resolution: "react-mde@npm:11.0.0"
+"react-mde@npm:11.5.0":
+  version: 11.5.0
+  resolution: "react-mde@npm:11.5.0"
   peerDependencies:
-    react: ^16.0.0
-    react-dom: ^16.0.0
-  checksum: 86847644845a95f3acb4160109599c3c8b36c6a2da7537078412e0f8ca9cd0d3e751d7b34b263c520320b1524afdb2073fde3c663b4af373aa49692c7b62df19
+    react: ^17.0.0
+    react-dom: ^17.0.0
+  checksum: cc23c7a07de56d47c95f6c4ae5599bb75c25fa226e0b3f1b0aa131b8f98062cd3e70aa1d8a51590a3e2dcc97256b2131c93510cd843e947fb2d51aeb0b87ceb6
   languageName: node
   linkType: hard
 
