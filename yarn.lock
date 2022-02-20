@@ -1056,7 +1056,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@faker-js/faker@npm:6.0.0-alpha.6, @faker-js/faker@npm:^6.0.0-alpha.5":
+"@faker-js/faker@npm:6.0.0-alpha.7":
+  version: 6.0.0-alpha.7
+  resolution: "@faker-js/faker@npm:6.0.0-alpha.7"
+  checksum: 1322aa3b8c5975fdd7cf826caecde71708bb73d21b3cbcf8dca8ba451398857f3d8c0946b65d5b0927bfddc9b9d71353ce3531264ad9a570948452053ee57f0c
+  languageName: node
+  linkType: hard
+
+"@faker-js/faker@npm:^6.0.0-alpha.5":
   version: 6.0.0-alpha.6
   resolution: "@faker-js/faker@npm:6.0.0-alpha.6"
   checksum: 7da62a22a8e1bfbcd8b6517a6f3aa74cf468a681cea4b3cd306a285ec670dc591d48cb5191fc1131fba9fc669ba12f9c1b4849eb47f9be50c8476f72705bcc99
@@ -1733,7 +1740,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
-    "@faker-js/faker": 6.0.0-alpha.6
+    "@faker-js/faker": 6.0.0-alpha.7
     "@graphql-tools/merge": ^8.2.1
     "@graphql-tools/resolvers-composition": ^6.4.1
     "@graphql-tools/schema": ^8.3.1
