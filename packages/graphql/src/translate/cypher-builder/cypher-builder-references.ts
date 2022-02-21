@@ -1,5 +1,5 @@
-import { stringifyObject } from "../../utils/stringify-object";
-import { escapeLabel, padLeft } from "../utils";
+import { stringifyObject } from "../utils/stringify-object";
+import { escapeLabel, padLeft } from "./utils/utils";
 import { CypherContext } from "./CypherContext";
 
 type NodeInput = {

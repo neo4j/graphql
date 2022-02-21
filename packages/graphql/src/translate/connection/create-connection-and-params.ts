@@ -32,7 +32,7 @@ import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
-import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
+import { getRelationshipDirection } from "../cypher-builder/utils/get-relationship-direction";
 import { CypherStatement } from "../types";
 import { isString } from "../../utils/utils";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";

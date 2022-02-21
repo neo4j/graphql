@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { CypherStatement } from "../types";
+import { CypherStatement } from "../../types";
 import { joinStatements } from "./join-statements";
 
 describe("translation utils", () => {
