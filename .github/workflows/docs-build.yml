@@ -21,8 +21,8 @@ jobs:
           node-version: lts/*
       - name: Build documentation
         run: |
-          npm install
-          npm run build
+          yarn
+          yarn build
           echo ${{ github.event.number }} > ./build/prnumber
         working-directory: docs/
       - name: Archive documentation
