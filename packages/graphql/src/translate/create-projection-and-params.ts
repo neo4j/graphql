@@ -32,7 +32,7 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
-import { getRelationshipDirection } from "./cypher-builder/utils/get-relationship-direction";
+import { getRelationshipDirection } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 

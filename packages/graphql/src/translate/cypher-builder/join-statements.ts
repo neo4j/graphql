@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { joinStrings, isString, asArray, filterTruthy } from "../../../utils/utils";
-import { CypherStatement, CypherParams } from "../../types";
+import { joinStrings, isString, asArray, filterTruthy } from "../../utils/utils";
+import { CypherStatement, CypherParams } from "../types";
 
 /** Joins all valid cypher statements and params with given separator, ignoring empty or undefined statements */
 export function joinStatements(
