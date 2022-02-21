@@ -96,10 +96,9 @@ CALL {
 	MERGE (this0_movies_connectOrCreate0_this0:\`Movie\` { title: $this0_movies_connectOrCreate0_param0 })
 ON CREATE SET
         this0_movies_connectOrCreate0_this0.title = $this0_movies_connectOrCreate0_param1
-MERGE (this0)-[this0_relationship_this0_movies_connectOrCreate0:ACTED_IN]->(this0_movies_connectOrCreate0)
-ON CREATE
-SET
-this0_relationship_this0_movies_connectOrCreate0.screentime = $this0_relationship_this0_movies_connectOrCreate0_on_create_screentime
+MERGE (this0)-[this0_movies_connectOrCreate0_this1:\`ACTED_IN\`]->(this0_movies_connectOrCreate0_this0)
+ON CREATE SET
+        this0_movies_connectOrCreate0_this1.screentime = $this0_movies_connectOrCreate0_param2
 	RETURN COUNT(*)
 }
 RETURN this0
@@ -113,7 +112,7 @@ this0 { .name } AS this0"
     \\"this0_name\\": \\"Tom Hanks\\",
     \\"this0_movies_connectOrCreate0_param0\\": \\"The Terminal\\",
     \\"this0_movies_connectOrCreate0_param1\\": \\"The Terminal\\",
-    \\"this0_relationship_this0_movies_connectOrCreate0_on_create_screentime\\": {
+    \\"this0_movies_connectOrCreate0_param2\\": {
         \\"low\\": 105,
         \\"high\\": 0
     }
@@ -158,10 +157,9 @@ CALL {
 	MERGE (this_movies0_connectOrCreate0_this0:\`Movie\` { title: $this_movies0_connectOrCreate0_param0 })
 ON CREATE SET
         this_movies0_connectOrCreate0_this0.title = $this_movies0_connectOrCreate0_param1
-MERGE (this)-[this_relationship_this_movies0_connectOrCreate0:ACTED_IN]->(this_movies0_connectOrCreate0)
-ON CREATE
-SET
-this_relationship_this_movies0_connectOrCreate0.screentime = $this_relationship_this_movies0_connectOrCreate0_on_create_screentime
+MERGE (this)-[this_movies0_connectOrCreate0_this1:\`ACTED_IN\`]->(this_movies0_connectOrCreate0_this0)
+ON CREATE SET
+        this_movies0_connectOrCreate0_this1.screentime = $this_movies0_connectOrCreate0_param2
 	RETURN COUNT(*)
 }
 RETURN this { .name } AS this"
@@ -173,7 +171,7 @@ RETURN this { .name } AS this"
     \\"this_update_name\\": \\"Tom Hanks 2\\",
     \\"this_movies0_connectOrCreate0_param0\\": \\"The Terminal\\",
     \\"this_movies0_connectOrCreate0_param1\\": \\"The Terminal\\",
-    \\"this_relationship_this_movies0_connectOrCreate0_on_create_screentime\\": {
+    \\"this_movies0_connectOrCreate0_param2\\": {
         \\"low\\": 105,
         \\"high\\": 0
     }
@@ -254,11 +252,11 @@ CALL {
 	WITH this0
 	MERGE (this0_movies_connectOrCreate0_this0:\`Movie\` { title: $this0_movies_connectOrCreate0_param0 })
 ON CREATE SET
-        this0_movies_connectOrCreate0_this0.title = $this0_movies_connectOrCreate0_param1
-MERGE (this0)-[this0_relationship_this0_movies_connectOrCreate0:ACTED_IN]->(this0_movies_connectOrCreate0)
-ON CREATE
-SET
-this0_relationship_this0_movies_connectOrCreate0.screentime = $this0_relationship_this0_movies_connectOrCreate0_on_create_screentime
+        this0_movies_connectOrCreate0_this0.id = randomUUID(),
+this0_movies_connectOrCreate0_this0.title = $this0_movies_connectOrCreate0_param1
+MERGE (this0)-[this0_movies_connectOrCreate0_this1:\`ACTED_IN\`]->(this0_movies_connectOrCreate0_this0)
+ON CREATE SET
+        this0_movies_connectOrCreate0_this1.screentime = $this0_movies_connectOrCreate0_param2
 	RETURN COUNT(*)
 }
 RETURN this0
@@ -272,7 +270,7 @@ this0 { .name } AS this0"
     \\"this0_name\\": \\"Tom Hanks\\",
     \\"this0_movies_connectOrCreate0_param0\\": \\"The Terminal\\",
     \\"this0_movies_connectOrCreate0_param1\\": \\"The Terminal\\",
-    \\"this0_relationship_this0_movies_connectOrCreate0_on_create_screentime\\": {
+    \\"this0_movies_connectOrCreate0_param2\\": {
         \\"low\\": 105,
         \\"high\\": 0
     }
@@ -318,10 +316,9 @@ CALL {
 	MERGE (this0_movies_connectOrCreate0_this0:\`Movie\` { id: $this0_movies_connectOrCreate0_param0 })
 ON CREATE SET
         this0_movies_connectOrCreate0_this0.title = $this0_movies_connectOrCreate0_param1
-MERGE (this0)-[this0_relationship_this0_movies_connectOrCreate0:ACTED_IN]->(this0_movies_connectOrCreate0)
-ON CREATE
-SET
-this0_relationship_this0_movies_connectOrCreate0.screentime = $this0_relationship_this0_movies_connectOrCreate0_on_create_screentime
+MERGE (this0)-[this0_movies_connectOrCreate0_this1:\`ACTED_IN\`]->(this0_movies_connectOrCreate0_this0)
+ON CREATE SET
+        this0_movies_connectOrCreate0_this1.screentime = $this0_movies_connectOrCreate0_param2
 	RETURN COUNT(*)
 }
 RETURN this0
@@ -335,7 +332,7 @@ this0 { .name } AS this0"
     \\"this0_name\\": \\"Tom Hanks\\",
     \\"this0_movies_connectOrCreate0_param0\\": \\"movieId\\",
     \\"this0_movies_connectOrCreate0_param1\\": \\"The Terminal\\",
-    \\"this0_relationship_this0_movies_connectOrCreate0_on_create_screentime\\": {
+    \\"this0_movies_connectOrCreate0_param2\\": {
         \\"low\\": 105,
         \\"high\\": 0
     }
@@ -379,11 +376,11 @@ CALL {
 	WITH this
 	MERGE (this_movies0_connectOrCreate0_this0:\`Movie\` { title: $this_movies0_connectOrCreate0_param0 })
 ON CREATE SET
-        this_movies0_connectOrCreate0_this0.title = $this_movies0_connectOrCreate0_param1
-MERGE (this)-[this_relationship_this_movies0_connectOrCreate0:ACTED_IN]->(this_movies0_connectOrCreate0)
-ON CREATE
-SET
-this_relationship_this_movies0_connectOrCreate0.screentime = $this_relationship_this_movies0_connectOrCreate0_on_create_screentime
+        this_movies0_connectOrCreate0_this0.id = randomUUID(),
+this_movies0_connectOrCreate0_this0.title = $this_movies0_connectOrCreate0_param1
+MERGE (this)-[this_movies0_connectOrCreate0_this1:\`ACTED_IN\`]->(this_movies0_connectOrCreate0_this0)
+ON CREATE SET
+        this_movies0_connectOrCreate0_this1.screentime = $this_movies0_connectOrCreate0_param2
 	RETURN COUNT(*)
 }
 RETURN this { .name } AS this"
@@ -395,7 +392,7 @@ RETURN this { .name } AS this"
     \\"this_update_name\\": \\"Tom Hanks 2\\",
     \\"this_movies0_connectOrCreate0_param0\\": \\"The Terminal\\",
     \\"this_movies0_connectOrCreate0_param1\\": \\"The Terminal\\",
-    \\"this_relationship_this_movies0_connectOrCreate0_on_create_screentime\\": {
+    \\"this_movies0_connectOrCreate0_param2\\": {
         \\"low\\": 105,
         \\"high\\": 0
     }
@@ -440,10 +437,9 @@ CALL {
 	MERGE (this_movies0_connectOrCreate0_this0:\`Movie\` { id: $this_movies0_connectOrCreate0_param0 })
 ON CREATE SET
         this_movies0_connectOrCreate0_this0.title = $this_movies0_connectOrCreate0_param1
-MERGE (this)-[this_relationship_this_movies0_connectOrCreate0:ACTED_IN]->(this_movies0_connectOrCreate0)
-ON CREATE
-SET
-this_relationship_this_movies0_connectOrCreate0.screentime = $this_relationship_this_movies0_connectOrCreate0_on_create_screentime
+MERGE (this)-[this_movies0_connectOrCreate0_this1:\`ACTED_IN\`]->(this_movies0_connectOrCreate0_this0)
+ON CREATE SET
+        this_movies0_connectOrCreate0_this1.screentime = $this_movies0_connectOrCreate0_param2
 	RETURN COUNT(*)
 }
 RETURN this { .name } AS this"
@@ -455,7 +451,7 @@ RETURN this { .name } AS this"
     \\"this_update_name\\": \\"Tom Hanks 2\\",
     \\"this_movies0_connectOrCreate0_param0\\": \\"movieId\\",
     \\"this_movies0_connectOrCreate0_param1\\": \\"The Terminal\\",
-    \\"this_relationship_this_movies0_connectOrCreate0_on_create_screentime\\": {
+    \\"this_movies0_connectOrCreate0_param2\\": {
         \\"low\\": 105,
         \\"high\\": 0
     }
@@ -538,12 +534,9 @@ CALL {
 	MERGE (this0_movies_connectOrCreate0_this0:\`Movie\` { title: $this0_movies_connectOrCreate0_param0 })
 ON CREATE SET
         this0_movies_connectOrCreate0_this0.title = $this0_movies_connectOrCreate0_param1
-MERGE (this0)-[this0_relationship_this0_movies_connectOrCreate0:ACTED_IN]->(this0_movies_connectOrCreate0)
-ON CREATE
-SET
-this0_relationship_this0_movies_connectOrCreate0.id = randomUUID(),
-this0_relationship_this0_movies_connectOrCreate0.createdAt = datetime(),
-this0_relationship_this0_movies_connectOrCreate0.screentime = $this0_relationship_this0_movies_connectOrCreate0_on_create_screentime
+MERGE (this0)-[this0_movies_connectOrCreate0_this1:\`ACTED_IN\`]->(this0_movies_connectOrCreate0_this0)
+ON CREATE SET
+        this0_movies_connectOrCreate0_this1.screentime = $this0_movies_connectOrCreate0_param2
 	RETURN COUNT(*)
 }
 RETURN this0
@@ -557,7 +550,7 @@ this0 { .name } AS this0"
     \\"this0_name\\": \\"Tom Hanks\\",
     \\"this0_movies_connectOrCreate0_param0\\": \\"The Terminal\\",
     \\"this0_movies_connectOrCreate0_param1\\": \\"The Terminal\\",
-    \\"this0_relationship_this0_movies_connectOrCreate0_on_create_screentime\\": {
+    \\"this0_movies_connectOrCreate0_param2\\": {
         \\"low\\": 105,
         \\"high\\": 0
     }
@@ -602,12 +595,9 @@ CALL {
 	MERGE (this_movies0_connectOrCreate0_this0:\`Movie\` { title: $this_movies0_connectOrCreate0_param0 })
 ON CREATE SET
         this_movies0_connectOrCreate0_this0.title = $this_movies0_connectOrCreate0_param1
-MERGE (this)-[this_relationship_this_movies0_connectOrCreate0:ACTED_IN]->(this_movies0_connectOrCreate0)
-ON CREATE
-SET
-this_relationship_this_movies0_connectOrCreate0.id = randomUUID(),
-this_relationship_this_movies0_connectOrCreate0.createdAt = datetime(),
-this_relationship_this_movies0_connectOrCreate0.screentime = $this_relationship_this_movies0_connectOrCreate0_on_create_screentime
+MERGE (this)-[this_movies0_connectOrCreate0_this1:\`ACTED_IN\`]->(this_movies0_connectOrCreate0_this0)
+ON CREATE SET
+        this_movies0_connectOrCreate0_this1.screentime = $this_movies0_connectOrCreate0_param2
 	RETURN COUNT(*)
 }
 RETURN this { .name } AS this"
@@ -619,7 +609,7 @@ RETURN this { .name } AS this"
     \\"this_update_name\\": \\"Tom Hanks 2\\",
     \\"this_movies0_connectOrCreate0_param0\\": \\"The Terminal\\",
     \\"this_movies0_connectOrCreate0_param1\\": \\"The Terminal\\",
-    \\"this_relationship_this_movies0_connectOrCreate0_on_create_screentime\\": {
+    \\"this_movies0_connectOrCreate0_param2\\": {
         \\"low\\": 105,
         \\"high\\": 0
     }
