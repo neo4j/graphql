@@ -23,7 +23,7 @@ module.exports = async function globalSetup() {
         await driver.verifyConnectivity();
         session = driver.session()
         await session.writeTransaction((tx) => tx.run(cypher));
-        console.log("\nSETUP DONE");
+        console.log("\nSETUP DONE"); // eslint-disable-line no-console
     } catch (err) {
         throw new Error(`Setup failure on neo4j @ ${NEO_URL} Error: ${err.message}`);
     } finally {

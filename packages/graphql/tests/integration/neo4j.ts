@@ -77,7 +77,7 @@ export const getSession = async (): Promise<neo4j.Session> => {
     if (hasIntegrationTestDb) {
         options = { database: INT_TEST_DB_NAME };
     }
-    console.log("Options:", options);
+    console.log("Options:", options); // eslint-disable-line no-console
     return driver.session(options);
 };
 

@@ -2,7 +2,7 @@
 const neo4j = require("neo4j-driver");
 
 module.exports = async function globalTeardown() {
-    console.log('TEARDOWN');
+    console.log('TEARDOWN');  // eslint-disable-line no-console
 
     const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
     const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
