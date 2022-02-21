@@ -6,6 +6,8 @@ on:
       - dev
       - master
     paths:
+      - docs/antora.yml
+      - docs/package.json
       - "docs/modules/ROOT/**"
 
 jobs:
