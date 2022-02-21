@@ -17,11 +17,13 @@
  * limitations under the License.
  */
 
+import { escapeQuery } from "../utils/escape-query";
 import { Node, Param, Relationship } from "./cypher-builder-references";
 import { CypherASTNode, CypherASTRoot } from "./cypher-builder-types";
 import { CypherContext } from "./CypherContext";
 
 export { NamedNode, Node, Param, Relationship } from "./cypher-builder-references";
+export { CypherResult } from "./cypher-builder-types";
 
 type Params = Record<string, Param<any>>;
 
@@ -44,6 +46,11 @@ export class Query extends CypherASTRoot {
 
     public merge<T extends Node | Relationship>(element: T): MergeStatement<T> {
         return this.addStatement(new MergeStatement(this, element));
+    }
+
+    public validate(options: ApocValidateOptions): Query {
+        this.addStatement(new ApocValidate(this, options));
+        return this;
     }
 
     public return(...args: ReturnStatementArgs) {
@@ -185,7 +192,6 @@ class MergeStatement<T extends Node | Relationship> extends CypherASTNode {
                 }
             );
 
-            const targetId = context.getReferenceId(this.element.target);
             const targetOnCreateStatements = Object.entries(this.onCreateParameters.target).map(([key, value]) => {
                 return `${relationshipId}.${key} = ${value.getCypher(context)}`;
             });
@@ -201,5 +207,26 @@ class MergeStatement<T extends Node | Relationship> extends CypherASTNode {
 
         return `ON CREATE SET
         ${onCreateStatements.join(",\n")}`;
+    }
+}
+
+type ApocValidateOptions = {
+    predicate: string;
+    message: string;
+    params: string;
+};
+
+class ApocValidate extends CypherASTNode {
+    options: ApocValidateOptions;
+
+    constructor(parent: CypherASTRoot, options: ApocValidateOptions) {
+        super(parent);
+        this.options = options;
+    }
+
+    public getCypher(_context: CypherContext): string {
+        const statements = [this.options.predicate, `"${this.options.message}"`, this.options.params].join(", ");
+
+        return `CALL apoc.util.validate(${statements})`;
     }
 }

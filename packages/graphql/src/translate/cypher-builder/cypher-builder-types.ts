@@ -19,7 +19,7 @@
 
 import { CypherContext } from "./CypherContext";
 
-type CypherResult = {
+export type CypherResult = {
     cypher: string;
     params: Record<string, string>;
 };
