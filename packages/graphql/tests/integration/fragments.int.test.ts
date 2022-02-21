@@ -22,7 +22,7 @@ import { graphql, GraphQLSchema } from "graphql";
 import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "./neo4j";
+import neo4j, { getDriverContextValues, getSession } from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
 const testLabel = generate({ charset: "alphabetic" });
@@ -84,7 +84,7 @@ describe("fragments", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        const session = driver.session();
+        const session = await getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         schema = await neoSchema.getSchema();
@@ -110,7 +110,7 @@ describe("fragments", () => {
     });
 
     afterAll(async () => {
-        const session = driver.session();
+        const session = await getSession();
         await session.run(`MATCH (node:${testLabel}) DETACH DELETE node`);
         await driver.close();
     });
@@ -130,7 +130,7 @@ describe("fragments", () => {
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
-            contextValue: { driver },
+            contextValue: getDriverContextValues(),
             variableValues: { actorName },
         });
 
@@ -161,7 +161,7 @@ describe("fragments", () => {
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
-            contextValue: { driver },
+            contextValue: getDriverContextValues(),
             variableValues: { actorName },
         });
 
@@ -204,7 +204,7 @@ describe("fragments", () => {
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
-            contextValue: { driver },
+            contextValue: getDriverContextValues(),
             variableValues: { actorName },
         });
 

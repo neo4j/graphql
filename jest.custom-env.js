@@ -15,8 +15,8 @@ class CustomTestEnvironment extends NodeEnvironment {
 
   async setup() {
     await super.setup();
-    console.log('testtttt', this.intTestDbName)
-    this.global.intTestDbName = 'TEEEE'
+    console.log('TEST, intTestDbName', this.intTestDbName)
+    this.global.intTestDbName = 'TEST_1'
   }
 
   async teardown() {

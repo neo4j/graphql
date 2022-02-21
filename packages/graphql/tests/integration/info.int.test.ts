@@ -20,7 +20,7 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j, { getSession } from "./neo4j";
+import neo4j, { getDriverContextValues, getSession } from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
 describe("info", () => {
@@ -80,7 +80,7 @@ describe("info", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { title, name },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: getDriverContextValues(session),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -122,7 +122,7 @@ describe("info", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: getDriverContextValues(session),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -166,7 +166,7 @@ describe("info", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: getDriverContextValues(session),
             });
 
             expect(gqlResult.errors).toBeFalsy();

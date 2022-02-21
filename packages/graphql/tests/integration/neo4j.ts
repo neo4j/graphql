@@ -22,14 +22,21 @@ import * as util from "util";
 
 const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
 
+type DriverContext = {
+    driver: neo4j.Driver;
+    driverConfig: {
+        database: string;
+        bookmarks?: string[];
+    };
+};
+
 let driver: neo4j.Driver;
-let hasIntegrationDb = false;
+let hasIntegrationTestDb = false;
 
 async function connect(): Promise<neo4j.Driver> {
     if (driver) {
         return driver;
     }
-    // TODO: figure out how to access jest globals in here
 
     const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
@@ -42,7 +49,7 @@ async function connect(): Promise<neo4j.Driver> {
 
     try {
         await driver.verifyConnectivity({ database: INT_TEST_DB_NAME });
-        hasIntegrationDb = true;
+        hasIntegrationTestDb = true;
     } catch (error: any) {
         const errMsg = `Unable to get a routing table for database ${INT_TEST_DB_NAME} because this database does not exist`;
         if (error instanceof Error && error.message.includes(errMsg)) {
@@ -52,7 +59,9 @@ async function connect(): Promise<neo4j.Driver> {
                 throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${err.message}`);
             }
         } else {
-            throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${error.message}`);
+            throw new Error(
+                `Could not connect to neo4j @ ${NEO_URL}, database ${INT_TEST_DB_NAME}, Error: ${error.message}`
+            );
         }
     }
 
@@ -65,11 +74,16 @@ export const getSession = async (): Promise<neo4j.Session> => {
     }
 
     let options = {};
-    if (hasIntegrationDb) {
+    if (hasIntegrationTestDb) {
         options = { database: INT_TEST_DB_NAME };
     }
     console.log("Options:", options);
     return driver.session(options);
 };
+
+export const getDriverContextValues = (session?: neo4j.Session): DriverContext => ({
+    driver,
+    driverConfig: { database: INT_TEST_DB_NAME, ...(session && { bookmarks: session.lastBookmark() }) },
+});
 
 export default connect;
