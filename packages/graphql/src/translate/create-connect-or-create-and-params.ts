@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-import { RelationField, Context } from "../../types";
-import { CypherStatement } from "../types";
-import { Node, Relationship } from "../../classes";
-import createAuthAndParams from "../create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../../constants";
-import { asArray, omitFields } from "../../utils/utils";
-import { wrapInCall } from "../utils/wrap-in-call";
-import { joinStatements } from "../cypher-builder/join-statements";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
-import { convertToCypherParams } from "../cypher-builder/utils";
-import { Param } from "../cypher-builder/CypherBuilder";
-import { RawParam } from "../cypher-builder/cypher-builder-references";
+import { RelationField, Context } from "../types";
+import { CypherStatement } from "./types";
+import { Node, Relationship } from "../classes";
+import createAuthAndParams from "./create-auth-and-params";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { asArray, omitFields } from "../utils/utils";
+import { wrapInCall } from "./utils/wrap-in-call";
+import { joinStatements } from "./cypher-builder/join-statements";
+import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import { convertToCypherParams } from "./cypher-builder/utils";
+import { Param } from "./cypher-builder/CypherBuilder";
+import { RawParam } from "./cypher-builder/cypher-builder-references";
 
 type CreateOrConnectInput = {
     where?: {

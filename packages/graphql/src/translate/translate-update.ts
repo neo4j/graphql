@@ -30,7 +30,7 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
-import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
+import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import { upperFirst } from "../utils/upper-first";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 
