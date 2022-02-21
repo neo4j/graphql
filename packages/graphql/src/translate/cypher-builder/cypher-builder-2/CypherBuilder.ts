@@ -21,7 +21,7 @@ import { Node, Param, Relationship } from "./cypher-builder-references";
 import { CypherASTNode, CypherASTRoot } from "./cypher-builder-types";
 import { CypherContext } from "./CypherContext";
 
-export { Node, Param, Relationship } from "./cypher-builder-references";
+export { NamedNode, Node, Param, Relationship } from "./cypher-builder-references";
 
 type Params = Record<string, Param<any>>;
 
@@ -37,6 +37,11 @@ export class Query extends CypherASTRoot {
         return this;
     }
 
+    public concat(query: CypherASTRoot): Query {
+        this.addStatement(new ConcatStatement(this, query));
+        return this;
+    }
+
     public merge<T extends Node | Relationship>(element: T): MergeStatement<T> {
         return this.addStatement(new MergeStatement(this, element));
     }
@@ -48,14 +53,20 @@ export class Query extends CypherASTRoot {
     }
 }
 
-class CallStatement extends CypherASTNode {
-    private query: CypherASTRoot;
+class ConcatStatement extends CypherASTNode {
+    protected query: CypherASTRoot;
 
     constructor(parent: CypherASTRoot, query: CypherASTRoot) {
         super(parent);
         this.query = query;
     }
 
+    public getCypher(context: CypherContext): string {
+        return this.query.getCypher(context);
+    }
+}
+
+class CallStatement extends ConcatStatement {
     public getCypher(context: CypherContext): string {
         return `CALL { ${this.query.getCypher(context)} }`;
     }
@@ -134,9 +145,10 @@ class MergeStatement<T extends Node | Relationship> extends CypherASTNode {
         return `${mergeStr}${separator}${onCreateSetStatement}`;
     }
 
-    public onCreate<Node>(onCreate: ParamsRecord): MergeStatement<T>;
-    public onCreate<Relationship>(onCreate: Partial<OnCreateParameters>): MergeStatement<T>;
-    public onCreate<T>(onCreate: Partial<OnCreateParameters> | ParamsRecord): MergeStatement<Node | Relationship> {
+    public onCreate<T extends Node>(onCreate: ParamsRecord): CypherASTRoot;
+    public onCreate<T extends Relationship>(onCreate: Partial<OnCreateParameters>): CypherASTRoot;
+    // public onCreate(onCreate: Partial<OnCreateParameters> | ParamsRecord): MergeStatement<Node | Relationship> {
+    public onCreate(onCreate: Partial<OnCreateParameters> | ParamsRecord): CypherASTRoot {
         let parameters: Partial<OnCreateParameters>;
 
         if (this.element instanceof Node) {
@@ -146,7 +158,7 @@ class MergeStatement<T extends Node | Relationship> extends CypherASTNode {
         }
 
         this.mergeOnCreateParamenters(parameters);
-        return this;
+        return this.getRoot(); // TODO: improve this
     }
 
     private mergeOnCreateParamenters(options: Partial<OnCreateParameters>): void {
@@ -188,6 +200,6 @@ class MergeStatement<T extends Node | Relationship> extends CypherASTNode {
         if (onCreateStatements.length === 0) return "";
 
         return `ON CREATE SET
-        ${onCreateStatements.join("\n")}`;
+        ${onCreateStatements.join(",\n")}`;
     }
 }

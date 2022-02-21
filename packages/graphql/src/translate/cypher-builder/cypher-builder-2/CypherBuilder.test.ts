@@ -67,10 +67,10 @@ Object {
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-"MERGE (this1:\`MyLabel\`)-[this0]->(this2)
+"MERGE (this1)-[this0]->(this2)
 ON CREATE SET
-        this1.age = $param0
-this1.name = $param1
+        this1.age = $param0,
+this1.name = $param1,
 this0.screentime = $param2"
 `);
         expect(queryResult.params).toMatchInlineSnapshot(`

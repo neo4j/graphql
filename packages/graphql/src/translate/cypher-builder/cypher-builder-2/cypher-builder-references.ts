@@ -23,13 +23,18 @@ export class Node implements CypherReference {
     }
 
     public getCypher(context: CypherContext) {
-        const referenceId = context.getReferenceId(this);
+        const referenceId = this.getReference(context);
         let parametersStr = "";
         if (this.hasParameters()) {
             const parameters = serializeParameters(this.parameters, context);
             parametersStr = padLeft(parameters);
         }
         return `(${referenceId}${this.getLabelsString()}${parametersStr})`;
+    }
+
+    // TODO: should be private or protected
+    public getReference(context: CypherContext): string {
+        return context.getReferenceId(this);
     }
 
     private hasParameters(): boolean {
@@ -40,6 +45,19 @@ export class Node implements CypherReference {
         const escapedLabels = this.labels.map(escapeLabel);
         if (escapedLabels.length === 0) return "";
         return `:${escapedLabels.join(":")}`;
+    }
+}
+
+// NOTE: this node is only for compatibility
+export class NamedNode extends Node {
+    private name: string;
+    constructor(name: string, input?: NodeInput) {
+        super(input || {});
+        this.name = name;
+    }
+
+    public getReference(_context: CypherContext): string {
+        return this.name;
     }
 }
 
@@ -76,8 +94,10 @@ export class Relationship implements CypherReference {
             parametersStr = padLeft(parameters);
         }
 
-        const sourceStr = this.source.getCypher(context);
-        const targetStr = this.target.getCypher(context);
+        // const sourceStr = this.source.getCypher(context);
+        // const targetStr = this.target.getCypher(context);
+        const sourceStr = `(${this.source.getReference(context)})`;
+        const targetStr = `(${this.target.getReference(context)})`;
         const arrowStr = this.getRelationshipArrow();
         const relationshipStr = `${referenceId || ""}${this.getTypeString()}${parametersStr}`;
 
@@ -107,6 +127,16 @@ export class Param<T> {
 
     public getCypher(context: CypherContext): string {
         return `$${context.getParamId(this)}`;
+    }
+}
+
+export class RawParam<T> extends Param<T> {
+    constructor(value: T) {
+        super(value);
+    }
+
+    public getCypher(_context: CypherContext): string {
+        return `${this.value}`;
     }
 }
 
