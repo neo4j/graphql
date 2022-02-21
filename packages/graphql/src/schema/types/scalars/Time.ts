@@ -66,7 +66,7 @@ const parse = (value: any) => {
     return new neo4j.types.Time(hour, minute, second, nanosecond, timeZoneOffsetSeconds);
 };
 
-export default new GraphQLScalarType({
+export const Time = new GraphQLScalarType({
     name: "Time",
     description: "A time, represented as an RFC3339 time string",
     serialize: (value: unknown) => {

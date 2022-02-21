@@ -31,10 +31,15 @@ import {
     Kind,
 } from "graphql";
 import pluralize from "pluralize";
-import * as scalars from "../scalars";
+import * as scalars from "../types/scalars";
 import * as enums from "./enums";
 import * as directives from "./directives";
-import * as point from "../point";
+import { Point } from "../types/objects/Point";
+import { CartesianPoint } from "../types/objects/CartesianPoint";
+import { PointInput } from "../types/input-objects/PointInput";
+import { CartesianPointInput } from "../types/input-objects/CartesianPointInput";
+import { PointDistance } from "../types/input-objects/PointDistance";
+import { CartesianPointDistance } from "../types/input-objects/CartesianPointDistance";
 import { RESERVED_TYPE_NAMES } from "../../constants";
 
 function filterDocument(document: DocumentNode): DocumentNode {
@@ -80,9 +85,10 @@ function filterDocument(document: DocumentNode): DocumentNode {
         return fields?.filter((f) => {
             const type = getArgumentType(f.type);
 
-            const nodeMatch = /(?<nodeName>.+)(?:ConnectInput|ConnectWhere|CreateInput|DeleteInput|DisconnectInput|Options|RelationInput|Sort|UpdateInput|Where)/gm.exec(
-                type
-            );
+            const nodeMatch =
+                /(?<nodeName>.+)(?:ConnectInput|ConnectWhere|CreateInput|DeleteInput|DisconnectInput|Options|RelationInput|Sort|UpdateInput|Where)/gm.exec(
+                    type
+                );
             if (nodeMatch?.groups?.nodeName) {
                 if (nodeNames.includes(nodeMatch.groups.nodeName)) {
                     return false;
@@ -158,7 +164,16 @@ function validateDocument(document: DocumentNode): void {
 
     const schemaToExtend = new GraphQLSchema({
         directives: [...Object.values(directives), ...specifiedDirectives],
-        types: [...Object.values(scalars), ...Object.values(enums), ...Object.values(point)],
+        types: [
+            ...Object.values(scalars),
+            ...Object.values(enums),
+            Point,
+            CartesianPoint,
+            PointInput,
+            PointDistance,
+            CartesianPointInput,
+            CartesianPointDistance,
+        ],
     });
 
     const schema = extendSchema(schemaToExtend, doc);

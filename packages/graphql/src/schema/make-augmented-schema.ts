@@ -25,9 +25,6 @@ import {
     DirectiveNode,
     DocumentNode,
     EnumTypeDefinitionNode,
-    GraphQLInt,
-    GraphQLNonNull,
-    GraphQLString,
     InputObjectTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
     Kind,
@@ -54,8 +51,7 @@ import {
 } from "./resolvers";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import * as constants from "../constants";
-import * as Scalars from "./scalars";
-import * as point from "./point";
+import * as Scalars from "./types/scalars";
 import { Exclude, Node } from "../classes";
 import { NodeDirective } from "../classes/NodeDirective";
 import Relationship from "../classes/Relationship";
@@ -81,6 +77,20 @@ import { upperFirst } from "../utils/upper-first";
 import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
 import { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
 
+// GraphQL type imports
+import { CreateInfo } from "./types/objects/CreateInfo";
+import { DeleteInfo } from "./types/objects/DeleteInfo";
+import { UpdateInfo } from "./types/objects/UpdateInfo";
+import { PageInfo } from "./types/objects/PageInfo";
+import { SortDirection } from "./types/enums/SortDirection";
+import { QueryOptions } from "./types/input-objects/QueryOptions";
+import { Point } from "./types/objects/Point";
+import { CartesianPoint } from "./types/objects/CartesianPoint";
+import { PointInput } from "./types/input-objects/PointInput";
+import { CartesianPointInput } from "./types/input-objects/CartesianPointInput";
+import { PointDistance } from "./types/input-objects/PointDistance";
+import { CartesianPointDistance } from "./types/input-objects/CartesianPointDistance";
+
 function makeAugmentedSchema(
     typeDefs: TypeSource,
     { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
@@ -102,69 +112,14 @@ function makeAugmentedSchema(
 
     let relationships: Relationship[] = [];
 
-    composer.createObjectTC({
-        name: "CreateInfo",
-        fields: {
-            bookmark: GraphQLString,
-            nodesCreated: new GraphQLNonNull(GraphQLInt),
-            relationshipsCreated: new GraphQLNonNull(GraphQLInt),
-        },
-    });
-
-    composer.createObjectTC({
-        name: "DeleteInfo",
-        fields: {
-            bookmark: GraphQLString,
-            nodesDeleted: new GraphQLNonNull(GraphQLInt),
-            relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
-        },
-    });
-
-    composer.createObjectTC({
-        name: "UpdateInfo",
-        fields: {
-            bookmark: GraphQLString,
-            nodesCreated: new GraphQLNonNull(GraphQLInt),
-            nodesDeleted: new GraphQLNonNull(GraphQLInt),
-            relationshipsCreated: new GraphQLNonNull(GraphQLInt),
-            relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
-        },
-    });
+    composer.createObjectTC(CreateInfo);
+    composer.createObjectTC(DeleteInfo);
+    composer.createObjectTC(UpdateInfo);
+    composer.createObjectTC(PageInfo);
+    composer.createInputTC(QueryOptions);
+    const sortDirection = composer.createEnumTC(SortDirection);
 
     const aggregationTypesMapper = new AggregationTypesMapper(composer);
-
-    composer.createInputTC({
-        name: "QueryOptions",
-        fields: {
-            offset: "Int",
-            limit: "Int",
-        },
-    });
-
-    const sortDirection = composer.createEnumTC({
-        name: "SortDirection",
-        values: {
-            ASC: {
-                value: "ASC",
-                description: "Sort by field values in ascending order.",
-            },
-            DESC: {
-                value: "DESC",
-                description: "Sort by field values in descending order.",
-            },
-        },
-    });
-
-    composer.createObjectTC({
-        name: "PageInfo",
-        description: "Pagination information (Relay)",
-        fields: {
-            hasNextPage: "Boolean!",
-            hasPreviousPage: "Boolean!",
-            startCursor: "String",
-            endCursor: "String",
-        },
-    });
 
     const customResolvers = getCustomResolvers(document);
 
@@ -708,17 +663,17 @@ function makeAugmentedSchema(
     if (pointInTypeDefs) {
         // Every field (apart from CRS) in Point needs a custom resolver
         // to deconstruct the point objects we fetch from the database
-        composer.createObjectTC(point.point);
-        composer.createInputTC(point.pointInput);
-        composer.createInputTC(point.pointDistance);
+        composer.createObjectTC(Point);
+        composer.createInputTC(PointInput);
+        composer.createInputTC(PointDistance);
     }
 
     if (cartesianPointInTypeDefs) {
         // Every field (apart from CRS) in CartesianPoint needs a custom resolver
         // to deconstruct the point objects we fetch from the database
-        composer.createObjectTC(point.cartesianPoint);
-        composer.createInputTC(point.cartesianPointInput);
-        composer.createInputTC(point.cartesianPointDistance);
+        composer.createObjectTC(CartesianPoint);
+        composer.createInputTC(CartesianPointInput);
+        composer.createInputTC(CartesianPointDistance);
     }
 
     unions.forEach((union) => {

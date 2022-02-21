@@ -20,60 +20,55 @@
 import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
 import neo4j from "neo4j-driver";
 
-// Matching YYYY-MM-DDTHH:MM:SS(.sss+)
-const LOCAL_DATE_TIME_REGEX =
-    /^(?<year>\d{4})-(?<month>[0]\d|1[0-2])-(?<day>[0-2]\d|3[01])T(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d+))?$/;
+export const LOCAL_TIME_REGEX =
+    /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?$/;
 
-export const parseLocalDateTime = (value: any) => {
+export const parseLocalTime = (value: any) => {
     if (typeof value !== "string") {
         throw new TypeError(`Value must be of type string: ${value}`);
     }
 
-    const match = LOCAL_DATE_TIME_REGEX.exec(value);
+    const match = LOCAL_TIME_REGEX.exec(value);
 
     if (!match) {
-        throw new TypeError(`Value must be formatted as LocalDateTime: ${value}`);
+        throw new TypeError(`Value must be formatted as LocalTime: ${value}`);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { year, month, day, hour, minute, second, fraction = 0 } = match.groups!;
+    const { hour, minute, second, fraction } = match.groups!;
 
-    // Take first nine digits if received more
-    let nanosecond = `${fraction}`.substring(0, 9);
-    // Pad with zeros to reach nine digits if received less
-    while (nanosecond.toString().length < 9) {
-        nanosecond = `${nanosecond}0`;
+    // Calculate the number of nanoseconds by padding the fraction of seconds with zeroes to nine digits
+    let nanosecond = 0;
+    if (fraction) {
+        nanosecond = +`${fraction}000000000`.substring(0, 9);
     }
 
     return {
-        year: +year,
-        month: +month,
-        day: +day,
         hour: +hour,
         minute: +minute,
         second: +second,
-        nanosecond: +nanosecond,
+        nanosecond,
     };
 };
 
 const parse = (value: any) => {
-    const { year, month, day, hour, minute, second, nanosecond } = parseLocalDateTime(value);
+    const { hour, minute, second, nanosecond } = parseLocalTime(value);
 
-    return new neo4j.types.LocalDateTime(year, month, day, hour, minute, second, nanosecond);
+    return new neo4j.types.LocalTime(hour, minute, second, nanosecond);
 };
 
-export default new GraphQLScalarType({
-    name: "LocalDateTime",
-    description: "A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'",
+export const LocalTime = new GraphQLScalarType({
+    name: "LocalTime",
+    description: "A local time, represented as a time string without timezone information",
     serialize: (value: unknown) => {
-        if (typeof value !== "string" && !(value instanceof neo4j.types.LocalDateTime)) {
+        if (typeof value !== "string" && !(value instanceof neo4j.types.LocalTime)) {
             throw new TypeError(`Value must be of type string: ${value}`);
         }
 
         const stringifiedValue = value.toString();
 
-        if (!LOCAL_DATE_TIME_REGEX.test(stringifiedValue)) {
-            throw new TypeError(`Value must be formatted as LocalDateTime: ${stringifiedValue}`);
+        if (!LOCAL_TIME_REGEX.test(stringifiedValue)) {
+            throw new TypeError(`Value must be formatted as LocalTime: ${stringifiedValue}`);
         }
 
         return stringifiedValue;
@@ -83,7 +78,7 @@ export default new GraphQLScalarType({
     },
     parseLiteral: (ast: ValueNode) => {
         if (ast.kind !== Kind.STRING) {
-            throw new GraphQLError(`Only strings can be validated as LocalDateTime, but received: ${ast.kind}`);
+            throw new GraphQLError(`Only strings can be validated as LocalTime, but received: ${ast.kind}`);
         }
         return parse(ast.value);
     },
