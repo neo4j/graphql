@@ -24,30 +24,22 @@ export const CartesianPoint = new GraphQLObjectType({
     fields: {
         x: {
             type: new GraphQLNonNull(GraphQLFloat),
-            resolve: (source) => {
-                return source.point.x;
-            },
+            resolve: (source) => source.point.x,
         },
         y: {
             type: new GraphQLNonNull(GraphQLFloat),
-            resolve: (source) => {
-                return source.point.y;
-            },
+            resolve: (source) => source.point.y,
         },
         z: {
             type: GraphQLFloat,
-            resolve: (source) => {
-                return source.point.z;
-            },
+            resolve: (source) => source.point.z,
         },
         crs: {
             type: new GraphQLNonNull(GraphQLString),
         },
         srid: {
             type: new GraphQLNonNull(GraphQLInt),
-            resolve: (source) => {
-                return source.point.srid;
-            },
+            resolve: (source) => source.point.srid,
         },
     },
 });

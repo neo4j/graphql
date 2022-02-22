@@ -24,30 +24,22 @@ export const Point = new GraphQLObjectType({
     fields: {
         longitude: {
             type: new GraphQLNonNull(GraphQLFloat),
-            resolve: (source) => {
-                return source.point.x;
-            },
+            resolve: (source) => source.point.x,
         },
         latitude: {
             type: new GraphQLNonNull(GraphQLFloat),
-            resolve: (source) => {
-                return source.point.y;
-            },
+            resolve: (source) => source.point.y,
         },
         height: {
             type: GraphQLFloat,
-            resolve: (source) => {
-                return source.point.z;
-            },
+            resolve: (source) => source.point.z,
         },
         crs: {
             type: new GraphQLNonNull(GraphQLString),
         },
         srid: {
             type: new GraphQLNonNull(GraphQLInt),
-            resolve: (source) => {
-                return source.point.srid;
-            },
+            resolve: (source) => source.point.srid,
         },
     },
 });
