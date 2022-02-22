@@ -46,7 +46,7 @@ describe("unions", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
@@ -87,7 +87,7 @@ describe("unions", () => {
                 MERGE (m)-[:SEARCH]->(g)
             `);
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -96,9 +96,9 @@ describe("unions", () => {
 
             const movies = (gqlResult.data as any).movies[0];
 
-            const movieSearch = movies.search.find((x) => x.__typename === "Movie"); // eslint-disable-line no-underscore-dangle
+            const movieSearch = movies.search.find((x: Record<string, string>) => x.__typename === "Movie");
             expect(movieSearch.title).toEqual(movieTitle);
-            const genreSearch = movies.search.find((x) => x.__typename === "Genre"); // eslint-disable-line no-underscore-dangle
+            const genreSearch = movies.search.find((x: Record<string, string>) => x.__typename === "Genre");
             expect(genreSearch.name).toEqual(genreName);
         } finally {
             await session.close();
@@ -164,7 +164,7 @@ describe("unions", () => {
                 MERGE (m)-[:SEARCH]->(g2)
             `);
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -191,7 +191,7 @@ describe("unions", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
@@ -237,7 +237,7 @@ describe("unions", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -264,7 +264,7 @@ describe("unions", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
@@ -324,7 +324,7 @@ describe("unions", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -365,7 +365,7 @@ describe("unions", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
@@ -413,7 +413,7 @@ describe("unions", () => {
             `);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -440,7 +440,7 @@ describe("unions", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
@@ -495,7 +495,7 @@ describe("unions", () => {
             `);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -522,7 +522,7 @@ describe("unions", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
@@ -595,7 +595,7 @@ describe("unions", () => {
             `);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -628,7 +628,7 @@ describe("unions", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
@@ -678,7 +678,7 @@ describe("unions", () => {
             `);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });

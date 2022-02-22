@@ -23,13 +23,13 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Unions", () => {
-    test("Relationship Properties", () => {
+    test("Relationship Properties", async () => {
         const typeDefs = gql`
             union Publication = Book | Journal
 
             type Author {
                 name: String!
-                publications: [Publication] @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
+                publications: [Publication!]! @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
             }
 
             type Book {
@@ -47,7 +47,7 @@ describe("Unions", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -57,13 +57,13 @@ describe("Unions", () => {
 
             type Author {
               name: String!
-              publications(options: QueryOptions, where: PublicationWhere): [Publication]
-              publicationsConnection(where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
+              publications(directed: Boolean = true, options: QueryOptions, where: PublicationWhere): [Publication!]!
+              publicationsConnection(after: String, directed: Boolean = true, first: Int, sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
             type AuthorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input AuthorConnectInput {
@@ -90,8 +90,10 @@ describe("Unions", () => {
             input AuthorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [AuthorSort]
+              \\"\\"\\"
+              Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [AuthorSort!]
             }
 
             input AuthorPublicationsBookConnectFieldInput {
@@ -154,27 +156,13 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
-            input AuthorPublicationsConnectionBookWhere {
-              AND: [AuthorPublicationsConnectionBookWhere]
-              OR: [AuthorPublicationsConnectionBookWhere]
-              edge: WroteWhere
-              edge_NOT: WroteWhere
-              node: BookWhere
-              node_NOT: BookWhere
-            }
-
-            input AuthorPublicationsConnectionJournalWhere {
-              AND: [AuthorPublicationsConnectionJournalWhere]
-              OR: [AuthorPublicationsConnectionJournalWhere]
-              edge: WroteWhere
-              edge_NOT: WroteWhere
-              node: JournalWhere
-              node_NOT: JournalWhere
+            input AuthorPublicationsConnectionSort {
+              edge: WroteSort
             }
 
             input AuthorPublicationsConnectionWhere {
-              Book: AuthorPublicationsConnectionBookWhere
-              Journal: AuthorPublicationsConnectionJournalWhere
+              Book: AuthorPublicationsBookConnectionWhere
+              Journal: AuthorPublicationsJournalConnectionWhere
             }
 
             input AuthorPublicationsCreateFieldInput {
@@ -261,7 +249,9 @@ describe("Unions", () => {
               publications: AuthorPublicationsCreateFieldInput
             }
 
-            \\"\\"\\"Fields to sort Authors by. The order in which sorts are applied is not guaranteed when specifying many fields in one AuthorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Authors by. The order in which sorts are applied is not guaranteed when specifying many fields in one AuthorSort object.
+            \\"\\"\\"
             input AuthorSort {
               name: SortDirection
             }
@@ -277,27 +267,31 @@ describe("Unions", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
-              publicationsConnection: AuthorPublicationsConnectionWhere
-              publicationsConnection_NOT: AuthorPublicationsConnectionWhere
+              publicationsConnection: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_SOME\` instead.\\")
+              publicationsConnection_ALL: AuthorPublicationsConnectionWhere
+              publicationsConnection_NONE: AuthorPublicationsConnectionWhere
+              publicationsConnection_NOT: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_NONE\` instead.\\")
+              publicationsConnection_SINGLE: AuthorPublicationsConnectionWhere
+              publicationsConnection_SOME: AuthorPublicationsConnectionWhere
             }
 
             type Book {
-              author(options: AuthorOptions, where: AuthorWhere): [Author!]!
-              authorAggregate(where: AuthorWhere): BookAuthorAuthorAggregationSelection
-              authorConnection(after: String, first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
+              author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
+              authorAggregate(directed: Boolean = true, where: AuthorWhere): BookAuthorAuthorAggregationSelection
+              authorConnection(after: String, directed: Boolean = true, first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
               title: String!
             }
 
             type BookAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input BookAuthorAggregateInput {
@@ -319,11 +313,11 @@ describe("Unions", () => {
             }
 
             type BookAuthorAuthorEdgeAggregateSelection {
-              words: IntAggregateSelection!
+              words: IntAggregateSelectionNonNullable!
             }
 
             type BookAuthorAuthorNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input BookAuthorConnectFieldInput {
@@ -390,6 +384,11 @@ describe("Unions", () => {
               words_MIN_GTE: Int
               words_MIN_LT: Int
               words_MIN_LTE: Int
+              words_SUM_EQUAL: Int
+              words_SUM_GT: Int
+              words_SUM_GTE: Int
+              words_SUM_LT: Int
+              words_SUM_LTE: Int
             }
 
             input BookAuthorFieldInput {
@@ -466,15 +465,19 @@ describe("Unions", () => {
             input BookOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [BookSort]
+              \\"\\"\\"
+              Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [BookSort!]
             }
 
             input BookRelationInput {
               author: [BookAuthorCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Books by. The order in which sorts are applied is not guaranteed when specifying many fields in one BookSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Books by. The order in which sorts are applied is not guaranteed when specifying many fields in one BookSort object.
+            \\"\\"\\"
             input BookSort {
               title: SortDirection
             }
@@ -487,19 +490,31 @@ describe("Unions", () => {
             input BookWhere {
               AND: [BookWhere!]
               OR: [BookWhere!]
-              author: AuthorWhere
+              author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: BookAuthorAggregateInput
-              authorConnection: BookAuthorConnectionWhere
-              authorConnection_NOT: BookAuthorConnectionWhere
-              author_NOT: AuthorWhere
+              authorConnection: BookAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_SOME\` instead.\\")
+              authorConnection_ALL: BookAuthorConnectionWhere
+              authorConnection_NONE: BookAuthorConnectionWhere
+              authorConnection_NOT: BookAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_NONE\` instead.\\")
+              authorConnection_SINGLE: BookAuthorConnectionWhere
+              authorConnection_SOME: BookAuthorConnectionWhere
+              \\"\\"\\"Return Books where all of the related Authors match this filter\\"\\"\\"
+              author_ALL: AuthorWhere
+              \\"\\"\\"Return Books where none of the related Authors match this filter\\"\\"\\"
+              author_NONE: AuthorWhere
+              author_NOT: AuthorWhere @deprecated(reason: \\"Use \`author_NONE\` instead.\\")
+              \\"\\"\\"Return Books where one of the related Authors match this filter\\"\\"\\"
+              author_SINGLE: AuthorWhere
+              \\"\\"\\"Return Books where some of the related Authors match this filter\\"\\"\\"
+              author_SOME: AuthorWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -531,22 +546,23 @@ describe("Unions", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelection {
+            type IntAggregateSelectionNonNullable {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Journal {
-              author(options: AuthorOptions, where: AuthorWhere): [Author!]!
-              authorAggregate(where: AuthorWhere): JournalAuthorAuthorAggregationSelection
-              authorConnection(after: String, first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
+              author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
+              authorAggregate(directed: Boolean = true, where: AuthorWhere): JournalAuthorAuthorAggregationSelection
+              authorConnection(after: String, directed: Boolean = true, first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
               subject: String!
             }
 
             type JournalAggregateSelection {
               count: Int!
-              subject: StringAggregateSelection!
+              subject: StringAggregateSelectionNonNullable!
             }
 
             input JournalAuthorAggregateInput {
@@ -568,11 +584,11 @@ describe("Unions", () => {
             }
 
             type JournalAuthorAuthorEdgeAggregateSelection {
-              words: IntAggregateSelection!
+              words: IntAggregateSelectionNonNullable!
             }
 
             type JournalAuthorAuthorNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input JournalAuthorConnectFieldInput {
@@ -639,6 +655,11 @@ describe("Unions", () => {
               words_MIN_GTE: Int
               words_MIN_LT: Int
               words_MIN_LTE: Int
+              words_SUM_EQUAL: Int
+              words_SUM_GT: Int
+              words_SUM_GTE: Int
+              words_SUM_LT: Int
+              words_SUM_LTE: Int
             }
 
             input JournalAuthorFieldInput {
@@ -715,15 +736,19 @@ describe("Unions", () => {
             input JournalOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [JournalSort]
+              \\"\\"\\"
+              Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [JournalSort!]
             }
 
             input JournalRelationInput {
               author: [JournalAuthorCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Journals by. The order in which sorts are applied is not guaranteed when specifying many fields in one JournalSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Journals by. The order in which sorts are applied is not guaranteed when specifying many fields in one JournalSort object.
+            \\"\\"\\"
             input JournalSort {
               subject: SortDirection
             }
@@ -736,19 +761,31 @@ describe("Unions", () => {
             input JournalWhere {
               AND: [JournalWhere!]
               OR: [JournalWhere!]
-              author: AuthorWhere
+              author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: JournalAuthorAggregateInput
-              authorConnection: JournalAuthorConnectionWhere
-              authorConnection_NOT: JournalAuthorConnectionWhere
-              author_NOT: AuthorWhere
+              authorConnection: JournalAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_SOME\` instead.\\")
+              authorConnection_ALL: JournalAuthorConnectionWhere
+              authorConnection_NONE: JournalAuthorConnectionWhere
+              authorConnection_NOT: JournalAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_NONE\` instead.\\")
+              authorConnection_SINGLE: JournalAuthorConnectionWhere
+              authorConnection_SOME: JournalAuthorConnectionWhere
+              \\"\\"\\"Return Journals where all of the related Authors match this filter\\"\\"\\"
+              author_ALL: AuthorWhere
+              \\"\\"\\"Return Journals where none of the related Authors match this filter\\"\\"\\"
+              author_NONE: AuthorWhere
+              author_NOT: AuthorWhere @deprecated(reason: \\"Use \`author_NONE\` instead.\\")
+              \\"\\"\\"Return Journals where one of the related Authors match this filter\\"\\"\\"
+              author_SINGLE: AuthorWhere
+              \\"\\"\\"Return Journals where some of the related Authors match this filter\\"\\"\\"
+              author_SOME: AuthorWhere
               subject: String
               subject_CONTAINS: String
               subject_ENDS_WITH: String
-              subject_IN: [String]
+              subject_IN: [String!]
               subject_NOT: String
               subject_NOT_CONTAINS: String
               subject_NOT_ENDS_WITH: String
-              subject_NOT_IN: [String]
+              subject_NOT_IN: [String!]
               subject_NOT_STARTS_WITH: String
               subject_STARTS_WITH: String
             }
@@ -783,13 +820,10 @@ describe("Unions", () => {
             type Query {
               authors(options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
-              authorsCount(where: AuthorWhere): Int!
               books(options: BookOptions, where: BookWhere): [Book!]!
               booksAggregate(where: BookWhere): BookAggregateSelection!
-              booksCount(where: BookWhere): Int!
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
               journalsAggregate(where: JournalWhere): JournalAggregateSelection!
-              journalsCount(where: JournalWhere): Int!
             }
 
             input QueryOptions {
@@ -804,7 +838,7 @@ describe("Unions", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
             }
@@ -854,13 +888,12 @@ describe("Unions", () => {
               words: Int
               words_GT: Int
               words_GTE: Int
-              words_IN: [Int]
+              words_IN: [Int!]
               words_LT: Int
               words_LTE: Int
               words_NOT: Int
-              words_NOT_IN: [Int]
-            }
-            "
+              words_NOT_IN: [Int!]
+            }"
         `);
     });
 });

@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import jsonwebtoken from "jsonwebtoken";
@@ -24,7 +25,7 @@ import { IncomingMessage } from "http";
 import { Socket } from "net";
 import neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
-import { generateUniqueType } from "../../../../../src/utils/test/graphql-types";
+import { generateUniqueType } from "../../../../utils/graphql-types";
 
 describe(`Field Level Auth Where Requests`, () => {
     let neoSchema: Neo4jGraphQL;
@@ -38,7 +39,7 @@ describe(`Field Level Auth Where Requests`, () => {
         name: String
         year: Int
         createdAt: DateTime
-        ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN)
+        ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
     }
 
     type ${typeActor.name} {
@@ -46,7 +47,7 @@ describe(`Field Level Auth Where Requests`, () => {
         year: Int
         createdAt: DateTime
         testId: Int
-        ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT)
+        ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
     }`;
     const secret = "secret";
 
@@ -66,10 +67,10 @@ describe(`Field Level Auth Where Requests`, () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs: extendedTypeDefs,
-            config: {
-                jwt: {
-                    secret,
-                },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
             },
         });
 
@@ -87,7 +88,7 @@ describe(`Field Level Auth Where Requests`, () => {
         await driver.close();
     });
 
-    it("authenticated query", async () => {
+    test("authenticated query", async () => {
         const query = `query {
             ${typeMovie.plural} {
                 ${typeActor.plural}Aggregate(where: {year_GT: 10}) {
@@ -110,7 +111,7 @@ describe(`Field Level Auth Where Requests`, () => {
         req.headers.authorization = `Bearer ${token}`;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });

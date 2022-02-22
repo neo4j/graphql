@@ -1,0 +1,52 @@
+{
+    "name": "@neo4j/introspector",
+    "version": "1.0.1",
+    "description": "Introspect a Neo4j database model/schema",
+    "keywords": [
+        "neo4j",
+        "graphql",
+        "schema"
+    ],
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/neo4j/graphql/issues"
+    },
+    "homepage": "https://github.com/neo4j/graphql/tree/dev/packages/introspector",
+    "exports": "./dist/index.js",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*.ts",
+        "dist/**/*.ts.map",
+        "dist/**/*.js",
+        "dist/**/*.js.map"
+    ],
+    "scripts": {
+        "clean": "cd src/ && tsc --build --clean",
+        "test": "jest",
+        "test:unit": "jest src",
+        "test:unit:watch": "jest src --watch",
+        "test:int": "jest tests/integration",
+        "test:int:watch": "jest tests/integration --watch",
+        "build": "tsc --build tsconfig.production.json",
+        "build:clean": "yarn clean && yarn build"
+    },
+    "author": "Neo4j Inc.",
+    "devDependencies": {
+        "@neo4j/graphql": "^3.0.0",
+        "@types/jest": "27.4.0",
+        "@types/node": "16.11.25",
+        "@types/pluralize": "0.0.29",
+        "jest": "27.5.1",
+        "ts-jest": "27.1.3",
+        "typescript": "4.5.5"
+    },
+    "dependencies": {
+        "camelcase": "^6.2.0",
+        "debug": "^4.3.2",
+        "pluralize": "^8.0.0"
+    },
+    "peerDependencies": {
+        "neo4j-driver": "^4.1.0"
+    }
+}

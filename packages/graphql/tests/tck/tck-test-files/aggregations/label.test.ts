@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher Aggregations Many while Alias fields", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -47,7 +46,7 @@ describe("Cypher Aggregations Many while Alias fields", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -82,7 +81,7 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "MATCH (this:\`Film\`)
             RETURN { _id: { _shortest: min(this.id), _longest: max(this.id) }, _title: { _shortest:
                                         reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(\\"
                                             RETURN
@@ -136,7 +135,7 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor:Person:Alien)
+            "MATCH (this:\`Actor\`:\`Person\`:\`Alien\`)
             RETURN { _id: { _shortest: min(this.id), _longest: max(this.id) }, _name: { _shortest:
                                         reduce(shortest = collect(this.name)[0], current IN collect(this.name) | apoc.cypher.runFirstColumn(\\"
                                             RETURN

@@ -90,22 +90,122 @@ query {
 }
 ----
 
+== Relationship Filtering
+
+For each relationship field, `field`, a set of filters are available depending on whether the relationship is `n..1` or `n..m`. In the case of `n..1`, filtering is done on equality or inequality of the related node by specifying a filter on `field` or `field_NOT`, respectively. In the case of `n..m`, filtering is done on the list of related nodes and is based on the https://neo4j.com/docs/cypher-manual/current/functions/predicate/[List Predicates] available in Cypher.
+
+=== Available Filters
+
+`n..1`::
+    ** `field` - equality
+    ** `field_NOT` - inequality
+
+`n..m`::
+    ** `field_ALL` - https://neo4j.com/docs/cypher-manual/current/functions/predicate/#functions-all[all]
+    ** `field_NONE` - https://neo4j.com/docs/cypher-manual/current/functions/predicate/#functions-none[none]
+    ** `field_SOME` - https://neo4j.com/docs/cypher-manual/current/functions/predicate/#functions-any[any]
+    ** `field_SINGLE` - https://neo4j.com/docs/cypher-manual/current/functions/predicate/#functions-single[single]
+
+
+=== Relationship Filtering Usage Examples
+
+For this section take as type definitions the following:
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID!
+    name: String
+    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+}
+
+type Post {
+    id: ID!
+    content: String
+    author: User! @relationship(type: "HAS_POST", direction: IN)
+    likes: [User!]! @relationship(type: "LIKES", direction: IN)
+}
+----
+=== `n..1` Relationships
+In the above, an `author` represents a `n..1` relationship on `Post` where a given `Post` is authored by one, and only one, `author`. The available filters here will be `author` and `author_NOT`.
+
+==== Find all posts by a desired author
+[source, graphql, indent=0]
+----
+query {
+    posts(where: { author: { id: "7CF1D9D6-E527-4ACD-9C2A-207AE0F5CB8C" } }) {
+        content
+    }
+}
+----
+==== Find all posts not by an undesired author
+[source, graphql, indent=0]
+----
+query {
+    posts(where: { author_NOT: { id: "7CF1D9D6-E527-4ACD-9C2A-207AE0F5CB8C" } }) {
+        content
+    }
+}
+----
+=== `n..m` Relationships
+In the above, `posts` represents a `n..m` relationship on `User` where a given `User` can have any number of `posts`.
+
+==== Find all users where all of their posts contain search term: `"neo4j"`
+[source, graphql, indent=0]
+----
+query {
+    users(where: { posts_ALL: { content_CONTAINS: "neo4j" } }) {
+        name
+    }
+}
+----
+
+==== Find all users where none of their posts contain search term: `"cypher"`
+[source, graphql, indent=0]
+----
+query {
+    users(where: { posts_NONE: { content_CONTAINS: "cypher" } }) {
+        name
+    }
+}
+----
+
+==== Find all users where some of their posts contain search term: `"graphql"`
+[source, graphql, indent=0]
+----
+query {
+    users(where: { posts_SOME: { content_CONTAINS: "graphql" } }) {
+        name
+    }
+}
+----
+
+==== Find all users where only one of their posts contain search term: `"graph"`
+[source, graphql, indent=0]
+----
+query {
+    users(where: { posts_SINGLE: { content_CONTAINS: "graph" } }) {
+        name
+    }
+}
+----
+
 == Aggregation Filtering
 
-This library offers, for each relationship, an aggregation key inside the where argument. You can use the aggregation key to satisfy questions such as: 
+This library offers, for each relationship, an aggregation key inside the where argument. You can use the aggregation key to satisfy questions such as:
 
 * Find the posts where the number of likes are greater than 5
 * Find flights where the average age of passengers is greater than or equal to 18
 * Find movies where the shortest actor screen time is less than 10 minutes
 
-You can use this where aggregation on both the `node` and `edge` of a relationship. 
+You can use this where aggregation on both the `node` and `edge` of a relationship.
 
 
 === Aggregation Filtering Usage Examples
 
 ==== Find the posts where the number of likes are greater than 5
 
-Given the schema: 
+Given the schema:
 
 [source, graphql, indent=0]
 ----
@@ -115,11 +215,11 @@ type User {
 
 type Post {
     content: String
-    likes: [User] @relationship(type: "LIKES", direction: IN)
+    likes: [User!]! @relationship(type: "LIKES", direction: IN)
 }
 ----
 
-Answering the question: 
+Answering the question:
 
 [source, graphql, indent=0]
 ----
@@ -132,7 +232,7 @@ query {
 
 ==== Find flights where the average age of passengers is greater than or equal to 18
 
-Given the schema: 
+Given the schema:
 
 [source, graphql, indent=0]
 ----
@@ -143,11 +243,11 @@ type Passenger {
 
 type Flight {
     code: String
-    passengers: [Passenger] @relationship(type: "FLYING_ON", direction: IN)
+    passengers: [Passenger!]! @relationship(type: "FLYING_ON", direction: IN)
 }
 ----
 
-Answering the question: 
+Answering the question:
 
 [source, graphql, indent=0]
 ----
@@ -160,13 +260,13 @@ query {
 
 ==== Find movies where the shortest actor screen time is less than 10 minutes
 
-Given the schema: 
+Given the schema:
 
 [source, graphql, indent=0]
 ----
 type Movie {
     title: String
-    actors: [Person] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+    actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
 }
 
 type Person {
@@ -178,7 +278,7 @@ interface ActedIn {
 }
 ----
 
-Answering the question: 
+Answering the question:
 
 [source, graphql, indent=0]
 ----
@@ -191,11 +291,11 @@ query {
 
 === Aggregation Filtering Operators
 
-Below you will learn more about the autogenerated filters available on the aggregate key and for each type on the `node` and `edge` of the specified relationship. 
+Below you will learn more about the autogenerated filters available on the aggregate key and for each type on the `node` and `edge` of the specified relationship.
 
 ==== Count
-This is a special 'top level' key inside the where aggregation and will be available for all relationships. This is used to count the amount of relationships the parent node is connected to. 
-The operators count has are as follows: 
+This is a special 'top level' key inside the where aggregation and will be available for all relationships. This is used to count the amount of relationships the parent node is connected to.
+The operators count has are as follows:
 
 * `count_EQUAL`
 * `count_GT`
@@ -214,13 +314,13 @@ query {
 }
 ----
 
-==== ID
+==== `ID`
 
-You can only use the `_EQUAL` operator on types of `ID`. 
+You can only use the `_EQUAL` operator on types of `ID`.
 
-==== String
+==== `String`
 
-Fields of type String has the following operators: 
+Fields of type `String` have the following operators:
 
 * `_EQUAL`
 * `_GT`
@@ -243,7 +343,7 @@ Fields of type String has the following operators:
 * `_LONGEST_LT`
 * `_LONGEST_LTE`
 
-When using the operators you are 'asking questions' about the length of each String. 
+These operators are calculated against the length of each string.
 
 ===== Example
 
@@ -258,14 +358,13 @@ query {
 
 ==== Numerical Types
 
-Includes: 
+Numerical types include the following:
 
 * `Int`
 * `Float`
 * `BigInt`
-* `Duration`
 
-Has the following operators: 
+The types in the list above have the following operators:
 
 * `_EQUAL`
 * `_GT`
@@ -277,6 +376,11 @@ Has the following operators:
 * `_AVERAGE_GTE`
 * `_AVERAGE_LT`
 * `_AVERAGE_LTE`
+* `_SUM_EQUAL`
+* `_SUM_GT`
+* `_SUM_GTE`
+* `_SUM_LT`
+* `_SUM_LTE`
 * `_MIN_EQUAL`
 * `_MIN_GT`
 * `_MIN_GTE`
@@ -288,7 +392,7 @@ Has the following operators:
 * `_MAX_LT`
 * `_MAX_LTE`
 
-===== Example 
+===== Example
 
 [source, graphql, indent=0]
 ----
@@ -299,16 +403,17 @@ query {
 }
 ----
 
-==== Other Types
+==== Temporal Types
 
-Includes: 
+Temporal types include the following:
 
 * `DateTime`
 * `LocalDateTime`
 * `LocalTime`
 * `Time`
+* `Duration`
 
-Has the following operators: 
+The types listed above have the following aggregation operators:
 
 * `_EQUAL`
 * `_GT`
@@ -325,3 +430,11 @@ Has the following operators:
 * `_MAX_GTE`
 * `_MAX_LT`
 * `_MAX_LTE`
+
+Whilst the `Duration` type also has the following additional operators:
+
+* `_AVERAGE_EQUAL`
+* `_AVERAGE_GT`
+* `_AVERAGE_GTE`
+* `_AVERAGE_LT`
+* `_AVERAGE_LTE`

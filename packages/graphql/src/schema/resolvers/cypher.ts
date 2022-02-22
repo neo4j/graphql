@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { UnionTypeDefinitionNode } from "graphql/language/ast";
+import { GraphQLResolveInfo, GraphQLUnionType } from "graphql";
 import { execute } from "../../utils";
-import { BaseField, ConnectionField, Context } from "../../types";
+import { ConnectionField, Context, CypherField } from "../../types";
 import { graphqlArgsToCompose } from "../to-compose";
 import createAuthAndParams from "../../translate/create-auth-and-params";
 import createAuthParam from "../../translate/create-auth-param";
@@ -27,18 +27,20 @@ import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import createProjectionAndParams from "../../translate/create-projection-and-params";
 import createConnectionAndParams from "../../translate/connection/create-connection-and-params";
 import { isNeoInt } from "../../utils/utils";
+import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 
 export default function cypherResolver({
     field,
     statement,
     type,
 }: {
-    field: BaseField;
+    field: CypherField;
     statement: string;
     type: "Query" | "Mutation";
 }) {
-    async function resolve(_root: any, args: any, _context: unknown) {
+    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
+        context.resolveTree = getNeo4jResolveTree(info);
         const { resolveTree } = context;
         const cypherStrs: string[] = [];
         const connectionProjectionStrs: string[] = [];
@@ -49,15 +51,7 @@ export default function cypherResolver({
 
         const isArray = field.typeMeta.array;
 
-        const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
-            field.typeMeta.name
-        );
-        const isEnum = context.neoSchema.document.definitions.find(
-            (x) => x.kind === "EnumTypeDefinition" && x.name.value === field.typeMeta.name
-        );
-        const isScalar = context.neoSchema.document.definitions.find(
-            (x) => x.kind === "ScalarTypeDefinition" && x.name.value === field.typeMeta.name
-        );
+        const graphqlType = context.schema.getType(field.typeMeta.name);
 
         const preAuth = createAuthAndParams({ entity: field, context });
         if (preAuth[0]) {
@@ -65,15 +59,13 @@ export default function cypherResolver({
             cypherStrs.push(`CALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
-        const referenceNode = context.neoSchema.nodes.find((x) => x.name === field.typeMeta.name);
-        const unions = context.neoSchema.document.definitions.filter(
-            (x) => x.kind === "UnionTypeDefinition"
-        ) as UnionTypeDefinitionNode[];
-        const referenceUnion = unions.find((u) => u.name.value === field.typeMeta.name);
+        const referenceNode = context.nodes.find((x) => x.name === field.typeMeta.name);
+
+        const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
 
         if (referenceNode) {
             const recurse = createProjectionAndParams({
-                fieldsByTypeName: resolveTree.fieldsByTypeName,
+                resolveTree,
                 node: referenceNode,
                 context,
                 varName: `this`,
@@ -109,7 +101,7 @@ export default function cypherResolver({
             const headStrs: string[] = [];
             const referencedNodes =
                 referenceUnion?.types
-                    ?.map((u) => context.neoSchema.nodes.find((n) => n.name === u.name.value))
+                    ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
                     ?.filter((b) => b !== undefined)
                     ?.filter((n) => Object.keys(resolveTree.fieldsByTypeName).includes(n?.name ?? "")) || [];
 
@@ -122,7 +114,7 @@ export default function cypherResolver({
 
                     if (resolveTree.fieldsByTypeName[node.name]) {
                         const [str, p, meta] = createProjectionAndParams({
-                            fieldsByTypeName: resolveTree.fieldsByTypeName,
+                            resolveTree,
                             node,
                             context,
                             varName: "this",
@@ -150,13 +142,22 @@ export default function cypherResolver({
         }
 
         const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
-        const apocParams = Object.entries(resolveTree.args).reduce(
-            (r: { strs: string[]; params: any }, entry) => {
-                return {
-                    strs: [...r.strs, `${entry[0]}: $${entry[0]}`],
-                    params: { ...r.params, [entry[0]]: entry[1] },
-                };
-            },
+
+        // Null default argument values are not passed into the resolve tree therefore these are not being passed to
+        // `apocParams` below causing a runtime error when executing.
+        const nullArgumentValues = field.arguments.reduce(
+            (res, argument) => ({
+                ...res,
+                ...{ [argument.name.value]: null },
+            }),
+            {}
+        );
+
+        const apocParams = Object.entries({ ...nullArgumentValues, ...resolveTree.args }).reduce(
+            (r: { strs: string[]; params: any }, entry) => ({
+                strs: [...r.strs, `${entry[0]}: $${entry[0]}`],
+                params: { ...r.params, [entry[0]]: entry[1] },
+            }),
             { strs: initApocParamsStrs, params }
         ) as { strs: string[]; params: any };
 
@@ -164,7 +165,7 @@ export default function cypherResolver({
 
         const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
-        const expectMultipleValues = !isPrimitive && !isScalar && !isEnum && isArray ? "true" : "false";
+        const expectMultipleValues = !field.isScalar && !field.isEnum && isArray ? "true" : "false";
         if (type === "Query") {
             cypherStrs.push(`
                 WITH apoc.cypher.runFirstColumn("${statement}", ${apocParamsStr}, ${expectMultipleValues}) as x
@@ -192,7 +193,7 @@ export default function cypherResolver({
 
         cypherStrs.push(connectionProjectionStrs.join("\n"));
 
-        if (isPrimitive || isEnum || isScalar) {
+        if (field.isScalar || field.isEnum) {
             cypherStrs.push(`RETURN this`);
         } else if (referenceUnion) {
             cypherStrs.push(`RETURN head( ${projectionStr} ) AS this`);

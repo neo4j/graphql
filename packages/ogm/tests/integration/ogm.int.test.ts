@@ -45,7 +45,9 @@ describe("OGM", () => {
 
         const ogm = new OGM({ typeDefs, driver, config: { driverConfig: { database: "another-random-db" } } });
 
-        await expect(ogm.model("Movie")?.find()).rejects.toThrow();
+        await ogm.init();
+
+        await expect(ogm.model("Movie").find()).rejects.toThrow();
 
         await session.close();
     });
@@ -61,6 +63,8 @@ describe("OGM", () => {
 
         const ogm = new OGM({ typeDefs, driver });
 
+        await ogm.init();
+
         const id = generate({
             charset: "alphabetic",
         });
@@ -74,7 +78,7 @@ describe("OGM", () => {
 
             const Movie = ogm.model("Movie");
 
-            const movies = await Movie?.find({ where: { id } });
+            const movies = await Movie.find({ where: { id } });
 
             // should return without error due to the fact auth should be removed
             expect(movies).toEqual([{ id }]);
@@ -95,6 +99,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -108,7 +114,7 @@ describe("OGM", () => {
 
                 const Movie = ogm.model("Movie");
 
-                const movies = await Movie?.find({ where: { id } });
+                const movies = await Movie.find({ where: { id } });
 
                 expect(movies).toEqual([{ id }]);
             } finally {
@@ -127,6 +133,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -142,7 +150,7 @@ describe("OGM", () => {
 
                 const Movie = ogm.model("Movie");
 
-                const movies = await Movie?.find({ where: { id }, options: { limit: 2 } });
+                const movies = await Movie.find({ where: { id }, options: { limit: 2 } });
 
                 expect(movies).toEqual([{ id }, { id }]);
             } finally {
@@ -160,7 +168,7 @@ describe("OGM", () => {
 
                 type Movie {
                     id: ID
-                    genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
+                    genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 }
             `;
 
@@ -175,6 +183,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -188,79 +198,9 @@ describe("OGM", () => {
 
                 const Movie = ogm.model("Movie");
 
-                const movies = await Movie?.find({ where: { id }, selectionSet });
+                const movies = await Movie.find({ where: { id }, selectionSet });
 
                 expect(movies).toEqual([{ id, genres: [{ id }] }]);
-            } finally {
-                await session.close();
-            }
-        });
-    });
-
-    describe("count", () => {
-        test("should count nodes", async () => {
-            const session = driver.session();
-
-            const randomType = `${generate({
-                charset: "alphabetic",
-                readable: true,
-            })}Movie`;
-
-            const typeDefs = `
-                type ${randomType} {
-                    id: ID
-                }
-            `;
-
-            const ogm = new OGM({ typeDefs, driver });
-
-            try {
-                await session.run(
-                    `
-                        CREATE (:${randomType} {id: randomUUID()})
-                        CREATE (:${randomType} {id: randomUUID()})
-                    `
-                );
-
-                const model = ogm.model(randomType);
-
-                const count = await model?.count();
-
-                expect(count).toEqual(2);
-            } finally {
-                await session.close();
-            }
-        });
-
-        test("should count movies with a where predicate", async () => {
-            const session = driver.session();
-
-            const typeDefs = `
-                type Movie {
-                    id: ID
-                }
-            `;
-
-            const ogm = new OGM({ typeDefs, driver });
-
-            const id = generate({
-                charset: "alphabetic",
-            });
-
-            try {
-                await ogm.checkNeo4jCompat();
-
-                await session.run(`
-                    CREATE (:Movie {id: "${id}"})
-                    CREATE (:Movie {id: randomUUID()})
-                    CREATE (:Movie {id: randomUUID()})
-                `);
-
-                const Movie = ogm.model("Movie");
-
-                const count = await Movie?.count({ where: { id } });
-
-                expect(count).toEqual(1);
             } finally {
                 await session.close();
             }
@@ -278,6 +218,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const id = generate({
                 charset: "alphabetic",
@@ -315,6 +257,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id1 = generate({
                 charset: "alphabetic",
             });
@@ -340,9 +284,9 @@ describe("OGM", () => {
                 type Product {
                     id: ID!
                     name: String!
-                    sizes: [Size] @relationship(type: "HAS_SIZE", direction: OUT)
-                    colors: [Color] @relationship(type: "HAS_COLOR", direction: OUT)
-                    photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+                    sizes: [Size!]! @relationship(type: "HAS_SIZE", direction: OUT)
+                    colors: [Color!]! @relationship(type: "HAS_COLOR", direction: OUT)
+                    photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
                 }
 
                 type Size {
@@ -353,18 +297,20 @@ describe("OGM", () => {
                 type Color {
                     id: ID!
                     name: String!
-                    photos: [Photo] @relationship(type: "OF_COLOR", direction: IN)
+                    photos: [Photo!]! @relationship(type: "OF_COLOR", direction: IN)
                 }
 
                 type Photo {
                     id: ID!
                     description: String!
                     url: String!
-                    color: Color @relationship(type: "OF_COLOR", direction: OUT)
+                    color: Color! @relationship(type: "OF_COLOR", direction: OUT)
                 }
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const product = {
                 id: generate({
@@ -408,13 +354,6 @@ describe("OGM", () => {
                     id: generate({
                         charset: "alphabetic",
                     }),
-                    description: "Outdoor photo",
-                    url: "outdoor.png",
-                },
-                {
-                    id: generate({
-                        charset: "alphabetic",
-                    }),
                     description: "Green photo",
                     url: "g.png",
                 },
@@ -427,9 +366,9 @@ describe("OGM", () => {
                 },
             ];
 
-            const Product = ogm.model("Product");
+            const Product = ogm.model("Product") as Model;
 
-            const { products } = await Product?.create({
+            const { products } = await Product.create({
                 input: [
                     {
                         ...product,
@@ -437,16 +376,15 @@ describe("OGM", () => {
                         colors: { create: colors.map((x) => ({ node: x })) },
                         photos: {
                             create: [
-                                { node: photos[0] },
                                 {
                                     node: {
-                                        ...photos[1],
+                                        ...photos[0],
                                         color: { connect: { where: { node: { id: colors[0].id } } } },
                                     },
                                 },
                                 {
                                     node: {
-                                        ...photos[2],
+                                        ...photos[1],
                                         color: { connect: { where: { node: { id: colors[1].id } } } },
                                     },
                                 },
@@ -512,6 +450,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -556,6 +496,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const id1 = generate({
                 charset: "alphabetic",
@@ -606,16 +548,18 @@ describe("OGM", () => {
             const typeDefs = gql`
                 type Actor {
                     id: ID
-                    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
                 type Movie {
                     id: ID
-                    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const movieId = generate({
                 charset: "alphabetic",
@@ -666,16 +610,18 @@ describe("OGM", () => {
             const typeDefs = `
                 type Actor {
                     id: ID
-                    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
                 type Movie {
                     id: ID
-                    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const movieId = generate({
                 charset: "alphabetic",
@@ -724,16 +670,18 @@ describe("OGM", () => {
             const typeDefs = `
                 type Actor {
                     id: ID
-                    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
                 type Movie {
                     id: ID
-                    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const movieId = generate({
                 charset: "alphabetic",
@@ -793,6 +741,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -818,7 +768,7 @@ describe("OGM", () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
-                    genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
+                    genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
                 }
 
                 type Genre {
@@ -827,6 +777,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const movieId = generate({
                 charset: "alphabetic",
@@ -868,6 +820,8 @@ describe("OGM", () => {
             const ogm = new OGM({ typeDefs, driver });
             const User = (ogm.model("User") as unknown) as Model;
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -900,6 +854,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const testId = generate({
                 charset: "alphabetic",
@@ -942,6 +898,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const testId = generate({
                 charset: "alphabetic",

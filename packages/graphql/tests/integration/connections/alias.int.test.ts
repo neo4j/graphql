@@ -23,9 +23,13 @@ import { generate } from "randomstring";
 import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("Connections Alias", () => {
     let driver: Driver;
+
+    const typeMovie = generateUniqueType("Movie");
+    const typeActor = generateUniqueType("Actor");
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -40,14 +44,14 @@ describe("Connections Alias", () => {
         const session = driver.session();
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -59,7 +63,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actors: actorsConnection {
                         totalCount
                     }
@@ -70,10 +74,10 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (m:Movie {title: $movieTitle})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
                 `,
                 {
                     movieTitle,
@@ -81,7 +85,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -89,7 +93,7 @@ describe("Connections Alias", () => {
             expect(result.errors).toBeUndefined();
 
             expect(result.data as any).toEqual({
-                movies: [{ actors: { totalCount: 3 } }],
+                [typeMovie.plural]: [{ actors: { totalCount: 3 } }],
             });
         } finally {
             await session.close();
@@ -100,14 +104,14 @@ describe("Connections Alias", () => {
         const session = driver.session();
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -119,7 +123,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actorsConnection {
                         count: totalCount
                     }
@@ -130,10 +134,10 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (m:Movie {title: $movieTitle})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
                 `,
                 {
                     movieTitle,
@@ -141,7 +145,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -149,7 +153,7 @@ describe("Connections Alias", () => {
             expect(result.errors).toBeUndefined();
 
             expect(result.data as any).toEqual({
-                movies: [{ actorsConnection: { count: 3 } }],
+                [typeMovie.plural]: [{ actorsConnection: { count: 3 } }],
             });
         } finally {
             await session.close();
@@ -161,14 +165,14 @@ describe("Connections Alias", () => {
         const session = driver.session();
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -180,7 +184,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actorsConnection {
                         pi:pageInfo {
                             hasNextPage
@@ -193,10 +197,10 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (m:Movie {title: $movieTitle})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
                 `,
                 {
                     movieTitle,
@@ -204,7 +208,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -212,7 +216,7 @@ describe("Connections Alias", () => {
             expect(result.errors).toBeUndefined();
 
             expect(result.data as any).toEqual({
-                movies: [{ actorsConnection: { pi: { hasNextPage: false } } }],
+                [typeMovie.plural]: [{ actorsConnection: { pi: { hasNextPage: false } } }],
             });
         } finally {
             await session.close();
@@ -223,14 +227,14 @@ describe("Connections Alias", () => {
         const session = driver.session();
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -242,7 +246,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actorsConnection {
                         pageInfo {
                             sc:startCursor
@@ -255,10 +259,10 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (m:Movie {title: $movieTitle})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
                 `,
                 {
                     movieTitle,
@@ -266,14 +270,14 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeUndefined();
 
-            expect((result.data as any).movies[0].actorsConnection.pageInfo.sc).toBeDefined();
+            expect((result.data as any)[typeMovie.plural][0].actorsConnection.pageInfo.sc).toBeDefined();
         } finally {
             await session.close();
         }
@@ -283,14 +287,14 @@ describe("Connections Alias", () => {
         const session = driver.session();
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -302,7 +306,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actorsConnection {
                         pageInfo {
                             ec:endCursor
@@ -315,10 +319,10 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (m:Movie {title: $movieTitle})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
                 `,
                 {
                     movieTitle,
@@ -326,14 +330,14 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeUndefined();
 
-            expect((result.data as any).movies[0].actorsConnection.pageInfo.ec).toBeDefined();
+            expect((result.data as any)[typeMovie.plural][0].actorsConnection.pageInfo.ec).toBeDefined();
         } finally {
             await session.close();
         }
@@ -343,14 +347,14 @@ describe("Connections Alias", () => {
         const session = driver.session();
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -362,7 +366,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actorsConnection {
                         pageInfo {
                             hPP:hasPreviousPage
@@ -375,10 +379,10 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (m:Movie {title: $movieTitle})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
-                    CREATE (m)<-[:ACTED_IN]-(:Actor)
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name})
                 `,
                 {
                     movieTitle,
@@ -386,14 +390,14 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeUndefined();
 
-            expect((result.data as any).movies[0].actorsConnection.pageInfo.hPP).toBeDefined();
+            expect((result.data as any)[typeMovie.plural][0].actorsConnection.pageInfo.hPP).toBeDefined();
         } finally {
             await session.close();
         }
@@ -403,14 +407,14 @@ describe("Connections Alias", () => {
         const session = driver.session();
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -422,7 +426,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         pageInfo {
                             hNP:hasNextPage
@@ -435,10 +439,10 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (m:Movie {title: $movieTitle})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
                 `,
                 {
                     movieTitle,
@@ -446,14 +450,14 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeUndefined();
 
-            expect((result.data as any).movies[0].actorsConnection.pageInfo.hNP).toBeDefined();
+            expect((result.data as any)[typeMovie.plural][0].actorsConnection.pageInfo.hNP).toBeDefined();
         } finally {
             await session.close();
         }
@@ -463,14 +467,14 @@ describe("Connections Alias", () => {
         const session = driver.session();
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -482,7 +486,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         e:edges {
                             cursor
@@ -495,10 +499,10 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (m:Movie {title: $movieTitle})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
                 `,
                 {
                     movieTitle,
@@ -506,14 +510,14 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeUndefined();
 
-            expect((result.data as any).movies[0].actorsConnection.e[0].cursor).toBeDefined();
+            expect((result.data as any)[typeMovie.plural][0].actorsConnection.e[0].cursor).toBeDefined();
         } finally {
             await session.close();
         }
@@ -523,14 +527,14 @@ describe("Connections Alias", () => {
         const session = driver.session();
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -542,7 +546,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         edges {
                             c:cursor
@@ -555,10 +559,10 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (m:Movie {title: $movieTitle})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
                 `,
                 {
                     movieTitle,
@@ -566,14 +570,14 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeUndefined();
 
-            expect((result.data as any).movies[0].actorsConnection.edges[0].c).toBeDefined();
+            expect((result.data as any)[typeMovie.plural][0].actorsConnection.edges[0].c).toBeDefined();
         } finally {
             await session.close();
         }
@@ -583,14 +587,14 @@ describe("Connections Alias", () => {
         const session = driver.session();
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -602,7 +606,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         edges {
                             n:node {
@@ -617,10 +621,10 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (m:Movie {title: $movieTitle})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
                 `,
                 {
                     movieTitle,
@@ -628,14 +632,14 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeUndefined();
 
-            expect((result.data as any).movies[0].actorsConnection.edges[0].n).toBeDefined();
+            expect((result.data as any)[typeMovie.plural][0].actorsConnection.edges[0].n).toBeDefined();
         } finally {
             await session.close();
         }
@@ -645,14 +649,14 @@ describe("Connections Alias", () => {
         const session = driver.session();
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -664,7 +668,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         edges {
                             node {
@@ -679,10 +683,10 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (m:Movie {title: $movieTitle})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
-                    CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: randomUUID()})
                 `,
                 {
                     movieTitle,
@@ -690,14 +694,14 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeUndefined();
 
-            expect((result.data as any).movies[0].actorsConnection.edges[0].node.n).toBeDefined();
+            expect((result.data as any)[typeMovie.plural][0].actorsConnection.edges[0].node.n).toBeDefined();
         } finally {
             await session.close();
         }
@@ -707,14 +711,14 @@ describe("Connections Alias", () => {
         const session = driver.session();
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             interface ActedIn {
@@ -730,7 +734,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         edges {
                             r:roles
@@ -743,10 +747,10 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (m:Movie {title: $movieTitle})
-                    CREATE (m)<-[:ACTED_IN {roles: [randomUUID()]}]-(:Actor {name: randomUUID()})
-                    CREATE (m)<-[:ACTED_IN {roles: [randomUUID()]}]-(:Actor {name: randomUUID()})
-                    CREATE (m)<-[:ACTED_IN {roles: [randomUUID()]}]-(:Actor {name: randomUUID()})
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN {roles: [randomUUID()]}]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN {roles: [randomUUID()]}]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN {roles: [randomUUID()]}]-(:${typeActor.name} {name: randomUUID()})
                 `,
                 {
                     movieTitle,
@@ -754,14 +758,14 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeUndefined();
 
-            expect((result.data as any).movies[0].actorsConnection.edges[0].r).toBeDefined();
+            expect((result.data as any)[typeMovie.plural][0].actorsConnection.edges[0].r).toBeDefined();
         } finally {
             await session.close();
         }
@@ -771,12 +775,12 @@ describe("Connections Alias", () => {
         const session = driver.session();
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
             }
 
@@ -801,7 +805,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     title
                     connection:actorsConnection {
                         tC:totalCount
@@ -822,8 +826,8 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (m:Movie {title: $movieTitle})
-                    CREATE (m)<-[:ACTED_IN {roles: $roles}]-(:Actor {name: $actorName})
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN {roles: $roles}]-(:${typeActor.name} {name: $actorName})
                 `,
                 {
                     movieTitle,
@@ -833,7 +837,7 @@ describe("Connections Alias", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -841,7 +845,7 @@ describe("Connections Alias", () => {
             expect(result.errors).toBeUndefined();
 
             expect(result.data as any).toEqual({
-                movies: [
+                [typeMovie.plural]: [
                     {
                         title: movieTitle,
                         connection: {
@@ -873,7 +877,8 @@ describe("Connections Alias", () => {
             }
         `;
 
-        const { schema } = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
 
         const postTitle = generate({ charset: "alphabetic" });
 
@@ -940,14 +945,14 @@ describe("Connections Alias", () => {
         const screenTime = 120;
 
         const typeDefs = gql`
-            type Movie {
+            type ${typeMovie.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type Actor {
+            type ${typeActor.name} {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
             interface ActedIn {
@@ -955,12 +960,13 @@ describe("Connections Alias", () => {
             }
         `;
 
-        const { schema } = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
         const session = driver.session();
 
         const query = `
             {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     title
                     actorsConnection(where: { node: { name: "${actorName}" } }) {
                         edges {
@@ -987,8 +993,8 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (movie:Movie {title: $movieTitle})
-                    CREATE (actor:Actor {name: $actorName})
+                    CREATE (movie:${typeMovie.name} {title: $movieTitle})
+                    CREATE (actor:${typeActor.name} {name: $actorName})
                     CREATE (actor)-[:ACTED_IN {screenTime: $screenTime}]->(movie)
                 `,
                 {
@@ -1005,8 +1011,7 @@ describe("Connections Alias", () => {
             });
 
             expect(result.errors).toBeUndefined();
-
-            expect((result.data as any).movies[0].actorsConnection.edges[0].node.b).toEqual({
+            expect((result.data as any)[typeMovie.plural][0].actorsConnection.edges[0].node.b).toEqual({
                 edges: [
                     {
                         node: {

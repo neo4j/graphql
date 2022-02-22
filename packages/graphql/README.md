@@ -50,21 +50,19 @@ const typeDefs = `
         title: String
         year: Int
         imdbRating: Float
-        genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
+        genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
     }
 
     type Genre {
         name: String
-        movies: [Movie] @relationship(type: "IN_GENRE", direction: IN)
+        movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN)
     }
 `;
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-const driver = neo4j.driver(
-    "bolt://localhost:7687",
-    neo4j.auth.basic("neo4j", "letmein")
-);
+const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "letmein"));
+
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
 const server = new ApolloServer({
     schema: neoSchema.schema,
@@ -80,9 +78,7 @@ server.listen(4000).then(() => console.log("Online"));
 
 ```graphql
 mutation {
-    createMovies(
-        input: [{ title: "The Matrix", year: 1999, imdbRating: 8.7 }]
-    ) {
+    createMovies(input: [{ title: "The Matrix", year: 1999, imdbRating: 8.7 }]) {
         movies {
             title
         }
@@ -96,13 +92,7 @@ mutation {
 mutation {
     updateMovies(
         where: { title: "The Matrix" }
-        connect: {
-            genres: {
-                where: {
-                    node: { OR: [{ name: "Sci-fi" }, { name: "Action" }] }
-                }
-            }
-        }
+        connect: { genres: { where: { node: { OR: [{ name: "Sci-fi" }, { name: "Action" }] } } } }
     ) {
         movies {
             title
@@ -121,15 +111,7 @@ mutation {
                 title: "The Matrix"
                 year: 1999
                 imdbRating: 8.7
-                genres: {
-                    connect: {
-                        where: {
-                            node: {
-                                AND: [{ name: "Sci-fi" }, { name: "Action" }]
-                            }
-                        }
-                    }
-                }
+                genres: { connect: { where: { node: { AND: [{ name: "Sci-fi" }, { name: "Action" }] } } } }
             }
         ]
     ) {
@@ -169,12 +151,7 @@ type Post {
     moderator: User @relationship(type: "MODERATES_POST", direction: IN)
 }
 
-extend type Post
-    @auth(
-        rules: [
-            { allow: [{ moderator: { id: "$jwt.sub" } }], operations: [UPDATE] }
-        ]
-    )
+extend type Post @auth(rules: [{ allow: [{ moderator: { id: "$jwt.sub" } }], operations: [UPDATE] }])
 ```
 
 Specify rules on fields;
@@ -186,12 +163,7 @@ type User {
 }
 
 extend type User {
-    password: String!
-        @auth(
-            rules: [
-                { OR: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }] }
-            ]
-        )
+    password: String! @auth(rules: [{ OR: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }] }])
 }
 ```
 

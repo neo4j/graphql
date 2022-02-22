@@ -3,9 +3,12 @@ name: "Documentation Teardown"
 on:
   pull_request_target:
     branches:
+      - dev
       - master
     paths:
-      - "docs/**"
+      - docs/antora.yml
+      - docs/package.json
+      - "docs/modules/ROOT/**"
     types:
       - closed
 

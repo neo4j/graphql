@@ -19,7 +19,7 @@
 
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "../../neo4j";
@@ -34,34 +34,34 @@ describe("interface relationships", () => {
 
         const typeDefs = gql`
             type Episode {
-                runtime: Int
-                series: Series @relationship(type: "HAS_EPISODE", direction: IN)
+                runtime: Int!
+                series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
             }
 
             interface Production {
-                title: String
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type Movie implements Production {
-                title: String
-                runtime: Int
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                title: String!
+                runtime: Int!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type Series implements Production {
-                title: String
-                episodes: [Episode] @relationship(type: "HAS_EPISODE", direction: OUT)
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                title: String!
+                episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             interface ActedIn @relationshipProperties {
-                screenTime: Int
+                screenTime: Int!
             }
 
             type Actor {
-                name: String
-                actedIn: [Production] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                name: String!
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
 
@@ -86,14 +86,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation UpdateCreate(
@@ -114,7 +114,7 @@ describe("interface relationships", () => {
                             }
                             {
                                 edge: { screenTime: $seriesScreenTime }
-                                node: { Series: { title: $seriesTitle } }
+                                node: { Series: { title: $seriesTitle, episodes: { create: [{ node: { runtime: 123 } }] } } }
                             }
                         ]
                     }
@@ -141,7 +141,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -174,7 +174,7 @@ describe("interface relationships", () => {
                     ],
                 },
             });
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect((gqlResult.data as any)?.updateActors.actors[0].actedIn).toHaveLength(2);
         } finally {
             await session.close();
         }
@@ -196,14 +196,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation UpdateCreate(
@@ -231,7 +231,7 @@ describe("interface relationships", () => {
                                     }
                                 }
                             }
-                            { edge: { screenTime: $seriesScreenTime }, node: { Series: { title: $seriesTitle } } }
+                            { edge: { screenTime: $seriesScreenTime }, node: { Series: { title: $seriesTitle, episodes: { create: [{ node: { runtime: 123 } }] }} } }
                         ]
                     }
                 ) {
@@ -260,7 +260,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -297,7 +297,8 @@ describe("interface relationships", () => {
                 },
             });
             expect(
-                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.title === movieTitle).actors
+                (gqlResult.data as any)?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.title === movieTitle)
+                    .actors
             ).toHaveLength(2);
         } finally {
             await session.close();

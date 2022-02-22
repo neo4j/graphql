@@ -18,8 +18,8 @@
  */
 
 import Node, { NodeConstructor } from "./Node";
-import { NodeBuilder } from "../utils/test/builders/node-builder";
-import { ContextBuilder } from "../utils/test/builders/context-builder";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 
 describe("Node", () => {
     const defaultContext = new ContextBuilder().instance();
@@ -51,7 +51,7 @@ describe("Node", () => {
             name: "Movie",
         }).instance();
 
-        expect(node.getLabelString(defaultContext)).toEqual(":Movie");
+        expect(node.getLabelString(defaultContext)).toBe(":Movie");
     });
 
     test("should return labels from node name", () => {
@@ -60,6 +60,14 @@ describe("Node", () => {
         }).instance();
 
         expect(node.getLabels(defaultContext)).toEqual(["Movie"]);
+    });
+
+    test("should return plural with underscores", () => {
+        const node = new NodeBuilder({
+            name: "super_movie",
+        }).instance();
+
+        expect(node.plural).toBe("super_movies");
     });
 
     describe("NodeDirective", () => {
@@ -84,8 +92,8 @@ describe("Node", () => {
             const labels = node.getLabels(context);
             const labelString = node.getLabelString(context);
 
-            expect(labels).toEqual(["`Movie`"]);
-            expect(labelString).toEqual(":`Movie`");
+            expect(labels).toEqual(["Movie"]);
+            expect(labelString).toBe(":`Movie`");
         });
 
         test("should return labels updated with context values from Context", () => {
@@ -106,8 +114,8 @@ describe("Node", () => {
             const labels = node.getLabels(context);
             const labelString = node.getLabelString(context);
 
-            expect(labels).toEqual(["`Movie`"]);
-            expect(labelString).toEqual(":`Movie`");
+            expect(labels).toEqual(["Movie"]);
+            expect(labelString).toBe(":`Movie`");
         });
 
         test("should return additional labels updated with jwt values from Context", () => {
@@ -132,8 +140,8 @@ describe("Node", () => {
             const labels = node.getLabels(context);
             const labelString = node.getLabelString(context);
 
-            expect(labels).toEqual(["Film", "`Movie`"]);
-            expect(labelString).toEqual(":Film:`Movie`");
+            expect(labels).toEqual(["Film", "Movie"]);
+            expect(labelString).toBe(":`Film`:`Movie`");
         });
     });
 });

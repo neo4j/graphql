@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Interfaces", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -56,7 +55,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -103,7 +102,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
@@ -157,7 +156,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
@@ -225,7 +224,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
@@ -304,7 +303,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
+            WITH collect(edge) as edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
@@ -326,5 +325,221 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 }
             }"
         `);
+    });
+
+    describe("Projecting interface node and relationship properties with sort argument", () => {
+        describe("field in selection set", () => {
+            test("on edge", async () => {
+                const query = gql`
+                    query {
+                        actors {
+                            name
+                            actedInConnection(sort: [{ edge: { screenTime: ASC } }]) {
+                                edges {
+                                    screenTime
+                                    node {
+                                        title
+                                        ... on Movie {
+                                            runtime
+                                        }
+                                        ... on Series {
+                                            episodes
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                const req = createJwtRequest("secret", {});
+                const result = await translateQuery(neoSchema, query, {
+                    req,
+                });
+
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                    "MATCH (this:Actor)
+                    CALL {
+                    WITH this
+                    CALL {
+                    WITH this
+                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
+                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
+                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    RETURN edge
+                    }
+                    WITH edge ORDER BY edge.screenTime ASC
+                    WITH collect(edge) as edges
+                    RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+                    }
+                    RETURN this { .name, actedInConnection } as this"
+                `);
+
+                expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+            });
+
+            test("on node", async () => {
+                const query = gql`
+                    query {
+                        actors {
+                            name
+                            actedInConnection(sort: [{ node: { title: ASC } }]) {
+                                edges {
+                                    screenTime
+                                    node {
+                                        title
+                                        ... on Movie {
+                                            runtime
+                                        }
+                                        ... on Series {
+                                            episodes
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                const req = createJwtRequest("secret", {});
+                const result = await translateQuery(neoSchema, query, {
+                    req,
+                });
+
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                    "MATCH (this:Actor)
+                    CALL {
+                    WITH this
+                    CALL {
+                    WITH this
+                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
+                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
+                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    RETURN edge
+                    }
+                    WITH edge ORDER BY edge.node.title ASC
+                    WITH collect(edge) as edges
+                    RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+                    }
+                    RETURN this { .name, actedInConnection } as this"
+                `);
+
+                expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+            });
+        });
+
+        describe("field not in selection set", () => {
+            test("on edge", async () => {
+                const query = gql`
+                    query {
+                        actors {
+                            name
+                            actedInConnection(sort: [{ edge: { screenTime: ASC } }]) {
+                                edges {
+                                    node {
+                                        title
+                                        ... on Movie {
+                                            runtime
+                                        }
+                                        ... on Series {
+                                            episodes
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                const req = createJwtRequest("secret", {});
+                const result = await translateQuery(neoSchema, query, {
+                    req,
+                });
+
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                    "MATCH (this:Actor)
+                    CALL {
+                    WITH this
+                    CALL {
+                    WITH this
+                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
+                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
+                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    RETURN edge
+                    }
+                    WITH edge ORDER BY edge.screenTime ASC
+                    WITH collect(edge) as edges
+                    RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+                    }
+                    RETURN this { .name, actedInConnection } as this"
+                `);
+
+                expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+            });
+
+            test("on node", async () => {
+                const query = gql`
+                    query {
+                        actors {
+                            name
+                            actedInConnection(sort: [{ node: { title: ASC } }]) {
+                                edges {
+                                    screenTime
+                                    node {
+                                        ... on Movie {
+                                            runtime
+                                        }
+                                        ... on Series {
+                                            episodes
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                const req = createJwtRequest("secret", {});
+                const result = await translateQuery(neoSchema, query, {
+                    req,
+                });
+
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                    "MATCH (this:Actor)
+                    CALL {
+                    WITH this
+                    CALL {
+                    WITH this
+                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
+                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
+                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    RETURN edge
+                    }
+                    WITH edge ORDER BY edge.node.title ASC
+                    WITH collect(edge) as edges
+                    RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+                    }
+                    RETURN this { .name, actedInConnection } as this"
+                `);
+
+                expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+            });
+        });
     });
 });

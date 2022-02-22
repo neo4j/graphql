@@ -1,0 +1,22 @@
+{
+    "categories": [
+        {
+            "title": "## 🚀 Features",
+            "labels": ["feature", "introspector"],
+            "exhaustive": true
+        },
+        {
+            "title": "## 🐛 Fixes",
+            "labels": ["fix", "introspector"],
+            "exhaustive": true
+        },
+        {
+            "title": "## 🧪 Tests",
+            "labels": ["test", "introspector"],
+            "exhaustive": true
+        }
+    ],
+    "tag_resolver": {
+        "method": "sort"
+    }
+}

@@ -36,8 +36,8 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
 
         type User {
             id: ID!
-            friends: [User] @relationship(type: "HAS_FRIEND", direction: OUT)
-            posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+            friends: [User!]! @relationship(type: "HAS_FRIEND", direction: OUT)
+            posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
         }
 
         type Query {
@@ -211,7 +211,7 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
             await neoSchema.checkNeo4jCompat();
 
             const mutationResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { input },
@@ -219,16 +219,16 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
 
             expect(mutationResult.errors).toBeFalsy();
 
-            expect(mutationResult?.data?.createUsers?.users[0].id).toEqual(userID);
-            expect(mutationResult?.data?.createUsers?.users[0].friends).toHaveLength(3);
-            expect(mutationResult?.data?.createUsers?.users[0].posts).toHaveLength(3);
+            expect((mutationResult?.data as any)?.createUsers?.users[0].id).toEqual(userID);
+            expect((mutationResult?.data as any)?.createUsers?.users[0].friends).toHaveLength(3);
+            expect((mutationResult?.data as any)?.createUsers?.users[0].posts).toHaveLength(3);
 
-            mutationResult?.data?.createUsers?.users[0].friends.forEach((friend) => {
+            (mutationResult?.data as any)?.createUsers?.users[0].friends.forEach((friend) => {
                 expect(friend.posts).toHaveLength(3);
             });
 
             const queryResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -239,7 +239,7 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
             expect(queryResult.errors).toBeFalsy();
 
             expect(queryResult?.data?.getContent).toHaveLength(12);
-            queryResult?.data?.getContent.forEach((content) => {
+            (queryResult?.data as any)?.getContent.forEach((content) => {
                 expect(content.postContent).toBeTruthy();
             });
         } finally {

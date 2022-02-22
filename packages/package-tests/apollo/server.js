@@ -21,23 +21,23 @@ const { ApolloServer } = require("apollo-server");
 const { Neo4jGraphQL } = require("@neo4j/graphql");
 
 const defaultTypeDefs = `
-type Movie {
-    title: String
-    year: Int
-    imdbRating: Float
-    genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
-}
+    type Movie {
+        title: String
+        year: Int
+        imdbRating: Float
+        genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
+    }
 
-type Genre {
-    name: String
-    movies: [Movie] @relationship(type: "IN_GENRE", direction: IN)
-}
+    type Genre {
+        name: String
+        movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN)
+    }
 `;
 
 async function start(typeDefs = defaultTypeDefs, driver = {}) {
     const neoSchema = new Neo4jGraphQL({ typeDefs });
     const server = new ApolloServer({
-        schema: neoSchema.schema,
+        schema: await neoSchema.getSchema(),
         context: ({ req }) => ({ driver, req }),
     });
     const { url } = await server.listen();

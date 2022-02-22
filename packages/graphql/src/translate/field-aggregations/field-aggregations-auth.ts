@@ -37,17 +37,17 @@ type PartialAuthQueries = {
 export function createFieldAggregationAuth({
     node,
     context,
-    subQueryNodeAlias,
+    subqueryNodeAlias,
     nodeFields,
 }: {
     node: Node;
     context: Context;
-    subQueryNodeAlias: string;
+    subqueryNodeAlias: string;
     nodeFields: Record<string, ResolveTree> | undefined;
 }): AggregationAuth {
-    const allowAuth = getAllowAuth({ node, context, varName: subQueryNodeAlias });
-    const whereAuth = getWhereAuth({ node, context, varName: subQueryNodeAlias });
-    const nodeAuth = getFieldAuth({ fields: nodeFields, node, context, varName: subQueryNodeAlias });
+    const allowAuth = getAllowAuth({ node, context, varName: subqueryNodeAlias });
+    const whereAuth = getWhereAuth({ node, context, varName: subqueryNodeAlias });
+    const nodeAuth = getFieldAuth({ fields: nodeFields, node, context, varName: subqueryNodeAlias });
 
     const cypherStrs = [...nodeAuth.queries, ...allowAuth.queries];
     const cypherParams = { ...nodeAuth.params, ...allowAuth.params, ...whereAuth.params };
@@ -65,7 +65,7 @@ function getAllowAuth({
     varName: string;
 }): PartialAuthQueries {
     const allowAuth = createAuthAndParams({
-        operation: "READ",
+        operations: "READ",
         entity: node,
         context,
         allow: {
@@ -98,7 +98,7 @@ function getWhereAuth({
     varName: string;
 }): PartialAuthQueries {
     const whereAuth = createAuthAndParams({
-        operation: "READ",
+        operations: "READ",
         entity: node,
         context,
         where: { varName, node },
@@ -136,7 +136,7 @@ function getFieldAuth({
         if (authField && authField.auth) {
             const allowAndParams = createAuthAndParams({
                 entity: authField,
-                operation: "READ",
+                operations: "READ",
                 context,
                 allow: { parentNode: node, varName, chainStr: authField.fieldName },
                 escapeQuotes: false,

@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Node directive with additionalLabels", () => {
@@ -32,19 +33,24 @@ describe("Node directive with additionalLabels", () => {
         typeDefs = gql`
             type Actor @node(additionalLabels: ["Person"]) {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie @node(label: "Film", additionalLabels: ["Multimedia"]) {
                 id: ID
                 title: String
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -63,7 +69,7 @@ describe("Node directive with additionalLabels", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film:Multimedia)
+            "MATCH (this:\`Film\`:\`Multimedia\`)
             RETURN this { .title } as this"
         `);
 
@@ -88,8 +94,8 @@ describe("Node directive with additionalLabels", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film:Multimedia)
-            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor:Person)   | this_actors { .name } ] } as this"
+            "MATCH (this:\`Film\`:\`Multimedia\`)
+            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:\`Actor\`:\`Person\`)   | this_actors { .name } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -118,19 +124,19 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-            CREATE (this0:Film:Multimedia)
+            CREATE (this0:\`Film\`:\`Multimedia\`)
             SET this0.id = $this0_id
             WITH this0
-            CREATE (this0_actors0_node:Actor:Person)
+            CREATE (this0_actors0_node:\`Actor\`:\`Person\`)
             SET this0_actors0_node.name = $this0_actors0_node_name
             MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
             RETURN this0
             }
             CALL {
-            CREATE (this1:Film:Multimedia)
+            CREATE (this1:\`Film\`:\`Multimedia\`)
             SET this1.id = $this1_id
             WITH this1
-            CREATE (this1_actors0_node:Actor:Person)
+            CREATE (this1_actors0_node:\`Actor\`:\`Person\`)
             SET this1_actors0_node.name = $this1_actors0_node_name
             MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
             RETURN this1
@@ -165,7 +171,7 @@ describe("Node directive with additionalLabels", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film:Multimedia)
+            "MATCH (this:\`Film\`:\`Multimedia\`)
             WHERE this.id = $this_id
             DETACH DELETE this"
         `);
@@ -194,7 +200,7 @@ describe("Node directive with additionalLabels", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film:Multimedia)
+            "MATCH (this:\`Film\`:\`Multimedia\`)
             WHERE this.id = $this_id
             SET this.id = $this_update_id
             RETURN this { .id } AS this"
@@ -206,25 +212,5 @@ describe("Node directive with additionalLabels", () => {
                 \\"this_update_id\\": \\"2\\"
             }"
         `);
-    });
-
-    test("Count movies with additional labels", async () => {
-        const query = gql`
-            {
-                moviesCount
-            }
-        `;
-
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film:Multimedia)
-            RETURN count(this)"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

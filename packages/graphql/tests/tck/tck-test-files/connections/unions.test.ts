@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Unions", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -34,7 +33,7 @@ describe("Cypher -> Connections -> Unions", () => {
 
             type Author {
                 name: String!
-                publications: [Publication] @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
+                publications: [Publication!]! @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
             }
 
             type Book {
@@ -54,7 +53,7 @@ describe("Cypher -> Connections -> Unions", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -100,8 +99,8 @@ describe("Cypher -> Connections -> Unions", () => {
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -158,8 +157,8 @@ describe("Cypher -> Connections -> Unions", () => {
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -232,8 +231,8 @@ describe("Cypher -> Connections -> Unions", () => {
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -315,8 +314,8 @@ describe("Cypher -> Connections -> Unions", () => {
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -353,5 +352,57 @@ describe("Cypher -> Connections -> Unions", () => {
                 }
             }"
         `);
+    });
+
+    test("Projecting union node and relationship properties with sort argument", async () => {
+        const query = gql`
+            query {
+                authors {
+                    name
+                    publicationsConnection(sort: [{ edge: { words: ASC } }]) {
+                        edges {
+                            words
+                            node {
+                                ... on Book {
+                                    title
+                                }
+                                ... on Journal {
+                                    subject
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Author)
+            CALL {
+            WITH this
+            CALL {
+            WITH this
+            MATCH (this)-[this_wrote_relationship:WROTE]->(this_Book:Book)
+            WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
+            RETURN edge
+            UNION
+            WITH this
+            MATCH (this)-[this_wrote_relationship:WROTE]->(this_Journal:Journal)
+            WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
+            RETURN edge
+            }
+            WITH edge ORDER BY edge.words ASC
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
+            }
+            RETURN this { .name, publicationsConnection } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

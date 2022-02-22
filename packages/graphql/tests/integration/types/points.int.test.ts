@@ -18,7 +18,7 @@
  */
 
 import { Driver, int, Session } from "neo4j-driver";
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
@@ -52,8 +52,8 @@ describe("[Point]", () => {
     });
 
     test("enables creation of a node with multiple wgs-84 points", async () => {
-        const id = faker.random.uuid();
-        const waypoints = [...new Array(faker.random.number({ min: 2, max: 10 }))].map(() => ({
+        const id = faker.datatype.uuid();
+        const waypoints = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.address.longitude()),
             latitude: parseFloat(faker.address.latitude()),
         }));
@@ -75,7 +75,7 @@ describe("[Point]", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: create,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { id, waypoints },
@@ -106,11 +106,11 @@ describe("[Point]", () => {
     });
 
     test("enables creation of a node with multiple wgs-84-3d points", async () => {
-        const id = faker.random.uuid();
-        const waypoints = [...new Array(faker.random.number({ min: 2, max: 10 }))].map(() => ({
+        const id = faker.datatype.uuid();
+        const waypoints = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.address.longitude()),
             latitude: parseFloat(faker.address.latitude()),
-            height: faker.random.float(),
+            height: faker.datatype.float(),
         }));
 
         const create = `
@@ -130,7 +130,7 @@ describe("[Point]", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: create,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { id, waypoints },
@@ -162,8 +162,8 @@ describe("[Point]", () => {
     });
 
     test("enables update of a node with multiple wgs-84 points", async () => {
-        const id = faker.random.uuid();
-        const waypoints = [...new Array(faker.random.number({ min: 2, max: 10 }))].map(() => ({
+        const id = faker.datatype.uuid();
+        const waypoints = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.address.longitude()),
             latitude: parseFloat(faker.address.latitude()),
         }));
@@ -216,7 +216,7 @@ describe("[Point]", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: update,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { id, waypoints: newWaypoints },
@@ -247,11 +247,11 @@ describe("[Point]", () => {
     });
 
     test("enables update of a node with multiple wgs-84-3d points", async () => {
-        const id = faker.random.uuid();
-        const waypoints = [...new Array(faker.random.number({ min: 2, max: 10 }))].map(() => ({
+        const id = faker.datatype.uuid();
+        const waypoints = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.address.longitude()),
             latitude: parseFloat(faker.address.latitude()),
-            height: faker.random.float(),
+            height: faker.datatype.float(),
         }));
         const newWaypoints = waypoints.map((waypoint) => ({
             longitude: parseFloat(faker.address.longitude()),
@@ -304,7 +304,7 @@ describe("[Point]", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: update,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { id, waypoints: newWaypoints },
@@ -337,8 +337,8 @@ describe("[Point]", () => {
 
     test("enables query of a node with multiple wgs-84 points", async () => {
         // Create test data and prepare for testing
-        const id = faker.random.uuid();
-        const waypoints = [...new Array(faker.random.number({ min: 2, max: 10 }))].map(() => ({
+        const id = faker.datatype.uuid();
+        const waypoints = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.address.longitude()),
             latitude: parseFloat(faker.address.latitude()),
         }));
@@ -374,7 +374,7 @@ describe("[Point]", () => {
         `;
 
         const routesResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: routesQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { waypoints },
@@ -402,7 +402,7 @@ describe("[Point]", () => {
         `;
 
         const routesIncludesResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: routesIncludesQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { waypoint: waypoints[0] },
@@ -430,7 +430,7 @@ describe("[Point]", () => {
         `;
 
         const routesNotIncludesResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: routesNotIncludesQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: {
@@ -449,11 +449,11 @@ describe("[Point]", () => {
     });
 
     test("enables query of a node with multiple wgs-84-3d points", async () => {
-        const id = faker.random.uuid();
-        const waypoints = [...new Array(faker.random.number({ min: 2, max: 10 }))].map(() => ({
+        const id = faker.datatype.uuid();
+        const waypoints = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.address.longitude()),
             latitude: parseFloat(faker.address.latitude()),
-            height: faker.random.float(),
+            height: faker.datatype.float(),
         }));
 
         await session.run(
@@ -486,7 +486,7 @@ describe("[Point]", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: routesQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { id },

@@ -31,7 +31,7 @@ type User {
 type User {
     id: ID! @id
     username: String! @alias(property: "dbUserName")
-    livesIn: [City] @relationship(direction: OUT, type: "LIVES_IN", properties: "UserLivesInProperties")
+    livesIn: [City!]! @relationship(direction: OUT, type: "LIVES_IN", properties: "UserLivesInProperties")
 }
 
 type City {
@@ -132,12 +132,15 @@ type User @node(label: "$context.appId") {
 ----
 
 When running the server with Apollo:
+
 [source, js, indent=0]
 ----
-new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ req }) => ({ req, appId: "myApp" }),
-});
+neoSchema.getSchema().then((schema) => {
+    new ApolloServer({
+        schema,
+        context: ({ req }) => ({ req, appId: "myApp" }),
+    });
+})
 ----
 
 ==== `additionalLabels`

@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Datetime", () => {
-    test("DateTime", () => {
+    test("DateTime", async () => {
         const typeDefs = gql`
             type Movie {
                 id: ID
@@ -31,7 +31,7 @@ describe("Datetime", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -53,9 +53,9 @@ describe("Datetime", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelection {
-              max: DateTime!
-              min: DateTime!
+            type DateTimeAggregateSelectionNullable {
+              max: DateTime
+              min: DateTime
             }
 
             type DeleteInfo {
@@ -64,9 +64,9 @@ describe("Datetime", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID!
-              shortest: ID!
+            type IDAggregateSelectionNullable {
+              longest: ID
+              shortest: ID
             }
 
             type Movie {
@@ -76,8 +76,8 @@ describe("Datetime", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              datetime: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
+              datetime: DateTimeAggregateSelectionNullable!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -88,11 +88,15 @@ describe("Datetime", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               datetime: SortDirection
               id: SortDirection
@@ -135,7 +139,6 @@ describe("Datetime", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -156,8 +159,7 @@ describe("Datetime", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 });

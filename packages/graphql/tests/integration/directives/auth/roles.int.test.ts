@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { generateUniqueType } from "../../../utils/graphql-types";
 
 describe("auth/roles", () => {
     let driver: Driver;
@@ -75,18 +77,25 @@ describe("auth/roles", () => {
             }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -110,24 +119,32 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
         });
 
         // This tests reproduces the security issue related to authorization without match #195
+        // eslint-disable-next-line jest/no-disabled-tests
         test.skip("should throw if missing role on type definition and no nodes are matched", async () => {
             const session = driver.session();
 
@@ -141,25 +158,32 @@ describe("auth/roles", () => {
             `;
 
             const query = `
-            {
-                notANodes {
-                    name
+                {
+                    notANodes {
+                        name
+                    }
                 }
-            }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -190,18 +214,25 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -230,18 +261,25 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -272,18 +310,25 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -312,18 +357,25 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -344,7 +396,7 @@ describe("auth/roles", () => {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -378,7 +430,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -389,12 +448,12 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: ["admin"] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -407,20 +466,20 @@ describe("auth/roles", () => {
                 type Comment {
                     id: String
                     content: String
-                    post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+                    post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
                 type Post {
                     id: String
                     content: String
-                    creator: User @relationship(type: "HAS_POST", direction: OUT)
-                    comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
+                    comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
                 type User {
                     id: ID
                     name: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -467,7 +526,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -478,12 +544,12 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: [""] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -504,7 +570,7 @@ describe("auth/roles", () => {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -538,7 +604,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -549,12 +622,12 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: ["admin"] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -567,20 +640,20 @@ describe("auth/roles", () => {
                 type Comment {
                     id: String
                     content: String
-                    post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+                    post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
                 type Post {
                     id: String
                     content: String
-                    creator: User @relationship(type: "HAS_POST", direction: OUT)
-                    comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
+                    comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
                 type User {
                     id: ID
                     name: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -627,7 +700,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -637,12 +717,12 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: [""] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -671,18 +751,25 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -695,7 +782,7 @@ describe("auth/roles", () => {
                 type User {
                     id: ID
                     name: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post @auth(rules: [{
@@ -723,7 +810,14 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
             try {
                 await session.run(`
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
@@ -732,12 +826,12 @@ describe("auth/roles", () => {
                 const req = createJwtRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -745,7 +839,7 @@ describe("auth/roles", () => {
     });
 
     describe("custom-resolvers", () => {
-        it("should throw if missing role on custom Query with @cypher", async () => {
+        test("should throw if missing role on custom Query with @cypher", async () => {
             const session = driver.session();
 
             const typeDefs = `
@@ -767,24 +861,31 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
         });
 
-        it("should throw if missing role on custom Mutation with @cypher", async () => {
+        test("should throw if missing role on custom Mutation with @cypher", async () => {
             const session = driver.session();
 
             const typeDefs = `
@@ -806,18 +907,25 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -849,18 +957,205 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
+    describe("combining roles with where", () => {
+        test("combines where with roles", async () => {
+            const session = driver.session();
+
+            const type = generateUniqueType("User");
+
+            const typeDefs = `
+                type ${type.name} {
+                    id: ID
+                    name: String
+                    password: String
+                }
+
+                extend type ${type.name}
+                    @auth(
+                        rules: [
+                            {
+                                roles: ["user"]
+                                where: { id: "$jwt.id" }
+                            }
+                            {
+                                roles: ["admin"]
+                            }
+                        ]
+                    )
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const userId2 = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                query {
+                    ${type.plural} {
+                        id
+                        name
+                        password
+                    }
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
+
+            try {
+                await session.run(`
+                    CREATE (:${type.name} {id: "${userId}", name: "User1", password: "password" })
+                    CREATE (:${type.name} {id: "${userId2}", name: "User2", password: "password" })
+                `);
+                // request with role "user" - should only return details of user
+                const userReq = createJwtRequest(secret, { roles: ["user"], id: userId });
+
+                const gqlResultUser = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: { driver, req: userReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect(gqlResultUser.data).toEqual({
+                    [type.plural]: [{ id: userId, name: "User1", password: "password" }],
+                });
+
+                // request with role "admin" - should return all users
+                const adminReq = createJwtRequest(secret, { roles: ["admin"], id: userId2 });
+
+                const gqlResultAdmin = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: { driver, req: adminReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect(gqlResultAdmin.data?.[type.plural]).toHaveLength(2);
+                expect(gqlResultAdmin.data).toEqual({
+                    [type.plural]: expect.arrayContaining([
+                        { id: userId, name: "User1", password: "password" },
+                        { id: userId2, name: "User2", password: "password" },
+                    ]),
+                });
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
+    describe("rolesPath with dots", () => {
+        test("can read role from path containing dots", async () => {
+            const session = driver.session();
+
+            const type = generateUniqueType("User");
+
+            const typeDefs = `
+                type ${type.name} {
+                    id: ID
+                    name: String
+                    password: String
+                }
+
+                extend type ${type.name}
+                    @auth(
+                        rules: [
+                            {
+                                roles: ["admin"]
+                            }
+                        ]
+                    )
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                query {
+                    ${type.plural} {
+                        id
+                        name
+                        password
+                    }
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                        rolesPath: "https://auth0\\.mysite\\.com/claims.https://auth0\\.mysite\\.com/claims/roles",
+                    }),
+                },
+            });
+
+            try {
+                await session.run(`
+                    CREATE (:${type.name} {id: "${userId}", name: "User1", password: "password" })
+                `);
+                // request without role "admin" - should return all users
+                const nonAdminReq = createJwtRequest(secret, {
+                    "https://auth0.mysite.com/claims": { "https://auth0.mysite.com/claims/roles": ["user"] },
+                    id: userId,
+                });
+
+                const gqlResultUser = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: { driver, req: nonAdminReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect((gqlResultUser.errors as any[])[0].message).toBe("Forbidden");
+
+                // request with role "admin" - should return all users
+                const adminReq = createJwtRequest(secret, {
+                    "https://auth0.mysite.com/claims": { "https://auth0.mysite.com/claims/roles": ["admin"] },
+                    id: userId,
+                });
+
+                const gqlResultAdmin = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: { driver, req: adminReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect(gqlResultAdmin.data).toEqual({
+                    [type.plural]: [{ id: userId, name: "User1", password: "password" }],
+                });
             } finally {
                 await session.close();
             }

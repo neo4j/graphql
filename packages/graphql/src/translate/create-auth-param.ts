@@ -18,11 +18,11 @@
  */
 
 import dotProp from "dot-prop";
-import { Context } from "../types";
+import { AuthContext, Context } from "../types";
 
-function createAuthParam({ context }: { context: Context }) {
+function createAuthParam({ context }: { context: Context }): AuthContext {
     const { jwt } = context;
-    const param: { isAuthenticated: boolean; roles?: string[]; jwt: any } = {
+    const param: AuthContext = {
         isAuthenticated: false,
         roles: [],
         jwt,
@@ -32,15 +32,17 @@ function createAuthParam({ context }: { context: Context }) {
         return param;
     }
 
-    const jwtConfig = context.neoSchema.config?.jwt;
+    // If any role is defined in this parameter, isAuthenticated shall be true
+    param.isAuthenticated = true;
 
-    if (jwtConfig?.rolesPath) {
-        param.roles = dotProp.get(jwt, jwtConfig.rolesPath);
+    const rolesPath = context?.plugins?.auth?.rolesPath;
+
+    // Roles added to config come from the role path or a roles array
+    if (rolesPath) {
+        param.roles = dotProp.get(jwt as unknown as { [key: string]: any }, rolesPath, []);
     } else if (jwt.roles) {
         param.roles = jwt.roles;
     }
-
-    param.isAuthenticated = true;
 
     return param;
 }

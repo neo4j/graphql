@@ -29,7 +29,8 @@ import createAuthAndParams from "./create-auth-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
-import createRelationshipValidationStr from "./create-relationship-validation-str";
+import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
+import createRelationshipValidationStr from "./create-relationship-validation-string";
 
 interface Res {
     strs: string[];
@@ -52,7 +53,7 @@ function createUpdateAndParams({
     withVars,
     context,
     parameterPrefix,
-    fromTopLevel,
+    includeRelationshipValidation,
 }: {
     parentVar: string;
     updateInput: any;
@@ -63,7 +64,7 @@ function createUpdateAndParams({
     insideDoWhen?: boolean;
     context: Context;
     parameterPrefix: string;
-    fromTopLevel?: boolean;
+    includeRelationshipValidation?: boolean;
 }): [string, any] {
     let hasAppliedTimeStamps = false;
 
@@ -83,20 +84,20 @@ function createUpdateAndParams({
         if (relationField) {
             const refNodes: Node[] = [];
 
-            const relationship = (context.neoSchema.relationships.find(
+            const relationship = context.relationships.find(
                 (x) => x.properties === relationField.properties
-            ) as unknown) as Relationship;
+            ) as unknown as Relationship;
 
             if (relationField.union) {
                 Object.keys(value).forEach((unionTypeName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
             } else if (relationField.interface) {
                 relationField.interface?.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
                 });
             } else {
-                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             const inStr = relationField.direction === "IN" ? "<-" : "-";
@@ -150,7 +151,7 @@ function createUpdateAndParams({
 
                         if (node.auth) {
                             const whereAuth = createAuthAndParams({
-                                operation: "UPDATE",
+                                operations: "UPDATE",
                                 entity: refNode,
                                 context,
                                 where: { varName: _varName, node: refNode },
@@ -201,6 +202,7 @@ function createUpdateAndParams({
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.node`,
+                                includeRelationshipValidation: true,
                             });
                             res.params = { ...res.params, ...updateAndParams[1], auth };
                             innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
@@ -316,6 +318,19 @@ function createUpdateAndParams({
                         res.params = { ...res.params, ...connectAndParams[1] };
                     }
 
+                    if (update.connectOrCreate) {
+                        const [connectOrCreateQuery, connectOrCreateParams] = createConnectOrCreateAndParams({
+                            input: update.connectOrCreate,
+                            varName: `${_varName}_connectOrCreate`,
+                            parentVar: varName,
+                            relationField,
+                            refNode,
+                            context,
+                        });
+                        subquery.push(connectOrCreateQuery);
+                        res.params = { ...res.params, ...connectOrCreateParams };
+                    }
+
                     if (update.delete) {
                         const innerVarName = `${_varName}_delete`;
 
@@ -355,6 +370,7 @@ function createUpdateAndParams({
                                 varName: nodeName,
                                 withVars: [...withVars, nodeName],
                                 insideDoWhen,
+                                includeRelationshipValidation: false,
                             });
                             subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
@@ -375,6 +391,16 @@ function createUpdateAndParams({
                                     }[${index}].create[${i}].edge`,
                                 });
                                 subquery.push(setA);
+                            }
+
+                            const relationshipValidationStr = createRelationshipValidationStr({
+                                node: refNode,
+                                context,
+                                varName: nodeName,
+                            });
+                            if (relationshipValidationStr) {
+                                subquery.push(`WITH ${[...withVars, nodeName].join(", ")}`);
+                                subquery.push(relationshipValidationStr);
                             }
                         });
                     }
@@ -436,14 +462,14 @@ function createUpdateAndParams({
             if (authableField.auth) {
                 const preAuth = createAuthAndParams({
                     entity: authableField,
-                    operation: "UPDATE",
+                    operations: "UPDATE",
                     context,
                     allow: { varName, parentNode: node, chainStr: param },
                     escapeQuotes: Boolean(insideDoWhen),
                 });
                 const postAuth = createAuthAndParams({
                     entity: authableField,
-                    operation: "UPDATE",
+                    operations: "UPDATE",
                     skipRoles: true,
                     skipIsAuthenticated: true,
                     context,
@@ -470,11 +496,13 @@ function createUpdateAndParams({
         return res;
     }
 
-    // eslint-disable-next-line prefer-const
-    let { strs, params, meta = { preAuthStrs: [], postAuthStrs: [] } } = Object.entries(updateInput).reduce(reducer, {
+    const reducedUpdate = Object.entries(updateInput as Record<string, unknown>).reduce(reducer, {
         strs: [],
         params: {},
     });
+
+    const { strs, meta = { preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
+    let params = reducedUpdate.params;
 
     let preAuthStrs: string[] = [];
     let postAuthStrs: string[] = [];
@@ -484,7 +512,7 @@ function createUpdateAndParams({
         entity: node,
         context,
         allow: { parentNode: node, varName },
-        operation: "UPDATE",
+        operations: "UPDATE",
         escapeQuotes: Boolean(insideDoWhen),
     });
     if (preAuth[0]) {
@@ -497,7 +525,7 @@ function createUpdateAndParams({
         context,
         skipIsAuthenticated: true,
         skipRoles: true,
-        operation: "UPDATE",
+        operations: "UPDATE",
         bind: { parentNode: node, varName },
         escapeQuotes: Boolean(insideDoWhen),
     });
@@ -513,7 +541,9 @@ function createUpdateAndParams({
 
     let preAuthStr = "";
     let postAuthStr = "";
-    const relationshipValidationStr = !fromTopLevel ? createRelationshipValidationStr({ node, context, varName }) : "";
+    const relationshipValidationStr = includeRelationshipValidation
+        ? createRelationshipValidationStr({ node, context, varName })
+        : "";
 
     const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
 

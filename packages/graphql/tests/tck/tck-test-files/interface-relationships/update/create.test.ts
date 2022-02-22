@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Update create", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -56,7 +55,7 @@ describe("Interface Relationships - Update create", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -100,11 +99,11 @@ describe("Interface Relationships - Update create", () => {
             CALL {
             WITH this
             MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-            RETURN { __resolveType: \\"Movie\\", title: this_Movie.title, runtime: this_Movie.runtime } AS actedIn
+            RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
             UNION
             WITH this
             MATCH (this)-[:ACTED_IN]->(this_Series:Series)
-            RETURN { __resolveType: \\"Series\\", title: this_Series.title, episodes: this_Series.episodes } AS actedIn
+            RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
             RETURN this { .name, actedIn: collect(actedIn) } AS this"
         `);

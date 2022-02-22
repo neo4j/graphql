@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
+import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
 import neo4j from "neo4j-driver";
 
-export const RFC_3339_REGEX = /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?((?:[Zz])|((?<offsetDirection>[-|+])(?<offsetHour>[01]\d|2[0-3]):(?<offsetMinute>[0-5]\d)))?$/;
+export const RFC_3339_REGEX =
+    /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?((?:[Zz])|((?<offsetDirection>[-|+])(?<offsetHour>[01]\d|2[0-3]):(?<offsetMinute>[0-5]\d)))?$/;
 
 export const parseTime = (value: any) => {
     if (typeof value !== "string") {
@@ -68,7 +69,7 @@ const parse = (value: any) => {
 export default new GraphQLScalarType({
     name: "Time",
     description: "A time, represented as an RFC3339 time string",
-    serialize: (value) => {
+    serialize: (value: unknown) => {
         if (typeof value !== "string" && !(value instanceof neo4j.types.Time)) {
             throw new TypeError(`Value must be of type string: ${value}`);
         }
@@ -81,10 +82,10 @@ export default new GraphQLScalarType({
 
         return stringifiedValue;
     },
-    parseValue: (value) => {
+    parseValue: (value: unknown) => {
         return parse(value);
     },
-    parseLiteral: (ast) => {
+    parseLiteral: (ast: ValueNode) => {
         if (ast.kind !== Kind.STRING) {
             throw new GraphQLError(`Only strings can be validated as Time, but received: ${ast.kind}`);
         }

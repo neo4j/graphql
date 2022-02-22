@@ -60,7 +60,7 @@ describe("@id directive", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -69,8 +69,8 @@ describe("@id directive", () => {
 
             const { id, name } = (gqlResult.data as any).createMovies.movies[0];
 
-            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](id))).toEqual(true);
-            expect(name).toEqual("dan");
+            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](id))).toBe(true);
+            expect(name).toBe("dan");
         } finally {
             await session.close();
         }
@@ -105,7 +105,7 @@ describe("@id directive", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -114,8 +114,8 @@ describe("@id directive", () => {
 
             const { id, name } = (gqlResult.data as any).createMovies.movies[0];
 
-            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](id))).toEqual(true);
-            expect(name).toEqual("dan");
+            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](id))).toBe(true);
+            expect(name).toBe("dan");
         } finally {
             await session.close();
         }
@@ -133,7 +133,7 @@ describe("@id directive", () => {
             type Movie {
                 id: ID! @id
                 name: String!
-                genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
+                genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
             }
         `;
 
@@ -164,7 +164,7 @@ describe("@id directive", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -173,9 +173,9 @@ describe("@id directive", () => {
 
             const { id, name, genres } = (gqlResult.data as any).createMovies.movies[0];
 
-            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](id))).toEqual(true);
-            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](genres[0].id))).toEqual(true);
-            expect(name).toEqual("dan");
+            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](id))).toBe(true);
+            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](genres[0].id))).toBe(true);
+            expect(name).toBe("dan");
         } finally {
             await session.close();
         }
@@ -231,7 +231,7 @@ describe("@id directive", () => {
 
         try {
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver },
                 variableValues: { title, name },
@@ -241,7 +241,7 @@ describe("@id directive", () => {
 
             const { actorsConnection } = (result.data as any).createMovies.movies[0];
 
-            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](actorsConnection.edges[0].id))).toEqual(true);
+            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](actorsConnection.edges[0].id))).toBe(true);
         } finally {
             await session.close();
         }

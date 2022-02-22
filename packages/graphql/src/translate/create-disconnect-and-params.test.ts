@@ -21,7 +21,8 @@ import createDisconnectAndParams from "./create-disconnect-and-params";
 import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test/builders/node-builder";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
+import { RelationshipQueryDirectionOption } from "../constants";
 
 describe("createDisconnectAndParams", () => {
     test("should return the correct disconnect", () => {
@@ -32,6 +33,7 @@ describe("createDisconnectAndParams", () => {
                     direction: "OUT",
                     type: "SIMILAR",
                     fieldName: "similarMovies",
+                    queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                     inherited: false,
                     typeMeta: {
                         name: "Movie",
@@ -77,7 +79,7 @@ describe("createDisconnectAndParams", () => {
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema };
+        const context: Context = { neoSchema, nodes: [node], relationships: [] };
 
         const result = createDisconnectAndParams({
             withVars: ["this"],

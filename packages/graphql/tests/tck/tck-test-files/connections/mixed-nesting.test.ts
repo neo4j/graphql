@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Mixed nesting", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -47,7 +46,7 @@ describe("Mixed nesting", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -222,7 +221,7 @@ describe("Mixed nesting", () => {
             WHERE (NOT this_actors_movie.title = $this_actors_moviesConnection.args.where.node.title_NOT)
             WITH collect({ screenTime: this_actors_acted_in_relationship.screenTime, node: { title: this_actors_movie.title } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS moviesConnection
-            } RETURN moviesConnection\\", { this_actors: this_actors, this_actors_moviesConnection: $this_actors_moviesConnection }, false) } ] } as this"
+            } RETURN moviesConnection\\", { this_actors: this_actors, this_actors_moviesConnection: $this_actors_moviesConnection, auth: $auth }, false) } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -237,7 +236,11 @@ describe("Mixed nesting", () => {
                         }
                     }
                 },
-                \\"this_actors_name\\": \\"Tom Hanks\\"
+                \\"this_actors_name\\": \\"Tom Hanks\\",
+                \\"auth\\": {
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
+                }
             }"
         `);
     });

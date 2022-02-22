@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
-import { createJwtRequest } from "../../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
 
 describe("Cypher Aggregations where node with Int", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -37,13 +36,13 @@ describe("Cypher Aggregations where node with Int", () => {
 
             type Post {
                 content: String!
-                likes: [User] @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -380,6 +379,171 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_likesAggregate_node_someInt_AVERAGE_LTE\\": 10
+            }"
+        `);
+    });
+
+    test("SUM_EQUAL", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { node: { someInt_SUM_EQUAL: 10 } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Post)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someInt) AS this_likesAggregate_node_someInt_SUM_EQUAL_SUM
+            RETURN this_likesAggregate_node_someInt_SUM_EQUAL_SUM = toFloat($this_likesAggregate_node_someInt_SUM_EQUAL)
+            \\", { this: this, this_likesAggregate_node_someInt_SUM_EQUAL: $this_likesAggregate_node_someInt_SUM_EQUAL }, false )
+            RETURN this { .content } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_likesAggregate_node_someInt_SUM_EQUAL\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("SUM_GT", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { node: { someInt_SUM_GT: 10 } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Post)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someInt) AS this_likesAggregate_node_someInt_SUM_GT_SUM
+            RETURN this_likesAggregate_node_someInt_SUM_GT_SUM > toFloat($this_likesAggregate_node_someInt_SUM_GT)
+            \\", { this: this, this_likesAggregate_node_someInt_SUM_GT: $this_likesAggregate_node_someInt_SUM_GT }, false )
+            RETURN this { .content } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_likesAggregate_node_someInt_SUM_GT\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("SUM_GTE", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { node: { someInt_SUM_GTE: 10 } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Post)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someInt) AS this_likesAggregate_node_someInt_SUM_GTE_SUM
+            RETURN this_likesAggregate_node_someInt_SUM_GTE_SUM >= toFloat($this_likesAggregate_node_someInt_SUM_GTE)
+            \\", { this: this, this_likesAggregate_node_someInt_SUM_GTE: $this_likesAggregate_node_someInt_SUM_GTE }, false )
+            RETURN this { .content } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_likesAggregate_node_someInt_SUM_GTE\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("SUM_LT", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { node: { someInt_SUM_LT: 10 } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Post)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someInt) AS this_likesAggregate_node_someInt_SUM_LT_SUM
+            RETURN this_likesAggregate_node_someInt_SUM_LT_SUM < toFloat($this_likesAggregate_node_someInt_SUM_LT)
+            \\", { this: this, this_likesAggregate_node_someInt_SUM_LT: $this_likesAggregate_node_someInt_SUM_LT }, false )
+            RETURN this { .content } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_likesAggregate_node_someInt_SUM_LT\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("SUM_LTE", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { node: { someInt_SUM_LTE: 10 } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Post)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someInt) AS this_likesAggregate_node_someInt_SUM_LTE_SUM
+            RETURN this_likesAggregate_node_someInt_SUM_LTE_SUM <= toFloat($this_likesAggregate_node_someInt_SUM_LTE)
+            \\", { this: this, this_likesAggregate_node_someInt_SUM_LTE: $this_likesAggregate_node_someInt_SUM_LTE }, false )
+            RETURN this { .content } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_likesAggregate_node_someInt_SUM_LTE\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
             }"
         `);
     });

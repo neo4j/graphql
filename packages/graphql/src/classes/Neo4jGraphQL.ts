@@ -17,151 +17,86 @@
  * limitations under the License.
  */
 
-import Debug from "debug";
 import { Driver } from "neo4j-driver";
-import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, printSchema, print } from "graphql";
-import { addResolversToSchema, addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
-import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
-import type { DriverConfig, CypherQueryOptions } from "../types";
+import { GraphQLSchema } from "graphql";
+import { addResolversToSchema, IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
+import { composeResolvers } from "@graphql-tools/resolvers-composition";
+import { forEachField, IResolvers } from "@graphql-tools/utils";
+import { mergeResolvers } from "@graphql-tools/merge";
+import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
-import { getJWT } from "../auth/index";
-import { DEBUG_GRAPHQL } from "../constants";
-import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
-import createAuthParam from "../translate/create-auth-param";
 import assertIndexesAndConstraints, {
     AssertIndexesAndConstraintsOptions,
 } from "./utils/asserts-indexes-and-constraints";
-
-const debug = Debug(DEBUG_GRAPHQL);
+import { wrapResolver } from "../schema/resolvers/wrapper";
+import { defaultFieldResolver } from "../schema/resolvers";
+import { asArray } from "../utils/utils";
 
 export interface Neo4jGraphQLJWT {
-    jwkEndpoint?: string;
-    secret?: string;
+    jwksEndpoint?: string;
+    secret?: string | Buffer | { key: string | Buffer; passphrase: string };
     noVerify?: boolean;
     rolesPath?: string;
 }
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
-    jwt?: Neo4jGraphQLJWT;
     enableRegex?: boolean;
     skipValidateTypeDefs?: boolean;
     queryOptions?: CypherQueryOptions;
 }
 
-export interface Neo4jGraphQLConstructor extends Omit<IExecutableSchemaDefinition, "schemaDirectives"> {
+export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
-    schemaDirectives?: Record<string, typeof SchemaDirectiveVisitor>;
+    plugins?: Neo4jGraphQLPlugins;
 }
 
 class Neo4jGraphQL {
-    public schema: GraphQLSchema;
-    public nodes: Node[];
-    public relationships: Relationship[];
-    public document: DocumentNode;
+    private config: Neo4jGraphQLConfig;
     private driver?: Driver;
-    public config?: Neo4jGraphQLConfig;
+
+    private schemaDefinition: IExecutableSchemaDefinition;
+
+    private _nodes?: Node[];
+    private _relationships?: Relationship[];
+    private plugins?: Neo4jGraphQLPlugins;
+    private schema?: Promise<GraphQLSchema>;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, resolvers, schemaDirectives, ...schemaDefinition } = input;
-        const { nodes, relationships, schema } = makeAugmentedSchema(schemaDefinition, {
-            enableRegex: config.enableRegex,
-            skipValidateTypeDefs: config.skipValidateTypeDefs,
-        });
+        const { config = {}, driver, plugins, ...schemaDefinition } = input;
 
         this.driver = driver;
         this.config = config;
-        this.nodes = nodes;
-        this.relationships = relationships;
-        this.schema = schema;
-
-        /*
-            Order must be:
-
-                addResolversToSchema -> visitSchemaDirectives -> createWrappedSchema
-
-            addResolversToSchema breaks schema directives added before it
-
-            createWrappedSchema must come last so that all requests have context prepared correctly
-        */
-        if (resolvers) {
-            if (Array.isArray(resolvers)) {
-                resolvers.forEach((r) => {
-                    this.schema = addResolversToSchema(this.schema, r);
-                });
-            } else {
-                this.schema = addResolversToSchema(this.schema, resolvers);
-            }
-        }
-
-        if (schemaDirectives) {
-            SchemaDirectiveVisitor.visitSchemaDirectives(this.schema, schemaDirectives);
-        }
-
-        this.schema = this.createWrappedSchema({ schema: this.schema, config });
-        this.document = parse(printSchema(schema));
+        this.plugins = plugins;
+        this.schemaDefinition = schemaDefinition;
     }
 
-    private createWrappedSchema({
-        schema,
-        config,
-    }: {
-        schema: GraphQLSchema;
-        config: Neo4jGraphQLConfig;
-    }): GraphQLSchema {
-        return addSchemaLevelResolver(schema, (obj, _args, context: any, resolveInfo: GraphQLResolveInfo) => {
-            const { driverConfig } = config;
+    public get nodes(): Node[] {
+        if (!this._nodes) {
+            throw new Error("You must await `.getSchema()` before accessing `nodes`");
+        }
 
-            if (debug.enabled) {
-                const query = print(resolveInfo.operation);
+        return this._nodes;
+    }
 
-                debug(
-                    "%s",
-                    `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(
-                        resolveInfo.variableValues,
-                        null,
-                        2
-                    )}`
-                );
-            }
+    public get relationships(): Relationship[] {
+        if (!this._relationships) {
+            throw new Error("You must await `.getSchema()` before accessing `relationships`");
+        }
 
-            /*
-                Deleting this property ensures that we call this function more than once,
-                See https://github.com/ardatan/graphql-tools/issues/353#issuecomment-499569711
-            */
-            // @ts-ignore: Deleting private property from object
-            delete resolveInfo.operation.__runAtMostOnce; // eslint-disable-line no-param-reassign,no-underscore-dangle
+        return this._relationships;
+    }
 
-            if (!context?.driver) {
-                if (!this.driver) {
-                    throw new Error(
-                        "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
-                    );
-                }
-                context.driver = this.driver;
-            }
+    async getSchema(): Promise<GraphQLSchema> {
+        if (!this.schema) {
+            this.schema = this.generateSchema();
+        }
 
-            if (!context?.driverConfig) {
-                context.driverConfig = driverConfig;
-            }
-
-            context.neoSchema = this;
-
-            context.resolveTree = getNeo4jResolveTree(resolveInfo);
-
-            if (!context.jwt) {
-                context.jwt = getJWT(context);
-            }
-
-            context.auth = createAuthParam({ context });
-
-            context.queryOptions = config.queryOptions;
-            return obj;
-        });
+        return this.schema;
     }
 
     async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
@@ -178,6 +113,12 @@ class Neo4jGraphQL {
     async assertIndexesAndConstraints(
         input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
     ): Promise<void> {
+        if (!this.schema) {
+            throw new Error("You must call `.getSchema()` before `.assertIndexesAndConstraints()`");
+        }
+
+        await this.schema;
+
         const driver = input.driver || this.driver;
         const driverConfig = input.driverConfig || this.config?.driverConfig;
 
@@ -186,6 +127,68 @@ class Neo4jGraphQL {
         }
 
         await assertIndexesAndConstraints({ driver, driverConfig, nodes: this.nodes, options: input.options });
+    }
+
+    private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
+        forEachField(schema, (field) => {
+            if (!field.resolve) {
+                // eslint-disable-next-line no-param-reassign
+                field.resolve = defaultFieldResolver;
+            }
+        });
+
+        return schema;
+    }
+
+    private wrapResolvers(resolvers: IResolvers, { schema }: { schema: GraphQLSchema }) {
+        const wrapResolverArgs = {
+            driver: this.driver,
+            config: this.config,
+            nodes: this.nodes,
+            relationships: this.relationships,
+            schema,
+            plugins: this.plugins,
+        };
+
+        const resolversComposition = {
+            "Query.*": [wrapResolver(wrapResolverArgs)],
+            "Mutation.*": [wrapResolver(wrapResolverArgs)],
+        };
+
+        // Merge generated and custom resolvers
+        const mergedResolvers = mergeResolvers([resolvers, ...asArray(this.schemaDefinition.resolvers)]);
+
+        return composeResolvers(mergedResolvers, resolversComposition);
+    }
+
+    private addWrappedResolversToSchema(resolverlessSchema: GraphQLSchema, resolvers: IResolvers): GraphQLSchema {
+        const schema = addResolversToSchema(resolverlessSchema, resolvers);
+
+        return this.addDefaultFieldResolvers(schema);
+    }
+
+    private generateSchema(): Promise<GraphQLSchema> {
+        return new Promise((resolve) => {
+            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(this.schemaDefinition.typeDefs, {
+                enableRegex: this.config?.enableRegex,
+                skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
+            });
+
+            this._nodes = nodes;
+            this._relationships = relationships;
+
+            const resolverlessSchema = makeExecutableSchema({
+                ...this.schemaDefinition,
+                typeDefs,
+            });
+
+            // Wrap the generated resolvers, which adds a context including the schema to every request
+            const wrappedResolvers = this.wrapResolvers(resolvers, { schema: resolverlessSchema });
+
+            const schema = this.addWrappedResolversToSchema(resolverlessSchema, wrappedResolvers);
+
+            resolve(schema);
+        });
     }
 }
 

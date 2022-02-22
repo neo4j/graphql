@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Null", () => {
-    test("Simple", () => {
+    test("Simple", async () => {
         const typeDefs = gql`
             type Movie {
                 id: ID!
@@ -42,7 +42,7 @@ describe("Null", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -64,7 +64,7 @@ describe("Null", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelection {
+            type DateTimeAggregateSelectionNonNullable {
               max: DateTime!
               min: DateTime!
             }
@@ -75,21 +75,23 @@ describe("Null", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelection {
+            type FloatAggregateSelectionNonNullable {
               average: Float!
               max: Float!
               min: Float!
+              sum: Float!
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNonNullable {
               longest: ID!
               shortest: ID!
             }
 
-            type IntAggregateSelection {
+            type IntAggregateSelectionNonNullable {
               average: Float!
               max: Int!
               min: Int!
+              sum: Int!
             }
 
             type Movie {
@@ -109,12 +111,12 @@ describe("Null", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregateSelection!
-              averageRating: FloatAggregateSelection!
+              actorCount: IntAggregateSelectionNonNullable!
+              averageRating: FloatAggregateSelectionNonNullable!
               count: Int!
-              createdAt: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
-              name: StringAggregateSelection!
+              createdAt: DateTimeAggregateSelectionNonNullable!
+              id: IDAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieCreateInput {
@@ -136,11 +138,15 @@ describe("Null", () => {
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               actorCount: SortDirection
               averageRating: SortDirection
@@ -172,11 +178,11 @@ describe("Null", () => {
               actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
-              actorCount_IN: [Int]
+              actorCount_IN: [Int!]
               actorCount_LT: Int
               actorCount_LTE: Int
               actorCount_NOT: Int
-              actorCount_NOT_IN: [Int]
+              actorCount_NOT_IN: [Int!]
               actorCounts: [Int!]
               actorCounts_INCLUDES: Int
               actorCounts_NOT: [Int!]
@@ -184,11 +190,11 @@ describe("Null", () => {
               averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
-              averageRating_IN: [Float]
+              averageRating_IN: [Float!]
               averageRating_LT: Float
               averageRating_LTE: Float
               averageRating_NOT: Float
-              averageRating_NOT_IN: [Float]
+              averageRating_NOT_IN: [Float!]
               averageRatings: [Float!]
               averageRatings_INCLUDES: Float
               averageRatings_NOT: [Float!]
@@ -196,11 +202,11 @@ describe("Null", () => {
               createdAt: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
-              createdAt_IN: [DateTime]
+              createdAt_IN: [DateTime!]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
               createdAt_NOT: DateTime
-              createdAt_NOT_IN: [DateTime]
+              createdAt_NOT_IN: [DateTime!]
               createdAts: [DateTime!]
               createdAts_INCLUDES: DateTime
               createdAts_NOT: [DateTime!]
@@ -209,11 +215,11 @@ describe("Null", () => {
               filmedAt_DISTANCE: PointDistance
               filmedAt_GT: PointDistance
               filmedAt_GTE: PointDistance
-              filmedAt_IN: [PointInput]
+              filmedAt_IN: [PointInput!]
               filmedAt_LT: PointDistance
               filmedAt_LTE: PointDistance
               filmedAt_NOT: PointInput
-              filmedAt_NOT_IN: [PointInput]
+              filmedAt_NOT_IN: [PointInput!]
               filmedAts: [PointInput!]
               filmedAts_INCLUDES: PointInput
               filmedAts_NOT: [PointInput!]
@@ -221,11 +227,11 @@ describe("Null", () => {
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_IN: [ID]
+              id_IN: [ID!]
               id_NOT: ID
               id_NOT_CONTAINS: ID
               id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
+              id_NOT_IN: [ID!]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               ids: [ID!]
@@ -237,11 +243,11 @@ describe("Null", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
               names: [String!]
@@ -279,7 +285,6 @@ describe("Null", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -289,7 +294,7 @@ describe("Null", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
             }
@@ -305,8 +310,7 @@ describe("Null", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 });

@@ -18,7 +18,7 @@
  */
 
 import createResolver from "./create";
-import { NodeBuilder } from "../../utils/test/builders/node-builder";
+import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
 
 describe("Create resolver", () => {
     test("should return the correct; type, args and resolve", () => {
@@ -27,7 +27,7 @@ describe("Create resolver", () => {
         }).instance();
 
         const result = createResolver({ node });
-        expect(result.type).toEqual("CreateMoviesMutationResponse!");
+        expect(result.type).toBe("CreateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
             input: "[MovieCreateInput!]!",

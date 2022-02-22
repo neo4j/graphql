@@ -50,5 +50,7 @@ const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 // private with access to password
 const ogm = new OGM({ typeDefs, driver });
 
-const apolloServer = new ApolloServer({ schema: neoSchema.schema });
+Promise.all([neoSchema.getSchema(), ogm.init()]).then(([schema]) => {
+    const apolloServer = new ApolloServer({ schema });
+})
 ----

@@ -42,10 +42,10 @@ describe("aggregations-where-node-int", () => {
                 testString: String!
                 someInt: Int!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -79,7 +79,7 @@ describe("aggregations-where-node-int", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -109,10 +109,10 @@ describe("aggregations-where-node-int", () => {
                 testString: String!
                 someInt: Int!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -147,7 +147,7 @@ describe("aggregations-where-node-int", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -177,10 +177,10 @@ describe("aggregations-where-node-int", () => {
                 testString: String!
                 someInt: Int!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -214,7 +214,7 @@ describe("aggregations-where-node-int", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -244,10 +244,10 @@ describe("aggregations-where-node-int", () => {
                 testString: String!
                 someInt: Int!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -282,7 +282,7 @@ describe("aggregations-where-node-int", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -312,10 +312,10 @@ describe("aggregations-where-node-int", () => {
                 testString: String!
                 someInt: Int!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
@@ -349,7 +349,7 @@ describe("aggregations-where-node-int", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -380,10 +380,10 @@ describe("aggregations-where-node-int", () => {
                     testString: String!
                     someInt: Int!
                 }
-              
+
                 type Post {
                   testString: String!
-                  likes: [User] @relationship(type: "LIKES", direction: IN)
+                  likes: [User!]! @relationship(type: "LIKES", direction: IN)
                 }
             `;
 
@@ -424,7 +424,7 @@ describe("aggregations-where-node-int", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -451,10 +451,10 @@ describe("aggregations-where-node-int", () => {
                     testString: String!
                     someInt: Int!
                 }
-              
+
                 type Post {
                   testString: String!
-                  likes: [User] @relationship(type: "LIKES", direction: IN)
+                  likes: [User!]! @relationship(type: "LIKES", direction: IN)
                 }
             `;
 
@@ -496,7 +496,7 @@ describe("aggregations-where-node-int", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -523,10 +523,10 @@ describe("aggregations-where-node-int", () => {
                     testString: String!
                     someInt: Int!
                 }
-              
+
                 type Post {
                   testString: String!
-                  likes: [User] @relationship(type: "LIKES", direction: IN)
+                  likes: [User!]! @relationship(type: "LIKES", direction: IN)
                 }
             `;
 
@@ -567,7 +567,7 @@ describe("aggregations-where-node-int", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -594,10 +594,10 @@ describe("aggregations-where-node-int", () => {
                     testString: String!
                     someInt: Int!
                 }
-              
+
                 type Post {
                   testString: String!
-                  likes: [User] @relationship(type: "LIKES", direction: IN)
+                  likes: [User!]! @relationship(type: "LIKES", direction: IN)
                 }
             `;
 
@@ -639,7 +639,7 @@ describe("aggregations-where-node-int", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
@@ -666,10 +666,10 @@ describe("aggregations-where-node-int", () => {
                     testString: String!
                     someInt: Int!
                 }
-              
+
                 type Post {
                   testString: String!
-                  likes: [User] @relationship(type: "LIKES", direction: IN)
+                  likes: [User!]! @relationship(type: "LIKES", direction: IN)
                 }
             `;
 
@@ -710,7 +710,80 @@ describe("aggregations-where-node-int", () => {
                 `;
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const [post] = (gqlResult.data as any).posts as any[];
+                expect(post.testString).toEqual(testString);
+                expect(post.likes).toHaveLength(3);
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
+    describe("sum", () => {
+        test("should return posts where the sum of like Int's is EQUAL to", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                    someInt: Int!
+                }
+
+                type Post {
+                  testString: String!
+                  likes: [User!]! @relationship(type: "LIKES", direction: IN)
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const someInt1 = Math.floor(Math.random() * Math.random());
+            const someInt2 = Math.floor(Math.random() * Math.random());
+            const someInt3 = Math.floor(Math.random() * Math.random());
+
+            const sum = someInt1 + someInt2 + someInt3;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt1}})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt2}})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someInt: ${someInt3}})
+                        CREATE (:Post {testString: "${testString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { node: { someInt_SUM_EQUAL: ${sum} } } }) {
+                            testString
+                            likes {
+                                testString
+                                someInt
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });

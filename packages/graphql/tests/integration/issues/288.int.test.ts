@@ -30,11 +30,11 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
         type USER {
             USERID: String
             COMPANYID: String
-            COMPANY: [COMPANY] @relationship(type: "IS_PART_OF", direction: OUT)
+            COMPANY: [COMPANY!]! @relationship(type: "IS_PART_OF", direction: OUT)
         }
 
         type COMPANY {
-            USERS: [USER] @relationship(type: "IS_PART_OF", direction: IN)
+            USERS: [USER!]! @relationship(type: "IS_PART_OF", direction: IN)
         }
     `;
 
@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
         const createMutation = `
             mutation {
                 createUSERS(input: { USERID: "${userid}", COMPANYID: "${companyid1}" }) {
-                    users {
+                    uSERS {
                         USERID
                         COMPANYID
                     }
@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
         const updateMutation = `
             mutation {
                 updateUSERS(where: { USERID: "${userid}" }, update: { COMPANYID: "${companyid2}" }) {
-                    users {
+                    uSERS {
                         USERID
                         COMPANYID
                     }
@@ -81,24 +81,28 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
             await neoSchema.checkNeo4jCompat();
 
             const createResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: createMutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(createResult.errors).toBeFalsy();
 
-            expect(createResult?.data?.createUSERS?.users).toEqual([{ USERID: userid, COMPANYID: companyid1 }]);
+            expect((createResult?.data as any)?.createUSERS?.uSERS).toEqual([
+                { USERID: userid, COMPANYID: companyid1 },
+            ]);
 
             const updateResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: updateMutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(updateResult.errors).toBeFalsy();
 
-            expect(updateResult?.data?.updateUSERS?.users).toEqual([{ USERID: userid, COMPANYID: companyid2 }]);
+            expect((updateResult?.data as any)?.updateUSERS?.uSERS).toEqual([
+                { USERID: userid, COMPANYID: companyid2 },
+            ]);
 
             await session.run(`MATCH (u:USER) WHERE u.USERID = "${userid}" DELETE u`);
         } finally {

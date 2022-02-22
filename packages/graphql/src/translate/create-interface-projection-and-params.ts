@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
@@ -6,7 +25,8 @@ import filterInterfaceNodes from "../utils/filter-interface-nodes";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
-import createNodeWhereAndParams from "./where/create-node-where-and-params";
+import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
+import createElementWhereAndParams from "./where/create-element-where-and-params";
 
 function createInterfaceProjectionAndParams({
     resolveTree,
@@ -26,13 +46,13 @@ function createInterfaceProjectionAndParams({
     let globalParams = {};
     let params: { args?: any } = {};
 
-    const inStr = field.direction === "IN" ? "<-" : "-";
     const relTypeStr = `[:${field.type}]`;
-    const outStr = field.direction === "OUT" ? "->" : "-";
+
+    const { inStr, outStr } = getRelationshipDirection(field, resolveTree.args);
 
     const whereInput = resolveTree.args.where as InterfaceWhereArg;
 
-    const referenceNodes = context.neoSchema.nodes.filter(
+    const referenceNodes = context.nodes.filter(
         (x) => field.interface?.implementations?.includes(x.name) && filterInterfaceNodes({ node: x, whereInput })
     );
 
@@ -45,15 +65,8 @@ function createInterfaceProjectionAndParams({
             `MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}(${param}:${refNode.name})`,
         ];
 
-        const fieldsByTypeName = {
-            [refNode.name]: {
-                ...resolveTree.fieldsByTypeName[field.typeMeta.name],
-                ...resolveTree.fieldsByTypeName[refNode.name],
-            },
-        };
-
         const allowAndParams = createAuthAndParams({
-            operation: "READ",
+            operations: "READ",
             entity: refNode,
             context,
             allow: {
@@ -70,7 +83,7 @@ function createInterfaceProjectionAndParams({
 
         if (resolveTree.args.where) {
             // For root filters
-            const rootNodeWhereAndParams = createNodeWhereAndParams({
+            const rootNodeWhereAndParams = createElementWhereAndParams({
                 whereInput: {
                     ...Object.entries(whereInput).reduce((args, [k, v]) => {
                         if (k !== "_on") {
@@ -85,8 +98,8 @@ function createInterfaceProjectionAndParams({
                     }, {}),
                 },
                 context,
-                node: refNode,
-                nodeVariable: param,
+                element: refNode,
+                varName: param,
                 parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                     resolveTree.alias
                 }.args.where`,
@@ -98,7 +111,7 @@ function createInterfaceProjectionAndParams({
 
             // For _on filters
             if (whereInput?._on?.[refNode.name]) {
-                const onTypeNodeWhereAndParams = createNodeWhereAndParams({
+                const onTypeNodeWhereAndParams = createElementWhereAndParams({
                     whereInput: {
                         ...Object.entries(whereInput).reduce((args, [k, v]) => {
                             if (k !== "_on") {
@@ -113,8 +126,8 @@ function createInterfaceProjectionAndParams({
                         }, {}),
                     },
                     context,
-                    node: refNode,
-                    nodeVariable: param,
+                    element: refNode,
+                    varName: param,
                     parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                         resolveTree.alias
                     }.args.where._on.${refNode.name}`,
@@ -122,7 +135,6 @@ function createInterfaceProjectionAndParams({
                 if (onTypeNodeWhereAndParams[0]) {
                     whereStrs.push(onTypeNodeWhereAndParams[0]);
                     if (whereArgs._on) {
-                        // eslint-disable-next-line prefer-destructuring
                         whereArgs._on[refNode.name] = onTypeNodeWhereAndParams[1];
                     } else {
                         whereArgs._on = { [refNode.name]: onTypeNodeWhereAndParams[1] };
@@ -132,7 +144,7 @@ function createInterfaceProjectionAndParams({
         }
 
         const whereAuth = createAuthAndParams({
-            operation: "READ",
+            operations: "READ",
             entity: refNode,
             context,
             where: { varName: param, node: refNode },
@@ -147,7 +159,7 @@ function createInterfaceProjectionAndParams({
         }
 
         const recurse = createProjectionAndParams({
-            fieldsByTypeName,
+            resolveTree,
             node: refNode,
             context,
             varName: param,

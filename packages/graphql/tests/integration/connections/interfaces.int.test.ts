@@ -22,22 +22,27 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("Connections -> Interfaces", () => {
     let driver: Driver;
     let bookmarks: string[];
+
+    const typeMovie = generateUniqueType("Movie");
+    const typeSeries = generateUniqueType("Series");
+    const typeActor = generateUniqueType("Actor");
 
     const typeDefs = gql`
         interface Production {
             title: String!
         }
 
-        type Movie implements Production {
+        type ${typeMovie.name} implements Production {
             title: String!
             runtime: Int!
         }
 
-        type Series implements Production {
+        type ${typeSeries.name} implements Production {
             title: String!
             episodes: Int!
         }
@@ -46,7 +51,7 @@ describe("Connections -> Interfaces", () => {
             screenTime: Int!
         }
 
-        type Actor {
+        type ${typeActor.name} {
             name: String!
             actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }
@@ -56,13 +61,15 @@ describe("Connections -> Interfaces", () => {
 
     const seriesTitle = "Game of Thrones";
     const seriesEpisodes = 73;
-
     const seriesScreenTime = 858;
 
-    const movieTitle = "Dune";
-    const movieRuntime = 155;
+    const movie1Title = "Dune";
+    const movie1Runtime = 155;
+    const movie1ScreenTime = 90;
 
-    const movieScreenTime = 90;
+    const movie2Title = "Aquaman";
+    const movie2Runtime = 144;
+    const movie2ScreenTime = 120;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -71,18 +78,22 @@ describe("Connections -> Interfaces", () => {
         try {
             await session.run(
                 `
-                    CREATE (actor:Actor {name: $actorName})
-                    CREATE (actor)-[:ACTED_IN {screenTime: $seriesScreenTime}]->(:Series {title: $seriesTitle, episodes: $seriesEpisodes})
-                    CREATE (actor)-[:ACTED_IN {screenTime: $movieScreenTime}]->(:Movie {title: $movieTitle, runtime: $movieRuntime})
+                    CREATE (actor:${typeActor.name} {name: $actorName})
+                    CREATE (actor)-[:ACTED_IN {screenTime: $seriesScreenTime}]->(:${typeSeries.name} {title: $seriesTitle, episodes: $seriesEpisodes})
+                    CREATE (actor)-[:ACTED_IN {screenTime: $movie1ScreenTime}]->(:${typeMovie.name} {title: $movie1Title, runtime: $movie1Runtime})
+                    CREATE (actor)-[:ACTED_IN {screenTime: $movie2ScreenTime}]->(:${typeMovie.name} {title: $movie2Title, runtime: $movie2Runtime})
                 `,
                 {
                     actorName,
                     seriesTitle,
                     seriesEpisodes,
                     seriesScreenTime,
-                    movieTitle,
-                    movieRuntime,
-                    movieScreenTime,
+                    movie1Title,
+                    movie1Runtime,
+                    movie1ScreenTime,
+                    movie2Title,
+                    movie2Runtime,
+                    movie2ScreenTime,
                 }
             );
             bookmarks = session.lastBookmark();
@@ -97,15 +108,17 @@ describe("Connections -> Interfaces", () => {
         try {
             await session.run(
                 `
-                    MATCH (actor:Actor {name: $actorName})
-                    MATCH (series:Series {title: $seriesTitle})
-                    MATCH (movie:Movie {title: $movieTitle})
-                    DETACH DELETE actor, series, movie
+                    MATCH (actor:${typeActor.name} {name: $actorName})
+                    MATCH (series:${typeSeries.name} {title: $seriesTitle})
+                    MATCH (movie1:${typeMovie.name} {title: $movie1Title})
+                    MATCH (movie2:${typeMovie.name} {title: $movie2Title})
+                    DETACH DELETE actor, series, movie1, movie2
                 `,
                 {
                     actorName,
                     seriesTitle,
-                    movieTitle,
+                    movie1Title,
+                    movie2Title,
                 }
             );
         } finally {
@@ -122,17 +135,17 @@ describe("Connections -> Interfaces", () => {
 
         const query = `
             query Actors($name: String) {
-                actors(where: { name: $name }) {
+                ${typeActor.plural}(where: { name: $name }) {
                     name
                     actedInConnection {
                         edges {
                             screenTime
                             node {
                                 title
-                                ... on Movie {
+                                ... on ${typeMovie.name} {
                                     runtime
                                 }
-                                ... on Series {
+                                ... on ${typeSeries.name} {
                                     episodes
                                 }
                             }
@@ -146,7 +159,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -156,16 +169,23 @@ describe("Connections -> Interfaces", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toEqual([
+            expect((result as any).data[typeActor.plural]).toEqual([
                 {
                     name: actorName,
                     actedInConnection: {
-                        edges: [
+                        edges: expect.arrayContaining([
                             {
-                                screenTime: movieScreenTime,
+                                screenTime: movie1ScreenTime,
                                 node: {
-                                    title: movieTitle,
-                                    runtime: movieRuntime,
+                                    title: movie1Title,
+                                    runtime: movie1Runtime,
+                                },
+                            },
+                            {
+                                screenTime: movie2ScreenTime,
+                                node: {
+                                    title: movie2Title,
+                                    runtime: movie2Runtime,
                                 },
                             },
                             {
@@ -175,7 +195,7 @@ describe("Connections -> Interfaces", () => {
                                     episodes: seriesEpisodes,
                                 },
                             },
-                        ],
+                        ]),
                     },
                 },
             ]);
@@ -191,17 +211,17 @@ describe("Connections -> Interfaces", () => {
 
         const query = `
             query Actors($name: String) {
-                actors(where: { name: $name }) {
+                ${typeActor.plural}(where: { name: $name }) {
                     name
                     actedInConnection(where: { node: { title: "Game of Thrones" } }) {
                         edges {
                             screenTime
                             node {
                                 title
-                                ... on Movie {
+                                ... on ${typeMovie.name} {
                                     runtime
                                 }
-                                ... on Series {
+                                ... on ${typeSeries.name} {
                                     episodes
                                 }
                             }
@@ -215,7 +235,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -225,7 +245,7 @@ describe("Connections -> Interfaces", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toEqual([
+            expect((result as any).data[typeActor.plural]).toEqual([
                 {
                     name: actorName,
                     actedInConnection: {
@@ -253,17 +273,17 @@ describe("Connections -> Interfaces", () => {
 
         const query = `
             query Actors($name: String) {
-                actors(where: { name: $name }) {
+                ${typeActor.plural}(where: { name: $name }) {
                     name
-                    actedInConnection(where: { node: { title: "Game of Thrones", _on: { Movie: { title: "Dune" } } } }) {
+                    actedInConnection(where: { node: { title: "Game of Thrones", _on: { ${typeMovie.name}: { title: "Dune" } } } }) {
                         edges {
                             screenTime
                             node {
                                 title
-                                ... on Movie {
+                                ... on ${typeMovie.name} {
                                     runtime
                                 }
-                                ... on Series {
+                                ... on ${typeSeries.name} {
                                     episodes
                                 }
                             }
@@ -277,7 +297,7 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
@@ -287,16 +307,16 @@ describe("Connections -> Interfaces", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toEqual([
+            expect((result as any).data[typeActor.plural]).toEqual([
                 {
                     name: actorName,
                     actedInConnection: {
                         edges: [
                             {
-                                screenTime: movieScreenTime,
+                                screenTime: movie1ScreenTime,
                                 node: {
-                                    title: movieTitle,
-                                    runtime: movieRuntime,
+                                    title: movie1Title,
+                                    runtime: movie1Runtime,
                                 },
                             },
                             {
@@ -315,66 +335,194 @@ describe("Connections -> Interfaces", () => {
         }
     });
 
-    // test("Projecting node and relationship properties for one union member with no arguments", async () => {
-    //     const session = driver.session();
+    test("Projecting node and relationship properties with sort argument", async () => {
+        const session = driver.session();
 
-    //     const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-    //     const query = `
-    //         query ($authorName: String) {
-    //             authors(where: { name: $authorName }) {
-    //                 name
-    //                 publicationsConnection {
-    //                     edges {
-    //                         words
-    //                         node {
-    //                             ... on Book {
-    //                                 title
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     `;
+        const query = `
+            query Actors($name: String) {
+                ${typeActor.plural}(where: { name: $name }) {
+                    name
+                    actedInConnection(sort: [{ edge: { screenTime: DESC } }]) {
+                        edges {
+                            screenTime
+                            node {
+                                title
+                                ... on ${typeMovie.name} {
+                                    runtime
+                                }
+                                ... on ${typeSeries.name} {
+                                    episodes
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
 
-    //     try {
-    //         await neoSchema.checkNeo4jCompat();
+        try {
+            await neoSchema.checkNeo4jCompat();
 
-    //         const result = await graphql({
-    //             schema: neoSchema.schema,
-    //             source: query,
-    //             contextValue: { driver, driverConfig: { bookmarks } },
-    //             variableValues: {
-    //                 authorName,
-    //             },
-    //         });
+            const result = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks } },
+                variableValues: {
+                    name: actorName,
+                },
+            });
 
-    //         expect(result.errors).toBeFalsy();
+            expect(result.errors).toBeFalsy();
 
-    //         expect(result?.data?.authors).toEqual([
-    //             {
-    //                 name: authorName,
-    //                 publicationsConnection: {
-    //                     edges: [
-    //                         {
-    //                             words: bookWordCount,
-    //                             node: {
-    //                                 title: bookTitle,
-    //                             },
-    //                         },
-    //                         {
-    //                             words: journalWordCount,
-    //                             node: {},
-    //                         },
-    //                     ],
-    //                 },
-    //             },
-    //         ]);
-    //     } finally {
-    //         await session.close();
-    //     }
-    // });
+            expect((result as any).data[typeActor.plural]).toEqual([
+                {
+                    name: actorName,
+                    actedInConnection: {
+                        edges: [
+                            {
+                                screenTime: seriesScreenTime,
+                                node: {
+                                    title: seriesTitle,
+                                    episodes: seriesEpisodes,
+                                },
+                            },
+                            {
+                                screenTime: movie2ScreenTime,
+                                node: {
+                                    title: movie2Title,
+                                    runtime: movie2Runtime,
+                                },
+                            },
+                            {
+                                screenTime: movie1ScreenTime,
+                                node: {
+                                    title: movie1Title,
+                                    runtime: movie1Runtime,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("Projecting node and relationship properties with pagination", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+            query Actors($name: String, $after: String) {
+                ${typeActor.plural}(where: { name: $name }) {
+                    name
+                    actedInConnection(first: 2, after: $after, sort: { edge: { screenTime: DESC } }) {
+                        pageInfo {
+                            hasNextPage
+                            hasPreviousPage
+                            endCursor
+                        }
+                        edges {
+                            screenTime
+                            node {
+                                title
+                                ... on ${typeMovie.name} {
+                                    runtime
+                                }
+                                ... on ${typeSeries.name} {
+                                    episodes
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks } },
+                variableValues: {
+                    name: actorName,
+                },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect((result as any).data[typeActor.plural]).toEqual([
+                {
+                    name: actorName,
+                    actedInConnection: {
+                        pageInfo: {
+                            hasNextPage: true,
+                            hasPreviousPage: false,
+                            endCursor: expect.any(String),
+                        },
+                        edges: [
+                            {
+                                screenTime: seriesScreenTime,
+                                node: {
+                                    title: seriesTitle,
+                                    episodes: seriesEpisodes,
+                                },
+                            },
+                            {
+                                screenTime: movie2ScreenTime,
+                                node: {
+                                    title: movie2Title,
+                                    runtime: movie2Runtime,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+
+            const nextResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks } },
+                variableValues: {
+                    name: actorName,
+                    after: (result as any).data[typeActor.plural][0].actedInConnection.pageInfo.endCursor,
+                },
+            });
+
+            expect(nextResult.errors).toBeFalsy();
+
+            expect((nextResult as any).data[typeActor.plural]).toEqual([
+                {
+                    name: actorName,
+                    actedInConnection: {
+                        pageInfo: {
+                            hasNextPage: false,
+                            hasPreviousPage: true,
+                            endCursor: expect.any(String),
+                        },
+                        edges: [
+                            {
+                                screenTime: movie1ScreenTime,
+                                node: {
+                                    title: movie1Title,
+                                    runtime: movie1Runtime,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
 
     test("With where argument for shared field on node with node in database", async () => {
         const session = driver.session();
@@ -383,17 +531,17 @@ describe("Connections -> Interfaces", () => {
 
         const query = `
         query Actors($name: String, $title: String) {
-            actors(where: { name: $name }) {
+            ${typeActor.plural}(where: { name: $name }) {
                 name
                 actedInConnection(where: { node: { title: $title } }) {
                     edges {
                         screenTime
                         node {
                             title
-                            ... on Movie {
+                            ... on ${typeMovie.name} {
                                 runtime
                             }
-                            ... on Series {
+                            ... on ${typeSeries.name} {
                                 episodes
                             }
                         }
@@ -407,27 +555,27 @@ describe("Connections -> Interfaces", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     name: actorName,
-                    title: movieTitle,
+                    title: movie1Title,
                 },
             });
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toEqual([
+            expect((result as any).data[typeActor.plural]).toEqual([
                 {
                     name: actorName,
                     actedInConnection: {
                         edges: [
                             {
-                                screenTime: movieScreenTime,
+                                screenTime: movie1ScreenTime,
                                 node: {
-                                    title: movieTitle,
-                                    runtime: movieRuntime,
+                                    title: movie1Title,
+                                    runtime: movie1Runtime,
                                 },
                             },
                         ],
@@ -438,528 +586,4 @@ describe("Connections -> Interfaces", () => {
             await session.close();
         }
     });
-
-    // test("With where argument on node with node not in database", async () => {
-    //     const session = driver.session();
-
-    //     const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-    //     const query = `
-    //         query ($authorName: String, $bookTitle: String) {
-    //             authors(where: { name: $authorName }) {
-    //                 name
-    //                 publicationsConnection(where: { Book: { node: { title_NOT: $bookTitle } } }) {
-    //                     edges {
-    //                         words
-    //                         node {
-    //                             ... on Book {
-    //                                 title
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     `;
-
-    //     try {
-    //         await neoSchema.checkNeo4jCompat();
-
-    //         const result = await graphql({
-    //             schema: neoSchema.schema,
-    //             source: query,
-    //             contextValue: { driver, driverConfig: { bookmarks } },
-    //             variableValues: {
-    //                 authorName,
-    //                 bookTitle,
-    //             },
-    //         });
-
-    //         expect(result.errors).toBeFalsy();
-
-    //         expect(result?.data?.authors).toEqual([
-    //             {
-    //                 name: authorName,
-    //                 publicationsConnection: {
-    //                     edges: [],
-    //                 },
-    //             },
-    //         ]);
-    //     } finally {
-    //         await session.close();
-    //     }
-    // });
-
-    // test("With where argument on all nodes with all in database", async () => {
-    //     const session = driver.session();
-
-    //     const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-    //     const query = `
-    //         query ($authorName: String, $bookTitle: String, $journalSubject: String) {
-    //             authors(where: { name: $authorName }) {
-    //                 name
-    //                 publicationsConnection(
-    //                     where: {
-    //                         Book: { node: { title: $bookTitle } }
-    //                         Journal: { node: { subject: $journalSubject } }
-    //                     }
-    //                 ) {
-    //                     totalCount
-    //                     edges {
-    //                         words
-    //                         node {
-    //                             __typename
-    //                             ... on Book {
-    //                                 title
-    //                             }
-    //                             ... on Journal {
-    //                                 subject
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     `;
-
-    //     try {
-    //         await neoSchema.checkNeo4jCompat();
-
-    //         const result = await graphql({
-    //             schema: neoSchema.schema,
-    //             source: query,
-    //             contextValue: { driver, driverConfig: { bookmarks } },
-    //             variableValues: {
-    //                 authorName,
-    //                 bookTitle,
-    //                 journalSubject,
-    //             },
-    //         });
-
-    //         expect(result.errors).toBeFalsy();
-
-    //         expect(result?.data?.authors).toEqual([
-    //             {
-    //                 name: authorName,
-    //                 publicationsConnection: {
-    //                     totalCount: 2,
-    //                     edges: [
-    //                         {
-    //                             words: bookWordCount,
-    //                             node: {
-    //                                 __typename: "Book",
-    //                                 title: bookTitle,
-    //                             },
-    //                         },
-    //                         {
-    //                             words: journalWordCount,
-    //                             node: {
-    //                                 __typename: "Journal",
-    //                                 subject: journalSubject,
-    //                             },
-    //                         },
-    //                     ],
-    //                 },
-    //             },
-    //         ]);
-    //     } finally {
-    //         await session.close();
-    //     }
-    // });
-
-    // test("With where argument on all nodes with only one in database", async () => {
-    //     const session = driver.session();
-
-    //     const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-    //     const query = `
-    //         query ($authorName: String, $bookTitle: String, $journalSubject: String) {
-    //             authors(where: { name: $authorName }) {
-    //                 name
-    //                 publicationsConnection(
-    //                     where: {
-    //                         Book: { node: { title: $bookTitle } }
-    //                         Journal: { node: { subject_NOT: $journalSubject } }
-    //                     }
-    //                 ) {
-    //                     totalCount
-    //                     edges {
-    //                         words
-    //                         node {
-    //                             __typename
-    //                             ... on Book {
-    //                                 title
-    //                             }
-    //                             ... on Journal {
-    //                                 subject
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     `;
-
-    //     try {
-    //         await neoSchema.checkNeo4jCompat();
-
-    //         const result = await graphql({
-    //             schema: neoSchema.schema,
-    //             source: query,
-    //             contextValue: { driver, driverConfig: { bookmarks } },
-    //             variableValues: {
-    //                 authorName,
-    //                 bookTitle,
-    //                 journalSubject,
-    //             },
-    //         });
-
-    //         expect(result.errors).toBeFalsy();
-
-    //         expect(result?.data?.authors).toEqual([
-    //             {
-    //                 name: authorName,
-    //                 publicationsConnection: {
-    //                     totalCount: 1,
-    //                     edges: [
-    //                         {
-    //                             words: bookWordCount,
-    //                             node: {
-    //                                 __typename: "Book",
-    //                                 title: bookTitle,
-    //                             },
-    //                         },
-    //                     ],
-    //                 },
-    //             },
-    //         ]);
-    //     } finally {
-    //         await session.close();
-    //     }
-    // });
-
-    // test("With where argument on relationship with relationship in database", async () => {
-    //     const session = driver.session();
-
-    //     const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-    //     const query = `
-    //         query ($authorName: String, $bookWordCount: Int) {
-    //             authors(where: { name: $authorName }) {
-    //                 name
-    //                 publicationsConnection(where: { Book: { edge: { words: $bookWordCount } } }) {
-    //                     edges {
-    //                         words
-    //                         node {
-    //                             ... on Book {
-    //                                 title
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     `;
-
-    //     try {
-    //         await neoSchema.checkNeo4jCompat();
-
-    //         const result = await graphql({
-    //             schema: neoSchema.schema,
-    //             source: query,
-    //             contextValue: { driver, driverConfig: { bookmarks } },
-    //             variableValues: {
-    //                 authorName,
-    //                 bookWordCount,
-    //             },
-    //         });
-
-    //         expect(result.errors).toBeFalsy();
-
-    //         expect(result?.data?.authors).toEqual([
-    //             {
-    //                 name: authorName,
-    //                 publicationsConnection: {
-    //                     edges: [
-    //                         {
-    //                             words: bookWordCount,
-    //                             node: {
-    //                                 title: bookTitle,
-    //                             },
-    //                         },
-    //                     ],
-    //                 },
-    //             },
-    //         ]);
-    //     } finally {
-    //         await session.close();
-    //     }
-    // });
-
-    // test("With where argument on relationship with relationship not in database", async () => {
-    //     const session = driver.session();
-
-    //     const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-    //     const query = `
-    //         query ($authorName: String, $bookWordCount: Int) {
-    //             authors(where: { name: $authorName }) {
-    //                 name
-    //                 publicationsConnection(where: { Book: { edge: { words_NOT: $bookWordCount } } }) {
-    //                     edges {
-    //                         words
-    //                         node {
-    //                             ... on Book {
-    //                                 title
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     `;
-
-    //     try {
-    //         await neoSchema.checkNeo4jCompat();
-
-    //         const result = await graphql({
-    //             schema: neoSchema.schema,
-    //             source: query,
-    //             contextValue: { driver, driverConfig: { bookmarks } },
-    //             variableValues: {
-    //                 authorName,
-    //                 bookWordCount,
-    //             },
-    //         });
-
-    //         expect(result.errors).toBeFalsy();
-
-    //         expect(result?.data?.authors).toEqual([
-    //             {
-    //                 name: authorName,
-    //                 publicationsConnection: {
-    //                     edges: [],
-    //                 },
-    //             },
-    //         ]);
-    //     } finally {
-    //         await session.close();
-    //     }
-    // });
-
-    // test("With where argument on all edges with all in database", async () => {
-    //     const session = driver.session();
-
-    //     const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-    //     const query = `
-    //         query ($authorName: String, $bookWordCount: Int, $journalWordCount: Int) {
-    //             authors(where: { name: $authorName }) {
-    //                 name
-    //                 publicationsConnection(
-    //                     where: {
-    //                         Book: { edge: { words: $bookWordCount } }
-    //                         Journal: { edge: { words: $journalWordCount } }
-    //                     }
-    //                 ) {
-    //                     totalCount
-    //                     edges {
-    //                         words
-    //                         node {
-    //                             __typename
-    //                             ... on Book {
-    //                                 title
-    //                             }
-    //                             ... on Journal {
-    //                                 subject
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     `;
-
-    //     try {
-    //         await neoSchema.checkNeo4jCompat();
-
-    //         const result = await graphql({
-    //             schema: neoSchema.schema,
-    //             source: query,
-    //             contextValue: { driver, driverConfig: { bookmarks } },
-    //             variableValues: {
-    //                 authorName,
-    //                 bookWordCount,
-    //                 journalWordCount,
-    //             },
-    //         });
-
-    //         expect(result.errors).toBeFalsy();
-
-    //         expect(result?.data?.authors).toEqual([
-    //             {
-    //                 name: authorName,
-    //                 publicationsConnection: {
-    //                     totalCount: 2,
-    //                     edges: [
-    //                         {
-    //                             words: bookWordCount,
-    //                             node: {
-    //                                 __typename: "Book",
-    //                                 title: bookTitle,
-    //                             },
-    //                         },
-    //                         {
-    //                             words: journalWordCount,
-    //                             node: {
-    //                                 __typename: "Journal",
-    //                                 subject: journalSubject,
-    //                             },
-    //                         },
-    //                     ],
-    //                 },
-    //             },
-    //         ]);
-    //     } finally {
-    //         await session.close();
-    //     }
-    // });
-
-    // test("With where argument on all edges with only one in database", async () => {
-    //     const session = driver.session();
-
-    //     const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-    //     const query = `
-    //         query ($authorName: String, $bookWordCount: Int, $journalWordCount: Int) {
-    //             authors(where: { name: $authorName }) {
-    //                 name
-    //                 publicationsConnection(
-    //                     where: {
-    //                         Book: { edge: { words: $bookWordCount } }
-    //                         Journal: { edge: { words_NOT: $journalWordCount } }
-    //                     }
-    //                 ) {
-    //                     totalCount
-    //                     edges {
-    //                         words
-    //                         node {
-    //                             __typename
-    //                             ... on Book {
-    //                                 title
-    //                             }
-    //                             ... on Journal {
-    //                                 subject
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     `;
-
-    //     try {
-    //         await neoSchema.checkNeo4jCompat();
-
-    //         const result = await graphql({
-    //             schema: neoSchema.schema,
-    //             source: query,
-    //             contextValue: { driver, driverConfig: { bookmarks } },
-    //             variableValues: {
-    //                 authorName,
-    //                 bookWordCount,
-    //                 journalWordCount,
-    //             },
-    //         });
-
-    //         expect(result.errors).toBeFalsy();
-
-    //         expect(result?.data?.authors).toEqual([
-    //             {
-    //                 name: authorName,
-    //                 publicationsConnection: {
-    //                     totalCount: 1,
-    //                     edges: [
-    //                         {
-    //                             words: bookWordCount,
-    //                             node: {
-    //                                 __typename: "Book",
-    //                                 title: bookTitle,
-    //                             },
-    //                         },
-    //                     ],
-    //                 },
-    //             },
-    //         ]);
-    //     } finally {
-    //         await session.close();
-    //     }
-    // });
-
-    // test("With where argument on relationship and node", async () => {
-    //     const session = driver.session();
-
-    //     const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-    //     const query = `
-    //         query ($authorName: String, $bookWordCount: Int, $bookTitle: String) {
-    //             authors(where: { name: $authorName }) {
-    //                 name
-    //                 publicationsConnection(
-    //                     where: {
-    //                         Book: {
-    //                             edge: { words: $bookWordCount }
-    //                             node: { title: $bookTitle }
-    //                         }
-    //                     }
-    //                 ) {
-    //                     edges {
-    //                         words
-    //                         node {
-    //                             ... on Book {
-    //                                 title
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     `;
-
-    //     try {
-    //         await neoSchema.checkNeo4jCompat();
-
-    //         const result = await graphql({
-    //             schema: neoSchema.schema,
-    //             source: query,
-    //             contextValue: { driver, driverConfig: { bookmarks } },
-    //             variableValues: {
-    //                 authorName,
-    //                 bookWordCount,
-    //                 bookTitle,
-    //             },
-    //         });
-
-    //         expect(result.errors).toBeFalsy();
-
-    //         expect(result?.data?.authors).toEqual([
-    //             {
-    //                 name: authorName,
-    //                 publicationsConnection: {
-    //                     edges: [
-    //                         {
-    //                             words: bookWordCount,
-    //                             node: {
-    //                                 title: bookTitle,
-    //                             },
-    //                         },
-    //                     ],
-    //                 },
-    //             },
-    //         ]);
-    //     } finally {
-    //         await session.close();
-    //     }
-    // });
 });

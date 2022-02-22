@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("auth/bind", () => {
     let driver: Driver;
@@ -62,18 +63,25 @@ describe("auth/bind", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -85,12 +93,12 @@ describe("auth/bind", () => {
             const typeDefs = `
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type Post @auth(rules: [{ operations: [CREATE], bind: { id: "$jwt.sub" } }])
@@ -122,18 +130,25 @@ describe("auth/bind", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -145,7 +160,7 @@ describe("auth/bind", () => {
             const typeDefs = `
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: OUT)
+                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type User {
@@ -181,7 +196,14 @@ describe("auth/bind", () => {
                }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -191,12 +213,12 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -229,7 +251,14 @@ describe("auth/bind", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -239,12 +268,12 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -256,12 +285,12 @@ describe("auth/bind", () => {
             const typeDefs = `
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type Post @auth(rules: [{ operations: [UPDATE], bind: { creator: { id: "$jwt.sub" } } }])
@@ -297,7 +326,14 @@ describe("auth/bind", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -307,12 +343,12 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -348,7 +384,14 @@ describe("auth/bind", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -358,12 +401,12 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -381,7 +424,7 @@ describe("auth/bind", () => {
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 extend type Post @auth(rules: [{ operations: [CONNECT], bind: { creator: { id: "$jwt.sub" } } }])
@@ -412,7 +455,14 @@ describe("auth/bind", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -422,12 +472,12 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }
@@ -445,7 +495,7 @@ describe("auth/bind", () => {
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 extend type Post @auth(rules: [{ operations: [DISCONNECT], bind: { creator: { id: "$jwt.sub" } } }])
@@ -476,7 +526,14 @@ describe("auth/bind", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             try {
                 await session.run(`
@@ -486,12 +543,12 @@ describe("auth/bind", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
                 await session.close();
             }

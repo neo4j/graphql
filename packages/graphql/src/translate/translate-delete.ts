@@ -29,7 +29,6 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
     let matchAndWhereStr = "";
-    let whereStr = "";
     let allowStr = "";
     let deleteStr = "";
     let cypherParams: { [k: string]: any } = {};
@@ -39,7 +38,7 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
     cypherParams = { ...cypherParams, ...topLevelMatch[1] };
 
     const allowAuth = createAuthAndParams({
-        operation: "DELETE",
+        operations: "DELETE",
         entity: node,
         context,
         allow: {
@@ -72,7 +71,7 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
         };
     }
 
-    const cypher = [matchAndWhereStr, whereStr, deleteStr, allowStr, `DETACH DELETE ${varName}`];
+    const cypher = [matchAndWhereStr, deleteStr, allowStr, `DETACH DELETE ${varName}`];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }

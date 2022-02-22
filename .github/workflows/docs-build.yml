@@ -3,9 +3,12 @@ name: "Documentation Build"
 on:
   pull_request:
     branches:
+      - dev
       - master
     paths:
-      - "docs/**"
+      - docs/antora.yml
+      - docs/package.json
+      - "docs/modules/ROOT/**"
 
 jobs:
   build-docs:
@@ -18,8 +21,8 @@ jobs:
           node-version: lts/*
       - name: Build documentation
         run: |
-          npm install
-          npm run build
+          yarn
+          yarn build
           echo ${{ github.event.number }} > ./build/prnumber
         working-directory: docs/
       - name: Archive documentation

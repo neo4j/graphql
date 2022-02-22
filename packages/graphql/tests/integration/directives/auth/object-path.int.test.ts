@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin, Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("auth/object-path", () => {
     let driver: Driver;
@@ -59,7 +60,14 @@ describe("auth/object-path", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -77,7 +85,7 @@ describe("auth/object-path", () => {
             });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -101,7 +109,7 @@ describe("auth/object-path", () => {
 
             type Post {
                 id: ID
-                creator: User @relationship(type: "HAS_POST", direction: IN)
+                creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
             extend type Post @auth(rules: [{ operations: [READ], allow: { creator: { id: "$context.userId" } } }])
@@ -123,7 +131,14 @@ describe("auth/object-path", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -133,7 +148,7 @@ describe("auth/object-path", () => {
             const req = createJwtRequest(secret);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req, userId },
             });
@@ -172,8 +187,11 @@ describe("auth/object-path", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                jwt: { secret, rolesPath: "https://github\\.com/claims.https://github\\.com/claims/roles" },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                    rolesPath: "https://github\\.com/claims.https://github\\.com/claims/roles",
+                }),
             },
         });
 
@@ -187,7 +205,7 @@ describe("auth/object-path", () => {
             });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -196,6 +214,60 @@ describe("auth/object-path", () => {
             const [user] = (gqlResult.data as any).users;
 
             expect(user).toEqual({ id: userId });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should use object path with JWT endpoint", async () => {
+        const session = driver.session({ defaultAccessMode: "WRITE" });
+
+        const typeDefs = `
+            type User {
+                id: ID
+            }
+
+            extend type User @auth(rules: [{ operations: [READ], roles: ["admin"] }])
+        `;
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            {
+                users(where: {id: "${userId}"}) {
+                    id
+                }
+            }
+        `;
+
+        // Pass the well-known JWKS Endpoint
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWKSPlugin({
+                    jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json",
+                }),
+            },
+        });
+
+        try {
+            await session.run(`
+                CREATE (:User {id: "${userId}"})
+            `);
+
+            // Not a valid JWT since signature shall never match
+            const req = createJwtRequest(secret);
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+            });
+
+            // Since we don't have a valid JWKS Endpoint, we will always get an error validating our JWKS
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }

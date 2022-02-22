@@ -42,7 +42,7 @@ describe("433", () => {
             # Cannot use 'type Node'
             type Movie {
                 title: String
-                actors: [Person] @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Person {
@@ -84,7 +84,7 @@ describe("433", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });

@@ -23,8 +23,7 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../../src/utils/test/graphql-types";
-import { parseLegacyConstraint } from "../../../src/classes/utils/asserts-indexes-and-constraints";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("assertIndexesAndConstraints/unique", () => {
     let driver: Driver;
@@ -57,6 +56,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         } finally {
             await session.close();
         }
+        // eslint-disable-next-line no-promise-executor-return
         await new Promise((x) => setTimeout(x, 5000));
     });
 
@@ -77,8 +77,7 @@ describe("assertIndexesAndConstraints/unique", () => {
     test("should create a constraint if it doesn't exist and specified in options, and then throw an error in the event of constraint validation", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -93,6 +92,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
 
         await expect(
             neoSchema.assertIndexesAndConstraints({
@@ -104,9 +104,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
         const session = driver.session({ database: databaseName });
 
-        const cypher = "CALL db.constraints";
-        // TODO: Swap line below with above when 4.1 no longer supported
-        // const cypher = "SHOW UNIQUE CONSTRAINTS";
+        const cypher = "SHOW UNIQUE CONSTRAINTS";
 
         try {
             const result = await session.run(cypher);
@@ -114,9 +112,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             expect(
                 result.records
                     .map((record) => {
-                        return parseLegacyConstraint(record.toObject());
-                        // TODO: Swap line below with above when 4.1 no longer supported
-                        // return record.toObject();
+                        return record.toObject();
                     })
                     .filter((record) => record.labelsOrTypes.includes("Book"))
             ).toHaveLength(1);
@@ -136,7 +132,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         `;
 
         const createResult = await graphql({
-            schema: neoSchema.schema,
+            schema,
             source: mutation,
             contextValue: {
                 driver,
@@ -155,7 +151,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         });
 
         const errorResult = await graphql({
-            schema: neoSchema.schema,
+            schema,
             source: mutation,
             contextValue: {
                 driver,
@@ -168,15 +164,14 @@ describe("assertIndexesAndConstraints/unique", () => {
         });
 
         expect(errorResult.errors).toHaveLength(1);
-        expect(errorResult.errors?.[0].message).toEqual("Constraint validation failed");
+        expect(errorResult.errors?.[0].message).toBe("Constraint validation failed");
     });
 
     describe("@unique", () => {
         test("should throw an error when all necessary constraints do not exist", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -190,6 +185,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
@@ -199,8 +195,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should throw an error when all necessary constraints do not exist when used with @alias", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -214,6 +209,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
@@ -223,8 +219,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should not throw an error when all necessary constraints exist", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -238,6 +233,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             const session = driver.session({ database: databaseName });
 
@@ -257,8 +253,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should not throw an error when all necessary constraints exist when used with @alias", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -272,6 +267,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             const session = driver.session({ database: databaseName });
 
@@ -291,8 +287,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should create a constraint if it doesn't exist and specified in options", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -306,6 +301,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -317,9 +313,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = "CALL db.constraints";
-            // TODO: Swap line below with above when 4.1 no longer supported
-            // const cypher = "SHOW UNIQUE CONSTRAINTS";
+            const cypher = "SHOW UNIQUE CONSTRAINTS";
 
             try {
                 const result = await session.run(cypher);
@@ -327,9 +321,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 expect(
                     result.records
                         .map((record) => {
-                            return parseLegacyConstraint(record.toObject());
-                            // TODO: Swap line below with above when 4.1 no longer supported
-                            // return record.toObject();
+                            return record.toObject();
                         })
                         .filter((record) => record.labelsOrTypes.includes(type.name))
                 ).toHaveLength(1);
@@ -341,8 +333,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should create a constraint if it doesn't exist and specified in options when used with @alias", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -356,6 +347,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -367,9 +359,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = "CALL db.constraints";
-            // TODO: Swap line below with above when 4.1 no longer supported
-            // const cypher = "SHOW UNIQUE CONSTRAINTS";
+            const cypher = "SHOW UNIQUE CONSTRAINTS";
 
             try {
                 const result = await session.run(cypher);
@@ -377,9 +367,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 expect(
                     result.records
                         .map((record) => {
-                            return parseLegacyConstraint(record.toObject());
-                            // TODO: Swap line below with above when 4.1 no longer supported
-                            // return record.toObject();
+                            return record.toObject();
                         })
                         .filter(
                             (record) =>
@@ -397,8 +385,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should throw an error when all necessary constraints do not exist", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -412,6 +399,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
@@ -421,8 +409,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should throw an error when all necessary constraints do not exist when used with @alias", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -436,6 +423,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
@@ -445,8 +433,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should not throw an error when unique argument is set to false", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -460,6 +447,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
@@ -469,8 +457,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should not throw an error when unique argument is set to false when used with @alias", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -484,6 +471,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
@@ -493,8 +481,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should not throw an error when all necessary constraints exist", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -508,6 +495,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             const session = driver.session({ database: databaseName });
 
@@ -527,8 +515,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should not throw an error when all necessary constraints exist when used with @alias", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -542,6 +529,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             const session = driver.session({ database: databaseName });
 
@@ -561,8 +549,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should create a constraint if it doesn't exist and specified in options", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -576,6 +563,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -587,9 +575,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = "CALL db.constraints";
-            // TODO: Swap line below with above when 4.1 no longer supported
-            // const cypher = "SHOW UNIQUE CONSTRAINTS";
+            const cypher = "SHOW UNIQUE CONSTRAINTS";
 
             try {
                 const result = await session.run(cypher);
@@ -597,9 +583,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 expect(
                     result.records
                         .map((record) => {
-                            return parseLegacyConstraint(record.toObject());
-                            // TODO: Swap line below with above when 4.1 no longer supported
-                            // return record.toObject();
+                            return record.toObject();
                         })
                         .filter((record) => record.labelsOrTypes.includes(type.name))
                 ).toHaveLength(1);
@@ -611,8 +595,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should create a constraint if it doesn't exist and specified in options when used with @alias", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -626,6 +609,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -637,9 +621,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = "CALL db.constraints";
-            // TODO: Swap line below with above when 4.1 no longer supported
-            // const cypher = "SHOW UNIQUE CONSTRAINTS";
+            const cypher = "SHOW UNIQUE CONSTRAINTS";
 
             try {
                 const result = await session.run(cypher);
@@ -647,9 +629,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 expect(
                     result.records
                         .map((record) => {
-                            return parseLegacyConstraint(record.toObject());
-                            // TODO: Swap line below with above when 4.1 no longer supported
-                            // return record.toObject();
+                            return record.toObject();
                         })
                         .filter(
                             (record) =>
@@ -664,8 +644,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should not create a constraint if it doesn't exist and unique option is set to false", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -679,6 +658,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -690,9 +670,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = "CALL db.constraints";
-            // TODO: Swap line below with above when 4.1 no longer supported
-            // const cypher = "SHOW UNIQUE CONSTRAINTS";
+            const cypher = "SHOW UNIQUE CONSTRAINTS";
 
             try {
                 const result = await session.run(cypher);
@@ -700,9 +678,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 expect(
                     result.records
                         .map((record) => {
-                            return parseLegacyConstraint(record.toObject());
-                            // TODO: Swap line below with above when 4.1 no longer supported
-                            // return record.toObject();
+                            return record.toObject();
                         })
                         .filter((record) => record.labelsOrTypes.includes(type.name))
                 ).toHaveLength(0);
@@ -714,8 +690,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         test("should not create a constraint if it doesn't exist and unique option is set to false when used with @alias", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
-                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-                pending();
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
                 return;
             }
 
@@ -729,6 +704,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
+            await neoSchema.getSchema();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
@@ -740,9 +716,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = "CALL db.constraints";
-            // TODO: Swap line below with above when 4.1 no longer supported
-            // const cypher = "SHOW UNIQUE CONSTRAINTS";
+            const cypher = "SHOW UNIQUE CONSTRAINTS";
 
             try {
                 const result = await session.run(cypher);
@@ -750,9 +724,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 expect(
                     result.records
                         .map((record) => {
-                            return parseLegacyConstraint(record.toObject());
-                            // TODO: Swap line below with above when 4.1 no longer supported
-                            // return record.toObject();
+                            return record.toObject();
                         })
                         .filter(
                             (record) =>
