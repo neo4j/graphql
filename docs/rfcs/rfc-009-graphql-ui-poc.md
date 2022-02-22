@@ -7,9 +7,13 @@ The [GraphQL Architect](https://grandstack.io/docs/graphql-architect-overview/#:
 ## Proposed Solution
 
 _Name suggestions:_
+
 (Already taken: Studio, Playground, GraphiQL)
+
 Explorer
+
 Architect
+
 Editor
 
 ### User audience
@@ -71,7 +75,9 @@ New packages in `@neo4j/graphql` monorepo:
 ## Risks
 
 A polished UI can eat up too much time.
+
 Implementing a custom autocomplete functionality for the query editor.
+
 Docs generation and presentation could be a rabbit hole.
 
 Expose/build our own "Apollo Server" library that uses this UI:
@@ -95,6 +101,9 @@ This PoC leverage the `@neo4j/graphql` and does not alter any of its behaviours.
 ## Out of Scope
 
 Use components of the Neo4j Design System
+
 Write a schema builder
+
 Settings (connection setttings, env vars, etc.)
+
 Query history
