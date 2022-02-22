@@ -89,7 +89,7 @@ export type RelationshipInput = {
 };
 
 export class Relationship implements CypherReference {
-    public readonly prefix = "this";
+    public readonly prefix: string = "this";
     public readonly source: Node;
     public readonly target: Node;
 
@@ -137,7 +137,7 @@ export class Relationship implements CypherReference {
 }
 
 export class Param<T> {
-    public readonly prefix = "param";
+    public readonly prefix: string = "param";
     public readonly value: T;
 
     constructor(value: T) {
@@ -150,10 +150,6 @@ export class Param<T> {
 }
 
 export class RawParam<T> extends Param<T> {
-    constructor(value: T) {
-        super(value);
-    }
-
     public getCypher(_context: CypherContext): string {
         return `${this.value}`;
     }

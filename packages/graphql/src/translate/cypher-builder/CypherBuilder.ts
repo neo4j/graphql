@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { escapeQuery } from "../utils/escape-query";
 import { Node, Param, Relationship } from "./cypher-builder-references";
 import { CypherASTNode, CypherASTRoot } from "./cypher-builder-types";
 import { CypherContext } from "./CypherContext";
@@ -28,6 +27,12 @@ export { CypherResult } from "./cypher-builder-types";
 type Params = Record<string, Param<any>>;
 
 export class Query extends CypherASTRoot {
+    private namedParams: Record<string, Param<any>> = {};
+
+    public addNamedParams(params: Record<string, Param<any>>) {
+        this.namedParams = { ...this.namedParams, ...params };
+    }
+
     public create(node: Node, params: Params): Query {
         const createStatement = new CreateStatement(this, node, params);
         this.addStatement(createStatement);
@@ -57,6 +62,14 @@ export class Query extends CypherASTRoot {
         const returnStatement = new ReturnStatement(this, args);
         this.addStatement(returnStatement);
         return this.getRoot();
+    }
+
+    protected getContext(prefix?: string): CypherContext {
+        const context = new CypherContext(prefix);
+        Object.entries(this.namedParams).forEach(([name, param]) => {
+            context.addNamedParamReference(name, param); // Only for compatibility reasons
+        });
+        return context;
     }
 }
 
@@ -96,7 +109,7 @@ class CreateStatement extends CypherASTNode {
             return `${nodeAlias}.${key} = ${value instanceof Param ? value.getCypher(context) : value}`;
         });
         if (params.length === 0) return "";
-        else return `SET ${params.join(",\n")}`;
+        return `SET ${params.join(",\n")}`;
     }
 }
 
@@ -152,9 +165,8 @@ class MergeStatement<T extends Node | Relationship> extends CypherASTNode {
         return `${mergeStr}${separator}${onCreateSetStatement}`;
     }
 
-    public onCreate<T extends Node>(onCreate: ParamsRecord): CypherASTRoot;
-    public onCreate<T extends Relationship>(onCreate: Partial<OnCreateParameters>): CypherASTRoot;
-    // public onCreate(onCreate: Partial<OnCreateParameters> | ParamsRecord): MergeStatement<Node | Relationship> {
+    public onCreate<Node>(onCreate: ParamsRecord): CypherASTRoot;
+    public onCreate<Relationship>(onCreate: Partial<OnCreateParameters>): CypherASTRoot;
     public onCreate(onCreate: Partial<OnCreateParameters> | ParamsRecord): CypherASTRoot {
         let parameters: Partial<OnCreateParameters>;
 
@@ -213,7 +225,6 @@ class MergeStatement<T extends Node | Relationship> extends CypherASTNode {
 type ApocValidateOptions = {
     predicate: string;
     message: string;
-    params: string;
 };
 
 class ApocValidate extends CypherASTNode {
@@ -225,7 +236,7 @@ class ApocValidate extends CypherASTNode {
     }
 
     public getCypher(_context: CypherContext): string {
-        const statements = [this.options.predicate, `"${this.options.message}"`, this.options.params].join(", ");
+        const statements = [this.options.predicate, `"${this.options.message}"`, "[0]"].join(", ");
 
         return `CALL apoc.util.validate(${statements})`;
     }

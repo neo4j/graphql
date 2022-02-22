@@ -56,6 +56,10 @@ export class CypherContext {
         }, {} as Record<string, any>);
     }
 
+    public addNamedParamReference(name: string, param: Param<any>): void {
+        this.params.set(param, name);
+    }
+
     private addReference(reference: ValidReferences): string {
         const refIndex = this.references.size;
         const referenceId = `${this.prefix}${reference.prefix}${refIndex}`;
