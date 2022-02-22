@@ -18,6 +18,7 @@
  */
 
 import { DocumentNode, ObjectTypeDefinitionNode } from "graphql";
+import { isRootType } from "../utils/is-root-type";
 
 interface CustomResolvers {
     customQuery?: ObjectTypeDefinitionNode;
@@ -33,7 +34,7 @@ function getCustomResolvers(document: DocumentNode): CustomResolvers {
             return res;
         }
 
-        if (!["Query", "Mutation", "Subscription"].includes(definition.name.value)) {
+        if (!isRootType(definition)) {
             return res;
         }
 

@@ -41,6 +41,7 @@ import { CartesianPointInput } from "../types/input-objects/CartesianPointInput"
 import { PointDistance } from "../types/input-objects/PointDistance";
 import { CartesianPointDistance } from "../types/input-objects/CartesianPointDistance";
 import { RESERVED_TYPE_NAMES } from "../../constants";
+import { isRootType } from "../../utils/is-root-type";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -61,7 +62,7 @@ function filterDocument(document: DocumentNode): DocumentNode {
             }
 
             if (definition.kind === "ObjectTypeDefinition") {
-                if (!["Query", "Mutation", "Subscription"].includes(definition.name.value)) {
+                if (!isRootType(definition)) {
                     return true;
                 }
             }
@@ -69,7 +70,7 @@ function filterDocument(document: DocumentNode): DocumentNode {
         })
         .map((definition) => (definition as ObjectTypeDefinitionNode).name.value);
 
-    const getArgumentType = (type: TypeNode) => {
+    const getArgumentType = (type: TypeNode): string => {
         if (type.kind === Kind.LIST_TYPE) {
             return getArgumentType(type.type);
         }
