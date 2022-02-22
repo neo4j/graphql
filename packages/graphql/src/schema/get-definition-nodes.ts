@@ -43,6 +43,12 @@ export type DefinitionNodes = {
     unionTypes: UnionTypeDefinitionNode[];
 };
 
+const rootTypes = ["Query", "Mutation", "Subscription"];
+
+function isRootType(definition: ObjectTypeDefinitionNode) {
+    return rootTypes.includes(definition.name.value);
+}
+
 export function getDefinitionNodes(document: DocumentNode): DefinitionNodes {
     return document.definitions.reduce<DefinitionNodes>(
         (definitionNodes, definition) => {
@@ -51,7 +57,7 @@ export function getDefinitionNodes(document: DocumentNode): DefinitionNodes {
                     definitionNodes.scalarTypes.push(definition);
                     break;
                 case Kind.OBJECT_TYPE_DEFINITION:
-                    if (!["Query", "Mutation", "Subscription"].includes(definition.name.value)) {
+                    if (!isRootType(definition)) {
                         definitionNodes.objectTypes.push(definition);
                     }
                     break;
