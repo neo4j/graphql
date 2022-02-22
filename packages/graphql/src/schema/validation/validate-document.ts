@@ -36,6 +36,7 @@ import * as enums from "./enums";
 import * as directives from "./directives";
 import * as point from "../point";
 import { RESERVED_TYPE_NAMES } from "../../constants";
+import { isRootType } from "src/utils/is-root-type";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -56,7 +57,7 @@ function filterDocument(document: DocumentNode): DocumentNode {
             }
 
             if (definition.kind === "ObjectTypeDefinition") {
-                if (!["Query", "Mutation", "Subscription"].includes(definition.name.value)) {
+                if (!isRootType(definition)) {
                     return true;
                 }
             }
@@ -80,9 +81,10 @@ function filterDocument(document: DocumentNode): DocumentNode {
         return fields?.filter((f) => {
             const type = getArgumentType(f.type);
 
-            const nodeMatch = /(?<nodeName>.+)(?:ConnectInput|ConnectWhere|CreateInput|DeleteInput|DisconnectInput|Options|RelationInput|Sort|UpdateInput|Where)/gm.exec(
-                type
-            );
+            const nodeMatch =
+                /(?<nodeName>.+)(?:ConnectInput|ConnectWhere|CreateInput|DeleteInput|DisconnectInput|Options|RelationInput|Sort|UpdateInput|Where)/gm.exec(
+                    type
+                );
             if (nodeMatch?.groups?.nodeName) {
                 if (nodeNames.includes(nodeMatch.groups.nodeName)) {
                     return false;

@@ -29,6 +29,7 @@ import {
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
 } from "graphql";
+import { isRootType } from "src/utils/is-root-type";
 import { DEBUG_GENERATE } from "../constants";
 
 const debug = Debug(DEBUG_GENERATE);
@@ -42,12 +43,6 @@ export type DefinitionNodes = {
     directives: DirectiveDefinitionNode[];
     unionTypes: UnionTypeDefinitionNode[];
 };
-
-const rootTypes = ["Query", "Mutation", "Subscription"];
-
-function isRootType(definition: ObjectTypeDefinitionNode) {
-    return rootTypes.includes(definition.name.value);
-}
 
 export function getDefinitionNodes(document: DocumentNode): DefinitionNodes {
     return document.definitions.reduce<DefinitionNodes>(
