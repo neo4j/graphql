@@ -6,15 +6,13 @@ The [GraphQL Architect](https://grandstack.io/docs/graphql-architect-overview/#:
 
 ## Proposed Solution
 
-_Name suggestions:_
-
+_Name suggestions:_  
+Explorer  
+Architect  
+Editor  
+UI  
+Frame  
 (Already taken: Studio, Playground, GraphiQL)
-
-Explorer
-
-Architect
-
-Editor
 
 ### User audience
 
@@ -22,7 +20,8 @@ The `@neo4j/graphql` lib's user audience are full stack developers who want a Gr
 
 ### Workflow (Graph App)
 
-1. Login page - Specify the database credentials (connectURL, username, password)
+1. Login page
+    1. Specify the database credentials (connectURL, username, password)
 2. Schema Editor page
     1. "Bring your own" typeDefs or introspect that database
     2. Show the generated schema if introspected
@@ -31,7 +30,7 @@ The `@neo4j/graphql` lib's user audience are full stack developers who want a Gr
     1. Write queries
     2. Execute queries
     3. Show results
-5. _Logout -_ Repeat
+5. Logout - _Repeat_
 
 ### Input
 
@@ -60,24 +59,22 @@ Query editor:
 Keybindings
 
 1. CTRL+ENTER - to run the query
-2. CTRL+SHIFT+P - Prettify code
-3. ... Other basic ones
+2. CTRL+SHIFT+P - to prettify the code
+3. _Nice to have_: Other common/basic ones
 
 ### Structure
 
 New packages in `@neo4j/graphql` monorepo:
 
-1. Schema Editor
-2. Query Editor
-3. Graph App (Neo4j GraphQL UI) - Must Have
-4. Server - Nice to have
+1. _Must have_: Graph App (Neo4j GraphQL UI)
+2. Schema Editor
+3. Query Editor
+4. _Nice to have_: Server
 
 ## Risks
 
-A polished UI can eat up too much time.
-
-Implementing a custom autocomplete functionality for the query editor.
-
+A polished UI can eat up too much time.  
+Implementing a custom autocomplete functionality for the query editor.  
 Docs generation and presentation could be a rabbit hole.
 
 Expose/build our own "Apollo Server" library that uses this UI:
@@ -100,10 +97,7 @@ This PoC leverage the `@neo4j/graphql` and does not alter any of its behaviours.
 
 ## Out of Scope
 
-Use components of the Neo4j Design System
-
-Write a schema builder
-
-Settings (connection setttings, env vars, etc.)
-
+Use components of the Neo4j Design System  
+Write a schema builder  
+Settings (connection setttings, env vars, etc.)  
 Query history
