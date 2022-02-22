@@ -29,7 +29,7 @@ import {
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import { isRootType } from "src/utils/is-root-type";
+import { isRootType } from "../utils/is-root-type";
 import { DEBUG_GENERATE } from "../constants";
 
 const debug = Debug(DEBUG_GENERATE);

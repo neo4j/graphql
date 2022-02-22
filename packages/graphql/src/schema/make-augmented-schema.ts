@@ -76,7 +76,7 @@ import parseNodeDirective from "./parse-node-directive";
 import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
 import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
-import { isRootType } from "src/utils/is-root-type";
+import { isRootType } from "../utils/is-root-type";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,

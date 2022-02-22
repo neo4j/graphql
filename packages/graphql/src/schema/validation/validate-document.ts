@@ -36,7 +36,7 @@ import * as enums from "./enums";
 import * as directives from "./directives";
 import * as point from "../point";
 import { RESERVED_TYPE_NAMES } from "../../constants";
-import { isRootType } from "src/utils/is-root-type";
+import { isRootType } from "../utils/is-root-type";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
