@@ -65,7 +65,7 @@ function filterDocument(document: DocumentNode): DocumentNode {
         })
         .map((definition) => (definition as ObjectTypeDefinitionNode).name.value);
 
-    const getArgumentType = (type: TypeNode) => {
+    const getArgumentType = (type: TypeNode): string => {
         if (type.kind === Kind.LIST_TYPE) {
             return getArgumentType(type.type);
         }
