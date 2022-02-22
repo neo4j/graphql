@@ -20,7 +20,7 @@
 import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
 import neo4j, { isDateTime } from "neo4j-driver";
 
-export const DateTime = new GraphQLScalarType({
+export const GraphQLDateTime = new GraphQLScalarType({
     name: "DateTime",
     description: "A date and time, represented as an ISO-8601 string",
     serialize: (outputValue: unknown) => {

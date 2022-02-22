@@ -20,7 +20,7 @@
 import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
 import neo4j, { isDate } from "neo4j-driver";
 
-const DateScalar = new GraphQLScalarType({
+export const GraphQLDate = new GraphQLScalarType({
     name: "Date",
     description: "A date, represented as a 'yyyy-mm-dd' string",
     serialize: (outputValue: unknown) => {
@@ -49,5 +49,3 @@ const DateScalar = new GraphQLScalarType({
         return neo4j.types.Date.fromStandardDate(new Date(ast.value));
     },
 });
-
-export { DateScalar as Date };

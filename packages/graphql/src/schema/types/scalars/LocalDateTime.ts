@@ -62,7 +62,7 @@ const parse = (value: any) => {
     return new neo4j.types.LocalDateTime(year, month, day, hour, minute, second, nanosecond);
 };
 
-export const LocalDateTime = new GraphQLScalarType({
+export const GraphQLLocalDateTime = new GraphQLScalarType({
     name: "LocalDateTime",
     description: "A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'",
     serialize: (value: unknown) => {

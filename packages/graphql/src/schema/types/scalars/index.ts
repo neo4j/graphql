@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-export { BigInt } from "./BigInt";
-export { Date } from "./Date";
-export { DateTime } from "./DateTime";
-export { Duration } from "./Duration";
-export { LocalDateTime } from "./LocalDateTime";
-export { LocalTime } from "./LocalTime";
-export { Time } from "./Time";
+export { GraphQLBigInt } from "./BigInt";
+export { GraphQLDate } from "./Date";
+export { GraphQLDateTime } from "./DateTime";
+export { GraphQLDuration } from "./Duration";
+export { GraphQLLocalDateTime } from "./LocalDateTime";
+export { GraphQLLocalTime } from "./LocalTime";
+export { GraphQLTime } from "./Time";

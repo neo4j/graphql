@@ -22,6 +22,7 @@ import {
     DefinitionNode,
     DirectiveNode,
     DocumentNode,
+    GraphQLScalarType,
     InterfaceTypeDefinitionNode,
     Kind,
     NamedTypeNode,
@@ -142,7 +143,7 @@ function makeAugmentedSchema(
         ] as ObjectTypeDefinitionNode[]),
     ].filter(Boolean) as DefinitionNode[];
 
-    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
+    Object.values(Scalars).forEach((scalar: GraphQLScalarType) => composer.addTypeDefs(`scalar ${scalar.name}`));
 
     if (extraDefinitions.length) {
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
@@ -990,9 +991,9 @@ function makeAugmentedSchema(
 
             return { ...res, [key]: value };
         }, {}),
-        ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
-            if (generatedTypeDefs.includes(`scalar ${name}\n`)) {
-                res[name] = scalar;
+        ...Object.values(Scalars).reduce((res, scalar: GraphQLScalarType) => {
+            if (generatedTypeDefs.includes(`scalar ${scalar.name}\n`)) {
+                res[scalar.name] = scalar;
             }
             return res;
         }, {}),
