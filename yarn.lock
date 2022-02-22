@@ -1782,7 +1782,7 @@ __metadata:
   dependencies:
     "@types/debug": 4.1.7
     "@types/jest": 27.4.0
-    "@types/jsonwebtoken": 8.5.1
+    "@types/jsonwebtoken": 8.5.8
     "@types/node": 16.11.24
     debug: ^4.3.3
     jest: 27.5.1

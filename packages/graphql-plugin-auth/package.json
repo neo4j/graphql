@@ -29,7 +29,7 @@
     },
     "author": "Neo4j Inc.",
     "dependencies": {
-        "@types/jsonwebtoken": "8.5.1",
+        "@types/jsonwebtoken": "8.5.8",
         "debug": "^4.3.3",
         "jsonwebtoken": "^8.5.1",
         "jwks-rsa": "^2.0.5"
