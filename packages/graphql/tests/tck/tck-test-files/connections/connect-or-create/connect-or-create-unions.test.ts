@@ -110,57 +110,57 @@ describe("Create or connect with unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"CALL {
-CREATE (this0:Actor)
-SET this0.name = $this0_name
-WITH this0
-CALL {
-	WITH this0
-	MERGE (this0_actedIn_Movie_connectOrCreate0_this0:\`Movie\` { isan: $this0_actedIn_Movie_connectOrCreate0_param0 })
-ON CREATE SET
-        this0_actedIn_Movie_connectOrCreate0_this0.title = $this0_actedIn_Movie_connectOrCreate0_param1,
-this0_actedIn_Movie_connectOrCreate0_this0.isan = $this0_actedIn_Movie_connectOrCreate0_param2
-MERGE (this0)-[this0_actedIn_Movie_connectOrCreate0_this1:\`ACTED_IN\`]->(this0_actedIn_Movie_connectOrCreate0_this0)
-ON CREATE SET
-        this0_actedIn_Movie_connectOrCreate0_this1.screentime = $this0_actedIn_Movie_connectOrCreate0_param3
-	RETURN COUNT(*)
-}
-WITH this0
-CALL {
-	WITH this0
-	MERGE (this0_actedIn_Series_connectOrCreate0_this0:\`Series\` { isan: $this0_actedIn_Series_connectOrCreate0_param0 })
-ON CREATE SET
-        this0_actedIn_Series_connectOrCreate0_this0.title = $this0_actedIn_Series_connectOrCreate0_param1,
-this0_actedIn_Series_connectOrCreate0_this0.isan = $this0_actedIn_Series_connectOrCreate0_param2
-MERGE (this0)-[this0_actedIn_Series_connectOrCreate0_this1:\`ACTED_IN\`]->(this0_actedIn_Series_connectOrCreate0_this0)
-ON CREATE SET
-        this0_actedIn_Series_connectOrCreate0_this1.screentime = $this0_actedIn_Series_connectOrCreate0_param3
-	RETURN COUNT(*)
-}
-RETURN this0
-}
-RETURN
-this0 { .name } AS this0"
-`);
+            "CALL {
+            CREATE (this0:Actor)
+            SET this0.name = $this0_name
+            WITH this0
+            CALL {
+            	WITH this0
+            	MERGE (this0_actedIn_Movie_connectOrCreate_this0:\`Movie\` { isan: $this0_actedIn_Movie_connectOrCreate_param0 })
+            ON CREATE SET
+                    this0_actedIn_Movie_connectOrCreate_this0.title = $this0_actedIn_Movie_connectOrCreate_param1,
+            this0_actedIn_Movie_connectOrCreate_this0.isan = $this0_actedIn_Movie_connectOrCreate_param2
+            MERGE (this0)-[this0_actedIn_Movie_connectOrCreate_this1:\`ACTED_IN\`]->(this0_actedIn_Movie_connectOrCreate_this0)
+            ON CREATE SET
+                    this0_actedIn_Movie_connectOrCreate_this1.screentime = $this0_actedIn_Movie_connectOrCreate_param3
+            	RETURN COUNT(*)
+            }
+            WITH this0
+            CALL {
+            	WITH this0
+            	MERGE (this0_actedIn_Series_connectOrCreate_this0:\`Series\` { isan: $this0_actedIn_Series_connectOrCreate_param0 })
+            ON CREATE SET
+                    this0_actedIn_Series_connectOrCreate_this0.title = $this0_actedIn_Series_connectOrCreate_param1,
+            this0_actedIn_Series_connectOrCreate_this0.isan = $this0_actedIn_Series_connectOrCreate_param2
+            MERGE (this0)-[this0_actedIn_Series_connectOrCreate_this1:\`ACTED_IN\`]->(this0_actedIn_Series_connectOrCreate_this0)
+            ON CREATE SET
+                    this0_actedIn_Series_connectOrCreate_this1.screentime = $this0_actedIn_Series_connectOrCreate_param3
+            	RETURN COUNT(*)
+            }
+            RETURN this0
+            }
+            RETURN
+            this0 { .name } AS this0"
+        `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-"{
-    \\"this0_name\\": \\"Tom Hanks\\",
-    \\"this0_actedIn_Movie_connectOrCreate0_param0\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
-    \\"this0_actedIn_Movie_connectOrCreate0_param1\\": \\"Forrest Gump\\",
-    \\"this0_actedIn_Movie_connectOrCreate0_param2\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
-    \\"this0_actedIn_Movie_connectOrCreate0_param3\\": {
-        \\"low\\": 105,
-        \\"high\\": 0
-    },
-    \\"this0_actedIn_Series_connectOrCreate0_param0\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
-    \\"this0_actedIn_Series_connectOrCreate0_param1\\": \\"Band of Brothers\\",
-    \\"this0_actedIn_Series_connectOrCreate0_param2\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
-    \\"this0_actedIn_Series_connectOrCreate0_param3\\": {
-        \\"low\\": 126,
-        \\"high\\": 0
-    }
-}"
-`);
+            "{
+                \\"this0_name\\": \\"Tom Hanks\\",
+                \\"this0_actedIn_Movie_connectOrCreate_param0\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
+                \\"this0_actedIn_Movie_connectOrCreate_param1\\": \\"Forrest Gump\\",
+                \\"this0_actedIn_Movie_connectOrCreate_param2\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
+                \\"this0_actedIn_Movie_connectOrCreate_param3\\": {
+                    \\"low\\": 105,
+                    \\"high\\": 0
+                },
+                \\"this0_actedIn_Series_connectOrCreate_param0\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
+                \\"this0_actedIn_Series_connectOrCreate_param1\\": \\"Band of Brothers\\",
+                \\"this0_actedIn_Series_connectOrCreate_param2\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
+                \\"this0_actedIn_Series_connectOrCreate_param3\\": {
+                    \\"low\\": 126,
+                    \\"high\\": 0
+                }
+            }"
+        `);
     });
 
     test("Update with createOrConnect operation", async () => {
@@ -205,55 +205,55 @@ this0 { .name } AS this0"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Actor)
-WHERE this.name = $this_name
-SET this.name = $this_update_name
-WITH this
-CALL {
-	WITH this
-	MERGE (this_actedIn_Movie0_connectOrCreate0_this0:\`Movie\` { isan: $this_actedIn_Movie0_connectOrCreate0_param0 })
-ON CREATE SET
-        this_actedIn_Movie0_connectOrCreate0_this0.title = $this_actedIn_Movie0_connectOrCreate0_param1,
-this_actedIn_Movie0_connectOrCreate0_this0.isan = $this_actedIn_Movie0_connectOrCreate0_param2
-MERGE (this)-[this_actedIn_Movie0_connectOrCreate0_this1:\`ACTED_IN\`]->(this_actedIn_Movie0_connectOrCreate0_this0)
-ON CREATE SET
-        this_actedIn_Movie0_connectOrCreate0_this1.screentime = $this_actedIn_Movie0_connectOrCreate0_param3
-	RETURN COUNT(*)
-}
-WITH this
-CALL {
-	WITH this
-	MERGE (this_actedIn_Series0_connectOrCreate0_this0:\`Series\` { isan: $this_actedIn_Series0_connectOrCreate0_param0 })
-ON CREATE SET
-        this_actedIn_Series0_connectOrCreate0_this0.title = $this_actedIn_Series0_connectOrCreate0_param1,
-this_actedIn_Series0_connectOrCreate0_this0.isan = $this_actedIn_Series0_connectOrCreate0_param2
-MERGE (this)-[this_actedIn_Series0_connectOrCreate0_this1:\`ACTED_IN\`]->(this_actedIn_Series0_connectOrCreate0_this0)
-ON CREATE SET
-        this_actedIn_Series0_connectOrCreate0_this1.screentime = $this_actedIn_Series0_connectOrCreate0_param3
-	RETURN COUNT(*)
-}
-RETURN this { .name } AS this"
-`);
+            "MATCH (this:Actor)
+            WHERE this.name = $this_name
+            SET this.name = $this_update_name
+            WITH this
+            CALL {
+            	WITH this
+            	MERGE (this_actedIn_Movie0_connectOrCreate_this0:\`Movie\` { isan: $this_actedIn_Movie0_connectOrCreate_param0 })
+            ON CREATE SET
+                    this_actedIn_Movie0_connectOrCreate_this0.title = $this_actedIn_Movie0_connectOrCreate_param1,
+            this_actedIn_Movie0_connectOrCreate_this0.isan = $this_actedIn_Movie0_connectOrCreate_param2
+            MERGE (this)-[this_actedIn_Movie0_connectOrCreate_this1:\`ACTED_IN\`]->(this_actedIn_Movie0_connectOrCreate_this0)
+            ON CREATE SET
+                    this_actedIn_Movie0_connectOrCreate_this1.screentime = $this_actedIn_Movie0_connectOrCreate_param3
+            	RETURN COUNT(*)
+            }
+            WITH this
+            CALL {
+            	WITH this
+            	MERGE (this_actedIn_Series0_connectOrCreate_this0:\`Series\` { isan: $this_actedIn_Series0_connectOrCreate_param0 })
+            ON CREATE SET
+                    this_actedIn_Series0_connectOrCreate_this0.title = $this_actedIn_Series0_connectOrCreate_param1,
+            this_actedIn_Series0_connectOrCreate_this0.isan = $this_actedIn_Series0_connectOrCreate_param2
+            MERGE (this)-[this_actedIn_Series0_connectOrCreate_this1:\`ACTED_IN\`]->(this_actedIn_Series0_connectOrCreate_this0)
+            ON CREATE SET
+                    this_actedIn_Series0_connectOrCreate_this1.screentime = $this_actedIn_Series0_connectOrCreate_param3
+            	RETURN COUNT(*)
+            }
+            RETURN this { .name } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-"{
-    \\"this_name\\": \\"Tom Hanks evil twin\\",
-    \\"this_update_name\\": \\"Tom Hanks\\",
-    \\"this_actedIn_Movie0_connectOrCreate0_param0\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
-    \\"this_actedIn_Movie0_connectOrCreate0_param1\\": \\"Forrest Gump\\",
-    \\"this_actedIn_Movie0_connectOrCreate0_param2\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
-    \\"this_actedIn_Movie0_connectOrCreate0_param3\\": {
-        \\"low\\": 105,
-        \\"high\\": 0
-    },
-    \\"this_actedIn_Series0_connectOrCreate0_param0\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
-    \\"this_actedIn_Series0_connectOrCreate0_param1\\": \\"Band of Brothers\\",
-    \\"this_actedIn_Series0_connectOrCreate0_param2\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
-    \\"this_actedIn_Series0_connectOrCreate0_param3\\": {
-        \\"low\\": 126,
-        \\"high\\": 0
-    }
-}"
-`);
+            "{
+                \\"this_name\\": \\"Tom Hanks evil twin\\",
+                \\"this_update_name\\": \\"Tom Hanks\\",
+                \\"this_actedIn_Movie0_connectOrCreate_param0\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
+                \\"this_actedIn_Movie0_connectOrCreate_param1\\": \\"Forrest Gump\\",
+                \\"this_actedIn_Movie0_connectOrCreate_param2\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
+                \\"this_actedIn_Movie0_connectOrCreate_param3\\": {
+                    \\"low\\": 105,
+                    \\"high\\": 0
+                },
+                \\"this_actedIn_Series0_connectOrCreate_param0\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
+                \\"this_actedIn_Series0_connectOrCreate_param1\\": \\"Band of Brothers\\",
+                \\"this_actedIn_Series0_connectOrCreate_param2\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
+                \\"this_actedIn_Series0_connectOrCreate_param3\\": {
+                    \\"low\\": 126,
+                    \\"high\\": 0
+                }
+            }"
+        `);
     });
 });

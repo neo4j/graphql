@@ -33,18 +33,22 @@ describe("CypherBuilder", () => {
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-"CALL { CREATE (this0:\`Movie\` { test: $param0, id: $param1 })
-SET this0.id = $param1
-RETURN this0 }
-RETURN this0 {.id} AS myalias"
-`);
+            "CALL {
+            	
+            	CREATE (this0:\`Movie\` { test: $param0, id: $param1 })
+            SET this0.id = $param1
+            RETURN this0
+            	RETURN COUNT(*)
+            }
+            RETURN this0 {.id} AS myalias"
+        `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
-Object {
-  "param0": "test-value",
-  "param1": "my-id",
-}
-`);
+            Object {
+              "param0": "test-value",
+              "param1": "my-id",
+            }
+        `);
     });
 
     test("Merge relationship", () => {
@@ -67,18 +71,18 @@ Object {
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-"MERGE (this1)-[this0]->(this2)
-ON CREATE SET
-        this1.age = $param0,
-this1.name = $param1,
-this0.screentime = $param2"
-`);
+            "MERGE (this1)-[this0]->(this2)
+            ON CREATE SET
+                    this1.age = $param0,
+            this1.name = $param1,
+            this0.screentime = $param2"
+        `);
         expect(queryResult.params).toMatchInlineSnapshot(`
-Object {
-  "param0": 23,
-  "param1": "Keanu",
-  "param2": 10,
-}
-`);
+            Object {
+              "param0": 23,
+              "param1": "Keanu",
+              "param2": 10,
+            }
+        `);
     });
 });

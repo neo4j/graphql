@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { joinStrings } from "../../utils/utils";
 import { Node, Param, Relationship } from "./cypher-builder-references";
 import { CypherASTNode, CypherASTRoot } from "./cypher-builder-types";
 import { CypherContext } from "./CypherContext";
@@ -39,8 +40,8 @@ export class Query extends CypherASTRoot {
         return this;
     }
 
-    public call(query: CypherASTRoot): Query {
-        this.addStatement(new CallStatement(this, query));
+    public call(query: CypherASTRoot, withStatement?: string): Query {
+        this.addStatement(new CallStatement(this, query, withStatement));
         return this;
     }
 
@@ -64,13 +65,20 @@ export class Query extends CypherASTRoot {
         return this.getRoot();
     }
 
-    protected getContext(prefix?: string): CypherContext {
-        const context = new CypherContext(prefix);
+    public getCypher(context: CypherContext, separator = "\n"): string {
         Object.entries(this.namedParams).forEach(([name, param]) => {
             context.addNamedParamReference(name, param); // Only for compatibility reasons
         });
-        return context;
+        return super.getCypher(context, separator);
     }
+
+    // protected getContext(prefix?: string): CypherContext {
+    //     const context = new CypherContext(prefix);
+    //     Object.entries(this.namedParams).forEach(([name, param]) => {
+    //         context.addNamedParamReference(name, param); // Only for compatibility reasons
+    //     });
+    //     return context;
+    // }
 }
 
 class ConcatStatement extends CypherASTNode {
@@ -87,8 +95,31 @@ class ConcatStatement extends CypherASTNode {
 }
 
 class CallStatement extends ConcatStatement {
+    private withStatement: string | undefined;
+    private returnStatement: string;
+
+    constructor(
+        parent: CypherASTRoot,
+        query: CypherASTRoot,
+        withStatement?: string,
+        returnStatement: string = "RETURN COUNT(*)"
+    ) {
+        super(parent, query);
+        this.withStatement = withStatement;
+        this.returnStatement = returnStatement;
+    }
+
     public getCypher(context: CypherContext): string {
-        return `CALL { ${this.query.getCypher(context)} }`;
+        const withStr = this.withStatement ? `WITH ${this.withStatement}` : "";
+        return joinStrings([
+            withStr,
+            "CALL {",
+            `\t${withStr}`,
+            `\t${this.query.getCypher(context)}`,
+            `\t${this.returnStatement}`,
+            "}",
+        ]);
+        // return `CALL { ${this.query.getCypher(context)} }`;
     }
 }
 

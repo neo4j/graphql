@@ -55,7 +55,7 @@ export function createConnectOrCreateAndParams({
     refNode: Node;
     context: Context;
 }): CypherStatement {
-    const statements = asArray(input).map((inputItem, index): CypherStatement => {
+    const statements = asArray(input).map((inputItem, index): CypherBuilder.Query => {
         const subqueryBaseName = `${varName}${index}`;
         const result = createConnectOrCreatePartialStatement({
             input: inputItem,
@@ -65,10 +65,16 @@ export function createConnectOrCreateAndParams({
             refNode,
             context,
         });
-        return [result.cypher, result.params];
+        return result;
     });
-    const [statement, params] = joinStatements(statements);
-    return [wrapInCall(statement, parentVar), params];
+
+    const query = statements.reduce((query, statement) => {
+        query.concat(statement);
+        return query;
+    }, new CypherBuilder.Query());
+
+    const queryResult = new CypherBuilder.Query().call(query, parentVar).build(`${varName}_`);
+    return [queryResult.cypher, queryResult.params];
 }
 
 function createConnectOrCreatePartialStatement({
@@ -85,7 +91,7 @@ function createConnectOrCreatePartialStatement({
     relationField: RelationField;
     refNode: Node;
     context: Context;
-}): CypherBuilder.CypherResult {
+}): CypherBuilder.Query {
     let mergeQuery = mergeStatement({
         input,
         refNode,
@@ -104,9 +110,7 @@ function createConnectOrCreatePartialStatement({
         authQuery.concat(mergeQuery);
         mergeQuery = authQuery;
     }
-
-    const result = mergeQuery.build(`${baseName}_`);
-    return result;
+    return mergeQuery;
 }
 
 function getOnCreateParameters(onCreateParams: Record<string, any> = {}, node?: Node): Record<string, Param<any>> {
