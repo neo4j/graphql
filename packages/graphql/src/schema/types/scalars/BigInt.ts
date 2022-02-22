@@ -20,7 +20,7 @@
 import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
 import { int, isInt } from "neo4j-driver";
 
-export default new GraphQLScalarType({
+export const GraphQLBigInt = new GraphQLScalarType({
     name: "BigInt",
     description:
         "A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.",
