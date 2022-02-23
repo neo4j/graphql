@@ -21,7 +21,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { generate } from "randomstring";
 import pluralize from "pluralize";
-import { lowerFirst } from "../../src/utils/lower-first";
+import camelcase from "camelcase";
 import { upperFirst } from "../../src/utils/upper-first";
 
 export function generateUniqueType(baseName: string) {
@@ -31,7 +31,7 @@ export function generateUniqueType(baseName: string) {
         readable: true,
     })}${baseName}`;
 
-    const plural = lowerFirst(pluralize(type));
+    const plural = pluralize(camelcase(type));
     const pascalCasePlural = upperFirst(plural);
 
     return {

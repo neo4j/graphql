@@ -54,7 +54,7 @@ export default function createResolver({ node }: { node: Node }) {
     }
 
     return {
-        type: `Create${upperFirst(node.plural)}MutationResponse!`,
+        type: `${node.mutationResponseTypeNames.create}!`,
         resolve,
         args: { input: `[${node.name}CreateInput!]!` },
     };
