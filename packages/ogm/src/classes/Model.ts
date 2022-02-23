@@ -38,12 +38,12 @@ type RootTypeFieldNames = {
 
 class Model {
     public name: string;
-    private namePluralized!: string;
+    private _namePluralized?: string;
 
     private _selectionSet?: string;
     private schema?: GraphQLSchema;
 
-    private rootTypeFieldNames!: RootTypeFieldNames;
+    private _rootTypeFieldNames?: RootTypeFieldNames;
 
     constructor(name: string) {
         this.name = name;
@@ -51,6 +51,22 @@ class Model {
 
     public set selectionSet(selectionSet: string | DocumentNode) {
         this._selectionSet = printSelectionSet(selectionSet);
+    }
+
+    private get namePluralized(): string {
+        if (!this._namePluralized) {
+            throw new Error("Must execute `OGM.init()` method before using Model instances");
+        }
+
+        return this._namePluralized;
+    }
+
+    private get rootTypeFieldNames(): RootTypeFieldNames {
+        if (!this._rootTypeFieldNames) {
+            throw new Error("Must execute `OGM.init()` method before using Model instances");
+        }
+
+        return this.rootTypeFieldNames;
     }
 
     init({
@@ -66,8 +82,8 @@ class Model {
     }) {
         this.selectionSet = selectionSet;
         this.schema = schema;
-        this.namePluralized = namePluralized;
-        this.rootTypeFieldNames = rootTypeFieldNames;
+        this._namePluralized = namePluralized;
+        this._rootTypeFieldNames = rootTypeFieldNames;
     }
 
     async find<T = any[]>({
