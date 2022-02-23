@@ -1,11 +1,8 @@
 import React from "react";
-import { ApolloClient } from "apollo-client";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { onError } from "apollo-link-error";
-import { ApolloLink, DocumentNode, split } from "apollo-link";
-import { ApolloProvider } from "@apollo/react-hooks";
-import { setContext } from "apollo-link-context";
-import { createHttpLink } from "apollo-link-http";
+import { onError } from "@apollo/client/link/error";
+import { setContext } from "@apollo/client/link/context";
+import { createHttpLink } from "@apollo/client/link/http";
+import { ApolloClient, ApolloProvider, ApolloLink, DocumentNode, InMemoryCache } from "@apollo/client";
 import { API_URL, JWT_KEY } from "../config";
 import constants from "../constants";
 

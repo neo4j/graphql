@@ -18,9 +18,9 @@
  */
 
 import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
-import neo4j, { DateTime, isDateTime } from "neo4j-driver";
+import neo4j, { isDateTime } from "neo4j-driver";
 
-export default new GraphQLScalarType({
+export const GraphQLDateTime = new GraphQLScalarType({
     name: "DateTime",
     description: "A date and time, represented as an ISO-8601 string",
     serialize: (outputValue: unknown) => {
@@ -29,7 +29,7 @@ export default new GraphQLScalarType({
         }
 
         if (isDateTime(outputValue as object)) {
-            return new Date((outputValue as typeof DateTime).toString()).toISOString();
+            return new Date((outputValue as typeof neo4j.types.DateTime).toString()).toISOString();
         }
 
         throw new GraphQLError(`DateTime cannot represent value: ${outputValue}`);

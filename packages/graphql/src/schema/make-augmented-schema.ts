@@ -17,18 +17,12 @@
  * limitations under the License.
  */
 
-import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IResolvers, TypeSource } from "@graphql-tools/utils";
 import {
     DefinitionNode,
-    DirectiveDefinitionNode,
     DirectiveNode,
     DocumentNode,
-    EnumTypeDefinitionNode,
-    GraphQLInt,
-    GraphQLNonNull,
-    GraphQLString,
-    InputObjectTypeDefinitionNode,
+    GraphQLScalarType,
     InterfaceTypeDefinitionNode,
     Kind,
     NamedTypeNode,
@@ -36,8 +30,6 @@ import {
     ObjectTypeDefinitionNode,
     parse,
     print,
-    ScalarTypeDefinitionNode,
-    UnionTypeDefinitionNode,
 } from "graphql";
 import { InputTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
@@ -54,17 +46,11 @@ import {
 } from "./resolvers";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import * as constants from "../constants";
-import * as Scalars from "./scalars";
-import * as point from "./point";
+import * as Scalars from "./types/scalars";
 import { Exclude, Node } from "../classes";
-import { NodeDirective } from "../classes/NodeDirective";
 import Relationship from "../classes/Relationship";
 import createConnectionFields from "./create-connection-fields";
 import createRelationshipFields from "./create-relationship-fields";
-import parseExcludeDirective from "./parse-exclude-directive";
-import parseFulltextDirective from "./parse/parse-fulltext-directive";
-import parseNodeDirective from "./parse-node-directive";
-import getAuth from "./get-auth";
 import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
 import getSortableFields from "./get-sortable-fields";
@@ -78,14 +64,36 @@ import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
 import { isString } from "../utils/utils";
 import { upperFirst } from "../utils/upper-first";
-import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
+import { getDocument } from "./get-document";
+import { getDefinitionNodes } from "./get-definition-nodes";
+import getAuth from "./get-auth";
+import parseExcludeDirective from "./parse-exclude-directive";
+import { NodeDirective } from "../classes/NodeDirective";
+import parseNodeDirective from "./parse-node-directive";
+import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
+import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
+import { isRootType } from "../utils/is-root-type";
+
+// GraphQL type imports
+import { CreateInfo } from "./types/objects/CreateInfo";
+import { DeleteInfo } from "./types/objects/DeleteInfo";
+import { UpdateInfo } from "./types/objects/UpdateInfo";
+import { PageInfo } from "./types/objects/PageInfo";
+import { SortDirection } from "./types/enums/SortDirection";
+import { QueryOptions } from "./types/input-objects/QueryOptions";
+import { Point } from "./types/objects/Point";
+import { CartesianPoint } from "./types/objects/CartesianPoint";
+import { PointInput } from "./types/input-objects/PointInput";
+import { CartesianPointInput } from "./types/input-objects/CartesianPointInput";
+import { PointDistance } from "./types/input-objects/PointDistance";
+import { CartesianPointDistance } from "./types/input-objects/CartesianPointDistance";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
     { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
 ): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers: IResolvers } {
-    const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
+    const document = getDocument(typeDefs);
 
     if (!skipValidateTypeDefs) {
         validateDocument(document);
@@ -102,103 +110,32 @@ function makeAugmentedSchema(
 
     let relationships: Relationship[] = [];
 
-    composer.createObjectTC({
-        name: "CreateInfo",
-        fields: {
-            bookmark: GraphQLString,
-            nodesCreated: new GraphQLNonNull(GraphQLInt),
-            relationshipsCreated: new GraphQLNonNull(GraphQLInt),
-        },
-    });
-
-    composer.createObjectTC({
-        name: "DeleteInfo",
-        fields: {
-            bookmark: GraphQLString,
-            nodesDeleted: new GraphQLNonNull(GraphQLInt),
-            relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
-        },
-    });
-
-    composer.createObjectTC({
-        name: "UpdateInfo",
-        fields: {
-            bookmark: GraphQLString,
-            nodesCreated: new GraphQLNonNull(GraphQLInt),
-            nodesDeleted: new GraphQLNonNull(GraphQLInt),
-            relationshipsCreated: new GraphQLNonNull(GraphQLInt),
-            relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
-        },
-    });
+    composer.createObjectTC(CreateInfo);
+    composer.createObjectTC(DeleteInfo);
+    composer.createObjectTC(UpdateInfo);
+    composer.createObjectTC(PageInfo);
+    composer.createInputTC(QueryOptions);
+    const sortDirection = composer.createEnumTC(SortDirection);
 
     const aggregationTypesMapper = new AggregationTypesMapper(composer);
 
-    composer.createInputTC({
-        name: "QueryOptions",
-        fields: {
-            offset: "Int",
-            limit: "Int",
-        },
-    });
-
-    const sortDirection = composer.createEnumTC({
-        name: "SortDirection",
-        values: {
-            ASC: {
-                value: "ASC",
-                description: "Sort by field values in ascending order.",
-            },
-            DESC: {
-                value: "DESC",
-                description: "Sort by field values in descending order.",
-            },
-        },
-    });
-
-    composer.createObjectTC({
-        name: "PageInfo",
-        description: "Pagination information (Relay)",
-        fields: {
-            hasNextPage: "Boolean!",
-            hasPreviousPage: "Boolean!",
-            startCursor: "String",
-            endCursor: "String",
-        },
-    });
-
     const customResolvers = getCustomResolvers(document);
 
-    const scalars = document.definitions.filter((x) => x.kind === "ScalarTypeDefinition") as ScalarTypeDefinitionNode[];
+    const definitionNodes = getDefinitionNodes(document);
 
-    const objectNodes = document.definitions.filter(
-        (x) => x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)
-    ) as ObjectTypeDefinitionNode[];
+    const { scalarTypes, objectTypes, enumTypes, inputObjectTypes, directives, unionTypes } = definitionNodes;
 
-    const enums = document.definitions.filter((x) => x.kind === "EnumTypeDefinition") as EnumTypeDefinitionNode[];
-
-    const inputs = document.definitions.filter(
-        (x) => x.kind === "InputObjectTypeDefinition"
-    ) as InputObjectTypeDefinitionNode[];
-
-    let interfaces = document.definitions.filter(
-        (x) => x.kind === "InterfaceTypeDefinition"
-    ) as InterfaceTypeDefinitionNode[];
-
-    const directives = document.definitions.filter(
-        (x) => x.kind === "DirectiveDefinition"
-    ) as DirectiveDefinitionNode[];
-
-    const unions = document.definitions.filter((x) => x.kind === "UnionTypeDefinition") as UnionTypeDefinitionNode[];
+    let { interfaceTypes } = definitionNodes;
 
     const relationshipPropertyInterfaceNames = new Set<string>();
     const interfaceRelationshipNames = new Set<string>();
 
     const extraDefinitions = [
-        ...enums,
-        ...scalars,
+        ...enumTypes,
+        ...scalarTypes,
         ...directives,
-        ...inputs,
-        ...unions,
+        ...inputObjectTypes,
+        ...unionTypes,
         ...([
             customResolvers.customQuery,
             customResolvers.customMutation,
@@ -206,13 +143,13 @@ function makeAugmentedSchema(
         ] as ObjectTypeDefinitionNode[]),
     ].filter(Boolean) as DefinitionNode[];
 
-    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
+    Object.values(Scalars).forEach((scalar: GraphQLScalarType) => composer.addTypeDefs(`scalar ${scalar.name}`));
 
     if (extraDefinitions.length) {
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const nodes = objectNodes.map((definition) => {
+    const nodes = objectTypes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
             (x) => !["auth", "exclude", "node", "fulltext", "queryOptions"].includes(x.name.value)
         );
@@ -230,7 +167,7 @@ function makeAugmentedSchema(
             interfaceExcludeDirectives: DirectiveNode[];
         }>(
             (res, interfaceName) => {
-                const iface = interfaces.find((i) => i.name.value === interfaceName.name.value);
+                const iface = interfaceTypes.find((i) => i.name.value === interfaceName.name.value);
 
                 if (iface) {
                     const interfaceAuthDirective = (iface.directives || []).find((x) => x.name.value === "auth");
@@ -279,11 +216,11 @@ function makeAugmentedSchema(
 
         const nodeFields = getObjFieldMeta({
             obj: definition,
-            enums,
-            interfaces,
-            scalars,
-            unions,
-            objects: objectNodes,
+            enums: enumTypes,
+            interfaces: interfaceTypes,
+            scalars: scalarTypes,
+            unions: unionTypes,
+            objects: objectTypes,
         });
 
         // Ensure that all required fields are returning either a scalar type or an enum
@@ -330,7 +267,7 @@ function makeAugmentedSchema(
 
         nodeFields.relationFields.forEach((relationship) => {
             if (relationship.properties) {
-                const propertiesInterface = interfaces.find((i) => i.name.value === relationship.properties);
+                const propertiesInterface = interfaceTypes.find((i) => i.name.value === relationship.properties);
                 if (!propertiesInterface) {
                     throw new Error(
                         `Cannot find interface specified in ${definition.name.value}.${relationship.fieldName}`
@@ -370,9 +307,9 @@ function makeAugmentedSchema(
         return node;
     });
 
-    const relationshipProperties = interfaces.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
-    const interfaceRelationships = interfaces.filter((i) => interfaceRelationshipNames.has(i.name.value));
-    interfaces = interfaces.filter(
+    const relationshipProperties = interfaceTypes.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
+    const interfaceRelationships = interfaceTypes.filter((i) => interfaceRelationshipNames.has(i.name.value));
+    interfaceTypes = interfaceTypes.filter(
         (i) => !(relationshipPropertyInterfaceNames.has(i.name.value) || interfaceRelationshipNames.has(i.name.value))
     );
 
@@ -401,11 +338,11 @@ function makeAugmentedSchema(
         });
 
         const relFields = getObjFieldMeta({
-            enums,
-            interfaces,
-            objects: objectNodes,
-            scalars,
-            unions,
+            enums: enumTypes,
+            interfaces: interfaceTypes,
+            objects: objectTypes,
+            scalars: scalarTypes,
+            unions: unionTypes,
             obj: relationship,
         });
 
@@ -491,16 +428,16 @@ function makeAugmentedSchema(
     }
 
     interfaceRelationships.forEach((interfaceRelationship) => {
-        const implementations = objectNodes.filter((n) =>
+        const implementations = objectTypes.filter((n) =>
             n.interfaces?.some((i) => i.name.value === interfaceRelationship.name.value)
         );
 
         const interfaceFields = getObjFieldMeta({
-            enums,
-            interfaces: [...interfaces, ...interfaceRelationships],
-            objects: objectNodes,
-            scalars,
-            unions,
+            enums: enumTypes,
+            interfaces: [...interfaceTypes, ...interfaceRelationships],
+            objects: objectTypes,
+            scalars: scalarTypes,
+            unions: unionTypes,
             obj: interfaceRelationship,
         });
 
@@ -708,20 +645,20 @@ function makeAugmentedSchema(
     if (pointInTypeDefs) {
         // Every field (apart from CRS) in Point needs a custom resolver
         // to deconstruct the point objects we fetch from the database
-        composer.createObjectTC(point.point);
-        composer.createInputTC(point.pointInput);
-        composer.createInputTC(point.pointDistance);
+        composer.createObjectTC(Point);
+        composer.createInputTC(PointInput);
+        composer.createInputTC(PointDistance);
     }
 
     if (cartesianPointInTypeDefs) {
         // Every field (apart from CRS) in CartesianPoint needs a custom resolver
         // to deconstruct the point objects we fetch from the database
-        composer.createObjectTC(point.cartesianPoint);
-        composer.createInputTC(point.cartesianPointInput);
-        composer.createInputTC(point.cartesianPointDistance);
+        composer.createObjectTC(CartesianPoint);
+        composer.createInputTC(CartesianPointInput);
+        composer.createInputTC(CartesianPointDistance);
     }
 
-    unions.forEach((union) => {
+    unionTypes.forEach((union) => {
         if (union.types && union.types.length) {
             const fields = union.types.reduce((f, type) => {
                 return { ...f, [type.name.value]: `${type.name.value}Where` };
@@ -972,11 +909,11 @@ function makeAugmentedSchema(
         if (cypherType) {
             const objectFields = getObjFieldMeta({
                 obj: cypherType,
-                scalars,
-                enums,
-                interfaces,
-                unions,
-                objects: objectNodes,
+                scalars: scalarTypes,
+                enums: enumTypes,
+                interfaces: interfaceTypes,
+                unions: unionTypes,
+                objects: objectTypes,
             });
 
             const objectComposeFields = objectFieldsToComposeFields([
@@ -1006,8 +943,15 @@ function makeAugmentedSchema(
         }
     });
 
-    interfaces.forEach((inter) => {
-        const objectFields = getObjFieldMeta({ obj: inter, scalars, enums, interfaces, unions, objects: objectNodes });
+    interfaceTypes.forEach((inter) => {
+        const objectFields = getObjFieldMeta({
+            obj: inter,
+            scalars: scalarTypes,
+            enums: enumTypes,
+            interfaces: interfaceTypes,
+            unions: unionTypes,
+            objects: objectTypes,
+        });
 
         const baseFields: BaseField[][] = Object.values(objectFields);
         const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
@@ -1035,9 +979,7 @@ function makeAugmentedSchema(
 
     const emptyObjectsInterfaces = (
         parsedDoc.definitions.filter(
-            (x) =>
-                (x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)) ||
-                x.kind === "InterfaceTypeDefinition"
+            (x) => (x.kind === "ObjectTypeDefinition" && !isRootType(x)) || x.kind === "InterfaceTypeDefinition"
         ) as (InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode)[]
     ).filter((x) => !x.fields?.length);
 
@@ -1059,15 +1001,15 @@ function makeAugmentedSchema(
 
             return { ...res, [key]: value };
         }, {}),
-        ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
-            if (generatedTypeDefs.includes(`scalar ${name}\n`)) {
-                res[name] = scalar;
+        ...Object.values(Scalars).reduce((res, scalar: GraphQLScalarType) => {
+            if (generatedTypeDefs.includes(`scalar ${scalar.name}\n`)) {
+                res[scalar.name] = scalar;
             }
             return res;
         }, {}),
     };
 
-    unions.forEach((union) => {
+    unionTypes.forEach((union) => {
         if (!generatedResolvers[union.name.value]) {
             generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
         }
