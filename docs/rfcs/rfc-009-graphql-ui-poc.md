@@ -62,6 +62,14 @@ Keybindings
 2. CTRL+SHIFT+P - to prettify the code
 3. _Nice to have_: Other common/basic ones
 
+
+### Sketch
+
+![GraphQL_UI_v4](https://user-images.githubusercontent.com/8817964/155305646-2adbf310-079e-4348-9536-93cfb4da5215.png)
+
+[Link](https://excalidraw.com/#json=b4U6WUvi6icFdMQaXoDjo,EjqhTATzUC7GqqiAgFPSjw) to excalidraw drawing.
+
+
 ### Structure
 
 New packages in `@neo4j/graphql` monorepo:
@@ -77,7 +85,7 @@ A polished UI can eat up too much time.
 Implementing a custom autocomplete functionality for the query editor.  
 Docs generation and presentation could be a rabbit hole.
 
-Expose/build our own "Apollo Server" library that uses this UI:
+Spending time on building our own "Apollo Server" library that uses this UI:
 
 ```tsx
 import { Neo4jGraphQL }
@@ -93,11 +101,11 @@ await server.listen(4000);
 
 ### Security consideration
 
-This PoC leverage the `@neo4j/graphql` and does not alter any of its behaviours. If the credentials in the login page need to be stored then they are encrypted.
+This PoC leverage the `@neo4j/graphql` and does not alter any of its behaviours. If the credentials (login page) need to be stored then they are encrypted.
 
 ## Out of Scope
 
 Use components of the Neo4j Design System  
 Write a schema builder  
-Settings (connection setttings, env vars, etc.)  
+Settings (connection settings, env vars, etc.)  
 Query history
