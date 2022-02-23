@@ -140,7 +140,7 @@ class Node extends GraphElement {
     private generatePlural(): string {
         const name = this.nodeDirective?.plural || this.name;
 
-        const re = /^(_+).+/gm;
+        const re = /^(_+).+/;
         const match = re.exec(name);
         const leadingUnderscores = match?.[1] || "";
 
