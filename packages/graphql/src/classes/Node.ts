@@ -186,28 +186,28 @@ class Node extends GraphElement {
         return this.constrainableFields.filter((field) => field.unique);
     }
 
-    public get rootTypeFieldNames(): RootTypeFieldNames {
-        const pluralValue = this.plural;
+    private get pascalCasePlural(): string {
+        return upperFirst(this.plural);
+    }
 
-        const pluralValueUpperFirst = upperFirst(pluralValue);
+    public get rootTypeFieldNames(): RootTypeFieldNames {
+        const pascalCasePlural = this.pascalCasePlural;
 
         return {
-            create: `create${pluralValueUpperFirst}`,
-            read: pluralValue,
-            update: `update${pluralValueUpperFirst}`,
-            delete: `delete${pluralValueUpperFirst}`,
-            aggregate: `${pluralValue}Aggregate`,
+            create: `create${pascalCasePlural}`,
+            read: this.plural,
+            update: `update${pascalCasePlural}`,
+            delete: `delete${pascalCasePlural}`,
+            aggregate: `${this.plural}Aggregate`,
         };
     }
 
     public get mutationResponseTypeNames() {
-        const pluralValue = this.plural;
-
-        const pluralValueUpperFirst = upperFirst(pluralValue);
+        const pascalCasePlural = this.pascalCasePlural;
 
         return {
-            create: `Create${pluralValueUpperFirst}MutationResponse`,
-            update: `Update${pluralValueUpperFirst}MutationResponse`,
+            create: `Create${pascalCasePlural}MutationResponse`,
+            update: `Update${pascalCasePlural}MutationResponse`,
         };
     }
 
