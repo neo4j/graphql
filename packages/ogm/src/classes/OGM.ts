@@ -112,7 +112,12 @@ class OGM<ModelMap = {}> {
                     }
                 `;
 
-        model.init({ schema: this.schema, selectionSet });
+        model.init({
+            schema: this.schema,
+            selectionSet,
+            namePluralized: node.plural,
+            rootTypeFieldNames: node.rootTypeFieldNames,
+        });
     }
 
     private createInitializer(): Promise<void> {

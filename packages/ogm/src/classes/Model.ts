@@ -18,10 +18,7 @@
  */
 
 import { DocumentNode, graphql, GraphQLSchema, parse, print, SelectionSetNode } from "graphql";
-import pluralize from "pluralize";
-import camelcase from "camelcase";
 import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
-import { upperFirst } from "../utils/upper-first";
 
 function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNode): string {
     if (typeof selectionSet === "string") {
@@ -31,25 +28,46 @@ function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNod
     return print(selectionSet);
 }
 
+type RootTypeFieldNames = {
+    create: string;
+    read: string;
+    update: string;
+    delete: string;
+    aggregate: string;
+};
+
 class Model {
     public name: string;
-    private namePluralized: string;
+    private namePluralized!: string;
 
     private _selectionSet?: string;
     private schema?: GraphQLSchema;
 
+    private rootTypeFieldNames!: RootTypeFieldNames;
+
     constructor(name: string) {
         this.name = name;
-        this.namePluralized = pluralize(camelcase(this.name));
     }
 
     public set selectionSet(selectionSet: string | DocumentNode) {
         this._selectionSet = printSelectionSet(selectionSet);
     }
 
-    init({ schema, selectionSet }: { schema: GraphQLSchema; selectionSet: string | DocumentNode }) {
+    init({
+        schema,
+        selectionSet,
+        namePluralized,
+        rootTypeFieldNames,
+    }: {
+        schema: GraphQLSchema;
+        selectionSet: string | DocumentNode;
+        namePluralized: string;
+        rootTypeFieldNames: RootTypeFieldNames;
+    }) {
         this.selectionSet = selectionSet;
         this.schema = schema;
+        this.namePluralized = namePluralized;
+        this.rootTypeFieldNames = rootTypeFieldNames;
     }
 
     async find<T = any[]>({
@@ -96,7 +114,7 @@ class Model {
 
         const query = `
             query ${argDefinitions.join(" ")}{
-                ${this.namePluralized}${argsApply.join(" ")} ${selection}
+                ${this.rootTypeFieldNames.read}${argsApply.join(" ")} ${selection}
             }
         `;
 
@@ -134,7 +152,7 @@ class Model {
             throw new Error("Must execute `OGM.init()` method before using Model instances");
         }
 
-        const mutationName = `create${upperFirst(this.namePluralized)}`;
+        const mutationName = this.rootTypeFieldNames.create;
 
         let selection = "";
         if (selectionSet) {
@@ -199,7 +217,7 @@ class Model {
             throw new Error("Must execute `OGM.init()` method before using Model instances");
         }
 
-        const mutationName = `update${upperFirst(this.namePluralized)}`;
+        const mutationName = this.rootTypeFieldNames.update;
         const argWorthy = Boolean(where || update || connect || disconnect || create || connectOrCreate);
 
         let selection = "";
@@ -276,7 +294,7 @@ class Model {
             throw new Error("Must execute `OGM.init()` method before using Model instances");
         }
 
-        const mutationName = `delete${upperFirst(this.namePluralized)}`;
+        const mutationName = this.rootTypeFieldNames.delete;
         const argWorthy = where || deleteInput;
 
         const argDefinitions = [
@@ -336,7 +354,7 @@ class Model {
             throw new Error("Must execute `OGM.init()` method before using Model instances");
         }
 
-        const queryName = `${this.namePluralized}Aggregate`;
+        const queryName = this.rootTypeFieldNames.aggregate;
         const selections: string[] = [];
         const argWorthy = Boolean(where || fulltext);
 
