@@ -58,7 +58,7 @@ directive @node(
     label: String
     """Map the GraphQL type to match additional Neo4j node labels"""
     additionalLabels: [String]
-    """Allows for the specification of the plural of the type name if the type name is non-English."""
+    """Allows for the specification of the plural of the type name."""
     plural: String
 ) on OBJECT
 ----
