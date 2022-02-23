@@ -23,8 +23,6 @@ import { Node, Relationship } from "../classes";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { asArray, omitFields } from "../utils/utils";
-import { wrapInCall } from "./utils/wrap-in-call";
-import { joinStatements } from "./cypher-builder/join-statements";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { convertToCypherParams } from "./cypher-builder/utils";
 import { Param } from "./cypher-builder/CypherBuilder";
@@ -68,9 +66,9 @@ export function createConnectOrCreateAndParams({
         return result;
     });
 
-    const query = statements.reduce((query, statement) => {
-        query.concat(statement);
-        return query;
+    const query = statements.reduce((result, statement) => {
+        result.concat(statement);
+        return result;
     }, new CypherBuilder.Query());
 
     const queryResult = new CypherBuilder.Query().call(query, parentVar).build(`${varName}_`);

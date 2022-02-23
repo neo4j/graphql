@@ -21,16 +21,21 @@ import { Node, Param, Relationship } from "./cypher-builder-references";
 
 type ValidReferences = Node | Relationship;
 
-export class CypherContext {
+export interface CypherContextInterface {
+    getReferenceId(reference: ValidReferences): string;
+    getParamId(reference: Param): string;
+}
+
+export class CypherContext implements CypherContextInterface {
     private prefix: string;
-    private params: Map<Param<any>, string> = new Map();
+    private params: Map<Param, string> = new Map();
     private references: Map<ValidReferences, string> = new Map();
 
     constructor(prefix?: string) {
         this.prefix = prefix || "";
     }
 
-    public getParamId(reference: Param<any>): string {
+    public getParamId(reference: Param): string {
         const id = this.params.get(reference);
         if (!id) {
             return this.addParamReference(reference);
@@ -56,7 +61,7 @@ export class CypherContext {
         }, {} as Record<string, any>);
     }
 
-    public addNamedParamReference(name: string, param: Param<any>): void {
+    public addNamedParamReference(name: string, param: Param): void {
         this.params.set(param, name);
     }
 

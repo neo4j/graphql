@@ -26,6 +26,7 @@ type NodeInput = {
     parameters?: Record<string, Param<any>>;
 };
 
+/** Represents a reference in AST */
 export interface CypherReference {
     readonly prefix: string;
     getCypher(context: CypherContext): string;
@@ -136,7 +137,7 @@ export class Relationship implements CypherReference {
     }
 }
 
-export class Param<T> {
+export class Param<T = any> {
     public readonly prefix: string = "param";
     public readonly value: T;
 
@@ -154,8 +155,6 @@ export class RawParam<T> extends Param<T> {
         return `${this.value}`;
     }
 }
-
-// TODO: move to a separate file?
 
 function serializeParameters(parameters: Record<string, Param<any>>, context: CypherContext): string {
     const paramValues = Object.entries(parameters).reduce((acc, [key, param]) => {

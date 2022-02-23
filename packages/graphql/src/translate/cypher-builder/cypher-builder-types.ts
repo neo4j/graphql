@@ -24,55 +24,24 @@ export type CypherResult = {
     params: Record<string, string>;
 };
 
-export abstract class CypherASTElement {
+export abstract class CypherASTNode {
     protected children: Array<CypherASTNode> = [];
-}
+    protected parent?: CypherASTNode;
 
-export abstract class CypherASTRoot extends CypherASTElement {
-    protected addStatement<C extends CypherASTNode>(astNode: C): C {
-        this.children.push(astNode);
-        return astNode;
-    }
-
-    public getRoot(): CypherASTRoot {
-        return this;
-    }
-
-    public build(prefix?: string): CypherResult {
-        const context = this.getContext(prefix);
-        const cypher = this.getCypher(context);
-        return {
-            cypher: cypher,
-            params: context.getParams(),
-        };
-    }
-
-    public getCypher(context: CypherContext, separator = "\n"): string {
-        const result = this.children
-            .map((value) => {
-                return value.getCypher(context);
-            })
-            .join(separator);
-        return result;
-    }
-
-    protected getContext(prefix?: string): CypherContext {
-        return new CypherContext(prefix);
-    }
-}
-
-export abstract class CypherASTNode extends CypherASTElement {
-    protected parent: CypherASTNode | CypherASTRoot;
-
-    constructor(parent: CypherASTNode | CypherASTRoot) {
-        super();
+    constructor(parent?: CypherASTNode) {
         this.parent = parent;
     }
 
     protected addStatement<C extends CypherASTNode>(astNode: C): C {
         this.children.push(astNode);
-        astNode.parent = this;
         return astNode;
+    }
+
+    public getRoot(): CypherASTNode {
+        if (this.parent) {
+            return this.parent.getRoot();
+        }
+        return this;
     }
 
     public getCypher(context: CypherContext, separator = "\n"): string {
@@ -84,11 +53,23 @@ export abstract class CypherASTNode extends CypherASTElement {
     }
 
     public build(prefix?: string): CypherResult {
+        if (this.isRoot) {
+            const context = this.getContext(prefix);
+            const cypher = this.getCypher(context);
+            return {
+                cypher,
+                params: context.getParams(),
+            };
+        }
         const root = this.getRoot();
         return root.build(prefix);
     }
 
-    public getRoot(): CypherASTRoot {
-        return this.parent.getRoot();
+    protected getContext(prefix?: string): CypherContext {
+        return new CypherContext(prefix);
+    }
+
+    private get isRoot() {
+        return this.parent === undefined;
     }
 }

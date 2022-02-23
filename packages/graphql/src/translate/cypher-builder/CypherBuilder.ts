@@ -19,7 +19,7 @@
 
 import { joinStrings } from "../../utils/utils";
 import { Node, Param, Relationship } from "./cypher-builder-references";
-import { CypherASTNode, CypherASTRoot } from "./cypher-builder-types";
+import { CypherASTNode } from "./cypher-builder-types";
 import { CypherContext } from "./CypherContext";
 
 export { NamedNode, Node, Param, Relationship } from "./cypher-builder-references";
@@ -27,7 +27,7 @@ export { CypherResult } from "./cypher-builder-types";
 
 type Params = Record<string, Param<any>>;
 
-export class Query extends CypherASTRoot {
+export class Query extends CypherASTNode {
     private namedParams: Record<string, Param<any>> = {};
 
     public addNamedParams(params: Record<string, Param<any>>) {
@@ -40,12 +40,12 @@ export class Query extends CypherASTRoot {
         return this;
     }
 
-    public call(query: CypherASTRoot, withStatement?: string): Query {
+    public call(query: Query, withStatement?: string): Query {
         this.addStatement(new CallStatement(this, query, withStatement));
         return this;
     }
 
-    public concat(query: CypherASTRoot): Query {
+    public concat(query: Query): Query {
         this.addStatement(new ConcatStatement(this, query));
         return this;
     }
@@ -71,20 +71,12 @@ export class Query extends CypherASTRoot {
         });
         return super.getCypher(context, separator);
     }
-
-    // protected getContext(prefix?: string): CypherContext {
-    //     const context = new CypherContext(prefix);
-    //     Object.entries(this.namedParams).forEach(([name, param]) => {
-    //         context.addNamedParamReference(name, param); // Only for compatibility reasons
-    //     });
-    //     return context;
-    // }
 }
 
 class ConcatStatement extends CypherASTNode {
-    protected query: CypherASTRoot;
+    protected query: Query;
 
-    constructor(parent: CypherASTRoot, query: CypherASTRoot) {
+    constructor(parent: Query, query: Query) {
         super(parent);
         this.query = query;
     }
@@ -98,12 +90,7 @@ class CallStatement extends ConcatStatement {
     private withStatement: string | undefined;
     private returnStatement: string;
 
-    constructor(
-        parent: CypherASTRoot,
-        query: CypherASTRoot,
-        withStatement?: string,
-        returnStatement: string = "RETURN COUNT(*)"
-    ) {
+    constructor(parent: Query, query: Query, withStatement?: string, returnStatement = "RETURN COUNT(*)") {
         super(parent, query);
         this.withStatement = withStatement;
         this.returnStatement = returnStatement;
@@ -119,12 +106,11 @@ class CallStatement extends ConcatStatement {
             `\t${this.returnStatement}`,
             "}",
         ]);
-        // return `CALL { ${this.query.getCypher(context)} }`;
     }
 }
 
 class CreateStatement extends CypherASTNode {
-    constructor(parent: CypherASTRoot, private node: Node, private params: Params) {
+    constructor(parent: Query, private node: Node, private params: Params) {
         super(parent);
     }
 
@@ -149,7 +135,7 @@ type ReturnStatementArgs = [Node, Array<string>?, string?];
 class ReturnStatement extends CypherASTNode {
     private returnArgs: ReturnStatementArgs;
 
-    constructor(parent: CypherASTNode | CypherASTRoot, args: ReturnStatementArgs) {
+    constructor(parent: CypherASTNode, args: ReturnStatementArgs) {
         super(parent);
         this.returnArgs = args;
     }
@@ -172,7 +158,7 @@ class ReturnStatement extends CypherASTNode {
 
 type ParamsRecord = Record<string, Param<any>>;
 
-type OnCreateParameters = {
+type OnCreateRelationshipParameters = {
     source: ParamsRecord;
     target: ParamsRecord;
     relationship: ParamsRecord;
@@ -180,10 +166,9 @@ type OnCreateParameters = {
 
 class MergeStatement<T extends Node | Relationship> extends CypherASTNode {
     private element: T;
+    private onCreateParameters: OnCreateRelationshipParameters = { source: {}, target: {}, relationship: {} };
 
-    private onCreateParameters: OnCreateParameters = { source: {}, target: {}, relationship: {} };
-
-    constructor(parent: CypherASTRoot, element: T) {
+    constructor(parent: Query, element: T) {
         super(parent);
         this.element = element;
     }
@@ -196,11 +181,8 @@ class MergeStatement<T extends Node | Relationship> extends CypherASTNode {
         return `${mergeStr}${separator}${onCreateSetStatement}`;
     }
 
-    public onCreate<Node>(onCreate: ParamsRecord): CypherASTRoot;
-    public onCreate<Relationship>(onCreate: Partial<OnCreateParameters>): CypherASTRoot;
-    public onCreate(onCreate: Partial<OnCreateParameters> | ParamsRecord): CypherASTRoot {
-        let parameters: Partial<OnCreateParameters>;
-
+    public onCreate(onCreate: T extends Node ? ParamsRecord : Partial<OnCreateRelationshipParameters>): Query {
+        let parameters: Partial<OnCreateRelationshipParameters>;
         if (this.element instanceof Node) {
             parameters = { source: onCreate as ParamsRecord };
         } else {
@@ -208,10 +190,10 @@ class MergeStatement<T extends Node | Relationship> extends CypherASTNode {
         }
 
         this.mergeOnCreateParamenters(parameters);
-        return this.getRoot(); // TODO: improve this
+        return this.getRoot() as Query; // TODO: improve this
     }
 
-    private mergeOnCreateParamenters(options: Partial<OnCreateParameters>): void {
+    private mergeOnCreateParamenters(options: Partial<OnCreateRelationshipParameters>): void {
         this.onCreateParameters = {
             source: { ...this.onCreateParameters.source, ...(options.source || {}) },
             target: { ...this.onCreateParameters.target, ...(options.target || {}) },
@@ -261,7 +243,7 @@ type ApocValidateOptions = {
 class ApocValidate extends CypherASTNode {
     options: ApocValidateOptions;
 
-    constructor(parent: CypherASTRoot, options: ApocValidateOptions) {
+    constructor(parent: Query, options: ApocValidateOptions) {
         super(parent);
         this.options = options;
     }

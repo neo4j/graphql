@@ -29,7 +29,9 @@ describe("CypherBuilder", () => {
         });
 
         const subQuery = new CypherBuilder.Query().create(movieNode, { id: idParam }).return(movieNode);
-        const query = new CypherBuilder.Query().call(subQuery).return(movieNode, ["id"], "myalias");
+        const query = new CypherBuilder.Query()
+            .call(subQuery.getRoot() as CypherBuilder.Query)
+            .return(movieNode, ["id"], "myalias");
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
