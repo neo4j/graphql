@@ -202,7 +202,7 @@ class Node extends GraphElement {
         };
     }
 
-    public get mutationResponseTypeNames() {
+    public get mutationResponseTypeNames(): MutationResponseTypeNames {
         const pascalCasePlural = this.pascalCasePlural;
 
         return {

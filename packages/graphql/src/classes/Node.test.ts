@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Node, { NodeConstructor, RootTypeFieldNames } from "./Node";
+import Node, { MutationResponseTypeNames, NodeConstructor, RootTypeFieldNames } from "./Node";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { NodeDirective } from "./NodeDirective";
@@ -263,6 +263,159 @@ describe("Node", () => {
                 }).instance();
 
                 expect(node.rootTypeFieldNames).toStrictEqual(rootTypeFieldNames);
+            }
+        );
+    });
+
+    describe("mutation response type names", () => {
+        test.each<[string, MutationResponseTypeNames]>([
+            [
+                "Account",
+                {
+                    create: "CreateAccountsMutationResponse",
+                    update: "UpdateAccountsMutationResponse",
+                },
+            ],
+            [
+                "AWSAccount",
+                {
+                    create: "CreateAwsAccountsMutationResponse",
+                    update: "UpdateAwsAccountsMutationResponse",
+                },
+            ],
+            [
+                "AWS_ACCOUNT",
+                {
+                    create: "CreateAwsAccountsMutationResponse",
+                    update: "UpdateAwsAccountsMutationResponse",
+                },
+            ],
+            [
+                "aws-account",
+                {
+                    create: "CreateAwsAccountsMutationResponse",
+                    update: "UpdateAwsAccountsMutationResponse",
+                },
+            ],
+            [
+                "aws_account",
+                {
+                    create: "CreateAwsAccountsMutationResponse",
+                    update: "UpdateAwsAccountsMutationResponse",
+                },
+            ],
+            [
+                "account",
+                {
+                    create: "CreateAccountsMutationResponse",
+                    update: "UpdateAccountsMutationResponse",
+                },
+            ],
+            [
+                "ACCOUNT",
+                {
+                    create: "CreateAccountsMutationResponse",
+                    update: "UpdateAccountsMutationResponse",
+                },
+            ],
+            [
+                "A",
+                {
+                    create: "CreateAsMutationResponse",
+                    update: "UpdateAsMutationResponse",
+                },
+            ],
+            [
+                "_2number",
+                {
+                    create: "Create_2NumbersMutationResponse",
+                    update: "Update_2NumbersMutationResponse",
+                },
+            ],
+            [
+                "__2number",
+                {
+                    create: "Create__2NumbersMutationResponse",
+                    update: "Update__2NumbersMutationResponse",
+                },
+            ],
+            [
+                "_number",
+                {
+                    create: "Create_numbersMutationResponse",
+                    update: "Update_numbersMutationResponse",
+                },
+            ],
+        ])(
+            "should generate mutation response type names for %s as expected",
+            (typename: string, mutationResponseTypeNames: MutationResponseTypeNames) => {
+                const node = new NodeBuilder({
+                    name: typename,
+                }).instance();
+
+                expect(node.mutationResponseTypeNames).toStrictEqual(mutationResponseTypeNames);
+            }
+        );
+
+        test.each<[string, MutationResponseTypeNames]>([
+            [
+                "Accounts",
+                {
+                    create: "CreateAccountsMutationResponse",
+                    update: "UpdateAccountsMutationResponse",
+                },
+            ],
+            [
+                "AWSAccounts",
+                {
+                    create: "CreateAwsAccountsMutationResponse",
+                    update: "UpdateAwsAccountsMutationResponse",
+                },
+            ],
+            [
+                "AWS_ACCOUNTS",
+                {
+                    create: "CreateAwsAccountsMutationResponse",
+                    update: "UpdateAwsAccountsMutationResponse",
+                },
+            ],
+            [
+                "aws-accounts",
+                {
+                    create: "CreateAwsAccountsMutationResponse",
+                    update: "UpdateAwsAccountsMutationResponse",
+                },
+            ],
+            [
+                "aws_accounts",
+                {
+                    create: "CreateAwsAccountsMutationResponse",
+                    update: "UpdateAwsAccountsMutationResponse",
+                },
+            ],
+            [
+                "accounts",
+                {
+                    create: "CreateAccountsMutationResponse",
+                    update: "UpdateAccountsMutationResponse",
+                },
+            ],
+            [
+                "ACCOUNTS",
+                {
+                    create: "CreateAccountsMutationResponse",
+                    update: "UpdateAccountsMutationResponse",
+                },
+            ],
+        ])(
+            "should generate mutation response type names for %s as expected with plural specified in @node directive",
+            (plural: string, mutationResponseTypeNames: MutationResponseTypeNames) => {
+                const node = new NodeBuilder({
+                    name: "Test",
+                    nodeDirective: new NodeDirective({ plural }),
+                }).instance();
+
+                expect(node.mutationResponseTypeNames).toStrictEqual(mutationResponseTypeNames);
             }
         );
     });
