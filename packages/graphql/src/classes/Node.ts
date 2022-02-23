@@ -18,6 +18,7 @@
  */
 
 import { DirectiveNode, NamedTypeNode } from "graphql";
+import camelcase from "camelcase";
 import pluralize from "pluralize";
 import type {
     Auth,
@@ -39,8 +40,8 @@ import type {
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
-import { lowerFirst } from "../utils/lower-first";
 import { QueryOptionsDirective } from "./QueryOptionsDirective";
+import { upperFirst } from "../utils/upper-first";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -88,6 +89,19 @@ type AuthableField =
 
 type ConstrainableField = PrimitiveField | TemporalField | PointField;
 
+export type RootTypeFieldNames = {
+    create: string;
+    read: string;
+    update: string;
+    delete: string;
+    aggregate: string;
+};
+
+export type MutationResponseTypeNames = {
+    create: string;
+    update: string;
+};
+
 class Node extends GraphElement {
     public relationFields: RelationField[];
     public connectionFields: ConnectionField[];
@@ -103,6 +117,7 @@ class Node extends GraphElement {
     public auth?: Auth;
     public description?: string;
     public queryOptions?: QueryOptionsDirective;
+    public plural: string;
 
     constructor(input: NodeConstructor) {
         super(input);
@@ -119,6 +134,19 @@ class Node extends GraphElement {
         this.fulltextDirective = input.fulltextDirective;
         this.auth = input.auth;
         this.queryOptions = input.queryOptionsDirective;
+        this.plural = this.generatePlural();
+    }
+
+    private generatePlural(): string {
+        const name = this.nodeDirective?.plural || this.name;
+
+        const re = /^(_+).+/;
+        const match = re.exec(name);
+        const leadingUnderscores = match?.[1] || "";
+
+        const plural = this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
+
+        return `${leadingUnderscores}${plural}`;
     }
 
     // Fields you can set in a create or update mutation
@@ -158,9 +186,29 @@ class Node extends GraphElement {
         return this.constrainableFields.filter((field) => field.unique);
     }
 
-    public get plural(): string {
-        const pluralValue = this.nodeDirective?.plural ? this.nodeDirective.plural : pluralize(this.name);
-        return lowerFirst(pluralValue);
+    private get pascalCasePlural(): string {
+        return upperFirst(this.plural);
+    }
+
+    public get rootTypeFieldNames(): RootTypeFieldNames {
+        const pascalCasePlural = this.pascalCasePlural;
+
+        return {
+            create: `create${pascalCasePlural}`,
+            read: this.plural,
+            update: `update${pascalCasePlural}`,
+            delete: `delete${pascalCasePlural}`,
+            aggregate: `${this.plural}Aggregate`,
+        };
+    }
+
+    public get mutationResponseTypeNames(): MutationResponseTypeNames {
+        const pascalCasePlural = this.pascalCasePlural;
+
+        return {
+            create: `Create${pascalCasePlural}MutationResponse`,
+            update: `Update${pascalCasePlural}MutationResponse`,
+        };
     }
 
     public getLabelString(context: Context): string {
