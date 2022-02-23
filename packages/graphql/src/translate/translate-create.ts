@@ -33,7 +33,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
     let connectionParams: any;
     let interfaceParams: any;
 
-    const mutationResponse = resolveTree.fieldsByTypeName[`Create${upperFirst(node.plural)}MutationResponse`];
+    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
 

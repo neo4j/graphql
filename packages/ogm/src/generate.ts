@@ -20,7 +20,6 @@
 import { codegen } from "@graphql-codegen/core";
 import * as typescriptPlugin from "@graphql-codegen/typescript";
 import { Types } from "@graphql-codegen/plugin-helpers";
-import { Neo4jGraphQL } from "@neo4j/graphql";
 import * as fs from "fs";
 import * as graphql from "graphql";
 import prettier from "prettier";
