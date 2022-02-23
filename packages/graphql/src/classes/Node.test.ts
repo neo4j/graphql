@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import Node, { NodeConstructor } from "./Node";
+import Node, { NodeConstructor, RootTypeFieldNames } from "./Node";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
+import { NodeDirective } from "./NodeDirective";
 
 describe("Node", () => {
     const defaultContext = new ContextBuilder().instance();
@@ -62,12 +63,208 @@ describe("Node", () => {
         expect(node.getLabels(defaultContext)).toEqual(["Movie"]);
     });
 
-    test("should return plural with underscores", () => {
-        const node = new NodeBuilder({
-            name: "super_movie",
-        }).instance();
+    describe("root type field names", () => {
+        test.each<[string, RootTypeFieldNames]>([
+            [
+                "Account",
+                {
+                    create: "createAccounts",
+                    read: "accounts",
+                    update: "updateAccounts",
+                    delete: "deleteAccounts",
+                    aggregate: "accountsAggregate",
+                },
+            ],
+            [
+                "AWSAccount",
+                {
+                    create: "createAwsAccounts",
+                    read: "awsAccounts",
+                    update: "updateAwsAccounts",
+                    delete: "deleteAwsAccounts",
+                    aggregate: "awsAccountsAggregate",
+                },
+            ],
+            [
+                "AWS_ACCOUNT",
+                {
+                    create: "createAwsAccounts",
+                    read: "awsAccounts",
+                    update: "updateAwsAccounts",
+                    delete: "deleteAwsAccounts",
+                    aggregate: "awsAccountsAggregate",
+                },
+            ],
+            [
+                "aws-account",
+                {
+                    create: "createAwsAccounts",
+                    read: "awsAccounts",
+                    update: "updateAwsAccounts",
+                    delete: "deleteAwsAccounts",
+                    aggregate: "awsAccountsAggregate",
+                },
+            ],
+            [
+                "aws_account",
+                {
+                    create: "createAwsAccounts",
+                    read: "awsAccounts",
+                    update: "updateAwsAccounts",
+                    delete: "deleteAwsAccounts",
+                    aggregate: "awsAccountsAggregate",
+                },
+            ],
+            [
+                "account",
+                {
+                    create: "createAccounts",
+                    read: "accounts",
+                    update: "updateAccounts",
+                    delete: "deleteAccounts",
+                    aggregate: "accountsAggregate",
+                },
+            ],
+            [
+                "ACCOUNT",
+                {
+                    create: "createAccounts",
+                    read: "accounts",
+                    update: "updateAccounts",
+                    delete: "deleteAccounts",
+                    aggregate: "accountsAggregate",
+                },
+            ],
+            [
+                "A",
+                {
+                    create: "createAs",
+                    read: "as",
+                    update: "updateAs",
+                    delete: "deleteAs",
+                    aggregate: "asAggregate",
+                },
+            ],
+            [
+                "_2number",
+                {
+                    create: "create_2Numbers",
+                    read: "_2Numbers",
+                    update: "update_2Numbers",
+                    delete: "delete_2Numbers",
+                    aggregate: "_2NumbersAggregate",
+                },
+            ],
+            [
+                "__2number",
+                {
+                    create: "create__2Numbers",
+                    read: "__2Numbers",
+                    update: "update__2Numbers",
+                    delete: "delete__2Numbers",
+                    aggregate: "__2NumbersAggregate",
+                },
+            ],
+            [
+                "_number",
+                {
+                    create: "create_numbers",
+                    read: "_numbers",
+                    update: "update_numbers",
+                    delete: "delete_numbers",
+                    aggregate: "_numbersAggregate",
+                },
+            ],
+        ])("should pluralize %s as expected", (typename: string, rootTypeFieldNames: RootTypeFieldNames) => {
+            const node = new NodeBuilder({
+                name: typename,
+            }).instance();
 
-        expect(node.plural).toBe("super_movies");
+            expect(node.rootTypeFieldNames).toStrictEqual(rootTypeFieldNames);
+        });
+
+        test.each<[string, RootTypeFieldNames]>([
+            [
+                "Accounts",
+                {
+                    create: "createAccounts",
+                    read: "accounts",
+                    update: "updateAccounts",
+                    delete: "deleteAccounts",
+                    aggregate: "accountsAggregate",
+                },
+            ],
+            [
+                "AWSAccounts",
+                {
+                    create: "createAwsAccounts",
+                    read: "awsAccounts",
+                    update: "updateAwsAccounts",
+                    delete: "deleteAwsAccounts",
+                    aggregate: "awsAccountsAggregate",
+                },
+            ],
+            [
+                "AWS_ACCOUNTS",
+                {
+                    create: "createAwsAccounts",
+                    read: "awsAccounts",
+                    update: "updateAwsAccounts",
+                    delete: "deleteAwsAccounts",
+                    aggregate: "awsAccountsAggregate",
+                },
+            ],
+            [
+                "aws-accounts",
+                {
+                    create: "createAwsAccounts",
+                    read: "awsAccounts",
+                    update: "updateAwsAccounts",
+                    delete: "deleteAwsAccounts",
+                    aggregate: "awsAccountsAggregate",
+                },
+            ],
+            [
+                "aws_accounts",
+                {
+                    create: "createAwsAccounts",
+                    read: "awsAccounts",
+                    update: "updateAwsAccounts",
+                    delete: "deleteAwsAccounts",
+                    aggregate: "awsAccountsAggregate",
+                },
+            ],
+            [
+                "accounts",
+                {
+                    create: "createAccounts",
+                    read: "accounts",
+                    update: "updateAccounts",
+                    delete: "deleteAccounts",
+                    aggregate: "accountsAggregate",
+                },
+            ],
+            [
+                "ACCOUNTS",
+                {
+                    create: "createAccounts",
+                    read: "accounts",
+                    update: "updateAccounts",
+                    delete: "deleteAccounts",
+                    aggregate: "accountsAggregate",
+                },
+            ],
+        ])(
+            "should pluralize %s as expected with plural specified in @node directive",
+            (plural: string, rootTypeFieldNames: RootTypeFieldNames) => {
+                const node = new NodeBuilder({
+                    name: "Test",
+                    nodeDirective: new NodeDirective({ plural }),
+                }).instance();
+
+                expect(node.rootTypeFieldNames).toStrictEqual(rootTypeFieldNames);
+            }
+        );
     });
 
     describe("NodeDirective", () => {

@@ -255,6 +255,8 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
+        console.log(typeDefs);
+
         expect(typeDefs).toMatchInlineSnapshot(`
             "type _2number @node(label: \\"2number\\") {
             	prop: BigInt!

@@ -176,7 +176,7 @@ export const nodeDirective = new GraphQLDirective({
             type: new GraphQLList(new GraphQLNonNull(GraphQLString)),
         },
         plural: {
-            description: "Defines a custom plural for the Node API",
+            description: "Allows for the specification of the plural of the type name if the type name is non-English.",
             type: GraphQLString,
         },
     },

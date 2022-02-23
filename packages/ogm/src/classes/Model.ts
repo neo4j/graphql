@@ -19,9 +19,9 @@
 
 import { DocumentNode, graphql, GraphQLSchema, parse, print, SelectionSetNode } from "graphql";
 import pluralize from "pluralize";
+import camelcase from "camelcase";
 import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
 import { upperFirst } from "../utils/upper-first";
-import { lowerFirst } from "../utils/lower-first";
 
 function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNode): string {
     if (typeof selectionSet === "string") {
@@ -40,7 +40,7 @@ class Model {
 
     constructor(name: string) {
         this.name = name;
-        this.namePluralized = lowerFirst(pluralize(this.name));
+        this.namePluralized = pluralize(camelcase(this.name));
     }
 
     public set selectionSet(selectionSet: string | DocumentNode) {
