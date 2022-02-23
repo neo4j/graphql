@@ -319,7 +319,7 @@ function createUpdateAndParams({
                     }
 
                     if (update.connectOrCreate) {
-                        const [connectOrCreateQuery, connectOrCreateParams] = createConnectOrCreateAndParams({
+                        const { cypher, params } = createConnectOrCreateAndParams({
                             input: update.connectOrCreate,
                             varName: `${_varName}_connectOrCreate`,
                             parentVar: varName,
@@ -327,8 +327,8 @@ function createUpdateAndParams({
                             refNode,
                             context,
                         });
-                        subquery.push(connectOrCreateQuery);
-                        res.params = { ...res.params, ...connectOrCreateParams };
+                        subquery.push(cypher);
+                        res.params = { ...res.params, ...params };
                     }
 
                     if (update.delete) {

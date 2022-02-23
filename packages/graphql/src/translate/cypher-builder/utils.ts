@@ -18,7 +18,6 @@
  */
 
 import { Param } from "./cypher-builder-references";
-import { CypherStatement, CypherParams } from "../types";
 import { stringifyObject } from "../utils/stringify-object";
 
 export function convertToCypherParams<T>(original: Record<string, T>): Record<string, Param<T>> {
@@ -34,10 +33,13 @@ export function generateParameterKey(prefix: string, key: string): string {
 }
 
 /** Serializes an object and splits between the serialized statement and params */
-export function serializeParameters(keyprefix: string, parameters: CypherParams | undefined): CypherStatement {
+export function serializeParameters(
+    keyprefix: string,
+    parameters: Record<string, any> | undefined
+): [string, Record<string, any>] {
     if (!parameters) return ["", {}];
 
-    const cypherParameters: CypherParams = {};
+    const cypherParameters: Record<string, any> = {};
     const nodeParameters: Record<string, string> = {};
 
     for (const [key, value] of Object.entries(parameters)) {

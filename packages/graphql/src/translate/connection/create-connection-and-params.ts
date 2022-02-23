@@ -33,7 +33,6 @@ import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
-import { CypherStatement } from "../types";
 import { isString } from "../../utils/utils";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";
 
@@ -49,7 +48,7 @@ function createConnectionAndParams({
     context: Context;
     nodeVariable: string;
     parameterPrefix?: string;
-}): CypherStatement {
+}): [string, Record<string, any>] {
     let globalParams = {};
     let nestedConnectionFieldParams;
 

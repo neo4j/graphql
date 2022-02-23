@@ -323,7 +323,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             }
 
             refNodes.forEach((refNode) => {
-                const connectAndParams = createConnectOrCreateAndParams({
+                const { cypher, params } = createConnectOrCreateAndParams({
                     input: input[refNode.name] || input, // Deals with different input from update -> connectOrCreate
                     varName: `${varName}_connectOrCreate_${key}${relationField.union ? `_${refNode.name}` : ""}`,
                     parentVar: varName,
@@ -331,8 +331,8 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     refNode,
                     context,
                 });
-                connectStrs.push(connectAndParams[0]);
-                cypherParams = { ...cypherParams, ...connectAndParams[1] };
+                connectStrs.push(cypher);
+                cypherParams = { ...cypherParams, ...params };
             });
         });
     }

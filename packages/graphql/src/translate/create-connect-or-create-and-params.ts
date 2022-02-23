@@ -18,7 +18,6 @@
  */
 
 import { RelationField, Context } from "../types";
-import { CypherStatement } from "./types";
 import { Node, Relationship } from "../classes";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
@@ -52,7 +51,7 @@ export function createConnectOrCreateAndParams({
     relationField: RelationField;
     refNode: Node;
     context: Context;
-}): CypherStatement {
+}): CypherBuilder.CypherResult {
     const statements = asArray(input).map((inputItem, index): CypherBuilder.Query => {
         const subqueryBaseName = `${varName}${index}`;
         const result = createConnectOrCreatePartialStatement({
@@ -71,8 +70,7 @@ export function createConnectOrCreateAndParams({
         return result;
     }, new CypherBuilder.Query());
 
-    const queryResult = new CypherBuilder.Query().call(query, parentVar).build(`${varName}_`);
-    return [queryResult.cypher, queryResult.params];
+    return new CypherBuilder.Query().call(query, parentVar).build(`${varName}_`);
 }
 
 function createConnectOrCreatePartialStatement({

@@ -154,7 +154,7 @@ function createCreateAndParams({
                 }
 
                 if (v.connectOrCreate) {
-                    const [connectOrCreateQuery, connectOrCreateParams] = createConnectOrCreateAndParams({
+                    const { cypher, params } = createConnectOrCreateAndParams({
                         input: v.connectOrCreate,
                         varName: `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}_connectOrCreate`,
                         parentVar: varName,
@@ -162,8 +162,8 @@ function createCreateAndParams({
                         refNode,
                         context,
                     });
-                    res.creates.push(connectOrCreateQuery);
-                    res.params = { ...res.params, ...connectOrCreateParams };
+                    res.creates.push(cypher);
+                    res.params = { ...res.params, ...params };
                 }
             });
 
