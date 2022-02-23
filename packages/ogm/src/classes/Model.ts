@@ -66,7 +66,7 @@ class Model {
             throw new Error("Must execute `OGM.init()` method before using Model instances");
         }
 
-        return this.rootTypeFieldNames;
+        return this._rootTypeFieldNames;
     }
 
     init({
