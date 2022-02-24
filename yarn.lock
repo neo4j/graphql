@@ -1762,7 +1762,7 @@ __metadata:
     graphql-tag: 2.12.6
     jest: 27.5.1
     jsonwebtoken: 8.5.1
-    libnpmsearch: 4.0.1
+    libnpmsearch: 5.0.0
     npm-run-all: 4.1.5
     pluralize: 8.0.0
     prettier: ^2.5.1
@@ -1826,7 +1826,7 @@ __metadata:
     koa: 2.13.4
     koa-jwt: 4.0.3
     koa-router: 10.1.1
-    libnpmsearch: 4.0.1
+    libnpmsearch: 5.0.0
     mock-jwks: 1.0.3
     nock: 13.2.4
     npm-run-all: 4.1.5
@@ -8463,7 +8463,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hosted-git-info@npm:^4.0.1":
+"hosted-git-info@npm:^4.1.0":
   version: 4.1.0
   resolution: "hosted-git-info@npm:4.1.0"
   dependencies:
@@ -10816,12 +10816,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libnpmsearch@npm:4.0.1":
-  version: 4.0.1
-  resolution: "libnpmsearch@npm:4.0.1"
+"libnpmsearch@npm:5.0.0":
+  version: 5.0.0
+  resolution: "libnpmsearch@npm:5.0.0"
   dependencies:
-    npm-registry-fetch: ^12.0.1
-  checksum: 79c8220905d7bbd56a380609d3cb63752a1cbb9ab5d619da77926b29216afb405f2244e1b43ae52c242ffd1835a1ff74468b289e1b08841b70b61a8621168638
+    npm-registry-fetch: ^13.0.0
+  checksum: 78445bd93670008501c3f52cb9845148ee245a01588e42e0b75b6eb6af65b02c5a5022ec7fd40fbaed213897f525e9fff6318a181505780f570caacf69f4cfe3
   languageName: node
   linkType: hard
 
@@ -11263,7 +11263,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"make-fetch-happen@npm:^10.0.1":
+"make-fetch-happen@npm:^10.0.2":
   version: 10.0.3
   resolution: "make-fetch-happen@npm:10.0.3"
   dependencies:
@@ -12253,28 +12253,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-package-arg@npm:^8.1.5":
-  version: 8.1.5
-  resolution: "npm-package-arg@npm:8.1.5"
+"npm-package-arg@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "npm-package-arg@npm:9.0.0"
   dependencies:
-    hosted-git-info: ^4.0.1
-    semver: ^7.3.4
+    hosted-git-info: ^4.1.0
+    semver: ^7.3.5
     validate-npm-package-name: ^3.0.0
-  checksum: ae76afbcebb4ea8d0b849b8b18ed1b0491030fb04a0af5d75f1b8390cc50bec186ced9fbe60f47d939eab630c7c0db0919d879ac56a87d3782267dfe8eec60d3
+  checksum: 88cea0eb8691915dcd13bf206fecacda52bfbf7724ada55359449b2a2a5965fe865dd319ff1832bf47b4d87bb9885ec4e80da2f7fdac5b37414d96211c316c86
   languageName: node
   linkType: hard
 
-"npm-registry-fetch@npm:^12.0.1":
-  version: 12.0.2
-  resolution: "npm-registry-fetch@npm:12.0.2"
+"npm-registry-fetch@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "npm-registry-fetch@npm:13.0.0"
   dependencies:
-    make-fetch-happen: ^10.0.1
+    make-fetch-happen: ^10.0.2
     minipass: ^3.1.6
     minipass-fetch: ^1.4.1
     minipass-json-stream: ^1.0.1
     minizlib: ^2.1.2
-    npm-package-arg: ^8.1.5
-  checksum: 88ef49b6fad104165f183ec804a65471a23cead40fa035ac57f2cbe084feffe9c10bed8c4234af3fa549d947108450d5359b41ae5dec9a1ffca4d8fa7c7f78b8
+    npm-package-arg: ^9.0.0
+    proc-log: ^2.0.0
+  checksum: 3cb3275e71ec9922bfe4118cc30a6b25dee8ffed1c47d2f8f122c9e78ef3f67c1fa8adc8c7b5c22e1d8c159224a76fb25f01b6e6f39d01c7825b6cee92f8b58c
   languageName: node
   linkType: hard
 
@@ -13724,6 +13725,13 @@ __metadata:
   bin:
     printj: bin/printj.njs
   checksum: 3bb8976e02c2a5943f86bf7d1cbe7764fa9fb6fb177cbc9fe0044adbd7be11dbf82e4c72d381f4d2ddc578fada92ea24ab263069549254cb796a252f11fd1ddf
+  languageName: node
+  linkType: hard
+
+"proc-log@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "proc-log@npm:2.0.0"
+  checksum: 74ab7f7d47fee1fa81e068e9a7f4cdca7e20b6b14fe51fad1f595bf9d4ce5451c858922a25f447835021ec89192788b56700cd7740ede50966099c41ebe0c70c
   languageName: node
   linkType: hard
 
