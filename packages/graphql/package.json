@@ -55,7 +55,7 @@
         "@types/randomstring": "1.1.8",
         "apollo-server": "3.6.3",
         "dedent": "0.7.0",
-        "graphql-middleware": "6.1.14",
+        "graphql-middleware": "6.1.15",
         "graphql-tag": "2.12.6",
         "is-uuid": "1.0.2",
         "jest": "27.5.1",
