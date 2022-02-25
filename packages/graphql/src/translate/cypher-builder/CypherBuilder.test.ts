@@ -18,7 +18,6 @@
  */
 
 import * as CypherBuilder from "./CypherBuilder";
-import { Param } from "./CypherBuilder";
 
 describe("CypherBuilder", () => {
     describe("Create", () => {
@@ -57,11 +56,11 @@ describe("CypherBuilder", () => {
 
             const query = new CypherBuilder.Merge(relationship).onCreate({
                 source: {
-                    age: new Param(23),
-                    name: new Param("Keanu"),
+                    age: new CypherBuilder.Param(23),
+                    name: new CypherBuilder.Param("Keanu"),
                 },
                 relationship: {
-                    screentime: new Param(10),
+                    screentime: new CypherBuilder.Param(10),
                 },
             });
 

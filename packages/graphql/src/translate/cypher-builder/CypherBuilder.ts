@@ -19,15 +19,41 @@
 
 import { joinStrings } from "../../utils/utils";
 import { Node, Param, Relationship } from "./cypher-builder-references";
-import { CypherASTNode } from "./cypher-builder-types";
+import { CypherASTNode, CypherResult } from "./cypher-builder-types";
 import { CypherContext } from "./CypherContext";
 
-export { NamedNode, Node, Param, Relationship } from "./cypher-builder-references";
+export { NamedNode, Node, Param, Relationship, RawParam } from "./cypher-builder-references";
 export { CypherResult } from "./cypher-builder-types";
 
 type Params = Record<string, Param<any>>;
 
-export class Create extends CypherASTNode {
+export class Query extends CypherASTNode {
+    public cypher(_context: CypherContext, childrenCypher: string): string {
+        return childrenCypher;
+    }
+
+    public concat(query: CypherASTNode | undefined): this {
+        if (query) {
+            this.addStatement(query);
+        }
+        return this;
+    }
+
+    public build(prefix?: string): CypherResult {
+        if (this.isRoot) {
+            const context = this.getContext(prefix);
+            const cypher = this.getCypher(context);
+            return {
+                cypher,
+                params: context.getParams(),
+            };
+        }
+        const root = this.getRoot() as Query;
+        return root.build(prefix);
+    }
+}
+
+export class Create extends Query {
     constructor(private node: Node, private params: Params, parent?: Query) {
         super(parent);
     }
@@ -53,7 +79,7 @@ export class Create extends CypherASTNode {
     }
 }
 
-export class Merge<T extends Node | Relationship> extends CypherASTNode {
+export class Merge<T extends Node | Relationship> extends Query {
     private element: T;
     private onCreateParameters: OnCreateRelationshipParameters = { source: {}, target: {}, relationship: {} };
 
@@ -124,62 +150,7 @@ export class Merge<T extends Node | Relationship> extends CypherASTNode {
     }
 }
 
-export class Query extends CypherASTNode {
-    public cypher(_context: CypherContext, childrenCypher: string): string {
-        return childrenCypher;
-    }
-}
-
-// export class Query extends CypherASTNode {
-//     private namedParams: Record<string, Param<any>> = {};
-//
-//     public addNamedParams(params: Record<string, Param<any>>) {
-//         this.namedParams = { ...this.namedParams, ...params };
-//     }
-//
-//     public call(query: Query, withStatement?: string): Query {
-//         this.addStatement(new CallStatement(this, query, withStatement));
-//         return this;
-//     }
-//
-//     public concat(query: Query): Query {
-//         this.addStatement(new ConcatStatement(this, query));
-//         return this;
-//     }
-//
-//     public validate(options: ApocValidateOptions): Query {
-//         this.addStatement(new ApocValidate(this, options));
-//         return this;
-//     }
-//
-//     public return(...args: ReturnStatementArgs) {
-//         const returnStatement = new ReturnStatement(this, args);
-//         this.addStatement(returnStatement);
-//         return this.getRoot();
-//     }
-//
-//     public cypher(context: CypherContext, childrenCypher: string): string {
-//         Object.entries(this.namedParams).forEach(([name, param]) => {
-//             context.addNamedParamReference(name, param); // Only for compatibility reasons
-//         });
-//         return childrenCypher;
-//     }
-// }
-
-// class ConcatStatement extends CypherASTNode {
-//     protected query: Query;
-//
-//     constructor(parent: Query, query: Query) {
-//         super(parent);
-//         this.query = query;
-//     }
-//
-//     public cypher(context: CypherContext, childrenCypher: string): string {
-//         return this.query.getCypher(context);
-//     }
-// }
-
-export class Call extends CypherASTNode {
+export class Call extends Query {
     private withStatement: string | undefined;
     private returnStatement: string;
 
@@ -212,6 +183,7 @@ class ReturnStatement extends CypherASTNode {
         super(parent);
         this.returnArgs = args;
     }
+
     public cypher(context: CypherContext): string {
         let projection = "";
         let alias = "";
@@ -228,6 +200,21 @@ class ReturnStatement extends CypherASTNode {
     }
 }
 
+export class ApocValidate extends Query {
+    options: ApocValidateOptions;
+
+    constructor(options: ApocValidateOptions, parent?: CypherASTNode) {
+        super(parent);
+        this.options = options;
+    }
+
+    public cypher(_context: CypherContext, childrenCypher: string): string {
+        const statements = [this.options.predicate, `"${this.options.message}"`, "[0]"].join(", ");
+
+        return `CALL apoc.util.validate(${statements})\n${childrenCypher}`;
+    }
+}
+
 type ParamsRecord = Record<string, Param<any>>;
 
 type OnCreateRelationshipParameters = {
@@ -240,22 +227,3 @@ type ApocValidateOptions = {
     predicate: string;
     message: string;
 };
-
-// export const Apoc = {
-//     Validate: class ApocValidate
-// }
-
-export class ApocValidate extends CypherASTNode {
-    options: ApocValidateOptions;
-
-    constructor(options: ApocValidateOptions, parent?: CypherASTNode) {
-        super(parent);
-        this.options = options;
-    }
-
-    public cypher(_context: CypherContext, childrenCypher): string {
-        const statements = [this.options.predicate, `"${this.options.message}"`, "[0]"].join(", ");
-
-        return `CALL apoc.util.validate(${statements})\n${childrenCypher}`;
-    }
-}

@@ -41,11 +41,6 @@ export abstract class CypherASTNode {
         return this;
     }
 
-    public concat(query: CypherASTNode): this {
-        this.addStatement(query);
-        return this;
-    }
-
     public getCypher(context: CypherContext, separator = "\n"): string {
         Object.entries(this.namedParams).forEach(([name, param]) => {
             context.addNamedParamReference(name, param); // Only for compatibility reasons
@@ -61,19 +56,6 @@ export abstract class CypherASTNode {
 
     protected abstract cypher(context: CypherContext, childrenCypher: string): string;
 
-    public build(prefix?: string): CypherResult {
-        if (this.isRoot) {
-            const context = this.getContext(prefix);
-            const cypher = this.getCypher(context);
-            return {
-                cypher,
-                params: context.getParams(),
-            };
-        }
-        const root = this.getRoot();
-        return root.build(prefix);
-    }
-
     protected getContext(prefix?: string): CypherContext {
         return new CypherContext(prefix);
     }
@@ -87,7 +69,7 @@ export abstract class CypherASTNode {
         this.namedParams = { ...this.namedParams, ...params };
     }
 
-    private get isRoot() {
+    protected get isRoot() {
         return this.parent === undefined;
     }
 }
