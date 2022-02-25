@@ -6968,9 +6968,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:7.29.0":
-  version: 7.29.0
-  resolution: "eslint-plugin-react@npm:7.29.0"
+"eslint-plugin-react@npm:7.29.1":
+  version: 7.29.1
+  resolution: "eslint-plugin-react@npm:7.29.1"
   dependencies:
     array-includes: ^3.1.4
     array.prototype.flatmap: ^1.2.5
@@ -6988,7 +6988,7 @@ __metadata:
     string.prototype.matchall: ^4.0.6
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
-  checksum: 2951ec2758a56ae2bc6f3729906043d2b67f1f5a971f070c4ba85ee37fe5fca32bc6097e5bd185d472c90031176611b43d1751e934080d1bb8e2e096fdaf0abb
+  checksum: d1d0d267d26a5eeb2ba9c3ed23982110e43858d7849b14a83f054d8581a31566cba806a16635a519c875c73c0d4c5c21d778f471c77fd39fc264ec0d1beefaec
   languageName: node
   linkType: hard
 
@@ -12038,7 +12038,7 @@ __metadata:
     eslint-plugin-import: 2.25.4
     eslint-plugin-jest: 26.1.1
     eslint-plugin-jsx-a11y: 6.5.1
-    eslint-plugin-react: 7.29.0
+    eslint-plugin-react: 7.29.1
     graphql: 16.3.0
     husky: 7.0.4
     jest: 27.5.1
