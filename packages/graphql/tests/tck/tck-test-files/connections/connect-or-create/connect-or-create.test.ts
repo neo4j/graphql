@@ -93,12 +93,12 @@ describe("Create or Connect", () => {
                 WITH this0
                 CALL {
                 	WITH this0
-                	MERGE (this0_movies_connectOrCreate_this0:\`Movie\` { title: $this0_movies_connectOrCreate_param0 })
+                	MERGE (this0_movies_connectOrCreate_this1:\`Movie\` { title: $this0_movies_connectOrCreate_param1 })
                 ON CREATE SET
-                        this0_movies_connectOrCreate_this0.title = $this0_movies_connectOrCreate_param1
-                MERGE (this0)-[this0_movies_connectOrCreate_this1:\`ACTED_IN\`]->(this0_movies_connectOrCreate_this0)
+                        this0_movies_connectOrCreate_this1.title = $this0_movies_connectOrCreate_param2
+                MERGE (this0)-[this0_movies_connectOrCreate_this0:\`ACTED_IN\`]->(this0_movies_connectOrCreate_this1)
                 ON CREATE SET
-                        this0_movies_connectOrCreate_this1.screentime = $this0_movies_connectOrCreate_param2
+                        this0_movies_connectOrCreate_this0.screentime = $this0_movies_connectOrCreate_param0
                 	RETURN COUNT(*)
                 }
                 RETURN this0
@@ -110,12 +110,12 @@ describe("Create or Connect", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this0_name\\": \\"Tom Hanks\\",
-                    \\"this0_movies_connectOrCreate_param0\\": \\"The Terminal\\",
-                    \\"this0_movies_connectOrCreate_param1\\": \\"The Terminal\\",
-                    \\"this0_movies_connectOrCreate_param2\\": {
+                    \\"this0_movies_connectOrCreate_param0\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"this0_movies_connectOrCreate_param1\\": \\"The Terminal\\",
+                    \\"this0_movies_connectOrCreate_param2\\": \\"The Terminal\\"
                 }"
             `);
         });
@@ -154,12 +154,12 @@ describe("Create or Connect", () => {
                 WITH this
                 CALL {
                 	WITH this
-                	MERGE (this_movies0_connectOrCreate_this0:\`Movie\` { title: $this_movies0_connectOrCreate_param0 })
+                	MERGE (this_movies0_connectOrCreate_this1:\`Movie\` { title: $this_movies0_connectOrCreate_param1 })
                 ON CREATE SET
-                        this_movies0_connectOrCreate_this0.title = $this_movies0_connectOrCreate_param1
-                MERGE (this)-[this_movies0_connectOrCreate_this1:\`ACTED_IN\`]->(this_movies0_connectOrCreate_this0)
+                        this_movies0_connectOrCreate_this1.title = $this_movies0_connectOrCreate_param2
+                MERGE (this)-[this_movies0_connectOrCreate_this0:\`ACTED_IN\`]->(this_movies0_connectOrCreate_this1)
                 ON CREATE SET
-                        this_movies0_connectOrCreate_this1.screentime = $this_movies0_connectOrCreate_param2
+                        this_movies0_connectOrCreate_this0.screentime = $this_movies0_connectOrCreate_param0
                 	RETURN COUNT(*)
                 }
                 RETURN this { .name } AS this"
@@ -169,12 +169,12 @@ describe("Create or Connect", () => {
                 "{
                     \\"this_name\\": \\"Tom Hanks\\",
                     \\"this_update_name\\": \\"Tom Hanks 2\\",
-                    \\"this_movies0_connectOrCreate_param0\\": \\"The Terminal\\",
-                    \\"this_movies0_connectOrCreate_param1\\": \\"The Terminal\\",
-                    \\"this_movies0_connectOrCreate_param2\\": {
+                    \\"this_movies0_connectOrCreate_param0\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"this_movies0_connectOrCreate_param1\\": \\"The Terminal\\",
+                    \\"this_movies0_connectOrCreate_param2\\": \\"The Terminal\\"
                 }"
             `);
         });
@@ -250,14 +250,14 @@ describe("Create or Connect", () => {
                 WITH this0
                 CALL {
                 	WITH this0
-                	MERGE (this0_movies_connectOrCreate_this0:\`Movie\` { title: $this0_movies_connectOrCreate_param0 })
+                	MERGE (this0_movies_connectOrCreate_this1:\`Movie\` { title: $this0_movies_connectOrCreate_param1 })
                 ON CREATE SET
-                        this0_movies_connectOrCreate_this0.createdAt = datetime(),
-                this0_movies_connectOrCreate_this0.id = randomUUID(),
-                this0_movies_connectOrCreate_this0.title = $this0_movies_connectOrCreate_param1
-                MERGE (this0)-[this0_movies_connectOrCreate_this1:\`ACTED_IN\`]->(this0_movies_connectOrCreate_this0)
+                        this0_movies_connectOrCreate_this1.createdAt = datetime(),
+                this0_movies_connectOrCreate_this1.id = randomUUID(),
+                this0_movies_connectOrCreate_this1.title = $this0_movies_connectOrCreate_param2
+                MERGE (this0)-[this0_movies_connectOrCreate_this0:\`ACTED_IN\`]->(this0_movies_connectOrCreate_this1)
                 ON CREATE SET
-                        this0_movies_connectOrCreate_this1.screentime = $this0_movies_connectOrCreate_param2
+                        this0_movies_connectOrCreate_this0.screentime = $this0_movies_connectOrCreate_param0
                 	RETURN COUNT(*)
                 }
                 RETURN this0
@@ -269,12 +269,12 @@ describe("Create or Connect", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this0_name\\": \\"Tom Hanks\\",
-                    \\"this0_movies_connectOrCreate_param0\\": \\"The Terminal\\",
-                    \\"this0_movies_connectOrCreate_param1\\": \\"The Terminal\\",
-                    \\"this0_movies_connectOrCreate_param2\\": {
+                    \\"this0_movies_connectOrCreate_param0\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"this0_movies_connectOrCreate_param1\\": \\"The Terminal\\",
+                    \\"this0_movies_connectOrCreate_param2\\": \\"The Terminal\\"
                 }"
             `);
         });
@@ -314,13 +314,13 @@ describe("Create or Connect", () => {
                 WITH this0
                 CALL {
                 	WITH this0
-                	MERGE (this0_movies_connectOrCreate_this0:\`Movie\` { id: $this0_movies_connectOrCreate_param0 })
+                	MERGE (this0_movies_connectOrCreate_this1:\`Movie\` { id: $this0_movies_connectOrCreate_param1 })
                 ON CREATE SET
-                        this0_movies_connectOrCreate_this0.createdAt = datetime(),
-                this0_movies_connectOrCreate_this0.title = $this0_movies_connectOrCreate_param1
-                MERGE (this0)-[this0_movies_connectOrCreate_this1:\`ACTED_IN\`]->(this0_movies_connectOrCreate_this0)
+                        this0_movies_connectOrCreate_this1.createdAt = datetime(),
+                this0_movies_connectOrCreate_this1.title = $this0_movies_connectOrCreate_param2
+                MERGE (this0)-[this0_movies_connectOrCreate_this0:\`ACTED_IN\`]->(this0_movies_connectOrCreate_this1)
                 ON CREATE SET
-                        this0_movies_connectOrCreate_this1.screentime = $this0_movies_connectOrCreate_param2
+                        this0_movies_connectOrCreate_this0.screentime = $this0_movies_connectOrCreate_param0
                 	RETURN COUNT(*)
                 }
                 RETURN this0
@@ -332,12 +332,12 @@ describe("Create or Connect", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this0_name\\": \\"Tom Hanks\\",
-                    \\"this0_movies_connectOrCreate_param0\\": \\"movieId\\",
-                    \\"this0_movies_connectOrCreate_param1\\": \\"The Terminal\\",
-                    \\"this0_movies_connectOrCreate_param2\\": {
+                    \\"this0_movies_connectOrCreate_param0\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"this0_movies_connectOrCreate_param1\\": \\"movieId\\",
+                    \\"this0_movies_connectOrCreate_param2\\": \\"The Terminal\\"
                 }"
             `);
         });
@@ -376,14 +376,14 @@ describe("Create or Connect", () => {
                 WITH this
                 CALL {
                 	WITH this
-                	MERGE (this_movies0_connectOrCreate_this0:\`Movie\` { title: $this_movies0_connectOrCreate_param0 })
+                	MERGE (this_movies0_connectOrCreate_this1:\`Movie\` { title: $this_movies0_connectOrCreate_param1 })
                 ON CREATE SET
-                        this_movies0_connectOrCreate_this0.createdAt = datetime(),
-                this_movies0_connectOrCreate_this0.id = randomUUID(),
-                this_movies0_connectOrCreate_this0.title = $this_movies0_connectOrCreate_param1
-                MERGE (this)-[this_movies0_connectOrCreate_this1:\`ACTED_IN\`]->(this_movies0_connectOrCreate_this0)
+                        this_movies0_connectOrCreate_this1.createdAt = datetime(),
+                this_movies0_connectOrCreate_this1.id = randomUUID(),
+                this_movies0_connectOrCreate_this1.title = $this_movies0_connectOrCreate_param2
+                MERGE (this)-[this_movies0_connectOrCreate_this0:\`ACTED_IN\`]->(this_movies0_connectOrCreate_this1)
                 ON CREATE SET
-                        this_movies0_connectOrCreate_this1.screentime = $this_movies0_connectOrCreate_param2
+                        this_movies0_connectOrCreate_this0.screentime = $this_movies0_connectOrCreate_param0
                 	RETURN COUNT(*)
                 }
                 RETURN this { .name } AS this"
@@ -393,12 +393,12 @@ describe("Create or Connect", () => {
                 "{
                     \\"this_name\\": \\"Tom Hanks\\",
                     \\"this_update_name\\": \\"Tom Hanks 2\\",
-                    \\"this_movies0_connectOrCreate_param0\\": \\"The Terminal\\",
-                    \\"this_movies0_connectOrCreate_param1\\": \\"The Terminal\\",
-                    \\"this_movies0_connectOrCreate_param2\\": {
+                    \\"this_movies0_connectOrCreate_param0\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"this_movies0_connectOrCreate_param1\\": \\"The Terminal\\",
+                    \\"this_movies0_connectOrCreate_param2\\": \\"The Terminal\\"
                 }"
             `);
         });
@@ -437,13 +437,13 @@ describe("Create or Connect", () => {
                 WITH this
                 CALL {
                 	WITH this
-                	MERGE (this_movies0_connectOrCreate_this0:\`Movie\` { id: $this_movies0_connectOrCreate_param0 })
+                	MERGE (this_movies0_connectOrCreate_this1:\`Movie\` { id: $this_movies0_connectOrCreate_param1 })
                 ON CREATE SET
-                        this_movies0_connectOrCreate_this0.createdAt = datetime(),
-                this_movies0_connectOrCreate_this0.title = $this_movies0_connectOrCreate_param1
-                MERGE (this)-[this_movies0_connectOrCreate_this1:\`ACTED_IN\`]->(this_movies0_connectOrCreate_this0)
+                        this_movies0_connectOrCreate_this1.createdAt = datetime(),
+                this_movies0_connectOrCreate_this1.title = $this_movies0_connectOrCreate_param2
+                MERGE (this)-[this_movies0_connectOrCreate_this0:\`ACTED_IN\`]->(this_movies0_connectOrCreate_this1)
                 ON CREATE SET
-                        this_movies0_connectOrCreate_this1.screentime = $this_movies0_connectOrCreate_param2
+                        this_movies0_connectOrCreate_this0.screentime = $this_movies0_connectOrCreate_param0
                 	RETURN COUNT(*)
                 }
                 RETURN this { .name } AS this"
@@ -453,12 +453,12 @@ describe("Create or Connect", () => {
                 "{
                     \\"this_name\\": \\"Tom Hanks\\",
                     \\"this_update_name\\": \\"Tom Hanks 2\\",
-                    \\"this_movies0_connectOrCreate_param0\\": \\"movieId\\",
-                    \\"this_movies0_connectOrCreate_param1\\": \\"The Terminal\\",
-                    \\"this_movies0_connectOrCreate_param2\\": {
+                    \\"this_movies0_connectOrCreate_param0\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"this_movies0_connectOrCreate_param1\\": \\"movieId\\",
+                    \\"this_movies0_connectOrCreate_param2\\": \\"The Terminal\\"
                 }"
             `);
         });
@@ -535,14 +535,14 @@ describe("Create or Connect", () => {
                 WITH this0
                 CALL {
                 	WITH this0
-                	MERGE (this0_movies_connectOrCreate_this0:\`Movie\` { title: $this0_movies_connectOrCreate_param0 })
+                	MERGE (this0_movies_connectOrCreate_this1:\`Movie\` { title: $this0_movies_connectOrCreate_param1 })
                 ON CREATE SET
-                        this0_movies_connectOrCreate_this0.title = $this0_movies_connectOrCreate_param1
-                MERGE (this0)-[this0_movies_connectOrCreate_this1:\`ACTED_IN\`]->(this0_movies_connectOrCreate_this0)
+                        this0_movies_connectOrCreate_this1.title = $this0_movies_connectOrCreate_param2
+                MERGE (this0)-[this0_movies_connectOrCreate_this0:\`ACTED_IN\`]->(this0_movies_connectOrCreate_this1)
                 ON CREATE SET
-                        this0_movies_connectOrCreate_this1.createdAt = datetime(),
-                this0_movies_connectOrCreate_this1.id = randomUUID(),
-                this0_movies_connectOrCreate_this1.screentime = $this0_movies_connectOrCreate_param2
+                        this0_movies_connectOrCreate_this0.createdAt = datetime(),
+                this0_movies_connectOrCreate_this0.id = randomUUID(),
+                this0_movies_connectOrCreate_this0.screentime = $this0_movies_connectOrCreate_param0
                 	RETURN COUNT(*)
                 }
                 RETURN this0
@@ -554,12 +554,12 @@ describe("Create or Connect", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this0_name\\": \\"Tom Hanks\\",
-                    \\"this0_movies_connectOrCreate_param0\\": \\"The Terminal\\",
-                    \\"this0_movies_connectOrCreate_param1\\": \\"The Terminal\\",
-                    \\"this0_movies_connectOrCreate_param2\\": {
+                    \\"this0_movies_connectOrCreate_param0\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"this0_movies_connectOrCreate_param1\\": \\"The Terminal\\",
+                    \\"this0_movies_connectOrCreate_param2\\": \\"The Terminal\\"
                 }"
             `);
         });
@@ -598,14 +598,14 @@ describe("Create or Connect", () => {
                 WITH this
                 CALL {
                 	WITH this
-                	MERGE (this_movies0_connectOrCreate_this0:\`Movie\` { title: $this_movies0_connectOrCreate_param0 })
+                	MERGE (this_movies0_connectOrCreate_this1:\`Movie\` { title: $this_movies0_connectOrCreate_param1 })
                 ON CREATE SET
-                        this_movies0_connectOrCreate_this0.title = $this_movies0_connectOrCreate_param1
-                MERGE (this)-[this_movies0_connectOrCreate_this1:\`ACTED_IN\`]->(this_movies0_connectOrCreate_this0)
+                        this_movies0_connectOrCreate_this1.title = $this_movies0_connectOrCreate_param2
+                MERGE (this)-[this_movies0_connectOrCreate_this0:\`ACTED_IN\`]->(this_movies0_connectOrCreate_this1)
                 ON CREATE SET
-                        this_movies0_connectOrCreate_this1.createdAt = datetime(),
-                this_movies0_connectOrCreate_this1.id = randomUUID(),
-                this_movies0_connectOrCreate_this1.screentime = $this_movies0_connectOrCreate_param2
+                        this_movies0_connectOrCreate_this0.createdAt = datetime(),
+                this_movies0_connectOrCreate_this0.id = randomUUID(),
+                this_movies0_connectOrCreate_this0.screentime = $this_movies0_connectOrCreate_param0
                 	RETURN COUNT(*)
                 }
                 RETURN this { .name } AS this"
@@ -615,12 +615,12 @@ describe("Create or Connect", () => {
                 "{
                     \\"this_name\\": \\"Tom Hanks\\",
                     \\"this_update_name\\": \\"Tom Hanks 2\\",
-                    \\"this_movies0_connectOrCreate_param0\\": \\"The Terminal\\",
-                    \\"this_movies0_connectOrCreate_param1\\": \\"The Terminal\\",
-                    \\"this_movies0_connectOrCreate_param2\\": {
+                    \\"this_movies0_connectOrCreate_param0\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"this_movies0_connectOrCreate_param1\\": \\"The Terminal\\",
+                    \\"this_movies0_connectOrCreate_param2\\": \\"The Terminal\\"
                 }"
             `);
         });

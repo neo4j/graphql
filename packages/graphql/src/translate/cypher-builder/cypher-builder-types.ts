@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Param } from "./cypher-builder-references";
 import { CypherContext } from "./CypherContext";
 
 export type CypherResult = {
@@ -27,14 +28,10 @@ export type CypherResult = {
 export abstract class CypherASTNode {
     protected children: Array<CypherASTNode> = [];
     protected parent?: CypherASTNode;
+    protected namedParams: Record<string, Param> = {}; // Only for compatibility reasons
 
     constructor(parent?: CypherASTNode) {
         this.parent = parent;
-    }
-
-    protected addStatement<C extends CypherASTNode>(astNode: C): C {
-        this.children.push(astNode);
-        return astNode;
     }
 
     public getRoot(): CypherASTNode {
@@ -44,13 +41,25 @@ export abstract class CypherASTNode {
         return this;
     }
 
+    public concat(query: CypherASTNode): this {
+        this.addStatement(query);
+        return this;
+    }
+
     public getCypher(context: CypherContext, separator = "\n"): string {
-        return this.children
+        Object.entries(this.namedParams).forEach(([name, param]) => {
+            context.addNamedParamReference(name, param); // Only for compatibility reasons
+        });
+
+        const childrenCypher = this.children
             .map((value) => {
                 return value.getCypher(context);
             })
             .join(separator);
+        return this.cypher(context, childrenCypher);
     }
+
+    protected abstract cypher(context: CypherContext, childrenCypher: string): string;
 
     public build(prefix?: string): CypherResult {
         if (this.isRoot) {
@@ -67,6 +76,15 @@ export abstract class CypherASTNode {
 
     protected getContext(prefix?: string): CypherContext {
         return new CypherContext(prefix);
+    }
+
+    protected addStatement<C extends CypherASTNode>(astNode: C): C {
+        this.children.push(astNode);
+        return astNode;
+    }
+
+    public addNamedParams(params: Record<string, Param>) {
+        this.namedParams = { ...this.namedParams, ...params };
     }
 
     private get isRoot() {

@@ -21,70 +21,66 @@ import * as CypherBuilder from "./CypherBuilder";
 import { Param } from "./CypherBuilder";
 
 describe("CypherBuilder", () => {
-    test("Call with create", () => {
-        const idParam = new CypherBuilder.Param("my-id");
-        const movieNode = new CypherBuilder.Node({
-            labels: ["Movie"],
-            parameters: { test: new CypherBuilder.Param("test-value"), id: idParam },
+    describe("Create", () => {
+        test("Create Node", () => {
+            const idParam = new CypherBuilder.Param("my-id");
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+                parameters: { test: new CypherBuilder.Param("test-value"), id: idParam },
+            });
+
+            const createQuery = new CypherBuilder.Create(movieNode, { id: idParam }).return(movieNode);
+
+            const queryResult = createQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "CREATE (this0:\`Movie\` { test: $param0, id: $param1 })
+                SET this0.id = $param1
+                RETURN this0"
+                `);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "test-value",
+                  "param1": "my-id",
+                }
+            `);
         });
-
-        const subQuery = new CypherBuilder.Query().create(movieNode, { id: idParam }).return(movieNode);
-        const query = new CypherBuilder.Query()
-            .call(subQuery.getRoot() as CypherBuilder.Query)
-            .return(movieNode, ["id"], "myalias");
-
-        const queryResult = query.build();
-        expect(queryResult.cypher).toMatchInlineSnapshot(`
-            "CALL {
-            	
-            	CREATE (this0:\`Movie\` { test: $param0, id: $param1 })
-            SET this0.id = $param1
-            RETURN this0
-            	RETURN COUNT(*)
-            }
-            RETURN this0 {.id} AS myalias"
-        `);
-
-        expect(queryResult.params).toMatchInlineSnapshot(`
-            Object {
-              "param0": "test-value",
-              "param1": "my-id",
-            }
-        `);
     });
+    describe("Merge", () => {
+        test("Merge relationship", () => {
+            const node1 = new CypherBuilder.Node({
+                labels: ["MyLabel"],
+            });
+            const node2 = new CypherBuilder.Node({});
 
-    test("Merge relationship", () => {
-        const node1 = new CypherBuilder.Node({
-            labels: ["MyLabel"],
+            const relationship = new CypherBuilder.Relationship({ source: node1, target: node2 });
+
+            const query = new CypherBuilder.Merge(relationship).onCreate({
+                source: {
+                    age: new Param(23),
+                    name: new Param("Keanu"),
+                },
+                relationship: {
+                    screentime: new Param(10),
+                },
+            });
+
+            const queryResult = query.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MERGE (this1)-[this0]->(this2)
+                ON CREATE SET
+                        this1.age = $param0,
+                this1.name = $param1,
+                this0.screentime = $param2
+                "
+            `);
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": 23,
+                  "param1": "Keanu",
+                  "param2": 10,
+                }
+            `);
         });
-        const node2 = new CypherBuilder.Node({});
-
-        const relationship = new CypherBuilder.Relationship({ source: node1, target: node2 });
-
-        const query = new CypherBuilder.Query().merge(relationship).onCreate({
-            source: {
-                age: new Param(23),
-                name: new Param("Keanu"),
-            },
-            relationship: {
-                screentime: new Param(10),
-            },
-        });
-
-        const queryResult = query.build();
-        expect(queryResult.cypher).toMatchInlineSnapshot(`
-            "MERGE (this1)-[this0]->(this2)
-            ON CREATE SET
-                    this1.age = $param0,
-            this1.name = $param1,
-            this0.screentime = $param2"
-        `);
-        expect(queryResult.params).toMatchInlineSnapshot(`
-            Object {
-              "param0": 23,
-              "param1": "Keanu",
-              "param2": 10,
-            }
-        `);
     });
 });
