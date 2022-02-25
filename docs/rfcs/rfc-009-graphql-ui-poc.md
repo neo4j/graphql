@@ -52,9 +52,10 @@ Query editor:
 2. Query parameters
 3. Query response
 4. Autocomplete for queries and mutations - [monaco-graphql editor](https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql)
-5. _Nice to have_: Store latest queries&params in window [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
-6. _Nice to have_: Docs (utilize from [GraphQL Playground](https://github.com/graphql/graphql-playground)?)
-7. _Nice to have_: Tabs for query input and parameters (similar to Apollo Studio)
+5. _Nice to have_: [Explorer plugin](https://user-images.githubusercontent.com/476818/51567716-c00dfa00-1e4c-11e9-88f7-6d78b244d534.gif) (or similar) for/from GraphiQL. [Repo](https://github.com/OneGraph/graphiql-explorer)
+6. _Nice to have_: Store latest queries&params in window [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+7. _Nice to have_: Docs (utilize from [GraphQL Playground](https://github.com/graphql/graphql-playground)?)
+8. _Nice to have_: Tabs for query input and parameters (similar to Apollo Studio)
 
 Keybindings
 
