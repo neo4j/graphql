@@ -17,10 +17,12 @@
  * limitations under the License.
  */
 
-export { NamedNode, Node, Param, Relationship, RawParam } from "./cypher-builder-references";
+export { NamedNode, Param, Relationship, RawParam } from "./cypher-builder-references";
 export { Query } from "./statements/Query";
 export { Create } from "./statements/Create";
 export { Merge } from "./statements/Merge";
 export { CypherResult } from "./cypher-builder-types";
 export { Apoc } from "./statements/Apoc";
 export { Call } from "./statements/Call";
+
+export { Node } from "./references/Node";

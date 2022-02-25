@@ -17,56 +17,17 @@
  * limitations under the License.
  */
 
-import { stringifyObject } from "../utils/stringify-object";
 import { escapeLabel, padLeft } from "./utils";
 import { CypherContext } from "./CypherContext";
+import { Node } from "./references/Node";
+import { CypherReference } from "./cypher-builder-types";
+import { stringifyObject } from "../utils/stringify-object";
 
+// TODO: Move classes to references/*
 type NodeInput = {
     labels?: Array<string>;
     parameters?: Record<string, Param<any>>;
 };
-
-/** Represents a reference in AST */
-export interface CypherReference {
-    readonly prefix: string;
-    getCypher(context: CypherContext): string;
-}
-
-export class Node implements CypherReference {
-    public readonly prefix = "this";
-    private labels: Array<string>;
-    private parameters: Record<string, Param<any>>;
-
-    constructor(input: NodeInput) {
-        this.labels = input.labels || [];
-        this.parameters = input.parameters || {};
-    }
-
-    public getCypher(context: CypherContext) {
-        const referenceId = this.getReference(context);
-        let parametersStr = "";
-        if (this.hasParameters()) {
-            const parameters = serializeParameters(this.parameters, context);
-            parametersStr = padLeft(parameters);
-        }
-        return `(${referenceId}${this.getLabelsString()}${parametersStr})`;
-    }
-
-    // TODO: should be private or protected
-    public getReference(context: CypherContext): string {
-        return context.getReferenceId(this);
-    }
-
-    private hasParameters(): boolean {
-        return Object.keys(this.parameters).length > 0;
-    }
-
-    private getLabelsString(): string {
-        const escapedLabels = this.labels.map(escapeLabel);
-        if (escapedLabels.length === 0) return "";
-        return `:${escapedLabels.join(":")}`;
-    }
-}
 
 // NOTE: this node is only for compatibility
 export class NamedNode extends Node {
@@ -156,7 +117,7 @@ export class RawParam<T> extends Param<T> {
     }
 }
 
-function serializeParameters(parameters: Record<string, Param<any>>, context: CypherContext): string {
+export function serializeParameters(parameters: Record<string, Param<any>>, context: CypherContext): string {
     const paramValues = Object.entries(parameters).reduce((acc, [key, param]) => {
         acc[key] = param.getCypher(context);
         return acc;

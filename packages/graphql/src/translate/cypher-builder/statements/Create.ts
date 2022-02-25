@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { Node, Param } from "../cypher-builder-references";
+import { Param } from "../cypher-builder-references";
 import { CypherASTNode } from "../cypher-builder-types";
 import { CypherContext } from "../CypherContext";
+import { Node } from "../references/Node";
 import { Query } from "./Query";
 
 type Params = Record<string, Param<any>>;

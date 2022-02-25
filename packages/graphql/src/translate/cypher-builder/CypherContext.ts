@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { Node, Param, Relationship } from "./cypher-builder-references";
+import { Param, Relationship } from "./cypher-builder-references";
+import { Node } from "./references/Node";
 
 type ValidReferences = Node | Relationship;
 

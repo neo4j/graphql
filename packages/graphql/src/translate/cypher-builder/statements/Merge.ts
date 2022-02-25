@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { Node, Param, Relationship } from "../cypher-builder-references";
+import { Param, Relationship } from "../cypher-builder-references";
 import { CypherContext } from "../CypherContext";
+import { Node } from "../references/Node";
 import { Query } from "./Query";
 
 export class Merge<T extends Node | Relationship> extends Query {

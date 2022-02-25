@@ -73,3 +73,9 @@ export abstract class CypherASTNode {
         return this.parent === undefined;
     }
 }
+
+/** Represents a reference in AST */
+export interface CypherReference {
+    readonly prefix: string;
+    getCypher(context: CypherContext): string;
+}
