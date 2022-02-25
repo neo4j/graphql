@@ -65,7 +65,7 @@ Keybindings
 
 ### Sketch
 
-![GraphQL_UI_v4](https://user-images.githubusercontent.com/8817964/155305646-2adbf310-079e-4348-9536-93cfb4da5215.png)
+![GraphQL_UI_v5](https://user-images.githubusercontent.com/8817964/155744938-2ec1b531-3b83-44e1-9fd0-371022150274.png)
 
 [Link](https://excalidraw.com/#json=b4U6WUvi6icFdMQaXoDjo,EjqhTATzUC7GqqiAgFPSjw) to excalidraw drawing.
 
