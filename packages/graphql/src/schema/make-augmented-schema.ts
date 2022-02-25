@@ -47,7 +47,7 @@ import {
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import * as constants from "../constants";
 import * as Scalars from "./types/scalars";
-import { Exclude, Node } from "../classes";
+import { Exclude, Interface, Node } from "../classes";
 import Relationship from "../classes/Relationship";
 import createConnectionFields from "./create-connection-fields";
 import createRelationshipFields from "./create-relationship-fields";
@@ -92,7 +92,7 @@ import { CartesianPointDistance } from "./types/input-objects/CartesianPointDist
 function makeAugmentedSchema(
     typeDefs: TypeSource,
     { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
-): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers: IResolvers } {
+): { nodes: Node[]; relationships: Relationship[]; interfaces: Interface[]; typeDefs: DocumentNode; resolvers: IResolvers } {
     const document = getDocument(typeDefs);
 
     if (!skipValidateTypeDefs) {
@@ -306,6 +306,25 @@ function makeAugmentedSchema(
 
         return node;
     });
+
+
+    const interfaces = interfaceTypes.map((definition) => {
+        const nodeFields = getObjFieldMeta({
+            obj: definition,
+            enums: enumTypes,
+            interfaces: interfaceTypes,
+            scalars: scalarTypes,
+            unions: unionTypes,
+            objects: objectTypes,
+        });
+
+        const iface = new Interface({
+            name: definition.name.value,
+            ...nodeFields,
+        });
+
+        return iface;
+    })
 
     const relationshipProperties = interfaceTypes.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
     const interfaceRelationships = interfaceTypes.filter((i) => interfaceRelationshipNames.has(i.name.value));
@@ -1044,6 +1063,7 @@ function makeAugmentedSchema(
     return {
         nodes,
         relationships,
+        interfaces,
         typeDefs: parsedDoc,
         resolvers: generatedResolvers,
     };

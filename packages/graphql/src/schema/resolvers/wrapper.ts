@@ -20,7 +20,7 @@
 import Debug from "debug";
 import { GraphQLResolveInfo, GraphQLSchema, print } from "graphql";
 import { Driver } from "neo4j-driver";
-import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
+import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLConfig, Node, Interface, Relationship } from "../../classes";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
 import { Context, Neo4jGraphQLPlugins, JwtPayload } from "../../types";
@@ -33,6 +33,7 @@ export const wrapResolver =
         driver,
         config,
         nodes,
+        interfaces,
         relationships,
         schema,
         plugins,
@@ -40,6 +41,7 @@ export const wrapResolver =
         driver?: Driver;
         config: Neo4jGraphQLConfig;
         nodes: Node[];
+        interfaces: Interface[];
         relationships: Relationship[];
         schema: GraphQLSchema;
         plugins?: Neo4jGraphQLPlugins;
@@ -71,6 +73,7 @@ export const wrapResolver =
         }
 
         context.nodes = nodes;
+        context.interfaces = interfaces;
         context.relationships = relationships;
         context.schema = schema;
         context.plugins = plugins;

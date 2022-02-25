@@ -25,6 +25,7 @@ import { forEachField, IResolvers } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
 import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins } from "../types";
 import { makeAugmentedSchema } from "../schema";
+import Interface from "./Interface";
 import Node from "./Node";
 import Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
@@ -61,6 +62,7 @@ class Neo4jGraphQL {
 
     private schemaDefinition: IExecutableSchemaDefinition;
 
+    private _interfaces?: Interface[];
     private _nodes?: Node[];
     private _relationships?: Relationship[];
     private plugins?: Neo4jGraphQLPlugins;
@@ -73,6 +75,14 @@ class Neo4jGraphQL {
         this.config = config;
         this.plugins = plugins;
         this.schemaDefinition = schemaDefinition;
+    }
+
+    public get interfaces(): Interface[] {
+        if (!this._interfaces) {
+            throw new Error("You must await `.getSchema()` before accessing `interfaces`");
+        }
+
+        return this._interfaces;
     }
 
     public get nodes(): Node[] {
@@ -145,6 +155,7 @@ class Neo4jGraphQL {
             driver: this.driver,
             config: this.config,
             nodes: this.nodes,
+            interfaces: this.interfaces,
             relationships: this.relationships,
             schema,
             plugins: this.plugins,
@@ -169,11 +180,12 @@ class Neo4jGraphQL {
 
     private generateSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
-            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(this.schemaDefinition.typeDefs, {
+            const { nodes, interfaces, relationships, typeDefs, resolvers } = makeAugmentedSchema(this.schemaDefinition.typeDefs, {
                 enableRegex: this.config?.enableRegex,
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
             });
 
+            this._interfaces = interfaces;
             this._nodes = nodes;
             this._relationships = relationships;
 

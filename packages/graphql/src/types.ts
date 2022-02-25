@@ -20,7 +20,7 @@
 import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Driver, Integer } from "neo4j-driver";
-import { Node, Relationship } from "./classes";
+import { Interface, Node, Relationship } from "./classes";
 import { RelationshipQueryDirectionOption } from "./constants";
 
 export type DriverConfig = {
@@ -39,6 +39,7 @@ export interface Context {
     driverConfig?: DriverConfig;
     resolveTree: ResolveTree;
     nodes: Node[];
+    interfaces: Interface[];
     relationships: Relationship[];
     schema: GraphQLSchema;
     auth?: AuthContext;
