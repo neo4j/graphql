@@ -18,7 +18,7 @@
  */
 
 export { default as Node, NodeConstructor } from "./Node";
-export { default as Interface, InterfaceContructor } from "./Interface";
+export { default as Interface, InterfaceConstructor } from "./Interface";
 export { default as Relationship } from "./Relationship";
 export { GraphElement } from "./GraphElement";
 export { default as Exclude, ExcludeConstructor } from "./Exclude";

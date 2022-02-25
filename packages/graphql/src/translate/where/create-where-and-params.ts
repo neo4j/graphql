@@ -19,7 +19,7 @@
 
 import { mergeDeep } from "@graphql-tools/utils";
 import { GraphQLWhereArg, Context } from "../../types";
-import { Node, Relationship } from "../../classes";
+import { Node, Interface, Relationship } from "../../classes";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
@@ -181,7 +181,10 @@ function createWhereAndParams({
             }
 
             Object.entries(nodeEntries).forEach((entry) => {
-                const refNode = context.nodes.find((x) => x.name === entry[0]) as Node;
+                const refNode : Node | Interface = (
+                    context.nodes.find((x) => x.name === entry[0]) as Node ||
+                    context.interfaces.find((x) => x.name === entry[0]) as Interface
+                );
                 const relationship = context.relationships.find(
                     (x) => x.name === connectionField.relationshipTypeName
                 ) as Relationship;
@@ -190,23 +193,21 @@ function createWhereAndParams({
                 const relationshipVariable = `${thisParam}_${connectionField.relationshipTypeName}`;
                 const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
                 const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
-                const labels = refNode.getLabelString(context);
                 const collectedMap = `${thisParam}_map`;
 
+                let labelSets : string[] = (
+                    refNode instanceof Interface ? refNode.getLabelStrings(context) : [ refNode.getLabelString(context) ]
+                );
+
                 if (value === null) {
-                    res.clauses.push(
+                    let fragment = labelSets.map(labels =>
                         `${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}[:${
                             connectionField.relationship.type
                         }]${outStr}(${labels}))`
-                    );
+                    ).join(isNot ? ' AND ' : ' OR ');
+                    res.clauses.push(`(${fragment})`);
                     return;
                 }
-
-                let resultStr = [
-                    `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
-                    `AND ${listPredicate}(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
-                    ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
-                ].join(" ");
 
                 const parameterPrefix = recursing
                     ? `${chainStr || varName}_${context.resolveTree.name}.where.${key}`
@@ -222,9 +223,19 @@ function createWhereAndParams({
                     parameterPrefix,
                 });
 
-                resultStr += connectionWhere[0];
-                resultStr += ")"; // close ALL
-                res.clauses.push(resultStr);
+                let parts : string[] = [];
+                for(let labels of labelSets) {
+                    let resultStr = [
+                        `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
+                        `AND ${listPredicate}(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
+                        ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+                    ].join(" ");
+
+                    resultStr += connectionWhere[0];
+                    resultStr += ")"; // close ALL
+                    parts.push(`(${resultStr})`);
+                }
+                res.clauses.push('(' + parts.join(' OR ') + ')');
 
                 const whereKeySuffix = operator ? `_${operator}` : "";
                 const resolveTreeParams = recursing

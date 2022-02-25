@@ -318,8 +318,11 @@ function makeAugmentedSchema(
             objects: objectTypes,
         });
 
+        let implementations = nodes.filter((n) => n.interfaces.filter(i => i.name.value === definition.name.value).length);
+
         const iface = new Interface({
             name: definition.name.value,
+            implementations,
             ...nodeFields,
         });
 

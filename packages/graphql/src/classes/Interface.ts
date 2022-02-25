@@ -18,13 +18,25 @@
  */
 
 import { GraphElement, GraphElementConstructor } from './GraphElement';
+import Node from './Node';
+import type { Context } from '../types';
 
-export interface InterfaceContructor extends GraphElementConstructor {
-
+export interface InterfaceConstructor extends GraphElementConstructor {
+    implementations: Node[];
 }
 
 class Interface extends GraphElement {
+    public implementations: Node[];
 
+    constructor(input: InterfaceConstructor) {
+        super(input);
+        this.implementations = input.implementations;
+    }
+
+    getLabelStrings(context: Context) : string[] {
+        //return [':' + this.name];
+        return this.implementations.map(impl => impl.getLabelString(context));
+    }
 }
 
 export default Interface;

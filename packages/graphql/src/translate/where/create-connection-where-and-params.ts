@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../../classes";
+import { GraphElement, Node, Relationship } from "../../classes";
 import { ConnectionWhereArg, Context } from "../../types";
 import createElementWhereAndParams from "./create-element-where-and-params";
 
@@ -32,7 +32,7 @@ function createConnectionWhereAndParams({
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
-    node: Node;
+    node: GraphElement;
     nodeVariable: string;
     relationship: Relationship;
     relationshipVariable: string;
