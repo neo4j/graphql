@@ -69,8 +69,8 @@ export function delay(ms: number): Promise<void> {
 }
 
 /** Omits fields from record */
-export function omitFields<T>(x: Record<string, T>, fields: string[]): Record<string, T> {
-    return Object.entries(x)
+export function omitFields<T>(obj: Record<string, T>, fields: string[]): Record<string, T> {
+    return Object.entries(obj)
         .filter((item) => !fields.includes(item[0]))
         .reduce((acc, [key, value]) => {
             acc[key] = value;
