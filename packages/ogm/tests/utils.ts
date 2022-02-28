@@ -23,8 +23,10 @@ import { IncomingMessage } from "http";
 import jsonwebtoken from "jsonwebtoken";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { generate } from "randomstring";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import camelcase from "camelcase";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import pluralize from "pluralize";
-import { lowerFirst } from "../src/utils/lower-first";
 
 /** Creates a JWT valid request with the given secret and the extraData in the JWT token */
 
@@ -50,7 +52,7 @@ export function generateUniqueType(baseName: string) {
         readable: true,
     })}${baseName}`;
 
-    const plural = lowerFirst(pluralize(type));
+    const plural = pluralize(camelcase(type));
     return {
         name: type,
         plural,
