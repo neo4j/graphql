@@ -17,7 +17,10 @@ Frame
 
 ### User audience
 
-The `@neo4j/graphql` lib's user audience are full stack developers who want a GraphQL API quickly without worrying about the database. This UI can further include developers wanting to experiment in general as well as experiment with/edit the introspected schema.
+The `@neo4j/graphql` lib's user audience are full stack developers who want a GraphQL API quickly without worrying about the database.  
+This UI can further include developers wanting to experiment in general as well as experiment with/edit the introspected schema.  
+The main aim is for prototyping and rapid development for both experinced as well as non-experienced users.
+
 
 ### Workflow (Graph App)
 
@@ -32,6 +35,15 @@ The `@neo4j/graphql` lib's user audience are full stack developers who want a Gr
     2. Execute queries
     3. Show results
 5. Logout - _Repeat_
+
+#### Metrics
+
+We want to track valuable events/actions of the UI to get an understanding and data of the usage (pattern) from the get go. This could include button clicks such as "generate typeDefs" or related things.  
+A spreasheet is to create to write down all the tracking events, their name, why we track it etc.  
+It is suggested to use [Segment](https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/) as it is used by other products at Neo4j. 
+
+_Nice to have_: As a one-off, measure the time it takes to get started with the `@neo4j/graphql` library using the node (`index.ts`) script versus this successor application.
+
 
 ### Input
 
@@ -81,6 +93,15 @@ New packages in `@neo4j/graphql` monorepo:
 2. Schema Editor
 3. Query Editor
 4. _Nice to have_: Server
+
+
+## Documentation
+
+If the resulting application is of sufficient quality (team decision):  
+Include this application in the "getting started" (or related) documentation as an alternative to the currently described way.
+
+_Stretch_: Have this application publically available as demo online as part of the offical Neo4j GraphQL webpage: https://neo4j.com/product/graphql-library/ 
+
 
 ## Risks
 
