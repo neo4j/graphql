@@ -86,9 +86,8 @@ New packages in `@neo4j/graphql` monorepo:
 
 A polished UI can eat up too much time.  
 Implementing a custom autocomplete functionality for the query editor.  
-Docs generation and presentation could be a rabbit hole.
 
-Spending time on building our own "Apollo Server" library that uses this UI:
+Spending too much time on building our own "Apollo Server" library that uses this UI:
 
 ```tsx
 import { Neo4jGraphQL }
@@ -101,6 +100,11 @@ const server = new Neo4jGraphQLServer(neoSchema);
 await server.listen(4000);
 // http://localhost:4000/playground
 ```
+
+### Rabbit holes
+
+Large databases could be slow to introspect, and so we need a way to cache the schema generation.   
+Docs generation and presentation.  
 
 ### Security consideration
 
