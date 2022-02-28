@@ -17,26 +17,23 @@
  * limitations under the License.
  */
 
-import { Param, Relationship } from "./cypher-builder-references";
-import { Node } from "./references/Node";
-
-type ValidReferences = Node | Relationship;
+import { CypherParam, CypherReference } from "./references/Reference";
 
 export interface CypherContextInterface {
-    getReferenceId(reference: ValidReferences): string;
-    getParamId(reference: Param): string;
+    getReferenceId(reference: CypherReference): string;
+    getParamId(reference: CypherParam): string;
 }
 
 export class CypherContext implements CypherContextInterface {
     private prefix: string;
-    private params: Map<Param, string> = new Map();
-    private references: Map<ValidReferences, string> = new Map();
+    private params: Map<CypherParam, string> = new Map();
+    private references: Map<CypherReference, string> = new Map();
 
     constructor(prefix?: string) {
         this.prefix = prefix || "";
     }
 
-    public getParamId(reference: Param): string {
+    public getParamId(reference: CypherParam): string {
         const id = this.params.get(reference);
         if (!id) {
             return this.addParamReference(reference);
@@ -44,7 +41,7 @@ export class CypherContext implements CypherContextInterface {
         return id;
     }
 
-    public getReferenceId(reference: ValidReferences): string {
+    public getReferenceId(reference: CypherReference): string {
         const id = this.references.get(reference);
         if (!id) {
             return this.addReference(reference);
@@ -55,25 +52,25 @@ export class CypherContext implements CypherContextInterface {
     public getParams(): Record<string, any> {
         const paramList = Array.from(this.params.keys());
 
-        return paramList.reduce((acc, param: Param<any>) => {
+        return paramList.reduce((acc, param: CypherParam) => {
             const key = this.getParamId(param);
             acc[key] = param.value;
             return acc;
         }, {} as Record<string, any>);
     }
 
-    public addNamedParamReference(name: string, param: Param): void {
+    public addNamedParamReference(name: string, param: CypherParam): void {
         this.params.set(param, name);
     }
 
-    private addReference(reference: ValidReferences): string {
+    private addReference(reference: CypherReference): string {
         const refIndex = this.references.size;
         const referenceId = `${this.prefix}${reference.prefix}${refIndex}`;
         this.references.set(reference, referenceId);
         return referenceId;
     }
 
-    private addParamReference(param: Param<any>): string {
+    private addParamReference(param: CypherParam): string {
         const refIndex = this.params.size;
         const paramId = `${this.prefix}${param.prefix}${refIndex}`;
         this.params.set(param, paramId);

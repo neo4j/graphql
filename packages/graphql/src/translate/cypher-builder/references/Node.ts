@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { stringifyObject } from "../../utils/stringify-object";
-import { Param } from "../cypher-builder-references";
-import { CypherReference } from "../cypher-builder-types";
 import { CypherContext } from "../CypherContext";
 import { escapeLabel, padLeft } from "../utils";
+import { Param } from "./Param";
+import { CypherReference } from "./Reference";
+import { serializeParameters } from "./utils";
 
 type NodeInput = {
     labels?: Array<string>;
@@ -64,12 +64,14 @@ export class Node implements CypherReference {
     }
 }
 
-// TODO: move to common CypherBuilder utils
-export function serializeParameters(parameters: Record<string, Param<any>>, context: CypherContext): string {
-    const paramValues = Object.entries(parameters).reduce((acc, [key, param]) => {
-        acc[key] = param.getCypher(context);
-        return acc;
-    }, {} as Record<string, string>);
+export class NamedNode extends Node {
+    private name: string;
+    constructor(name: string, input?: NodeInput) {
+        super(input || {});
+        this.name = name;
+    }
 
-    return stringifyObject(paramValues);
+    public getReference(_context: CypherContext): string {
+        return this.name;
+    }
 }

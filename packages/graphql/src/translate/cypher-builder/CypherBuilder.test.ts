@@ -45,6 +45,7 @@ describe("CypherBuilder", () => {
             `);
         });
     });
+
     describe("Merge", () => {
         test("Merge relationship", () => {
             const node1 = new CypherBuilder.Node({
@@ -78,6 +79,32 @@ describe("CypherBuilder", () => {
                   "param0": 23,
                   "param1": "Keanu",
                   "param2": 10,
+                }
+            `);
+        });
+    });
+
+    describe("Call", () => {
+        test("Wraps query inside Call", () => {
+            const idParam = new CypherBuilder.Param("my-id");
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
+
+            const createQuery = new CypherBuilder.Create(movieNode, { id: idParam }).return(movieNode);
+
+            const queryResult = new CypherBuilder.Call(createQuery).build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "CALL {
+                	CREATE (this0:\`Movie\`)
+                SET this0.id = $param0
+                RETURN this0
+                	RETURN COUNT(*)
+                }"
+            `);
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "my-id",
                 }
             `);
         });

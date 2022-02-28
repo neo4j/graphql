@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import { CypherASTNode, CypherResult } from "../cypher-builder-types";
-import { CypherContext } from "../CypherContext";
+import { CypherASTNode } from "../CypherASTNode";
+import { CypherContextInterface } from "../CypherContext";
+import { CypherResult } from "../types";
 
 export class Query extends CypherASTNode {
-    public cypher(_context: CypherContext, childrenCypher: string): string {
+    public cypher(_context: CypherContextInterface, childrenCypher: string): string {
         return childrenCypher;
     }
 

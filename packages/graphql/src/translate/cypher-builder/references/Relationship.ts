@@ -17,30 +17,12 @@
  * limitations under the License.
  */
 
-import { escapeLabel, padLeft } from "./utils";
-import { CypherContext } from "./CypherContext";
-import { Node } from "./references/Node";
-import { CypherReference } from "./cypher-builder-types";
-import { stringifyObject } from "../utils/stringify-object";
-
-// TODO: Move classes to references/*
-type NodeInput = {
-    labels?: Array<string>;
-    parameters?: Record<string, Param<any>>;
-};
-
-// NOTE: this node is only for compatibility
-export class NamedNode extends Node {
-    private name: string;
-    constructor(name: string, input?: NodeInput) {
-        super(input || {});
-        this.name = name;
-    }
-
-    public getReference(_context: CypherContext): string {
-        return this.name;
-    }
-}
+import { CypherContext } from "../CypherContext";
+import { escapeLabel, padLeft } from "../utils";
+import { Node } from "./Node";
+import { Param } from "./Param";
+import { CypherReference } from "./Reference";
+import { serializeParameters } from "./utils";
 
 export type RelationshipInput = {
     source: Node;
@@ -96,32 +78,4 @@ export class Relationship implements CypherReference {
     private getTypeString(): string {
         return this.type ? `:${escapeLabel(this.type)}` : "";
     }
-}
-
-export class Param<T = any> {
-    public readonly prefix: string = "param";
-    public readonly value: T;
-
-    constructor(value: T) {
-        this.value = value;
-    }
-
-    public getCypher(context: CypherContext): string {
-        return `$${context.getParamId(this)}`;
-    }
-}
-
-export class RawParam<T> extends Param<T> {
-    public getCypher(_context: CypherContext): string {
-        return `${this.value}`;
-    }
-}
-
-export function serializeParameters(parameters: Record<string, Param<any>>, context: CypherContext): string {
-    const paramValues = Object.entries(parameters).reduce((acc, [key, param]) => {
-        acc[key] = param.getCypher(context);
-        return acc;
-    }, {} as Record<string, string>);
-
-    return stringifyObject(paramValues);
 }

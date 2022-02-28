@@ -17,13 +17,8 @@
  * limitations under the License.
  */
 
-import { Param } from "./cypher-builder-references";
 import { CypherContext } from "./CypherContext";
-
-export type CypherResult = {
-    cypher: string;
-    params: Record<string, string>;
-};
+import { Param } from "./references/Param";
 
 export abstract class CypherASTNode {
     protected children: Array<CypherASTNode> = [];
@@ -72,10 +67,4 @@ export abstract class CypherASTNode {
     protected get isRoot() {
         return this.parent === undefined;
     }
-}
-
-/** Represents a reference in AST */
-export interface CypherReference {
-    readonly prefix: string;
-    getCypher(context: CypherContext): string;
 }

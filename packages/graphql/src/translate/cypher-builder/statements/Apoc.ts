@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../cypher-builder-types";
+import { CypherASTNode } from "../CypherASTNode";
 import { CypherContext } from "../CypherContext";
 import { Query } from "./Query";
 

@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-import { Param } from "./cypher-builder-references";
-import { stringifyObject } from "../utils/stringify-object";
+import { Param } from "./references/Param";
 
 export function convertToCypherParams<T>(original: Record<string, T>): Record<string, Param<T>> {
     return Object.entries(original).reduce((acc, [key, value]) => {
@@ -30,25 +29,6 @@ export function convertToCypherParams<T>(original: Record<string, T>): Record<st
 /** Generates a string to be used as parameter key */
 export function generateParameterKey(prefix: string, key: string): string {
     return `${prefix}_${key}`;
-}
-
-/** Serializes an object and splits between the serialized statement and params */
-export function serializeParameters(
-    keyprefix: string,
-    parameters: Record<string, any> | undefined
-): [string, Record<string, any>] {
-    if (!parameters) return ["", {}];
-
-    const cypherParameters: Record<string, any> = {};
-    const nodeParameters: Record<string, string> = {};
-
-    for (const [key, value] of Object.entries(parameters)) {
-        const paramKey = generateParameterKey(keyprefix, key);
-        cypherParameters[paramKey] = value;
-        nodeParameters[key] = `$${paramKey}`;
-    }
-
-    return [stringifyObject(nodeParameters), cypherParameters];
 }
 
 /** Adds spaces to the left of the string, returns empty string is variable is undefined or empty string */

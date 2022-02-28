@@ -17,10 +17,19 @@
  * limitations under the License.
  */
 
-import { Param, Relationship } from "../cypher-builder-references";
 import { CypherContext } from "../CypherContext";
 import { Node } from "../references/Node";
+import { Param } from "../references/Param";
+import { Relationship } from "../references/Relationship";
 import { Query } from "./Query";
+
+type ParamsRecord = Record<string, Param<any>>;
+
+type OnCreateRelationshipParameters = {
+    source: ParamsRecord;
+    target: ParamsRecord;
+    relationship: ParamsRecord;
+};
 
 export class Merge<T extends Node | Relationship> extends Query {
     private element: T;
@@ -92,11 +101,3 @@ export class Merge<T extends Node | Relationship> extends Query {
         ${onCreateStatements.join(",\n")}`;
     }
 }
-
-type ParamsRecord = Record<string, Param<any>>;
-
-type OnCreateRelationshipParameters = {
-    source: ParamsRecord;
-    target: ParamsRecord;
-    relationship: ParamsRecord;
-};

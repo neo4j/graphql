@@ -17,20 +17,15 @@
  * limitations under the License.
  */
 
-import { serializeParameters } from "./utils";
+import { stringifyObject } from "../../utils/stringify-object";
+import { CypherContext } from "../CypherContext";
+import { Param } from "./Param";
 
-describe("cypher builder utils", () => {
-    describe("serializeParameters", () => {
-        test("serialize node parameters", () => {
-            const result = serializeParameters("this", { param1: "Arthur", param2: "Zaphod" });
+export function serializeParameters(parameters: Record<string, Param<any>>, context: CypherContext): string {
+    const paramValues = Object.entries(parameters).reduce((acc, [key, param]) => {
+        acc[key] = param.getCypher(context);
+        return acc;
+    }, {} as Record<string, string>);
 
-            expect(result).toEqual([
-                "{ param1: $this_param1, param2: $this_param2 }",
-                {
-                    this_param1: "Arthur",
-                    this_param2: "Zaphod",
-                },
-            ]);
-        });
-    });
-});
+    return stringifyObject(paramValues);
+}

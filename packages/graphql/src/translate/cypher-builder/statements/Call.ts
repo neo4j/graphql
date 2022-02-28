@@ -33,14 +33,7 @@ export class Call extends Query {
     }
 
     public cypher(_context: CypherContext, childrenCypher: string): string {
-        const withStr = this.withStatement ? `WITH ${this.withStatement}` : "";
-        return joinStrings([
-            withStr,
-            "CALL {",
-            `\t${withStr}`,
-            `\t${childrenCypher}`,
-            `\t${this.returnStatement}`,
-            "}",
-        ]);
+        const withStr = this.withStatement ? `\tWITH ${this.withStatement}` : "";
+        return joinStrings([withStr, "CALL {", `${withStr}`, `\t${childrenCypher}`, `\t${this.returnStatement}`, "}"]);
     }
 }

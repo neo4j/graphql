@@ -17,14 +17,24 @@
  * limitations under the License.
  */
 
-export { Query } from "./statements/Query";
-export { Create } from "./statements/Create";
-export { Merge } from "./statements/Merge";
-export { Apoc } from "./statements/Apoc";
-export { Call } from "./statements/Call";
+import { CypherContext } from "../CypherContext";
+import { CypherParam } from "./Reference";
 
-export { Node, NamedNode } from "./references/Node";
-export { Param, RawParam } from "./references/Param";
-export { Relationship } from "./references/Relationship";
+export class Param<T = any> implements CypherParam {
+    public readonly prefix: string = "param";
+    public readonly value: T;
 
-export { CypherResult } from "./types";
+    constructor(value: T) {
+        this.value = value;
+    }
+
+    public getCypher(context: CypherContext): string {
+        return `$${context.getParamId(this)}`;
+    }
+}
+
+export class RawParam<T> extends Param<T> {
+    public getCypher(_context: CypherContext): string {
+        return `${this.value}`;
+    }
+}

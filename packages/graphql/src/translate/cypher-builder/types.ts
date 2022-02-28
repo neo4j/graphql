@@ -17,14 +17,7 @@
  * limitations under the License.
  */
 
-export { Query } from "./statements/Query";
-export { Create } from "./statements/Create";
-export { Merge } from "./statements/Merge";
-export { Apoc } from "./statements/Apoc";
-export { Call } from "./statements/Call";
-
-export { Node, NamedNode } from "./references/Node";
-export { Param, RawParam } from "./references/Param";
-export { Relationship } from "./references/Relationship";
-
-export { CypherResult } from "./types";
+export type CypherResult = {
+    cypher: string;
+    params: Record<string, string>;
+};
