@@ -56,6 +56,31 @@ UNION
 RETURN this
 ```
 
+We can filter for any implementing type of `Production`:
+
+```gql
+query {
+  productions(where: { title_CONTAINS: "Star Wars" }) {
+    title
+  }
+}
+```
+
+This would produce:
+
+```
+CALL {
+  MATCH (this:Movie)
+  WHERE this.title CONTAINS "Star Wars"
+  RETURN this { __resolveType: "Movie", .title }
+UNION
+  MATCH (this:Series)
+  WHERE this.title CONTAINS "Star Wars"
+  RETURN this { __resolveType: "Series", .title }
+}
+RETURN this
+```
+
 We can do some filtering for both types:
 
 ```gql
