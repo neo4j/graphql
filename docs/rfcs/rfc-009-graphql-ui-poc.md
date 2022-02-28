@@ -2,7 +2,8 @@
 
 ## Problem
 
-The [GraphQL Architect](https://grandstack.io/docs/graphql-architect-overview/#:~:text=GraphQL%20Architect%20is%20a%20graph,Neo4j%20Desktop%20Graph%20Apps%20Gallery) for usage in the Neo4j Desktop is due to be replaced. As an initial step a proof of concept of a successor shall be established.
+The [GraphQL Architect](https://grandstack.io/docs/graphql-architect-overview/#:~:text=GraphQL%20Architect%20is%20a%20graph,Neo4j%20Desktop%20Graph%20Apps%20Gallery) for usage in the Neo4j Desktop is due to be replaced. As an initial step a proof of concept of a successor shall be established.  
+The successor application will be made available to install as Graph App in Neo4j Desktop. If time permits it, would be favorable if we can add the successor to the 'Neo4j Developer Graph Apps Gallery' in Neo4j Desktop.
 
 ## Proposed Solution
 
@@ -37,6 +38,7 @@ The `@neo4j/graphql` lib's user audience are full stack developers who want a Gr
 Login:
 
 1. Input fields for username, password, connectURL for dbms
+2. _Nice to have_: Store credentials (encrypted!) in window [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
 
 Schema editor
 (An open-source editor shall be utlized)
