@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -39,7 +39,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -71,7 +71,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -98,7 +98,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -137,7 +137,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -183,7 +183,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -209,7 +209,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -256,7 +256,7 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -294,7 +294,7 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -335,7 +335,7 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn

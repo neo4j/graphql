@@ -18,7 +18,7 @@ jobs:
         run: |
           version=$(echo "$GITHUB_REF" | cut -d/ -f4)
           echo "::set-output name=version::$version"
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn

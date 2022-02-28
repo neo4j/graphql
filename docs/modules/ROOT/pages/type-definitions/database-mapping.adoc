@@ -58,6 +58,8 @@ directive @node(
     label: String
     """Map the GraphQL type to match additional Neo4j node labels"""
     additionalLabels: [String]
+    """Allows for the specification of the plural of the type name."""
+    plural: String
 ) on OBJECT
 ----
 
@@ -198,6 +200,7 @@ type User @node(additionalLabels: ["$jwt.username"]) {
 ----
 
 ==== `plural`
+
 The parameter `plural` redefines how to compose the plural of the type for the generated operations. This is particularly
 useful for types that are not correctly pluralized or are non-English words.
 
