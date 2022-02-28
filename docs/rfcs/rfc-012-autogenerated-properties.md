@@ -94,7 +94,7 @@ These properties will be stored in the database.
 
 ## Risks
 
-* Using `@default` with `@callback`.
+* Some directive combinations (e.g. `@default` with `@callback`) may be invalid.
 * Relationship properties
 * Type validation
 
