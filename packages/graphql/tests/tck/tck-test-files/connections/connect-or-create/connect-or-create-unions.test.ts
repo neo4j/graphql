@@ -143,8 +143,8 @@ describe("Create or connect with unions", () => {
             }
             RETURN this0
             }
-            RETURN
-            this0 { .name } AS this0"
+            RETURN [
+            this0 { .name }] AS data, [] AS meta"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

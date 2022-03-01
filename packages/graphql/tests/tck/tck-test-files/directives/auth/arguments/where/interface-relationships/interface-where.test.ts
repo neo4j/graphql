@@ -627,8 +627,8 @@ describe("Cypher Auth Where", () => {
             }
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -696,8 +696,8 @@ describe("Cypher Auth Where", () => {
             }
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

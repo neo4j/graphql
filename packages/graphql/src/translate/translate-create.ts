@@ -95,7 +95,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                         // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
                         .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
                         .replace(/\$REPLACE_ME/g, "$projection")
-                        .replace(/REPLACE_ME/g, `this${i}`)} AS this${i}`
+                        .replace(/REPLACE_ME/g, `this${i}`)}`
             )
             .join(", ");
 
@@ -181,7 +181,9 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
           }, {})
         : {};
 
-    const returnStatement = nodeProjection ? `RETURN ${projectionStr}` : "RETURN 'Query cannot conclude with CALL'";
+    const returnStatement = nodeProjection
+        ? `RETURN [${projectionStr}] AS data, [] AS meta`
+        : "RETURN 'Query cannot conclude with CALL'";
 
     const cypher = [
         `${createStrs.join("\n")}`,

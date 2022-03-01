@@ -133,8 +133,8 @@ describe("Interface Relationships - Create connect", () => {
             MATCH (this0)-[:ACTED_IN]->(this0_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS actedIn
             }
-            RETURN
-            this0 { .name, actedIn: collect(actedIn) } AS this0"
+            RETURN [
+            this0 { .name, actedIn: collect(actedIn) }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

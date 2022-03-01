@@ -97,8 +97,8 @@ describe("Cypher Auth isAuthenticated", () => {
             CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -144,8 +144,8 @@ describe("Cypher Auth isAuthenticated", () => {
             SET this0.content = $this0_content
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

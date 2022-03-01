@@ -113,8 +113,8 @@ describe("Plural in Node directive", () => {
             SET this0.name = $this0_name
             RETURN this0
             }
-            RETURN
-            this0 { .name } AS this0"
+            RETURN [
+            this0 { .name }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

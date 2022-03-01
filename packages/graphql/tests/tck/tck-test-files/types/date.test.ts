@@ -125,8 +125,8 @@ describe("Cypher Date", () => {
             SET this0.date = $this0_date
             RETURN this0
             }
-            RETURN
-            this0 { .date } AS this0"
+            RETURN [
+            this0 { .date }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

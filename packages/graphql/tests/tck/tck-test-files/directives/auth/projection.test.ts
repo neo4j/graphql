@@ -116,9 +116,9 @@ describe("Cypher Auth Projection", () => {
             }
             CALL apoc.util.validate(NOT(this0.id IS NOT NULL AND this0.id = $projection_id_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(NOT(this1.id IS NOT NULL AND this1.id = $projection_id_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN
-            this0 { .id } AS this0,
-            this1 { .id } AS this1"
+            RETURN [
+            this0 { .id },
+            this1 { .id }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

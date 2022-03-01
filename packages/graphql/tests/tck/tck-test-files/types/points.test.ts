@@ -222,12 +222,12 @@ describe("Cypher Points", () => {
             SET this0.points = [p in $this0_points | point(p)]
             RETURN this0
             }
-            RETURN
+            RETURN [
             this0 { points: apoc.cypher.runFirstColumn('RETURN
             CASE this0.points IS NOT NULL
             	WHEN true THEN [p in this0.points | { point:p, crs: p.crs }]
             	ELSE NULL
-            END AS result',{ this0: this0 },false) } AS this0"
+            END AS result',{ this0: this0 },false) }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

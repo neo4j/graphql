@@ -127,8 +127,8 @@ describe("Cypher LocalTime", () => {
             SET this0.time = $this0_time
             RETURN this0
             }
-            RETURN
-            this0 { .time } AS this0"
+            RETURN [
+            this0 { .time }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

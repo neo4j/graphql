@@ -65,8 +65,8 @@ describe("Cypher autogenerate directive", () => {
             SET this0.name = $this0_name
             RETURN this0
             }
-            RETURN
-            this0 { .id, .name } AS this0"
+            RETURN [
+            this0 { .id, .name }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

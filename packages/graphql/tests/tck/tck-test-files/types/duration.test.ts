@@ -139,8 +139,8 @@ describe("Cypher Duration", () => {
             SET this0.duration = $this0_duration
             RETURN this0
             }
-            RETURN
-            this0 { .duration } AS this0"
+            RETURN [
+            this0 { .duration }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

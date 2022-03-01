@@ -70,8 +70,8 @@ describe("#288", () => {
             SET this0.COMPANYID = $this0_COMPANYID
             RETURN this0
             }
-            RETURN
-            this0 { .USERID, .COMPANYID } AS this0"
+            RETURN [
+            this0 { .USERID, .COMPANYID }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -158,8 +158,8 @@ describe("Label in Node directive", () => {
             SET this0.id = $this0_id
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -209,9 +209,9 @@ describe("Label in Node directive", () => {
             MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
             RETURN this1
             }
-            RETURN
-            this0 { .id } AS this0,
-            this1 { .id } AS this1"
+            RETURN [
+            this0 { .id },
+            this1 { .id }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

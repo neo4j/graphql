@@ -124,8 +124,8 @@ describe("Cypher Union", () => {
             MERGE (this0)-[:SEARCH]->(this0_search_Genre0_node)
             RETURN this0
             }
-            RETURN
-            this0 { .title } AS this0"
+            RETURN [
+            this0 { .title }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -208,8 +208,8 @@ describe("Cypher Union", () => {
             }
             RETURN this0
             }
-            RETURN
-            this0 { .title } AS this0"
+            RETURN [
+            this0 { .title }] AS data, [] AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

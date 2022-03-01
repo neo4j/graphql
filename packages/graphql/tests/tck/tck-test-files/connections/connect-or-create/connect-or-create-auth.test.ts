@@ -96,8 +96,8 @@ describe("connectOrCreate", () => {
                 }
                 RETURN this0
                 }
-                RETURN
-                this0 { .title } AS this0"
+                RETURN [
+                this0 { .title }] AS data, [] AS meta"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -149,8 +149,8 @@ describe("connectOrCreate", () => {
                 }
                 RETURN this0
                 }
-                RETURN
-                this0 { .title } AS this0"
+                RETURN [
+                this0 { .title }] AS data, [] AS meta"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -202,8 +202,8 @@ describe("connectOrCreate", () => {
                 }
                 RETURN this0
                 }
-                RETURN
-                this0 { .title } AS this0"
+                RETURN [
+                this0 { .title }] AS data, [] AS meta"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -254,8 +254,8 @@ describe("connectOrCreate", () => {
                 }
                 RETURN this0
                 }
-                RETURN
-                this0 { .title } AS this0"
+                RETURN [
+                this0 { .title }] AS data, [] AS meta"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
