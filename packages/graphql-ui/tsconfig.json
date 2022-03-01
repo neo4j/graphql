@@ -1,0 +1,27 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "module": "esnext",
+        "target": "es5",
+
+        "jsx": "react-jsx",
+        "moduleResolution": "node",
+
+        "declarationMap": true,
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        // TODO Refactor so that noImplicitAny is no longer needed
+        "noImplicitAny": false,
+        "rootDir": ".",
+        "baseUrl": ".",
+        "outDir": "dist",
+        "noEmit": false,
+        "paths": {
+            "@neo4j/graphql": ["../graphql/src"],
+            "@neo4j/graphql-plugin-auth": ["../graphql-plugin-auth/src"],
+        },
+    },
+    "include": ["src/**/*", "tests/**/*"],
+    "references": [{ "path": "../graphql/tsconfig.json" }, { "path": "../graphql-plugin-auth/tsconfig.json" }]
+}
