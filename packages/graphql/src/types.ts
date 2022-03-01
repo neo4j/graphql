@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import EventEmitter from "events";
+import { EventEmitter } from "events";
 import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Driver, Integer } from "neo4j-driver";
