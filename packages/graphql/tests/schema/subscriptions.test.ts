@@ -53,7 +53,7 @@ describe("Subscriptions", () => {
             typeDefs,
             plugins: {
                 subscriptions: plugin,
-            },
+            } as any,
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
