@@ -661,15 +661,23 @@ function makeAugmentedSchema(
             ]),
         });
 
-        ["Create", "Update"].map((operation) =>
-            composer.createObjectTC({
-                name: `${operation}${upperFirst(node.plural)}MutationResponse`,
-                fields: {
-                    info: `${operation}Info!`,
-                    [node.plural]: `[${node.name}!]!`,
-                },
-            })
-        );
+        const mutationResponseTypeNames = node.mutationResponseTypeNames;
+
+        composer.createObjectTC({
+            name: mutationResponseTypeNames.create,
+            fields: {
+                info: `CreateInfo!`,
+                [node.plural]: `[${node.name}!]!`,
+            },
+        });
+
+        composer.createObjectTC({
+            name: mutationResponseTypeNames.update,
+            fields: {
+                info: `UpdateInfo!`,
+                [node.plural]: `[${node.name}!]!`,
+            },
+        });
 
         createRelationshipFields({
             relationshipFields: node.relationFields,
@@ -694,31 +702,33 @@ function makeAugmentedSchema(
         ensureNonEmptyInput(`${node.name}UpdateInput`);
         ensureNonEmptyInput(`${node.name}CreateInput`);
 
+        const rootTypeFieldNames = node.rootTypeFieldNames;
+
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [node.plural]: findResolver({ node }),
+                [rootTypeFieldNames.read]: findResolver({ node }),
             });
 
             composer.Query.addFields({
-                [`${node.plural}Aggregate`]: aggregateResolver({ node }),
+                [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${upperFirst(node.plural)}`]: createResolver({ node }),
+                [rootTypeFieldNames.create]: createResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${upperFirst(node.plural)}`]: deleteResolver({ node }),
+                [rootTypeFieldNames.delete]: deleteResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${upperFirst(node.plural)}`]: updateResolver({
+                [rootTypeFieldNames.update]: updateResolver({
                     node,
                     schemaComposer: composer,
                 }),
