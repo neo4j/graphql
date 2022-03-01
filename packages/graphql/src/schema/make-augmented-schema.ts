@@ -80,6 +80,7 @@ import { CartesianPointInput } from "./types/input-objects/CartesianPointInput";
 import { PointDistance } from "./types/input-objects/PointDistance";
 import { CartesianPointDistance } from "./types/input-objects/CartesianPointDistance";
 import getNodes from "./get-nodes";
+import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -741,7 +742,7 @@ function makeAugmentedSchema(
     });
 
     if (generateSubscriptions) {
-        generateSubscriptionTypes(composer);
+        generateSubscriptionTypes({ schemaComposer: composer, nodes });
     }
 
     ["Mutation", "Query"].forEach((type) => {
