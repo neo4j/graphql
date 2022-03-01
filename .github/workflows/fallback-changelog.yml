@@ -35,7 +35,7 @@ jobs:
       VERSION: ${{ needs.get-version.outputs.version }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: master
           fetch-depth: 0
@@ -52,7 +52,7 @@ jobs:
           git tag -a "@neo4j/graphql-ogm@$VERSION" -m "@neo4j/graphql-ogm@$VERSION"
       - name: git push
         run: git push --follow-tags
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: dev
           fetch-depth: 0
@@ -81,7 +81,7 @@ jobs:
       VERSION: ${{ needs.merge-tag-push.outputs.version }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Extract product label from tag
         id: get-label
         run: |
@@ -121,7 +121,7 @@ jobs:
       name: github
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - name: Delete release branch
