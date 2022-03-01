@@ -212,7 +212,7 @@ describe("Cypher Create Pringles", () => {
             RETURN this0
             }
             RETURN [
-            this0 { .id }] AS data, [] AS meta"
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -317,7 +317,7 @@ describe("Cypher Create Pringles", () => {
             RETURN count(*)
             \\", \\"\\", {this:this, updateProducts: $updateProducts, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_connect0_node_name:$this_photos0_color0_connect0_node_name})
             YIELD value as _
-            RETURN this { .id } AS this"
+            RETURN collect(this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

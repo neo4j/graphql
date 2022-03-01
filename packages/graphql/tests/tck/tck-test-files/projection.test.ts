@@ -120,7 +120,7 @@ describe("Cypher Projection", () => {
             CASE this1_photos.location IS NOT NULL
             	WHEN true THEN { point: this1_photos.location }
             	ELSE NULL
-            END AS result',{ this1_photos: this1_photos },false) } ], colors: [ (this1)-[:HAS_COLOR]->(this1_colors:Color)  WHERE this1_colors.id = $projection_colors_id | this1_colors { .id } ], sizes: [ (this1)-[:HAS_SIZE]->(this1_sizes:Size)  WHERE this1_sizes.name = $projection_sizes_name | this1_sizes { .name } ] }] AS data, [] AS meta"
+            END AS result',{ this1_photos: this1_photos },false) } ], colors: [ (this1)-[:HAS_COLOR]->(this1_colors:Color)  WHERE this1_colors.id = $projection_colors_id | this1_colors { .id } ], sizes: [ (this1)-[:HAS_SIZE]->(this1_sizes:Size)  WHERE this1_sizes.name = $projection_sizes_name | this1_sizes { .name } ] }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

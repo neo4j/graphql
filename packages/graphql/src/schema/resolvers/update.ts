@@ -24,7 +24,6 @@ import { translateUpdate } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
-import { upperFirst } from "../../utils/upper-first";
 
 export default function updateResolver({ node, schemaComposer }: { node: Node; schemaComposer: SchemaComposer }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
@@ -49,7 +48,7 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
                 bookmark: executeResult.bookmark,
                 ...executeResult.statistics,
             },
-            ...(nodeProjection ? { [nodeKey]: executeResult.records.map((x) => x.this) } : {}),
+            ...(nodeProjection ? { [nodeKey]: executeResult.records[0]?.data || [] } : {}),
         };
     }
     const relationFields: Record<string, string> = node.relationFields.length

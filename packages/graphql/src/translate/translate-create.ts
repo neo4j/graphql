@@ -182,7 +182,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
         : {};
 
     const returnStatement = nodeProjection
-        ? `RETURN [${projectionStr}] AS data, [] AS meta`
+        ? `RETURN [${projectionStr}] AS data`
         : "RETURN 'Query cannot conclude with CALL'";
 
     const cypher = [

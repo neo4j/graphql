@@ -236,7 +236,7 @@ describe("Cypher Connect", () => {
             RETURN this0
             }
             RETURN [
-            this0 { .id }] AS data, [] AS meta"
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

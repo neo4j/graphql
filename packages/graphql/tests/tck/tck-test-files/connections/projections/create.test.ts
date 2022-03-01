@@ -94,7 +94,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
             RETURN [
-            this0 { .title, actorsConnection }] AS data, [] AS meta"
+            this0 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -153,7 +153,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             }
             RETURN [
             this0 { .title, actorsConnection },
-            this1 { .title, actorsConnection }] AS data, [] AS meta"
+            this1 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -215,7 +215,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             }
             RETURN [
             this0 { .title, actorsConnection },
-            this1 { .title, actorsConnection }] AS data, [] AS meta"
+            this1 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

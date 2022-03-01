@@ -144,7 +144,7 @@ describe("#324", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPerson.car required', [0])
             	RETURN c AS this_car_Car_unique_ignored
             }
-            RETURN this { .identifier } AS this"
+            RETURN collect(this { .identifier }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

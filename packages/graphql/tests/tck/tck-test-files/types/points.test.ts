@@ -227,7 +227,7 @@ describe("Cypher Points", () => {
             CASE this0.points IS NOT NULL
             	WHEN true THEN [p in this0.points | { point:p, crs: p.crs }]
             	ELSE NULL
-            END AS result',{ this0: this0 },false) }] AS data, [] AS meta"
+            END AS result',{ this0: this0 },false) }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -266,11 +266,11 @@ describe("Cypher Points", () => {
             "MATCH (this:PointContainer)
             WHERE this.id = $this_id
             SET this.points = [p in $this_update_points | point(p)]
-            RETURN this { points: apoc.cypher.runFirstColumn('RETURN
+            RETURN collect(this { points: apoc.cypher.runFirstColumn('RETURN
             CASE this.points IS NOT NULL
             	WHEN true THEN [p in this.points | { point:p, crs: p.crs }]
             	ELSE NULL
-            END AS result',{ this: this },false) } AS this"
+            END AS result',{ this: this },false) }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

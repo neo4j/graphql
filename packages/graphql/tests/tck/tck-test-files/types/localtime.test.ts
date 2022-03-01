@@ -128,7 +128,7 @@ describe("Cypher LocalTime", () => {
             RETURN this0
             }
             RETURN [
-            this0 { .time }] AS data, [] AS meta"
+            this0 { .time }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -163,7 +163,7 @@ describe("Cypher LocalTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.time = $this_update_time
-            RETURN this { .id, .time } AS this"
+            RETURN collect(this { .id, .time }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

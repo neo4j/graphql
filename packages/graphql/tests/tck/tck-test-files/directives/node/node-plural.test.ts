@@ -114,7 +114,7 @@ describe("Plural in Node directive", () => {
             RETURN this0
             }
             RETURN [
-            this0 { .name }] AS data, [] AS meta"
+            this0 { .name }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -143,7 +143,7 @@ describe("Plural in Node directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Tech\`)
             SET this.name = $this_update_name
-            RETURN this { .name } AS this"
+            RETURN collect(this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

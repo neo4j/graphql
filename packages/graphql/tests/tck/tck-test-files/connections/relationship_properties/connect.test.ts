@@ -106,7 +106,7 @@ describe("Relationship Properties Connect Cypher", () => {
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
             RETURN [
-            this0 { .title, actorsConnection }] AS data, [] AS meta"
+            this0 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -177,7 +177,7 @@ describe("Relationship Properties Connect Cypher", () => {
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
             RETURN [
-            this0 { .title, actorsConnection }] AS data, [] AS meta"
+            this0 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -238,7 +238,7 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } AS this"
+            RETURN collect(this { .title, actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -302,7 +302,7 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } AS this"
+            RETURN collect(this { .title, actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -76,7 +76,7 @@ describe("Cypher TimeStamps On Time Fields", () => {
             RETURN this0
             }
             RETURN [
-            this0 { .id }] AS data, [] AS meta"
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -108,7 +108,7 @@ describe("Cypher TimeStamps On Time Fields", () => {
             SET this.interfaceTimestamp = time()
             SET this.id = $this_update_id
             SET this.name = $this_update_name
-            RETURN this { .id } AS this"
+            RETURN collect(this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -100,7 +100,7 @@ describe("Cypher DateTime", () => {
             RETURN this0
             }
             RETURN [
-            this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }] AS data, [] AS meta"
+            this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -139,7 +139,7 @@ describe("Cypher DateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.datetime = $this_update_datetime
-            RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
+            RETURN collect(this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

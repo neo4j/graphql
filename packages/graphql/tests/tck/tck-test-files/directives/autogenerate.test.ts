@@ -66,7 +66,7 @@ describe("Cypher autogenerate directive", () => {
             RETURN this0
             }
             RETURN [
-            this0 { .id, .name }] AS data, [] AS meta"
+            this0 { .id, .name }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -96,7 +96,7 @@ describe("Cypher autogenerate directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.name = $this_update_name
-            RETURN this { .id, .name } AS this"
+            RETURN collect(this { .id, .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

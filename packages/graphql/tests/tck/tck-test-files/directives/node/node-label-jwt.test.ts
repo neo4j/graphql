@@ -134,7 +134,7 @@ describe("Label in Node directive", () => {
             RETURN this0
             }
             RETURN [
-            this0 { .title }] AS data, [] AS meta"
+            this0 { .title }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

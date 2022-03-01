@@ -106,7 +106,7 @@ describe("Relationship Properties Create Cypher", () => {
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
             RETURN [
-            this0 { .title, actorsConnection }] AS data, [] AS meta"
+            this0 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
