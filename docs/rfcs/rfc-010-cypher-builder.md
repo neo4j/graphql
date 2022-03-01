@@ -27,22 +27,11 @@ This is a proposal on a Cypher builder, the goal of this builder is to be able t
 * Cypher Backtracking (i.e. allow to easily modify Cypher statements in a non-sequential fashion).
 
 ## Proposed interface
-While the current interface is flexible enough, it is not intuitive nor unified across different builders, a more consistent, extensible and simple interface is needed, with additional types for the expected input, preferably decoupled from the GrahpQL types.
+The proposed interface follows a similar [builder-like pattern](https://refactoring.guru/design-patterns/builder) to other query builders. All typings are part of the builder (i.e. none of the library typings are used) to avoid coupling.
 
-The proposal is to provide a `Query` class that will handle query composition, its various methods will be used to concatenate the different statements in a [builder-like pattern](https://refactoring.guru/design-patterns/builder).
-
-```typescript
-// Simplified example
-const builderQuery = new CypherBuilder.Query().match().node....
-
-builderQuery.query // "MATCH ()..."
-builderQuery.params // {}
-```
-
-This approach allows the developer to compose queries with improved types and transparent handling of parameters.
+The classes will compose the query in a simplified [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) representing our query. Parameters, references and string generation are generated lazily after the full tree has been composed.
 
 ## Examples
-Note that these examples are just a proposal, final interface still needs to be decided
 
 ### Build a simple Match query
 ```Cypher
@@ -53,27 +42,19 @@ RETURN m.title
 
 Example with plain strings as input
 ```typescript
-const query = new CypherBuilder.Query()
-				.match
-				.node("a", ["Actor"])
-				.relatedTo("ACTED_IN", {direction: "out"})
-				.node("m", ["Movie"])
-				.where({"a.name": "Arthur"})
-				.return(["m.title"])
+const actorNode = new CypherBuilder.Node({
+    labels: ["Actor"],
+});
+const movieNode = new CypherBuilder.Node({
+    labels: ["Movie"],
+});
+const relationship = new CypherBuilder.Relationship({ source: node1, target: node2, type: "ACTED_IN" });
 
-query.print() // "MATCH(a:Actor) ...."
-query.params // {}
-```
 
-Alternatively, classes to define nodes and relationships could be used to improve types:
-```typescript
-const actorNode = new CypherBuilder.Node({alias: "a", labels: ["Actor"]})
-const movieNode = new CypherBuilder.Node({alias: "m", labels: ["Movie"]})
-const actedIn = new CypherBuilder.Relationship({type: "ACTED_IN", source: actorNode, target: movieNode})
-// Alternatively: const actedIn = actorNode.relatedTo("ACTED_IN", movieNode)
-
-const query = new CypherBuilder.Query().match(actedIn).where(actorNode, {name: "Arthur"}).return([[movieNode, "title"]])
-const alternativeQuery = new CypherBuilder.Query().match(actedIn).where(actedIn.source, {name: "Arthur"}).return([[actedIn.target, "title"]])
+const query = new CypherBuilder.Match(relationship).where(actorNode, {name: "Arthur"}).return(movieNode, ["title"])
+const { cypher, params } = query.build()
+cypher // "MATCH(this1:Actor)...."
+params // { param1: "Arthur" }
 ```
 
 ### Query composition
@@ -103,11 +84,11 @@ query.params // [this0_id]
 ### Backtracking / Lazy
 Because the actual string would be built at the last moment (lazy), all reference can be updated after being defined (e.g. renaming nodes):
 ```typescript
-const actorNode = new CypherBuilder.Node({alias: "a", labels: ["Actor"]})
-const movieNode = new CypherBuilder.Node({alias: "m", labels: ["Movie"]})
+const actorNode = new CypherBuilder.Node({labels: ["Actor"]})
+const movieNode = new CypherBuilder.Node({labels: ["Movie"]})
 const actedIn = new CypherBuilder.Relationship({type: "ACTED_IN", source: actorNode, target: movieNode})
 
-const query = new CypherBuilder.Query().match(actedIn).where(actorNode, {name: "Arthur"}).return([[movieNode, "title"]])
+const query = new CypherBuilder.Match(actedIn).where(actorNode, {name: "Arthur"}).return([[movieNode, "title"]])
 
 
 actorNode.addLabel("MyOtherLabel")
