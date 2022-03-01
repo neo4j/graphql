@@ -83,7 +83,11 @@ import getNodes from "./get-nodes";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
-    { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
+    {
+        enableRegex,
+        skipValidateTypeDefs,
+        generateSubscriptions,
+    }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean; generateSubscriptions?: boolean } = {}
 ): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers: IResolvers } {
     const document = getDocument(typeDefs);
 
@@ -735,6 +739,10 @@ function makeAugmentedSchema(
             });
         }
     });
+
+    if (generateSubscriptions) {
+        generateSubscriptionTypes(composer);
+    }
 
     ["Mutation", "Query"].forEach((type) => {
         const objectComposer = composer[type] as ObjectTypeComposer;
