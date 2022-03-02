@@ -73,9 +73,9 @@ RETURN this0 { .id } AS this0
 const movieNode = new CypherBuilder.Node({labels: ["Movie"]});
 const idParam = new CypherBuilder.Param();
 
-const subQuery = new CypherBuilder.Query().create(movieNode, {id: idParam}).return(movieNode)
+const subQuery = new CypherBuilder.Create(movieNode, {id: idParam}).return(movieNode)
 
-const query = new CypherBuilder.Query().call(subQuery).return(movieNode, {"id"}, "this0")
+const query = new CypherBuilder.Call(subQuery).return(movieNode, {"id"}, "this0")
 
 query.print() // CALL { ...
 query.params // [this0_id]
