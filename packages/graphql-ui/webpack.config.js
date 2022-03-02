@@ -1,20 +1,16 @@
 const path = require("path");
-const webpack = require('webpack')
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 
 module.exports = {
     mode: "none",
     entry: path.join(__dirname, "src", "index.tsx"),
+    context: path.join(__dirname, "src"),
     target: "web",
     resolve: {
         plugins: [new TsconfigPathsPlugin()],
         extensions: [".ts", ".tsx", ".js"],
-        alias: {
-            '@neo4j/graphql': path.resolve(__dirname, '../graphql/src'),
-            '@neo4j/graphql-plugin-auth': path.resolve(__dirname, '../graphql-plugin-auth/src')
-        }
     },
     module: {
         rules: [
@@ -22,7 +18,7 @@ module.exports = {
                 test: /\.tsx?$/,
                 loader: "ts-loader",
                 exclude: "/node_modules/",
-                options: { projectReferences: true }
+                options: { projectReferences: true },
             },
         ],
     },
@@ -34,14 +30,11 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.join(__dirname, "src", "index.html"),
         }),
-        new webpack.ProvidePlugin({
-            process: 'process/browser',
-        }),
         new NodePolyfillPlugin(),
     ],
     devServer: {
         static: {
-            directory: path.join(__dirname, 'dist'),
+            directory: path.join(__dirname, "dist"),
         },
         compress: true,
         port: 4242,
