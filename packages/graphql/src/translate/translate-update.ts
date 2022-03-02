@@ -387,7 +387,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     }
 
     const returnStatement = nodeProjection
-        ? `RETURN ${varName} ${projStr} AS ${varName}`
+        ? `RETURN collect(${varName} ${projStr}) AS data`
         : `RETURN 'Query cannot conclude with CALL'`;
 
     const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";

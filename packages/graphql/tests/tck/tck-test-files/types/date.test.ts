@@ -125,8 +125,8 @@ describe("Cypher Date", () => {
             SET this0.date = $this0_date
             RETURN this0
             }
-            RETURN
-            this0 { .date } AS this0"
+            RETURN [
+            this0 { .date }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -160,7 +160,7 @@ describe("Cypher Date", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.date = $this_update_date
-            RETURN this { .id, .date } AS this"
+            RETURN collect(this { .id, .date }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

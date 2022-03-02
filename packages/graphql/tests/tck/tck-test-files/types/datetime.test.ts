@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher DateTime", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -100,8 +99,8 @@ describe("Cypher DateTime", () => {
             SET this0.datetime = $this0_datetime
             RETURN this0
             }
-            RETURN
-            this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this0"
+            RETURN [
+            this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -140,7 +139,7 @@ describe("Cypher DateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.datetime = $this_update_datetime
-            RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
+            RETURN collect(this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

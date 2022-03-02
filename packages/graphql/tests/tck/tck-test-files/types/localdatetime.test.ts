@@ -133,8 +133,8 @@ describe("Cypher LocalDateTime", () => {
             SET this0.localDT = $this0_localDT
             RETURN this0
             }
-            RETURN
-            this0 { .localDT } AS this0"
+            RETURN [
+            this0 { .localDT }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -172,7 +172,7 @@ describe("Cypher LocalDateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.localDT = $this_update_localDT
-            RETURN this { .id, .localDT } AS this"
+            RETURN collect(this { .id, .localDT }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

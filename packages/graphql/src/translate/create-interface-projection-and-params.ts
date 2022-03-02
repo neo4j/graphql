@@ -209,6 +209,11 @@ function createInterfaceProjectionAndParams({
         return subquery.join("\n");
     });
     const interfaceProjection = [`WITH ${nodeVariable}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
+
+    if (field.typeMeta.array) {
+        interfaceProjection.push(`WITH ${nodeVariable}, collect(${field.fieldName}) AS ${field.fieldName}`);
+    }
+
     if (Object.keys(whereArgs).length) {
         params.args = { where: whereArgs };
     }

@@ -1272,7 +1272,7 @@ describe("integration/rfs/003", () => {
                         	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
-                        RETURN this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) } AS this"
+                        RETURN collect(this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) }) AS data"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1372,7 +1372,7 @@ describe("integration/rfs/003", () => {
                         	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
-                        RETURN this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) } AS this"
+                        RETURN collect(this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) }) AS data"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
