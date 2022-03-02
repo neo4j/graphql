@@ -550,10 +550,12 @@ function createProjectionAndParams({
                 nodeVariable: varName,
             });
 
-            const connectionParamName = Object.keys(connection[1])[0];
+            const connectionParamNames = Object.keys(connection[1]);
             const runFirstColumnParams = [
                 ...[`${chainStr}: ${chainStr}`],
-                ...(connectionParamName ? [`${connectionParamName}: $${connectionParamName}`] : []),
+                ...connectionParamNames
+                    .filter(Boolean)
+                    .map((connectionParamName) => `${connectionParamName}: $${connectionParamName}`),
                 ...(context.auth ? ["auth: $auth"] : []),
                 ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
             ];
