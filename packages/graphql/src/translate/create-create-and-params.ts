@@ -25,6 +25,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
+import createRelationshipValidationStr from "./create-relationship-validation-string";
 
 interface Res {
     creates: string[];
@@ -43,6 +44,7 @@ function createCreateAndParams({
     context,
     withVars,
     insideDoWhen,
+    includeRelationshipValidation,
 }: {
     input: any;
     varName: string;
@@ -50,33 +52,28 @@ function createCreateAndParams({
     context: Context;
     withVars: string[];
     insideDoWhen?: boolean;
+    includeRelationshipValidation?: boolean;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key === x.fieldName);
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
-
         const dbFieldName = mapToDbProperty(node, key);
 
         if (relationField) {
             const refNodes: Node[] = [];
-            // let unionTypeName = "";
 
             if (relationField.union) {
-                // [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
-
                 Object.keys(value).forEach((unionTypeName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
-
-                // refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
             } else if (relationField.interface) {
                 relationField.interface?.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
                 });
             } else {
-                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             refNodes.forEach((refNode) => {
@@ -102,6 +99,7 @@ function createCreateAndParams({
                             node: refNode,
                             varName: nodeName,
                             withVars: [...withVars, nodeName],
+                            includeRelationshipValidation: false,
                         });
                         res.creates.push(recurse[0]);
                         res.params = { ...res.params, ...recurse[1] };
@@ -112,9 +110,9 @@ function createCreateAndParams({
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                         if (relationField.properties) {
-                            const relationship = (context.neoSchema.relationships.find(
+                            const relationship = context.relationships.find(
                                 (x) => x.properties === relationField.properties
-                            ) as unknown) as Relationship;
+                            ) as unknown as Relationship;
 
                             const setA = createSetRelationshipPropertiesAndParams({
                                 properties: create.edge ?? {},
@@ -124,6 +122,16 @@ function createCreateAndParams({
                             });
                             res.creates.push(setA[0]);
                             res.params = { ...res.params, ...setA[1] };
+                        }
+
+                        const relationshipValidationStr = createRelationshipValidationStr({
+                            node: refNode,
+                            context,
+                            varName: nodeName,
+                        });
+                        if (relationshipValidationStr) {
+                            res.creates.push(`WITH ${[...withVars, nodeName].join(", ")}`);
+                            res.creates.push(relationshipValidationStr);
                         }
                     });
                 }
@@ -253,10 +261,18 @@ function createCreateAndParams({
             params = { ...params, ...bindAndParams[1] };
         }
     }
-
     if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
         creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
+    }
+
+    if (includeRelationshipValidation) {
+        const str = createRelationshipValidationStr({ node, context, varName });
+
+        if (str) {
+            creates.push(`WITH ${withVars.join(", ")}`);
+            creates.push(str);
+        }
     }
 
     return [creates.join("\n"), params];

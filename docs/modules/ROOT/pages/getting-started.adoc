@@ -23,14 +23,14 @@ cd neo4j-graphql-example
 ----
 +
 . Create a new Node.js project:
-
++
 [source, bash, indent=0]
 ----
 npm init --yes
 ----
-
++
 Whilst you're there, create an empty `index.js` file which will contain all of the code for this example:
-
++
 [source, bash, indent=0]
 ----
 touch index.js
@@ -52,6 +52,8 @@ Additionally, you will need to install a GraphQL server package which will host 
 ----
 npm install @neo4j/graphql graphql neo4j-driver apollo-server
 ----
+
+Make sure the database fulfills the requirements stated xref::introduction.adoc#introduction-requirements[here], including the necessary plugins.
 
 == Define your GraphQL type definitions
 
@@ -104,13 +106,15 @@ Add the following to the bottom of `index.js`:
 
 [source, javascript, indent=0]
 ----
-const server = new ApolloServer({
-    schema: neoSchema.schema,
-});
+neoSchema.getSchema().then((schema) => {
+  const server = new ApolloServer({
+      schema,
+  });
 
-server.listen().then(({ url }) => {
-    console.log(`🚀 Server ready at ${url}`);
-});
+  server.listen().then(({ url }) => {
+      console.log(`🚀 Server ready at ${url}`);
+  });
+})
 ----
 
 == Start the server

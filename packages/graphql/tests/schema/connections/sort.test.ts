@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Sort", () => {
-    test("sort argument is not present when nothing to sort", () => {
+    test("sort argument is not present when nothing to sort", async () => {
         const typeDefs = gql`
             type Node1 {
                 property: String!
@@ -35,7 +35,7 @@ describe("Sort", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -117,7 +117,7 @@ describe("Sort", () => {
               \\"\\"\\"
               Specify one or more Node1Sort objects to sort Node1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [Node1Sort]
+              sort: [Node1Sort!]
             }
 
             input Node1RelatedToAggregateInput {
@@ -207,18 +207,30 @@ describe("Sort", () => {
               property: String
               property_CONTAINS: String
               property_ENDS_WITH: String
-              property_IN: [String]
+              property_IN: [String!]
               property_NOT: String
               property_NOT_CONTAINS: String
               property_NOT_ENDS_WITH: String
-              property_NOT_IN: [String]
+              property_NOT_IN: [String!]
               property_NOT_STARTS_WITH: String
               property_STARTS_WITH: String
-              relatedTo: Node2Where
+              relatedTo: Node2Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
               relatedToAggregate: Node1RelatedToAggregateInput
-              relatedToConnection: Node1RelatedToConnectionWhere
-              relatedToConnection_NOT: Node1RelatedToConnectionWhere
-              relatedTo_NOT: Node2Where
+              relatedToConnection: Node1RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_SOME\` instead.\\")
+              relatedToConnection_ALL: Node1RelatedToConnectionWhere
+              relatedToConnection_NONE: Node1RelatedToConnectionWhere
+              relatedToConnection_NOT: Node1RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
+              relatedToConnection_SINGLE: Node1RelatedToConnectionWhere
+              relatedToConnection_SOME: Node1RelatedToConnectionWhere
+              \\"\\"\\"Return Node1s where all of the related Node2s match this filter\\"\\"\\"
+              relatedTo_ALL: Node2Where
+              \\"\\"\\"Return Node1s where none of the related Node2s match this filter\\"\\"\\"
+              relatedTo_NONE: Node2Where
+              relatedTo_NOT: Node2Where @deprecated(reason: \\"Use \`relatedTo_NONE\` instead.\\")
+              \\"\\"\\"Return Node1s where one of the related Node2s match this filter\\"\\"\\"
+              relatedTo_SINGLE: Node2Where
+              \\"\\"\\"Return Node1s where some of the related Node2s match this filter\\"\\"\\"
+              relatedTo_SOME: Node2Where
             }
 
             type Node2 {
@@ -371,11 +383,23 @@ describe("Sort", () => {
             input Node2Where {
               AND: [Node2Where!]
               OR: [Node2Where!]
-              relatedTo: Node1Where
+              relatedTo: Node1Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
               relatedToAggregate: Node2RelatedToAggregateInput
-              relatedToConnection: Node2RelatedToConnectionWhere
-              relatedToConnection_NOT: Node2RelatedToConnectionWhere
-              relatedTo_NOT: Node1Where
+              relatedToConnection: Node2RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_SOME\` instead.\\")
+              relatedToConnection_ALL: Node2RelatedToConnectionWhere
+              relatedToConnection_NONE: Node2RelatedToConnectionWhere
+              relatedToConnection_NOT: Node2RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
+              relatedToConnection_SINGLE: Node2RelatedToConnectionWhere
+              relatedToConnection_SOME: Node2RelatedToConnectionWhere
+              \\"\\"\\"Return Node2s where all of the related Node1s match this filter\\"\\"\\"
+              relatedTo_ALL: Node1Where
+              \\"\\"\\"Return Node2s where none of the related Node1s match this filter\\"\\"\\"
+              relatedTo_NONE: Node1Where
+              relatedTo_NOT: Node1Where @deprecated(reason: \\"Use \`relatedTo_NONE\` instead.\\")
+              \\"\\"\\"Return Node2s where one of the related Node1s match this filter\\"\\"\\"
+              relatedTo_SINGLE: Node1Where
+              \\"\\"\\"Return Node2s where some of the related Node1s match this filter\\"\\"\\"
+              relatedTo_SOME: Node1Where
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"

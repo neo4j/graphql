@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#288", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -43,15 +42,15 @@ describe("#288", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
     test("Can create a USER and COMPANYID is populated", async () => {
         const query = gql`
             mutation {
-                createUSERS(input: { USERID: "userid", COMPANYID: "companyid" }) {
-                    uSERS {
+                createUsers(input: { USERID: "userid", COMPANYID: "companyid" }) {
+                    users {
                         USERID
                         COMPANYID
                     }
@@ -86,8 +85,8 @@ describe("#288", () => {
     test("Can update a USER and COMPANYID is populated", async () => {
         const query = gql`
             mutation {
-                updateUSERS(where: { USERID: "userid" }, update: { COMPANYID: "companyid2" }) {
-                    uSERS {
+                updateUsers(where: { USERID: "userid" }, update: { COMPANYID: "companyid2" }) {
+                    users {
                         USERID
                         COMPANYID
                     }

@@ -111,7 +111,7 @@ describe("Relationship properties - read", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
@@ -179,7 +179,7 @@ describe("Relationship properties - read", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
@@ -240,7 +240,7 @@ describe("Relationship properties - read", () => {
             await neoSchema.checkNeo4jCompat();
 
             const ascResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "ASC" },
@@ -281,7 +281,7 @@ describe("Relationship properties - read", () => {
             ]);
 
             const descResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "DESC" },
@@ -357,7 +357,7 @@ describe("Relationship properties - read", () => {
             await neoSchema.checkNeo4jCompat();
 
             const ascResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "ASC" },
@@ -392,7 +392,7 @@ describe("Relationship properties - read", () => {
             ]);
 
             const descResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "DESC" },
@@ -458,7 +458,7 @@ describe("Relationship properties - read", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });
@@ -522,7 +522,7 @@ describe("Relationship properties - read", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks } },
             });

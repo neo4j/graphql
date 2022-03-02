@@ -60,7 +60,7 @@ describe("comment-custom", () => {
                     CREATE (p)-[:HAS_COMMENT]->(:Comment {id: "${commentId}"})<-[:COMMENTED]-(u)
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,
@@ -115,7 +115,7 @@ describe("comment-custom", () => {
                     CREATE (p)-[:HAS_COMMENT]->(:Comment {id: "${commentId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,
@@ -169,7 +169,7 @@ describe("comment-custom", () => {
                     CREATE (p)-[:HAS_COMMENT]->(:Comment {id: "${commentId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,
@@ -227,7 +227,7 @@ describe("comment-custom", () => {
                     CREATE (p)-[:HAS_COMMENT]->(:Comment {id: "${commentId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
                 const response = await apolloServer.executeOperation({
                     query: mutation,

@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
@@ -49,7 +50,12 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -101,8 +107,8 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
             WITH { node: { __resolveType: \\"Post\\", content: this_Post.content, creatorConnection: creatorConnection } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS contentConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
             RETURN this { contentConnection } as this"
         `);

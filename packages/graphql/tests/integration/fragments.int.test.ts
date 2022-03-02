@@ -18,7 +18,8 @@
  */
 
 import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
+import { graphql, GraphQLSchema } from "graphql";
+import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
@@ -28,103 +29,199 @@ const testLabel = generate({ charset: "alphabetic" });
 
 describe("fragments", () => {
     let driver: Driver;
+    let schema: GraphQLSchema;
+
     const typeDefs = gql`
-        interface Entity {
-            username: String!
+        interface Production {
+            title: String!
+            runtime: Int!
         }
 
-        type User implements Entity {
-            id: ID!
-            email: String!
-            username: String!
+        type Movie implements Production {
+            title: String!
+            runtime: Int!
+        }
+
+        type Series implements Production {
+            title: String!
+            runtime: Int!
+            episodes: Int!
+        }
+
+        interface ActedIn @relationshipProperties {
+            screenTime: Int!
+        }
+
+        interface InterfaceA {
+            actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+        }
+
+        type Actor implements InterfaceA {
+            name: String!
+            actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }
     `;
 
-    const { schema } = new Neo4jGraphQL({ typeDefs });
+    const actorName = generate({
+        readable: true,
+        charset: "alphabetic",
+    });
 
-    const id = generate();
-    const email = generate({ charset: "alphabetic" });
-    const username = generate({ charset: "alphabetic" });
+    const movieTitle = generate({
+        readable: true,
+        charset: "alphabetic",
+    });
+    const movieRuntime = faker.datatype.number();
+    const movieScreenTime = faker.datatype.number();
+
+    const seriesTitle = generate({
+        readable: true,
+        charset: "alphabetic",
+    });
+    const seriesRuntime = faker.datatype.number();
+    const seriesEpisodes = faker.datatype.number();
+    const seriesScreenTime = faker.datatype.number();
 
     beforeAll(async () => {
         driver = await neo4j();
         const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        schema = await neoSchema.getSchema();
+
         await session.run(
             `
-                CREATE (user:User:${testLabel})
-                SET user = $user
-            `,
-            { user: { id, email, username } }
+            CREATE (a:Actor:${testLabel} { name: $actorName })
+            CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie:${testLabel} { title: $movieTitle, runtime:$movieRuntime })
+            CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series:${testLabel} { title: $seriesTitle, runtime:$seriesRuntime, episodes: $seriesEpisodes })
+        `,
+            {
+                actorName,
+                movieTitle,
+                movieRuntime,
+                movieScreenTime,
+                seriesTitle,
+                seriesRuntime,
+                seriesEpisodes,
+                seriesScreenTime,
+            }
         );
         await session.close();
     });
 
     afterAll(async () => {
         const session = driver.session();
-        await session.run(`
-            MATCH (node:${testLabel})
-            DETACH DELETE node
-        `);
+        await session.run(`MATCH (node:${testLabel}) DETACH DELETE node`);
         await driver.close();
     });
 
     test("should be able project fragment on type", async () => {
         const query = gql`
-            query ($id: ID!) {
-                users(where: { id: $id }) {
-                    email
+            query ($actorName: String!) {
+                actors(where: { name: $actorName }) {
                     ...FragmentOnType
                 }
             }
 
-            fragment FragmentOnType on User {
-                username
+            fragment FragmentOnType on Actor {
+                name
             }
         `;
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
             contextValue: { driver },
-            variableValues: { id },
+            variableValues: { actorName },
         });
 
         expect(graphqlResult.errors).toBeFalsy();
 
-        const graphqlUsers: Array<{ email: string; username: string }> = (graphqlResult.data as any)?.users;
+        const graphqlActor: Array<{ name: string }> = (graphqlResult.data as any)?.actors;
 
-        expect(graphqlUsers).toHaveLength(1);
-        expect(graphqlUsers[0].email).toBe(email);
-        expect(graphqlUsers[0].username).toBeDefined();
-        expect(graphqlUsers[0].username).toBe(username);
+        expect(graphqlActor).toHaveLength(1);
+        expect(graphqlActor[0].name).toBe(actorName);
     });
 
     test("should be able project fragment on interface", async () => {
         const query = gql`
-            query ($id: ID!) {
-                users(where: { id: $id }) {
-                    email
-                    ...FragmentOnInterface
+            query ($actorName: String!) {
+                actors(where: { name: $actorName }) {
+                    name
+                    actedIn {
+                        ...FragmentOnInterface
+                    }
                 }
             }
 
-            fragment FragmentOnInterface on Entity {
-                username
+            fragment FragmentOnInterface on Production {
+                title
             }
         `;
+
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
             contextValue: { driver },
-            variableValues: { id },
+            variableValues: { actorName },
         });
 
         expect(graphqlResult.errors).toBeFalsy();
 
-        const graphqlUsers: Array<{ email: string; username: string }> = (graphqlResult.data as any)?.users;
+        const graphqlActors: Array<{ name: string; actedIn: Array<{ title: string }> }> = (graphqlResult.data as any)
+            ?.actors;
 
-        expect(graphqlUsers).toHaveLength(1);
-        expect(graphqlUsers[0].email).toBe(email);
-        expect(graphqlUsers[0].username).toBeDefined();
-        expect(graphqlUsers[0].username).toBe(username);
+        expect(graphqlActors).toHaveLength(1);
+        expect(graphqlActors[0].name).toBe(actorName);
+        expect(graphqlActors[0].actedIn).toHaveLength(2);
+        expect(graphqlActors[0].actedIn).toEqual(
+            expect.arrayContaining([{ title: movieTitle }, { title: seriesTitle }])
+        );
+    });
+
+    test("should be able to project nested fragments", async () => {
+        const query = gql`
+            query ($actorName: String!) {
+                actors(where: { name: $actorName }) {
+                    name
+                    actedIn {
+                        ...FragmentA
+                    }
+                    ...FragmentB
+                }
+            }
+
+            fragment FragmentA on Production {
+                title
+            }
+
+            fragment FragmentB on InterfaceA {
+                actedIn {
+                    runtime
+                }
+            }
+        `;
+
+        const graphqlResult = await graphql({
+            schema,
+            source: query.loc!.source,
+            contextValue: { driver },
+            variableValues: { actorName },
+        });
+
+        expect(graphqlResult.errors).toBeFalsy();
+
+        const graphqlActors: Array<{ name: string; actedIn: Array<{ title: string; runtime: number }> }> = (
+            graphqlResult.data as any
+        )?.actors;
+
+        expect(graphqlActors).toHaveLength(1);
+        expect(graphqlActors[0].name).toBe(actorName);
+        expect(graphqlActors[0].actedIn).toHaveLength(2);
+        expect(graphqlActors[0].actedIn).toEqual(
+            expect.arrayContaining([
+                { title: movieTitle, runtime: movieRuntime },
+                { title: seriesTitle, runtime: seriesRuntime },
+            ])
+        );
     });
 });

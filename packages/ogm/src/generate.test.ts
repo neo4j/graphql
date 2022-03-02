@@ -173,7 +173,7 @@ describe("generate", () => {
 
             export type UserOptions = {
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
@@ -206,7 +206,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface UserAggregateInput {
+            export interface UserAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInputNullable;
             }
@@ -241,12 +241,12 @@ describe("generate", () => {
                 where?: UserWhere;
 
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: UserWhere;
 
-                aggregate: UserAggregateInput;
+                aggregate: UserAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
@@ -410,7 +410,7 @@ describe("generate", () => {
 
             export type UserOptions = {
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
@@ -448,7 +448,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface UserAggregateInput {
+            export interface UserAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInputNullable;
             }
@@ -483,12 +483,12 @@ describe("generate", () => {
                 where?: UserWhere;
 
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: UserWhere;
                 fulltext?: UserFulltext;
-                aggregate: UserAggregateInput;
+                aggregate: UserAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
@@ -655,7 +655,7 @@ describe("generate", () => {
 
             export type UserOptions = {
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
@@ -688,7 +688,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface UserAggregateInput {
+            export interface UserAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInputNullable;
             }
@@ -723,12 +723,12 @@ describe("generate", () => {
                 where?: UserWhere;
 
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: UserWhere;
 
-                aggregate: UserAggregateInput;
+                aggregate: UserAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
@@ -913,9 +913,9 @@ describe("generate", () => {
             };
 
             export type MovieActorsArgs = {
-              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
               where?: InputMaybe<PersonWhere>;
               options?: InputMaybe<PersonOptions>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
             };
 
             export type MovieActorsAggregateArgs = {
@@ -925,10 +925,10 @@ describe("generate", () => {
 
             export type MovieActorsConnectionArgs = {
               where?: InputMaybe<MovieActorsConnectionWhere>;
-              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
-              sort?: InputMaybe<Array<MovieActorsConnectionSort>>;
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
+              sort?: InputMaybe<Array<MovieActorsConnectionSort>>;
             };
 
             export type MovieActorsConnection = {
@@ -1032,8 +1032,8 @@ describe("generate", () => {
               AND?: InputMaybe<Array<ActedInWhere>>;
               screenTime?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_NOT?: InputMaybe<Scalars[\\"Int\\"]>;
-              screenTime_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"Int\\"]>>>;
-              screenTime_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"Int\\"]>>>;
+              screenTime_IN?: InputMaybe<Array<Scalars[\\"Int\\"]>>;
+              screenTime_NOT_IN?: InputMaybe<Array<Scalars[\\"Int\\"]>>;
               screenTime_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_GT?: InputMaybe<Scalars[\\"Int\\"]>;
@@ -1177,7 +1177,7 @@ describe("generate", () => {
 
             export type MovieOptions = {
               /** Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<InputMaybe<MovieSort>>>;
+              sort?: InputMaybe<Array<MovieSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
@@ -1201,8 +1201,8 @@ describe("generate", () => {
               AND?: InputMaybe<Array<MovieWhere>>;
               title?: InputMaybe<Scalars[\\"String\\"]>;
               title_NOT?: InputMaybe<Scalars[\\"String\\"]>;
-              title_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              title_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              title_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
+              title_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
               title_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               title_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               title_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
@@ -1212,8 +1212,20 @@ describe("generate", () => {
               actors?: InputMaybe<PersonWhere>;
               actors_NOT?: InputMaybe<PersonWhere>;
               actorsAggregate?: InputMaybe<MovieActorsAggregateInput>;
+              /** Return Movies where all of the related People match this filter */
+              actors_ALL?: InputMaybe<PersonWhere>;
+              /** Return Movies where none of the related People match this filter */
+              actors_NONE?: InputMaybe<PersonWhere>;
+              /** Return Movies where one of the related People match this filter */
+              actors_SINGLE?: InputMaybe<PersonWhere>;
+              /** Return Movies where some of the related People match this filter */
+              actors_SOME?: InputMaybe<PersonWhere>;
               actorsConnection?: InputMaybe<MovieActorsConnectionWhere>;
               actorsConnection_NOT?: InputMaybe<MovieActorsConnectionWhere>;
+              actorsConnection_ALL?: InputMaybe<MovieActorsConnectionWhere>;
+              actorsConnection_NONE?: InputMaybe<MovieActorsConnectionWhere>;
+              actorsConnection_SINGLE?: InputMaybe<MovieActorsConnectionWhere>;
+              actorsConnection_SOME?: InputMaybe<MovieActorsConnectionWhere>;
             };
 
             export type PersonConnectWhere = {
@@ -1226,7 +1238,7 @@ describe("generate", () => {
 
             export type PersonOptions = {
               /** Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<InputMaybe<PersonSort>>>;
+              sort?: InputMaybe<Array<PersonSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
@@ -1245,8 +1257,8 @@ describe("generate", () => {
               AND?: InputMaybe<Array<PersonWhere>>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
               name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
-              name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              name_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
+              name_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
@@ -1259,7 +1271,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface MovieAggregateInput {
+            export interface MovieAggregateSelectionInput {
               count?: boolean;
               title?: StringAggregateInputNonNullable;
             }
@@ -1297,12 +1309,12 @@ describe("generate", () => {
                 where?: MovieWhere;
                 delete?: MovieDeleteInput;
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: MovieWhere;
 
-                aggregate: MovieAggregateInput;
+                aggregate: MovieAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<MovieAggregateSelection>;
@@ -1312,7 +1324,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface PersonAggregateInput {
+            export interface PersonAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInputNonNullable;
             }
@@ -1347,12 +1359,12 @@ describe("generate", () => {
                 where?: PersonWhere;
 
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: PersonWhere;
 
-                aggregate: PersonAggregateInput;
+                aggregate: PersonAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<PersonAggregateSelection>;

@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Alias", () => {
-    test("Custom Directive Simple", () => {
+    test("Custom Directive Simple", async () => {
         const typeDefs = gql`
             type Actor {
                 name: String!
@@ -42,7 +42,7 @@ describe("Alias", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -239,11 +239,11 @@ describe("Alias", () => {
               character: String
               character_CONTAINS: String
               character_ENDS_WITH: String
-              character_IN: [String]
+              character_IN: [String!]
               character_NOT: String
               character_NOT_CONTAINS: String
               character_NOT_ENDS_WITH: String
-              character_NOT_IN: [String]
+              character_NOT_IN: [String!]
               character_NOT_STARTS_WITH: String
               character_STARTS_WITH: String
               screenTime: Int
@@ -323,7 +323,7 @@ describe("Alias", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
@@ -347,11 +347,23 @@ describe("Alias", () => {
             input ActorWhere {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
-              actedIn: MovieWhere
+              actedIn: MovieWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInAggregate: ActorActedInAggregateInput
-              actedInConnection: ActorActedInConnectionWhere
-              actedInConnection_NOT: ActorActedInConnectionWhere
-              actedIn_NOT: MovieWhere
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              actedIn_ALL: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              actedIn_NONE: MovieWhere
+              actedIn_NOT: MovieWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              actedIn_SINGLE: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              actedIn_SOME: MovieWhere
               city: String
               city_CONTAINS: String
               city_ENDS_WITH: String
@@ -365,11 +377,11 @@ describe("Alias", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -436,7 +448,7 @@ describe("Alias", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -466,11 +478,11 @@ describe("Alias", () => {
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }

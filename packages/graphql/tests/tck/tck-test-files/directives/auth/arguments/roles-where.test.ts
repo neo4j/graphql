@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
@@ -80,7 +81,12 @@ describe("Cypher Auth Where with Roles", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -458,8 +464,8 @@ describe("Cypher Auth Where with Roles", () => {
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS contentConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
             RETURN this { .id, contentConnection } as this"
         `);
@@ -521,8 +527,8 @@ describe("Cypher Auth Where with Roles", () => {
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS contentConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
             RETURN this { .id, contentConnection } as this"
         `);
@@ -680,6 +686,14 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this, this_posts0
             CALL apoc.util.validate(NOT(((ANY(r IN [\\\\\\"user\\\\\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR (ANY(r IN [\\\\\\"admin\\\\\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             SET this_posts0.id = $this_update_posts0_id
+            WITH this, this_posts0
+            CALL {
+            	WITH this_posts0
+            	MATCH (this_posts0)<-[this_posts0_creator_User_unique:HAS_POST]-(:User)
+            	WITH count(this_posts0_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator must be less than or equal to one', [0])
+            	RETURN c AS this_posts0_creator_User_unique_ignored
+            }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id})
             YIELD value as _

@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Aggregations", () => {
-    test("Top Level Aggregations", () => {
+    test("Top Level Aggregations", async () => {
         const typeDefs = gql`
             type Movie {
                 id: ID
@@ -40,7 +40,7 @@ describe("Aggregations", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -179,7 +179,7 @@ describe("Aggregations", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -245,11 +245,11 @@ describe("Aggregations", () => {
               isbn: String
               isbn_CONTAINS: String
               isbn_ENDS_WITH: String
-              isbn_IN: [String]
+              isbn_IN: [String!]
               isbn_NOT: String
               isbn_NOT_CONTAINS: String
               isbn_NOT_ENDS_WITH: String
-              isbn_NOT_IN: [String]
+              isbn_NOT_IN: [String!]
               isbn_NOT_STARTS_WITH: String
               isbn_STARTS_WITH: String
               screenTime: Duration
@@ -363,7 +363,7 @@ describe("Aggregations", () => {
         `);
     });
 
-    test("Where Level Aggregations", () => {
+    test("Where Level Aggregations", async () => {
         const typeDefs = gql`
             type User {
                 someId: ID
@@ -397,7 +397,7 @@ describe("Aggregations", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -1131,7 +1131,7 @@ describe("Aggregations", () => {
               \\"\\"\\"
               Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [PostSort]
+              sort: [PostSort!]
             }
 
             input PostRelationInput {
@@ -1185,11 +1185,23 @@ describe("Aggregations", () => {
             input PostWhere {
               AND: [PostWhere!]
               OR: [PostWhere!]
-              likes: UserWhere
+              likes: UserWhere @deprecated(reason: \\"Use \`likes_SOME\` instead.\\")
               likesAggregate: PostLikesAggregateInput
-              likesConnection: PostLikesConnectionWhere
-              likesConnection_NOT: PostLikesConnectionWhere
-              likes_NOT: UserWhere
+              likesConnection: PostLikesConnectionWhere @deprecated(reason: \\"Use \`likesConnection_SOME\` instead.\\")
+              likesConnection_ALL: PostLikesConnectionWhere
+              likesConnection_NONE: PostLikesConnectionWhere
+              likesConnection_NOT: PostLikesConnectionWhere @deprecated(reason: \\"Use \`likesConnection_NONE\` instead.\\")
+              likesConnection_SINGLE: PostLikesConnectionWhere
+              likesConnection_SOME: PostLikesConnectionWhere
+              \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
+              likes_ALL: UserWhere
+              \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
+              likes_NONE: UserWhere
+              likes_NOT: UserWhere @deprecated(reason: \\"Use \`likes_NONE\` instead.\\")
+              \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
+              likes_SINGLE: UserWhere
+              \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
+              likes_SOME: UserWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -1297,7 +1309,7 @@ describe("Aggregations", () => {
               \\"\\"\\"
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [UserSort]
+              sort: [UserSort!]
             }
 
             \\"\\"\\"

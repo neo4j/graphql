@@ -19,7 +19,7 @@
 
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
@@ -79,15 +79,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesEpisodes = faker.random.number();
-        const seriesScreenTime = faker.random.number();
+        const seriesEpisodes = faker.datatype.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             query Actors($name: String) {
@@ -117,7 +117,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { name: actorName },
@@ -148,6 +148,89 @@ describe("interface relationships", () => {
         }
     });
 
+    test("should read and return sorted interface relationship fields", async () => {
+        const session = driver.session();
+
+        const actor = {
+            name: generate({
+                readable: true,
+                charset: "alphabetic",
+            }),
+        };
+
+        const movie1 = {
+            title: "A",
+            runtime: faker.datatype.number(),
+            screenTime: faker.datatype.number(),
+        };
+
+        const movie2 = {
+            title: "B",
+            runtime: faker.datatype.number(),
+            screenTime: faker.datatype.number(),
+        };
+
+        const series1 = {
+            title: "C",
+            episodes: faker.datatype.number(),
+            screenTime: faker.datatype.number(),
+        };
+
+        const series2 = {
+            title: "D",
+            episodes: faker.datatype.number(),
+            screenTime: faker.datatype.number(),
+        };
+
+        const query = gql`
+            query Actors($name: String) {
+                actors(where: { name: $name }) {
+                    name
+                    actedIn(options: { sort: [{ title: DESC }] }) {
+                        title
+                        ... on Movie {
+                            runtime
+                        }
+                        ... on Series {
+                            episodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (a:Actor { name: $actor.name })
+                CREATE (:Movie { title: $movie1.title, runtime:$movie1.runtime })<-[:ACTED_IN { screenTime: $movie1.screenTime }]-(a)-[:ACTED_IN { screenTime: $movie2.screenTime }]->(:Movie { title: $movie2.title, runtime: $movie2.runtime })
+                CREATE (:Series { title: $series1.title, episodes: $series1.episodes })<-[:ACTED_IN { screenTime: $series1.screenTime }]-(a)-[:ACTED_IN { screenTime: $series2.screenTime }]->(:Series { title: $series2.title, episodes: $series2.episodes })
+            `,
+                { actor, movie1, movie2, series1, series2 }
+            );
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query.loc!.source,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { name: actor.name },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            const [gqlActor] = gqlResult.data?.actors as any[];
+
+            expect(gqlActor.name).toEqual(actor.name);
+            expect(gqlActor.actedIn).toHaveLength(4);
+            expect(gqlActor.actedIn[0]).toEqual({ title: series2.title, episodes: series2.episodes });
+            expect(gqlActor.actedIn[1]).toEqual({ title: series1.title, episodes: series1.episodes });
+            expect(gqlActor.actedIn[2]).toEqual({ title: movie2.title, runtime: movie2.runtime });
+            expect(gqlActor.actedIn[3]).toEqual({ title: movie1.title, runtime: movie1.runtime });
+        } finally {
+            await session.close();
+        }
+    });
+
     test("should read and return non-array interface relationship fields", async () => {
         const session = driver.session();
 
@@ -160,21 +243,21 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesEpisodes = faker.random.number();
-        const seriesScreenTime = faker.random.number();
+        const seriesEpisodes = faker.datatype.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const newMovieTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const newMovieRuntime = faker.random.number();
+        const newMovieRuntime = faker.datatype.number();
 
         const query = `
             query Actors($name: String) {
@@ -215,7 +298,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { name: actorName },
@@ -251,11 +334,11 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
-        const seriesEpisodes = faker.random.number();
-        const seriesScreenTime = faker.random.number();
+        const seriesEpisodes = faker.datatype.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             query Actors($name: String, $title: String) {
@@ -286,7 +369,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { name: actorName, title: "Apple" },
@@ -329,11 +412,11 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
-        const seriesEpisodes = faker.random.number();
-        const seriesScreenTime = faker.random.number();
+        const seriesEpisodes = faker.datatype.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             query Actors($name: String, $title: String) {
@@ -361,7 +444,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { name: actorName, title: "Apple" },
@@ -399,11 +482,11 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
-        const seriesEpisodes = faker.random.number();
-        const seriesScreenTime = faker.random.number();
+        const seriesEpisodes = faker.datatype.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             query Actors($name: String, $title: String, $movieTitle: String) {
@@ -434,7 +517,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { name: actorName, title: "Apple", movieTitle: "Pear" },

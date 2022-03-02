@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../src";
@@ -80,7 +81,12 @@ describe("Cypher Auth Allow", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -340,6 +346,14 @@ describe("Cypher Auth Allow", () => {
             RETURN count(*)
             \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_id:$this_update_creator0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
             YIELD value as _
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
+            	WITH count(this_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_creator_User_unique_ignored
+            }
             RETURN this { .id } AS this"
         `);
 
@@ -411,6 +425,14 @@ describe("Cypher Auth Allow", () => {
             RETURN count(*)
             \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
             YIELD value as _
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
+            	WITH count(this_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_creator_User_unique_ignored
+            }
             RETURN this { .id } AS this"
         `);
 
@@ -639,6 +661,21 @@ describe("Cypher Auth Allow", () => {
             RETURN count(*)
             }
             RETURN count(*)
+            }
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_creator_User_unique:HAS_COMMENT]-(:User)
+            	WITH count(this_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required', [0])
+            	RETURN c AS this_creator_User_unique_ignored
+            }
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_post_Post_unique:HAS_COMMENT]-(:Post)
+            	WITH count(this_post_Post_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required', [0])
+            	RETURN c AS this_post_Post_unique_ignored
             }
             RETURN this { .id } AS this"
         `);

@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
-describe("Undirected Aggregations", () => {
+describe("Undirected connections", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
@@ -38,7 +39,11 @@ describe("Undirected Aggregations", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { jwt: { secret } },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
         const query = gql`
             query FriendsAggregate {

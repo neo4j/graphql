@@ -24,7 +24,7 @@ import { Neo4jGraphQL } from "../../../src";
 
 describe("Node Directive", () => {
     describe("Plural option", () => {
-        test("Partial types with plural", () => {
+        test("Partial types with plural", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -35,7 +35,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -105,7 +105,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [TechSort]
+                  sort: [TechSort!]
                 }
 
                 \\"\\"\\"
@@ -161,7 +161,7 @@ describe("Node Directive", () => {
             `);
         });
 
-        test("Partial types with same plural in both", () => {
+        test("Partial types with same plural in both", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -172,7 +172,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -242,7 +242,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [TechSort]
+                  sort: [TechSort!]
                 }
 
                 \\"\\"\\"
@@ -298,7 +298,7 @@ describe("Node Directive", () => {
             `);
         });
 
-        test("Partial types with different plural", () => {
+        test("Partial types with different plural", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -309,7 +309,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -379,7 +379,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more TechSort objects to sort Technologies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [TechSort]
+                  sort: [TechSort!]
                 }
 
                 \\"\\"\\"
@@ -435,7 +435,7 @@ describe("Node Directive", () => {
             `);
         });
 
-        test("Collision between Type and plural", () => {
+        test("Collision between Type and plural", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -446,7 +446,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -513,7 +513,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more TechsSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [TechsSort]
+                  sort: [TechsSort!]
                 }
 
                 \\"\\"\\"
@@ -557,7 +557,7 @@ describe("Node Directive", () => {
             `);
         });
 
-        test("Same plural on multiple nodes", () => {
+        test("Same plural on multiple nodes", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -568,7 +568,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -648,7 +648,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more UserSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [UserSort]
+                  sort: [UserSort!]
                 }
 
                 \\"\\"\\"
@@ -679,7 +679,7 @@ describe("Node Directive", () => {
             `);
         });
 
-        test("Collision with pluralize", () => {
+        test("Collision with pluralize", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Users") {
                     name: String
@@ -690,7 +690,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -770,7 +770,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [UserSort]
+                  sort: [UserSort!]
                 }
 
                 \\"\\"\\"
@@ -801,7 +801,7 @@ describe("Node Directive", () => {
             `);
         });
 
-        test("Type collision with pluralize", () => {
+        test("Type collision with pluralize", async () => {
             const typeDefs = gql`
                 type User {
                     name: String
@@ -812,7 +812,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -892,7 +892,7 @@ describe("Node Directive", () => {
                   \\"\\"\\"
                   Specify one or more UsersSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [UsersSort]
+                  sort: [UsersSort!]
                 }
 
                 \\"\\"\\"

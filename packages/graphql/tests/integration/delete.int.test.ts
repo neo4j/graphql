@@ -68,7 +68,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -125,7 +125,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id: "NOT FOUND" },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -197,7 +197,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id, name },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -289,7 +289,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id1, name, id2 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -380,7 +380,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { name },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },

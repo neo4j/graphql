@@ -40,7 +40,7 @@ describe("validateDocument", () => {
         `;
 
         expect(() => validateDocument(doc)).toThrow(
-            'Directive "@coalesce" argument "value" of type "Scalar!" is required, but it was not provided.'
+            'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
         );
     });
 
@@ -379,7 +379,7 @@ describe("validateDocument", () => {
                         @cypher(
                             statement: "MATCH (this)-[:SHIPS_TO]->(a:Address) RETURN round(0.01 * distance(a.location, Point({latitude: 40.7128, longitude: -74.0060})) / 1000, 2)"
                         )
-                    estimatedDelivery: DateTime @ignore
+                    estimatedDelivery: DateTime @computed
                 }
 
                 type Customer {

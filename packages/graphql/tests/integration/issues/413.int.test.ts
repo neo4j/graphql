@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
@@ -65,7 +66,7 @@ describe("413", () => {
 
         const secret = "secret";
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret }) } });
 
         const query = `
             query {
@@ -90,7 +91,7 @@ describe("413", () => {
             });
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -98,7 +99,7 @@ describe("413", () => {
             expect(result.errors).toBeFalsy();
 
             expect(result.data as any).toEqual({
-                jobPlansAggregate: {count: 3},
+                jobPlansAggregate: { count: 3 },
             });
         } finally {
             await session.close();

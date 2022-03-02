@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@writeonly directive", () => {
-    test("makes a field writeonly", () => {
+    test("makes a field writeonly", async () => {
         const typeDefs = gql`
             type User {
                 username: String!
@@ -31,7 +31,7 @@ describe("@writeonly directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -113,7 +113,7 @@ describe("@writeonly directive", () => {
               \\"\\"\\"
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [UserSort]
+              sort: [UserSort!]
             }
 
             \\"\\"\\"
@@ -135,28 +135,28 @@ describe("@writeonly directive", () => {
               password: String
               password_CONTAINS: String
               password_ENDS_WITH: String
-              password_IN: [String]
+              password_IN: [String!]
               password_NOT: String
               password_NOT_CONTAINS: String
               password_NOT_ENDS_WITH: String
-              password_NOT_IN: [String]
+              password_NOT_IN: [String!]
               password_NOT_STARTS_WITH: String
               password_STARTS_WITH: String
               username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
-              username_IN: [String]
+              username_IN: [String!]
               username_NOT: String
               username_NOT_CONTAINS: String
               username_NOT_ENDS_WITH: String
-              username_NOT_IN: [String]
+              username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
             }"
         `);
     });
 
-    test("makes an inherited field writeonly", () => {
+    test("makes an inherited field writeonly", async () => {
         const typeDefs = gql`
             interface UserInterface {
                 username: String!
@@ -169,7 +169,7 @@ describe("@writeonly directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -255,7 +255,7 @@ describe("@writeonly directive", () => {
               \\"\\"\\"
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [UserSort]
+              sort: [UserSort!]
             }
 
             \\"\\"\\"
@@ -277,28 +277,28 @@ describe("@writeonly directive", () => {
               password: String
               password_CONTAINS: String
               password_ENDS_WITH: String
-              password_IN: [String]
+              password_IN: [String!]
               password_NOT: String
               password_NOT_CONTAINS: String
               password_NOT_ENDS_WITH: String
-              password_NOT_IN: [String]
+              password_NOT_IN: [String!]
               password_NOT_STARTS_WITH: String
               password_STARTS_WITH: String
               username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
-              username_IN: [String]
+              username_IN: [String!]
               username_NOT: String
               username_NOT_CONTAINS: String
               username_NOT_ENDS_WITH: String
-              username_NOT_IN: [String]
+              username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
             }"
         `);
     });
 
-    test("makes a relationship field writeonly", () => {
+    test("makes a relationship field writeonly", async () => {
         const typeDefs = gql`
             type Actor {
                 name: String
@@ -310,7 +310,7 @@ describe("@writeonly directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -341,7 +341,7 @@ describe("@writeonly directive", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             \\"\\"\\"
@@ -506,7 +506,7 @@ describe("@writeonly directive", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
@@ -528,11 +528,23 @@ describe("@writeonly directive", () => {
             input MovieWhere {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
-              actors: ActorWhere
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
-              actorsConnection: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere
-              actors_NOT: ActorWhere
+              actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID

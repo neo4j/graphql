@@ -17,11 +17,13 @@
  * limitations under the License.
  */
 
-import { InputValueDefinitionNode, DirectiveNode, TypeNode } from "graphql";
+import { EventEmitter } from "events";
+import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { JwtPayload } from "jsonwebtoken";
 import { Driver, Integer } from "neo4j-driver";
-import { Neo4jGraphQL } from "./classes";
+import { Node, Relationship } from "./classes";
+import { RelationshipQueryDirectionOption } from "./constants";
+import { EventMeta } from "./subscriptions/event-meta";
 
 export type DriverConfig = {
     database?: string;
@@ -38,10 +40,13 @@ export interface Context {
     driver: Driver;
     driverConfig?: DriverConfig;
     resolveTree: ResolveTree;
-    neoSchema: Neo4jGraphQL;
-    jwt?: JwtPayload;
+    nodes: Node[];
+    relationships: Relationship[];
+    schema: GraphQLSchema;
     auth?: AuthContext;
     queryOptions?: CypherQueryOptions;
+    plugins?: Neo4jGraphQLPlugins;
+    jwt?: JwtPayload;
     [k: string]: any;
 }
 
@@ -118,7 +123,6 @@ export interface BaseField {
     description?: string;
     readonly?: boolean;
     writeonly?: boolean;
-    ignored?: boolean;
     dbPropertyName?: string;
     unique?: Unique;
 }
@@ -134,6 +138,7 @@ export interface RelationField extends BaseField {
     properties?: string;
     union?: UnionField;
     interface?: InterfaceField;
+    queryDirection: RelationshipQueryDirectionOption;
 }
 
 export interface ConnectionField extends BaseField {
@@ -146,6 +151,8 @@ export interface ConnectionField extends BaseField {
  */
 export interface CypherField extends BaseField {
     statement: string;
+    isEnum: boolean;
+    isScalar: boolean;
 }
 
 /**
@@ -164,10 +171,16 @@ export type CustomScalarField = BaseField;
 export interface CustomEnumField extends BaseField {
     // TODO Must be "Enum" - really needs refactoring into classes
     kind: string;
+    defaultValue?: string;
+    coalesceValue?: string;
 }
 
 export interface UnionField extends BaseField {
     nodes?: string[];
+}
+
+export interface ComputedField extends BaseField {
+    requiredFields: string[];
 }
 
 export interface InterfaceField extends BaseField {
@@ -181,6 +194,14 @@ export interface TemporalField extends PrimitiveField {
 }
 
 export type PointField = BaseField;
+
+export type SortableField =
+    | PrimitiveField
+    | CustomScalarField
+    | CustomEnumField
+    | TemporalField
+    | PointField
+    | CypherField;
 
 export type SortDirection = "ASC" | "DESC";
 
@@ -311,3 +332,34 @@ export interface CypherQueryOptions {
 
 /** Nested Records helper type, supports any level of recursion. Ending in properties of type T */
 export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {} // Using interface to allow recursive types
+
+/** Input field for graphql-compose */
+export type InputField = { type: string; defaultValue?: string } | string;
+
+export interface Neo4jGraphQLAuthPlugin {
+    rolesPath?: string;
+
+    decode<T>(token: string): Promise<T | undefined>;
+}
+
+export interface Neo4jGraphQLSubscriptionsPlugin {
+    events: EventEmitter;
+
+    publish(eventMeta: EventMeta): Promise<void>;
+}
+
+export interface Neo4jGraphQLPlugins {
+    auth?: Neo4jGraphQLAuthPlugin;
+    subscriptions?: Neo4jGraphQLSubscriptionsPlugin;
+}
+
+export interface JwtPayload {
+    [key: string]: any;
+    iss?: string | undefined;
+    sub?: string | undefined;
+    aud?: string | string[] | undefined;
+    exp?: number | undefined;
+    nbf?: number | undefined;
+    iat?: number | undefined;
+    jti?: string | undefined;
+}

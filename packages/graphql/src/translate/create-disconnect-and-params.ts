@@ -72,9 +72,9 @@ function createDisconnectAndParams({
         subquery.push(`WITH ${withVars.join(", ")}`);
         subquery.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${label})`);
 
-        const relationship = (context.neoSchema.relationships.find(
+        const relationship = context.relationships.find(
             (x) => x.properties === relationField.properties
-        ) as unknown) as Relationship;
+        ) as unknown as Relationship;
 
         const whereStrs: string[] = [];
 
@@ -152,12 +152,14 @@ function createDisconnectAndParams({
         }
 
         /*
-           Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
-           https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
+        Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
+        https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
         subquery.push(`FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END | `);
         subquery.push(`DELETE ${_varName}_rel`);
         subquery.push(`)`); // close FOREACH
+
+        // TODO - relationship validation - Blocking, if this were to be enforced it would stop someone from 'reconnecting'
 
         if (disconnect.disconnect) {
             const disconnects = Array.isArray(disconnect.disconnect) ? disconnect.disconnect : [disconnect.disconnect];
@@ -189,12 +191,10 @@ function createDisconnectAndParams({
 
                             if (relField.union) {
                                 Object.keys(v).forEach((modelName) => {
-                                    newRefNodes.push(context.neoSchema.nodes.find((x) => x.name === modelName) as Node);
+                                    newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
                                 });
                             } else {
-                                newRefNodes.push(
-                                    context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
-                                );
+                                newRefNodes.push(context.nodes.find((x) => x.name === relField.typeMeta.name) as Node);
                             }
 
                             newRefNodes.forEach((newRefNode) => {
@@ -239,13 +239,11 @@ function createDisconnectAndParams({
 
                                 if (relField.union) {
                                     Object.keys(v).forEach((modelName) => {
-                                        newRefNodes.push(
-                                            context.neoSchema.nodes.find((x) => x.name === modelName) as Node
-                                        );
+                                        newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
                                     });
                                 } else {
                                     newRefNodes.push(
-                                        context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
+                                        context.nodes.find((x) => x.name === relField.typeMeta.name) as Node
                                     );
                                 }
 

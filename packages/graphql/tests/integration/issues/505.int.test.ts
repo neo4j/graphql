@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     async function queryTest(neoSchema: Neo4jGraphQL, variableValues: any, userId: string, session: Session) {
         async function graphqlQuery(query: string) {
             return graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: {
                     driver,

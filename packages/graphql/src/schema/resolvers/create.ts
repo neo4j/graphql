@@ -26,9 +26,9 @@ import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 import { upperFirst } from "../../utils/upper-first";
 
 export default function createResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
+    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
-        context.resolveTree = getNeo4jResolveTree(info);
+        context.resolveTree = getNeo4jResolveTree(info, { args });
         const [cypher, params] = translateCreate({ context, node });
 
         const executeResult = await execute({
@@ -54,7 +54,7 @@ export default function createResolver({ node }: { node: Node }) {
     }
 
     return {
-        type: `Create${upperFirst(node.plural)}MutationResponse!`,
+        type: `${node.mutationResponseTypeNames.create}!`,
         resolve,
         args: { input: `[${node.name}CreateInput!]!` },
     };

@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import { UnionTypeDefinitionNode } from "graphql/language/ast";
 import { ResolveTree } from "graphql-parse-resolve-info";
+import { GraphQLUnionType } from "graphql";
+import { mergeDeep } from "@graphql-tools/utils";
 import { Node } from "../classes";
-import createWhereAndParams from "./create-where-and-params";
+import createWhereAndParams from "./where/create-where-and-params";
 import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
@@ -31,7 +32,9 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
-import { generateProjectionField } from "./utils/generate-projection-field";
+import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
+import { generateMissingOrAliasedFields, filterFieldsInSelection } from "./utils/resolveTree";
+import { removeDuplicates } from "../utils/utils";
 
 interface Res {
     projection: string[];
@@ -136,16 +139,17 @@ function createProjectionAndParams({
     resolveType?: boolean;
     inRelationshipProjection?: boolean;
 }): [string, any, ProjectionMeta?] {
-    function reducer(res: Res, [key, field]: [string, ResolveTree]): Res {
+    function reducer(res: Res, field: ResolveTree): Res {
+        const alias = field.alias;
         let param = "";
         if (chainStr) {
-            param = `${chainStr}_${key}`;
+            param = `${chainStr}_${alias}`;
         } else {
-            param = `${varName}_${key}`;
+            param = `${varName}_${alias}`;
         }
 
         const whereInput = field.args.where as GraphQLWhereArg;
-        const optionsInput = field.args.options as GraphQLOptionsArg;
+        const optionsInput = (field.args.options || {}) as GraphQLOptionsArg;
         const fieldFields = field.fieldsByTypeName;
         const cypherField = node.cypherFields.find((x) => x.fieldName === field.name);
         const relationField = node.relationFields.find((x) => x.fieldName === field.name);
@@ -179,28 +183,18 @@ function createProjectionAndParams({
 
             const isArray = cypherField.typeMeta.array;
 
-            const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
-                cypherField.typeMeta.name
-            );
-            const isEnum = context.neoSchema.document.definitions.find(
-                (x) => x.kind === "EnumTypeDefinition" && x.name.value === cypherField.typeMeta.name
-            );
-            const isScalar = context.neoSchema.document.definitions.find(
-                (x) => x.kind === "ScalarTypeDefinition" && x.name.value === cypherField.typeMeta.name
-            );
+            const graphqlType = context.schema.getType(cypherField.typeMeta.name);
 
-            const referenceNode = context.neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
-            const unions = context.neoSchema.document.definitions.filter(
-                (x) => x.kind === "UnionTypeDefinition"
-            ) as UnionTypeDefinitionNode[];
-            const referenceUnion = unions.find((u) => u.name.value === cypherField.typeMeta.name);
+            const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
+
+            const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
 
             if (referenceNode) {
                 const recurse = createProjectionAndParams({
                     resolveTree: field,
                     node: referenceNode || node,
                     context,
-                    varName: `${varName}_${key}`,
+                    varName: `${varName}_${alias}`,
                     chainStr: param,
                     inRelationshipProjection: true,
                 });
@@ -216,7 +210,7 @@ function createProjectionAndParams({
                 const headStrs: string[] = [];
                 const referencedNodes =
                     referenceUnion?.types
-                        ?.map((u) => context.neoSchema.nodes.find((n) => n.name === u.name.value))
+                        ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
                         ?.filter((b) => b !== undefined)
                         ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? "")) || [];
 
@@ -224,11 +218,11 @@ function createProjectionAndParams({
                     if (refNode) {
                         const labelsStatements = refNode
                             .getLabels(context)
-                            .map((label) => `"${label}" IN labels(${varName}_${key})`);
+                            .map((label) => `"${label}" IN labels(${varName}_${alias})`);
                         unionWheres.push(`(${labelsStatements.join("AND")})`);
 
                         const innerHeadStr: string[] = [
-                            `[ ${varName}_${key} IN [${varName}_${key}] WHERE (${labelsStatements.join(" AND ")})`,
+                            `[ ${varName}_${alias} IN [${varName}_${alias}] WHERE (${labelsStatements.join(" AND ")})`,
                         ];
 
                         if (fieldFields[refNode.name]) {
@@ -236,12 +230,12 @@ function createProjectionAndParams({
                                 resolveTree: field,
                                 node: refNode,
                                 context,
-                                varName: `${varName}_${key}`,
+                                varName: `${varName}_${alias}`,
                             });
 
                             innerHeadStr.push(
                                 [
-                                    `| ${varName}_${key} { __resolveType: "${refNode.name}", `,
+                                    `| ${varName}_${alias} { __resolveType: "${refNode.name}", `,
                                     ...str.replace("{", "").split(""),
                                 ].join("")
                             );
@@ -251,7 +245,7 @@ function createProjectionAndParams({
                                 projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
                             }
                         } else {
-                            innerHeadStr.push(`| ${varName}_${key} { __resolveType: "${refNode.name}" } `);
+                            innerHeadStr.push(`| ${varName}_${alias} { __resolveType: "${refNode.name}" } `);
                         }
 
                         innerHeadStr.push(`]`);
@@ -305,75 +299,90 @@ function createProjectionAndParams({
             const apocParamsStr = `{this: ${chainStr || varName}${
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}`;
-            const apocStr = `${!isPrimitive && !isEnum && !isScalar ? `${param} IN` : ""} apoc.cypher.runFirstColumn("${
-                cypherField.statement
-            }", ${apocParamsStr}, ${expectMultipleValues})${apocWhere ? ` ${apocWhere}` : ""}${
-                unionWhere ? ` ${unionWhere} ` : ""
-            }${projectionStr ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""}`;
+            const apocStr = `${
+                !cypherField.isScalar && !cypherField.isEnum ? `${param} IN` : ""
+            } apoc.cypher.runFirstColumn("${cypherField.statement}", ${apocParamsStr}, ${expectMultipleValues})${
+                apocWhere ? ` ${apocWhere}` : ""
+            }${unionWhere ? ` ${unionWhere} ` : ""}${
+                projectionStr ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""
+            }`;
 
-            if (isPrimitive || isEnum || isScalar) {
-                res.projection.push(`${key}: ${apocStr}`);
+            if (cypherField.isScalar || cypherField.isEnum) {
+                res.projection.push(`${alias}: ${apocStr}`);
 
                 return res;
             }
 
             if (cypherField.typeMeta.array) {
-                res.projection.push(`${key}: [${apocStr}]`);
+                res.projection.push(`${alias}: [${apocStr}]`);
 
                 return res;
             }
 
-            res.projection.push(`${key}: head([${apocStr}])`);
+            res.projection.push(`${alias}: head([${apocStr}])`);
 
             return res;
         }
 
         if (relationField) {
-            const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const referenceNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+
+            if (referenceNode?.queryOptions) {
+                optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
+            }
 
             const nodeMatchStr = `(${chainStr || varName})`;
-            let inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
-            let outStr = relationField.direction === "OUT" ? "->" : "-";
             const labels = referenceNode?.getLabelString(context);
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
-            if (field.args.directed === false) {
-                inStr = "-";
-                outStr = "-";
-            }
+            const { inStr, outStr } = getRelationshipDirection(relationField, field.args);
 
             if (relationField.interface) {
                 if (!res.meta.interfaceFields) {
                     res.meta.interfaceFields = [];
                 }
 
-                const f = field;
-
-                res.meta.interfaceFields.push(f);
+                res.meta.interfaceFields.push(field);
 
                 let offsetLimitStr = "";
                 if (optionsInput) {
-                    offsetLimitStr = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
+                    offsetLimitStr = createOffsetLimitStr({
+                        offset: optionsInput.offset,
+                        limit: optionsInput.limit,
+                    });
+
+                    if (optionsInput.sort) {
+                        const sorts = optionsInput.sort.reduce(sortReducer, []);
+
+                        res.projection.push(
+                            `${field.alias}: apoc.coll.sortMulti(collect(${field.alias}), [${sorts.join(
+                                ", "
+                            )}])${offsetLimitStr}`
+                        );
+                        return res;
+                    }
                 }
 
                 res.projection.push(
-                    `${f.alias}: ${!isArray ? "head(" : ""}collect(${f.alias})${offsetLimitStr}${!isArray ? ")" : ""}`
+                    `${field.alias}: ${!isArray ? "head(" : ""}collect(${field.alias})${offsetLimitStr}${
+                        !isArray ? ")" : ""
+                    }`
                 );
 
                 return res;
             }
 
             if (relationField.union) {
-                const referenceNodes = context.neoSchema.nodes.filter(
+                const referenceNodes = context.nodes.filter(
                     (x) =>
                         relationField.union?.nodes?.includes(x.name) &&
                         (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
                 );
 
                 const unionStrs: string[] = [
-                    `${key}: ${!isArray ? "head(" : ""} [${param} IN [(${
+                    `${alias}: ${!isArray ? "head(" : ""} [${param} IN [(${
                         chainStr || varName
                     })${inStr}${relTypeStr}${outStr}(${param})`,
                     `WHERE ${referenceNodes
@@ -465,7 +474,7 @@ function createProjectionAndParams({
                 resolveTree: field,
                 node: referenceNode || node,
                 context,
-                varName: `${varName}_${key}`,
+                varName: `${varName}_${alias}`,
                 chainStr: param,
                 inRelationshipProjection: true,
             });
@@ -475,7 +484,7 @@ function createProjectionAndParams({
             let whereStr = "";
             const nodeWhereAndParams = createNodeWhereAndParams({
                 whereInput,
-                varName: `${varName}_${key}`,
+                varName: `${varName}_${alias}`,
                 node: referenceNode,
                 context,
                 authValidateStrs: recurse[2]?.authValidateStrs,
@@ -493,27 +502,16 @@ function createProjectionAndParams({
                 const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
 
                 if (optionsInput.sort) {
-                    const sorts = optionsInput.sort.reduce((s: string[], sort: GraphQLSortArg) => {
-                        return [
-                            ...s,
-                            ...Object.entries(sort).map(([fieldName, direction]) => {
-                                if (direction === "DESC") {
-                                    return `'${fieldName}'`;
-                                }
+                    const sorts = optionsInput.sort.reduce(sortReducer, []);
 
-                                return `'^${fieldName}'`;
-                            }),
-                        ];
-                    }, []);
-
-                    nestedQuery = `${key}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
+                    nestedQuery = `${alias}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
                 } else {
-                    nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${offsetLimit}${
+                    nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${offsetLimit}${
                         !isArray ? ")" : ""
                     }`;
                 }
             } else {
-                nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
+                nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
             }
 
             res.projection.push(nestedQuery);
@@ -529,7 +527,7 @@ function createProjectionAndParams({
         });
 
         if (aggregationFieldProjection) {
-            res.projection.push(`${key}: ${aggregationFieldProjection.query}`);
+            res.projection.push(`${alias}: ${aggregationFieldProjection.query}`);
             res.params = { ...res.params, ...aggregationFieldProjection.params };
             return res;
         }
@@ -541,7 +539,7 @@ function createProjectionAndParams({
                 }
 
                 res.meta.connectionFields.push(field);
-                res.projection.push(literalElements ? `${field.alias}: ${field.alias}` : `${field.alias}`);
+                res.projection.push(literalElements ? `${alias}: ${alias}` : `${alias}`);
 
                 return res;
             }
@@ -578,23 +576,18 @@ function createProjectionAndParams({
         } else if (temporalField?.typeMeta.name === "DateTime") {
             res.projection.push(createDatetimeElement({ resolveTree: field, field: temporalField, variable: varName }));
         } else {
+            // In the case of using the @alias directive (map a GraphQL field to a db prop)
+            // the output will be RETURN varName {GraphQLfield: varName.dbAlias}
+            const dbFieldName = mapToDbProperty(node, field.name);
+
             // If field is aliased, rename projected field to alias and set to varName.fieldName
             // e.g. RETURN varname { .fieldName } -> RETURN varName { alias: varName.fieldName }
             let aliasedProj: string;
 
-            if (field.alias !== field.name) {
-                aliasedProj = `${field.alias}: ${varName}`;
-            } else if (literalElements) {
-                aliasedProj = `${key}: ${varName}`;
+            if (alias !== field.name || dbFieldName !== field.name || literalElements) {
+                aliasedProj = `${alias}: ${varName}`;
             } else {
                 aliasedProj = "";
-            }
-
-            // In the case of using the @alias directive (map a GraphQL field to a db prop)
-            // the output will be RETURN varName {GraphQLfield: varName.dbAlias}
-            const dbFieldName = mapToDbProperty(node, field.name);
-            if (dbFieldName !== field.name) {
-                aliasedProj = !aliasedProj ? `${key}: ${varName}` : aliasedProj;
             }
 
             res.projection.push(`${aliasedProj}.${dbFieldName}`);
@@ -603,39 +596,22 @@ function createProjectionAndParams({
         return res;
     }
 
-    // Fields of reference node to sort on. Since sorting is done on projection, if field is not selected
-    // sort will fail silently
-
-    const sortFieldNames = ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat();
-
-    // Iterate over fields name in sort argument
-    const nodeFields = sortFieldNames.reduce(
-        (acc, sortFieldName) => ({
-            ...acc,
-            // If fieldname is not found in fields of selection set
-            ...(!Object.values(resolveTree.fieldsByTypeName[node.name]).find((field) => field.name === sortFieldName)
-                ? // generate a basic resolve tree
-                  generateProjectionField({ name: sortFieldName })
-                : {}),
-        }),
-        // and add it to existing fields for projection
-        resolveTree.fieldsByTypeName[node.name]
-    );
-
     // Include fields of implemented interfaces to allow for fragments on interfaces
     // cf. https://github.com/neo4j/graphql/issues/476
+    const mergedSelectedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
+        resolveTree.fieldsByTypeName[node.name],
+        ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value]),
+    ]);
 
-    const fields = node.interfaces
-        // Map over the implemented interfaces of the node and extract the names
-        .map((implementedInterface) => implementedInterface.name.value)
-        // Combine the fields of the interfaces...
-        .reduce(
-            (prevFields, interfaceName) => ({ ...prevFields, ...resolveTree.fieldsByTypeName[interfaceName] }),
-            // with the fields of the node
-            nodeFields
-        );
+    // Merge fields for final projection to account for multiple fragments
+    // cf. https://github.com/neo4j/graphql/issues/920
+    const mergedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
+        mergedSelectedFields,
+        generateMissingOrAliasedSortFields({ selection: mergedSelectedFields, resolveTree }),
+        generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
+    ]);
 
-    const { projection, params, meta } = Object.entries(fields).reduce(reducer, {
+    const { projection, params, meta } = Object.values(mergedFields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
         params: {},
         meta: {},
@@ -644,4 +620,49 @@ function createProjectionAndParams({
     return [`{ ${projection.join(", ")} }`, params, meta];
 }
 
+function sortReducer(s: string[], sort: GraphQLSortArg) {
+    return [
+        ...s,
+        ...Object.entries(sort).map(([fieldName, direction]) => {
+            if (direction === "DESC") {
+                return `'${fieldName}'`;
+            }
+
+            return `'^${fieldName}'`;
+        }),
+    ];
+}
+
 export default createProjectionAndParams;
+
+// Generates any missing fields required for sorting
+const generateMissingOrAliasedSortFields = ({
+    selection,
+    resolveTree,
+}: {
+    selection: Record<string, ResolveTree>;
+    resolveTree: ResolveTree;
+}): Record<string, ResolveTree> => {
+    const sortFieldNames = removeDuplicates(
+        ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat()
+    );
+
+    return generateMissingOrAliasedFields({ fieldNames: sortFieldNames, selection });
+};
+
+// Generated any missing fields required for custom resolvers
+const generateMissingOrAliasedRequiredFields = ({
+    node,
+    selection,
+}: {
+    node: Node;
+    selection: Record<string, ResolveTree>;
+}): Record<string, ResolveTree> => {
+    const requiredFields = removeDuplicates(
+        filterFieldsInSelection({ fields: node.computedFields, selection })
+            .map((f) => f.requiredFields)
+            .flat()
+    );
+
+    return generateMissingOrAliasedFields({ fieldNames: requiredFields, selection });
+};

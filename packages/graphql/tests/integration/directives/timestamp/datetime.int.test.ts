@@ -65,7 +65,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -137,7 +137,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title, name },
@@ -189,7 +189,7 @@ describe("timestamp/datetime", () => {
                 `);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -267,7 +267,7 @@ describe("timestamp/datetime", () => {
                 );
 
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: update,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title },
@@ -315,7 +315,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -387,7 +387,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title, name },
@@ -457,7 +457,7 @@ describe("timestamp/datetime", () => {
                 );
 
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: update,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title },
@@ -507,7 +507,7 @@ describe("timestamp/datetime", () => {
                 `);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -563,7 +563,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -635,7 +635,7 @@ describe("timestamp/datetime", () => {
 
             try {
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title, name },
@@ -705,7 +705,7 @@ describe("timestamp/datetime", () => {
                 );
 
                 const result = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: update,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title },
@@ -755,7 +755,7 @@ describe("timestamp/datetime", () => {
                 `);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });

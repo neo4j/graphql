@@ -24,7 +24,6 @@ import { Context, ConnectionField, RelationField } from "../types";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
-import { upperFirst } from "../utils/upper-first";
 
 function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
@@ -33,7 +32,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
     let connectionParams: any;
     let interfaceParams: any;
 
-    const mutationResponse = resolveTree.fieldsByTypeName[`Create${upperFirst(node.plural)}MutationResponse`];
+    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
 
@@ -49,6 +48,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                 context,
                 varName,
                 withVars: [varName],
+                includeRelationshipValidation: true,
             });
             create.push(`${createAndParams[0]}`);
             create.push(`RETURN ${varName}`);

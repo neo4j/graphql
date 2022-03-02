@@ -30,7 +30,7 @@ import createSetRelationshipProperties from "./create-set-relationship-propertie
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
-import { wrapInCall } from "./utils/wrap-in-call";
+import createRelationshipValidationStr from "./create-relationship-validation-string";
 
 interface Res {
     strs: string[];
@@ -53,6 +53,7 @@ function createUpdateAndParams({
     withVars,
     context,
     parameterPrefix,
+    includeRelationshipValidation,
 }: {
     parentVar: string;
     updateInput: any;
@@ -63,6 +64,7 @@ function createUpdateAndParams({
     insideDoWhen?: boolean;
     context: Context;
     parameterPrefix: string;
+    includeRelationshipValidation?: boolean;
 }): [string, any] {
     let hasAppliedTimeStamps = false;
 
@@ -82,20 +84,20 @@ function createUpdateAndParams({
         if (relationField) {
             const refNodes: Node[] = [];
 
-            const relationship = (context.neoSchema.relationships.find(
+            const relationship = context.relationships.find(
                 (x) => x.properties === relationField.properties
-            ) as unknown) as Relationship;
+            ) as unknown as Relationship;
 
             if (relationField.union) {
                 Object.keys(value).forEach((unionTypeName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
             } else if (relationField.interface) {
                 relationField.interface?.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
                 });
             } else {
-                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             const inStr = relationField.direction === "IN" ? "<-" : "-";
@@ -200,6 +202,7 @@ function createUpdateAndParams({
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.node`,
+                                includeRelationshipValidation: true,
                             });
                             res.params = { ...res.params, ...updateAndParams[1], auth };
                             innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
@@ -324,7 +327,7 @@ function createUpdateAndParams({
                             refNode,
                             context,
                         });
-                        subquery.push(wrapInCall(connectOrCreateQuery, varName));
+                        subquery.push(connectOrCreateQuery);
                         res.params = { ...res.params, ...connectOrCreateParams };
                     }
 
@@ -367,6 +370,7 @@ function createUpdateAndParams({
                                 varName: nodeName,
                                 withVars: [...withVars, nodeName],
                                 insideDoWhen,
+                                includeRelationshipValidation: false,
                             });
                             subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
@@ -387,6 +391,16 @@ function createUpdateAndParams({
                                     }[${index}].create[${i}].edge`,
                                 });
                                 subquery.push(setA);
+                            }
+
+                            const relationshipValidationStr = createRelationshipValidationStr({
+                                node: refNode,
+                                context,
+                                varName: nodeName,
+                            });
+                            if (relationshipValidationStr) {
+                                subquery.push(`WITH ${[...withVars, nodeName].join(", ")}`);
+                                subquery.push(relationshipValidationStr);
                             }
                         });
                     }
@@ -482,11 +496,13 @@ function createUpdateAndParams({
         return res;
     }
 
-    // eslint-disable-next-line prefer-const
-    let { strs, params, meta = { preAuthStrs: [], postAuthStrs: [] } } = Object.entries(updateInput).reduce(reducer, {
+    const reducedUpdate = Object.entries(updateInput as Record<string, unknown>).reduce(reducer, {
         strs: [],
         params: {},
     });
+
+    const { strs, meta = { preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
+    let params = reducedUpdate.params;
 
     let preAuthStrs: string[] = [];
     let postAuthStrs: string[] = [];
@@ -525,6 +541,9 @@ function createUpdateAndParams({
 
     let preAuthStr = "";
     let postAuthStr = "";
+    const relationshipValidationStr = includeRelationshipValidation
+        ? createRelationshipValidationStr({ node, context, varName })
+        : "";
 
     const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
 
@@ -538,9 +557,15 @@ function createUpdateAndParams({
         postAuthStr = `${withStr}\n${apocStr}`;
     }
 
-    const str = `${preAuthStr}\n${strs.join("\n")}\n${postAuthStr}`;
-
-    return [str, params];
+    return [
+        [
+            preAuthStr,
+            ...strs,
+            postAuthStr,
+            ...(relationshipValidationStr ? [withStr, relationshipValidationStr] : []),
+        ].join("\n"),
+        params,
+    ];
 }
 
 export default createUpdateAndParams;

@@ -17,5 +17,5 @@
  * limitations under the License.
  */
 
-export { default as Model, ModelConstructor } from "./Model";
+export { default as Model } from "./Model";
 export { default as OGM } from "./OGM";
