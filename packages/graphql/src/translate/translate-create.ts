@@ -21,9 +21,10 @@ import { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import { Context, ConnectionField, RelationField } from "../types";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
+import { createEventMeta } from "./subscriptions/create-event-meta";
 
 function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
@@ -31,15 +32,16 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
     const interfaceStrs: string[] = [];
     let connectionParams: any;
     let interfaceParams: any;
+    const needsMeta = Boolean(context.plugins?.subscriptions);
 
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
+    const metaNames: string[] = [];
 
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
             const varName = `this${index}`;
-
             const create = [`CALL {`];
 
             const createAndParams = createCreateAndParams({
@@ -50,8 +52,18 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                 withVars: [varName],
                 includeRelationshipValidation: true,
             });
+
             create.push(`${createAndParams[0]}`);
-            create.push(`RETURN ${varName}`);
+            if (needsMeta) {
+                const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
+                const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName });
+                create.push(eventWithMetaStr);
+                create.push(`RETURN ${varName}, ${metaVariable}`);
+                metaNames.push(metaVariable);
+            } else {
+                create.push(`RETURN ${varName}`);
+            }
+
             create.push(`}`);
 
             res.createStrs.push(create.join("\n"));
@@ -181,8 +193,13 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
           }, {})
         : {};
 
+    let metaStr = "";
+    if (needsMeta) {
+        metaStr = `, [${metaNames.join(", ")}] as meta`;
+    }
+
     const returnStatement = nodeProjection
-        ? `RETURN [${projectionStr}] AS data`
+        ? `RETURN [${projectionStr}] AS data${metaStr}`
         : "RETURN 'Query cannot conclude with CALL'";
 
     const cypher = [

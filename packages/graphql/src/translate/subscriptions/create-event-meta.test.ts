@@ -22,17 +22,19 @@ import { createEventMeta } from "./create-event-meta";
 describe("createEventMeta", () => {
     test("create", () => {
         expect(createEventMeta({ event: "create", nodeVariable: "this0" })).toBe(
-            `RETURN meta + { event: "create", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } as meta`
+            `WITH this0, { event: "create", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS this0_meta`
         );
     });
+
     test("update", () => {
         expect(createEventMeta({ event: "update", nodeVariable: "this" })).toBe(
-            `RETURN meta + { event: "update", id: id(this), properties: { old: this { .* }, new: this { .* } }, timestamp: timestamp() } as meta`
+            `WITH this, { event: "update", id: id(this), properties: { old: this { .* }, new: this { .* } }, timestamp: timestamp() } AS this_meta`
         );
     });
+
     test("delete", () => {
         expect(createEventMeta({ event: "delete", nodeVariable: "this" })).toBe(
-            `RETURN meta + { event: "delete", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp() } as meta`
+            `WITH this, { event: "delete", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp() } AS this_meta`
         );
     });
 });
