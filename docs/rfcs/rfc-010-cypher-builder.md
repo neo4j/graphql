@@ -19,6 +19,7 @@ This is a proposal on a Cypher builder, the goal of this builder is to be able t
 * Ease unit-testing.
 * Reduce code complexity, duplicity, and size by abstracting the Cypher composition layer.
 * Handle parameters in a consistent way.
+* Ensure Cypher Injection is not possible
 
 **Nice-to-have** that may be achieved with this proposal:
 * Improve TypeScript types over using plain string.
