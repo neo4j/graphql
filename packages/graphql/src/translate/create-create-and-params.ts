@@ -21,11 +21,12 @@ import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
+import { createEventMeta } from "./subscriptions/create-event-meta";
 
 interface Res {
     creates: string[];
@@ -45,6 +46,7 @@ function createCreateAndParams({
     withVars,
     insideDoWhen,
     includeRelationshipValidation,
+    topLevelNodeVariable,
 }: {
     input: any;
     varName: string;
@@ -53,6 +55,7 @@ function createCreateAndParams({
     withVars: string[];
     insideDoWhen?: boolean;
     includeRelationshipValidation?: boolean;
+    topLevelNodeVariable?: string;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;
@@ -100,6 +103,7 @@ function createCreateAndParams({
                             varName: nodeName,
                             withVars: [...withVars, nodeName],
                             includeRelationshipValidation: false,
+                            topLevelNodeVariable,
                         });
                         res.creates.push(recurse[0]);
                         res.params = { ...res.params, ...recurse[1] };
@@ -108,6 +112,25 @@ function createCreateAndParams({
                         const outStr = relationField.direction === "OUT" ? "->" : "-";
                         const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+
+                        const needsMeta = Boolean(context.plugins?.subscriptions);
+
+                        if (needsMeta) {
+                            const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
+                            const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: nodeName });
+                            const withStrs = [nodeName, eventWithMetaStr];
+                            if (topLevelNodeVariable) {
+                                withStrs.push(topLevelNodeVariable);
+                            }
+                            if (varName !== topLevelNodeVariable) {
+                                withStrs.push(varName);
+                            }
+                            res.creates.push(`WITH ${withStrs.join(", ")}`);
+                            // create.push(`RETURN ${varName}, ${metaVariable}`);
+                            // metaNames.push(metaVariable);
+                        } else {
+                            // create.push(`RETURN ${varName}`);
+                        }
 
                         if (relationField.properties) {
                             const relationship = context.relationships.find(

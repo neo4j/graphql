@@ -24,7 +24,7 @@ export type EventMetaType = "create" | "update" | "delete";
 export function createEventMeta({ event, nodeVariable }: { event: EventMetaType; nodeVariable: string }): string {
     const properties = createEventMetaProperties({ event, nodeVariable });
 
-    return `WITH ${nodeVariable}, { event: "${event}", id: id(${nodeVariable}), ${properties}, timestamp: timestamp() } AS ${nodeVariable}_${META_CYPHER_VARIABLE}`;
+    return `${META_CYPHER_VARIABLE} + { event: "${event}", id: id(${nodeVariable}), ${properties}, timestamp: timestamp() } AS ${META_CYPHER_VARIABLE}`;
 }
 
 function createEventMetaProperties({ event, nodeVariable }: { event: EventMetaType; nodeVariable: string }): string {

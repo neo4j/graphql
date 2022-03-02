@@ -33,12 +33,12 @@ describe("Subscritions metadata on create", () => {
         plugin = new TestSubscriptionsPlugin();
         typeDefs = gql`
             type Actor {
-                name: String
+                name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
-                id: ID
+                id: ID!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
@@ -70,12 +70,14 @@ describe("Subscritions metadata on create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
+            WITH [] AS meta
             CREATE (this0:Movie)
             SET this0.id = $this0_id
-            WITH this0, { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS this0_meta
-            RETURN this0, this0_meta
+            WITH this0, meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta
+            RETURN this0, meta AS this0_meta
             }
-            RETURN [this0 { .id }] AS data, [this0_meta] as meta"
+            RETURN [
+            this0 { .id }] AS data, this0_meta as meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -103,24 +105,288 @@ describe("Subscritions metadata on create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
+            WITH [] AS meta
             CREATE (this0:Movie)
             SET this0.id = $this0_id
-            WITH this0, { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS this0_meta
-            RETURN this0, this0_meta
+            WITH this0, meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta
+            RETURN this0, meta AS this0_meta
             }
             CALL {
+            WITH [] AS meta
             CREATE (this1:Movie)
             SET this1.id = $this1_id
-            WITH this1, { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp() } AS this1_meta
-            RETURN this1, this1_meta
+            WITH this1, meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp() } AS meta
+            RETURN this1, meta AS this1_meta
             }
-            RETURN [this0 { .id }, this1 { .id }] AS data, [this0_meta, this1_meta] as meta"
+            RETURN [
+            this0 { .id },
+            this1 { .id }] AS data, this0_meta + this1_meta as meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
                 \\"this1_id\\": \\"2\\"
+            }"
+        `);
+    });
+
+    test("Nested Create", async () => {
+        const query = gql`
+            mutation {
+                createMovies(input: [{ id: "1", actors: { create: { node: { name: "Andrés" } } } }]) {
+                    movies {
+                        id
+                        actors {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            WITH [] AS meta
+            CREATE (this0:Movie)
+            SET this0.id = $this0_id
+            WITH this0, meta
+            CREATE (this0_actors0_node:Actor)
+            SET this0_actors0_node.name = $this0_actors0_node_name
+            MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
+            WITH this0_actors0_node, meta + { event: \\"create\\", id: id(this0_actors0_node), properties: { old: null, new: this0_actors0_node { .* } }, timestamp: timestamp() } AS meta, this0
+            WITH this0, meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta
+            RETURN this0, meta AS this0_meta
+            }
+            RETURN [
+            this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name } ] }] AS data, this0_meta as meta"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_id\\": \\"1\\",
+                \\"this0_actors0_node_name\\": \\"Andrés\\"
+            }"
+        `);
+    });
+
+    test("Triple nested Create", async () => {
+        const query = gql`
+            mutation {
+                createMovies(
+                    input: [
+                        {
+                            id: "1"
+                            actors: { create: { node: { name: "Andrés", movies: { create: { node: { id: 6 } } } } } }
+                        }
+                    ]
+                ) {
+                    movies {
+                        id
+                        actors {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            WITH [] AS meta
+            CREATE (this0:Movie)
+            SET this0.id = $this0_id
+            WITH this0, meta
+            CREATE (this0_actors0_node:Actor)
+            SET this0_actors0_node.name = $this0_actors0_node_name
+            WITH this0, meta, this0_actors0_node
+            CREATE (this0_actors0_node_movies0_node:Movie)
+            SET this0_actors0_node_movies0_node.id = $this0_actors0_node_movies0_node_id
+            MERGE (this0_actors0_node)-[:ACTED_IN]->(this0_actors0_node_movies0_node)
+            WITH this0_actors0_node_movies0_node, meta + { event: \\"create\\", id: id(this0_actors0_node_movies0_node), properties: { old: null, new: this0_actors0_node_movies0_node { .* } }, timestamp: timestamp() } AS meta, this0, this0_actors0_node
+            MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
+            WITH this0_actors0_node, meta + { event: \\"create\\", id: id(this0_actors0_node), properties: { old: null, new: this0_actors0_node { .* } }, timestamp: timestamp() } AS meta, this0
+            WITH this0, meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta
+            RETURN this0, meta AS this0_meta
+            }
+            RETURN [
+            this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name } ] }] AS data, this0_meta as meta"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_id\\": \\"1\\",
+                \\"this0_actors0_node_name\\": \\"Andrés\\",
+                \\"this0_actors0_node_movies0_node_id\\": \\"6\\"
+            }"
+        `);
+    });
+
+    test("Quadruple nested Create", async () => {
+        const query = gql`
+            mutation {
+                createMovies(
+                    input: [
+                        {
+                            id: "1"
+                            actors: {
+                                create: {
+                                    node: {
+                                        name: "Andrés"
+                                        movies: {
+                                            create: {
+                                                node: { id: 6, actors: { create: { node: { name: "Thomas" } } } }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                ) {
+                    movies {
+                        id
+                        actors {
+                            name
+                            movies {
+                                id
+                                actors {
+                                    name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            WITH [] AS meta
+            CREATE (this0:Movie)
+            SET this0.id = $this0_id
+            WITH this0, meta
+            CREATE (this0_actors0_node:Actor)
+            SET this0_actors0_node.name = $this0_actors0_node_name
+            WITH this0, meta, this0_actors0_node
+            CREATE (this0_actors0_node_movies0_node:Movie)
+            SET this0_actors0_node_movies0_node.id = $this0_actors0_node_movies0_node_id
+            WITH this0, meta, this0_actors0_node, this0_actors0_node_movies0_node
+            CREATE (this0_actors0_node_movies0_node_actors0_node:Actor)
+            SET this0_actors0_node_movies0_node_actors0_node.name = $this0_actors0_node_movies0_node_actors0_node_name
+            MERGE (this0_actors0_node_movies0_node)<-[:ACTED_IN]-(this0_actors0_node_movies0_node_actors0_node)
+            WITH this0_actors0_node_movies0_node_actors0_node, meta + { event: \\"create\\", id: id(this0_actors0_node_movies0_node_actors0_node), properties: { old: null, new: this0_actors0_node_movies0_node_actors0_node { .* } }, timestamp: timestamp() } AS meta, this0, this0_actors0_node_movies0_node
+            MERGE (this0_actors0_node)-[:ACTED_IN]->(this0_actors0_node_movies0_node)
+            WITH this0_actors0_node_movies0_node, meta + { event: \\"create\\", id: id(this0_actors0_node_movies0_node), properties: { old: null, new: this0_actors0_node_movies0_node { .* } }, timestamp: timestamp() } AS meta, this0, this0_actors0_node
+            MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
+            WITH this0_actors0_node, meta + { event: \\"create\\", id: id(this0_actors0_node), properties: { old: null, new: this0_actors0_node { .* } }, timestamp: timestamp() } AS meta, this0
+            WITH this0, meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta
+            RETURN this0, meta AS this0_meta
+            }
+            RETURN [
+            this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name, movies: [ (this0_actors)-[:ACTED_IN]->(this0_actors_movies:Movie)   | this0_actors_movies { .id, actors: [ (this0_actors_movies)<-[:ACTED_IN]-(this0_actors_movies_actors:Actor)   | this0_actors_movies_actors { .name } ] } ] } ] }] AS data, this0_meta as meta"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_id\\": \\"1\\",
+                \\"this0_actors0_node_name\\": \\"Andrés\\",
+                \\"this0_actors0_node_movies0_node_id\\": \\"6\\",
+                \\"this0_actors0_node_movies0_node_actors0_node_name\\": \\"Thomas\\"
+            }"
+        `);
+    });
+
+    test("Multi Create with nested", async () => {
+        const query = gql`
+            mutation {
+                createMovies(
+                    input: [
+                        {
+                            id: "1"
+                            actors: { create: { node: { name: "Andrés", movies: { create: { node: { id: 6 } } } } } }
+                        }
+                        {
+                            id: "2"
+                            actors: { create: { node: { name: "Darrell", movies: { create: { node: { id: 8 } } } } } }
+                        }
+                    ]
+                ) {
+                    movies {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            WITH [] AS meta
+            CREATE (this0:Movie)
+            SET this0.id = $this0_id
+            WITH this0, meta
+            CREATE (this0_actors0_node:Actor)
+            SET this0_actors0_node.name = $this0_actors0_node_name
+            WITH this0, meta, this0_actors0_node
+            CREATE (this0_actors0_node_movies0_node:Movie)
+            SET this0_actors0_node_movies0_node.id = $this0_actors0_node_movies0_node_id
+            MERGE (this0_actors0_node)-[:ACTED_IN]->(this0_actors0_node_movies0_node)
+            WITH this0_actors0_node_movies0_node, meta + { event: \\"create\\", id: id(this0_actors0_node_movies0_node), properties: { old: null, new: this0_actors0_node_movies0_node { .* } }, timestamp: timestamp() } AS meta, this0, this0_actors0_node
+            MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
+            WITH this0_actors0_node, meta + { event: \\"create\\", id: id(this0_actors0_node), properties: { old: null, new: this0_actors0_node { .* } }, timestamp: timestamp() } AS meta, this0
+            WITH this0, meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta
+            RETURN this0, meta AS this0_meta
+            }
+            CALL {
+            WITH [] AS meta
+            CREATE (this1:Movie)
+            SET this1.id = $this1_id
+            WITH this1, meta
+            CREATE (this1_actors0_node:Actor)
+            SET this1_actors0_node.name = $this1_actors0_node_name
+            WITH this1, meta, this1_actors0_node
+            CREATE (this1_actors0_node_movies0_node:Movie)
+            SET this1_actors0_node_movies0_node.id = $this1_actors0_node_movies0_node_id
+            MERGE (this1_actors0_node)-[:ACTED_IN]->(this1_actors0_node_movies0_node)
+            WITH this1_actors0_node_movies0_node, meta + { event: \\"create\\", id: id(this1_actors0_node_movies0_node), properties: { old: null, new: this1_actors0_node_movies0_node { .* } }, timestamp: timestamp() } AS meta, this1, this1_actors0_node
+            MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
+            WITH this1_actors0_node, meta + { event: \\"create\\", id: id(this1_actors0_node), properties: { old: null, new: this1_actors0_node { .* } }, timestamp: timestamp() } AS meta, this1
+            WITH this1, meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp() } AS meta
+            RETURN this1, meta AS this1_meta
+            }
+            RETURN [
+            this0 { .id },
+            this1 { .id }] AS data, this0_meta + this1_meta as meta"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_id\\": \\"1\\",
+                \\"this0_actors0_node_name\\": \\"Andrés\\",
+                \\"this0_actors0_node_movies0_node_id\\": \\"6\\",
+                \\"this1_id\\": \\"2\\",
+                \\"this1_actors0_node_name\\": \\"Darrell\\",
+                \\"this1_actors0_node_movies0_node_id\\": \\"8\\"
             }"
         `);
     });

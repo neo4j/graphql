@@ -44,21 +44,26 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
             const varName = `this${index}`;
             const create = [`CALL {`];
 
+            if (needsMeta) {
+                create.push(`WITH [] AS ${META_CYPHER_VARIABLE}`);
+            }
+
             const createAndParams = createCreateAndParams({
                 input,
                 node,
                 context,
                 varName,
-                withVars: [varName],
+                withVars: needsMeta ? [varName, META_CYPHER_VARIABLE] : [varName],
                 includeRelationshipValidation: true,
+                topLevelNodeVariable: varName,
             });
 
             create.push(`${createAndParams[0]}`);
             if (needsMeta) {
                 const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
                 const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName });
-                create.push(eventWithMetaStr);
-                create.push(`RETURN ${varName}, ${metaVariable}`);
+                create.push(`WITH ${varName}, ${eventWithMetaStr}`);
+                create.push(`RETURN ${varName}, ${META_CYPHER_VARIABLE} AS ${metaVariable}`);
                 metaNames.push(metaVariable);
             } else {
                 create.push(`RETURN ${varName}`);
@@ -195,7 +200,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
 
     let metaStr = "";
     if (needsMeta) {
-        metaStr = `, [${metaNames.join(", ")}] as meta`;
+        metaStr = `, ${metaNames.join(" + ")} as meta`;
     }
 
     const returnStatement = nodeProjection
