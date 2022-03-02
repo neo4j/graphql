@@ -252,7 +252,7 @@ jobs:
       name: npm
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: release-tarballs
       - name: npm publish

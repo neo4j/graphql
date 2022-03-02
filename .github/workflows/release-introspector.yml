@@ -194,7 +194,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: integration-coverage-${{ matrix.package }}
       - name: Upload coverage to Codecov
@@ -285,7 +285,7 @@ jobs:
       name: npm
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: release-tarballs
       - name: npm publish
