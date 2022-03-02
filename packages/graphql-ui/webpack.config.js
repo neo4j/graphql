@@ -20,6 +20,11 @@ module.exports = {
                 exclude: "/node_modules/",
                 options: { projectReferences: true },
             },
+            {
+                test: /\.(css|scss)$/,
+                use: ["style-loader", "css-loader", "postcss-loader"],
+                exclude: /\.module\.css$/,
+            },
         ],
     },
     output: {

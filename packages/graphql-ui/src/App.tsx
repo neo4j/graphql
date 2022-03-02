@@ -1,5 +1,6 @@
 import React from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
+import "./index.css";
 
 const typeDefs = `
     type Movie {
@@ -25,7 +26,7 @@ const App = () => {
             .catch((e) => console.error(e));
     }, []);
 
-    return <span>TEEEEST</span>;
+    return <h1 className="text-3xl font-bold underline italic">Hello world!</h1>;
 };
 
 export default App;
