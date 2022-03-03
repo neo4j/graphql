@@ -1,6 +1,5 @@
 import React, { Dispatch, useState, SetStateAction } from "react";
 import * as neo4j from "neo4j-driver";
-import { driver } from "neo4j-driver-core";
 
 const LOCAL_STATE_USERNAME = "username";
 const LOCAL_STATE_PASSWORD = "password";
