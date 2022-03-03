@@ -10,7 +10,7 @@ module.exports = {
     target: "web",
     resolve: {
         plugins: [new TsconfigPathsPlugin()],
-        extensions: [".ts", ".tsx", ".js"],
+        extensions: [".ts", ".tsx", ".mjs", ".json", ".js"], // IMPORTANT: .mjs has to be BEFORE .js
     },
     module: {
         rules: [
