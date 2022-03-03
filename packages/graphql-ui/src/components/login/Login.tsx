@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useContext, useState } from "react";
 import * as AuthContext from "../../contexts/auth";
+import { FormInput } from "./FormInput";
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
@@ -35,40 +36,37 @@ const Login = () => {
             <div className="w-full max-w-xs">
                 <form onSubmit={onSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                        <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        <FormInput
                             id="username"
+                            label="Username"
                             name="username"
-                            type="text"
-                            placeholder="Username"
+                            placeholder="admin"
                             required={true}
+                            type="text"
                             disabled={loading}
-                        />
+                        ></FormInput>
                     </div>
                     <div className="mb-6">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                        <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        <FormInput
                             id="password"
+                            label="Password"
                             name="password"
-                            type="password"
-                            placeholder="Password"
+                            placeholder="password"
                             required={true}
+                            type="password"
                             disabled={loading}
-                        />
+                        ></FormInput>
                     </div>
                     <div className="mb-8">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Bolt URL</label>
-                        <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        <FormInput
                             id="url"
+                            label="Bolt URL"
                             name="url"
-                            type="text"
                             placeholder="bolt://localhost:7687"
                             required={true}
+                            type="text"
                             disabled={loading}
-                        />
+                        ></FormInput>
                     </div>
                     <div className="flex items-center justify-between">
                         <button
