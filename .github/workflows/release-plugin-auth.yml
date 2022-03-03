@@ -236,7 +236,7 @@ jobs:
         run: npm pack
         working-directory: packages/${{ matrix.package }}
       - name: Archive release tarball
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: release-tarballs
           path: packages/${{ matrix.package }}/neo4j-${{ matrix.package }}-*.tgz
