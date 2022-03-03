@@ -2,6 +2,10 @@ import React, { Dispatch, useState } from "react";
 import * as neo4j from "neo4j-driver";
 import { SetStateAction } from "react";
 
+const LOCAL_STATE_USERNAME = "@neo4j/graphql-ui:username";
+const LOCAL_STATE_PASSWORD = "@neo4j/graphql-ui:password";
+const LOCAL_STATE_URL = "@neo4j/graphql-ui:url";
+
 interface LoginOptions {
     username: string;
     password: string;
@@ -27,12 +31,36 @@ export function Provider(props: any) {
             const driver = neo4j.driver(options.url, auth);
             await driver.verifyConnectivity();
 
+            // @TODO - Encode
+            localStorage.setItem(LOCAL_STATE_USERNAME, options.username);
+            localStorage.setItem(LOCAL_STATE_PASSWORD, options.password);
+            localStorage.setItem(LOCAL_STATE_URL, options.url);
+
             setValue((v) => ({ ...v, driver }));
         },
         logout: () => {
+            localStorage.removeItem(LOCAL_STATE_USERNAME);
+            localStorage.removeItem(LOCAL_STATE_PASSWORD);
+            localStorage.removeItem(LOCAL_STATE_URL);
+
             setValue((v) => ({ ...v, driver: undefined }));
         },
     });
+
+    // @TODO - Decode
+    const username = localStorage.getItem(LOCAL_STATE_USERNAME);
+    const password = localStorage.getItem(LOCAL_STATE_PASSWORD);
+    const url = localStorage.getItem(LOCAL_STATE_URL);
+
+    if (username && password && url) {
+        value
+            .login({
+                username,
+                password,
+                url,
+            })
+            .catch(() => {});
+    }
 
     return <Context.Provider value={value as State}>{props.children}</Context.Provider>;
 }
