@@ -17,25 +17,38 @@
  * limitations under the License.
  */
 
-export type EventMeta =
+import * as neo4j from "neo4j-driver";
+
+export type RawEventMeta = {
+    event: "create" | "update" | "delete";
+    properties: {
+        old: Record<string, any>;
+        new: Record<string, any>;
+    };
+    id: neo4j.Integer | string | number;
+    timestamp: neo4j.Integer | string | number;
+};
+
+export type EventMeta = (
     | {
           event: "create";
-          id: string;
-          oldProps: undefined;
-          newProps: Record<string, any>;
-          timestamp: number;
+          properties: {
+              old: undefined;
+              new: Record<string, any>;
+          };
       }
     | {
           event: "update";
-          id: string;
-          oldProps: Record<string, any>;
-          newProps: Record<string, any>;
-          timestamp: number;
+          properties: {
+              old: Record<string, any>;
+              new: Record<string, any>;
+          };
       }
     | {
           event: "delete";
-          id: string;
-          oldProps: Record<string, any>;
-          newProps: undefined;
-          timestamp: number;
-      };
+          properties: {
+              old: Record<string, any>;
+              new: undefined;
+          };
+      }
+) & { id: number; timestamp: number };

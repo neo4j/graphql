@@ -23,7 +23,9 @@ import { Neo4jGraphQLSubscriptionsPlugin } from "../../src/types";
 export class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
     public events: EventEmitter = {} as EventEmitter;
 
-    publish(_eventMeta: EventMeta): Promise<void> {
-        throw new Error("Method not implemented.");
+    public eventList: EventMeta[] = [];
+
+    async publish(eventMeta: EventMeta): Promise<void> {
+        this.eventList.push(eventMeta);
     }
 }

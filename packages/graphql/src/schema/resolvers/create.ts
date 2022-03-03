@@ -23,6 +23,7 @@ import { translateCreate } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
+import { EventMeta, RawEventMeta } from "src/subscriptions/event-meta";
 
 export default function createResolver({ node }: { node: Node }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
@@ -41,6 +42,15 @@ export default function createResolver({ node }: { node: Node }) {
             (selection) => selection.kind === "Field" && selection.name.value === node.plural
         ) as FieldNode;
         const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
+
+        const subscriptionsPlugin = context.plugins?.subscriptions;
+        if (subscriptionsPlugin) {
+            const metaData: EventMeta[] = executeResult.records[0]?.meta;
+            for (const meta of metaData) {
+                subscriptionsPlugin.publish(meta);
+            }
+        }
+
         return {
             info: {
                 bookmark: executeResult.bookmark,
@@ -55,4 +65,9 @@ export default function createResolver({ node }: { node: Node }) {
         resolve,
         args: { input: `[${node.name}CreateInput!]!` },
     };
+}
+
+function serializeEventMeta(event: RawEventMeta): EventMeta {
+    // TODO:
+    return event as EventMeta;
 }
