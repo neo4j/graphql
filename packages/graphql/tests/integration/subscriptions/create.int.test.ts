@@ -68,11 +68,11 @@ describe("Subscriptions create", () => {
                 input: [
                     {
                         id: "1"
-                        actors: { create: { node: { name: "Andrés", movies: { create: { node: { id: 6 } } } } } }
+                        actors: { create: { node: { name: "Andrés", movies: { create: { node: { id: 2 } } } } } }
                     }
                     {
-                        id: "2"
-                        actors: { create: { node: { name: "Darrell", movies: { create: { node: { id: 8 } } } } } }
+                        id: "3"
+                        actors: { create: { node: { name: "Darrell", movies: { create: { node: { id: 4 } } } } } }
                     }
                 ]
             ) {
@@ -90,8 +90,45 @@ describe("Subscriptions create", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(gqlResult.data[typeMovie.operations.create][typeMovie.plural]).toEqual([{ id: "1" }, { id: "2" }]);
+        expect(gqlResult.data[typeMovie.operations.create][typeMovie.plural]).toEqual([{ id: "1" }, { id: "3" }]);
 
-        console.log(plugin.eventList);
+        expect(plugin.eventList).toEqual([
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "create",
+                properties: { old: undefined, new: { id: "1" } },
+            },
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "create",
+                properties: { old: undefined, new: { name: "Andrés" } },
+            },
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "create",
+                properties: { old: undefined, new: { id: "2" } },
+            },
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "create",
+                properties: { old: undefined, new: { id: "3" } },
+            },
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "create",
+                properties: { old: undefined, new: { name: "Darrell" } },
+            },
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "create",
+                properties: { old: undefined, new: { id: "4" } },
+            },
+        ]);
     });
 });
