@@ -24,7 +24,7 @@ export function Provider(props: any) {
     [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
             // @ts-ignore
-            setValue((v) => ({ ...v, driver }));
+            setValue((v) => ({ ...v, driver: true }));
         },
         logout: () => {
             setValue((v) => ({ ...v, driver: undefined }));
