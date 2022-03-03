@@ -21,7 +21,7 @@ import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
@@ -63,6 +63,7 @@ function createCreateAndParams({
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
         const dbFieldName = mapToDbProperty(node, key);
+        const needsMeta = Boolean(context.plugins?.subscriptions);
 
         if (relationField) {
             const refNodes: Node[] = [];
@@ -90,7 +91,9 @@ function createCreateAndParams({
                             return;
                         }
 
-                        res.creates.push(`\nWITH ${withVars.join(", ")}`);
+                        if (!needsMeta) {
+                            res.creates.push(`\nWITH ${withVars.join(", ")}`);
+                        }
 
                         const baseName = `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
                         const nodeName = `${baseName}_node`;
@@ -112,25 +115,6 @@ function createCreateAndParams({
                         const outStr = relationField.direction === "OUT" ? "->" : "-";
                         const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
-
-                        const needsMeta = Boolean(context.plugins?.subscriptions);
-
-                        if (needsMeta) {
-                            const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
-                            const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: nodeName });
-                            const withStrs = [nodeName, eventWithMetaStr];
-                            if (topLevelNodeVariable) {
-                                withStrs.push(topLevelNodeVariable);
-                            }
-                            if (varName !== topLevelNodeVariable) {
-                                withStrs.push(varName);
-                            }
-                            res.creates.push(`WITH ${withStrs.join(", ")}`);
-                            // create.push(`RETURN ${varName}, ${metaVariable}`);
-                            // metaNames.push(metaVariable);
-                        } else {
-                            // create.push(`RETURN ${varName}`);
-                        }
 
                         if (relationField.properties) {
                             const relationship = context.relationships.find(
@@ -242,6 +226,12 @@ function createCreateAndParams({
 
         res.creates.push(`SET ${varName}.${dbFieldName} = $${varNameKey}`);
         res.params[varNameKey] = value;
+
+        if (needsMeta) {
+            const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName });
+            const withStrs = [eventWithMetaStr];
+            res.creates.push(`WITH ${withStrs.join(", ")}, ${withVars.join(", ")}`);
+        }
 
         return res;
     }

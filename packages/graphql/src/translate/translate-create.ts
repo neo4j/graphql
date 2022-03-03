@@ -24,7 +24,6 @@ import { Context, ConnectionField, RelationField } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
-import { createEventMeta } from "./subscriptions/create-event-meta";
 
 function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
@@ -53,7 +52,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                 node,
                 context,
                 varName,
-                withVars: needsMeta ? [varName, META_CYPHER_VARIABLE] : [varName],
+                withVars: needsMeta ? [varName] : [varName],
                 includeRelationshipValidation: true,
                 topLevelNodeVariable: varName,
             });
@@ -61,8 +60,6 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
             create.push(`${createAndParams[0]}`);
             if (needsMeta) {
                 const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
-                const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName });
-                create.push(`WITH ${varName}, ${eventWithMetaStr}`);
                 create.push(`RETURN ${varName}, ${META_CYPHER_VARIABLE} AS ${metaVariable}`);
                 metaNames.push(metaVariable);
             } else {
