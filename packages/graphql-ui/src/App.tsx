@@ -1,33 +1,13 @@
-import React from "react";
-import { Neo4jGraphQL } from "@neo4j/graphql";
 import Main from "./components/main/Main";
 import "./index.css";
-
-const typeDefs = `
-    type Movie {
-        name: String!
-    }
-`;
+import * as AuthContext from "./contexts/auth";
 
 const App = () => {
-    const [neoSchema, setNeoSchema] = React.useState<Neo4jGraphQL | null>(null);
-    React.useEffect(() => {
-        const tmpNeoSchema = new Neo4jGraphQL({
-            typeDefs: typeDefs,
-            // @ts-ignore
-            driver: {},
-        });
-        setNeoSchema(tmpNeoSchema);
-        tmpNeoSchema
-            // @ts-ignore
-            .getSchema()
-            // @ts-ignore
-            .then((schema) => console.log(schema))
-            // @ts-ignore
-            .catch((e) => console.error(e));
-    }, []);
-
-    return <Main />;
+    return (
+        <AuthContext.Provider>
+            <Main />
+        </AuthContext.Provider>
+    );
 };
 
 export default App;

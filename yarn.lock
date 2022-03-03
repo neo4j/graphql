@@ -1808,6 +1808,7 @@ __metadata:
     autoprefixer: ^10.4.2
     css-loader: ^6.6.0
     html-webpack-plugin: 5.5.0
+    neo4j-driver: ^4.1.0
     node-polyfill-webpack-plugin: 1.1.4
     postcss: ^8.4.7
     postcss-loader: ^6.2.1
@@ -12808,7 +12809,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo4j-driver@npm:4.4.3, neo4j-driver@npm:^4.2.0":
+"neo4j-driver@npm:4.4.3, neo4j-driver@npm:^4.1.0, neo4j-driver@npm:^4.2.0":
   version: 4.4.3
   resolution: "neo4j-driver@npm:4.4.3"
   dependencies:
