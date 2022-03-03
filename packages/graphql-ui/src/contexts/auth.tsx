@@ -1,9 +1,10 @@
 import React, { Dispatch, useState, SetStateAction } from "react";
 import * as neo4j from "neo4j-driver";
+import { driver } from "neo4j-driver-core";
 
-const LOCAL_STATE_USERNAME = "@neo4j/graphql-ui:username";
-const LOCAL_STATE_PASSWORD = "@neo4j/graphql-ui:password";
-const LOCAL_STATE_URL = "@neo4j/graphql-ui:url";
+const LOCAL_STATE_USERNAME = "username";
+const LOCAL_STATE_PASSWORD = "password";
+const LOCAL_STATE_URL = "url";
 
 interface LoginOptions {
     username: string;
@@ -51,7 +52,7 @@ export function Provider(props: any) {
     const password = localStorage.getItem(LOCAL_STATE_PASSWORD);
     const url = localStorage.getItem(LOCAL_STATE_URL);
 
-    if (username && password && url) {
+    if (username && password && url && !value.driver) {
         value
             .login({
                 username,
