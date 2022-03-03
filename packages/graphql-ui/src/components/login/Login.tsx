@@ -9,10 +9,9 @@ const Login = () => {
 
     const onSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setLoading(true);
 
         (async () => {
-            setLoading(true);
-
             try {
                 const data = new FormData(event.currentTarget);
                 const username = data.get("username") as string;
