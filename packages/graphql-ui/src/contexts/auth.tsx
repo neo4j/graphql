@@ -31,7 +31,7 @@ export function Provider(props: any) {
             const driver = neo4j.driver(options.url, auth);
             await driver.verifyConnectivity();
 
-            // @TODO - Encode
+            // TODO - Encode
             localStorage.setItem(LOCAL_STATE_USERNAME, options.username);
             localStorage.setItem(LOCAL_STATE_PASSWORD, options.password);
             localStorage.setItem(LOCAL_STATE_URL, options.url);
@@ -47,7 +47,7 @@ export function Provider(props: any) {
         },
     });
 
-    // @TODO - Decode
+    // TODO - Decode
     const username = localStorage.getItem(LOCAL_STATE_USERNAME);
     const password = localStorage.getItem(LOCAL_STATE_PASSWORD);
     const url = localStorage.getItem(LOCAL_STATE_URL);
