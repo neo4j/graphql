@@ -1,5 +1,5 @@
 import React, { Dispatch, useState } from "react";
-import { Driver } from "neo4j-driver";
+import * as neo4j from "neo4j-driver";
 import { SetStateAction } from "react";
 
 interface LoginOptions {
@@ -9,7 +9,7 @@ interface LoginOptions {
 }
 
 export interface State {
-    driver?: Driver;
+    driver?: neo4j.Driver;
     login: (options: LoginOptions) => Promise<void>;
     logout: () => void;
 }
@@ -23,8 +23,11 @@ export function Provider(props: any) {
 
     [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
-            // @ts-ignore
-            setValue((v) => ({ ...v, driver: true }));
+            const auth = neo4j.auth.basic(options.username, options.password);
+            const driver = neo4j.driver(options.url, auth);
+            await driver.verifyConnectivity();
+
+            setValue((v) => ({ ...v, driver }));
         },
         logout: () => {
             setValue((v) => ({ ...v, driver: undefined }));
