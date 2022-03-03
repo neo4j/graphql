@@ -1,6 +1,5 @@
-import React, { Dispatch, useState } from "react";
+import React, { Dispatch, useState, SetStateAction } from "react";
 import * as neo4j from "neo4j-driver";
-import { SetStateAction } from "react";
 
 const LOCAL_STATE_USERNAME = "@neo4j/graphql-ui:username";
 const LOCAL_STATE_PASSWORD = "@neo4j/graphql-ui:password";
