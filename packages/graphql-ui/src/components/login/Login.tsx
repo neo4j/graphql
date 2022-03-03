@@ -76,7 +76,7 @@ const Login = () => {
                             type="submit"
                             disabled={loading}
                         >
-                            {loading ? <>Logging In</> : <span> Sign In</span>}
+                            {loading ? <>Logging In</> : <span>Sign In</span>}
                         </button>
                     </div>
 
