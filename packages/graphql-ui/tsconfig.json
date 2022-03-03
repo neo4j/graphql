@@ -16,12 +16,12 @@
         "noEmit": false,
         "paths": {
             "@neo4j/graphql": ["../graphql/src"],
-            "@neo4j/graphql-plugin-auth": ["../graphql-plugin-auth/src"]
+            "@neo4j/introspector": ["../introspector/src"]
         }
     },
     "include": ["src/**/*"],
     "references": [
         { "path": "../graphql/src/tsconfig.production.json" },
-        { "path": "../graphql-plugin-auth/tsconfig.production.json" }
+        { "path": "../introspector/tsconfig.production.json" }
     ]
 }
