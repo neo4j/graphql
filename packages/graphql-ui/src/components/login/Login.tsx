@@ -33,7 +33,7 @@ const Login = () => {
 
     return (
         <div className="grid place-items-center h-screen bg-secondarydark">
-            <div className="w-full max-w-xs">
+            <div className="w-full max-w-md">
                 <form onSubmit={onSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <div className="mb-4">
                         <FormInput
@@ -63,6 +63,7 @@ const Login = () => {
                             label="Bolt URL"
                             name="url"
                             placeholder="bolt://localhost:7687"
+                            defaultValue="bolt://localhost:7687"
                             required={true}
                             type="text"
                             disabled={loading}

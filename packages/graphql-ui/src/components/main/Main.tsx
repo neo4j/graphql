@@ -24,7 +24,7 @@ const Main = () => {
 
     return (
         <div className="flex">
-            <SideBar />
+            <SideBar onShowTypeDefs={() => setSchema(undefined)} />
             <div className="flex w-full h-full flex-col">
                 <TopBar />
                 <Content>

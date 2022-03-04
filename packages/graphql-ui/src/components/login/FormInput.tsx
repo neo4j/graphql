@@ -4,6 +4,7 @@ export interface Props {
     label: string;
     type: string;
     placeholder: string;
+    defaultValue?: string;
     required: boolean;
     disabled?: boolean;
 }
@@ -19,6 +20,7 @@ export const FormInput = (props: Props) => {
                 type={props.type}
                 placeholder={props.placeholder}
                 required={true}
+                defaultValue={props.defaultValue}
                 disabled={props.disabled}
             />
         </div>

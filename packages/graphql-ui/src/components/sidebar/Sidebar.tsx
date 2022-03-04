@@ -1,7 +1,12 @@
 import { useContext } from "react";
 import * as AuthContext from "../../contexts/auth";
 
-const SideBar = () => {
+export interface Props {
+    onShowTypeDefs?: () => void;
+    onShowEditor?: () => void;
+}
+
+const SideBar = (props: Props) => {
     const auth = useContext(AuthContext.Context);
 
     return (
@@ -9,10 +14,26 @@ const SideBar = () => {
             <div className="flex flex-col justify-between align-center text-white">
                 <ul>
                     <li className="pb-8 flex justify-center">
-                        <span className="font-medium text-2xl cursor-pointer">S</span>
+                        <span className="font-medium text-2xl cursor-pointer">
+                            <button
+                                onClick={() => {
+                                    if (props.onShowTypeDefs) props.onShowTypeDefs();
+                                }}
+                            >
+                                S
+                            </button>
+                        </span>
                     </li>
                     <li className="pb-8 flex justify-center">
-                        <span className="font-medium text-2xl cursor-pointer">Q</span>
+                        <span className="font-medium text-2xl cursor-pointer">
+                            <button
+                                onClick={() => {
+                                    if (props.onShowEditor) props.onShowEditor();
+                                }}
+                            >
+                                L
+                            </button>
+                        </span>
                     </li>
                 </ul>
             </div>
