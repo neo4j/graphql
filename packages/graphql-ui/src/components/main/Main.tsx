@@ -4,7 +4,7 @@ import TopBar from "../topbar/TopBar";
 import * as AuthContext from "../../contexts/auth";
 import { useContext, useState } from "react";
 import Login from "../login/Login";
-import { GetSchema } from "../get_schema/GetSchema";
+import { SchemaEditor } from "../schemaeditor/SchemaEditor";
 import { GraphQLSchema } from "graphql";
 import { Editor } from "../editor/Editor";
 
@@ -44,12 +44,12 @@ const Main = () => {
                 <TopBar />
                 <Content>
                     {activePage === Pages.TYPEDEFS ? (
-                        <GetSchema
+                        <SchemaEditor
                             onChange={(schema) => {
                                 setSchema(schema);
                                 setActivePage(Pages.EDITOR);
                             }}
-                        ></GetSchema>
+                        ></SchemaEditor>
                     ) : (
                         <Editor schema={schema} />
                     )}

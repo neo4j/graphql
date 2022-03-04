@@ -13,7 +13,7 @@ export interface Props {
     onChange: (s: GraphQLSchema) => void;
 }
 
-export const GetSchema = (props: Props) => {
+export const SchemaEditor = (props: Props) => {
     const auth = useContext(AuthContext.Context);
     const ref = useRef<HTMLTextAreaElement>();
     const mirror = useRef<CodeMirror.EditorFromTextArea>();
@@ -95,8 +95,9 @@ export const GetSchema = (props: Props) => {
         });
 
         const storedTypeDefs = getStoredTypeDefs();
-        if (storedTypeDefs) {
+        if (storedTypeDefs && ref.current) {
             mirror.current?.setValue(storedTypeDefs);
+            ref.current.value = storedTypeDefs;
         }
 
         mirror.current.on("change", (e) => {
