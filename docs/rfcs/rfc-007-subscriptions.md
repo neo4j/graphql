@@ -39,6 +39,7 @@ Our users would like to use [GraphQL Subscriptions](https://graphql.org/blog/sub
 ### Won't have (this time)
 
 - Events from changes outside of GraphQL (e.g. via Bolt)
+- Events triggered from custom Cypher (won't do this ever)
 
 ## Proposed Solutions
 

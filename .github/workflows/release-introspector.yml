@@ -96,7 +96,7 @@ jobs:
           NEO_PASSWORD: testpassword
           NEO_URL: bolt://localhost:7687
       - name: Archive coverage report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: integration-coverage-${{ matrix.package }}
           path: packages/${{ matrix.package }}/coverage-${{ matrix.neo4j-version }}/
@@ -175,7 +175,7 @@ jobs:
           NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
           NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
       - name: Archive coverage report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: integration-coverage-${{ matrix.package }}
           path: packages/${{ matrix.package }}/coverage-aura-${{ matrix.aura-instance }}/
@@ -194,7 +194,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: integration-coverage-${{ matrix.package }}
       - name: Upload coverage to Codecov
@@ -269,7 +269,7 @@ jobs:
         run: npm pack
         working-directory: packages/${{ matrix.package }}
       - name: Archive release tarball
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: release-tarballs
           path: packages/${{ matrix.package }}/neo4j-${{ matrix.package }}-*.tgz
@@ -285,7 +285,7 @@ jobs:
       name: npm
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: release-tarballs
       - name: npm publish
