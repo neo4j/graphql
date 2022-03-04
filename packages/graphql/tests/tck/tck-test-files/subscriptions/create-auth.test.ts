@@ -95,7 +95,7 @@ describe("Subscriptions metadata on create", () => {
             CALL apoc.util.validate(NOT(this1.id IS NOT NULL AND this1.id = $this1_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this1, meta AS this1_meta
             }
-            WITH this0_meta + this1_meta AS meta, this0, this1
+            WITH this0, this1, this0_meta + this1_meta AS meta
             RETURN [
             this0 { .id },
             this1 { .id }] AS data, meta"

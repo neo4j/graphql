@@ -57,8 +57,6 @@ function createCreateAndParams({
     includeRelationshipValidation?: boolean;
     topLevelNodeVariable?: string;
 }): [string, any] {
-    const needsMeta = Boolean(context.plugins?.subscriptions);
-
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key === x.fieldName);
@@ -92,7 +90,7 @@ function createCreateAndParams({
                             return;
                         }
 
-                        if (!needsMeta) {
+                        if (!context.subscriptionsEnabled) {
                             res.creates.push(`\nWITH ${withVars.join(", ")}`);
                         }
 
@@ -229,14 +227,6 @@ function createCreateAndParams({
         res.creates.push(`SET ${varName}.${dbFieldName} = $${varNameKey}`);
         res.params[varNameKey] = value;
 
-        // if (needsMeta) {
-        //     const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName });
-        //     const withStrs = [eventWithMetaStr];
-        //     res.creates.push(
-        //         `WITH ${withStrs.join(", ")}, ${withVars.filter((w) => w !== META_CYPHER_VARIABLE).join(", ")}`
-        //     );
-        // }
-
         return res;
     }
 
@@ -262,7 +252,7 @@ function createCreateAndParams({
         params: {},
     });
 
-    if (needsMeta) {
+    if (context.subscriptionsEnabled) {
         const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName });
         const withStrs = [eventWithMetaStr];
         creates.push(`WITH ${withStrs.join(", ")}, ${withVars.filter((w) => w !== META_CYPHER_VARIABLE).join(", ")}`);

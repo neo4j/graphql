@@ -76,7 +76,7 @@ describe("Subscriptions metadata on create", () => {
             WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
-            WITH this0_meta AS meta, this0
+            WITH this0, this0_meta AS meta
             RETURN [
             this0 { .id }] AS data, meta"
         `);
@@ -119,7 +119,7 @@ describe("Subscriptions metadata on create", () => {
             WITH meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp() } AS meta, this1
             RETURN this1, meta AS this1_meta
             }
-            WITH this0_meta + this1_meta AS meta, this0, this1
+            WITH this0, this1, this0_meta + this1_meta AS meta
             RETURN [
             this0 { .id },
             this1 { .id }] AS data, meta"
@@ -164,7 +164,7 @@ describe("Subscriptions metadata on create", () => {
             WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
-            WITH this0_meta AS meta, this0
+            WITH this0, this0_meta AS meta
             RETURN [
             this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name } ] }] AS data, meta"
         `);
@@ -219,7 +219,7 @@ describe("Subscriptions metadata on create", () => {
             WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
-            WITH this0_meta AS meta, this0
+            WITH this0, this0_meta AS meta
             RETURN [
             this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name } ] }] AS data, meta"
         `);
@@ -296,7 +296,7 @@ describe("Subscriptions metadata on create", () => {
             WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
-            WITH this0_meta AS meta, this0
+            WITH this0, this0_meta AS meta
             RETURN [
             this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name, movies: [ (this0_actors)-[:ACTED_IN]->(this0_actors_movies:Movie)   | this0_actors_movies { .id, actors: [ (this0_actors_movies)<-[:ACTED_IN]-(this0_actors_movies_actors:Actor)   | this0_actors_movies_actors { .name } ] } ] } ] }] AS data, meta"
         `);
@@ -369,7 +369,7 @@ describe("Subscriptions metadata on create", () => {
             WITH meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp() } AS meta, this1
             RETURN this1, meta AS this1_meta
             }
-            WITH this0_meta + this1_meta AS meta, this0, this1
+            WITH this0, this1, this0_meta + this1_meta AS meta
             RETURN [
             this0 { .id },
             this1 { .id }] AS data, meta"
@@ -411,7 +411,7 @@ describe("Subscriptions metadata on create", () => {
             WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
-            WITH this0_meta AS meta, this0
+            WITH this0, this0_meta AS meta
             RETURN meta"
         `);
 

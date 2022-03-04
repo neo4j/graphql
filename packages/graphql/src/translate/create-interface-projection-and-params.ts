@@ -45,6 +45,7 @@ function createInterfaceProjectionAndParams({
 }): { cypher: string; params: Record<string, any> } {
     let globalParams = {};
     let params: { args?: any } = {};
+    // FIXME: Hack to avoid duplicates
     const fullWithVars = Array.from(new Set([...asArray(withVars), nodeVariable]));
     const relTypeStr = `[:${field.type}]`;
 

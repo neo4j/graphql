@@ -54,6 +54,7 @@ function createConnectionAndParams({
 }): CypherStatement {
     let globalParams = {};
     let nestedConnectionFieldParams: any;
+    // FIXME: Hack to avoid duplicates
     const fullWithVars = Array.from(new Set([...asArray(withVars), nodeVariable]));
     let subquery = ["CALL {", `WITH ${fullWithVars.join(", ")}`];
 

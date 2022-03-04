@@ -33,7 +33,7 @@ import translateTopLevelMatch from "./translate-top-level-match";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 
-function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
+export default function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
     const updateInput = resolveTree.args.update;
     const connectInput = resolveTree.args.connect;
@@ -43,11 +43,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const connectOrCreateInput = resolveTree.args.connectOrCreate;
     const varName = "this";
 
-    const needsMeta = Boolean(context.plugins?.subscriptions);
-
     const withVars = [varName];
 
-    if (needsMeta) {
+    if (context.subscriptionsEnabled) {
         withVars.push(META_CYPHER_VARIABLE);
     }
 
@@ -395,16 +393,12 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         }
     }
 
-    // const returnStatement = nodeProjection
-    //     ? `RETURN collect(${varName} ${projStr}) AS data`
-    //     : `RETURN 'Query cannot conclude with CALL'`;
-
-    const returnStatement = generateUpdateReturnStatement(varName, projStr, needsMeta);
+    const returnStatement = generateUpdateReturnStatement(varName, projStr, context.subscriptionsEnabled);
 
     const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";
 
     const cypher = [
-        ...(needsMeta ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
+        ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
         matchAndWhereStr,
         updateStr,
         connectStrs.join("\n"),
@@ -425,12 +419,10 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     ];
 }
 
-export default translateUpdate;
-
 function generateUpdateReturnStatement(
     varName: string | undefined,
     projStr: string | undefined,
-    needsMeta: boolean
+    subscriptionsEnabled: boolean
 ): string {
     const statements: string[] = [];
 
@@ -438,7 +430,7 @@ function generateUpdateReturnStatement(
         statements.push(`collect(${varName} ${projStr}) AS data`);
     }
 
-    if (needsMeta) {
+    if (subscriptionsEnabled) {
         statements.push(META_CYPHER_VARIABLE);
     }
 

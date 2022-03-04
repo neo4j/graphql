@@ -26,15 +26,14 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import { filterTruthy } from "../utils/utils";
 
-function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
+export default function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
-    const beforeReturnVars: string[] = [];
+    const projectionWith: string[] = [];
 
     let connectionParams: any;
     let interfaceParams: any;
-    const needsMeta = Boolean(context.plugins?.subscriptions);
 
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
 
@@ -47,8 +46,8 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
             const create = [`CALL {`];
 
             const withVars = [varName];
-            beforeReturnVars.push(varName);
-            if (needsMeta) {
+            projectionWith.push(varName);
+            if (context.subscriptionsEnabled) {
                 create.push(`WITH [] AS ${META_CYPHER_VARIABLE}`);
                 withVars.push(META_CYPHER_VARIABLE);
             }
@@ -64,7 +63,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
             });
 
             create.push(`${createAndParams[0]}`);
-            if (needsMeta) {
+            if (context.subscriptionsEnabled) {
                 const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
                 create.push(`RETURN ${varName}, ${META_CYPHER_VARIABLE} AS ${metaVariable}`);
                 metaNames.push(metaVariable);
@@ -89,10 +88,8 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
     let projectionStr: string | undefined;
     let authCalls: string | undefined;
 
-    let projectionWith = "";
-    // WITH this0_meta as meta
     if (metaNames.length > 0) {
-        projectionWith = `WITH ${metaNames.join(" + ")} AS meta, ${beforeReturnVars.join(", ")}`;
+        projectionWith.push(`${metaNames.join(" + ")} AS meta`);
     }
 
     if (nodeProjection) {
@@ -129,7 +126,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
             .join("\n");
 
-        const withVars = needsMeta ? [META_CYPHER_VARIABLE] : [];
+        const withVars = context.subscriptionsEnabled ? [META_CYPHER_VARIABLE] : [];
         if (projection[2]?.connectionFields?.length) {
             projection[2].connectionFields.forEach((connectionResolveTree) => {
                 const connectionField = node.connectionFields.find(
@@ -209,11 +206,12 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
           }, {})
         : {};
 
-    const returnStatement = generateCreateReturnStatement(projectionStr, needsMeta);
+    const returnStatement = generateCreateReturnStatement(projectionStr, context.subscriptionsEnabled);
+    const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
     const cypher = filterTruthy([
         `${createStrs.join("\n")}`,
-        projectionWith,
+        projectionWithStr,
         authCalls,
         ...replacedConnectionStrs,
         ...replacedInterfaceStrs,
@@ -226,16 +224,14 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
     ];
 }
 
-export default translateCreate;
-
-function generateCreateReturnStatement(projectionStr: string | undefined, needsMeta: boolean): string {
+function generateCreateReturnStatement(projectionStr: string | undefined, subscriptionsEnabled: boolean): string {
     const statements: string[] = [];
 
     if (projectionStr) {
         statements.push(`[${projectionStr}] AS data`);
     }
 
-    if (needsMeta) {
+    if (subscriptionsEnabled) {
         statements.push(META_CYPHER_VARIABLE);
     }
 
