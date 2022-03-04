@@ -65,3 +65,6 @@ In addition to the challenges present in every testing strategy, we may find the
 
 ## Risks and unknowns
 * Currently, `@neo4j/graphql` works on the principle of a single Cypher query per request, we need to validate if this is still the best way to achieve good performance.
+
+## Out of scope
+* How to store these metrics and monitor them over time.
