@@ -31,7 +31,7 @@ const SideBar = (props: Props) => {
                                     if (props.onShowEditor) props.onShowEditor();
                                 }}
                             >
-                                L
+                                Q
                             </button>
                         </span>
                     </li>

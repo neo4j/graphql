@@ -11,6 +11,7 @@ import { Editor } from "../editor/Editor";
 const Main = () => {
     const auth = useContext(AuthContext.Context);
     const [schema, setSchema] = useState<GraphQLSchema | undefined>(undefined);
+    const [isSchemaPage, setIsSchemaPage] = useState<boolean>(true);
 
     if (!auth.driver) {
         return (
@@ -24,12 +25,17 @@ const Main = () => {
 
     return (
         <div className="flex">
-            <SideBar onShowTypeDefs={() => setSchema(undefined)} />
+            <SideBar onShowTypeDefs={() => setIsSchemaPage(true)} onShowEditor={() => setIsSchemaPage(false)} />
             <div className="flex w-full h-full flex-col">
                 <TopBar />
                 <Content>
-                    {!schema ? (
-                        <GetSchema onChange={(schema) => setSchema(schema)}></GetSchema>
+                    {isSchemaPage || !schema ? (
+                        <GetSchema
+                            onChange={(schema) => {
+                                setSchema(schema);
+                                setIsSchemaPage(false);
+                            }}
+                        ></GetSchema>
                     ) : (
                         <Editor schema={schema} />
                     )}
