@@ -229,13 +229,13 @@ function createCreateAndParams({
         res.creates.push(`SET ${varName}.${dbFieldName} = $${varNameKey}`);
         res.params[varNameKey] = value;
 
-        if (needsMeta) {
-            const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName });
-            const withStrs = [eventWithMetaStr];
-            res.creates.push(
-                `WITH ${withStrs.join(", ")}, ${withVars.filter((w) => w !== META_CYPHER_VARIABLE).join(", ")}`
-            );
-        }
+        // if (needsMeta) {
+        //     const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName });
+        //     const withStrs = [eventWithMetaStr];
+        //     res.creates.push(
+        //         `WITH ${withStrs.join(", ")}, ${withVars.filter((w) => w !== META_CYPHER_VARIABLE).join(", ")}`
+        //     );
+        // }
 
         return res;
     }
@@ -261,6 +261,12 @@ function createCreateAndParams({
         creates: initial,
         params: {},
     });
+
+    if (needsMeta) {
+        const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName });
+        const withStrs = [eventWithMetaStr];
+        creates.push(`WITH ${withStrs.join(", ")}, ${withVars.filter((w) => w !== META_CYPHER_VARIABLE).join(", ")}`);
+    }
 
     const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
 

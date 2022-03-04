@@ -225,7 +225,67 @@ describe("interface relationships", () => {
                 ],
             },
         });
-        console.log(JSON.stringify(subscriptionsPlugin.eventList, null, 4));
-        // TODO: check events
+
+        expect(subscriptionsPlugin.eventList).toHaveLength(5);
+        expect(subscriptionsPlugin.eventList).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "event": "create",
+                "id": 15198,
+                "properties": Object {
+                  "new": Object {
+                    "name": "ePeeoBSZkNdaYYXLHUwBPkAenqBioret",
+                  },
+                  "old": undefined,
+                },
+                "timestamp": 1646409520839,
+              },
+              Object {
+                "event": "create",
+                "id": 15197,
+                "properties": Object {
+                  "new": Object {
+                    "runtime": 83674,
+                    "title": "tsVvZYLoTWjjYYsxUWABVsWWqQEkwDtq",
+                  },
+                  "old": undefined,
+                },
+                "timestamp": 1646409520839,
+              },
+              Object {
+                "event": "create",
+                "id": 15200,
+                "properties": Object {
+                  "new": Object {
+                    "runtime": 35076,
+                  },
+                  "old": undefined,
+                },
+                "timestamp": 1646409520839,
+              },
+              Object {
+                "event": "create",
+                "id": 15199,
+                "properties": Object {
+                  "new": Object {
+                    "title": "PcZfhSsfYDXsjKFsbaSdqsVkbpsZKdKD",
+                  },
+                  "old": undefined,
+                },
+                "timestamp": 1646409520839,
+              },
+              Object {
+                "event": "create",
+                "id": 15196,
+                "properties": Object {
+                  "new": Object {
+                    "name": "RKpYZtDNQwEwQLLpgfaiDbDkpNiDEapQ",
+                  },
+                  "old": undefined,
+                },
+                "timestamp": 1646409520839,
+              },
+            ]
+        `);
     });
 });

@@ -97,7 +97,7 @@ describe("Subscriptions create", () => {
                 id: expect.any(Number),
                 timestamp: expect.any(Number),
                 event: "create",
-                properties: { old: undefined, new: { id: "1" } },
+                properties: { old: undefined, new: { id: "2" } },
             },
             {
                 id: expect.any(Number),
@@ -109,13 +109,13 @@ describe("Subscriptions create", () => {
                 id: expect.any(Number),
                 timestamp: expect.any(Number),
                 event: "create",
-                properties: { old: undefined, new: { id: "2" } },
+                properties: { old: undefined, new: { id: "1" } },
             },
             {
                 id: expect.any(Number),
                 timestamp: expect.any(Number),
                 event: "create",
-                properties: { old: undefined, new: { id: "3" } },
+                properties: { old: undefined, new: { id: "4" } },
             },
             {
                 id: expect.any(Number),
@@ -127,7 +127,7 @@ describe("Subscriptions create", () => {
                 id: expect.any(Number),
                 timestamp: expect.any(Number),
                 event: "create",
-                properties: { old: undefined, new: { id: "4" } },
+                properties: { old: undefined, new: { id: "3" } },
             },
         ]);
     });
