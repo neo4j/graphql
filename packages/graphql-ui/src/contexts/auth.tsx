@@ -3,6 +3,7 @@ import * as neo4j from "neo4j-driver";
 import { encrypt, decrypt } from "src/utils/utils";
 
 const LOCAL_STATE_LOGIN = "neo4j.graphql.login";
+const VERIFY_CONNECTION_INTERVAL_MS = 30000;
 
 interface LoginOptions {
     username: string;
@@ -18,6 +19,8 @@ interface LoginPayload {
 
 export interface State {
     driver?: neo4j.Driver;
+    connectUrl?: string;
+    isConnected?: boolean;
     login: (options: LoginOptions) => Promise<void>;
     logout: () => void;
 }
@@ -28,6 +31,16 @@ export const Context = React.createContext<State>();
 export function Provider(props: any) {
     let value: State | undefined;
     let setValue: Dispatch<SetStateAction<State>>;
+    let intervalId: number;
+
+    const checkConnectivity = async (driver: neo4j.Driver, setValue: any) => {
+        try {
+            await driver.verifyConnectivity();
+            setValue((v) => ({ ...v, isConnected: true }));
+        } catch (err) {
+            setValue((v) => ({ ...v, isConnected: false }));
+        }
+    };
 
     [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
@@ -42,12 +55,17 @@ export function Provider(props: any) {
             } as LoginPayload);
             localStorage.setItem(LOCAL_STATE_LOGIN, JSON.stringify(encodedPayload));
 
-            setValue((v) => ({ ...v, driver }));
+            intervalId = window.setInterval(() => checkConnectivity(driver, setValue), VERIFY_CONNECTION_INTERVAL_MS);
+
+            setValue((v) => ({ ...v, driver, connectUrl: options.url, isConnected: true }));
         },
         logout: () => {
             localStorage.removeItem(LOCAL_STATE_LOGIN);
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
 
-            setValue((v) => ({ ...v, driver: undefined }));
+            setValue((v) => ({ ...v, driver: undefined, connectUrl: undefined, isConnected: false }));
         },
     });
 
