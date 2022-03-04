@@ -19,7 +19,7 @@ export const JSONEditor = (props: Props) => {
 
         mirror.current = CodeMirror.fromTextArea(ref.current, {
             mode: { name: "javascript", json: true },
-            theme: "default",
+            theme: "dracula",
             readOnly: props.readonly,
             lineNumbers: true,
             lineWrapping: true,

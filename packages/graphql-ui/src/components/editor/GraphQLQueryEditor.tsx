@@ -29,6 +29,7 @@ export const GraphQLQueryEditor = ({ schema, setQuery, query }: Props) => {
             lineNumbers: true,
             tabSize: 2,
             mode: "graphql",
+            theme: "dracula",
             keyMap: "sublime",
             autoCloseBrackets: true,
             matchBrackets: true,

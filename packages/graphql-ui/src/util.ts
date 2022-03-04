@@ -16,5 +16,6 @@ import "codemirror-graphql/lint";
 import "codemirror-graphql/info";
 import "codemirror-graphql/jump";
 import "codemirror-graphql/mode";
+import "codemirror/theme/dracula.css";
 
 export { CodeMirror };

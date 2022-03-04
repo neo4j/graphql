@@ -80,6 +80,7 @@ export const GetSchema = (props: Props) => {
             lineNumbers: true,
             tabSize: 2,
             mode: "graphql",
+            theme: "dracula",
             keyMap: "sublime",
             autoCloseBrackets: true,
             matchBrackets: true,
