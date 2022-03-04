@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import styled from "styled-components";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
+import { Button } from "@neo4j-ndl/react";
 
 const Pains = styled.div`
     display: flex;
@@ -71,13 +72,13 @@ export const Editor = (props: Props) => {
     return (
         <Wrapper className="p-5">
             <Header>
-                <button
+                <Button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     type="button"
                     onClick={() => onSubmit()}
                 >
                     Query (CTRL+ENTER)
-                </button>
+                </Button>
 
                 {loading && (
                     <div style={{ padding: "0.5em" }}>
