@@ -195,14 +195,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
           }, {})
         : {};
 
-    let metaStr = "";
-    if (needsMeta) {
-        metaStr = `, ${metaNames.join(" + ")} as meta`;
-    }
-
-    const returnStatement = nodeProjection
-        ? `RETURN [${projectionStr}] AS data${metaStr}`
-        : "RETURN 'Query cannot conclude with CALL'";
+    const returnStatement = generateCreateReturnStatement(projectionStr, metaNames);
 
     const cypher = [
         `${createStrs.join("\n")}`,
@@ -219,3 +212,21 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
 }
 
 export default translateCreate;
+
+function generateCreateReturnStatement(projectionStr: string | undefined, metaNames: string[]): string {
+    const statements: string[] = [];
+
+    if (projectionStr) {
+        statements.push(`[${projectionStr}] AS data`);
+    }
+
+    if (metaNames.length > 0) {
+        statements.push(`${metaNames.join(" + ")} AS meta`);
+    }
+
+    if (statements.length === 0) {
+        statements.push("'Query cannot conclude with CALL'");
+    }
+
+    return `RETURN ${statements.join(", ")}`;
+}

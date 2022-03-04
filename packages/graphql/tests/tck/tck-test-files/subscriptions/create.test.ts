@@ -77,7 +77,7 @@ describe("Subscritions metadata on create", () => {
             RETURN this0, meta AS this0_meta
             }
             RETURN [
-            this0 { .id }] AS data, this0_meta as meta"
+            this0 { .id }] AS data, this0_meta AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -120,7 +120,7 @@ describe("Subscritions metadata on create", () => {
             }
             RETURN [
             this0 { .id },
-            this1 { .id }] AS data, this0_meta + this1_meta as meta"
+            this1 { .id }] AS data, this0_meta + this1_meta AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -163,7 +163,7 @@ describe("Subscritions metadata on create", () => {
             RETURN this0, meta AS this0_meta
             }
             RETURN [
-            this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name } ] }] AS data, this0_meta as meta"
+            this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name } ] }] AS data, this0_meta AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -217,7 +217,7 @@ describe("Subscritions metadata on create", () => {
             RETURN this0, meta AS this0_meta
             }
             RETURN [
-            this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name } ] }] AS data, this0_meta as meta"
+            this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name } ] }] AS data, this0_meta AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -293,7 +293,7 @@ describe("Subscritions metadata on create", () => {
             RETURN this0, meta AS this0_meta
             }
             RETURN [
-            this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name, movies: [ (this0_actors)-[:ACTED_IN]->(this0_actors_movies:Movie)   | this0_actors_movies { .id, actors: [ (this0_actors_movies)<-[:ACTED_IN]-(this0_actors_movies_actors:Actor)   | this0_actors_movies_actors { .name } ] } ] } ] }] AS data, this0_meta as meta"
+            this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name, movies: [ (this0_actors)-[:ACTED_IN]->(this0_actors_movies:Movie)   | this0_actors_movies { .id, actors: [ (this0_actors_movies)<-[:ACTED_IN]-(this0_actors_movies_actors:Actor)   | this0_actors_movies_actors { .name } ] } ] } ] }] AS data, this0_meta AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -366,7 +366,7 @@ describe("Subscritions metadata on create", () => {
             }
             RETURN [
             this0 { .id },
-            this1 { .id }] AS data, this0_meta + this1_meta as meta"
+            this1 { .id }] AS data, this0_meta + this1_meta AS meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -377,6 +377,40 @@ describe("Subscritions metadata on create", () => {
                 \\"this1_id\\": \\"2\\",
                 \\"this1_actors0_node_name\\": \\"Darrell\\",
                 \\"this1_actors0_node_movies0_node_id\\": \\"8\\"
+            }"
+        `);
+    });
+
+    test("Simple create without returned data", async () => {
+        const query = gql`
+            mutation {
+                createMovies(input: [{ id: "1" }]) {
+                    info {
+                        nodesCreated
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            WITH [] AS meta
+            CREATE (this0:Movie)
+            SET this0.id = $this0_id
+            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
+            RETURN this0, meta AS this0_meta
+            }
+            RETURN this0_meta AS meta"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_id\\": \\"1\\"
             }"
         `);
     });

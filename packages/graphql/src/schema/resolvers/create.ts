@@ -46,7 +46,7 @@ export default function createResolver({ node }: { node: Node }) {
 
         const subscriptionsPlugin = context.plugins?.subscriptions;
         if (subscriptionsPlugin) {
-            const metaData: RawEventMeta[] = executeResult.records[0]?.meta;
+            const metaData: RawEventMeta[] = executeResult.records[0]?.meta || [];
             for (const meta of metaData) {
                 const serializedMeta = serializeEventMeta(meta);
                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -78,7 +78,7 @@ function serializeProperties(properties: Record<string, any> | undefined): Recor
     return Object.entries(properties).reduce((serializedProps, [k, v]) => {
         serializedProps[k] = serializeNeo4jValue(v);
         return serializedProps;
-    }, {});
+    }, {} as Record<string, any>);
 }
 
 function serializeEventMeta(event: RawEventMeta): EventMeta {
