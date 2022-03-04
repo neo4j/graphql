@@ -72,11 +72,7 @@ export const Editor = (props: Props) => {
     return (
         <Wrapper className="p-5">
             <Header>
-                <Button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    type="button"
-                    onClick={() => onSubmit()}
-                >
+                <Button fill="outlined" onClick={() => onSubmit()}>
                     Query (CTRL+ENTER)
                 </Button>
 

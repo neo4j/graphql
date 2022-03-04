@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useContext, useState } from "react";
 import * as AuthContext from "../../contexts/auth";
 import { FormInput } from "./FormInput";
+import { Button } from "@neo4j-ndl/react";
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
@@ -70,13 +71,9 @@ const Login = () => {
                         ></FormInput>
                     </div>
                     <div className="flex items-center justify-between">
-                        <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            type="submit"
-                            disabled={loading}
-                        >
+                        <Button fill="outlined" type="submit" disabled={loading}>
                             {loading ? <>Logging In</> : <span>Sign In</span>}
-                        </button>
+                        </Button>
                     </div>
 
                     {error && (

@@ -5,6 +5,7 @@ import { CodeMirror } from "../../util";
 import * as neo4j from "neo4j-driver";
 import * as AuthContext from "../../contexts/auth";
 import { GraphQLSchema } from "graphql";
+import { Button } from "@neo4j-ndl/react";
 
 const LOCAL_STATE_TYPE_DEFS = "neo4j.graphql.typeDefs";
 
@@ -118,21 +119,13 @@ export const GetSchema = (props: Props) => {
                     </div>
                 )}
                 <div className="flex justify-between">
-                    <button
-                        className="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        onClick={onSubmit}
-                        disabled={loading}
-                    >
+                    <Button fill="outlined" onClick={onSubmit} disabled={loading}>
                         {loading ? "Loading..." : "Build schema"}
-                    </button>
+                    </Button>
 
-                    <button
-                        className="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        onClick={introspect}
-                        disabled={loading}
-                    >
+                    <Button fill="outlined" onClick={introspect} disabled={loading}>
                         {loading ? "Loading..." : "Generate typeDefs"}
-                    </button>
+                    </Button>
                 </div>
 
                 <div
