@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
-describe("Subscritions metadata on create", () => {
+describe("Subscriptions metadata on create", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
     let plugin: TestSubscriptionsPlugin;
@@ -82,7 +82,6 @@ describe("Subscritions metadata on create", () => {
             CREATE (this0:Actor)
             SET this0.id = $this0_id
             WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
-            WITH this0
             CALL apoc.util.validate(NOT(this0.id IS NOT NULL AND this0.id = $this0_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0, meta AS this0_meta
             }
@@ -91,7 +90,6 @@ describe("Subscritions metadata on create", () => {
             CREATE (this1:Actor)
             SET this1.id = $this1_id
             WITH meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp() } AS meta, this1
-            WITH this1
             CALL apoc.util.validate(NOT(this1.id IS NOT NULL AND this1.id = $this1_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this1, meta AS this1_meta
             }

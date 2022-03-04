@@ -52,7 +52,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                 node,
                 context,
                 varName,
-                withVars: needsMeta ? [varName] : [varName],
+                withVars: needsMeta ? [varName, META_CYPHER_VARIABLE] : [varName],
                 includeRelationshipValidation: true,
                 topLevelNodeVariable: varName,
             });

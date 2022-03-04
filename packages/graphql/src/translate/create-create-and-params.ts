@@ -21,7 +21,7 @@ import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
@@ -57,13 +57,14 @@ function createCreateAndParams({
     includeRelationshipValidation?: boolean;
     topLevelNodeVariable?: string;
 }): [string, any] {
+    const needsMeta = Boolean(context.plugins?.subscriptions);
+
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key === x.fieldName);
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
         const dbFieldName = mapToDbProperty(node, key);
-        const needsMeta = Boolean(context.plugins?.subscriptions);
 
         if (relationField) {
             const refNodes: Node[] = [];
@@ -230,7 +231,9 @@ function createCreateAndParams({
         if (needsMeta) {
             const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName });
             const withStrs = [eventWithMetaStr];
-            res.creates.push(`WITH ${withStrs.join(", ")}, ${withVars.join(", ")}`);
+            res.creates.push(
+                `WITH ${withStrs.join(", ")}, ${withVars.filter((w) => w !== META_CYPHER_VARIABLE).join(", ")}`
+            );
         }
 
         return res;
@@ -274,6 +277,7 @@ function createCreateAndParams({
             params = { ...params, ...bindAndParams[1] };
         }
     }
+
     if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
         creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
