@@ -8,10 +8,15 @@ import { GetSchema } from "../get_schema/GetSchema";
 import { GraphQLSchema } from "graphql";
 import { Editor } from "../editor/Editor";
 
+export enum Pages {
+    TYPEDEFS,
+    EDITOR,
+}
+
 const Main = () => {
     const auth = useContext(AuthContext.Context);
     const [schema, setSchema] = useState<GraphQLSchema | undefined>(undefined);
-    const [isSchemaPage, setIsSchemaPage] = useState<boolean>(true);
+    const [activePage, setActivePage] = useState<Pages>(Pages.TYPEDEFS);
 
     if (!auth.driver) {
         return (
@@ -25,15 +30,24 @@ const Main = () => {
 
     return (
         <div className="flex">
-            <SideBar onShowTypeDefs={() => setIsSchemaPage(true)} onShowEditor={() => setIsSchemaPage(false)} />
+            <SideBar
+                activePage={activePage}
+                allowRedirectToEdit={!!schema}
+                onShowTypeDefs={() => setActivePage(Pages.TYPEDEFS)}
+                onShowEditor={() => setActivePage(Pages.EDITOR)}
+                onLogout={() => {
+                    setActivePage(Pages.TYPEDEFS);
+                    setSchema(undefined);
+                }}
+            />
             <div className="flex w-full h-full flex-col">
                 <TopBar />
                 <Content>
-                    {isSchemaPage || !schema ? (
+                    {activePage === Pages.TYPEDEFS ? (
                         <GetSchema
                             onChange={(schema) => {
                                 setSchema(schema);
-                                setIsSchemaPage(false);
+                                setActivePage(Pages.EDITOR);
                             }}
                         ></GetSchema>
                     ) : (

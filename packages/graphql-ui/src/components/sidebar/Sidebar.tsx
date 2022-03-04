@@ -1,50 +1,65 @@
 import { useContext } from "react";
-import * as AuthContext from "../../contexts/auth";
 import { HeroIcon } from "@neo4j-ndl/react/lib/icons";
+import * as AuthContext from "../../contexts/auth";
+import { Pages } from "../main/Main";
 
 export interface Props {
+    activePage?: Pages;
+    allowRedirectToEdit: boolean;
     onShowTypeDefs?: () => void;
     onShowEditor?: () => void;
+    onLogout?: () => void;
 }
 
 const SideBar = (props: Props) => {
     const auth = useContext(AuthContext.Context);
 
     return (
-        <div className="flex flex-col w-16 h-screen pt-6 pb-4 overflow-y-auto bg-sidebargrey">
+        <div className="flex flex-col w-16 h-screen overflow-y-auto bg-sidebargrey">
             <div className="flex flex-col justify-between align-center text-white">
                 <ul>
-                    <li className="pb-8 flex justify-center">
-                        <span className="font-medium text-2xl cursor-pointer">
-                            <button
-                                onClick={() => {
-                                    if (props.onShowTypeDefs) props.onShowTypeDefs();
-                                }}
-                            >
-                                <HeroIcon className="h-8 w-8" iconName="DocumentTextIcon" type="outline" />
-                            </button>
+                    <li
+                        className={`py-4 flex justify-center ${
+                            props.activePage === Pages.TYPEDEFS && "n-bg-neutral-90"
+                        }`}
+                    >
+                        <span
+                            className="font-medium text-2xl cursor-pointer"
+                            onClick={() => {
+                                if (props.onShowTypeDefs) props.onShowTypeDefs();
+                            }}
+                        >
+                            <HeroIcon className="h-8 w-8" iconName="DocumentTextIcon" type="outline" />
                         </span>
                     </li>
-                    <li className="pb-8 flex justify-center">
-                        <span className="font-medium text-2xl cursor-pointer">
-                            <button
-                                onClick={() => {
-                                    if (props.onShowEditor) props.onShowEditor();
-                                }}
-                            >
-                                <HeroIcon className="h-8 w-8" iconName="SearchIcon" type="outline" />
-                            </button>
+                    <li
+                        className={`py-4 flex justify-center ${props.activePage === Pages.EDITOR && "n-bg-neutral-90"}`}
+                    >
+                        <span
+                            className={`font-medium text-2xl ${
+                                props.allowRedirectToEdit ? "cursor-pointer" : "default"
+                            }`}
+                            onClick={() => {
+                                if (!props.allowRedirectToEdit) return;
+                                if (props.onShowEditor) props.onShowEditor();
+                            }}
+                        >
+                            <HeroIcon className="h-8 w-8" iconName="SearchIcon" type="outline" />
                         </span>
                     </li>
                 </ul>
             </div>
             <div className="flex flex-col-reverse flex-1 justify-between align-center text-white">
                 <ul>
-                    <li className="pb-4 flex justify-center">
-                        <span className="font-medium text-2xl cursor-pointer">
-                            <button onClick={() => auth?.logout()}>
-                                <HeroIcon className="h-8 w-8" iconName="LogoutIcon" type="outline" />
-                            </button>
+                    <li className="py-4 flex justify-center">
+                        <span
+                            className="font-medium text-2xl cursor-pointer"
+                            onClick={() => {
+                                if (props.onLogout) props.onLogout();
+                                auth?.logout();
+                            }}
+                        >
+                            <HeroIcon className="h-8 w-8" iconName="LogoutIcon" type="outline" />
                         </span>
                     </li>
                 </ul>

@@ -34,7 +34,7 @@ const Pain = styled.div`
 `;
 
 export interface Props {
-    schema: GraphQLSchema;
+    schema?: GraphQLSchema;
 }
 
 export const Editor = (props: Props) => {
@@ -47,6 +47,7 @@ export const Editor = (props: Props) => {
         async (override?: string) => {
             let result: string;
             setLoading(true);
+            if (!props.schema) return;
 
             try {
                 const response = await graphql({
@@ -72,7 +73,7 @@ export const Editor = (props: Props) => {
     return (
         <Wrapper className="p-5">
             <Header>
-                <Button fill="outlined" onClick={() => onSubmit()}>
+                <Button fill="outlined" onClick={() => onSubmit()} disabled={!props.schema}>
                     Query (CTRL+ENTER)
                 </Button>
 
@@ -86,11 +87,13 @@ export const Editor = (props: Props) => {
                 <Pain>
                     <div className="h-full">
                         <div className="h-3/4 pb-5">
-                            <GraphQLQueryEditor
-                                schema={props.schema}
-                                setQuery={setQuery}
-                                query={onSubmit}
-                            ></GraphQLQueryEditor>
+                            {props.schema ? (
+                                <GraphQLQueryEditor
+                                    schema={props.schema}
+                                    setQuery={setQuery}
+                                    query={onSubmit}
+                                ></GraphQLQueryEditor>
+                            ) : null}
                         </div>
                         <div className="h-1/4">
                             <JSONEditor readonly={false} onChange={setVariableValues}></JSONEditor>
