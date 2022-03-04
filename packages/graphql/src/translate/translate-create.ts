@@ -34,7 +34,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
 
     let connectionParams: any;
     let interfaceParams: any;
-    const needsMeta = Boolean(context.plugins?.subscriptions) || true;
+    const needsMeta = Boolean(context.plugins?.subscriptions);
 
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
 

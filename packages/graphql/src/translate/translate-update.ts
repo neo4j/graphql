@@ -43,7 +43,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const connectOrCreateInput = resolveTree.args.connectOrCreate;
     const varName = "this";
 
-    const needsMeta = Boolean(context.plugins?.subscriptions) || true;
+    const needsMeta = Boolean(context.plugins?.subscriptions);
 
     const withVars = [varName];
 
@@ -264,7 +264,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                         node: refNode,
                         input: create.node,
                         varName: nodeName,
-                        withVars: [varName, nodeName],
+                        withVars: [...withVars, nodeName],
                         includeRelationshipValidation: false,
                     });
                     createStrs.push(createAndParams[0]);
@@ -399,7 +399,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     //     ? `RETURN collect(${varName} ${projStr}) AS data`
     //     : `RETURN 'Query cannot conclude with CALL'`;
 
-    const returnStatement = generateUpdateReturnStatement(`${varName} ${projStr}`, needsMeta);
+    const returnStatement = generateUpdateReturnStatement(varName, projStr, needsMeta);
 
     const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";
 
@@ -427,11 +427,15 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
 export default translateUpdate;
 
-function generateUpdateReturnStatement(projectionStr: string | undefined, needsMeta: boolean): string {
+function generateUpdateReturnStatement(
+    varName: string | undefined,
+    projStr: string | undefined,
+    needsMeta: boolean
+): string {
     const statements: string[] = [];
 
-    if (projectionStr) {
-        statements.push(`collect(${projectionStr}) AS data`);
+    if (varName && projStr) {
+        statements.push(`collect(${varName} ${projStr}) AS data`);
     }
 
     if (needsMeta) {

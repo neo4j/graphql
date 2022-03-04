@@ -34,7 +34,7 @@ describe("579", () => {
         await driver.close();
     });
 
-    test.only("should update an Edge property in a one to one relationship", async () => {
+    test("should update an Edge property in a one to one relationship", async () => {
         const session = driver.session();
 
         const typeDefs = `

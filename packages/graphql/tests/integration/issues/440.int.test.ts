@@ -113,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
         }
     });
 
-    test.only("should be able to delete 2 nodes while creating one in the same mutation", async () => {
+    test("should be able to delete 2 nodes while creating one in the same mutation", async () => {
         const session = driver.session();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         const videoID = generate({ charset: "alphabetic" });
