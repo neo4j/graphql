@@ -57,7 +57,7 @@ function createCreateAndParams({
     includeRelationshipValidation?: boolean;
     topLevelNodeVariable?: string;
 }): [string, any] {
-    const needsMeta = Boolean(context.plugins?.subscriptions);
+    const needsMeta = Boolean(context.plugins?.subscriptions) || true;
 
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;

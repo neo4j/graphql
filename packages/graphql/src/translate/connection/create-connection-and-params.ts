@@ -54,7 +54,7 @@ function createConnectionAndParams({
 }): CypherStatement {
     let globalParams = {};
     let nestedConnectionFieldParams: any;
-    const fullWithVars = [...asArray(withVars), nodeVariable];
+    const fullWithVars = Array.from(new Set([...asArray(withVars), nodeVariable]));
     let subquery = ["CALL {", `WITH ${fullWithVars.join(", ")}`];
 
     const sortInput = (resolveTree.args.sort ?? []) as ConnectionSortArg[];

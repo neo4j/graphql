@@ -45,7 +45,7 @@ function createInterfaceProjectionAndParams({
 }): { cypher: string; params: Record<string, any> } {
     let globalParams = {};
     let params: { args?: any } = {};
-    const fullWithVars = [...asArray(withVars), nodeVariable];
+    const fullWithVars = Array.from(new Set([...asArray(withVars), nodeVariable]));
     const relTypeStr = `[:${field.type}]`;
 
     const { inStr, outStr } = getRelationshipDirection(field, resolveTree.args);
