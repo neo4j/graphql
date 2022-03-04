@@ -1,11 +1,16 @@
 import React, { Dispatch, useState, SetStateAction } from "react";
 import * as neo4j from "neo4j-driver";
+import { encrypt, decrypt } from "src/utils/utils";
 
-const LOCAL_STATE_USERNAME = "username";
-const LOCAL_STATE_PASSWORD = "password";
-const LOCAL_STATE_URL = "url";
+const LOCAL_STATE_LOGIN = "neo4j.graphql.login";
 
 interface LoginOptions {
+    username: string;
+    password: string;
+    url: string;
+}
+
+interface LoginPayload {
     username: string;
     password: string;
     url: string;
@@ -30,35 +35,36 @@ export function Provider(props: any) {
             const driver = neo4j.driver(options.url, auth);
             await driver.verifyConnectivity();
 
-            // TODO - Encode
-            localStorage.setItem(LOCAL_STATE_USERNAME, options.username);
-            localStorage.setItem(LOCAL_STATE_PASSWORD, options.password);
-            localStorage.setItem(LOCAL_STATE_URL, options.url);
+            const encodedPayload = encrypt({
+                username: options.username,
+                password: options.password,
+                url: options.url,
+            } as LoginPayload);
+            localStorage.setItem(LOCAL_STATE_LOGIN, JSON.stringify(encodedPayload));
 
             setValue((v) => ({ ...v, driver }));
         },
         logout: () => {
-            localStorage.removeItem(LOCAL_STATE_USERNAME);
-            localStorage.removeItem(LOCAL_STATE_PASSWORD);
-            localStorage.removeItem(LOCAL_STATE_URL);
+            localStorage.removeItem(LOCAL_STATE_LOGIN);
 
             setValue((v) => ({ ...v, driver: undefined }));
         },
     });
 
-    // TODO - Decode
-    const username = localStorage.getItem(LOCAL_STATE_USERNAME);
-    const password = localStorage.getItem(LOCAL_STATE_PASSWORD);
-    const url = localStorage.getItem(LOCAL_STATE_URL);
+    const storedEncryptedPayload = localStorage.getItem(LOCAL_STATE_LOGIN);
+    if (storedEncryptedPayload && typeof storedEncryptedPayload === "string") {
+        const { encryptedPayload, hashKey } = JSON.parse(storedEncryptedPayload as string);
+        const { username, password, url } = decrypt(encryptedPayload, hashKey) as unknown as LoginPayload;
 
-    if (username && password && url && !value.driver) {
-        value
-            .login({
-                username,
-                password,
-                url,
-            })
-            .catch(() => {});
+        if (username && password && url && !value.driver) {
+            value
+                .login({
+                    username,
+                    password,
+                    url,
+                })
+                .catch(() => {});
+        }
     }
 
     return <Context.Provider value={value as State}>{props.children}</Context.Provider>;
