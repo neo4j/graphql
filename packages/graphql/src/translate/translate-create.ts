@@ -24,11 +24,14 @@ import { Context, ConnectionField, RelationField } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
+import { filterTruthy } from "../utils/utils";
 
 function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
+    const beforeReturnVars: string[] = [];
+
     let connectionParams: any;
     let interfaceParams: any;
     const needsMeta = Boolean(context.plugins?.subscriptions);
@@ -43,8 +46,11 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
             const varName = `this${index}`;
             const create = [`CALL {`];
 
+            const withVars = [varName];
+            beforeReturnVars.push(varName);
             if (needsMeta) {
                 create.push(`WITH [] AS ${META_CYPHER_VARIABLE}`);
+                withVars.push(META_CYPHER_VARIABLE);
             }
 
             const createAndParams = createCreateAndParams({
@@ -52,7 +58,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                 node,
                 context,
                 varName,
-                withVars: needsMeta ? [varName, META_CYPHER_VARIABLE] : [varName],
+                withVars,
                 includeRelationshipValidation: true,
                 topLevelNodeVariable: varName,
             });
@@ -82,6 +88,12 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
     let replacedProjectionParams: Record<string, unknown> = {};
     let projectionStr: string | undefined;
     let authCalls: string | undefined;
+
+    let projectionWith = "";
+    // WITH this0_meta as meta
+    if (metaNames.length > 0) {
+        projectionWith = `WITH ${metaNames.join(" + ")} AS meta, ${beforeReturnVars.join(", ")}`;
+    }
 
     if (nodeProjection) {
         let projAuth = "";
@@ -117,6 +129,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
             .join("\n");
 
+        const withVars = needsMeta ? [META_CYPHER_VARIABLE] : [];
         if (projection[2]?.connectionFields?.length) {
             projection[2].connectionFields.forEach((connectionResolveTree) => {
                 const connectionField = node.connectionFields.find(
@@ -127,6 +140,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                     field: connectionField,
                     context,
                     nodeVariable: "REPLACE_ME",
+                    withVars,
                 });
                 connectionStrs.push(connection[0]);
                 if (!connectionParams) connectionParams = {};
@@ -143,8 +157,8 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                     resolveTree: interfaceResolveTree,
                     field: relationshipField,
                     context,
-                    node,
                     nodeVariable: "REPLACE_ME",
+                    withVars,
                 });
                 interfaceStrs.push(interfaceProjection.cypher);
                 if (!interfaceParams) interfaceParams = {};
@@ -195,15 +209,16 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
           }, {})
         : {};
 
-    const returnStatement = generateCreateReturnStatement(projectionStr, metaNames);
+    const returnStatement = generateCreateReturnStatement(projectionStr, needsMeta);
 
-    const cypher = [
+    const cypher = filterTruthy([
         `${createStrs.join("\n")}`,
+        projectionWith,
         authCalls,
         ...replacedConnectionStrs,
         ...replacedInterfaceStrs,
         returnStatement,
-    ];
+    ]);
 
     return [
         cypher.filter(Boolean).join("\n"),
@@ -213,15 +228,15 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
 
 export default translateCreate;
 
-function generateCreateReturnStatement(projectionStr: string | undefined, metaNames: string[]): string {
+function generateCreateReturnStatement(projectionStr: string | undefined, needsMeta: boolean): string {
     const statements: string[] = [];
 
     if (projectionStr) {
         statements.push(`[${projectionStr}] AS data`);
     }
 
-    if (metaNames.length > 0) {
-        statements.push(`${metaNames.join(" + ")} AS meta`);
+    if (needsMeta) {
+        statements.push(META_CYPHER_VARIABLE);
     }
 
     if (statements.length === 0) {

@@ -34,7 +34,7 @@ import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
 import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
 import { CypherStatement } from "../types";
-import { isString } from "../../utils/utils";
+import { asArray, isString } from "../../utils/utils";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";
 
 function createConnectionAndParams({
@@ -43,17 +43,19 @@ function createConnectionAndParams({
     context,
     nodeVariable,
     parameterPrefix,
+    withVars,
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
     context: Context;
     nodeVariable: string;
     parameterPrefix?: string;
+    withVars?: string[];
 }): CypherStatement {
     let globalParams = {};
-    let nestedConnectionFieldParams;
-
-    let subquery = ["CALL {", `WITH ${nodeVariable}`];
+    let nestedConnectionFieldParams: any;
+    const fullWithVars = [...asArray(withVars), nodeVariable];
+    let subquery = ["CALL {", `WITH ${fullWithVars.join(", ")}`];
 
     const sortInput = (resolveTree.args.sort ?? []) as ConnectionSortArg[];
     // Fields of {edge, node} to sort on. A simple resolve tree will be added if not in selection set
@@ -181,6 +183,7 @@ function createConnectionAndParams({
                                 parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                                     resolveTree.alias
                                 }.edges.node`,
+                                withVars: fullWithVars,
                             });
                             nestedSubqueries.push(nestedConnection[0]);
 

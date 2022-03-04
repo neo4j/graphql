@@ -378,7 +378,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     resolveTree: interfaceResolveTree,
                     field: relationshipField,
                     context,
-                    node,
                     nodeVariable: varName,
                 });
                 interfaceStrs.push(interfaceProjection.cypher);
