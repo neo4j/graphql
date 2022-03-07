@@ -5,9 +5,11 @@ import { Button } from "@neo4j-ndl/react";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
 import { LOCAL_STATE_TYPE_LAST_QUERY } from "src/constants/constants";
+import { Frame } from "./Frame";
 
 const Pains = styled.div`
     display: flex;
+    justify-content: flex-start;
     flex-direction: row;
     flex-grow: 1;
     width: 100%;
@@ -24,7 +26,8 @@ const Wrapper = styled.div`
 
 const Header = styled.div`
     display: flex;
-    padding: 10px;
+    justify-content: flex-start;
+    padding: 1.2em 0;
 `;
 
 const Pain = styled.div`
@@ -52,6 +55,8 @@ export const Editor = (props: Props) => {
     const [query, setQuery] = useState("");
     const [variableValues, setVariableValues] = useState("");
     const [output, setOutput] = useState("");
+    const [showExplorer, isShowExplorer] = useState(false);
+    const [showDocs, isShowDocs] = useState(false);
 
     const getInitialQueryValue = (): string | undefined =>
         JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_QUERY) as string) || DEFAULT_QUERY;
@@ -94,6 +99,14 @@ export const Editor = (props: Props) => {
                     Prettify
                 </Button>
 
+                <Button fill="outlined" onClick={() => isShowExplorer(!showExplorer)} disabled={false}>
+                    Explorer
+                </Button>
+
+                <Button fill="outlined" onClick={() => isShowDocs(!showDocs)} disabled={false}>
+                    Docs
+                </Button>
+
                 {loading && (
                     <div style={{ padding: "0.5em" }}>
                         <h1>Loading</h1>
@@ -101,7 +114,7 @@ export const Editor = (props: Props) => {
                 )}
             </Header>
             <Pains>
-                <Pain>
+                {/* <Pain>
                     <div className="h-full">
                         <div className="h-3/4 pb-5">
                             {props.schema ? (
@@ -122,10 +135,37 @@ export const Editor = (props: Props) => {
                     </div>
                 </Pain>
                 <Pain>
-                    <div className="h-full">
-                        <JSONEditor readonly={true} json={output}></JSONEditor>
-                    </div>
-                </Pain>
+                    <ResizableBox
+                        className=""
+                        width={200}
+                        height={200}
+                        // handle={<span className="custom-handle custom-handle-se" />}
+                        handleSize={[8, 8]}
+                    >
+                        <div className="h-full">
+                            <JSONEditor readonly={true} json={output}></JSONEditor>
+                        </div>
+                    </ResizableBox>
+                </Pain> */}
+                <Frame
+                    queryEditor={
+                        props.schema ? (
+                            <GraphQLQueryEditor
+                                schema={props.schema}
+                                initialQueryValue={getInitialQueryValue()}
+                                setQuery={setQuery}
+                                onChangeQuery={(query) =>
+                                    localStorage.setItem(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query))
+                                }
+                                query={onSubmit}
+                            />
+                        ) : null
+                    }
+                    parameterEditor={<JSONEditor readonly={false} onChange={setVariableValues} />}
+                    resultView={<JSONEditor readonly={true} json={output} />}
+                    showExplorer={showExplorer}
+                    showDocs={showDocs}
+                />
             </Pains>
         </Wrapper>
     );
