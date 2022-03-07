@@ -7,8 +7,8 @@ const TopBar = () => {
     const redDot = <span className="ml-1 h-3 w-3 bg-red-400 rounded-full inline-block" />;
 
     return (
-        <div className="flex justify-center w-full h-16 bg-secondarydark">
-            <div className="flex justify-center w-full h-12 m-2 bg-primarydark">
+        <div className="flex justify-center w-full h-16 bg-backgroundLight">
+            <div className="flex justify-center w-full h-12 m-2 bg-draculaDark">
                 <div className="flex items-center justify-space text-white text-xs">
                     <div className="mr-3">Connected to: {auth?.connectUrl}</div>
                     <div className="flex items-start">Status: {auth?.isConnected ? greenDot : redDot}</div>
