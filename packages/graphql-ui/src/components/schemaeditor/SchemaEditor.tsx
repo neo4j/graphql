@@ -8,6 +8,16 @@ import { CodeMirror } from "../../util";
 import * as AuthContext from "../../contexts/auth";
 import { LOCAL_STATE_TYPE_DEFS } from "src/constants/constants";
 
+const DEFAULT_TYPE_DEFS = `
+# Write your own type definition in the editor here or 
+# generate it automatically from the current Neo4j database (introspection)
+
+# Example type definition:
+type Movie {
+    title: String!
+}
+`;
+
 export interface Props {
     onChange: (s: GraphQLSchema) => void;
 }
@@ -93,7 +103,7 @@ export const SchemaEditor = (props: Props) => {
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
         });
 
-        const storedTypeDefs = getStoredTypeDefs();
+        const storedTypeDefs = getStoredTypeDefs() || DEFAULT_TYPE_DEFS;
         if (storedTypeDefs && ref.current) {
             mirror.current?.setValue(storedTypeDefs);
             ref.current.value = storedTypeDefs;
@@ -121,6 +131,10 @@ export const SchemaEditor = (props: Props) => {
                 <div className="flex justify-between">
                     <Button fill="outlined" onClick={onSubmit} disabled={loading}>
                         {loading ? "Loading..." : "Build schema"}
+                    </Button>
+
+                    <Button fill="outlined" onClick={() => {}} disabled={loading}>
+                        {loading ? "Loading..." : "Prettify"}
                     </Button>
 
                     <Button fill="outlined" onClick={introspect} disabled={loading}>

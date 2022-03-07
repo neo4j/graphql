@@ -90,6 +90,10 @@ export const Editor = (props: Props) => {
                     Query (CTRL+ENTER)
                 </Button>
 
+                <Button fill="outlined" onClick={() => {}} disabled={false}>
+                    Prettify
+                </Button>
+
                 {loading && (
                     <div style={{ padding: "0.5em" }}>
                         <h1>Loading</h1>
