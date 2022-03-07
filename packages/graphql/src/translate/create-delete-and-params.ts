@@ -21,7 +21,8 @@ import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
+import { createEventMeta } from "./subscriptions/create-event-meta";
 
 interface Res {
     strs: string[];
@@ -211,7 +212,13 @@ function createDeleteAndParams({
                     res.strs.push(
                         `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`].join(", ")}`
                     );
-                    res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
+                    res.strs.push(`UNWIND ${_varName}_to_delete AS x`);
+                    const eventMeta = createEventMeta({ event: "delete", nodeVariable: "x" });
+                    res.strs.push(
+                        `WITH ${withVars.filter((w) => w !== META_CYPHER_VARIABLE).join(", ")}, ${eventMeta}, x`
+                    );
+
+                    res.strs.push(`DETACH DELETE x`);
 
                     // TODO - relationship validation
                 });

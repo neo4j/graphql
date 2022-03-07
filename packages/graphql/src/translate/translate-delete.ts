@@ -34,6 +34,12 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
     let deleteStr = "";
     let cypherParams: { [k: string]: any } = {};
 
+    const withVars = [varName];
+
+    if (context.subscriptionsEnabled) {
+        withVars.push(META_CYPHER_VARIABLE);
+    }
+
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "DELETE" });
     matchAndWhereStr = topLevelMatch[0];
     cypherParams = { ...cypherParams, ...topLevelMatch[1] };
@@ -59,7 +65,7 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
             deleteInput,
             varName,
             parentVar: varName,
-            withVars: [varName],
+            withVars,
             parameterPrefix: `${varName}_${resolveTree.name}.args.delete`,
         });
         [deleteStr] = deleteAndParams;

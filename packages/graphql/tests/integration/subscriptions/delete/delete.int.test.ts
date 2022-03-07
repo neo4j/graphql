@@ -91,7 +91,7 @@ describe("Subscriptions delete", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toEqual(2);
+        expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(2);
 
         expect(plugin.eventList).toEqual([
             {
@@ -105,6 +105,64 @@ describe("Subscriptions delete", () => {
                 timestamp: expect.any(Number),
                 event: "delete",
                 properties: { old: { id: "2" }, new: undefined },
+            },
+        ]);
+    });
+
+    test("simple nested delete with subscriptions enabled", async () => {
+        const query = `
+        mutation {
+            ${typeMovie.operations.delete}(delete: { actors: { where: { } } }) {
+                nodesDeleted
+            }
+        }
+        `;
+
+        await session.run(`
+            CREATE (m1:${typeMovie.name} { id: "1" })<-[:ACTED_IN]-(:${typeActor.name} { id: "3" })
+            CREATE (m2:${typeMovie.name} { id: "2" })<-[:ACTED_IN]-(:${typeActor.name} { id: "4" })
+            CREATE (m2)<-[:ACTED_IN]-(:${typeActor.name} { id: "5" })
+        `);
+
+        const gqlResult: any = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: { driver },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(5);
+
+        expect(plugin.eventList).toEqual([
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "delete",
+                properties: { old: { id: "1" }, new: undefined },
+            },
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "delete",
+                properties: { old: { id: "2" }, new: undefined },
+            },
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "delete",
+                properties: { old: { id: "3" }, new: undefined },
+            },
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "delete",
+                properties: { old: { id: "4" }, new: undefined },
+            },
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "delete",
+                properties: { old: { id: "5" }, new: undefined },
             },
         ]);
     });
