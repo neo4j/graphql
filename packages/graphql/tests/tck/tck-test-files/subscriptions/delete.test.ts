@@ -106,8 +106,8 @@ describe("Subscriptions metadata on delete", () => {
             WITH this, meta
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
-            WITH this, meta + { event: \\"delete\\", id: id(this_actors0), properties: { old: this_actors0 { .* }, new: null }, timestamp: timestamp() } AS meta
             WITH this, meta, collect(DISTINCT this_actors0) as this_actors0_to_delete
+            WITH this,this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp() }) AS meta
             FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
             DETACH DELETE this
             WITH meta

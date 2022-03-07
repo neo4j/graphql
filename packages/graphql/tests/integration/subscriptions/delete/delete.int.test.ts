@@ -21,7 +21,7 @@ import { gql } from "apollo-server";
 import { graphql } from "graphql";
 import { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import neo4j from "../../neo4j";
 
@@ -31,11 +31,19 @@ describe("Subscriptions delete", () => {
     let neoSchema: Neo4jGraphQL;
     let plugin: TestSubscriptionsPlugin;
 
-    const typeActor = generateUniqueType("Actor");
-    const typeMovie = generateUniqueType("Movie");
+    let typeActor: UniqueType;
+    let typeMovie: UniqueType;
 
     beforeAll(async () => {
         driver = await neo4j();
+    });
+
+    beforeEach(() => {
+        session = driver.session();
+
+        typeActor = generateUniqueType("Actor");
+        typeMovie = generateUniqueType("Movie");
+
         plugin = new TestSubscriptionsPlugin();
         const typeDefs = gql`
             type ${typeActor.name} {
@@ -56,10 +64,6 @@ describe("Subscriptions delete", () => {
                 subscriptions: plugin,
             } as any,
         });
-    });
-
-    beforeEach(() => {
-        session = driver.session();
     });
 
     afterEach(async () => {
@@ -133,37 +137,40 @@ describe("Subscriptions delete", () => {
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(5);
 
-        expect(plugin.eventList).toEqual([
-            {
-                id: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "delete",
-                properties: { old: { id: "1" }, new: undefined },
-            },
-            {
-                id: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "delete",
-                properties: { old: { id: "2" }, new: undefined },
-            },
-            {
-                id: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "delete",
-                properties: { old: { id: "3" }, new: undefined },
-            },
-            {
-                id: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "delete",
-                properties: { old: { id: "4" }, new: undefined },
-            },
-            {
-                id: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "delete",
-                properties: { old: { id: "5" }, new: undefined },
-            },
-        ]);
+        expect(plugin.eventList).toHaveLength(5);
+        expect(plugin.eventList).toEqual(
+            expect.arrayContaining([
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "delete",
+                    properties: { old: { id: "1" }, new: undefined },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "delete",
+                    properties: { old: { id: "3" }, new: undefined },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "delete",
+                    properties: { old: { id: "2" }, new: undefined },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "delete",
+                    properties: { old: { id: "5" }, new: undefined },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "delete",
+                    properties: { old: { id: "4" }, new: undefined },
+                },
+            ])
+        );
     });
 });

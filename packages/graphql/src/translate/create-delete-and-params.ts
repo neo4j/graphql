@@ -22,7 +22,7 @@ import { Context } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
-import { createEventMeta } from "./subscriptions/create-event-meta";
+import { createEventMetaObject } from "./subscriptions/create-event-meta";
 
 interface Res {
     strs: string[];
@@ -209,17 +209,24 @@ function createDeleteAndParams({
                         }
                     }
 
+                    const nodeToDelete = `${_varName}_to_delete`;
                     res.strs.push(
-                        `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`].join(", ")}`
-                    );
-                    res.strs.push(`UNWIND ${_varName}_to_delete AS x`);
-                    const eventMeta = createEventMeta({ event: "delete", nodeVariable: "x" });
-                    res.strs.push(
-                        `WITH ${withVars.filter((w) => w !== META_CYPHER_VARIABLE).join(", ")}, ${eventMeta}, x`
+                        `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${nodeToDelete}`].join(", ")}`
                     );
 
-                    res.strs.push(`DETACH DELETE x`);
+                    if (context.subscriptionsEnabled) {
+                        res.strs.push(
+                            `WITH ${[
+                                ...withVars.filter((v) => v !== META_CYPHER_VARIABLE),
+                                nodeToDelete,
+                            ]}, REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${createEventMetaObject({
+                                event: "delete",
+                                nodeVariable: "n",
+                            })}) AS ${META_CYPHER_VARIABLE}`
+                        );
+                    }
 
+                    res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
                     // TODO - relationship validation
                 });
             });

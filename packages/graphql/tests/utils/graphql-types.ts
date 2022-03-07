@@ -24,7 +24,18 @@ import pluralize from "pluralize";
 import camelcase from "camelcase";
 import { upperFirst } from "../../src/utils/upper-first";
 
-export function generateUniqueType(baseName: string) {
+export type UniqueType = {
+    name: string;
+    plural: string;
+    operations: {
+        create: string;
+        update: string;
+        delete: string;
+        aggregate: string;
+    };
+};
+
+export function generateUniqueType(baseName: string): UniqueType {
     const type = `${generate({
         length: 8,
         charset: "alphabetic",
