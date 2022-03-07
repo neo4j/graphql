@@ -55,7 +55,9 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
     });
     if (allowAuth[0]) {
         cypherParams = { ...cypherParams, ...allowAuth[1] };
-        allowStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        allowStr = `WITH ${withVars.join(", ")}\nCALL apoc.util.validate(NOT(${
+            allowAuth[0]
+        }), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
     if (deleteInput) {
