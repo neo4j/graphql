@@ -34,6 +34,15 @@ const Pain = styled.div`
     height: 85vh;
 `;
 
+const DEFAULT_QUERY = `
+# Type queries into this side of the screen, and you will 
+# see intelligent typeaheads aware of the current GraphQL type schema.
+
+query {
+
+}
+`;
+
 export interface Props {
     schema?: GraphQLSchema;
 }
@@ -45,7 +54,7 @@ export const Editor = (props: Props) => {
     const [output, setOutput] = useState("");
 
     const getInitialQueryValue = (): string | undefined =>
-        JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_QUERY) as string) || undefined;
+        JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_QUERY) as string) || DEFAULT_QUERY;
 
     const onSubmit = useCallback(
         async (override?: string) => {
