@@ -19,10 +19,11 @@
 
 import { Node } from "../classes";
 import { Context } from "../types";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createAuthAndParams from "./create-auth-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
+import { createEventMeta } from "./subscriptions/create-event-meta";
 
 function translateDelete({ context, node }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
@@ -71,7 +72,23 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
         };
     }
 
-    const cypher = [matchAndWhereStr, deleteStr, allowStr, `DETACH DELETE ${varName}`];
+    const eventMeta = createEventMeta({ event: "delete", nodeVariable: varName });
+
+    const cypher = [
+        ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
+        matchAndWhereStr,
+        ...(context.subscriptionsEnabled ? [`WITH ${varName}, ${eventMeta}`] : []),
+        deleteStr,
+        allowStr,
+        `DETACH DELETE ${varName}`,
+        ...(context.subscriptionsEnabled
+            ? [
+                  `WITH ${META_CYPHER_VARIABLE}`,
+                  `UNWIND ${META_CYPHER_VARIABLE} AS m`,
+                  `RETURN collect(DISTINCT m) AS meta`,
+              ]
+            : []),
+    ];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }

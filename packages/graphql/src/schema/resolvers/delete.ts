@@ -23,6 +23,8 @@ import { execute } from "../../utils";
 import { translateDelete } from "../../translate";
 import { Context } from "../../types";
 import { Node } from "../../classes";
+import { EventMeta, RawEventMeta } from "../../subscriptions/event-meta";
+import { serializeNeo4jValue } from "../../utils/neo4j-serializers";
 
 export default function deleteResolver({ node }: { node: Node }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
@@ -35,6 +37,16 @@ export default function deleteResolver({ node }: { node: Node }) {
             defaultAccessMode: "WRITE",
             context,
         });
+
+        const subscriptionsPlugin = context.plugins?.subscriptions;
+        if (subscriptionsPlugin) {
+            const metaData: RawEventMeta[] = executeResult.records[0]?.meta || [];
+            for (const meta of metaData) {
+                const serializedMeta = serializeEventMeta(meta);
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                subscriptionsPlugin.publish(serializedMeta);
+            }
+        }
 
         return { bookmark: executeResult.bookmark, ...executeResult.statistics };
     }
@@ -51,4 +63,27 @@ export default function deleteResolver({ node }: { node: Node }) {
                 : {}),
         },
     };
+}
+
+function serializeProperties(properties: Record<string, any> | undefined): Record<string, any> | undefined {
+    if (!properties) {
+        return undefined;
+    }
+
+    return Object.entries(properties).reduce((serializedProps, [k, v]) => {
+        serializedProps[k] = serializeNeo4jValue(v);
+        return serializedProps;
+    }, {} as Record<string, any>);
+}
+
+function serializeEventMeta(event: RawEventMeta): EventMeta {
+    return {
+        id: serializeNeo4jValue(event.id),
+        timestamp: serializeNeo4jValue(event.timestamp),
+        event: event.event,
+        properties: {
+            old: serializeProperties(event.properties.old),
+            new: serializeProperties(event.properties.new),
+        },
+    } as EventMeta;
 }
