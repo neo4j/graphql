@@ -25,6 +25,7 @@ export class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin 
 
     public eventList: EventMeta[] = [];
 
+    // eslint-disable-next-line @typescript-eslint/require-await
     async publish(eventMeta: EventMeta): Promise<void> {
         this.eventList.push(eventMeta);
     }
