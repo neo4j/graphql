@@ -4,11 +4,13 @@ import { CodeMirror } from "../../util";
 
 export interface Props {
     schema: GraphQLSchema;
+    initialQueryValue?: string;
     query: (override?: string) => Promise<void>;
     setQuery: React.Dispatch<React.SetStateAction<string>>;
+    onChangeQuery: (query: string) => void;
 }
 
-export const GraphQLQueryEditor = ({ schema, setQuery, query }: Props) => {
+export const GraphQLQueryEditor = ({ schema, initialQueryValue, setQuery, query, onChangeQuery }: Props) => {
     const ref = useRef<HTMLTextAreaElement | null>(null);
 
     useEffect(() => {
@@ -72,8 +74,14 @@ export const GraphQLQueryEditor = ({ schema, setQuery, query }: Props) => {
             },
         });
 
+        if (initialQueryValue && ref.current) {
+            mirror.setValue(initialQueryValue);
+            ref.current.value = initialQueryValue;
+        }
+
         mirror.on("change", (e) => {
             setQuery(e.getValue());
+            onChangeQuery(e.getValue());
         });
     }, [ref, schema]);
 

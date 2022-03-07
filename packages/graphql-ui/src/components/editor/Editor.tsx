@@ -1,9 +1,10 @@
 import { graphql, GraphQLSchema } from "graphql";
 import { useCallback, useState } from "react";
 import styled from "styled-components";
+import { Button } from "@neo4j-ndl/react";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
-import { Button } from "@neo4j-ndl/react";
+import { LOCAL_STATE_TYPE_LAST_QUERY } from "src/constants/constants";
 
 const Pains = styled.div`
     display: flex;
@@ -42,6 +43,9 @@ export const Editor = (props: Props) => {
     const [query, setQuery] = useState("");
     const [variableValues, setVariableValues] = useState("");
     const [output, setOutput] = useState("");
+
+    const getInitialQueryValue = (): string | undefined =>
+        JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_QUERY) as string) || undefined;
 
     const onSubmit = useCallback(
         async (override?: string) => {
@@ -90,7 +94,11 @@ export const Editor = (props: Props) => {
                             {props.schema ? (
                                 <GraphQLQueryEditor
                                     schema={props.schema}
+                                    initialQueryValue={getInitialQueryValue()}
                                     setQuery={setQuery}
+                                    onChangeQuery={(query) =>
+                                        localStorage.setItem(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query))
+                                    }
                                     query={onSubmit}
                                 ></GraphQLQueryEditor>
                             ) : null}

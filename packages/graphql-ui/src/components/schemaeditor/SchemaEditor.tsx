@@ -1,13 +1,12 @@
 import { useCallback, useContext, useEffect, useRef, useState, Fragment } from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
-import { CodeMirror } from "../../util";
-import * as neo4j from "neo4j-driver";
-import * as AuthContext from "../../contexts/auth";
 import { GraphQLSchema } from "graphql";
 import { Button } from "@neo4j-ndl/react";
-
-const LOCAL_STATE_TYPE_DEFS = "neo4j.graphql.typeDefs";
+import * as neo4j from "neo4j-driver";
+import { CodeMirror } from "../../util";
+import * as AuthContext from "../../contexts/auth";
+import { LOCAL_STATE_TYPE_DEFS } from "src/constants/constants";
 
 export interface Props {
     onChange: (s: GraphQLSchema) => void;
