@@ -12,6 +12,7 @@ import {
     LOCAL_STATE_TYPE_LAST_QUERY,
 } from "../../constants";
 import { Frame } from "./Frame";
+import { DocExplorer } from "./docexplorer/DocExplorer";
 
 const Pains = styled.div`
     display: flex;
@@ -22,14 +23,7 @@ const Pains = styled.div`
     height: 100%;
 `;
 
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: stretch;
-    width: 100%;
-    overflow-y: auto;
-`;
+const Wrapper = styled.div``;
 
 const Header = styled.div`
     display: flex;
@@ -206,6 +200,17 @@ export const Editor = (props: Props) => {
                         />
                     }
                     showDocs={showDocs}
+                    documentation={
+                        <DocExplorer schema={props.schema}>
+                            <button
+                                className="docExplorerHide"
+                                onClick={() => isShowDocs(!showDocs)}
+                                aria-label="Close Documentation Explorer"
+                            >
+                                {"\u2715"}
+                            </button>
+                        </DocExplorer>
+                    }
                 />
             </Pains>
         </Wrapper>
