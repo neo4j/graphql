@@ -2110,6 +2110,7 @@ __metadata:
     codemirror-graphql: ^1.2.12
     crypto-js: ^4.1.1
     css-loader: ^6.6.0
+    graphiql-explorer: ^0.9.0
     html-webpack-plugin: 5.5.0
     neo4j-driver: ^4.1.0
     node-polyfill-webpack-plugin: 1.1.4
@@ -9387,6 +9388,17 @@ __metadata:
   version: 4.2.9
   resolution: "graceful-fs@npm:4.2.9"
   checksum: 68ea4e07ff2c041ada184f9278b830375f8e0b75154e3f080af6b70f66172fabb4108d19b3863a96b53fc068a310b9b6493d86d1291acc5f3861eb4b79d26ad6
+  languageName: node
+  linkType: hard
+
+"graphiql-explorer@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "graphiql-explorer@npm:0.9.0"
+  peerDependencies:
+    graphql: ^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
+    react: ^15.6.0 || ^16.0.0
+    react-dom: ^15.6.0 || ^16.0.0
+  checksum: e36832645fb781993c3154db50dd50189c83964e219507d24628057b97bf3b75c03d119ba6af976e3a78b6a539cbaae29640a9b400f9aade9b380942e0c58669
   languageName: node
   linkType: hard
 
