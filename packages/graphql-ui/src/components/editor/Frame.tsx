@@ -32,7 +32,7 @@ export interface Props {
 export const Frame = (props: Props) => {
     return (
         <div className="h-full flex flex-row">
-            {props.showExplorer ? <div className="w-80 bg-white">{props.explorer}</div> : null}
+            {props.showExplorer ? <div className="w-80 bg-white graphiql-container">{props.explorer}</div> : null}
             <Row className={"flex-1"} initialHeight={1200}>
                 <ColsWrapper>
                     <Col initialWidth={600} left={false}>

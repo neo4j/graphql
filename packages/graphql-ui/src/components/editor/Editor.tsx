@@ -31,7 +31,7 @@ import {
     LOCAL_STATE_TYPE_LAST_QUERY,
 } from "../../constants";
 import { Frame } from "./Frame";
-import { DocExplorer } from "./docexplorer/DocExplorer";
+import { DocExplorer } from "./docexplorer/index";
 
 const Pains = styled.div`
     display: flex;
