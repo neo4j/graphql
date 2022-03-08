@@ -12,18 +12,18 @@ export interface Props {
 export const Frame = (props: Props) => {
     return (
         <div className="h-full flex flex-row">
-            {props.showExplorer ? <div className="w-60 border-2">Explorer</div> : null}
+            {props.showExplorer ? <div className="w-80">{props.explorer}</div> : null}
             <Row className={"flex-1"} initialHeight={1200}>
                 <ColsWrapper>
-                    <Col initialWidth={800} left={false}>
+                    <Col initialWidth={600} left={false}>
                         <RowsWrapper>
                             <Row initialHeight={900}>{props.queryEditor}</Row>
                             <Row initialHeight={300}>{props.parameterEditor}</Row>
                         </RowsWrapper>
                     </Col>
-                    <Col initialWidth={700}>
+                    <Col initialWidth={600}>
                         <RowsWrapper>
-                            <Row initialHeight={2300}>
+                            <Row initialHeight={1200}>
                                 <div style={{ position: "relative", width: "100%", height: "100%" }}>
                                     <div style={{ position: "absolute", width: "100%", height: "100%" }}>
                                         {props.resultView}
