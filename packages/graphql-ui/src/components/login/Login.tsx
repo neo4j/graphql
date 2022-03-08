@@ -34,7 +34,7 @@ const Login = () => {
     }, []);
 
     return (
-        <div className="grid place-items-center h-screen bg-secondarydark">
+        <div className="grid place-items-center h-screen n-bg-neutral-40">
             <div className="w-full max-w-md">
                 <form onSubmit={onSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <div className="mb-4">
