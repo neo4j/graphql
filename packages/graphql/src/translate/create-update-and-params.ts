@@ -31,6 +31,8 @@ import createConnectionWhereAndParams from "./where/create-connection-where-and-
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
+import { createEventMeta } from "./subscriptions/create-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 
 interface Res {
     strs: string[];
@@ -428,6 +430,11 @@ function createUpdateAndParams({
             return res;
         }
 
+        // OLD PROPS
+        if (context.subscriptionsEnabled) {
+            res.strs.push(`WITH ${varName} { .* } AS oldProps, ${withVars.join(", ")}`);
+        }
+
         if (!hasAppliedTimeStamps) {
             const timestampedFields = node.temporalFields.filter(
                 (temporalField) =>
@@ -457,6 +464,11 @@ function createUpdateAndParams({
             }
 
             res.params[param] = value;
+        }
+
+        if (context.subscriptionsEnabled) {
+            const eventMeta = createEventMeta({ event: "update", nodeVariable: varName });
+            res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, ${eventMeta}`);
         }
 
         if (authableField) {
