@@ -136,4 +136,103 @@ describe("Subscriptions metadata on delete", () => {
             }"
         `);
     });
+    test("Triple Nested Delete", async () => {
+        const query = gql`
+            mutation {
+                deleteMovies(
+                    where: { id: 123 }
+                    delete: {
+                        actors: {
+                            where: { node: { name: "Actor to delete" } }
+                            delete: {
+                                movies: {
+                                    where: { node: { id: 321 } }
+                                    delete: { actors: { where: { node: { name: "Another actor to delete" } } } }
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    nodesDeleted
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "WITH [] AS meta
+            MATCH (this:Movie)
+            WHERE this.id = $this_id
+            WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp() } AS meta
+            WITH this, meta
+            OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
+            WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
+            WITH this, meta, this_actors0
+            OPTIONAL MATCH (this_actors0)-[this_actors0_movies0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
+            WHERE this_actors0_movies0.id = $this_deleteMovies.args.delete.actors[0].delete.movies[0].where.node.id
+            WITH this, meta, this_actors0, this_actors0_movies0
+            OPTIONAL MATCH (this_actors0_movies0)<-[this_actors0_movies0_actors0_relationship:ACTED_IN]-(this_actors0_movies0_actors0:Actor)
+            WHERE this_actors0_movies0_actors0.name = $this_deleteMovies.args.delete.actors[0].delete.movies[0].delete.actors[0].where.node.name
+            WITH this, meta, this_actors0, this_actors0_movies0, collect(DISTINCT this_actors0_movies0_actors0) as this_actors0_movies0_actors0_to_delete
+            WITH this,this_actors0,this_actors0_movies0,this_actors0_movies0_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp() }) AS meta
+            FOREACH(x IN this_actors0_movies0_actors0_to_delete | DETACH DELETE x)
+            WITH this, meta, this_actors0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete
+            WITH this,this_actors0,this_actors0_movies0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp() }) AS meta
+            FOREACH(x IN this_actors0_movies0_to_delete | DETACH DELETE x)
+            WITH this, meta, collect(DISTINCT this_actors0) as this_actors0_to_delete
+            WITH this,this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp() }) AS meta
+            FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
+            DETACH DELETE this
+            WITH meta
+            UNWIND meta AS m
+            RETURN collect(DISTINCT m) AS meta"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_id\\": \\"123\\",
+                \\"this_deleteMovies\\": {
+                    \\"args\\": {
+                        \\"delete\\": {
+                            \\"actors\\": [
+                                {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"name\\": \\"Actor to delete\\"
+                                        }
+                                    },
+                                    \\"delete\\": {
+                                        \\"movies\\": [
+                                            {
+                                                \\"where\\": {
+                                                    \\"node\\": {
+                                                        \\"id\\": \\"321\\"
+                                                    }
+                                                },
+                                                \\"delete\\": {
+                                                    \\"actors\\": [
+                                                        {
+                                                            \\"where\\": {
+                                                                \\"node\\": {
+                                                                    \\"name\\": \\"Another actor to delete\\"
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }"
+        `);
+    });
 });
