@@ -18,7 +18,7 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { asArray } from "../utils/utils";
+import { asArray, removeDuplicates } from "../utils/utils";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { ConnectionField, Context, InterfaceWhereArg, RelationField } from "../types";
 import filterInterfaceNodes from "../utils/filter-interface-nodes";
@@ -45,8 +45,7 @@ function createInterfaceProjectionAndParams({
 }): { cypher: string; params: Record<string, any> } {
     let globalParams = {};
     let params: { args?: any } = {};
-    // FIXME: Hack to avoid duplicates
-    const fullWithVars = Array.from(new Set([...asArray(withVars), nodeVariable]));
+    const fullWithVars = removeDuplicates([...asArray(withVars), nodeVariable]);
     const relTypeStr = `[:${field.type}]`;
 
     const { inStr, outStr } = getRelationshipDirection(field, resolveTree.args);

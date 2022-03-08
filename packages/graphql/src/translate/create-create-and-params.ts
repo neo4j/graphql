@@ -21,12 +21,13 @@ import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { createEventMeta } from "./subscriptions/create-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 
 interface Res {
     creates: string[];
@@ -255,7 +256,7 @@ function createCreateAndParams({
     if (context.subscriptionsEnabled) {
         const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName });
         const withStrs = [eventWithMetaStr];
-        creates.push(`WITH ${withStrs.join(", ")}, ${withVars.filter((w) => w !== META_CYPHER_VARIABLE).join(", ")}`);
+        creates.push(`WITH ${withStrs.join(", ")}, ${filterMetaVariable(withVars).join(", ")}`);
     }
 
     const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
