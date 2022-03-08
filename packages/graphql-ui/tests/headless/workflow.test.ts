@@ -44,7 +44,7 @@ describe("workflow", () => {
         await driver.close();
     });
 
-    test("should wait for username input", async () => {
+    test("should perform e2e workflow", async () => {
         const page = await getPage({ browser });
 
         await page.waitForSelector(`#${LOGIN_USERNAME_INPUT}`);

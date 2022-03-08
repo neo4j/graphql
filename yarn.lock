@@ -2124,6 +2124,7 @@ __metadata:
     postcss-loader: ^6.2.1
     process: 0.11.10
     puppeteer: ^13.5.0
+    randomstring: 1.2.2
     react: 17.0.2
     react-dom: 17.0.2
     react-grid-resizable: ^1.0.0
