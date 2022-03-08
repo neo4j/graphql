@@ -33,6 +33,7 @@ import { createConnectOrCreateAndParams } from "./connect-or-create/create-conne
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import { escapeQuery } from "./utils/escape-query";
 
 interface Res {
     strs: string[];
@@ -254,9 +255,7 @@ function createUpdateAndParams({
                         }
 
                         if (update.update.edge) {
-                            subquery.push(
-                                `CALL apoc.do.when(${relationshipVariable} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`
-                            );
+                            subquery.push(`CALL apoc.do.when(${relationshipVariable} IS NOT NULL, "`);
 
                             const setProperties = createSetRelationshipProperties({
                                 properties: update.update.edge,
@@ -268,16 +267,13 @@ function createUpdateAndParams({
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
                             });
 
-                            const updateStrs = [setProperties, "RETURN count(*)"];
+                            const updateStrs = [escapeQuery(setProperties), escapeQuery("RETURN count(*)")];
+
                             const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}}`;
 
-                            if (insideDoWhen) {
-                                updateStrs.push(`\\", \\"\\", ${apocArgs})`);
-                            } else {
-                                updateStrs.push(`", "", ${apocArgs})`);
-                            }
+                            updateStrs.push(`", "", ${apocArgs})`);
                             updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_edge`);
                             subquery.push(updateStrs.join("\n"));
                         }
