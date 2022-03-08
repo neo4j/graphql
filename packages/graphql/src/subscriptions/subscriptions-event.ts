@@ -19,7 +19,7 @@
 
 import * as neo4j from "neo4j-driver";
 
-export type RawEventMeta = {
+export type EventMeta = {
     event: "create" | "update" | "delete";
     properties: {
         old: Record<string, any>;
@@ -29,7 +29,7 @@ export type RawEventMeta = {
     timestamp: neo4j.Integer | string | number;
 };
 
-export type EventMeta = (
+export type SubscriptionsEvent = (
     | {
           event: "create";
           properties: {

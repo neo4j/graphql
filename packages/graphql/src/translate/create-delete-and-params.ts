@@ -23,6 +23,7 @@ import createAuthAndParams from "./create-auth-and-params";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import { createEventMetaObject } from "./subscriptions/create-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 
 interface Res {
     strs: string[];
@@ -217,7 +218,7 @@ function createDeleteAndParams({
                     if (context.subscriptionsEnabled) {
                         res.strs.push(
                             `WITH ${[
-                                ...withVars.filter((v) => v !== META_CYPHER_VARIABLE),
+                                ...filterMetaVariable(withVars),
                                 nodeToDelete,
                             ]}, REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${createEventMetaObject({
                                 event: "delete",
