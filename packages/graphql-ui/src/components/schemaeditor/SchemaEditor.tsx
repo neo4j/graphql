@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useEffect, useRef, useState, Fragment } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import { GraphQLSchema } from "graphql";

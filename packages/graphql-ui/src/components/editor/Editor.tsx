@@ -20,7 +20,6 @@
 import { useCallback, useState } from "react";
 import { graphql, GraphQLSchema } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
-import styled from "styled-components";
 import { Button } from "@neo4j-ndl/react";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
@@ -33,37 +32,13 @@ import {
 import { Frame } from "./Frame";
 import { DocExplorer } from "./docexplorer/index";
 
-const Pains = styled.div`
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: row;
-    flex-grow: 1;
-    width: 100%;
-    height: 100%;
-`;
-
-const Wrapper = styled.div``;
-
-const Header = styled.div`
-    display: flex;
-    justify-content: flex-start;
-    padding: 1.2em 0;
-`;
-
-const Pain = styled.div`
-    padding: 10px;
-    flex-grow: 1;
-    width: 100%;
-    height: 85vh;
-`;
-
 const DEFAULT_QUERY = `
-# Type queries into this side of the screen, and you will 
-# see intelligent typeaheads aware of the current GraphQL type schema.
+    # Type queries into this side of the screen, and you will 
+    # see intelligent typeaheads aware of the current GraphQL type schema.
 
-query {
+    query {
 
-}
+    }
 `;
 
 export interface Props {
@@ -109,8 +84,8 @@ export const Editor = (props: Props) => {
     );
 
     return (
-        <Wrapper className="p-5">
-            <Header>
+        <div className="p-5">
+            <div className="flex justify-start pb-3 pt-3">
                 <Button id={EDITOR_QUERY_BUTTON} fill="outlined" onClick={() => onSubmit()} disabled={!props.schema}>
                     Query (CTRL+ENTER)
                 </Button>
@@ -132,41 +107,8 @@ export const Editor = (props: Props) => {
                         <h1>Loading</h1>
                     </div>
                 )}
-            </Header>
-            <Pains>
-                {/* <Pain>
-                    <div className="h-full">
-                        <div className="h-3/4 pb-5">
-                            {props.schema ? (
-                                <GraphQLQueryEditor
-                                    schema={props.schema}
-                                    initialQueryValue={getInitialQueryValue()}
-                                    setQuery={setQuery}
-                                    onChangeQuery={(query) =>
-                                        localStorage.setItem(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query))
-                                    }
-                                    query={onSubmit}
-                                ></GraphQLQueryEditor>
-                            ) : null}
-                        </div>
-                        <div className="h-1/4">
-                            <JSONEditor readonly={false} onChange={setVariableValues}></JSONEditor>
-                        </div>
-                    </div>
-                </Pain>
-                <Pain>
-                    <ResizableBox
-                        className=""
-                        width={200}
-                        height={200}
-                        // handle={<span className="custom-handle custom-handle-se" />}
-                        handleSize={[8, 8]}
-                    >
-                        <div className="h-full">
-                            <JSONEditor readonly={true} json={output}></JSONEditor>
-                        </div>
-                    </ResizableBox>
-                </Pain> */}
+            </div>
+            <div className="flex justify-start flex-row flex-grow w-full h-full">
                 <Frame
                     queryEditor={
                         props.schema ? (
@@ -193,29 +135,8 @@ export const Editor = (props: Props) => {
                             query={query}
                             onEdit={setQuery}
                             onRunOperation={onSubmit}
+                            onToggleExplorer={() => isShowExplorer(!showExplorer)}
                             explorerIsOpen={showExplorer}
-                            // getDefaultScalarArgValue={getDefaultScalarArgValue}
-                            // makeDefaultArg={makeDefaultArg}
-                            colors={{
-                                keyword: "#B11A04",
-                                // OperationName, FragmentName
-                                def: "#D2054E",
-                                // FieldName
-                                property: "#1F61A0",
-                                // FieldAlias
-                                qualifier: "#1C92A9",
-                                // ArgumentName and ObjectFieldName
-                                attribute: "#8B2BB9",
-                                number: "#2882F9",
-                                string: "#D64292",
-                                // Boolean
-                                builtin: "#D47509",
-                                // Enum
-                                string2: "#0B7FC7",
-                                variable: "#397D13",
-                                // Type
-                                atom: "#CA9800",
-                            }}
                         />
                     }
                     showDocs={showDocs}
@@ -231,7 +152,7 @@ export const Editor = (props: Props) => {
                         </DocExplorer>
                     }
                 />
-            </Pains>
-        </Wrapper>
+            </div>
+        </div>
     );
 };
