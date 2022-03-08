@@ -108,7 +108,9 @@ export const GraphQLQueryEditor = ({ schema, initialQueryValue, query, executeQu
     }, [ref, schema]);
 
     useEffect(() => {
+        const cursor = mirror?.getCursor();
         mirror?.setValue(query);
+        if (cursor) mirror?.setCursor(cursor);
     }, [query]);
 
     useEffect(() => {
