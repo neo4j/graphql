@@ -15,12 +15,12 @@ const SideBar = (props: Props) => {
     const auth = useContext(AuthContext.Context);
 
     return (
-        <div className="flex flex-col w-16 h-screen overflow-y-auto bg-sidebargrey">
+        <div className="flex flex-col w-16 h-screen overflow-y-auto n-bg-neutral-90">
             <div className="flex flex-col justify-between align-center text-white">
                 <ul>
                     <li
                         className={`py-4 flex justify-center ${
-                            props.activePage === Pages.TYPEDEFS && "n-bg-neutral-90"
+                            props.activePage === Pages.TYPEDEFS && "n-bg-neutral-80"
                         }`}
                     >
                         <span
@@ -33,7 +33,7 @@ const SideBar = (props: Props) => {
                         </span>
                     </li>
                     <li
-                        className={`py-4 flex justify-center ${props.activePage === Pages.EDITOR && "n-bg-neutral-90"}`}
+                        className={`py-4 flex justify-center ${props.activePage === Pages.EDITOR && "n-bg-neutral-80"}`}
                     >
                         <span
                             className={`font-medium text-2xl ${
