@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import * as AuthContext from "../../contexts/auth";
 import { FormInput } from "./FormInput";
 import { Button } from "@neo4j-ndl/react";
+import { LOGIN_USERNAME_INPUT } from "../../constants";
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
@@ -38,7 +39,7 @@ const Login = () => {
                 <form onSubmit={onSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <div className="mb-4">
                         <FormInput
-                            id="username"
+                            id={LOGIN_USERNAME_INPUT}
                             label="Username"
                             name="username"
                             placeholder="admin"

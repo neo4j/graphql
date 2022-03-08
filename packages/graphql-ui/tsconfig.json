@@ -1,13 +1,14 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
+        "declarationMap": false,
+        "sourceMap": false,
+        "skipLibCheck": true,
         "lib": ["dom", "dom.iterable", "esnext"],
         "module": "esnext",
         "target": "es5",
         "jsx": "react-jsx",
         "moduleResolution": "node",
-        "declarationMap": true,
-        "sourceMap": true,
         "resolveJsonModule": true,
         "noImplicitAny": false,
         "rootDir": "src",

@@ -2,6 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+const HtmlInlineScriptPlugin = require("html-inline-script-webpack-plugin");
 
 module.exports = {
     mode: "none",
@@ -18,7 +19,7 @@ module.exports = {
                 test: /\.tsx?$/,
                 loader: "ts-loader",
                 exclude: "/node_modules/",
-                options: { projectReferences: true },
+                options: { projectReferences: true, compilerOptions: { declarationMap: false, sourceMap: false } },
             },
             {
                 test: /\.(css|scss)$/,
@@ -34,8 +35,16 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.join(__dirname, "src", "index.html"),
+            ...(["production", "test"].includes(process.env.NODE_ENV) ? { inject: "body" } : {}),
         }),
         new NodePolyfillPlugin(),
+        ...(["production", "test"].includes(process.env.NODE_ENV)
+            ? [
+                  new HtmlInlineScriptPlugin({
+                      htmlMatchPattern: [/index.html$/],
+                  }),
+              ]
+            : []),
     ],
     devServer: {
         static: {
