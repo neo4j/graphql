@@ -18,7 +18,7 @@
  */
 
 import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
-import neo4j from "neo4j-driver";
+import neo4j, { isLocalTime, LocalTime } from "neo4j-driver";
 
 export const LOCAL_TIME_REGEX =
     /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?$/;
@@ -52,12 +52,16 @@ export const parseLocalTime = (value: any) => {
 };
 
 const parse = (value: any) => {
+    if (isLocalTime(value)) {
+        return value as LocalTime<number>;
+    }
+
     const { hour, minute, second, nanosecond } = parseLocalTime(value);
 
     return new neo4j.types.LocalTime(hour, minute, second, nanosecond);
 };
 
-export const GraphQLLocalTime = new GraphQLScalarType({
+export const GraphQLLocalTime = new GraphQLScalarType<LocalTime<number>, string>({
     name: "LocalTime",
     description: "A local time, represented as a time string without timezone information",
     serialize: (value: unknown) => {

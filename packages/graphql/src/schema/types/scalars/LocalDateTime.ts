@@ -18,7 +18,7 @@
  */
 
 import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
-import neo4j from "neo4j-driver";
+import neo4j, { isLocalDateTime, LocalDateTime } from "neo4j-driver";
 
 // Matching YYYY-MM-DDTHH:MM:SS(.sss+)
 const LOCAL_DATE_TIME_REGEX =
@@ -57,12 +57,16 @@ export const parseLocalDateTime = (value: any) => {
 };
 
 const parse = (value: any) => {
+    if (isLocalDateTime(value)) {
+        return value as unknown as LocalDateTime<number>;
+    }
+
     const { year, month, day, hour, minute, second, nanosecond } = parseLocalDateTime(value);
 
     return new neo4j.types.LocalDateTime(year, month, day, hour, minute, second, nanosecond);
 };
 
-export const GraphQLLocalDateTime = new GraphQLScalarType({
+export const GraphQLLocalDateTime = new GraphQLScalarType<LocalDateTime<number>, string>({
     name: "LocalDateTime",
     description: "A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'",
     serialize: (value: unknown) => {

@@ -18,7 +18,7 @@
  */
 
 import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
-import neo4j from "neo4j-driver";
+import neo4j, { isTime, Time } from "neo4j-driver";
 
 export const RFC_3339_REGEX =
     /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?((?:[Zz])|((?<offsetDirection>[-|+])(?<offsetHour>[01]\d|2[0-3]):(?<offsetMinute>[0-5]\d)))?$/;
@@ -61,12 +61,16 @@ export const parseTime = (value: any) => {
 };
 
 const parse = (value: any) => {
+    if (isTime(value)) {
+        return value as unknown as Time<number>;
+    }
+
     const { hour, minute, second, nanosecond, timeZoneOffsetSeconds } = parseTime(value);
 
     return new neo4j.types.Time(hour, minute, second, nanosecond, timeZoneOffsetSeconds);
 };
 
-export const GraphQLTime = new GraphQLScalarType({
+export const GraphQLTime = new GraphQLScalarType<Time<number>, string>({
     name: "Time",
     description: "A time, represented as an RFC3339 time string",
     serialize: (value: unknown) => {
