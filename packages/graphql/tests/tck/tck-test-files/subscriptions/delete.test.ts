@@ -107,7 +107,7 @@ describe("Subscriptions metadata on delete", () => {
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
             WITH this, meta, collect(DISTINCT this_actors0) as this_actors0_to_delete
-            WITH this,this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp() }) AS meta
+            WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp() }) AS meta
             FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
             DETACH DELETE this
             WITH meta
@@ -178,13 +178,13 @@ describe("Subscriptions metadata on delete", () => {
             OPTIONAL MATCH (this_actors0_movies0)<-[this_actors0_movies0_actors0_relationship:ACTED_IN]-(this_actors0_movies0_actors0:Actor)
             WHERE this_actors0_movies0_actors0.name = $this_deleteMovies.args.delete.actors[0].delete.movies[0].delete.actors[0].where.node.name
             WITH this, meta, this_actors0, this_actors0_movies0, collect(DISTINCT this_actors0_movies0_actors0) as this_actors0_movies0_actors0_to_delete
-            WITH this,this_actors0,this_actors0_movies0,this_actors0_movies0_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp() }) AS meta
+            WITH this, this_actors0, this_actors0_movies0, this_actors0_movies0_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp() }) AS meta
             FOREACH(x IN this_actors0_movies0_actors0_to_delete | DETACH DELETE x)
             WITH this, meta, this_actors0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete
-            WITH this,this_actors0,this_actors0_movies0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp() }) AS meta
+            WITH this, this_actors0, this_actors0_movies0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp() }) AS meta
             FOREACH(x IN this_actors0_movies0_to_delete | DETACH DELETE x)
             WITH this, meta, collect(DISTINCT this_actors0) as this_actors0_to_delete
-            WITH this,this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp() }) AS meta
+            WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp() }) AS meta
             FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
             DETACH DELETE this
             WITH meta

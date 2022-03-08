@@ -90,7 +90,7 @@ describe("Subscriptions delete", () => {
                 source: query,
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
-            console.log(JSON.stringify(gqlResult, null, 4));
+
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();

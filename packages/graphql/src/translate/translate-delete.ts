@@ -25,7 +25,7 @@ import createDeleteAndParams from "./create-delete-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
 import { createEventMeta } from "./subscriptions/create-event-meta";
 
-function translateDelete({ context, node }: { context: Context; node: Node }): [string, any] {
+export default function translateDelete({ context, node }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
@@ -89,16 +89,18 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
         deleteStr,
         allowStr,
         `DETACH DELETE ${varName}`,
-        ...(context.subscriptionsEnabled
-            ? [
-                  `WITH ${META_CYPHER_VARIABLE}`,
-                  `UNWIND ${META_CYPHER_VARIABLE} AS m`,
-                  `RETURN collect(DISTINCT m) AS meta`,
-              ]
-            : []),
+        ...getDeleteReturn(context),
     ];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }
 
-export default translateDelete;
+function getDeleteReturn(context: Context): Array<string> {
+    return context.subscriptionsEnabled
+        ? [
+              `WITH ${META_CYPHER_VARIABLE}`,
+              `UNWIND ${META_CYPHER_VARIABLE} AS m`,
+              `RETURN collect(DISTINCT m) AS ${META_CYPHER_VARIABLE}`,
+          ]
+        : [];
+}

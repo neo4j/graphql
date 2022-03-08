@@ -216,14 +216,13 @@ function createDeleteAndParams({
                     );
 
                     if (context.subscriptionsEnabled) {
+                        const metaObjectStr = createEventMetaObject({
+                            event: "delete",
+                            nodeVariable: "n",
+                        });
+                        const reduceStr = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${metaObjectStr}) AS ${META_CYPHER_VARIABLE}`;
                         res.strs.push(
-                            `WITH ${[
-                                ...filterMetaVariable(withVars),
-                                nodeToDelete,
-                            ]}, REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${createEventMetaObject({
-                                event: "delete",
-                                nodeVariable: "n",
-                            })}) AS ${META_CYPHER_VARIABLE}`
+                            `WITH ${[...filterMetaVariable(withVars), nodeToDelete].join(", ")}, ${reduceStr}`
                         );
                     }
 

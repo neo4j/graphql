@@ -27,12 +27,12 @@ export function publishEventsToPlugin(
     plugin: Neo4jGraphQLSubscriptionsPlugin | undefined
 ): void {
     if (plugin) {
-        const metaData: EventMeta[] = executeResult.records[0]?.meta || [];
+        const metadata: EventMeta[] = executeResult.records[0]?.meta || [];
 
-        for (const meta of metaData) {
-            const serializedMeta = serializeEvent(meta);
+        for (const rawEvent of metadata) {
+            const subscriptionsEvent = serializeEvent(rawEvent);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            plugin.publish(serializedMeta);
+            plugin.publish(subscriptionsEvent);
         }
     }
 }
@@ -46,7 +46,7 @@ function serializeEvent(event: EventMeta): SubscriptionsEvent {
             old: serializeProperties(event.properties.old),
             new: serializeProperties(event.properties.new),
         },
-    } as SubscriptionsEvent;
+    } as SubscriptionsEvent; // Casting here because ts is not smart enough to get the difference between create|update|delete
 }
 
 function serializeProperties(properties: Record<string, any> | undefined): Record<string, any> | undefined {
