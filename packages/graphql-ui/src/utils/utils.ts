@@ -20,6 +20,9 @@ import "codemirror-graphql/jump";
 import "codemirror-graphql/mode";
 import "codemirror/theme/dracula.css";
 
+// @ts-ignore
+document.CodeMirror = CodeMirror;
+
 export interface EncryptedData {
     encryptedPayload: string;
     hashKey: string;

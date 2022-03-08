@@ -5,7 +5,12 @@ import styled from "styled-components";
 import { Button } from "@neo4j-ndl/react";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
-import { LOCAL_STATE_TYPE_LAST_QUERY } from "../../constants";
+import {
+    EDITOR_PARAMS_INPUT,
+    EDITOR_QUERY_BUTTON,
+    EDITOR_RESPONSE_OUTPUT,
+    LOCAL_STATE_TYPE_LAST_QUERY,
+} from "../../constants";
 import { Frame } from "./Frame";
 
 const Pains = styled.div`
@@ -93,7 +98,7 @@ export const Editor = (props: Props) => {
     return (
         <Wrapper className="p-5">
             <Header>
-                <Button fill="outlined" onClick={() => onSubmit()} disabled={!props.schema}>
+                <Button id={EDITOR_QUERY_BUTTON} fill="outlined" onClick={() => onSubmit()} disabled={!props.schema}>
                     Query (CTRL+ENTER)
                 </Button>
 
@@ -164,8 +169,10 @@ export const Editor = (props: Props) => {
                             />
                         ) : null
                     }
-                    parameterEditor={<JSONEditor readonly={false} onChange={setVariableValues} />}
-                    resultView={<JSONEditor readonly={true} json={output} />}
+                    parameterEditor={
+                        <JSONEditor id={EDITOR_PARAMS_INPUT} readonly={false} onChange={setVariableValues} />
+                    }
+                    resultView={<JSONEditor id={EDITOR_RESPONSE_OUTPUT} readonly={true} json={output} />}
                     showExplorer={showExplorer}
                     explorer={
                         <GraphiQLExplorer

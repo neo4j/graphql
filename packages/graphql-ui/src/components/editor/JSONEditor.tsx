@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { CodeMirror } from "../../utils/utils";
 
 export interface Props {
+    id: string;
     json?: string;
     readonly?: boolean;
     onChange?: (json: string) => void;
@@ -35,6 +36,8 @@ export const JSONEditor = (props: Props) => {
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
         });
 
+        document[props.id] = mirror.current;
+
         mirror.current.on("change", (e) => {
             setInput(e.getValue());
         });
@@ -58,5 +61,5 @@ export const JSONEditor = (props: Props) => {
         };
     }, []);
 
-    return <textarea style={{ width: "100%", height: "100%" }} ref={ref} />;
+    return <textarea id={props.id} style={{ width: "100%", height: "100%" }} ref={ref} />;
 };

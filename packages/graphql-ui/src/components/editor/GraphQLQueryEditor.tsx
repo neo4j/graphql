@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { GraphQLSchema } from "graphql";
 import { CodeMirror } from "../../utils/utils";
 import { EditorFromTextArea } from "codemirror";
+import { EDITOR_QUERY_INPUT } from "src/constants";
 
 export interface Props {
     schema: GraphQLSchema;
@@ -90,6 +91,11 @@ export const GraphQLQueryEditor = ({ schema, initialQueryValue, query, executeQu
     useEffect(() => {
         mirror?.setValue(query);
     }, [query]);
+
+    useEffect(() => {
+        // @ts-ignore
+        document[EDITOR_QUERY_INPUT] = mirror;
+    }, [mirror]);
 
     return <textarea ref={ref} className="w-full h-full" />;
 };
