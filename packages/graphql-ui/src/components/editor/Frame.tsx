@@ -7,12 +7,13 @@ export interface Props {
     explorer?: any;
     showExplorer: boolean;
     showDocs: boolean;
+    documentation?: any;
 }
 
 export const Frame = (props: Props) => {
     return (
         <div className="h-full flex flex-row">
-            {props.showExplorer ? <div className="w-80">{props.explorer}</div> : null}
+            {props.showExplorer ? <div className="w-80 bg-white">{props.explorer}</div> : null}
             <Row className={"flex-1"} initialHeight={1200}>
                 <ColsWrapper>
                     <Col initialWidth={600} left={false}>
@@ -35,11 +36,11 @@ export const Frame = (props: Props) => {
                                                 top: 0,
                                                 bottom: 0,
                                                 right: 0,
-                                                width: "250px",
-                                                backgroundColor: "rgba(255,255,255,0.5)",
+                                                width: "400px",
+                                                backgroundColor: "white",
                                             }}
                                         >
-                                            Docs
+                                            {props.documentation}
                                         </div>
                                     ) : null}
                                 </div>
