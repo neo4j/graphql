@@ -19,7 +19,7 @@ module.exports = {
                 test: /\.tsx?$/,
                 loader: "ts-loader",
                 exclude: "/node_modules/",
-                options: { projectReferences: true, compilerOptions: { declarationMap: false, sourceMap: false } },
+                options: { projectReferences: true },
             },
             {
                 test: /\.(css|scss)$/,
@@ -35,10 +35,10 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.join(__dirname, "src", "index.html"),
-            ...(["production", "test"].includes(process.env.NODE_ENV) ? { inject: "body" } : {}),
+            ...(process.env.NODE_ENV === "test" ? { inject: "body" } : {}),
         }),
         new NodePolyfillPlugin(),
-        ...(["production", "test"].includes(process.env.NODE_ENV)
+        ...(process.env.NODE_ENV === "test"
             ? [
                   new HtmlInlineScriptPlugin({
                       htmlMatchPattern: [/index.html$/],
