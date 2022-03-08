@@ -1,16 +1,18 @@
+import { useEffect, useRef, useState } from "react";
 import { GraphQLSchema } from "graphql";
-import { useEffect, useRef } from "react";
 import { CodeMirror } from "../../util";
+import { EditorFromTextArea } from "codemirror";
 
 export interface Props {
     schema: GraphQLSchema;
+    query: string;
     initialQueryValue?: string;
-    query: (override?: string) => Promise<void>;
-    setQuery: React.Dispatch<React.SetStateAction<string>>;
+    executeQuery: (override?: string) => Promise<void>;
     onChangeQuery: (query: string) => void;
 }
 
-export const GraphQLQueryEditor = ({ schema, initialQueryValue, setQuery, query, onChangeQuery }: Props) => {
+export const GraphQLQueryEditor = ({ schema, initialQueryValue, query, executeQuery, onChangeQuery }: Props) => {
+    const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const ref = useRef<HTMLTextAreaElement | null>(null);
 
     useEffect(() => {
@@ -66,13 +68,14 @@ export const GraphQLQueryEditor = ({ schema, initialQueryValue, setQuery, query,
                 "Shift-Space": showHint,
                 "Shift-Alt-Space": showHint,
                 "Cmd-Enter": () => {
-                    query(mirror.getValue());
+                    executeQuery(mirror.getValue());
                 },
                 "Ctrl-Enter": () => {
-                    query(mirror.getValue());
+                    executeQuery(mirror.getValue());
                 },
             },
         });
+        setMirror(mirror);
 
         if (initialQueryValue && ref.current) {
             mirror.setValue(initialQueryValue);
@@ -80,10 +83,13 @@ export const GraphQLQueryEditor = ({ schema, initialQueryValue, setQuery, query,
         }
 
         mirror.on("change", (e) => {
-            setQuery(e.getValue());
             onChangeQuery(e.getValue());
         });
     }, [ref, schema]);
+
+    useEffect(() => {
+        mirror?.setValue(query);
+    }, [query]);
 
     return <textarea ref={ref} className="w-full h-full" />;
 };

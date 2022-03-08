@@ -1,5 +1,6 @@
-import { graphql, GraphQLSchema } from "graphql";
 import { useCallback, useState } from "react";
+import { graphql, GraphQLSchema } from "graphql";
+import GraphiQLExplorer from "graphiql-explorer";
 import styled from "styled-components";
 import { Button } from "@neo4j-ndl/react";
 import { JSONEditor } from "./JSONEditor";
@@ -22,6 +23,7 @@ const Wrapper = styled.div`
     justify-content: space-between;
     align-items: stretch;
     width: 100%;
+    overflow-y: auto;
 `;
 
 const Header = styled.div`
@@ -152,18 +154,50 @@ export const Editor = (props: Props) => {
                         props.schema ? (
                             <GraphQLQueryEditor
                                 schema={props.schema}
+                                query={query}
                                 initialQueryValue={getInitialQueryValue()}
-                                setQuery={setQuery}
-                                onChangeQuery={(query) =>
-                                    localStorage.setItem(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query))
-                                }
-                                query={onSubmit}
+                                onChangeQuery={(query) => {
+                                    setQuery(query);
+                                    localStorage.setItem(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
+                                }}
+                                executeQuery={onSubmit}
                             />
                         ) : null
                     }
                     parameterEditor={<JSONEditor readonly={false} onChange={setVariableValues} />}
                     resultView={<JSONEditor readonly={true} json={output} />}
                     showExplorer={showExplorer}
+                    explorer={
+                        <GraphiQLExplorer
+                            schema={props.schema}
+                            query={query}
+                            onEdit={setQuery}
+                            onRunOperation={onSubmit}
+                            explorerIsOpen={showExplorer}
+                            // getDefaultScalarArgValue={getDefaultScalarArgValue}
+                            // makeDefaultArg={makeDefaultArg}
+                            colors={{
+                                keyword: "#B11A04",
+                                // OperationName, FragmentName
+                                def: "#D2054E",
+                                // FieldName
+                                property: "#1F61A0",
+                                // FieldAlias
+                                qualifier: "#1C92A9",
+                                // ArgumentName and ObjectFieldName
+                                attribute: "#8B2BB9",
+                                number: "#2882F9",
+                                string: "#D64292",
+                                // Boolean
+                                builtin: "#D47509",
+                                // Enum
+                                string2: "#0B7FC7",
+                                variable: "#397D13",
+                                // Type
+                                atom: "#CA9800",
+                            }}
+                        />
+                    }
                     showDocs={showDocs}
                 />
             </Pains>
