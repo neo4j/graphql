@@ -47,6 +47,7 @@ export interface Context {
     queryOptions?: CypherQueryOptions;
     plugins?: Neo4jGraphQLPlugins;
     jwt?: JwtPayload;
+    subscriptionsEnabled: boolean;
     [k: string]: any;
 }
 

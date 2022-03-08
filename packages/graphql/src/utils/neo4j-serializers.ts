@@ -17,10 +17,12 @@
  * limitations under the License.
  */
 
-import { joinStrings } from "../../utils/utils";
+import * as neo4j from "neo4j-driver";
 
-/** Wraps a string in a CALL statement */
-export function wrapInCall(statement: string, withVars: string[], returnStatement = "RETURN COUNT(*)"): string {
-    const withString = `WITH ${withVars.join(", ")}`;
-    return joinStrings([withString, "CALL {", `\t${withString}`, `\t${statement}`, `\t${returnStatement}`, "}"]);
+export function serializeNeo4jValue(value: unknown): any {
+    if (neo4j.isInt(value)) {
+        return value.toNumber();
+    }
+
+    return value;
 }

@@ -21,37 +21,56 @@ import { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import { Context, ConnectionField, RelationField } from "../types";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
+import { filterTruthy } from "../utils/utils";
 
-function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
+export default function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
+    const projectionWith: string[] = [];
+
     let connectionParams: any;
     let interfaceParams: any;
 
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
+    const metaNames: string[] = [];
 
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
             const varName = `this${index}`;
-
             const create = [`CALL {`];
+
+            const withVars = [varName];
+            projectionWith.push(varName);
+            if (context.subscriptionsEnabled) {
+                create.push(`WITH [] AS ${META_CYPHER_VARIABLE}`);
+                withVars.push(META_CYPHER_VARIABLE);
+            }
 
             const createAndParams = createCreateAndParams({
                 input,
                 node,
                 context,
                 varName,
-                withVars: [varName],
+                withVars,
                 includeRelationshipValidation: true,
+                topLevelNodeVariable: varName,
             });
+
             create.push(`${createAndParams[0]}`);
-            create.push(`RETURN ${varName}`);
+            if (context.subscriptionsEnabled) {
+                const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
+                create.push(`RETURN ${varName}, ${META_CYPHER_VARIABLE} AS ${metaVariable}`);
+                metaNames.push(metaVariable);
+            } else {
+                create.push(`RETURN ${varName}`);
+            }
+
             create.push(`}`);
 
             res.createStrs.push(create.join("\n"));
@@ -68,6 +87,10 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
     let replacedProjectionParams: Record<string, unknown> = {};
     let projectionStr: string | undefined;
     let authCalls: string | undefined;
+
+    if (metaNames.length > 0) {
+        projectionWith.push(`${metaNames.join(" + ")} AS meta`);
+    }
 
     if (nodeProjection) {
         let projAuth = "";
@@ -103,6 +126,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
             .join("\n");
 
+        const withVars = context.subscriptionsEnabled ? [META_CYPHER_VARIABLE] : [];
         if (projection[2]?.connectionFields?.length) {
             projection[2].connectionFields.forEach((connectionResolveTree) => {
                 const connectionField = node.connectionFields.find(
@@ -113,6 +137,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                     field: connectionField,
                     context,
                     nodeVariable: "REPLACE_ME",
+                    withVars,
                 });
                 connectionStrs.push(connection[0]);
                 if (!connectionParams) connectionParams = {};
@@ -129,8 +154,8 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                     resolveTree: interfaceResolveTree,
                     field: relationshipField,
                     context,
-                    node,
                     nodeVariable: "REPLACE_ME",
+                    withVars,
                 });
                 interfaceStrs.push(interfaceProjection.cypher);
                 if (!interfaceParams) interfaceParams = {};
@@ -181,17 +206,17 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
           }, {})
         : {};
 
-    const returnStatement = nodeProjection
-        ? `RETURN [${projectionStr}] AS data`
-        : "RETURN 'Query cannot conclude with CALL'";
+    const returnStatement = generateCreateReturnStatement(projectionStr, context.subscriptionsEnabled);
+    const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
-    const cypher = [
+    const cypher = filterTruthy([
         `${createStrs.join("\n")}`,
+        projectionWithStr,
         authCalls,
         ...replacedConnectionStrs,
         ...replacedInterfaceStrs,
         returnStatement,
-    ];
+    ]);
 
     return [
         cypher.filter(Boolean).join("\n"),
@@ -199,4 +224,20 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
     ];
 }
 
-export default translateCreate;
+function generateCreateReturnStatement(projectionStr: string | undefined, subscriptionsEnabled: boolean): string {
+    const statements: string[] = [];
+
+    if (projectionStr) {
+        statements.push(`[${projectionStr}] AS data`);
+    }
+
+    if (subscriptionsEnabled) {
+        statements.push(META_CYPHER_VARIABLE);
+    }
+
+    if (statements.length === 0) {
+        statements.push("'Query cannot conclude with CALL'");
+    }
+
+    return `RETURN ${statements.join(", ")}`;
+}

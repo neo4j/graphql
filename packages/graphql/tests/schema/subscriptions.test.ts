@@ -19,19 +19,9 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
-import EventEmitter from "events";
 import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
-import { Neo4jGraphQLSubscriptionsPlugin } from "../../src/types";
-import { EventMeta } from "../../src/subscriptions/event-meta";
-
-class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
-    public events: EventEmitter = {} as EventEmitter;
-
-    publish(_eventMeta: EventMeta): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
-}
+import { TestSubscriptionsPlugin } from "../utils/TestSubscriptionPlugin";
 
 describe("Subscriptions", () => {
     let plugin: TestSubscriptionsPlugin;

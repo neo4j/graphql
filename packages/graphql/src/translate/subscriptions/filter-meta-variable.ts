@@ -17,10 +17,8 @@
  * limitations under the License.
  */
 
-import { joinStrings } from "../../utils/utils";
+import { META_CYPHER_VARIABLE } from "../../constants";
 
-/** Wraps a string in a CALL statement */
-export function wrapInCall(statement: string, withVars: string[], returnStatement = "RETURN COUNT(*)"): string {
-    const withString = `WITH ${withVars.join(", ")}`;
-    return joinStrings([withString, "CALL {", `\t${withString}`, `\t${statement}`, `\t${returnStatement}`, "}"]);
+export function filterMetaVariable(withVars: string[]): string[] {
+    return withVars.filter((w) => w !== META_CYPHER_VARIABLE);
 }

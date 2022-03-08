@@ -102,3 +102,5 @@ export enum RelationshipQueryDirectionOption {
     DIRECTED_ONLY = "DIRECTED_ONLY",
     UNDIRECTED_ONLY = "UNDIRECTED_ONLY",
 }
+
+export const META_CYPHER_VARIABLE = "meta";

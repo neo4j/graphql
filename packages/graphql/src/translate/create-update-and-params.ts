@@ -326,6 +326,7 @@ function createUpdateAndParams({
                             relationField,
                             refNode,
                             context,
+                            withVars,
                         });
                         subquery.push(connectOrCreateQuery);
                         res.params = { ...res.params, ...connectOrCreateParams };

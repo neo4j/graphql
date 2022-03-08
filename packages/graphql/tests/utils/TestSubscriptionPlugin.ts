@@ -16,11 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import EventEmitter from "events";
+import { EventMeta } from "../../src/subscriptions/event-meta";
+import { Neo4jGraphQLSubscriptionsPlugin } from "../../src/types";
 
-import { joinStrings } from "../../utils/utils";
+export class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
+    public events: EventEmitter = {} as EventEmitter;
 
-/** Wraps a string in a CALL statement */
-export function wrapInCall(statement: string, withVars: string[], returnStatement = "RETURN COUNT(*)"): string {
-    const withString = `WITH ${withVars.join(", ")}`;
-    return joinStrings([withString, "CALL {", `\t${withString}`, `\t${statement}`, `\t${returnStatement}`, "}"]);
+    public eventList: EventMeta[] = [];
+
+    // eslint-disable-next-line @typescript-eslint/require-await
+    async publish(eventMeta: EventMeta): Promise<void> {
+        this.eventList.push(eventMeta);
+    }
 }

@@ -26,6 +26,8 @@ import createSetRelationshipPropertiesAndParams from "./create-set-relationship-
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
+import { createEventMeta } from "./subscriptions/create-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 
 interface Res {
     creates: string[];
@@ -45,6 +47,7 @@ function createCreateAndParams({
     withVars,
     insideDoWhen,
     includeRelationshipValidation,
+    topLevelNodeVariable,
 }: {
     input: any;
     varName: string;
@@ -53,6 +56,7 @@ function createCreateAndParams({
     withVars: string[];
     insideDoWhen?: boolean;
     includeRelationshipValidation?: boolean;
+    topLevelNodeVariable?: string;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;
@@ -87,7 +91,9 @@ function createCreateAndParams({
                             return;
                         }
 
-                        res.creates.push(`\nWITH ${withVars.join(", ")}`);
+                        if (!context.subscriptionsEnabled) {
+                            res.creates.push(`\nWITH ${withVars.join(", ")}`);
+                        }
 
                         const baseName = `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
                         const nodeName = `${baseName}_node`;
@@ -100,6 +106,7 @@ function createCreateAndParams({
                             varName: nodeName,
                             withVars: [...withVars, nodeName],
                             includeRelationshipValidation: false,
+                            topLevelNodeVariable,
                         });
                         res.creates.push(recurse[0]);
                         res.params = { ...res.params, ...recurse[1] };
@@ -161,6 +168,7 @@ function createCreateAndParams({
                         relationField,
                         refNode,
                         context,
+                        withVars,
                     });
                     res.creates.push(connectOrCreateQuery);
                     res.params = { ...res.params, ...connectOrCreateParams };
@@ -245,6 +253,12 @@ function createCreateAndParams({
         params: {},
     });
 
+    if (context.subscriptionsEnabled) {
+        const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName });
+        const withStrs = [eventWithMetaStr];
+        creates.push(`WITH ${withStrs.join(", ")}, ${filterMetaVariable(withVars).join(", ")}`);
+    }
+
     const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
 
     if (node.auth) {
@@ -261,6 +275,7 @@ function createCreateAndParams({
             params = { ...params, ...bindAndParams[1] };
         }
     }
+
     if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
         creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);

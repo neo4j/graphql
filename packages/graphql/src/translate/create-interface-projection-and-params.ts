@@ -18,7 +18,7 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { Node } from "../classes";
+import { asArray, removeDuplicates } from "../utils/utils";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { ConnectionField, Context, InterfaceWhereArg, RelationField } from "../types";
 import filterInterfaceNodes from "../utils/filter-interface-nodes";
@@ -32,20 +32,20 @@ function createInterfaceProjectionAndParams({
     resolveTree,
     field,
     context,
-    node,
     nodeVariable,
     parameterPrefix,
+    withVars,
 }: {
     resolveTree: ResolveTree;
     field: RelationField;
     context: Context;
-    node: Node;
     nodeVariable: string;
     parameterPrefix?: string;
+    withVars?: string[];
 }): { cypher: string; params: Record<string, any> } {
     let globalParams = {};
     let params: { args?: any } = {};
-
+    const fullWithVars = removeDuplicates([...asArray(withVars), nodeVariable]);
     const relTypeStr = `[:${field.type}]`;
 
     const { inStr, outStr } = getRelationshipDirection(field, resolveTree.args);
@@ -61,7 +61,7 @@ function createInterfaceProjectionAndParams({
     const subqueries = referenceNodes.map((refNode) => {
         const param = `${nodeVariable}_${refNode.name}`;
         const subquery = [
-            `WITH ${nodeVariable}`,
+            `WITH ${fullWithVars.join(", ")}`,
             `MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}(${param}:${refNode.name})`,
         ];
 
@@ -192,7 +192,6 @@ function createInterfaceProjectionAndParams({
                     resolveTree: interfaceResolveTree,
                     field: relationshipField,
                     context,
-                    node: refNode,
                     nodeVariable: param,
                 });
                 subquery.push(interfaceProjection.cypher);
@@ -208,10 +207,10 @@ function createInterfaceProjectionAndParams({
 
         return subquery.join("\n");
     });
-    const interfaceProjection = [`WITH ${nodeVariable}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
+    const interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
 
     if (field.typeMeta.array) {
-        interfaceProjection.push(`WITH ${nodeVariable}, collect(${field.fieldName}) AS ${field.fieldName}`);
+        interfaceProjection.push(`WITH ${fullWithVars.join(", ")}, collect(${field.fieldName}) AS ${field.fieldName}`);
     }
 
     if (Object.keys(whereArgs).length) {
