@@ -4,9 +4,9 @@ import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import { GraphQLSchema } from "graphql";
 import { Button } from "@neo4j-ndl/react";
 import * as neo4j from "neo4j-driver";
-import { CodeMirror } from "../../util";
+import { CodeMirror } from "../../utils/utils";
 import * as AuthContext from "../../contexts/auth";
-import { LOCAL_STATE_TYPE_DEFS } from "src/constants/constants";
+import { LOCAL_STATE_TYPE_DEFS, SCHEMA_EDITOR_BUILD_BUTTON, SCHEMA_EDITOR_INPUT } from "../../constants";
 
 const DEFAULT_TYPE_DEFS = `
 # Write your own type definition in the editor here or 
@@ -129,7 +129,7 @@ export const SchemaEditor = (props: Props) => {
                     </div>
                 )}
                 <div className="flex justify-between">
-                    <Button fill="outlined" onClick={onSubmit} disabled={loading}>
+                    <Button id={SCHEMA_EDITOR_BUILD_BUTTON} fill="outlined" onClick={onSubmit} disabled={loading}>
                         {loading ? "Loading..." : "Build schema"}
                     </Button>
 
@@ -146,8 +146,13 @@ export const SchemaEditor = (props: Props) => {
                     className="mt-5"
                     style={{ width: "100%", height: "800px", overflow: "hidden", resize: "vertical" }}
                 >
-                    {/* @ts-ignore */}
-                    <textarea ref={ref} style={{ width: "100%", height: "800px" }} disabled={loading} />
+                    <textarea
+                        id={SCHEMA_EDITOR_INPUT}
+                        /* @ts-ignore */
+                        ref={ref}
+                        style={{ width: "100%", height: "800px" }}
+                        disabled={loading}
+                    />
                 </div>
             </div>
         </div>

@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import * as AuthContext from "../../contexts/auth";
 import { FormInput } from "./FormInput";
 import { Button } from "@neo4j-ndl/react";
-import { LOGIN_USERNAME_INPUT } from "../../constants";
+import { LOGIN_BUTTON, LOGIN_PASSWORD_INPUT, LOGIN_URL_INPUT, LOGIN_USERNAME_INPUT } from "../../constants";
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
@@ -50,7 +50,7 @@ const Login = () => {
                     </div>
                     <div className="mb-6">
                         <FormInput
-                            id="password"
+                            id={LOGIN_PASSWORD_INPUT}
                             label="Password"
                             name="password"
                             placeholder="password"
@@ -61,7 +61,7 @@ const Login = () => {
                     </div>
                     <div className="mb-8">
                         <FormInput
-                            id="url"
+                            id={LOGIN_URL_INPUT}
                             label="Bolt URL"
                             name="url"
                             placeholder="bolt://localhost:7687"
@@ -72,7 +72,7 @@ const Login = () => {
                         ></FormInput>
                     </div>
                     <div className="flex items-center justify-between">
-                        <Button fill="outlined" type="submit" disabled={loading}>
+                        <Button id={LOGIN_BUTTON} fill="outlined" type="submit" disabled={loading}>
                             {loading ? <>Logging In</> : <span>Sign In</span>}
                         </Button>
                     </div>

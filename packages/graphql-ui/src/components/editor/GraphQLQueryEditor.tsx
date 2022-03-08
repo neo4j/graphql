@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { GraphQLSchema } from "graphql";
-import { CodeMirror } from "../../util";
+import { CodeMirror } from "../../utils/utils";
 import { EditorFromTextArea } from "codemirror";
 
 export interface Props {

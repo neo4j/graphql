@@ -21,7 +21,6 @@ export async function getPage(options: { browser: puppeteer.Browser }): Promise<
 
     const page = await options.browser.newPage();
 
-    // https://stackoverflow.com/a/65809370/10687857
     await page.setRequestInterception(true);
     page.on("request", (request) => {
         request.respond({ status: 200, contentType: "text/html", body: bundle });

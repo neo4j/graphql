@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Button } from "@neo4j-ndl/react";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
-import { LOCAL_STATE_TYPE_LAST_QUERY } from "src/constants/constants";
+import { LOCAL_STATE_TYPE_LAST_QUERY } from "../../constants";
 import { Frame } from "./Frame";
 
 const Pains = styled.div`

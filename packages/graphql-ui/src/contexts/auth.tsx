@@ -1,7 +1,7 @@
 import React, { Dispatch, useState, SetStateAction } from "react";
 import * as neo4j from "neo4j-driver";
-import { encrypt, decrypt } from "src/utils/utils";
-import { LOCAL_STATE_LOGIN } from "src/constants/constants";
+import { encrypt, decrypt } from "../utils/utils";
+import { LOCAL_STATE_LOGIN } from "../constants";
 
 const VERIFY_CONNECTION_INTERVAL_MS = 30000;
 
