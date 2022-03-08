@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 import EventEmitter from "events";
-import { EventMeta } from "../../src/subscriptions/event-meta";
+import { SubscriptionsEvent } from "../../src/subscriptions/subscriptions-event";
 import { Neo4jGraphQLSubscriptionsPlugin } from "../../src/types";
 
 export class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
     public events: EventEmitter = {} as EventEmitter;
 
-    public eventList: EventMeta[] = [];
+    public eventList: SubscriptionsEvent[] = [];
 
     // eslint-disable-next-line @typescript-eslint/require-await
-    async publish(eventMeta: EventMeta): Promise<void> {
+    async publish(eventMeta: SubscriptionsEvent): Promise<void> {
         this.eventList.push(eventMeta);
     }
 }
