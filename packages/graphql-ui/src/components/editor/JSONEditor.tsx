@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CodeMirror } from "../../util";
+import { CodeMirror } from "../../utils/utils";
 
 export interface Props {
     json?: string;
