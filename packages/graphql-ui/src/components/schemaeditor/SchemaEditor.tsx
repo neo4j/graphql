@@ -140,9 +140,6 @@ export const SchemaEditor = (props: Props) => {
         if (storedTypeDefs && ref.current) {
             mirror?.setValue(storedTypeDefs);
             ref.current.value = storedTypeDefs;
-            if (storedTypeDefs !== DEFAULT_TYPE_DEFS) {
-                buildSchema(storedTypeDefs);
-            }
         }
 
         mirror.on("change", (e) => {
