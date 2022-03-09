@@ -23,18 +23,20 @@ import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import { GraphQLSchema } from "graphql";
 import { Button } from "@neo4j-ndl/react";
 import * as neo4j from "neo4j-driver";
+import { EditorFromTextArea } from "codemirror";
 import { CodeMirror } from "../../utils/utils";
 import * as AuthContext from "../../contexts/auth";
 import { LOCAL_STATE_TYPE_DEFS, SCHEMA_EDITOR_BUILD_BUTTON, SCHEMA_EDITOR_INPUT } from "../../constants";
+import { formatCode, ParserOptions } from "../editor/utils";
 
 const DEFAULT_TYPE_DEFS = `
-# Write your own type definition in the editor here or 
-# generate it automatically from the current Neo4j database (introspection)
+    # Write your own type definition in the editor here or 
+    # generate it automatically from the current Neo4j database (introspection)
 
-# Example type definition:
-type Movie {
-    title: String!
-}
+    # Example type definition:
+    type Movie {
+        title: String!
+    }
 `;
 
 export interface Props {
@@ -44,9 +46,14 @@ export interface Props {
 export const SchemaEditor = (props: Props) => {
     const auth = useContext(AuthContext.Context);
     const ref = useRef<HTMLTextAreaElement>();
-    const mirror = useRef<CodeMirror.EditorFromTextArea>();
+    const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
+    const formatTheCode = (): void => {
+        if (!mirror) return;
+        formatCode(mirror, ParserOptions.GRAPH_QL);
+    };
 
     const getStoredTypeDefs = (): string | undefined => {
         const data = localStorage.getItem(LOCAL_STATE_TYPE_DEFS);
@@ -85,7 +92,7 @@ export const SchemaEditor = (props: Props) => {
 
             const typeDefs = await toGraphQLTypeDefs(sessionFactory);
 
-            mirror.current?.setValue(typeDefs);
+            mirror?.setValue(typeDefs);
         } catch (error) {
             const msg = (error as Error).message;
             setError(msg);
@@ -105,7 +112,7 @@ export const SchemaEditor = (props: Props) => {
             return;
         }
 
-        mirror.current = CodeMirror.fromTextArea(ref.current as HTMLTextAreaElement, {
+        const mirror = CodeMirror.fromTextArea(ref.current as HTMLTextAreaElement, {
             lineNumbers: true,
             tabSize: 2,
             mode: "graphql",
@@ -120,15 +127,22 @@ export const SchemaEditor = (props: Props) => {
                 minFoldSize: 4,
             },
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            extraKeys: {
+                "Ctrl-L": () => {
+                    if (!mirror) return;
+                    formatCode(mirror, ParserOptions.GRAPH_QL);
+                },
+            },
         });
+        setMirror(mirror);
 
         const storedTypeDefs = getStoredTypeDefs() || DEFAULT_TYPE_DEFS;
         if (storedTypeDefs && ref.current) {
-            mirror.current?.setValue(storedTypeDefs);
+            mirror?.setValue(storedTypeDefs);
             ref.current.value = storedTypeDefs;
         }
 
-        mirror.current.on("change", (e) => {
+        mirror.on("change", (e) => {
             if (ref.current) {
                 ref.current.value = e.getValue();
             }
@@ -136,7 +150,7 @@ export const SchemaEditor = (props: Props) => {
     }, [ref]);
 
     return (
-        <div className="flex w-1/2 mx-auto">
+        <div className="w-1/2 p-5">
             <div className="w-full">
                 {error && (
                     <div
@@ -147,13 +161,13 @@ export const SchemaEditor = (props: Props) => {
                         <span className="block sm:inline">{error}</span>
                     </div>
                 )}
-                <div className="flex justify-between">
+                <div className="flex">
                     <Button id={SCHEMA_EDITOR_BUILD_BUTTON} fill="outlined" onClick={onSubmit} disabled={loading}>
                         {loading ? "Loading..." : "Build schema"}
                     </Button>
 
-                    <Button fill="outlined" onClick={() => {}} disabled={loading}>
-                        {loading ? "Loading..." : "Prettify"}
+                    <Button fill="outlined" onClick={formatTheCode} disabled={loading}>
+                        {loading ? "Loading..." : "Prettify (CTRL+L)"}
                     </Button>
 
                     <Button fill="outlined" onClick={introspect} disabled={loading}>

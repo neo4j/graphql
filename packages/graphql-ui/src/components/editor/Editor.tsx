@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef } from "react";
 import { graphql, GraphQLSchema } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
 import { Button } from "@neo4j-ndl/react";
+import { EditorFromTextArea } from "codemirror";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
 import {
@@ -31,6 +32,7 @@ import {
 } from "../../constants";
 import { Frame } from "./Frame";
 import { DocExplorer } from "./docexplorer/index";
+import { formatCode, ParserOptions } from "./utils";
 
 const DEFAULT_QUERY = `
     # Type queries into this side of the screen, and you will 
@@ -52,6 +54,12 @@ export const Editor = (props: Props) => {
     const [output, setOutput] = useState("");
     const [showExplorer, isShowExplorer] = useState(false);
     const [showDocs, isShowDocs] = useState(false);
+    const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
+
+    const formatTheCode = (): void => {
+        if (!refForQueryEditorMirror.current) return;
+        formatCode(refForQueryEditorMirror.current, ParserOptions.GRAPH_QL);
+    };
 
     const getInitialQueryValue = (): string | undefined =>
         JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_QUERY) as string) || DEFAULT_QUERY;
@@ -86,27 +94,26 @@ export const Editor = (props: Props) => {
     return (
         <div className="p-5">
             <div className="flex justify-start pb-3 pt-3">
-                <Button id={EDITOR_QUERY_BUTTON} fill="outlined" onClick={() => onSubmit()} disabled={!props.schema}>
-                    Query (CTRL+ENTER)
+                <Button
+                    id={EDITOR_QUERY_BUTTON}
+                    fill="outlined"
+                    onClick={() => onSubmit()}
+                    disabled={!props.schema || loading}
+                >
+                    {!loading ? "Query (CTRL+ENTER)" : "Loading..."}
                 </Button>
 
-                <Button fill="outlined" onClick={() => {}} disabled={false}>
-                    Prettify
+                <Button fill="outlined" onClick={formatTheCode} disabled={loading}>
+                    {!loading ? "Prettify (CTRL+L)" : "Loading..."}
                 </Button>
 
-                <Button fill="outlined" onClick={() => isShowExplorer(!showExplorer)} disabled={false}>
-                    Explorer
+                <Button fill="outlined" onClick={() => isShowExplorer(!showExplorer)} disabled={loading}>
+                    {!loading ? "Explorer" : "Loading..."}
                 </Button>
 
-                <Button fill="outlined" onClick={() => isShowDocs(!showDocs)} disabled={false}>
-                    Docs
+                <Button fill="outlined" onClick={() => isShowDocs(!showDocs)} disabled={loading}>
+                    {!loading ? "Docs" : "Loading..."}
                 </Button>
-
-                {loading && (
-                    <div style={{ padding: "0.5em" }}>
-                        <h1>Loading</h1>
-                    </div>
-                )}
             </div>
             <div className="flex justify-start flex-row flex-grow w-full h-full">
                 <Frame
@@ -115,6 +122,7 @@ export const Editor = (props: Props) => {
                             <GraphQLQueryEditor
                                 schema={props.schema}
                                 query={query}
+                                mirrorRef={refForQueryEditorMirror}
                                 initialQueryValue={getInitialQueryValue()}
                                 onChangeQuery={(query) => {
                                     setQuery(query);
