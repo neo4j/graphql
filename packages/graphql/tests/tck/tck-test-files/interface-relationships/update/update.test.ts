@@ -106,7 +106,7 @@ describe("Interface Relationships - Update update", () => {
             YIELD value as _
             RETURN count(*)
             }
-            RETURN collect(this { .name }) AS data"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -199,7 +199,7 @@ describe("Interface Relationships - Update update", () => {
             YIELD value as _
             RETURN count(*)
             }
-            RETURN collect(this { .name }) AS data"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -295,7 +295,7 @@ describe("Interface Relationships - Update update", () => {
             YIELD value as _
             RETURN count(*)
             }
-            RETURN collect(this { .name }) AS data"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -405,7 +405,7 @@ describe("Interface Relationships - Update update", () => {
             YIELD value as _
             RETURN count(*)
             }
-            RETURN collect(this { .name }) AS data"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

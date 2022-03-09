@@ -276,7 +276,7 @@ describe("@auth allow with interface relationships", () => {
             RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
             }
             WITH this, collect(content) AS content
-            RETURN collect(this { .id, content: content }) AS data"
+            RETURN collect(DISTINCT this { .id, content: content }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -359,7 +359,7 @@ describe("@auth allow with interface relationships", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -500,7 +500,7 @@ describe("@auth allow with interface relationships", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -591,7 +591,7 @@ describe("@auth allow with interface relationships", () => {
             }
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -683,7 +683,7 @@ describe("@auth allow with interface relationships", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

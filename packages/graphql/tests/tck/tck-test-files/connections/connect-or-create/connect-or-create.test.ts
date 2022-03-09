@@ -166,7 +166,7 @@ describe("Create or Connect", () => {
                 this_relationship_this_movies0_connectOrCreate0.screentime = $this_relationship_this_movies0_connectOrCreate0_on_create_screentime
                 	RETURN COUNT(*)
                 }
-                RETURN collect(this { .name }) AS data"
+                RETURN collect(DISTINCT this { .name }) AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -396,7 +396,7 @@ describe("Create or Connect", () => {
                 this_relationship_this_movies0_connectOrCreate0.screentime = $this_relationship_this_movies0_connectOrCreate0_on_create_screentime
                 	RETURN COUNT(*)
                 }
-                RETURN collect(this { .name }) AS data"
+                RETURN collect(DISTINCT this { .name }) AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -458,7 +458,7 @@ describe("Create or Connect", () => {
                 this_relationship_this_movies0_connectOrCreate0.screentime = $this_relationship_this_movies0_connectOrCreate0_on_create_screentime
                 	RETURN COUNT(*)
                 }
-                RETURN collect(this { .name }) AS data"
+                RETURN collect(DISTINCT this { .name }) AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -624,7 +624,7 @@ describe("Create or Connect", () => {
                 this_relationship_this_movies0_connectOrCreate0.screentime = $this_relationship_this_movies0_connectOrCreate0_on_create_screentime
                 	RETURN COUNT(*)
                 }
-                RETURN collect(this { .name }) AS data"
+                RETURN collect(DISTINCT this { .name }) AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`

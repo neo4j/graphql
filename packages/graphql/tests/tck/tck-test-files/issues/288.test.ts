@@ -103,7 +103,7 @@ describe("#288", () => {
             "MATCH (this:USER)
             WHERE this.USERID = $this_USERID
             SET this.COMPANYID = $this_update_COMPANYID
-            RETURN collect(this { .USERID, .COMPANYID }) AS data"
+            RETURN collect(DISTINCT this { .USERID, .COMPANYID }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -76,7 +76,7 @@ describe("Subscriptions metadata on update", () => {
             SET this.id = $this_update_id
             WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp() } AS meta
             UNWIND meta AS m
-            RETURN collect(this { .id }) AS data, collect(DISTINCT m) as meta"
+            RETURN collect(DISTINCT this { .id }) AS data, collect(DISTINCT m) as meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -108,7 +108,7 @@ describe("Cypher TimeStamps On DateTime Fields", () => {
             SET this.interfaceTimestamp = datetime()
             SET this.id = $this_update_id
             SET this.name = $this_update_name
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

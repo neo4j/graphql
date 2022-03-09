@@ -82,7 +82,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             RETURN count(*)
             \\", \\"\\", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies})
             YIELD value as this_acted_in0_relationship_actors0_edge
-            RETURN collect(this { .title }) AS data"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -157,7 +157,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             RETURN count(*)
             \\", \\"\\", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies})
             YIELD value as this_acted_in0_relationship_actors0_edge
-            RETURN collect(this { .title }) AS data"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

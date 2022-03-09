@@ -266,7 +266,7 @@ describe("Cypher Points", () => {
             "MATCH (this:PointContainer)
             WHERE this.id = $this_id
             SET this.points = [p in $this_update_points | point(p)]
-            RETURN collect(this { points: apoc.cypher.runFirstColumn('RETURN
+            RETURN collect(DISTINCT this { points: apoc.cypher.runFirstColumn('RETURN
             CASE this.points IS NOT NULL
             	WHEN true THEN [p in this.points | { point:p, crs: p.crs }]
             	ELSE NULL

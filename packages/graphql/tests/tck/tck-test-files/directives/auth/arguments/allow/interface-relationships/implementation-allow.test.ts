@@ -255,7 +255,7 @@ describe("@auth allow on specific interface implementation", () => {
             RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
             }
             WITH this, collect(content) AS content
-            RETURN collect(this { .id, content: content }) AS data"
+            RETURN collect(DISTINCT this { .id, content: content }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -389,7 +389,7 @@ describe("@auth allow on specific interface implementation", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -474,7 +474,7 @@ describe("@auth allow on specific interface implementation", () => {
             }
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -561,7 +561,7 @@ describe("@auth allow on specific interface implementation", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

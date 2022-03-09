@@ -318,7 +318,7 @@ describe("connectOrCreate", () => {
                 MERGE (this)-[this_relationship_this_genres0_connectOrCreate0:IN_GENRE]->(this_genres0_connectOrCreate0)
                 	RETURN COUNT(*)
                 }
-                RETURN collect(this { .title }) AS data"
+                RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -367,7 +367,7 @@ describe("connectOrCreate", () => {
                 MERGE (this)-[this_relationship_this_genres0_connectOrCreate0:IN_GENRE]->(this_genres0_connectOrCreate0)
                 	RETURN COUNT(*)
                 }
-                RETURN collect(this { .title }) AS data"
+                RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -416,7 +416,7 @@ describe("connectOrCreate", () => {
                 MERGE (this)-[this_relationship_this_genres0_connectOrCreate0:IN_GENRE]->(this_genres0_connectOrCreate0)
                 	RETURN COUNT(*)
                 }
-                RETURN collect(this { .title }) AS data"
+                RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -464,7 +464,7 @@ describe("connectOrCreate", () => {
                 MERGE (this)-[this_relationship_this_genres0_connectOrCreate0:IN_GENRE]->(this_genres0_connectOrCreate0)
                 	RETURN COUNT(*)
                 }
-                RETURN collect(this { .title }) AS data"
+                RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -523,7 +523,7 @@ describe("connectOrCreate", () => {
                 MERGE (this)-[this_relationship_this_connectOrCreate_genres0:IN_GENRE]->(this_connectOrCreate_genres0)
                 	RETURN COUNT(*)
                 }
-                RETURN collect(this { .title }) AS data"
+                RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -572,7 +572,7 @@ describe("connectOrCreate", () => {
                 MERGE (this)-[this_relationship_this_connectOrCreate_genres0:IN_GENRE]->(this_connectOrCreate_genres0)
                 	RETURN COUNT(*)
                 }
-                RETURN collect(this { .title }) AS data"
+                RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -621,7 +621,7 @@ describe("connectOrCreate", () => {
                 MERGE (this)-[this_relationship_this_connectOrCreate_genres0:IN_GENRE]->(this_connectOrCreate_genres0)
                 	RETURN COUNT(*)
                 }
-                RETURN collect(this { .title }) AS data"
+                RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -669,7 +669,7 @@ describe("connectOrCreate", () => {
                 MERGE (this)-[this_relationship_this_connectOrCreate_genres0:IN_GENRE]->(this_connectOrCreate_genres0)
                 	RETURN COUNT(*)
                 }
-                RETURN collect(this { .title }) AS data"
+                RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`

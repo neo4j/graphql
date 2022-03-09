@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDUser.activeOrganization must be less than or equal to one', [0])
             	RETURN c AS this_activeOrganization_Organization_unique_ignored
             }
-            RETURN collect(this { id: this._id }) AS data"
+            RETURN collect(DISTINCT this { id: this._id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
