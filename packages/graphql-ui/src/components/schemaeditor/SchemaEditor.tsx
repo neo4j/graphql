@@ -99,7 +99,7 @@ export const SchemaEditor = (props: Props) => {
         } finally {
             setLoading(false);
         }
-    }, [buildSchema]);
+    }, [buildSchema, mirror]);
 
     const onSubmit = useCallback(() => {
         if (ref.current?.value) {
@@ -140,6 +140,9 @@ export const SchemaEditor = (props: Props) => {
         if (storedTypeDefs && ref.current) {
             mirror?.setValue(storedTypeDefs);
             ref.current.value = storedTypeDefs;
+            if (storedTypeDefs !== DEFAULT_TYPE_DEFS) {
+                buildSchema(storedTypeDefs);
+            }
         }
 
         mirror.on("change", (e) => {
