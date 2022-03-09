@@ -242,7 +242,7 @@ describe("Cypher Auth Allow", () => {
             CALL apoc.do.when(this_posts0_creator0 IS NOT NULL, \\\\\\"
             SET this_posts0_creator0.id = $this_update_posts0_creator0_id
             WITH this, this_posts0, this_posts0_creator0
-            CALL apoc.util.validate(NOT(this_posts0_creator0.id IS NOT NULL AND this_posts0_creator0.id = $this_posts0_creator0_auth_bind0_id), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
+            CALL apoc.util.validate(NOT(this_posts0_creator0.id IS NOT NULL AND this_posts0_creator0.id = $this_posts0_creator0_auth_bind0_id), \\\\\\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\\\\\", [0])
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_posts0:this_posts0, updateUsers: $updateUsers, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id})
             YIELD value as _

@@ -18,5 +18,6 @@
  */
 
 export function escapeQuery(query: string): string {
-    return query.replace(/("|')/g, "\\$1");
+    // return query.replace(/("|')/g, "\\$1");
+    return query.replace(/(")/g, "\\$1");
 }

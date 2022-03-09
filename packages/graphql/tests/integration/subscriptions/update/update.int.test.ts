@@ -154,4 +154,153 @@ describe("Subscriptions delete", () => {
             ])
         );
     });
+
+    test("nested update with subscriptions enabled", async () => {
+        const query = `
+        mutation {
+            ${typeMovie.operations.update}(
+                where: { id_IN: ["1", "2"] }
+                update: {
+                    name: "The Matrix"
+                    actors: [
+                        {
+                            where: { node: { name: "arthur" } }
+                            update: {
+                                node: {
+                                    name: "ford"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ) {
+                ${typeMovie.plural} {
+                    id
+                }
+            }
+        }
+        `;
+
+        await session.run(`
+            CREATE (m1:${typeMovie.name} { id: "1", name: "Terminator" })
+            CREATE (m2:${typeMovie.name} { id: "2", name: "The Many Adventures of Winnie the Pooh" })
+            CREATE (m3:${typeMovie.name} { id: "3", name: "Terminator 2" })
+            CREATE (m4:${typeMovie.name} { id: "4", name: "The Many Adventures of Winnie the Pooh 2" })
+
+            CREATE(a1:${typeActor.name} {name: "arthur"})-[:ACTED_IN]->(m1)
+            CREATE(a1)-[:ACTED_IN]->(m2)
+
+            CREATE(a2:${typeActor.name} {name: "arthur"})-[:ACTED_IN]->(m3)
+            CREATE(a2)-[:ACTED_IN]->(m4)
+        `);
+
+        const gqlResult: any = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: { driver },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        // TODO: test result data as well (unwind may produce duplciates)
+
+        console.log(JSON.stringify(plugin.eventList, null, 4));
+
+        expect(plugin.eventList).toHaveLength(3);
+        // expect(plugin.eventList).toEqual(
+        //     expect.arrayContaining([
+        //         {
+        //             id: expect.any(Number),
+        //             timestamp: expect.any(Number),
+        //             event: "update",
+        //             properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "The Matrix" } },
+        //         },
+        //         {
+        //             id: expect.any(Number),
+        //             timestamp: expect.any(Number),
+        //             event: "update",
+        //             properties: {
+        //                 old: { id: "2", name: "The Many Adventures of Winnie the Pooh" },
+        //                 new: { id: "2", name: "The Matrix" },
+        //             },
+        //         },
+        //     ])
+        // );
+    });
+
+    test("tripled nested update with subscriptions enabled", async () => {
+        const query = `
+        mutation {
+            ${typeMovie.operations.update}(
+                where: { id_IN: ["1", "2"] }
+                update: {
+                    actors: [
+                        {
+                            where: { node: { name: "arthur" } }
+                            update: {
+                                node: {
+                                    name: "ford"
+                                    movies: [
+                                        {
+                                            where: { node: { id_IN: ["3", "4"] } }
+                                            update: { node: { name: "new movie title" } }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ) {
+                ${typeMovie.plural} {
+                    id
+                }
+            }
+        }
+        `;
+
+        await session.run(`
+            CREATE (m1:${typeMovie.name} { id: "1", name: "Terminator" })
+            CREATE (m2:${typeMovie.name} { id: "2", name: "The Many Adventures of Winnie the Pooh" })
+            CREATE (m3:${typeMovie.name} { id: "3", name: "Terminator 2" })
+            CREATE (m4:${typeMovie.name} { id: "4", name: "The Many Adventures of Winnie the Pooh 2" })
+
+            CREATE(a1:${typeActor.name} {name: "arthur"})-[:ACTED_IN]->(m1)
+            CREATE(a1)-[:ACTED_IN]->(m2)
+
+            CREATE(a2:${typeActor.name} {name: "arthur"})-[:ACTED_IN]->(m3)
+            CREATE(a2)-[:ACTED_IN]->(m4)
+        `);
+
+        const gqlResult: any = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: { driver },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        console.log(JSON.stringify(plugin.eventList, null, 4));
+
+        expect(plugin.eventList).toHaveLength(6);
+        // expect(plugin.eventList).toEqual(
+        //     expect.arrayContaining([
+        //         {
+        //             id: expect.any(Number),
+        //             timestamp: expect.any(Number),
+        //             event: "update",
+        //             properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "The Matrix" } },
+        //         },
+        //         {
+        //             id: expect.any(Number),
+        //             timestamp: expect.any(Number),
+        //             event: "update",
+        //             properties: {
+        //                 old: { id: "2", name: "The Many Adventures of Winnie the Pooh" },
+        //                 new: { id: "2", name: "The Matrix" },
+        //             },
+        //         },
+        //     ])
+        // );
+    });
 });

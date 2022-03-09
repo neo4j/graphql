@@ -29,9 +29,4 @@ describe("escapeQuery", () => {
         const escaped = escapeQuery(`"Hello"`);
         expect(escaped).toBe(`\\"Hello\\"`);
     });
-
-    test("escape query with single and double quotes", () => {
-        const escaped = escapeQuery(`"Hello" and 'goodbye'`);
-        expect(escaped).toBe(`\\"Hello\\" and \\'goodbye\\'`);
-    });
 });
