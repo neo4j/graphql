@@ -166,11 +166,10 @@ function buildOnCreate(onCreate: Record<string, any>, varName: string, node?: No
         const nodeField = node?.primitiveFields.find((f) => f.fieldName === key);
         const nodeFieldName = nodeField?.dbPropertyName || nodeField?.fieldName;
         const fieldName = nodeFieldName || key;
-        const valueOrArray = nodeField?.typeMeta.array ? [value] : value;
         const parameterKey = generateParameterKey(`${varName}_on_create`, fieldName);
 
         queries.push(`${varName}.${fieldName} = $${parameterKey}`);
-        parameters[parameterKey] = valueOrArray;
+        parameters[parameterKey] = value;
     });
     return [joinStrings(queries, ",\n"), parameters];
 }

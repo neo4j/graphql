@@ -48,13 +48,13 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
         const typeDefs = `
             type ${testBibliographicReference.name} @node(additionalLabels: ["Resource"]){
                 iri: ID! @unique @alias(property: "uri")
-                prefLabel: [String]
+                prefLabel: [String!]
                 isInPublication: [${testConcept.name}!]! @relationship(type: "isInPublication", direction: OUT)
             }
-            
+
             type ${testConcept.name} @node(additionalLabels: ["Resource"]){
                 iri: ID! @unique @alias(property: "uri")
-                prefLabel: [String]!
+                prefLabel: [String!]!
             }
         `;
         const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
