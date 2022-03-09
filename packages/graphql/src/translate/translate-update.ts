@@ -428,7 +428,7 @@ function generateUpdateReturnStatement(
     const statements: string[] = [];
 
     if (varName && projStr) {
-        statements.push(`collect(${varName} ${projStr}) AS data`);
+        statements.push(`collect(DISTINCT ${varName} ${projStr}) AS data`);
     }
 
     if (subscriptionsEnabled) {

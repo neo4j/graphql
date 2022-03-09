@@ -202,33 +202,42 @@ describe("Subscriptions delete", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        // TODO: test result data as well (unwind may produce duplciates)
-
-        console.log(JSON.stringify(plugin.eventList, null, 4));
+        expect(gqlResult.data[typeMovie.operations.update]).toEqual({
+            [typeMovie.plural]: [{ id: "1" }, { id: "2" }],
+        });
 
         expect(plugin.eventList).toHaveLength(3);
-        // expect(plugin.eventList).toEqual(
-        //     expect.arrayContaining([
-        //         {
-        //             id: expect.any(Number),
-        //             timestamp: expect.any(Number),
-        //             event: "update",
-        //             properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "The Matrix" } },
-        //         },
-        //         {
-        //             id: expect.any(Number),
-        //             timestamp: expect.any(Number),
-        //             event: "update",
-        //             properties: {
-        //                 old: { id: "2", name: "The Many Adventures of Winnie the Pooh" },
-        //                 new: { id: "2", name: "The Matrix" },
-        //             },
-        //         },
-        //     ])
-        // );
+        expect(plugin.eventList).toEqual(
+            expect.arrayContaining([
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "update",
+                    properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "The Matrix" } },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "update",
+                    properties: {
+                        old: { id: "2", name: "The Many Adventures of Winnie the Pooh" },
+                        new: { id: "2", name: "The Matrix" },
+                    },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "update",
+                    properties: {
+                        old: { name: "arthur" },
+                        new: { name: "ford" },
+                    },
+                },
+            ])
+        );
     });
 
-    test("tripled nested update with subscriptions enabled", async () => {
+    test("triple nested update with subscriptions enabled", async () => {
         const query = `
         mutation {
             ${typeMovie.operations.update}(

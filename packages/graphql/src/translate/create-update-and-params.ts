@@ -234,16 +234,18 @@ function createUpdateAndParams({
                             } else {
                                 updateStrs.push("RETURN count(*)");
                             }
-                            const apocArgs = `{${filterMetaVariable(withVars)
-                                .map((withVar) => `${withVar}:${withVar}`)
-                                .join(", ")}, ${parameterPrefix?.split(".")[0]}: $${
+                            const apocArgs = `{${withVars.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
                                 parameterPrefix?.split(".")[0]
-                            }, ${_varName}:${_varName}REPLACE_ME}`;
+                            }: $${parameterPrefix?.split(".")[0]}, ${_varName}:${_varName}REPLACE_ME}`;
 
-                            updateStrs.push(`", "", ${apocArgs})`);
+                            updateStrs.push(
+                                `", ${context.subscriptionsEnabled ? `"RETURN meta as meta"` : `""`}, ${apocArgs})`
+                            );
                             if (context.subscriptionsEnabled) {
                                 updateStrs.push("YIELD value AS nested_value");
-                                updateStrs.push(`WITH ${withVars.join(", ")}`);
+                                updateStrs.push(
+                                    `WITH ${filterMetaVariable(withVars).join(", ")}, nested_value.meta as meta`
+                                );
                             } else {
                                 updateStrs.push("YIELD value as _");
                             }
