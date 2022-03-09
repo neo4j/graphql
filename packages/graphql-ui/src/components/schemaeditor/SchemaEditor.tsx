@@ -21,12 +21,17 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import { GraphQLSchema } from "graphql";
-import { Button } from "@neo4j-ndl/react";
+import { Button, Checkbox } from "@neo4j-ndl/react";
 import * as neo4j from "neo4j-driver";
 import { EditorFromTextArea } from "codemirror";
 import { CodeMirror } from "../../utils/utils";
 import * as AuthContext from "../../contexts/auth";
-import { LOCAL_STATE_TYPE_DEFS, SCHEMA_EDITOR_BUILD_BUTTON, SCHEMA_EDITOR_INPUT } from "../../constants";
+import {
+    LOCAL_STATE_DEBUG,
+    LOCAL_STATE_TYPE_DEFS,
+    SCHEMA_EDITOR_BUILD_BUTTON,
+    SCHEMA_EDITOR_INPUT,
+} from "../../constants";
 import { formatCode, ParserOptions } from "../editor/utils";
 
 const DEFAULT_TYPE_DEFS = `
@@ -49,6 +54,13 @@ export const SchemaEditor = (props: Props) => {
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [isDebugChecked, setIsDebugChecked] = useState<string | null>(localStorage.getItem(LOCAL_STATE_DEBUG));
+
+    const onChangeDebugCheckbox = (): void => {
+        const next = isDebugChecked === "true" ? "false" : "true";
+        setIsDebugChecked(next);
+        localStorage.setItem(LOCAL_STATE_DEBUG, next);
+    };
 
     const formatTheCode = (): void => {
         if (!mirror) return;
@@ -61,27 +73,33 @@ export const SchemaEditor = (props: Props) => {
         return JSON.parse(data as string);
     };
 
-    const buildSchema = useCallback(async (typeDefs: string) => {
-        try {
-            setLoading(true);
+    const buildSchema = useCallback(
+        async (typeDefs: string) => {
+            try {
+                setLoading(true);
 
-            localStorage.setItem(LOCAL_STATE_TYPE_DEFS, JSON.stringify(typeDefs));
+                localStorage.setItem(LOCAL_STATE_TYPE_DEFS, JSON.stringify(typeDefs));
 
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                driver: auth.driver,
-            });
+                const neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    driver: auth.driver,
+                    config: {
+                        enableDebug: isDebugChecked === "true",
+                    },
+                });
 
-            const schema = await neoSchema.getSchema();
+                const schema = await neoSchema.getSchema();
 
-            props.onChange(schema);
-        } catch (error) {
-            const msg = (error as Error).message;
-            setError(msg);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+                props.onChange(schema);
+            } catch (error) {
+                const msg = (error as Error).message;
+                setError(msg);
+            } finally {
+                setLoading(false);
+            }
+        },
+        [isDebugChecked]
+    );
 
     const introspect = useCallback(async () => {
         try {
@@ -161,7 +179,7 @@ export const SchemaEditor = (props: Props) => {
                         <span className="block sm:inline">{error}</span>
                     </div>
                 )}
-                <div className="flex">
+                <div className="flex items-center">
                     <Button id={SCHEMA_EDITOR_BUILD_BUTTON} fill="outlined" onClick={onSubmit} disabled={loading}>
                         {loading ? "Loading..." : "Build schema"}
                     </Button>
@@ -173,6 +191,12 @@ export const SchemaEditor = (props: Props) => {
                     <Button fill="outlined" onClick={introspect} disabled={loading}>
                         {loading ? "Loading..." : "Generate typeDefs"}
                     </Button>
+
+                    <Checkbox
+                        label="Enable debug"
+                        checked={isDebugChecked === "true"}
+                        onChange={onChangeDebugCheckbox}
+                    />
                 </div>
 
                 <div
