@@ -172,7 +172,7 @@ class Neo4jGraphQL {
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(this.schemaDefinition.typeDefs, {
                 enableRegex: this.config?.enableRegex,
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
-                generateSubscriptions: Boolean(this.plugins?.subscriptions),
+                generateSubscriptions: Boolean(this.plugins?.subscriptions) || true,
             });
 
             this._nodes = nodes;
