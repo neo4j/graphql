@@ -463,7 +463,7 @@ function createUpdateAndParams({
         }
 
         if (context.subscriptionsEnabled) {
-            let eventMeta = createEventMeta({ event: "update", nodeVariable: varName });
+            const eventMeta = createEventMeta({ event: "update", nodeVariable: varName });
             res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, ${eventMeta}`);
         }
 
