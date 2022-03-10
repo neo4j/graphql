@@ -83,16 +83,12 @@ export function objectFieldsToComposeFields(fields: BaseField[]): {
     }, {});
 }
 
-export function objectFieldsToCreateInputFields(fields: BaseField[], optional = false): Record<string, InputField> {
+export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<string, InputField> {
     return fields
         .filter((f) => !(f as PrimitiveField)?.autogenerate && !(f as TemporalField)?.timestamps)
         .reduce((res, f) => {
-            let fieldType = f.typeMeta.input.create.pretty;
+            const fieldType = f.typeMeta.input.create.pretty;
             const defaultValue = (f as PrimitiveField)?.defaultValue;
-
-            // if (optional) {
-            //     fieldType = f.typeMeta.input.create.type;
-            // }
 
             if (defaultValue !== undefined) {
                 res[f.fieldName] = {
