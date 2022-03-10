@@ -75,6 +75,7 @@ describe("Subscriptions metadata on update", () => {
             WITH this { .* } AS oldProps, this, meta
             SET this.id = $this_update_id
             WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp() } AS meta
+            WITH this, meta
             UNWIND meta AS m
             RETURN collect(DISTINCT this { .id }) AS data, collect(DISTINCT m) as meta"
         `);
