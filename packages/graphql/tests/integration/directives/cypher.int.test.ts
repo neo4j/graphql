@@ -24,6 +24,7 @@ import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("cypher", () => {
     let driver: Driver;
@@ -664,7 +665,7 @@ describe("cypher", () => {
             let schemaWithDefaultValue: GraphQLSchema;
             let schemaWithMissingValue: GraphQLSchema;
 
-            const testLabel = generate({ charset: "alphabetic" });
+            const accountType = generateUniqueType("Account");
 
             const defaultOffset = 0;
             const defaultLimit = 30;
@@ -673,7 +674,7 @@ describe("cypher", () => {
             const limit = 10;
 
             const generateTypeDefs = (withDefaultValue: boolean) => `
-                type Account {
+                type ${accountType.name} {
                     id: ID!
                     name: String!
                 }
@@ -684,10 +685,12 @@ describe("cypher", () => {
                 }
 
                 type Query {
-                    listAccounts(options: ListAccountOptions${withDefaultValue ? "= null" : ""}): [Account!]!
+                    listAccounts(options: ListAccountOptions${withDefaultValue ? "= null" : ""}): [${
+                accountType.name
+            }!]!
                         @cypher(
                             statement: """
-                                MATCH (accounts:Account)
+                                MATCH (accounts:${accountType.name})
                                 RETURN accounts
                                 SKIP coalesce($options.offset, toInteger(${defaultOffset}))
                                 LIMIT coalesce($options.limit, toInteger(${defaultLimit}))
@@ -710,13 +713,13 @@ describe("cypher", () => {
                 schemaWithMissingValue = await neoSchemaWithMissingValue.getSchema();
 
                 // Create 50 Account nodes with ids 1, 2, 3...
-                await session.run(`FOREACH (x in range(1,50) | CREATE (:Account:${testLabel} {id: x}))`);
+                await session.run(`FOREACH (x in range(1,50) | CREATE (:${accountType.name} {id: x}))`);
                 await session.close();
             });
 
             afterAll(async () => {
                 const session = driver.session();
-                await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
+                await session.run(`MATCH (n:${accountType.name}) DETACH DELETE n`);
                 await session.close();
             });
 
