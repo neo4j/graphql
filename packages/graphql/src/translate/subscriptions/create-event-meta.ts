@@ -17,20 +17,38 @@
  * limitations under the License.
  */
 
-import { META_CYPHER_VARIABLE } from "../../constants";
+import { META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../../constants";
 
 export type SubscriptionsEventType = "create" | "update" | "delete";
 
-export function createEventMeta({ event, nodeVariable }: { event: SubscriptionsEventType; nodeVariable: string }): string {
+export function createEventMeta({
+    event,
+    nodeVariable,
+}: {
+    event: SubscriptionsEventType;
+    nodeVariable: string;
+}): string {
     return `${META_CYPHER_VARIABLE} + ${createEventMetaObject({ event, nodeVariable })} AS ${META_CYPHER_VARIABLE}`;
 }
 
-export function createEventMetaObject({ event, nodeVariable }: { event: SubscriptionsEventType; nodeVariable: string }): string {
+export function createEventMetaObject({
+    event,
+    nodeVariable,
+}: {
+    event: SubscriptionsEventType;
+    nodeVariable: string;
+}): string {
     const properties = createEventMetaProperties({ event, nodeVariable });
     return `{ event: "${event}", id: id(${nodeVariable}), ${properties}, timestamp: timestamp() }`;
 }
 
-function createEventMetaProperties({ event, nodeVariable }: { event: SubscriptionsEventType; nodeVariable: string }): string {
+function createEventMetaProperties({
+    event,
+    nodeVariable,
+}: {
+    event: SubscriptionsEventType;
+    nodeVariable: string;
+}): string {
     let oldProps: string;
     let newProps: string;
 
@@ -40,7 +58,7 @@ function createEventMetaProperties({ event, nodeVariable }: { event: Subscriptio
             newProps = `${nodeVariable} { .* }`;
             break;
         case "update":
-            oldProps = `${nodeVariable} { .* }`;
+            oldProps = META_OLD_PROPS_CYPHER_VARIABLE;
             newProps = `${nodeVariable} { .* }`;
             break;
         case "delete":

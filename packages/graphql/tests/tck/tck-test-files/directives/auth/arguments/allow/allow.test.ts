@@ -269,7 +269,7 @@ describe("Cypher Auth Allow", () => {
             WITH this
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -303,7 +303,7 @@ describe("Cypher Auth Allow", () => {
             WITH this
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id AND this.id IS NOT NULL AND this.id = $this_update_password_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.password = $this_update_password
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -345,7 +345,7 @@ describe("Cypher Auth Allow", () => {
             SET this_creator0.id = $this_update_creator0_id
             RETURN count(*)
             \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_id:$this_update_creator0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
-            YIELD value as _
+            YIELD value AS _
             WITH this
             CALL {
             	WITH this
@@ -354,7 +354,7 @@ describe("Cypher Auth Allow", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -424,7 +424,7 @@ describe("Cypher Auth Allow", () => {
             SET this_creator0.password = $this_update_creator0_password
             RETURN count(*)
             \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
-            YIELD value as _
+            YIELD value AS _
             WITH this
             CALL {
             	WITH this
@@ -433,7 +433,7 @@ describe("Cypher Auth Allow", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -586,7 +586,7 @@ describe("Cypher Auth Allow", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -677,7 +677,7 @@ describe("Cypher Auth Allow", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required', [0])
             	RETURN c AS this_post_Post_unique_ignored
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -744,7 +744,7 @@ describe("Cypher Auth Allow", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

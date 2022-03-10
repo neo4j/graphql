@@ -445,7 +445,7 @@ describe("integration/rfs/003", () => {
                             }
                             RETURN count(*)
                             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_director0:this_director0, auth:$auth,this_update_director0_id:$this_update_director0_id})
-                            YIELD value as _
+                            YIELD value AS _
                             WITH this
                             CALL {
                             	WITH this
@@ -538,7 +538,7 @@ describe("integration/rfs/003", () => {
                             }
                             RETURN count(*)
                             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_director0:this_director0, auth:$auth,this_update_director0_id:$this_update_director0_id})
-                            YIELD value as _
+                            YIELD value AS _
                             WITH this
                             CALL {
                             	WITH this
@@ -1272,7 +1272,7 @@ describe("integration/rfs/003", () => {
                         	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
-                        RETURN collect(this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) }) AS data"
+                        RETURN collect(DISTINCT this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) }) AS data"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1372,7 +1372,7 @@ describe("integration/rfs/003", () => {
                         	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
-                        RETURN collect(this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) }) AS data"
+                        RETURN collect(DISTINCT this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) }) AS data"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`

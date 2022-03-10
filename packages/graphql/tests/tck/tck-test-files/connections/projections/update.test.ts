@@ -91,7 +91,7 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN collect(this { .title, actorsConnection }) AS data"
+            RETURN collect(DISTINCT this { .title, actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

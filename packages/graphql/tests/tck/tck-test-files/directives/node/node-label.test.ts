@@ -244,7 +244,7 @@ describe("Label in Node directive", () => {
             "MATCH (this:\`Film\`)
             WHERE this.id = $this_id
             SET this.id = $this_update_id
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -286,8 +286,8 @@ describe("Label in Node directive", () => {
             SET this_actors0.name = $this_update_actors0_name
             RETURN count(*)
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-            YIELD value as _
-            RETURN collect(this { .id }) AS data"
+            YIELD value AS _
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -356,7 +356,7 @@ describe("Label in Node directive", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -396,7 +396,7 @@ describe("Label in Node directive", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

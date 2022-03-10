@@ -452,7 +452,7 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:User)
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             SET this.name = $this_update_name
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -483,7 +483,7 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:User)
             WHERE this.name = $this_name AND this.id IS NOT NULL AND this.id = $this_auth_where0_id
             SET this.name = $this_update_name
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -532,8 +532,8 @@ describe("Cypher Auth Where", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id})
-            YIELD value as _
-            RETURN collect(this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_where0_creator_id) | this_posts { .id } ] }) AS data"
+            YIELD value AS _
+            RETURN collect(DISTINCT this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_where0_creator_id) | this_posts { .id } ] }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -808,7 +808,7 @@ describe("Cypher Auth Where", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -852,7 +852,7 @@ describe("Cypher Auth Where", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -897,7 +897,7 @@ describe("Cypher Auth Where", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -941,7 +941,7 @@ describe("Cypher Auth Where", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -984,7 +984,7 @@ describe("Cypher Auth Where", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1026,7 +1026,7 @@ describe("Cypher Auth Where", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1087,7 +1087,7 @@ describe("Cypher Auth Where", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1140,7 +1140,7 @@ describe("Cypher Auth Where", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

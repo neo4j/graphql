@@ -124,7 +124,7 @@ describe("#324", () => {
             }
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_car0:this_car0, updatePeople: $updatePeople, this_car0_manufacturer0:this_car0_manufacturer0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
-            YIELD value as _
+            YIELD value AS _
             WITH this, this_car0
             CALL {
             	WITH this_car0
@@ -135,7 +135,7 @@ describe("#324", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updatePeople: $updatePeople, this_car0:this_car0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
-            YIELD value as _
+            YIELD value AS _
             WITH this
             CALL {
             	WITH this
@@ -144,7 +144,7 @@ describe("#324", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPerson.car required', [0])
             	RETURN c AS this_car_Car_unique_ignored
             }
-            RETURN collect(this { .identifier }) AS data"
+            RETURN collect(DISTINCT this { .identifier }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

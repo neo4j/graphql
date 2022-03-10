@@ -28,7 +28,7 @@ describe("createEventMeta", () => {
 
     test("update", () => {
         expect(createEventMeta({ event: "update", nodeVariable: "this" })).toBe(
-            `meta + { event: "update", id: id(this), properties: { old: this { .* }, new: this { .* } }, timestamp: timestamp() } AS meta`
+            `meta + { event: "update", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp() } AS meta`
         );
     });
 

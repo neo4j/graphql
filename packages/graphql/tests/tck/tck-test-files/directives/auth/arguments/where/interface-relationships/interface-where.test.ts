@@ -337,7 +337,7 @@ describe("Cypher Auth Where", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -376,7 +376,7 @@ describe("Cypher Auth Where", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -424,7 +424,7 @@ describe("Cypher Auth Where", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             UNION
             WITH this
@@ -442,10 +442,10 @@ describe("Cypher Auth Where", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -765,7 +765,7 @@ describe("Cypher Auth Where", () => {
             }
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -829,7 +829,7 @@ describe("Cypher Auth Where", () => {
             }
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -884,7 +884,7 @@ describe("Cypher Auth Where", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -938,7 +938,7 @@ describe("Cypher Auth Where", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -999,7 +999,7 @@ describe("Cypher Auth Where", () => {
             }
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1059,7 +1059,7 @@ describe("Cypher Auth Where", () => {
             }
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1128,7 +1128,7 @@ describe("Cypher Auth Where", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1189,7 +1189,7 @@ describe("Cypher Auth Where", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

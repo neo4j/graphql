@@ -104,3 +104,4 @@ export enum RelationshipQueryDirectionOption {
 }
 
 export const META_CYPHER_VARIABLE = "meta";
+export const META_OLD_PROPS_CYPHER_VARIABLE = "oldProps";

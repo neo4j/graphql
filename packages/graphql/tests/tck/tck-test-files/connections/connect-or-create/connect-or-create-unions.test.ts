@@ -240,7 +240,7 @@ describe("Create or connect with unions", () => {
             this_relationship_this_actedIn_Series0_connectOrCreate0.screentime = $this_relationship_this_actedIn_Series0_connectOrCreate0_on_create_screentime
             	RETURN COUNT(*)
             }
-            RETURN collect(this { .name }) AS data"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

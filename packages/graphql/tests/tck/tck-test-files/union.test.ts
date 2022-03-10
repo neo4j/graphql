@@ -157,7 +157,7 @@ describe("Cypher Union", () => {
             CREATE (this_create_search_Genre0_node:Genre)
             SET this_create_search_Genre0_node.name = $this_create_search_Genre0_node_name
             MERGE (this)-[:SEARCH]->(this_create_search_Genre0_node)
-            RETURN collect(this { .title }) AS data"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -256,8 +256,8 @@ describe("Cypher Union", () => {
             SET this_search_Genre0.name = $this_update_search_Genre0_name
             RETURN count(*)
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name})
-            YIELD value as _
-            RETURN collect(this { .title }) AS data"
+            YIELD value AS _
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -329,7 +329,7 @@ describe("Cypher Union", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .title }) AS data"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -392,7 +392,7 @@ describe("Cypher Union", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .title }) AS data"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -453,7 +453,7 @@ describe("Cypher Union", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .title }) AS data"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -491,7 +491,7 @@ describe("Cypher Union", () => {
             WHERE this_delete_search_Genre0.name = $updateMovies.args.delete.search.Genre[0].where.node.name
             WITH this, collect(DISTINCT this_delete_search_Genre0) as this_delete_search_Genre0_to_delete
             FOREACH(x IN this_delete_search_Genre0_to_delete | DETACH DELETE x)
-            RETURN collect(this { .title }) AS data"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

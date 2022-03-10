@@ -410,6 +410,7 @@ export default function translateUpdate({ node, context }: { node: Node; context
         ...(relationshipValidationStr ? [`WITH ${withVars.join(", ")}`, relationshipValidationStr] : []),
         ...connectionStrs,
         ...interfaceStrs,
+        ...(context.subscriptionsEnabled ? [`UNWIND ${META_CYPHER_VARIABLE} AS m`] : []),
         returnStatement,
     ];
 
@@ -427,11 +428,11 @@ function generateUpdateReturnStatement(
     const statements: string[] = [];
 
     if (varName && projStr) {
-        statements.push(`collect(${varName} ${projStr}) AS data`);
+        statements.push(`collect(DISTINCT ${varName} ${projStr}) AS data`);
     }
 
     if (subscriptionsEnabled) {
-        statements.push(META_CYPHER_VARIABLE);
+        statements.push(`collect(DISTINCT m) as ${META_CYPHER_VARIABLE}`);
     }
 
     if (statements.length === 0) {

@@ -106,7 +106,7 @@ describe("Interface Relationships - Update create", () => {
             RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
             WITH this, collect(actedIn) AS actedIn
-            RETURN collect(this { .name, actedIn: actedIn }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: actedIn }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

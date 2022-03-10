@@ -586,7 +586,7 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this
             CALL apoc.util.validate(NOT(((ANY(r IN [\\"user\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR (ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.name = $this_update_name
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -631,7 +631,7 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this
             CALL apoc.util.validate(NOT(((ANY(r IN [\\"user\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR (ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.name = $this_update_name
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -696,8 +696,8 @@ describe("Cypher Auth Where with Roles", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id})
-            YIELD value as _
-            RETURN collect(this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE (((ANY(r IN [\\"user\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_where0_creator_id))) OR (ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)))) AND apoc.util.validatePredicate(NOT(((ANY(r IN [\\"user\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR (ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_posts { .id } ] }) AS data"
+            YIELD value AS _
+            RETURN collect(DISTINCT this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE (((ANY(r IN [\\"user\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_where0_creator_id))) OR (ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)))) AND apoc.util.validatePredicate(NOT(((ANY(r IN [\\"user\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR (ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_posts { .id } ] }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1006,7 +1006,7 @@ describe("Cypher Auth Where with Roles", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1066,7 +1066,7 @@ describe("Cypher Auth Where with Roles", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1125,7 +1125,7 @@ describe("Cypher Auth Where with Roles", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1183,7 +1183,7 @@ describe("Cypher Auth Where with Roles", () => {
             	)
             	RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1242,7 +1242,7 @@ describe("Cypher Auth Where with Roles", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1300,7 +1300,7 @@ describe("Cypher Auth Where with Roles", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1375,7 +1375,7 @@ describe("Cypher Auth Where with Roles", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1442,7 +1442,7 @@ describe("Cypher Auth Where with Roles", () => {
             )
             RETURN count(*)
             }
-            RETURN collect(this { .id }) AS data"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
