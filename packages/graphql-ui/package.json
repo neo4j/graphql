@@ -27,6 +27,7 @@
         "codemirror-graphql": "^1.2.12",
         "crypto-js": "^4.1.1",
         "graphiql-explorer": "^0.9.0",
+        "graphql-request": "^4.0.0",
         "markdown-it": "^12.3.2",
         "neo4j-driver": "^4.1.0",
         "node-polyfill-webpack-plugin": "1.1.4",

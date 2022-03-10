@@ -2084,6 +2084,7 @@ __metadata:
     css-loader: ^6.6.0
     file-loader: ^6.2.0
     graphiql-explorer: ^0.9.0
+    graphql-request: ^4.0.0
     html-inline-script-webpack-plugin: ^3.0.0
     html-webpack-inline-source-plugin: ^0.0.10
     html-webpack-plugin: 5.5.0
@@ -6578,7 +6579,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:3.1.5, cross-fetch@npm:^3.1.5":
+"cross-fetch@npm:3.1.5, cross-fetch@npm:^3.0.6, cross-fetch@npm:^3.1.5":
   version: 3.1.5
   resolution: "cross-fetch@npm:3.1.5"
   dependencies:
@@ -8578,6 +8579,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"extract-files@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "extract-files@npm:9.0.0"
+  checksum: c31781d090f8d8f62cc541f1023b39ea863f24bd6fb3d4011922d71cbded70cef8191f2b70b43ec6cb5c5907cdad1dc5e9f29f78228936c10adc239091d8ab64
+  languageName: node
+  linkType: hard
+
 "extract-zip@npm:2.0.1":
   version: 2.0.1
   resolution: "extract-zip@npm:2.0.1"
@@ -9596,6 +9604,19 @@ __metadata:
   peerDependencies:
     graphql: ^16.2.0
   checksum: 74b2b608ed7c18cc405d53fa7e482a68442a4dc7c0748bba029c59e1d23c6c6e5b8193c775eb73f6bb0dce49501f66af0453eb0b0f0362374cef9f97528852c0
+  languageName: node
+  linkType: hard
+
+"graphql-request@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "graphql-request@npm:4.0.0"
+  dependencies:
+    cross-fetch: ^3.0.6
+    extract-files: ^9.0.0
+    form-data: ^3.0.0
+  peerDependencies:
+    graphql: 14 - 16
+  checksum: 0d16c7f06360679c022faaa19554c2693e200263beae0dec920b0668f6c48b0d08de6e1155a50a050283a58a878b29b04db129a2d932a645bfadbe8d55530243
   languageName: node
   linkType: hard
 
