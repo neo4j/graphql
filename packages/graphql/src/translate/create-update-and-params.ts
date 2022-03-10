@@ -482,7 +482,6 @@ function createUpdateAndParams({
                     skipIsAuthenticated: true,
                     context,
                     bind: { parentNode: node, varName, chainStr: param },
-                    escapeQuotes: false,
                 });
 
                 if (!res.meta) {
