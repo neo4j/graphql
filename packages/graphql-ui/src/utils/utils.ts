@@ -31,6 +31,7 @@ import "codemirror/addon/search/searchcursor";
 import "codemirror/addon/search/jump-to-line";
 import "codemirror/addon/dialog/dialog";
 import "codemirror/addon/lint/lint";
+import "codemirror/mode/javascript/javascript";
 import "codemirror/keymap/sublime";
 import "codemirror-graphql/hint";
 import "codemirror-graphql/lint";
