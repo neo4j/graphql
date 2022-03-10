@@ -44,7 +44,18 @@ const DEFAULT_TYPE_DEFS = `
     type Movie {
         title: String!
     }
+    
 `;
+
+const DEFAULT_OPTIONS = JSON.stringify(
+    {
+        config: {
+            enableRegex: true,
+        },
+    },
+    null,
+    2
+);
 
 export interface Props {
     onChange: (s: GraphQLSchema) => void;
@@ -57,7 +68,7 @@ export const SchemaEditor = (props: Props) => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [isDebugChecked, setIsDebugChecked] = useState<string | null>(localStorage.getItem(LOCAL_STATE_DEBUG));
-    const [variableValues, setVariableValues] = useState("");
+    const [variableValues, setVariableValues] = useState(DEFAULT_OPTIONS);
 
     const onChangeDebugCheckbox = (): void => {
         const next = isDebugChecked === "true" ? "false" : "true";
@@ -77,19 +88,23 @@ export const SchemaEditor = (props: Props) => {
     };
 
     const buildSchema = useCallback(
-        async (typeDefs: string) => {
+        async (typeDefs: string, userOptions: { config: any; [k: string]: unknown }) => {
             try {
                 setLoading(true);
 
                 localStorage.setItem(LOCAL_STATE_TYPE_DEFS, JSON.stringify(typeDefs));
 
-                const neoSchema = new Neo4jGraphQL({
+                const options = {
+                    ...userOptions,
                     typeDefs,
                     driver: auth.driver,
                     config: {
+                        ...(userOptions.config ? userOptions.config : {}),
                         enableDebug: isDebugChecked === "true",
                     },
-                });
+                };
+
+                const neoSchema = new Neo4jGraphQL(options);
 
                 const schema = await neoSchema.getSchema();
 
@@ -101,7 +116,7 @@ export const SchemaEditor = (props: Props) => {
                 setLoading(false);
             }
         },
-        [isDebugChecked]
+        [isDebugChecked, variableValues]
     );
 
     const introspect = useCallback(async () => {
@@ -124,9 +139,9 @@ export const SchemaEditor = (props: Props) => {
 
     const onSubmit = useCallback(() => {
         if (ref.current?.value) {
-            buildSchema(ref.current?.value);
+            buildSchema(ref.current?.value, JSON.parse(variableValues));
         }
-    }, [ref.current?.value, buildSchema]);
+    }, [ref.current?.value, buildSchema, variableValues]);
 
     useEffect(() => {
         if (ref.current === null) {
@@ -173,55 +188,61 @@ export const SchemaEditor = (props: Props) => {
     return (
         <div className="w-1/2 p-5">
             <div className="w-full">
-                {error && (
-                    <div
-                        className="mt-5 mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                        role="alert"
-                    >
-                        <strong className="font-bold">Holy smokes! </strong>
-                        <span className="block sm:inline">{error}</span>
+                <div className="pb-3 pt-3">
+                    {error && (
+                        <div
+                            className="mt-5 mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                            role="alert"
+                        >
+                            <strong className="font-bold">Holy smokes! </strong>
+                            <span className="block sm:inline">{error}</span>
+                        </div>
+                    )}
+                    <div className="flex items-center">
+                        <Button id={SCHEMA_EDITOR_BUILD_BUTTON} fill="outlined" onClick={onSubmit} disabled={loading}>
+                            {loading ? "Loading..." : "Build schema"}
+                        </Button>
+
+                        <Button fill="outlined" onClick={formatTheCode} disabled={loading}>
+                            {loading ? "Loading..." : "Prettify (CTRL+L)"}
+                        </Button>
+
+                        <Button fill="outlined" onClick={introspect} disabled={loading}>
+                            {loading ? "Loading..." : "Generate typeDefs"}
+                        </Button>
+
+                        <Checkbox
+                            label="Enable debug"
+                            checked={isDebugChecked === "true"}
+                            onChange={onChangeDebugCheckbox}
+                        />
                     </div>
-                )}
-                <div className="flex items-center">
-                    <Button id={SCHEMA_EDITOR_BUILD_BUTTON} fill="outlined" onClick={onSubmit} disabled={loading}>
-                        {loading ? "Loading..." : "Build schema"}
-                    </Button>
-
-                    <Button fill="outlined" onClick={formatTheCode} disabled={loading}>
-                        {loading ? "Loading..." : "Prettify (CTRL+L)"}
-                    </Button>
-
-                    <Button fill="outlined" onClick={introspect} disabled={loading}>
-                        {loading ? "Loading..." : "Generate typeDefs"}
-                    </Button>
-
-                    <Checkbox
-                        label="Enable debug"
-                        checked={isDebugChecked === "true"}
-                        onChange={onChangeDebugCheckbox}
-                    />
                 </div>
 
-                <Row className={"flex-1"} initialHeight={1200}>
+                <Row className={"flex-1"} initialHeight={1200} initialWidth={1200}>
                     <ColsWrapper>
                         <Col initialWidth={600} left={true}>
                             <RowsWrapper>
-                                <Row initialHeight={1200}>
+                                <Row>
                                     <textarea
                                         id={SCHEMA_EDITOR_INPUT}
                                         /* @ts-ignore */
                                         ref={ref}
-                                        style={{ width: "100%", height: "800px" }}
+                                        style={{ width: "100%", height: "100%" }}
                                         disabled={loading}
                                     />
                                 </Row>
                             </RowsWrapper>
                         </Col>
 
-                        <Col initialWidth={600} left={false}>
+                        <Col initialHeight={300} right={true}>
                             <RowsWrapper>
-                                <Row initialHeight={300}>
-                                    <JSONEditor id={"EDITOR_PARAMS_INPUT"} onChange={setVariableValues} />
+                                <Row>
+                                    <JSONEditor
+                                        id={"EDITOR_PARAMS_INPUT"}
+                                        onChange={setVariableValues}
+                                        json={variableValues}
+                                    />
                                 </Row>
                             </RowsWrapper>
                         </Col>

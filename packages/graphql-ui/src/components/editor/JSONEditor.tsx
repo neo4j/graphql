@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { CodeMirror } from "../../utils/utils";
 
 export interface Props {
@@ -30,7 +30,6 @@ export interface Props {
 export const JSONEditor = (props: Props) => {
     const ref = useRef<HTMLTextAreaElement | null>(null);
     const mirror = useRef<CodeMirror.Editor | null>(null);
-    const [input, setInput] = useState("");
 
     useEffect(() => {
         if (!ref.current) {
@@ -55,24 +54,21 @@ export const JSONEditor = (props: Props) => {
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
         });
 
-        document[props.id] = mirror.current;
+        if (props.json && mirror.current) {
+            mirror.current.setValue(props.json);
+        }
 
-        mirror.current.on("change", (e) => {
-            setInput(e.getValue());
-        });
+        document[props.id] = mirror.current;
     }, []);
 
     useEffect(() => {
-        if (props.json && mirror.current) {
-            mirror.current.setValue(JSON.stringify(JSON.parse(props.json || "{}"), null, 2));
+        if (!props.readonly && props.onChange && mirror.current) {
+            mirror.current.on("change", (e) => {
+                //@ts-ignore
+                props.onChange(e.getValue() as string);
+            });
         }
-    }, [props.json]);
-
-    useEffect(() => {
-        if (!props.readonly && props.onChange) {
-            props.onChange(input);
-        }
-    }, [input, props.onChange]);
+    }, [props.onChange]);
 
     useEffect(() => {
         return () => {
