@@ -25,7 +25,7 @@ import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import neo4j from "../../neo4j";
 
-describe("Subscriptions delete", () => {
+describe("Subscriptions update", () => {
     let driver: Driver;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
