@@ -33,6 +33,8 @@ import {
     SCHEMA_EDITOR_INPUT,
 } from "../../constants";
 import { formatCode, ParserOptions } from "../editor/utils";
+import { Col, ColsWrapper, Row, RowsWrapper } from "react-grid-resizable";
+import { JSONEditor } from "../editor/JSONEditor";
 
 const DEFAULT_TYPE_DEFS = `
     # Write your own type definition in the editor here or 
@@ -55,6 +57,7 @@ export const SchemaEditor = (props: Props) => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [isDebugChecked, setIsDebugChecked] = useState<string | null>(localStorage.getItem(LOCAL_STATE_DEBUG));
+    const [variableValues, setVariableValues] = useState("");
 
     const onChangeDebugCheckbox = (): void => {
         const next = isDebugChecked === "true" ? "false" : "true";
@@ -199,18 +202,31 @@ export const SchemaEditor = (props: Props) => {
                     />
                 </div>
 
-                <div
-                    className="mt-5"
-                    style={{ width: "100%", height: "800px", overflow: "hidden", resize: "vertical" }}
-                >
-                    <textarea
-                        id={SCHEMA_EDITOR_INPUT}
-                        /* @ts-ignore */
-                        ref={ref}
-                        style={{ width: "100%", height: "800px" }}
-                        disabled={loading}
-                    />
-                </div>
+                <Row className={"flex-1"} initialHeight={1200}>
+                    <ColsWrapper>
+                        <Col initialWidth={600} left={true}>
+                            <RowsWrapper>
+                                <Row initialHeight={1200}>
+                                    <textarea
+                                        id={SCHEMA_EDITOR_INPUT}
+                                        /* @ts-ignore */
+                                        ref={ref}
+                                        style={{ width: "100%", height: "800px" }}
+                                        disabled={loading}
+                                    />
+                                </Row>
+                            </RowsWrapper>
+                        </Col>
+
+                        <Col initialWidth={600} left={false}>
+                            <RowsWrapper>
+                                <Row initialHeight={300}>
+                                    <JSONEditor id={"EDITOR_PARAMS_INPUT"} onChange={setVariableValues} />
+                                </Row>
+                            </RowsWrapper>
+                        </Col>
+                    </ColsWrapper>
+                </Row>
             </div>
         </div>
     );
