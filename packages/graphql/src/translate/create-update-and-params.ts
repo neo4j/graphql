@@ -474,7 +474,6 @@ function createUpdateAndParams({
                     operations: "UPDATE",
                     context,
                     allow: { varName, parentNode: node, chainStr: param },
-                    escapeQuotes: false,
                 });
                 const postAuth = createAuthAndParams({
                     entity: authableField,
