@@ -133,7 +133,7 @@ describe("workflow", () => {
 
         await page.click(`#${EDITOR_QUERY_BUTTON}`);
         await page.waitForNetworkIdle();
-        await page.waitFor(2000); // - Wait for Response
+        await page.waitForTimeout(2000); // - Wait for Response
         const response = await page.evaluate((injected) => {
             // @ts-ignore
             return document[`${injected}`].getValue();
