@@ -113,7 +113,7 @@ describe("Cypher Update", () => {
             SET this_actors0.name = $this_update_actors0_name
             RETURN count(*)
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-            YIELD value as _
+            YIELD value AS _
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -200,10 +200,10 @@ describe("Cypher Update", () => {
             SET this_actors0_movies0.title = $this_update_actors0_movies0_title
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_actors0:this_actors0, updateMovies: $updateMovies, this_actors0_movies0:this_actors0_movies0, auth:$auth,this_update_actors0_movies0_title:$this_update_actors0_movies0_title})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name,this_update_actors0_movies0_title:$this_update_actors0_movies0_title})
-            YIELD value as _
+            YIELD value AS _
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -717,7 +717,7 @@ describe("Cypher Update", () => {
             SET this_actors0.name = $this_update_actors0_name
             RETURN count(*)
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-            YIELD value as _
+            YIELD value AS _
             WITH this
             OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
             WHERE this_delete_actors0.name = $updateMovies.args.delete.actors[0].where.node.name

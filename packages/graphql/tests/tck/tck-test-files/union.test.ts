@@ -256,7 +256,7 @@ describe("Cypher Union", () => {
             SET this_search_Genre0.name = $this_update_search_Genre0_name
             RETURN count(*)
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name})
-            YIELD value as _
+            YIELD value AS _
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 

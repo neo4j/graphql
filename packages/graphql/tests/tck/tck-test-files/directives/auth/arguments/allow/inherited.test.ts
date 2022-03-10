@@ -338,7 +338,7 @@ describe("@auth allow when inherited from interface", () => {
             SET this_creator0.id = $this_update_creator0_id
             RETURN count(*)
             \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_id:$this_update_creator0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
-            YIELD value as _
+            YIELD value AS _
             WITH this
             CALL {
             	WITH this
@@ -417,7 +417,7 @@ describe("@auth allow when inherited from interface", () => {
             SET this_creator0.password = $this_update_creator0_password
             RETURN count(*)
             \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
-            YIELD value as _
+            YIELD value AS _
             WITH this
             CALL {
             	WITH this

@@ -445,7 +445,7 @@ describe("integration/rfs/003", () => {
                             }
                             RETURN count(*)
                             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_director0:this_director0, auth:$auth,this_update_director0_id:$this_update_director0_id})
-                            YIELD value as _
+                            YIELD value AS _
                             WITH this
                             CALL {
                             	WITH this
@@ -538,7 +538,7 @@ describe("integration/rfs/003", () => {
                             }
                             RETURN count(*)
                             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_director0:this_director0, auth:$auth,this_update_director0_id:$this_update_director0_id})
-                            YIELD value as _
+                            YIELD value AS _
                             WITH this
                             CALL {
                             	WITH this

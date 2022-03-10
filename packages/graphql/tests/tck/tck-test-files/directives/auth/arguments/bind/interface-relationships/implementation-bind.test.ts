@@ -269,10 +269,10 @@ describe("Cypher Auth Allow", () => {
             CALL apoc.do.when(this_content0_creator0 IS NOT NULL, \\\\\\"
             SET this_content0_creator0.id = $this_update_content0_creator0_id
             WITH this, this_content0, this_content0_creator0
-            CALL apoc.util.validate(NOT(this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0_auth_bind0_id), \\\\\\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\\\\\", [0])
+            CALL apoc.util.validate(NOT(this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0_auth_bind0_id), \\\\\\\\\\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\\\\\\\\\", [0])
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_content0:this_content0, updateUsers: $updateUsers, this_content0_creator0:this_content0_creator0, auth:$auth,this_update_content0_creator0_id:$this_update_content0_creator0_id,this_content0_creator0_auth_bind0_id:$this_content0_creator0_auth_bind0_id})
-            YIELD value as _
+            YIELD value AS _
             WITH this, this_content0
             CALL {
             	WITH this_content0
@@ -283,7 +283,7 @@ describe("Cypher Auth Allow", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_creator0_id:$this_update_content0_creator0_id,this_content0_creator0_auth_bind0_id:$this_content0_creator0_auth_bind0_id})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             UNION
             WITH this
@@ -295,10 +295,10 @@ describe("Cypher Auth Allow", () => {
             CALL apoc.do.when(this_content0_creator0 IS NOT NULL, \\\\\\"
             SET this_content0_creator0.id = $this_update_content0_creator0_id
             WITH this, this_content0, this_content0_creator0
-            CALL apoc.util.validate(NOT(this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0_auth_bind0_id), \\\\\\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\\\\\", [0])
+            CALL apoc.util.validate(NOT(this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0_auth_bind0_id), \\\\\\\\\\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\\\\\\\\\", [0])
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_content0:this_content0, updateUsers: $updateUsers, this_content0_creator0:this_content0_creator0, auth:$auth,this_update_content0_creator0_id:$this_update_content0_creator0_id,this_content0_creator0_auth_bind0_id:$this_content0_creator0_auth_bind0_id})
-            YIELD value as _
+            YIELD value AS _
             WITH this, this_content0
             CALL apoc.util.validate(NOT(EXISTS((this_content0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_auth_bind0_creator_id)), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             WITH this, this_content0
@@ -311,7 +311,7 @@ describe("Cypher Auth Allow", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_creator0_id:$this_update_content0_creator0_id,this_content0_creator0_auth_bind0_id:$this_content0_creator0_auth_bind0_id,this_content0_auth_bind0_creator_id:$this_content0_auth_bind0_creator_id})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             }
             WITH this

@@ -221,7 +221,7 @@ describe("@auth allow on specific interface implementation", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             UNION
             WITH this
@@ -240,7 +240,7 @@ describe("@auth allow on specific interface implementation", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id,this_content0_auth_allow0_creator_id:$this_content0_auth_allow0_creator_id})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             }
             WITH this

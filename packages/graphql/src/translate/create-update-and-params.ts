@@ -22,7 +22,7 @@ import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createAuthParam from "./create-auth-param";
 import createAuthAndParams from "./create-auth-and-params";
@@ -230,7 +230,7 @@ function createUpdateAndParams({
                                 updateStrs.push(escapeQuery(onUpdateAndParams[0]));
                             }
                             if (context.subscriptionsEnabled) {
-                                updateStrs.push("RETURN meta");
+                                updateStrs.push(`RETURN ${META_CYPHER_VARIABLE}`);
                             } else {
                                 updateStrs.push("RETURN count(*)");
                             }
@@ -239,15 +239,15 @@ function createUpdateAndParams({
                             }: $${parameterPrefix?.split(".")[0]}, ${_varName}:${_varName}REPLACE_ME}`;
 
                             updateStrs.push(
-                                `", ${context.subscriptionsEnabled ? `"RETURN meta as meta"` : `""`}, ${apocArgs})`
+                                `", ${
+                                    context.subscriptionsEnabled ? `"RETURN ${META_CYPHER_VARIABLE}"` : `""`
+                                }, ${apocArgs})`
                             );
                             if (context.subscriptionsEnabled) {
-                                updateStrs.push("YIELD value AS nested_value");
-                                updateStrs.push(
-                                    `WITH ${filterMetaVariable(withVars).join(", ")}, nested_value.meta as meta`
-                                );
+                                updateStrs.push("YIELD value");
+                                updateStrs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, value.meta AS meta`);
                             } else {
-                                updateStrs.push("YIELD value as _");
+                                updateStrs.push("YIELD value AS _");
                             }
 
                             const paramsString = Object.keys(innerApocParams)
@@ -278,7 +278,7 @@ function createUpdateAndParams({
                             }: $${parameterPrefix?.split(".")[0]}}`;
 
                             updateStrs.push(`", "", ${apocArgs})`);
-                            updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_edge`);
+                            updateStrs.push(`YIELD value AS ${relationshipVariable}_${key}${index}_edge`);
                             subquery.push(updateStrs.join("\n"));
                         }
                     }

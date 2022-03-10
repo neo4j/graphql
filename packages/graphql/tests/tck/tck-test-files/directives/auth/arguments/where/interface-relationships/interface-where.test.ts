@@ -424,7 +424,7 @@ describe("Cypher Auth Where", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             UNION
             WITH this
@@ -442,7 +442,7 @@ describe("Cypher Auth Where", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             }
             RETURN collect(DISTINCT this { .id }) AS data"
