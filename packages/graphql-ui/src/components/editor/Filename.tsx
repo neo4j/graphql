@@ -40,7 +40,7 @@ const Ending = (props: { extension: Extension }) => {
 
 export const FileName = (props: Props) => {
     return (
-        <div className="m-0 pt-1 pl-2 bg-draculaDark w-48 rounded-t">
+        <div className="m-0 p-1 pl-2 bg-draculaDark w-48 rounded-t">
             <p className="text-white text-sm">
                 <Icon extension={props.extension}></Icon> <span className="pl-1">{props.name}</span>
                 <Ending extension={props.extension}></Ending>

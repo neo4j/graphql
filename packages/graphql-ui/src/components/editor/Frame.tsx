@@ -32,7 +32,11 @@ export interface Props {
 export const Frame = (props: Props) => {
     return (
         <div className="h-full flex flex-row">
-            {props.showExplorer ? <div className="w-80 bg-white graphiql-container">{props.explorer}</div> : null}
+            {props.showExplorer ? (
+                <div className="w-80 bg-white graphiql-container" style={{ maxHeight: "1200px" }}>
+                    {props.explorer}
+                </div>
+            ) : null}
             <Row className={"flex-1"} initialHeight={1200}>
                 <ColsWrapper>
                     <Col initialWidth={600} left={false}>
@@ -44,10 +48,8 @@ export const Frame = (props: Props) => {
                     <Col initialWidth={600}>
                         <RowsWrapper>
                             <Row initialHeight={1200}>
-                                <div style={{ position: "relative", width: "100%", height: "100%" }}>
-                                    <div style={{ position: "absolute", width: "100%", height: "100%" }}>
-                                        {props.resultView}
-                                    </div>
+                                <div className="relative h-full w-full">
+                                    <div className="absolute h-full w-full">{props.resultView}</div>
                                     {props.showDocs ? (
                                         <div
                                             style={{
@@ -57,6 +59,7 @@ export const Frame = (props: Props) => {
                                                 right: 0,
                                                 width: "400px",
                                                 backgroundColor: "white",
+                                                overflowY: "auto",
                                             }}
                                         >
                                             {props.documentation}

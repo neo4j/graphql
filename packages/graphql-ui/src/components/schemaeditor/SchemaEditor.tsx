@@ -216,15 +216,6 @@ export const SchemaEditor = (props: Props) => {
     return (
         <div className="w-1/2">
             <div className="w-full">
-                {error && (
-                    <div
-                        className="mt-5 mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                        role="alert"
-                    >
-                        <strong className="font-bold">Holy smokes! </strong>
-                        <span className="block sm:inline">{error}</span>
-                    </div>
-                )}
                 <div className="border-b n-border-neutral-40 p-3 grid grid-cols-6 gap-4" style={{ width: "1200px" }}>
                     <Button
                         id={SCHEMA_EDITOR_BUILD_BUTTON}
@@ -241,6 +232,16 @@ export const SchemaEditor = (props: Props) => {
                         {loading ? "Loading..." : "Generate typeDefs"}
                     </Button>
                 </div>
+
+                {error && (
+                    <div
+                        className="mt-5 mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                        role="alert"
+                    >
+                        <strong className="font-bold">Holy smokes! </strong>
+                        <span className="block sm:inline">{error}</span>
+                    </div>
+                )}
 
                 <div className="mt-3">
                     <Row className={"flex-1"} initialHeight={1200} initialWidth={1200}>
@@ -277,7 +278,7 @@ export const SchemaEditor = (props: Props) => {
                                     <Row>
                                         <div className="pt-3">
                                             <h2 className="text-lg">Settings</h2>
-                                            <div className="pl-2">
+                                            <div className="pl-2 pt-2">
                                                 <Checkbox
                                                     className="m-0"
                                                     label="Enable debug"

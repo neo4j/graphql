@@ -1,3 +1,17 @@
+.docExplorerWrap {
+    overflow-y: auto !important;
+}
+
+.docExplorerHide {
+    cursor: pointer;
+    font-size: 18px;
+    margin: -7px -8px -6px 0;
+    padding: 18px 16px 15px 12px;
+    background: 0;
+    border: 0;
+    line-height: 14px;
+}
+
 .graphiql-container .doc-explorer {
     background: white;
 }
@@ -294,14 +308,4 @@
     text-transform: uppercase;
     top: 50%;
     transform: translate(0, -50%);
-}
-
-.docExplorerHide {
-    cursor: pointer;
-    font-size: 18px;
-    margin: -7px -8px -6px 0;
-    padding: 18px 16px 15px 12px;
-    background: 0;
-    border: 0;
-    line-height: 14px;
 }
