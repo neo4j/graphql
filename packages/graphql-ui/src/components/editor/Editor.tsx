@@ -33,6 +33,7 @@ import {
 import { Frame } from "./Frame";
 import { DocExplorer } from "./docexplorer/index";
 import { formatCode, ParserOptions } from "./utils";
+import { Extension } from "./Filename";
 
 const DEFAULT_QUERY = `
     # Type queries into this side of the screen, and you will 
@@ -135,10 +136,23 @@ export const Editor = (props: Props) => {
                         ) : null
                     }
                     parameterEditor={
-                        <JSONEditor id={EDITOR_PARAMS_INPUT} readonly={false} onChange={setVariableValues} />
+                        <JSONEditor
+                            id={EDITOR_PARAMS_INPUT}
+                            fileName="params"
+                            fileExtension={Extension.JSON}
+                            readonly={false}
+                            onChange={setVariableValues}
+                        />
                     }
                     resultView={
-                        <JSONEditor id={EDITOR_RESPONSE_OUTPUT} readonly={true} json={output} onChange={setOutput} />
+                        <JSONEditor
+                            id={EDITOR_RESPONSE_OUTPUT}
+                            fileName="response"
+                            fileExtension={Extension.JSON}
+                            readonly={true}
+                            json={output}
+                            onChange={setOutput}
+                        />
                     }
                     showExplorer={showExplorer}
                     explorer={

@@ -23,6 +23,7 @@ import { CodeMirror } from "../../utils/utils";
 import { EditorFromTextArea } from "codemirror";
 import { EDITOR_QUERY_INPUT } from "src/constants";
 import { formatCode, ParserOptions } from "./utils";
+import { Extension, FileName } from "./Filename";
 
 export interface Props {
     schema: GraphQLSchema;
@@ -118,5 +119,10 @@ export const GraphQLQueryEditor = ({ schema, mirrorRef, query, executeQuery, onC
         document[EDITOR_QUERY_INPUT] = mirror;
     }, [mirror]);
 
-    return <textarea ref={ref} className="w-full h-full" />;
+    return (
+        <div style={{ width: "100%", height: "100%" }}>
+            <FileName name={"query"} extension={Extension.GQL}></FileName>
+            <textarea ref={ref} className="w-full h-full" />;
+        </div>
+    );
 };

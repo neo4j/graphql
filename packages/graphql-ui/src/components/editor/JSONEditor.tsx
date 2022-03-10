@@ -20,12 +20,15 @@
 import { EditorFromTextArea } from "codemirror";
 import { useEffect, useRef } from "react";
 import { CodeMirror } from "../../utils/utils";
+import { Extension, FileName } from "./Filename";
 import { formatCode, ParserOptions } from "./utils";
 
 export interface Props {
     id: string;
     json?: string;
     readonly?: boolean;
+    fileName: string;
+    fileExtension: Extension;
     onChange?: (json: string) => void;
 }
 
@@ -74,5 +77,10 @@ export const JSONEditor = (props: Props) => {
         }
     }, [props.json]);
 
-    return <textarea id={props.id} style={{ width: "100%", height: "100%" }} ref={ref} />;
+    return (
+        <div style={{ width: "100%", height: "100%" }}>
+            <FileName extension={props.fileExtension} name={props.fileName}></FileName>
+            <textarea id={props.id} style={{ width: "100%", height: "100%" }} ref={ref} />;
+        </div>
+    );
 };

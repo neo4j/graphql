@@ -37,6 +37,7 @@ import {
 import { formatCode, ParserOptions } from "../editor/utils";
 import { Col, ColsWrapper, Row, RowsWrapper } from "react-grid-resizable";
 import { JSONEditor } from "../editor/JSONEditor";
+import { Extension, FileName } from "../editor/Filename";
 
 const DEFAULT_TYPE_DEFS = `
     # Write your own type definition in the editor here or 
@@ -262,13 +263,16 @@ export const SchemaEditor = (props: Props) => {
                         <Col initialWidth={600} left={true}>
                             <RowsWrapper>
                                 <Row>
-                                    <textarea
-                                        id={SCHEMA_EDITOR_INPUT}
-                                        /* @ts-ignore */
-                                        ref={ref}
-                                        style={{ width: "100%", height: "100%" }}
-                                        disabled={loading}
-                                    />
+                                    <div style={{ width: "100%", height: "100%" }}>
+                                        <FileName extension={Extension.GQL} name={"typeDefs"}></FileName>
+                                        <textarea
+                                            id={SCHEMA_EDITOR_INPUT}
+                                            /* @ts-ignore */
+                                            ref={ref}
+                                            style={{ width: "100%", height: "100%" }}
+                                            disabled={loading}
+                                        />
+                                    </div>
                                 </Row>
                             </RowsWrapper>
                         </Col>
@@ -277,7 +281,9 @@ export const SchemaEditor = (props: Props) => {
                             <RowsWrapper>
                                 <Row>
                                     <JSONEditor
+                                        fileExtension={Extension.JSON}
                                         id={"EDITOR_PARAMS_INPUT"}
+                                        fileName="options"
                                         onChange={setVariableValues}
                                         json={variableValues}
                                     />

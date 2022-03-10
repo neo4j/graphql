@@ -2082,6 +2082,7 @@ __metadata:
     cross-env: ^7.0.3
     crypto-js: ^4.1.1
     css-loader: ^6.6.0
+    file-loader: ^6.2.0
     graphiql-explorer: ^0.9.0
     html-inline-script-webpack-plugin: ^3.0.0
     html-webpack-inline-source-plugin: ^0.0.10
@@ -2106,6 +2107,7 @@ __metadata:
     ts-node: 10.5.0
     tsconfig-paths-webpack-plugin: 3.5.2
     typescript: 4.6.2
+    url-loader: ^4.1.1
     uuid: ^8.3.2
     webpack: 5.69.1
     webpack-cli: 4.9.2
@@ -8738,7 +8740,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-loader@npm:6.2.0":
+"file-loader@npm:6.2.0, file-loader@npm:^6.2.0":
   version: 6.2.0
   resolution: "file-loader@npm:6.2.0"
   dependencies:
@@ -19363,6 +19365,23 @@ __metadata:
   version: 0.1.0
   resolution: "urix@npm:0.1.0"
   checksum: 4c076ecfbf3411e888547fe844e52378ab5ada2d2f27625139011eada79925e77f7fbf0e4016d45e6a9e9adb6b7e64981bd49b22700c7c401c5fc15f423303b3
+  languageName: node
+  linkType: hard
+
+"url-loader@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "url-loader@npm:4.1.1"
+  dependencies:
+    loader-utils: ^2.0.0
+    mime-types: ^2.1.27
+    schema-utils: ^3.0.0
+  peerDependencies:
+    file-loader: "*"
+    webpack: ^4.0.0 || ^5.0.0
+  peerDependenciesMeta:
+    file-loader:
+      optional: true
+  checksum: c1122a992c6cff70a7e56dfc2b7474534d48eb40b2cc75467cde0c6972e7597faf8e43acb4f45f93c2473645dfd803bcbc20960b57544dd1e4c96e77f72ba6fd
   languageName: node
   linkType: hard
 
