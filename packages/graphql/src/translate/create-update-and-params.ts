@@ -22,7 +22,7 @@ import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createAuthParam from "./create-auth-param";
 import createAuthAndParams from "./create-auth-and-params";
@@ -428,7 +428,7 @@ function createUpdateAndParams({
 
         // OLD PROPS
         if (context.subscriptionsEnabled) {
-            res.strs.push(`WITH ${varName} { .* } AS oldProps, ${withVars.join(", ")}`);
+            res.strs.push(`WITH ${varName} { .* } AS ${META_OLD_PROPS_CYPHER_VARIABLE}, ${withVars.join(", ")}`);
         }
 
         if (!hasAppliedTimeStamps) {

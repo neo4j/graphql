@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { META_CYPHER_VARIABLE } from "../../constants";
+import { META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../../constants";
 
 export type SubscriptionsEventType = "create" | "update" | "delete";
 
@@ -58,7 +58,7 @@ function createEventMetaProperties({
             newProps = `${nodeVariable} { .* }`;
             break;
         case "update":
-            oldProps = `oldProps`; // TODO: use constant or something
+            oldProps = META_OLD_PROPS_CYPHER_VARIABLE;
             newProps = `${nodeVariable} { .* }`;
             break;
         case "delete":
