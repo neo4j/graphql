@@ -1,5 +1,6 @@
 import { EditorFromTextArea } from "codemirror";
 import prettier from "prettier";
+import prettierBabel from "prettier/parser-babel";
 import parserGraphQL from "prettier/parser-graphql";
 
 export enum ParserOptions {
@@ -22,9 +23,9 @@ export const formatCode = (mirror: EditorFromTextArea, parserOption: ParserOptio
         case ParserOptions.JSON:
             options = {
                 parser: "json",
+                plugins: [prettierBabel],
             };
             break;
-
         default:
             options = {
                 parser: "graphql",

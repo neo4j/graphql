@@ -17,8 +17,10 @@
  * limitations under the License.
  */
 
+import { EditorFromTextArea } from "codemirror";
 import { useEffect, useRef } from "react";
 import { CodeMirror } from "../../utils/utils";
+import { formatCode, ParserOptions } from "./utils";
 
 export interface Props {
     id: string;
@@ -68,6 +70,7 @@ export const JSONEditor = (props: Props) => {
     useEffect(() => {
         if (mirror.current && props.json) {
             mirror.current.setValue(props.json as string);
+            formatCode(mirror.current as EditorFromTextArea, ParserOptions.JSON);
         }
     }, [props.json]);
 
