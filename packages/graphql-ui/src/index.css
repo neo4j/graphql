@@ -4,5 +4,11 @@
 
 /* Global settings for ALL CodeMirror editors */
 .CodeMirror {
+    height: 100%;
     font-size: 17px;
+}
+
+.code-mirror-disabled-state {
+    pointer-events: none;
+    opacity: 0.85;
 }

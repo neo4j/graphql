@@ -21,11 +21,12 @@ import { EditorFromTextArea } from "codemirror";
 import { useEffect, useRef } from "react";
 import { CodeMirror } from "../../utils/utils";
 import { Extension, FileName } from "./Filename";
-import { formatCode, ParserOptions } from "./utils";
+import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 
 export interface Props {
     id: string;
     json?: string;
+    loading: boolean;
     readonly?: boolean;
     fileName: string;
     fileExtension: Extension;
@@ -76,6 +77,10 @@ export const JSONEditor = (props: Props) => {
             formatCode(mirror.current as EditorFromTextArea, ParserOptions.JSON);
         }
     }, [props.json]);
+
+    useEffect(() => {
+        handleEditorDisableState(mirror.current as EditorFromTextArea, props.loading);
+    }, [props.loading]);
 
     return (
         <div style={{ width: "100%", height: "100%" }}>

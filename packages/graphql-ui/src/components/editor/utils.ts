@@ -38,3 +38,13 @@ export const formatCode = (mirror: EditorFromTextArea, parserOption: ParserOptio
     mirror.setValue(formatted);
     if (cursor) mirror.setCursor(cursor);
 };
+
+export const handleEditorDisableState = (mirror: EditorFromTextArea | null, loading: boolean) => {
+    const wrapperElement = mirror?.getWrapperElement();
+
+    if (loading) {
+        wrapperElement?.classList.add("code-mirror-disabled-state");
+    } else {
+        wrapperElement?.classList.remove("code-mirror-disabled-state");
+    }
+};

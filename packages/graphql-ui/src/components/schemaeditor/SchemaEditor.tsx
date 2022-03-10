@@ -287,6 +287,7 @@ export const SchemaEditor = (props: Props) => {
                                         <JSONEditor
                                             fileExtension={Extension.JSON}
                                             id={"EDITOR_PARAMS_INPUT"}
+                                            loading={loading}
                                             fileName="options"
                                             onChange={setVariableValues}
                                             json={variableValues}

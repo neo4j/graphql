@@ -22,18 +22,19 @@ import { GraphQLSchema } from "graphql";
 import { CodeMirror } from "../../utils/utils";
 import { EditorFromTextArea } from "codemirror";
 import { EDITOR_QUERY_INPUT } from "src/constants";
-import { formatCode, ParserOptions } from "./utils";
+import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 import { Extension, FileName } from "./Filename";
 
 export interface Props {
     schema: GraphQLSchema;
     query: string;
+    loading: boolean;
     mirrorRef: React.MutableRefObject<EditorFromTextArea | null>;
     executeQuery: (override?: string) => Promise<void>;
     onChangeQuery: (query: string) => void;
 }
 
-export const GraphQLQueryEditor = ({ schema, mirrorRef, query, executeQuery, onChangeQuery }: Props) => {
+export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQuery, onChangeQuery }: Props) => {
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const ref = useRef<HTMLTextAreaElement | null>(null);
 
@@ -113,6 +114,10 @@ export const GraphQLQueryEditor = ({ schema, mirrorRef, query, executeQuery, onC
         mirror?.setValue(query);
         if (cursor) mirror?.setCursor(cursor);
     }, [query]);
+
+    useEffect(() => {
+        handleEditorDisableState(mirror, loading);
+    }, [loading]);
 
     useEffect(() => {
         // @ts-ignore

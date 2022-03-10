@@ -123,6 +123,7 @@ export const Editor = (props: Props) => {
                             <GraphQLQueryEditor
                                 schema={props.schema}
                                 query={query}
+                                loading={loading}
                                 mirrorRef={refForQueryEditorMirror}
                                 onChangeQuery={(query) => {
                                     setQuery(query);
@@ -136,6 +137,7 @@ export const Editor = (props: Props) => {
                         <JSONEditor
                             id={EDITOR_PARAMS_INPUT}
                             fileName="params"
+                            loading={loading}
                             fileExtension={Extension.JSON}
                             readonly={false}
                             onChange={setVariableValues}
@@ -145,6 +147,7 @@ export const Editor = (props: Props) => {
                         <JSONEditor
                             id={EDITOR_RESPONSE_OUTPUT}
                             fileName="response"
+                            loading={loading}
                             fileExtension={Extension.JSON}
                             readonly={true}
                             json={output}

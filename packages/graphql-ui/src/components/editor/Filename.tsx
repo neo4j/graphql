@@ -1,5 +1,5 @@
 // @ts-ignore
-import GraphQLIcon from "../../../public/graphql-icon.svg";
+import GraphQLIcon from "../../assets/graphql-icon.svg";
 
 export enum Extension {
     JSON,
@@ -38,7 +38,7 @@ const Ending = (props: { extension: Extension }) => {
 
 export const FileName = (props: Props) => {
     return (
-        <div className="m-0 p-3 bg-draculaDark w-48">
+        <div className="m-0 p-2 bg-draculaDark w-48 rounded-t">
             <p className="text-white">
                 <Icon extension={props.extension}></Icon> <span>{props.name}</span>
                 <Ending extension={props.extension}></Ending>
