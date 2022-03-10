@@ -24,6 +24,8 @@ import { FormInput } from "./FormInput";
 import { Button } from "@neo4j-ndl/react";
 import { LOGIN_BUTTON, LOGIN_PASSWORD_INPUT, LOGIN_URL_INPUT, LOGIN_USERNAME_INPUT } from "../../constants";
 
+const DEFAULT_BOLT_URL = "bolt://localhost:7687";
+
 const Login = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -83,8 +85,8 @@ const Login = () => {
                             id={LOGIN_URL_INPUT}
                             label="Bolt URL"
                             name="url"
-                            placeholder="bolt://localhost:7687"
-                            defaultValue="bolt://localhost:7687"
+                            placeholder={DEFAULT_BOLT_URL}
+                            defaultValue={DEFAULT_BOLT_URL}
                             required={true}
                             type="text"
                             disabled={loading}

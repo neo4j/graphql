@@ -21,16 +21,12 @@ import React, { Dispatch, useState, SetStateAction } from "react";
 import * as neo4j from "neo4j-driver";
 import { encrypt, decrypt } from "../utils/utils";
 import { LOCAL_STATE_LOGIN } from "../constants";
+import { resolveNeo4jDesktopLoginPayload } from "./utils";
+import { LoginPayload } from "./types";
 
 const VERIFY_CONNECTION_INTERVAL_MS = 30000;
 
 interface LoginOptions {
-    username: string;
-    password: string;
-    url: string;
-}
-
-interface LoginPayload {
     username: string;
     password: string;
     url: string;
@@ -61,6 +57,28 @@ export function Provider(props: any) {
         }
     };
 
+    const processLoginPayload = (value: State | undefined, loginPayloadFromDesktop: LoginPayload | null) => {
+        let loginPayload: LoginPayload | null = null;
+        if (loginPayloadFromDesktop) {
+            loginPayload = loginPayloadFromDesktop;
+        } else {
+            const storedEncryptedPayload = localStorage.getItem(LOCAL_STATE_LOGIN);
+            if (storedEncryptedPayload && typeof storedEncryptedPayload === "string") {
+                const { encryptedPayload, hashKey } = JSON.parse(storedEncryptedPayload as string);
+                loginPayload = decrypt(encryptedPayload, hashKey) as unknown as LoginPayload;
+            }
+        }
+        if (loginPayload && value && !value.driver) {
+            value
+                .login({
+                    username: loginPayload.username,
+                    password: loginPayload.password,
+                    url: loginPayload.url,
+                })
+                .catch(() => {});
+        }
+    };
+
     [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
             const auth = neo4j.auth.basic(options.username, options.password);
@@ -88,21 +106,7 @@ export function Provider(props: any) {
         },
     });
 
-    const storedEncryptedPayload = localStorage.getItem(LOCAL_STATE_LOGIN);
-    if (storedEncryptedPayload && typeof storedEncryptedPayload === "string") {
-        const { encryptedPayload, hashKey } = JSON.parse(storedEncryptedPayload as string);
-        const { username, password, url } = decrypt(encryptedPayload, hashKey) as unknown as LoginPayload;
-
-        if (username && password && url && !value.driver) {
-            value
-                .login({
-                    username,
-                    password,
-                    url,
-                })
-                .catch(() => {});
-        }
-    }
+    resolveNeo4jDesktopLoginPayload().then(processLoginPayload.bind(null, value)).catch(console.error);
 
     return <Context.Provider value={value as State}>{props.children}</Context.Provider>;
 }
