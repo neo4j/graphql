@@ -24,35 +24,44 @@ import pluralize from "pluralize";
 import camelcase from "camelcase";
 import { upperFirst } from "../../src/utils/upper-first";
 
-export type UniqueType = {
-    name: string;
-    plural: string;
-    operations: {
-        create: string;
-        update: string;
-        delete: string;
-        aggregate: string;
-    };
+type UniqueTypeOperations = {
+    create: string;
+    update: string;
+    delete: string;
+    aggregate: string;
 };
 
-export function generateUniqueType(baseName: string): UniqueType {
-    const type = `${generate({
-        length: 8,
-        charset: "alphabetic",
-        readable: true,
-    })}${baseName}`;
+export class UniqueType {
+    public readonly name: string;
 
-    const plural = pluralize(camelcase(type));
-    const pascalCasePlural = upperFirst(plural);
+    constructor(baseName: string) {
+        this.name = `${generate({
+            length: 8,
+            charset: "alphabetic",
+            readable: true,
+        })}${baseName}`;
+    }
 
-    return {
-        name: type,
-        plural,
-        operations: {
+    public get plural(): string {
+        return pluralize(camelcase(this.name));
+    }
+
+    public get operations(): UniqueTypeOperations {
+        const pascalCasePlural = upperFirst(this.plural);
+
+        return {
             create: `create${pascalCasePlural}`,
             update: `update${pascalCasePlural}`,
             delete: `delete${pascalCasePlural}`,
-            aggregate: `${plural}Aggregate`,
-        },
-    };
+            aggregate: `${this.plural}Aggregate`,
+        };
+    }
+
+    public toString(): string {
+        return this.name;
+    }
+}
+
+export function generateUniqueType(baseName: string): UniqueType {
+    return new UniqueType(baseName);
 }
