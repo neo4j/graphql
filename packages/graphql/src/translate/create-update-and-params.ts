@@ -426,9 +426,9 @@ function createUpdateAndParams({
             return res;
         }
 
-        // OLD PROPS
         if (context.subscriptionsEnabled) {
-            res.strs.push(`WITH ${varName} { .* } AS oldProps, ${withVars.join(", ")}`);
+            const oldProps = `WITH ${varName} { .* } AS oldProps, ${withVars.join(", ")}`;
+            res.strs.push(oldProps);
         }
 
         if (!hasAppliedTimeStamps) {
