@@ -54,27 +54,22 @@ export const JSONEditor = (props: Props) => {
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
         });
 
-        if (props.json && mirror.current) {
-            mirror.current.setValue(props.json);
+        if (!props.readonly) {
+            mirror.current.on("change", (e) => {
+                if (props.onChange) {
+                    props.onChange(e.getValue() as string);
+                }
+            });
         }
 
         document[props.id] = mirror.current;
     }, []);
 
     useEffect(() => {
-        if (!props.readonly && props.onChange && mirror.current) {
-            mirror.current.on("change", (e) => {
-                //@ts-ignore
-                props.onChange(e.getValue() as string);
-            });
+        if (mirror.current && props.json) {
+            mirror.current.setValue(props.json as string);
         }
-    }, [props.onChange]);
-
-    useEffect(() => {
-        return () => {
-            mirror.current = null;
-        };
-    }, []);
+    }, [props.json]);
 
     return <textarea id={props.id} style={{ width: "100%", height: "100%" }} ref={ref} />;
 };

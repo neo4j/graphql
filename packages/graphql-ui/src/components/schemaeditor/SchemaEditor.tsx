@@ -243,6 +243,17 @@ export const SchemaEditor = (props: Props) => {
                             checked={isDebugChecked === "true"}
                             onChange={onChangeDebugCheckbox}
                         />
+                        <Checkbox
+                            label="Check constraint"
+                            checked={isCheckConstraintChecked === "true"}
+                            onChange={onChangeCheckConstraintCheckbox}
+                        />
+
+                        <Checkbox
+                            label="Create constraint"
+                            checked={isCreateConstraintChecked === "true"}
+                            onChange={onChangeCreateConstraintCheckbox}
+                        />
                     </div>
                 </div>
 

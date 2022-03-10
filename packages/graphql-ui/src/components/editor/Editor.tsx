@@ -137,7 +137,9 @@ export const Editor = (props: Props) => {
                     parameterEditor={
                         <JSONEditor id={EDITOR_PARAMS_INPUT} readonly={false} onChange={setVariableValues} />
                     }
-                    resultView={<JSONEditor id={EDITOR_RESPONSE_OUTPUT} readonly={true} json={output} />}
+                    resultView={
+                        <JSONEditor id={EDITOR_RESPONSE_OUTPUT} readonly={true} json={output} onChange={setOutput} />
+                    }
                     showExplorer={showExplorer}
                     explorer={
                         <GraphiQLExplorer
