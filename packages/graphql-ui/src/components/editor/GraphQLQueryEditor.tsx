@@ -28,19 +28,11 @@ export interface Props {
     schema: GraphQLSchema;
     query: string;
     mirrorRef: React.MutableRefObject<EditorFromTextArea | null>;
-    initialQueryValue?: string;
     executeQuery: (override?: string) => Promise<void>;
     onChangeQuery: (query: string) => void;
 }
 
-export const GraphQLQueryEditor = ({
-    schema,
-    initialQueryValue,
-    mirrorRef,
-    query,
-    executeQuery,
-    onChangeQuery,
-}: Props) => {
+export const GraphQLQueryEditor = ({ schema, mirrorRef, query, executeQuery, onChangeQuery }: Props) => {
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const ref = useRef<HTMLTextAreaElement | null>(null);
 
@@ -109,11 +101,6 @@ export const GraphQLQueryEditor = ({
         });
         setMirror(mirror);
         mirrorRef.current = mirror;
-
-        if (initialQueryValue && ref.current) {
-            mirror.setValue(initialQueryValue);
-            ref.current.value = initialQueryValue;
-        }
 
         mirror.on("change", (e) => {
             onChangeQuery(e.getValue());

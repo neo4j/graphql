@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import { graphql, GraphQLSchema } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
 import { Button } from "@neo4j-ndl/react";
@@ -37,9 +37,10 @@ import { formatCode, ParserOptions } from "./utils";
 const DEFAULT_QUERY = `
     # Type queries into this side of the screen, and you will 
     # see intelligent typeaheads aware of the current GraphQL type schema.
+    # Try the Explorer and use the Documentation
 
     query {
-
+        __typename
     }
 `;
 
@@ -60,9 +61,6 @@ export const Editor = (props: Props) => {
         if (!refForQueryEditorMirror.current) return;
         formatCode(refForQueryEditorMirror.current, ParserOptions.GRAPH_QL);
     };
-
-    const getInitialQueryValue = (): string | undefined =>
-        JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_QUERY) as string) || DEFAULT_QUERY;
 
     const onSubmit = useCallback(
         async (override?: string) => {
@@ -90,6 +88,11 @@ export const Editor = (props: Props) => {
         },
         [query, setOutput, setLoading, variableValues]
     );
+
+    useEffect(() => {
+        const initQuery = JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_QUERY) as string) || DEFAULT_QUERY;
+        setQuery(initQuery);
+    }, []);
 
     return (
         <div className="p-5">
@@ -123,7 +126,6 @@ export const Editor = (props: Props) => {
                                 schema={props.schema}
                                 query={query}
                                 mirrorRef={refForQueryEditorMirror}
-                                initialQueryValue={getInitialQueryValue()}
                                 onChangeQuery={(query) => {
                                     setQuery(query);
                                     localStorage.setItem(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
