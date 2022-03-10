@@ -27,6 +27,8 @@ import { EditorFromTextArea } from "codemirror";
 import { CodeMirror } from "../../utils/utils";
 import * as AuthContext from "../../contexts/auth";
 import {
+    LOCAL_STATE_CHECK_CONSTRAINT,
+    LOCAL_STATE_CREATE_CONSTRAINT,
     LOCAL_STATE_DEBUG,
     LOCAL_STATE_TYPE_DEFS,
     SCHEMA_EDITOR_BUILD_BUTTON,
@@ -69,11 +71,29 @@ export const SchemaEditor = (props: Props) => {
     const [loading, setLoading] = useState(false);
     const [isDebugChecked, setIsDebugChecked] = useState<string | null>(localStorage.getItem(LOCAL_STATE_DEBUG));
     const [variableValues, setVariableValues] = useState(DEFAULT_OPTIONS);
+    const [isCheckConstraintChecked, setIsCheckConstraintChecked] = useState<string | null>(
+        localStorage.getItem(LOCAL_STATE_CHECK_CONSTRAINT)
+    );
+    const [isCreateConstraintChecked, setIsCreateConstraintChecked] = useState<string | null>(
+        localStorage.getItem(LOCAL_STATE_CREATE_CONSTRAINT)
+    );
 
     const onChangeDebugCheckbox = (): void => {
         const next = isDebugChecked === "true" ? "false" : "true";
         setIsDebugChecked(next);
         localStorage.setItem(LOCAL_STATE_DEBUG, next);
+    };
+
+    const onChangeCheckConstraintCheckbox = (): void => {
+        const next = isCheckConstraintChecked === "true" ? "false" : "true";
+        setIsCheckConstraintChecked(next);
+        localStorage.setItem(LOCAL_STATE_CHECK_CONSTRAINT, next);
+    };
+
+    const onChangeCreateConstraintCheckbox = (): void => {
+        const next = isCreateConstraintChecked === "true" ? "false" : "true";
+        setIsCreateConstraintChecked(next);
+        localStorage.setItem(LOCAL_STATE_CREATE_CONSTRAINT, next);
     };
 
     const formatTheCode = (): void => {
@@ -108,6 +128,13 @@ export const SchemaEditor = (props: Props) => {
 
                 const schema = await neoSchema.getSchema();
 
+                if (isCheckConstraintChecked === "true") {
+                    await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: false } });
+                }
+                if (isCreateConstraintChecked === "true") {
+                    await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: true } });
+                }
+
                 props.onChange(schema);
             } catch (error) {
                 const msg = (error as Error).message;
@@ -116,7 +143,7 @@ export const SchemaEditor = (props: Props) => {
                 setLoading(false);
             }
         },
-        [isDebugChecked, variableValues]
+        [isDebugChecked, isCheckConstraintChecked, isCreateConstraintChecked]
     );
 
     const introspect = useCallback(async () => {

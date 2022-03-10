@@ -22,6 +22,8 @@ export const LOCAL_STATE_OPTIONS = "neo4j.graphql.options";
 export const LOCAL_STATE_TYPE_LAST_QUERY = "neo4j.graphql.lastQuery";
 export const LOCAL_STATE_LOGIN = "neo4j.graphql.login";
 export const LOCAL_STATE_DEBUG = "neo4j.graphql.debug";
+export const LOCAL_STATE_CHECK_CONSTRAINT = "neo4j.graphql.checkConstraint";
+export const LOCAL_STATE_CREATE_CONSTRAINT = "neo4j.graphql.createConstraint";
 
 export const LOGIN_USERNAME_INPUT = "LOGIN_USERNAME_INPUT";
 export const LOGIN_PASSWORD_INPUT = "LOGIN_PASSWORD_INPUT";
