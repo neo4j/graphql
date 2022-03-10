@@ -30,7 +30,7 @@ const TopBar = () => {
             <div className="flex justify-center w-full h-12 m-2 n-bg-neutral-90">
                 <div className="flex items-center justify-space text-white text-sm">
                     <div className="mr-3">Connected to: {auth?.connectUrl}</div>
-                    <div className="flex items-start">Status: {auth?.isConnected ? greenDot : redDot}</div>
+                    <div className="flex items-center">Status: {auth?.isConnected ? greenDot : redDot}</div>
                 </div>
             </div>
         </div>

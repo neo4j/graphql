@@ -225,46 +225,27 @@ export const SchemaEditor = (props: Props) => {
                         <span className="block sm:inline">{error}</span>
                     </div>
                 )}
-                <div className="p-3 bg-draculaDark grid grid-cols-6 gap-4" style={{ width: "1200px" }}>
-                    <Button id={SCHEMA_EDITOR_BUILD_BUTTON} fill="outlined" onClick={onSubmit} disabled={loading}>
+                <div className="border-b n-border-neutral-40 p-3 grid grid-cols-6 gap-4" style={{ width: "1200px" }}>
+                    <Button
+                        id={SCHEMA_EDITOR_BUILD_BUTTON}
+                        style={{ backgroundColor: "#018bff" }}
+                        onClick={onSubmit}
+                        disabled={loading}
+                    >
                         {loading ? "Loading..." : "Build schema"}
                     </Button>
-                    <Button fill="outlined" onClick={formatTheCode} disabled={loading}>
+                    <Button style={{ backgroundColor: "#018bff" }} onClick={formatTheCode} disabled={loading}>
                         {loading ? "Loading..." : "Prettify (CTRL+L)"}
                     </Button>
-                    <Button fill="outlined" onClick={introspect} disabled={loading}>
+                    <Button style={{ backgroundColor: "#018bff" }} onClick={introspect} disabled={loading}>
                         {loading ? "Loading..." : "Generate typeDefs"}
                     </Button>
-                    <div className="text-white w-32 text-xs pt-2">
-                        <Checkbox
-                            className="m-0"
-                            label="Enable debug"
-                            checked={isDebugChecked === "true"}
-                            onChange={onChangeDebugCheckbox}
-                        />
-                    </div>
-                    <div className="text-white w-32 text-xs pt-2">
-                        <Checkbox
-                            className="m-0"
-                            label="Check constraint"
-                            checked={isCheckConstraintChecked === "true"}
-                            onChange={onChangeCheckConstraintCheckbox}
-                        />
-                    </div>
-                    <div className="text-white w-32 text-xs pt-2">
-                        <Checkbox
-                            className="m-0"
-                            label="Create constraint"
-                            checked={isCreateConstraintChecked === "true"}
-                            onChange={onChangeCreateConstraintCheckbox}
-                        />
-                    </div>
                 </div>
 
                 <div className="mt-3">
                     <Row className={"flex-1"} initialHeight={1200} initialWidth={1200}>
                         <ColsWrapper>
-                            <Col initialWidth={600} left={true}>
+                            <Col initialWidth={700} left={true}>
                                 <RowsWrapper>
                                     <Row>
                                         <div style={{ width: "100%", height: "100%" }}>
@@ -281,9 +262,9 @@ export const SchemaEditor = (props: Props) => {
                                 </RowsWrapper>
                             </Col>
 
-                            <Col initialHeight={300} right={true}>
+                            <Col right={true}>
                                 <RowsWrapper>
-                                    <Row>
+                                    <Row initialHeight={300}>
                                         <JSONEditor
                                             fileExtension={Extension.JSON}
                                             id={"EDITOR_PARAMS_INPUT"}
@@ -292,6 +273,31 @@ export const SchemaEditor = (props: Props) => {
                                             onChange={setVariableValues}
                                             json={variableValues}
                                         />
+                                    </Row>
+                                    <Row>
+                                        <div className="pt-3">
+                                            <h2 className="text-lg">Settings</h2>
+                                            <div className="pl-2">
+                                                <Checkbox
+                                                    className="m-0"
+                                                    label="Enable debug"
+                                                    checked={isDebugChecked === "true"}
+                                                    onChange={onChangeDebugCheckbox}
+                                                />
+                                                <Checkbox
+                                                    className="m-0"
+                                                    label="Check constraint"
+                                                    checked={isCheckConstraintChecked === "true"}
+                                                    onChange={onChangeCheckConstraintCheckbox}
+                                                />
+                                                <Checkbox
+                                                    className="m-0"
+                                                    label="Create constraint"
+                                                    checked={isCreateConstraintChecked === "true"}
+                                                    onChange={onChangeCreateConstraintCheckbox}
+                                                />
+                                            </div>
+                                        </div>
                                     </Row>
                                 </RowsWrapper>
                             </Col>

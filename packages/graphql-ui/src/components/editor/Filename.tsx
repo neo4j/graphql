@@ -29,8 +29,10 @@ const Ending = (props: { extension: Extension }) => {
     switch (props.extension) {
         case Extension.GQL:
             content = ".gql";
+            break;
         case Extension.JSON:
             content = ".json";
+            break;
     }
 
     return <span>{content}</span>;
