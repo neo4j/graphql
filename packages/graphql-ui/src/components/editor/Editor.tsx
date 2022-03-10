@@ -96,8 +96,8 @@ export const Editor = (props: Props) => {
     }, []);
 
     return (
-        <div className="p-5">
-            <div className="flex justify-start pb-3 pt-3">
+        <div>
+            <div className="p-3 bg-draculaDark grid grid-cols-4 gap-4" style={{ width: "1200px" }}>
                 <Button
                     id={EDITOR_QUERY_BUTTON}
                     fill="outlined"
@@ -106,20 +106,17 @@ export const Editor = (props: Props) => {
                 >
                     {!loading ? "Query (CTRL+ENTER)" : "Loading..."}
                 </Button>
-
                 <Button fill="outlined" onClick={formatTheCode} disabled={loading}>
                     {!loading ? "Prettify (CTRL+L)" : "Loading..."}
                 </Button>
-
                 <Button fill="outlined" onClick={() => isShowExplorer(!showExplorer)} disabled={loading}>
                     {!loading ? "Explorer" : "Loading..."}
                 </Button>
-
                 <Button fill="outlined" onClick={() => isShowDocs(!showDocs)} disabled={loading}>
                     {!loading ? "Docs" : "Loading..."}
                 </Button>
             </div>
-            <div className="flex justify-start flex-row flex-grow w-full h-full">
+            <div className="flex justify-start flex-row flex-grow w-full h-full mt-3">
                 <Frame
                     queryEditor={
                         props.schema ? (

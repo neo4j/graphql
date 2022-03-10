@@ -214,43 +214,46 @@ export const SchemaEditor = (props: Props) => {
     }, [ref]);
 
     return (
-        <div className="w-1/2 p-5">
+        <div className="w-1/2">
             <div className="w-full">
-                <div className="pb-3 pt-3">
-                    {error && (
-                        <div
-                            className="mt-5 mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                            role="alert"
-                        >
-                            <strong className="font-bold">Holy smokes! </strong>
-                            <span className="block sm:inline">{error}</span>
-                        </div>
-                    )}
-                    <div className="flex items-center">
-                        <Button id={SCHEMA_EDITOR_BUILD_BUTTON} fill="outlined" onClick={onSubmit} disabled={loading}>
-                            {loading ? "Loading..." : "Build schema"}
-                        </Button>
-
-                        <Button fill="outlined" onClick={formatTheCode} disabled={loading}>
-                            {loading ? "Loading..." : "Prettify (CTRL+L)"}
-                        </Button>
-
-                        <Button fill="outlined" onClick={introspect} disabled={loading}>
-                            {loading ? "Loading..." : "Generate typeDefs"}
-                        </Button>
-
+                {error && (
+                    <div
+                        className="mt-5 mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                        role="alert"
+                    >
+                        <strong className="font-bold">Holy smokes! </strong>
+                        <span className="block sm:inline">{error}</span>
+                    </div>
+                )}
+                <div className="p-3 bg-draculaDark grid grid-cols-6 gap-4" style={{ width: "1200px" }}>
+                    <Button id={SCHEMA_EDITOR_BUILD_BUTTON} fill="outlined" onClick={onSubmit} disabled={loading}>
+                        {loading ? "Loading..." : "Build schema"}
+                    </Button>
+                    <Button fill="outlined" onClick={formatTheCode} disabled={loading}>
+                        {loading ? "Loading..." : "Prettify (CTRL+L)"}
+                    </Button>
+                    <Button fill="outlined" onClick={introspect} disabled={loading}>
+                        {loading ? "Loading..." : "Generate typeDefs"}
+                    </Button>
+                    <div className="text-white w-32 text-xs pt-2">
                         <Checkbox
+                            className="m-0"
                             label="Enable debug"
                             checked={isDebugChecked === "true"}
                             onChange={onChangeDebugCheckbox}
                         />
+                    </div>
+                    <div className="text-white w-32 text-xs pt-2">
                         <Checkbox
+                            className="m-0"
                             label="Check constraint"
                             checked={isCheckConstraintChecked === "true"}
                             onChange={onChangeCheckConstraintCheckbox}
                         />
-
+                    </div>
+                    <div className="text-white w-32 text-xs pt-2">
                         <Checkbox
+                            className="m-0"
                             label="Create constraint"
                             checked={isCreateConstraintChecked === "true"}
                             onChange={onChangeCreateConstraintCheckbox}
@@ -258,40 +261,42 @@ export const SchemaEditor = (props: Props) => {
                     </div>
                 </div>
 
-                <Row className={"flex-1"} initialHeight={1200} initialWidth={1200}>
-                    <ColsWrapper>
-                        <Col initialWidth={600} left={true}>
-                            <RowsWrapper>
-                                <Row>
-                                    <div style={{ width: "100%", height: "100%" }}>
-                                        <FileName extension={Extension.GQL} name={"typeDefs"}></FileName>
-                                        <textarea
-                                            id={SCHEMA_EDITOR_INPUT}
-                                            /* @ts-ignore */
-                                            ref={ref}
-                                            style={{ width: "100%", height: "100%" }}
-                                            disabled={loading}
-                                        />
-                                    </div>
-                                </Row>
-                            </RowsWrapper>
-                        </Col>
+                <div className="mt-3">
+                    <Row className={"flex-1"} initialHeight={1200} initialWidth={1200}>
+                        <ColsWrapper>
+                            <Col initialWidth={600} left={true}>
+                                <RowsWrapper>
+                                    <Row>
+                                        <div style={{ width: "100%", height: "100%" }}>
+                                            <FileName extension={Extension.GQL} name={"typeDefs"}></FileName>
+                                            <textarea
+                                                id={SCHEMA_EDITOR_INPUT}
+                                                /* @ts-ignore */
+                                                ref={ref}
+                                                style={{ width: "100%", height: "100%" }}
+                                                disabled={loading}
+                                            />
+                                        </div>
+                                    </Row>
+                                </RowsWrapper>
+                            </Col>
 
-                        <Col initialHeight={300} right={true}>
-                            <RowsWrapper>
-                                <Row>
-                                    <JSONEditor
-                                        fileExtension={Extension.JSON}
-                                        id={"EDITOR_PARAMS_INPUT"}
-                                        fileName="options"
-                                        onChange={setVariableValues}
-                                        json={variableValues}
-                                    />
-                                </Row>
-                            </RowsWrapper>
-                        </Col>
-                    </ColsWrapper>
-                </Row>
+                            <Col initialHeight={300} right={true}>
+                                <RowsWrapper>
+                                    <Row>
+                                        <JSONEditor
+                                            fileExtension={Extension.JSON}
+                                            id={"EDITOR_PARAMS_INPUT"}
+                                            fileName="options"
+                                            onChange={setVariableValues}
+                                            json={variableValues}
+                                        />
+                                    </Row>
+                                </RowsWrapper>
+                            </Col>
+                        </ColsWrapper>
+                    </Row>
+                </div>
             </div>
         </div>
     );
