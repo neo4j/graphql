@@ -27,6 +27,8 @@ import { EditorFromTextArea } from "codemirror";
 import { CodeMirror } from "../../utils/utils";
 import * as AuthContext from "../../contexts/auth";
 import {
+    LOCAL_STATE_CHECK_CONSTRAINT,
+    LOCAL_STATE_CREATE_CONSTRAINT,
     LOCAL_STATE_DEBUG,
     LOCAL_STATE_TYPE_DEFS,
     SCHEMA_EDITOR_BUILD_BUTTON,
@@ -55,11 +57,29 @@ export const SchemaEditor = (props: Props) => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [isDebugChecked, setIsDebugChecked] = useState<string | null>(localStorage.getItem(LOCAL_STATE_DEBUG));
+    const [isCheckConstraintChecked, setIsCheckConstraintChecked] = useState<string | null>(
+        localStorage.getItem(LOCAL_STATE_CHECK_CONSTRAINT)
+    );
+    const [isCreateConstraintChecked, setIsCreateConstraintChecked] = useState<string | null>(
+        localStorage.getItem(LOCAL_STATE_CREATE_CONSTRAINT)
+    );
 
     const onChangeDebugCheckbox = (): void => {
         const next = isDebugChecked === "true" ? "false" : "true";
         setIsDebugChecked(next);
         localStorage.setItem(LOCAL_STATE_DEBUG, next);
+    };
+
+    const onChangeCheckConstraintCheckbox = (): void => {
+        const next = isCheckConstraintChecked === "true" ? "false" : "true";
+        setIsCheckConstraintChecked(next);
+        localStorage.setItem(LOCAL_STATE_CHECK_CONSTRAINT, next);
+    };
+
+    const onChangeCreateConstraintCheckbox = (): void => {
+        const next = isCreateConstraintChecked === "true" ? "false" : "true";
+        setIsCreateConstraintChecked(next);
+        localStorage.setItem(LOCAL_STATE_CREATE_CONSTRAINT, next);
     };
 
     const formatTheCode = (): void => {
@@ -90,6 +110,13 @@ export const SchemaEditor = (props: Props) => {
 
                 const schema = await neoSchema.getSchema();
 
+                if (isCheckConstraintChecked === "true") {
+                    await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: false } });
+                }
+                if (isCreateConstraintChecked === "true") {
+                    await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: true } });
+                }
+
                 props.onChange(schema);
             } catch (error) {
                 const msg = (error as Error).message;
@@ -98,7 +125,7 @@ export const SchemaEditor = (props: Props) => {
                 setLoading(false);
             }
         },
-        [isDebugChecked]
+        [isDebugChecked, isCheckConstraintChecked, isCreateConstraintChecked]
     );
 
     const introspect = useCallback(async () => {
@@ -168,47 +195,71 @@ export const SchemaEditor = (props: Props) => {
     }, [ref]);
 
     return (
-        <div className="w-1/2 p-5">
-            <div className="w-full">
-                {error && (
-                    <div
-                        className="mt-5 mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                        role="alert"
-                    >
-                        <strong className="font-bold">Holy smokes! </strong>
-                        <span className="block sm:inline">{error}</span>
+        <div className="flex w-full p-5">
+            <div className="flex-1">
+                <div className="w-full">
+                    {error && (
+                        <div
+                            className="mt-5 mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                            role="alert"
+                        >
+                            <strong className="font-bold">Holy smokes! </strong>
+                            <span className="block sm:inline">{error}</span>
+                        </div>
+                    )}
+                    <div className="flex flex-col">
+                        <div>
+                            <Button
+                                id={SCHEMA_EDITOR_BUILD_BUTTON}
+                                fill="outlined"
+                                onClick={onSubmit}
+                                disabled={loading}
+                            >
+                                {loading ? "Loading..." : "Build schema"}
+                            </Button>
+
+                            <Button fill="outlined" onClick={formatTheCode} disabled={loading}>
+                                {loading ? "Loading..." : "Prettify (CTRL+L)"}
+                            </Button>
+
+                            <Button fill="outlined" onClick={introspect} disabled={loading}>
+                                {loading ? "Loading..." : "Generate typeDefs"}
+                            </Button>
+                        </div>
+
+                        <div
+                            className="mt-5"
+                            style={{ width: "100%", height: "800px", overflow: "hidden", resize: "vertical" }}
+                        >
+                            <textarea
+                                id={SCHEMA_EDITOR_INPUT}
+                                /* @ts-ignore */
+                                ref={ref}
+                                style={{ width: "100%", height: "800px" }}
+                                disabled={loading}
+                            />
+                        </div>
                     </div>
-                )}
-                <div className="flex items-center">
-                    <Button id={SCHEMA_EDITOR_BUILD_BUTTON} fill="outlined" onClick={onSubmit} disabled={loading}>
-                        {loading ? "Loading..." : "Build schema"}
-                    </Button>
-
-                    <Button fill="outlined" onClick={formatTheCode} disabled={loading}>
-                        {loading ? "Loading..." : "Prettify (CTRL+L)"}
-                    </Button>
-
-                    <Button fill="outlined" onClick={introspect} disabled={loading}>
-                        {loading ? "Loading..." : "Generate typeDefs"}
-                    </Button>
-
+                </div>
+            </div>
+            <div className="flex-1">
+                <div className="p-8">
                     <Checkbox
                         label="Enable debug"
                         checked={isDebugChecked === "true"}
                         onChange={onChangeDebugCheckbox}
                     />
-                </div>
 
-                <div
-                    className="mt-5"
-                    style={{ width: "100%", height: "800px", overflow: "hidden", resize: "vertical" }}
-                >
-                    <textarea
-                        id={SCHEMA_EDITOR_INPUT}
-                        /* @ts-ignore */
-                        ref={ref}
-                        style={{ width: "100%", height: "800px" }}
-                        disabled={loading}
+                    <Checkbox
+                        label="Check constraint"
+                        checked={isCheckConstraintChecked === "true"}
+                        onChange={onChangeCheckConstraintCheckbox}
+                    />
+
+                    <Checkbox
+                        label="Create constraint"
+                        checked={isCreateConstraintChecked === "true"}
+                        onChange={onChangeCreateConstraintCheckbox}
                     />
                 </div>
             </div>
