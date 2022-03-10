@@ -426,9 +426,9 @@ function createUpdateAndParams({
             return res;
         }
 
-        // OLD PROPS
         if (context.subscriptionsEnabled) {
-            res.strs.push(`WITH ${varName} { .* } AS ${META_OLD_PROPS_CYPHER_VARIABLE}, ${withVars.join(", ")}`);
+            const oldProps = `WITH ${varName} { .* } AS ${META_OLD_PROPS_CYPHER_VARIABLE}, ${withVars.join(", ")}`;
+            res.strs.push(oldProps);
         }
 
         if (!hasAppliedTimeStamps) {
@@ -463,7 +463,7 @@ function createUpdateAndParams({
         }
 
         if (context.subscriptionsEnabled) {
-            let eventMeta = createEventMeta({ event: "update", nodeVariable: varName });
+            const eventMeta = createEventMeta({ event: "update", nodeVariable: varName });
             res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, ${eventMeta}`);
         }
 
@@ -474,7 +474,6 @@ function createUpdateAndParams({
                     operations: "UPDATE",
                     context,
                     allow: { varName, parentNode: node, chainStr: param },
-                    escapeQuotes: false,
                 });
                 const postAuth = createAuthAndParams({
                     entity: authableField,
@@ -483,7 +482,6 @@ function createUpdateAndParams({
                     skipIsAuthenticated: true,
                     context,
                     bind: { parentNode: node, varName, chainStr: param },
-                    escapeQuotes: false,
                 });
 
                 if (!res.meta) {
