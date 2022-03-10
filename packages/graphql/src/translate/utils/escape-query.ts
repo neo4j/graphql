@@ -18,6 +18,7 @@
  */
 
 export function escapeQuery(query: string): string {
+    // TODO: Should single quotes be escaped?
     // return query.replace(/("|')/g, "\\$1");
     return query.replace(/("|\\)/g, "\\$1");
 }
