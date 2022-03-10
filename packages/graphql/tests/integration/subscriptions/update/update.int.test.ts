@@ -468,7 +468,7 @@ describe("Subscriptions update", () => {
         );
     });
 
-    test.only("update mutation with nested delete and create", async () => {
+    test("update mutation with nested delete and create", async () => {
         const query = `
         mutation {
             ${typeMovie.operations.update}(
