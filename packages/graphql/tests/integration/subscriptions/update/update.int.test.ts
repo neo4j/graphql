@@ -243,6 +243,7 @@ describe("Subscriptions delete", () => {
             ${typeMovie.operations.update}(
                 where: { id_IN: ["1", "2"] }
                 update: {
+                    name: "The Matrix"
                     actors: [
                         {
                             where: { node: { name: "arthur" } }
@@ -276,6 +277,8 @@ describe("Subscriptions delete", () => {
 
             CREATE(a1:${typeActor.name} {name: "arthur"})-[:ACTED_IN]->(m1)
             CREATE(a1)-[:ACTED_IN]->(m2)
+            CREATE(a1)-[:ACTED_IN]->(m3)
+            CREATE(a1)-[:ACTED_IN]->(m4)
 
             CREATE(a2:${typeActor.name} {name: "arthur"})-[:ACTED_IN]->(m3)
             CREATE(a2)-[:ACTED_IN]->(m4)
@@ -291,25 +294,46 @@ describe("Subscriptions delete", () => {
 
         console.log(JSON.stringify(plugin.eventList, null, 4));
 
-        expect(plugin.eventList).toHaveLength(6);
-        // expect(plugin.eventList).toEqual(
-        //     expect.arrayContaining([
-        //         {
-        //             id: expect.any(Number),
-        //             timestamp: expect.any(Number),
-        //             event: "update",
-        //             properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "The Matrix" } },
-        //         },
-        //         {
-        //             id: expect.any(Number),
-        //             timestamp: expect.any(Number),
-        //             event: "update",
-        //             properties: {
-        //                 old: { id: "2", name: "The Many Adventures of Winnie the Pooh" },
-        //                 new: { id: "2", name: "The Matrix" },
-        //             },
-        //         },
-        //     ])
-        // );
+        expect(plugin.eventList).toHaveLength(5);
+        expect(plugin.eventList).toEqual(
+            expect.arrayContaining([
+                {
+                    event: "update",
+                    id: expect.any(Number),
+                    properties: { new: { id: "1", name: "The Matrix" }, old: { id: "1", name: "Terminator" } },
+                    timestamp: expect.any(Number),
+                },
+                {
+                    event: "update",
+                    id: expect.any(Number),
+                    properties: { new: { name: "ford" }, old: { name: "arthur" } },
+                    timestamp: expect.any(Number),
+                },
+                {
+                    event: "update",
+                    id: expect.any(Number),
+                    properties: { new: { id: "3", name: "new movie title" }, old: { id: "3", name: "Terminator 2" } },
+                    timestamp: expect.any(Number),
+                },
+                {
+                    event: "update",
+                    id: expect.any(Number),
+                    properties: {
+                        new: { id: "4", name: "new movie title" },
+                        old: { id: "4", name: "The Many Adventures of Winnie the Pooh 2" },
+                    },
+                    timestamp: expect.any(Number),
+                },
+                {
+                    event: "update",
+                    id: expect.any(Number),
+                    properties: {
+                        new: { id: "2", name: "The Matrix" },
+                        old: { id: "2", name: "The Many Adventures of Winnie the Pooh" },
+                    },
+                    timestamp: expect.any(Number),
+                },
+            ])
+        );
     });
 });
