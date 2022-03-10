@@ -3,11 +3,12 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const HtmlInlineScriptPlugin = require("html-inline-script-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     mode: "none",
     entry: path.join(__dirname, "src", "index.tsx"),
-    context: path.join(__dirname, "src"),
+    context: path.join(__dirname),
     target: "web",
     resolve: {
         plugins: [new TsconfigPathsPlugin()],
@@ -44,23 +45,26 @@ module.exports = {
         path: path.resolve(__dirname, "dist"),
     },
     plugins: [
+        new CopyWebpackPlugin({
+            patterns: ["public"],
+        }),
         new HtmlWebpackPlugin({
-            template: path.join(__dirname, "src", "index.html"),
-            favicon: path.join(__dirname, "public", "favicon.ico"),
+            template: "./src/index.html",
+            favicon: "./public/favicon.ico",
             ...(process.env.NODE_ENV === "test" ? { inject: "body" } : {}),
         }),
         new NodePolyfillPlugin(),
         ...(process.env.NODE_ENV === "test"
             ? [
-                new HtmlInlineScriptPlugin({
-                    htmlMatchPattern: [/index.html$/],
-                }),
-            ]
+                  new HtmlInlineScriptPlugin({
+                      htmlMatchPattern: [/index.html$/],
+                  }),
+              ]
             : []),
     ],
     devServer: {
         static: {
-            directory: path.join(__dirname, "dist"),
+            directory: "dist",
         },
         compress: true,
         port: 4242,
