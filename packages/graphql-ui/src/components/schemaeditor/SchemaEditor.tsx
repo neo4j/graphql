@@ -219,16 +219,17 @@ export const SchemaEditor = (props: Props) => {
                 <div className="border-b n-border-neutral-40 p-3 grid grid-cols-6 gap-4" style={{ width: "1200px" }}>
                     <Button
                         id={SCHEMA_EDITOR_BUILD_BUTTON}
-                        style={{ backgroundColor: "#018bff" }}
+                        color="neutral"
+                        fill="outlined"
                         onClick={onSubmit}
                         disabled={loading}
                     >
                         {loading ? "Loading..." : "Build schema"}
                     </Button>
-                    <Button style={{ backgroundColor: "#018bff" }} onClick={formatTheCode} disabled={loading}>
+                    <Button color="neutral" fill="outlined" onClick={formatTheCode} disabled={loading}>
                         {loading ? "Loading..." : "Prettify (CTRL+L)"}
                     </Button>
-                    <Button style={{ backgroundColor: "#018bff" }} onClick={introspect} disabled={loading}>
+                    <Button color="neutral" fill="outlined" onClick={introspect} disabled={loading}>
                         {loading ? "Loading..." : "Generate typeDefs"}
                     </Button>
                 </div>

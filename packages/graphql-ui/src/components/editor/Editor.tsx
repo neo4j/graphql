@@ -100,23 +100,25 @@ export const Editor = (props: Props) => {
             <div className="border-b n-border-neutral-40 p-3 grid grid-cols-4 gap-4" style={{ width: "1200px" }}>
                 <Button
                     id={EDITOR_QUERY_BUTTON}
-                    style={{ backgroundColor: "#018bff" }}
+                    color="neutral"
+                    fill="outlined"
                     onClick={() => onSubmit()}
                     disabled={!props.schema || loading}
                 >
                     {!loading ? "Query (CTRL+ENTER)" : "Loading..."}
                 </Button>
-                <Button style={{ backgroundColor: "#018bff" }} onClick={formatTheCode} disabled={loading}>
+                <Button color="neutral" fill="outlined" onClick={formatTheCode} disabled={loading}>
                     {!loading ? "Prettify (CTRL+L)" : "Loading..."}
                 </Button>
                 <Button
-                    style={{ backgroundColor: "#018bff" }}
+                    color="neutral"
+                    fill="outlined"
                     onClick={() => isShowExplorer(!showExplorer)}
                     disabled={loading}
                 >
                     {!loading ? "Explorer" : "Loading..."}
                 </Button>
-                <Button style={{ backgroundColor: "#018bff" }} onClick={() => isShowDocs(!showDocs)} disabled={loading}>
+                <Button color="neutral" fill="outlined" onClick={() => isShowDocs(!showDocs)} disabled={loading}>
                     {!loading ? "Docs" : "Loading..."}
                 </Button>
             </div>
