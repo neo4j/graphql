@@ -155,7 +155,7 @@ describe("connectorcreate with @id", () => {
         });
 
         expect(gqlResult.errors).toHaveLength(1);
-        expect((gqlResult?.errors as any[])[0].message).toEqual(
+        expect((gqlResult?.errors as any[])[0].message).toBe(
             `Field "${typeMovie.name}OnCreateInput.title" of required type "String!" was not provided.`
         );
     });
@@ -179,7 +179,7 @@ describe("connectorcreate with @id", () => {
                 ${typeActor.plural} {
                   name,
                   movies {
-                      id,
+                      id
                       title
                   }
                 }
@@ -194,7 +194,7 @@ describe("connectorcreate with @id", () => {
         });
 
         expect(gqlResult.errors).toHaveLength(1);
-        expect((gqlResult?.errors as any[])[0].message).toEqual(
+        expect((gqlResult?.errors as any[])[0].message).toBe(
             `Field "id" is not defined by type "${typeMovie.name}OnCreateInput".`
         );
     });
