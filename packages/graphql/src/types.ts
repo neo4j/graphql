@@ -23,6 +23,8 @@ import { Driver, Integer } from "neo4j-driver";
 import { Node, Relationship } from "./classes";
 import { RelationshipQueryDirectionOption } from "./constants";
 
+export { Node } from "./classes";
+
 export type DriverConfig = {
     database?: string;
     bookmarks?: string | string[];
