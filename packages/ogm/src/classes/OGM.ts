@@ -18,6 +18,7 @@
  */
 
 import { Neo4jGraphQL, Neo4jGraphQLConstructor } from "@neo4j/graphql";
+import { Node } from "@neo4j/graphql/src/classes";
 import { GraphQLSchema } from "graphql";
 import Model from "./Model";
 import { filterDocument } from "../utils";
@@ -61,7 +62,7 @@ class OGM<ModelMap = {}> {
         return this._schema;
     }
 
-    public get nodes() {
+    public get nodes(): Node[] {
         try {
             return this.neoSchema.nodes;
         } catch {
