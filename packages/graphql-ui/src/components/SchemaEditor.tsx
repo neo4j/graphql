@@ -182,7 +182,7 @@ export const SchemaEditor = (props: Props) => {
         });
         setMirror(mirror);
 
-        mirror.setOption("theme", "neo");
+        // mirror.setOption("theme", "neo");
 
         const storedTypeDefs = getStoredTypeDefs() || DEFAULT_TYPE_DEFS;
         if (storedTypeDefs && ref.current) {
