@@ -228,7 +228,7 @@ export const SchemaEditor = (props: Props) => {
                 <div className="mt-3">
                     <Row className={"flex-1"} initialHeight={1200} initialWidth={1200}>
                         <ColsWrapper>
-                            <Col initialWidth={700} left={true}>
+                            <Col initialWidth={800} left={true}>
                                 <RowsWrapper>
                                     <Row>
                                         <div style={{ width: "100%", height: "100%" }}>
