@@ -268,7 +268,7 @@ export const SchemaEditor = (props: Props) => {
                                         />
                                     </Row>
                                     <Row>
-                                        <div className="max-w-sm rounded overflow-hidden shadow-lg">
+                                        <div className="w-full rounded overflow-hidden shadow-lg">
                                             <Tabs fill="underline" onChange={function noRefCheck() {}} value={0}>
                                                 <Tab tabId={0}>Settings</Tab>
                                             </Tabs>
