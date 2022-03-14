@@ -198,4 +198,50 @@ describe("connectorcreate with @id", () => {
             `Field "id" is not defined by type "${typeMovie.name}OnCreateInput".`
         );
     });
+
+    test("create -> connectOrCreate overrides title on create", async () => {
+        const title = generate({
+            charset: "alphabetic",
+        });
+
+        const query = gql`
+            mutation {
+              ${typeActor.operations.create}(
+                input: [
+                  {
+                    name: "Tom Hanks"
+                    movies: {
+                      connectOrCreate: {
+                        where: { node: { title: "${title}" } }
+                        onCreate: { node: { title: "${title}-2" } }
+                      }
+                    }
+                  }
+                ]
+              ) {
+                ${typeActor.plural} {
+                  name,
+                  movies {
+                      id
+                      title
+                  }
+                }
+              }
+            }
+            `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: getQuerySource(query),
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult as any).data[typeActor.operations.create][typeActor.plural]).toHaveLength(1);
+
+        const resultActor = (gqlResult as any).data[typeActor.operations.create][typeActor.plural][0];
+        expect(resultActor.movies).toHaveLength(1);
+        expect(resultActor.movies[0].title).toBe(`${title}-2`);
+    });
 });
