@@ -4,11 +4,12 @@ on:
     pull_request:
         branches:
             - feat/neo4j-graphql-ui
+            - feat/neo4j-graphql-ui-config
         paths-ignore:
             - "docs/**"
 
 jobs:
-    pack:
+    publish-stage:
         runs-on: ubuntu-latest
 
         steps:
