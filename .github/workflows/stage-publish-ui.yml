@@ -30,6 +30,7 @@ jobs:
           working-directory: packages/${{ matrix.package }}
         - name: Publish GraphQL UI to surge
           run: |
+              yarn build
               npm install -g surge
               ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
               surge ./dist neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
