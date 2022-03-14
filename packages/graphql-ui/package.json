@@ -12,9 +12,10 @@
         "dist/**/*.js.map"
     ],
     "scripts": {
-        "build": "webpack --config webpack.config.js",
-        "start": "webpack serve",
-        "test": "cross-env NODE_ENV=test yarn build && yarn jest"
+        "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
+        "start": "cross-env NODE_ENV=development webpack serve",
+        "test-build": "cross-env NODE_ENV=test webpack --config webpack.config.js",
+        "test": "cross-env NODE_ENV=test yarn test-build && jest"
     },
     "author": "",
     "license": "Apache-2.0",

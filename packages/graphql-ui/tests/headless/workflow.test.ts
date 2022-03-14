@@ -22,15 +22,12 @@ import {
     EDITOR_QUERY_BUTTON,
     EDITOR_QUERY_INPUT,
     EDITOR_RESPONSE_OUTPUT,
-    LOGIN_BUTTON,
-    LOGIN_PASSWORD_INPUT,
-    LOGIN_URL_INPUT,
-    LOGIN_USERNAME_INPUT,
     SCHEMA_EDITOR_BUILD_BUTTON,
     SCHEMA_EDITOR_INPUT,
 } from "../../src/constants";
 import { generate } from "randomstring";
 import * as neo4j from "neo4j-driver";
+import { Login } from "./screens/Login";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
@@ -65,39 +62,13 @@ describe("workflow", () => {
 
     test("should perform e2e workflow", async () => {
         const page = await getPage({ browser });
+        const login = new Login(page);
 
-        await page.waitForSelector(`#${LOGIN_USERNAME_INPUT}`);
-        await page.$eval(
-            `#${LOGIN_USERNAME_INPUT}`,
-            (el, injected) => {
-                // @ts-ignore
-                el.value = injected;
-            },
-            NEO_USER
-        );
-
-        await page.waitForSelector(`#${LOGIN_PASSWORD_INPUT}`);
-        await page.$eval(
-            `#${LOGIN_PASSWORD_INPUT}`,
-            (el, injected) => {
-                // @ts-ignore
-                el.value = injected;
-            },
-            NEO_PASSWORD
-        );
-
-        await page.waitForSelector(`#${LOGIN_URL_INPUT}`);
-        await page.$eval(
-            `#${LOGIN_URL_INPUT}`,
-            (el, injected) => {
-                // @ts-ignore
-                el.value = injected;
-            },
-            NEO_URL
-        );
-
-        await page.waitForSelector(`#${LOGIN_BUTTON}`);
-        await page.click(`#${LOGIN_BUTTON}`);
+        await login.setUsername(NEO_USER);
+        await login.setPassword(NEO_PASSWORD);
+        await login.setURL(NEO_URL);
+        await login.submit();
+        await login.awaitSuccess();
 
         await page.waitForSelector(`#${SCHEMA_EDITOR_INPUT}`);
         await page.$eval(
