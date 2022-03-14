@@ -2,11 +2,11 @@ name: "Stage publish UI"
 
 on:
     pull_request:
-        branches:
-            - feat/neo4j-graphql-ui
-            - feat/neo4j-graphql-ui-config
-        paths-ignore:
-            - "docs/**"
+      branches:
+        - dev
+        - feat/neo4j-graphql-ui
+      paths:
+        - "packages/graphql-ui/**"
 
 jobs:
     publish-stage:
