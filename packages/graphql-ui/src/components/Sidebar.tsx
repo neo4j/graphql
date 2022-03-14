@@ -20,18 +20,16 @@
 import { useContext } from "react";
 import { HeroIcon } from "@neo4j-ndl/react/lib/icons";
 import * as AuthContext from "../contexts/auth";
-import { Pages } from "./Main";
+import * as SideBarContext from "../contexts/sidebar";
 
 export interface Props {
-    activePage?: Pages;
     allowRedirectToEdit: boolean;
-    onShowTypeDefs?: () => void;
-    onShowEditor?: () => void;
     onLogout?: () => void;
 }
 
 export const SideBar = (props: Props) => {
     const auth = useContext(AuthContext.Context);
+    const sidebar = useContext(SideBarContext.Context);
 
     return (
         <div className="flex flex-col w-16 h-screen overflow-y-auto n-bg-neutral-90">
@@ -39,20 +37,22 @@ export const SideBar = (props: Props) => {
                 <ul>
                     <li
                         className={`py-4 flex justify-center ${
-                            props.activePage === Pages.TYPEDEFS && "n-bg-neutral-80"
+                            sidebar.view === SideBarContext.Views.TYPEDEFS && "n-bg-neutral-80"
                         }`}
                     >
                         <span
                             className="font-medium text-2xl cursor-pointer"
                             onClick={() => {
-                                if (props.onShowTypeDefs) props.onShowTypeDefs();
+                                sidebar.setView(SideBarContext.Views.TYPEDEFS);
                             }}
                         >
                             <HeroIcon className="h-8 w-8" iconName="DocumentTextIcon" type="outline" />
                         </span>
                     </li>
                     <li
-                        className={`py-4 flex justify-center ${props.activePage === Pages.EDITOR && "n-bg-neutral-80"}`}
+                        className={`py-4 flex justify-center ${
+                            sidebar.view === SideBarContext.Views.EDITOR && "n-bg-neutral-80"
+                        }`}
                     >
                         <span
                             className={`font-medium text-2xl ${
@@ -60,7 +60,7 @@ export const SideBar = (props: Props) => {
                             }`}
                             onClick={() => {
                                 if (!props.allowRedirectToEdit) return;
-                                if (props.onShowEditor) props.onShowEditor();
+                                sidebar.setView(SideBarContext.Views.EDITOR);
                             }}
                         >
                             <HeroIcon className="h-8 w-8" iconName="SearchIcon" type="outline" />

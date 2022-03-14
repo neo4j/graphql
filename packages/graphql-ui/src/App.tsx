@@ -19,13 +19,16 @@
 
 import Main from "./components/Main";
 import * as AuthContext from "./contexts/auth";
+import * as SideBarContext from "./contexts/sidebar";
 import "@neo4j-ndl/base/lib/neo4j-ds-styles.css";
 import "./index.css";
 
 export const App = () => {
     return (
         <AuthContext.Provider>
-            <Main />
+            <SideBarContext.Provider>
+                <Main />
+            </SideBarContext.Provider>
         </AuthContext.Provider>
     );
 };

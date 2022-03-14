@@ -38,8 +38,7 @@ export interface State {
     logout: () => void;
 }
 
-// @ts-ignore - This is going to be set in the Provider
-export const Context = React.createContext<State>();
+export const Context = React.createContext(null as unknown as State);
 
 export function Provider(props: any) {
     let value: State | undefined;
