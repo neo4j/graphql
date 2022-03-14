@@ -2,8 +2,8 @@
     "name": "@neo4j/graphql-ui",
     "version": "0.0.1",
     "description": "",
-    "exports": "./dist/index.js",
-    "main": "./dist/index.js",
+    "exports": "./dist/main.js",
+    "main": "./dist/main.js",
     "types": "./dist/index.d.ts",
     "files": [
         "dist/**/*.ts",
