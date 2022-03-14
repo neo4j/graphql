@@ -7,6 +7,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
+const WebpackNotifierPlugin = require("webpack-notifier");
 
 module.exports = {
     mode: "none",
@@ -19,11 +20,11 @@ module.exports = {
     },
     ...(process.env.NODE_ENV === "production"
         ? {
-            optimization: {
-                minimize: true,
-                minimizer: [new TerserPlugin()],
-            },
-        }
+              optimization: {
+                  minimize: true,
+                  minimizer: [new TerserPlugin()],
+              },
+          }
         : {}),
     module: {
         rules: [
@@ -66,18 +67,27 @@ module.exports = {
         }),
         new ForkTsCheckerWebpackPlugin({
             typescript: {
-                build: true
+                build: true,
             },
         }),
         new NodePolyfillPlugin(),
         ...(process.env.NODE_ENV === "test"
             ? [
-                new HtmlInlineScriptPlugin({
-                    htmlMatchPattern: [/index.html$/],
-                }),
-            ]
+                  new HtmlInlineScriptPlugin({
+                      htmlMatchPattern: [/index.html$/],
+                  }),
+              ]
             : []),
         ...(process.env.NODE_ENV === "production" ? [new CompressionPlugin()] : []),
+        ...(process.env.NODE_ENV === "development"
+            ? [
+                  new WebpackNotifierPlugin({
+                      title: function (params) {
+                          return `Build status is ${params.status} with message ${params.message}`;
+                      },
+                  }),
+              ]
+            : []),
     ],
     devServer: {
         static: {
