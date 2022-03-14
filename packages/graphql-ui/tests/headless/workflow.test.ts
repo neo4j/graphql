@@ -28,6 +28,7 @@ import {
 import { generate } from "randomstring";
 import * as neo4j from "neo4j-driver";
 import { Login } from "./screens/Login";
+import { SchemaEditor } from "./screens/SchemaEditor";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
@@ -70,18 +71,9 @@ describe("workflow", () => {
         await login.submit();
         await login.awaitSuccess();
 
-        await page.waitForSelector(`#${SCHEMA_EDITOR_INPUT}`);
-        await page.$eval(
-            `#${SCHEMA_EDITOR_INPUT}`,
-            (el, injected) => {
-                // @ts-ignore
-                el.value = injected;
-            },
-            typeDefs
-        );
-
-        await page.waitForSelector(`#${SCHEMA_EDITOR_BUILD_BUTTON}`);
-        await page.click(`#${SCHEMA_EDITOR_BUILD_BUTTON}`);
+        const schemaEditor = new SchemaEditor(page);
+        await schemaEditor.setTypeDefs(typeDefs);
+        await schemaEditor.buildSchema();
 
         await page.waitForSelector(`#${EDITOR_QUERY_BUTTON}`);
 
