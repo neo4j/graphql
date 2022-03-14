@@ -20,11 +20,9 @@
 import React, { Dispatch, useState, SetStateAction } from "react";
 import * as neo4j from "neo4j-driver";
 import { encrypt, decrypt } from "../utils/utils";
-import { LOCAL_STATE_LOGIN } from "../constants";
+import { LOCAL_STATE_LOGIN, VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
 import { resolveNeo4jDesktopLoginPayload } from "./utils";
 import { LoginPayload } from "./types";
-
-const VERIFY_CONNECTION_INTERVAL_MS = 30000;
 
 interface LoginOptions {
     username: string;
@@ -92,7 +90,9 @@ export function Provider(props: any) {
             } as LoginPayload);
             localStorage.setItem(LOCAL_STATE_LOGIN, JSON.stringify(encodedPayload));
 
-            intervalId = window.setInterval(() => checkConnectivity(driver, setValue), VERIFY_CONNECTION_INTERVAL_MS);
+            intervalId = window.setInterval(() => {
+                checkConnectivity(driver, setValue);
+            }, VERIFY_CONNECTION_INTERVAL_MS);
 
             setValue((v) => ({ ...v, driver, connectUrl: options.url, isConnected: true }));
         },

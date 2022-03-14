@@ -18,9 +18,9 @@
  */
 
 import { useContext } from "react";
-import * as AuthContext from "../../contexts/auth";
+import * as AuthContext from "../contexts/auth";
 
-const TopBar = () => {
+export const TopBar = () => {
     const auth = useContext(AuthContext.Context);
     const greenDot = <span className="ml-1 h-3 w-3 bg-green-400 rounded-full inline-block" />;
     const redDot = <span className="ml-1 h-3 w-3 bg-red-400 rounded-full inline-block" />;
@@ -36,5 +36,3 @@ const TopBar = () => {
         </div>
     );
 };
-
-export default TopBar;

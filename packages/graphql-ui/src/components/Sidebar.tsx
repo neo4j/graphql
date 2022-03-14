@@ -19,8 +19,8 @@
 
 import { useContext } from "react";
 import { HeroIcon } from "@neo4j-ndl/react/lib/icons";
-import * as AuthContext from "../../contexts/auth";
-import { Pages } from "../main/Main";
+import * as AuthContext from "../contexts/auth";
+import { Pages } from "./Main";
 
 export interface Props {
     activePage?: Pages;
@@ -30,7 +30,7 @@ export interface Props {
     onLogout?: () => void;
 }
 
-const SideBar = (props: Props) => {
+export const SideBar = (props: Props) => {
     const auth = useContext(AuthContext.Context);
 
     return (
@@ -86,5 +86,3 @@ const SideBar = (props: Props) => {
         </div>
     );
 };
-
-export default SideBar;

@@ -17,22 +17,22 @@
  * limitations under the License.
  */
 
-import { Content } from "../content/Content";
-import SideBar from "../sidebar/Sidebar";
-import TopBar from "../topbar/TopBar";
-import * as AuthContext from "../../contexts/auth";
+import { Content } from "./Content";
+import { SideBar } from "./Sidebar";
+import { TopBar } from "./TopBar";
+import * as AuthContext from "../contexts/auth";
 import { useContext, useState } from "react";
-import Login from "../login/Login";
-import { SchemaEditor } from "../schemaeditor/SchemaEditor";
+import Login from "./Login";
+import { SchemaEditor } from "./SchemaEditor";
 import { GraphQLSchema } from "graphql";
-import { Editor } from "../editor/Editor";
+import { Editor } from "./editor/Editor";
 
 export enum Pages {
     TYPEDEFS,
     EDITOR,
 }
 
-const Main = () => {
+export const Main = () => {
     const auth = useContext(AuthContext.Context);
     const [schema, setSchema] = useState<GraphQLSchema | undefined>(undefined);
     const [activePage, setActivePage] = useState<Pages>(Pages.TYPEDEFS);

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Main from "./components/main/Main";
+import Main from "./components/Main";
 import * as AuthContext from "./contexts/auth";
 import "@neo4j-ndl/base/lib/neo4j-ds-styles.css";
 import "./index.css";

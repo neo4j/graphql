@@ -37,3 +37,28 @@ export const EDITOR_QUERY_INPUT = "EDITOR_QUERY_INPUT";
 export const EDITOR_PARAMS_INPUT = "EDITOR_PARAMS_INPUT";
 export const EDITOR_RESPONSE_OUTPUT = "EDITOR_RESPONSE_OUTPUT";
 export const EDITOR_QUERY_BUTTON = "EDITOR_QUERY_BUTTON";
+
+export const VERIFY_CONNECTION_INTERVAL_MS = 30000;
+
+export const DEFAULT_TYPE_DEFS = `
+    # Write your own type definition in the editor here or 
+    # generate it automatically from the current Neo4j database (introspection)
+
+    # Example type definition:
+    type Movie {
+        title: String!
+    }
+    
+`;
+
+export const DEFAULT_OPTIONS = JSON.stringify(
+    {
+        config: {
+            enableRegex: true,
+        },
+    },
+    null,
+    2
+);
+
+export const DEFAULT_BOLT_URL = "bolt://localhost:7687";

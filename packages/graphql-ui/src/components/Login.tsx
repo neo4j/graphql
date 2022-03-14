@@ -19,14 +19,18 @@
 
 import { useCallback } from "react";
 import { useContext, useState } from "react";
-import * as AuthContext from "../../contexts/auth";
+import * as AuthContext from "../contexts/auth";
 import { FormInput } from "./FormInput";
 import { Button } from "@neo4j-ndl/react";
-import { LOGIN_BUTTON, LOGIN_PASSWORD_INPUT, LOGIN_URL_INPUT, LOGIN_USERNAME_INPUT } from "../../constants";
+import {
+    DEFAULT_BOLT_URL,
+    LOGIN_BUTTON,
+    LOGIN_PASSWORD_INPUT,
+    LOGIN_URL_INPUT,
+    LOGIN_USERNAME_INPUT,
+} from "../constants";
 
-const DEFAULT_BOLT_URL = "bolt://localhost:7687";
-
-const Login = () => {
+export const Login = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const auth = useContext(AuthContext.Context);
@@ -48,8 +52,9 @@ const Login = () => {
                     url,
                 });
             } catch (error) {
-                setLoading(false);
                 setError((error as Error).message as string);
+            } finally {
+                setLoading(false);
             }
         })();
     }, []);
