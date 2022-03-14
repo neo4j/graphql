@@ -9,22 +9,45 @@ on:
         - "packages/graphql-ui/**"
 
 jobs:
-    publish-stage:
-        runs-on: ubuntu-latest
 
-        steps:
+    cache-dependencies:
+      runs-on: ubuntu-latest
+
+      steps:
         - uses: actions/checkout@v2
         - uses: actions/setup-node@v3
           with:
-              node-version: lts/*
-              cache: yarn
+            node-version: lts/*
+            cache: yarn
         - name: Install dependencies
-          run: yarn --immutable
+          run: yarn
+
+    build:
+        runs-on: ubuntu-latest
+
+        strategy:
+          matrix:
+            package:
+              - graphql
+              - introspector
+              - graphql-ui
+
+        steps:
+        - uses: actions/setup-node@v3
         - name: Build UI
           run: yarn build
-          working-directory: packages/graphql-ui
-        - name: Publish documentation
-          run: |
-              npm install -g surge
-              surge ./dist neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
-          working-directory: packages/graphql-ui
+          working-directory: packages/${{ matrix.package }}
+
+    upload-integration-coverage:
+      needs:
+        - build
+
+      runs-on: ubuntu-latest
+
+      steps:
+      - uses: actions/setup-node@v3
+      - name: Publish documentation
+        run: |
+            npm install -g surge
+            surge ./dist neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+        working-directory: packages/graphql-ui
