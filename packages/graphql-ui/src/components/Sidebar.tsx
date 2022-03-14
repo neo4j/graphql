@@ -21,6 +21,8 @@ import { useContext } from "react";
 import { HeroIcon } from "@neo4j-ndl/react/lib/icons";
 import * as AuthContext from "../contexts/auth";
 import * as SideBarContext from "../contexts/sidebar";
+// @ts-ignore
+import Icon from "../assets/neo4j-white.svg";
 
 export interface Props {
     allowRedirectToEdit: boolean;
@@ -80,6 +82,9 @@ export const SideBar = (props: Props) => {
                         >
                             <HeroIcon className="h-8 w-8" iconName="LogoutIcon" type="outline" />
                         </span>
+                    </li>
+                    <li className="py-4 flex justify-center">
+                        <img src={Icon} alt="d.s" className="h-8 w-8" />
                     </li>
                 </ul>
             </div>

@@ -61,7 +61,7 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: "./src/index.html",
-            favicon: "./public/favicon.ico",
+            favicon: "./public/favicon.svg",
             ...(process.env.NODE_ENV === "test" ? { inject: "body" } : {}),
         }),
         new ForkTsCheckerWebpackPlugin(),
