@@ -19,11 +19,11 @@ module.exports = {
     },
     ...(process.env.NODE_ENV === "production"
         ? {
-              optimization: {
-                  minimize: true,
-                  minimizer: [new TerserPlugin()],
-              },
-          }
+            optimization: {
+                minimize: true,
+                minimizer: [new TerserPlugin()],
+            },
+        }
         : {}),
     module: {
         rules: [
@@ -31,7 +31,7 @@ module.exports = {
                 test: /\.tsx?$/,
                 loader: "ts-loader",
                 exclude: "/node_modules/",
-                options: { projectReferences: true },
+                options: { projectReferences: true, transpileOnly: false },
             },
             {
                 test: /\.(png|jpg|gif|svg)$/i,
@@ -68,10 +68,10 @@ module.exports = {
         new NodePolyfillPlugin(),
         ...(process.env.NODE_ENV === "test"
             ? [
-                  new HtmlInlineScriptPlugin({
-                      htmlMatchPattern: [/index.html$/],
-                  }),
-              ]
+                new HtmlInlineScriptPlugin({
+                    htmlMatchPattern: [/index.html$/],
+                }),
+            ]
             : []),
         ...(process.env.NODE_ENV === "production" ? [new CompressionPlugin()] : []),
     ],

@@ -35,7 +35,7 @@ export const TopBar = () => {
                 n-bg-neutral-90 
             `}
         >
-            <div className="flex items-center justify-space text-white text-lg font-bold">
+            <div className="flex items-center justify-space text-white text-base font-bold">
                 <p>Connected to: {auth?.connectUrl}</p>
                 <p className="ml-1">Status: {auth?.isConnected ? greenDot : redDot}</p>
             </div>

@@ -40,6 +40,7 @@ import { formatCode, ParserOptions } from "./editor/utils";
 import { Col, ColsWrapper, Row, RowsWrapper } from "react-grid-resizable";
 import { JSONEditor } from "./editor/JSONEditor";
 import { Extension, FileName } from "./editor/Filename";
+import { EditorThemes } from "src/utils/types";
 
 export interface Props {
     onChange: (s: GraphQLSchema) => void;
@@ -181,6 +182,8 @@ export const SchemaEditor = (props: Props) => {
         });
         setMirror(mirror);
 
+        mirror.setOption("theme", "neo");
+
         const storedTypeDefs = getStoredTypeDefs() || DEFAULT_TYPE_DEFS;
         if (storedTypeDefs && ref.current) {
             mirror?.setValue(storedTypeDefs);
@@ -232,7 +235,11 @@ export const SchemaEditor = (props: Props) => {
                                 <RowsWrapper>
                                     <Row>
                                         <div style={{ width: "100%", height: "100%" }}>
-                                            <FileName extension={Extension.GQL} name={"typeDefs"}></FileName>
+                                            <FileName
+                                                extension={Extension.GQL}
+                                                name={"typeDefs"}
+                                                theme={EditorThemes.DARK}
+                                            ></FileName>
                                             <textarea
                                                 id={SCHEMA_EDITOR_INPUT}
                                                 /* @ts-ignore */
