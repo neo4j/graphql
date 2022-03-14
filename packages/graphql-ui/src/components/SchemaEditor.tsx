@@ -21,7 +21,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import { GraphQLSchema } from "graphql";
-import { Button, Checkbox } from "@neo4j-ndl/react";
+import { Button, Checkbox, Tab, TabPanel, Tabs } from "@neo4j-ndl/react";
 import * as neo4j from "neo4j-driver";
 import { EditorFromTextArea } from "codemirror";
 import { Col, ColsWrapper, Row, RowsWrapper } from "react-grid-resizable";
@@ -268,28 +268,32 @@ export const SchemaEditor = (props: Props) => {
                                         />
                                     </Row>
                                     <Row>
-                                        <div className="pt-3">
-                                            <h2 className="text-lg">Settings</h2>
-                                            <div className="pl-2 pt-2">
-                                                <Checkbox
-                                                    className="m-0"
-                                                    label="Enable debug"
-                                                    checked={isDebugChecked === "true"}
-                                                    onChange={onChangeDebugCheckbox}
-                                                />
-                                                <Checkbox
-                                                    className="m-0"
-                                                    label="Check constraint"
-                                                    checked={isCheckConstraintChecked === "true"}
-                                                    onChange={onChangeCheckConstraintCheckbox}
-                                                />
-                                                <Checkbox
-                                                    className="m-0"
-                                                    label="Create constraint"
-                                                    checked={isCreateConstraintChecked === "true"}
-                                                    onChange={onChangeCreateConstraintCheckbox}
-                                                />
-                                            </div>
+                                        <div className="max-w-sm rounded overflow-hidden shadow-lg">
+                                            <Tabs fill="underline" onChange={function noRefCheck() {}} value={0}>
+                                                <Tab tabId={0}>Settings</Tab>
+                                            </Tabs>
+                                            <TabPanel tabId={0} value={0}>
+                                                <div className="p-3">
+                                                    <Checkbox
+                                                        className="m-0"
+                                                        label="Enable debug"
+                                                        checked={isDebugChecked === "true"}
+                                                        onChange={onChangeDebugCheckbox}
+                                                    />
+                                                    <Checkbox
+                                                        className="m-0"
+                                                        label="Check constraint"
+                                                        checked={isCheckConstraintChecked === "true"}
+                                                        onChange={onChangeCheckConstraintCheckbox}
+                                                    />
+                                                    <Checkbox
+                                                        className="m-0"
+                                                        label="Create constraint"
+                                                        checked={isCreateConstraintChecked === "true"}
+                                                        onChange={onChangeCreateConstraintCheckbox}
+                                                    />
+                                                </div>
+                                            </TabPanel>
                                         </div>
                                     </Row>
                                 </RowsWrapper>
