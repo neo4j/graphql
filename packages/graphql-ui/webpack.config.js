@@ -4,6 +4,9 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const HtmlInlineScriptPlugin = require("html-inline-script-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
     mode: "none",
@@ -14,6 +17,14 @@ module.exports = {
         plugins: [new TsconfigPathsPlugin()],
         extensions: [".ts", ".tsx", ".mjs", ".json", ".js"], // IMPORTANT: .mjs has to be BEFORE .js
     },
+    ...(process.env.NODE_ENV === "production"
+        ? {
+              optimization: {
+                  minimize: true,
+                  minimizer: [new TerserPlugin()],
+              },
+          }
+        : {}),
     module: {
         rules: [
             {
@@ -53,6 +64,7 @@ module.exports = {
             favicon: "./public/favicon.ico",
             ...(process.env.NODE_ENV === "test" ? { inject: "body" } : {}),
         }),
+        new ForkTsCheckerWebpackPlugin(),
         new NodePolyfillPlugin(),
         ...(process.env.NODE_ENV === "test"
             ? [
@@ -61,6 +73,7 @@ module.exports = {
                   }),
               ]
             : []),
+        ...(process.env.NODE_ENV === "production" ? [new CompressionPlugin()] : []),
     ],
     devServer: {
         static: {
