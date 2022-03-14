@@ -18,17 +18,11 @@
  */
 
 import { getBrowser, getPage, Browser } from "./puppeteer";
-import {
-    EDITOR_QUERY_BUTTON,
-    EDITOR_QUERY_INPUT,
-    EDITOR_RESPONSE_OUTPUT,
-    SCHEMA_EDITOR_BUILD_BUTTON,
-    SCHEMA_EDITOR_INPUT,
-} from "../../src/constants";
 import { generate } from "randomstring";
 import * as neo4j from "neo4j-driver";
 import { Login } from "./screens/Login";
 import { SchemaEditor } from "./screens/SchemaEditor";
+import { Editor } from "./screens/Editor";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
@@ -63,8 +57,8 @@ describe("workflow", () => {
 
     test("should perform e2e workflow", async () => {
         const page = await getPage({ browser });
-        const login = new Login(page);
 
+        const login = new Login(page);
         await login.setUsername(NEO_USER);
         await login.setPassword(NEO_PASSWORD);
         await login.setURL(NEO_URL);
@@ -75,15 +69,8 @@ describe("workflow", () => {
         await schemaEditor.setTypeDefs(typeDefs);
         await schemaEditor.buildSchema();
 
-        await page.waitForSelector(`#${EDITOR_QUERY_BUTTON}`);
-
-        await page.evaluate(
-            (injected) => {
-                // @ts-ignore
-                document[`${injected.id}`].setValue(injected.query);
-            },
-            { query, id: EDITOR_QUERY_INPUT }
-        );
+        const editor = new Editor(page);
+        await editor.setQuery(query);
 
         const session = await driver.session();
         try {
@@ -94,15 +81,13 @@ describe("workflow", () => {
             await session.close();
         }
 
-        await page.click(`#${EDITOR_QUERY_BUTTON}`);
+        await editor.submitQuery();
         await page.waitForNetworkIdle();
-        await page.waitForTimeout(2000); // - Wait for Response
-        const response = await page.evaluate((injected) => {
-            // @ts-ignore
-            return document[`${injected}`].getValue();
-        }, EDITOR_RESPONSE_OUTPUT);
+        await page.waitForTimeout(2000);
 
-        expect(JSON.parse(response)).toMatchObject({
+        const output = await editor.getOutput();
+
+        expect(JSON.parse(output)).toMatchObject({
             data: {
                 movies: [{ id }],
             },
