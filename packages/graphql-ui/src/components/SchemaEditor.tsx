@@ -36,6 +36,8 @@ import {
     LOCAL_STATE_TYPE_DEFS,
     SCHEMA_EDITOR_BUILD_BUTTON,
     SCHEMA_EDITOR_INPUT,
+    SCHEMA_EDITOR_INTROSPECT_BUTTON,
+    SCHEMA_EDITOR_PRETTY_BUTTON,
     THEME_EDITOR_DARK,
     THEME_EDITOR_LIGHT,
 } from "../constants";
@@ -217,10 +219,22 @@ export const SchemaEditor = (props: Props) => {
                     >
                         {loading ? "Loading..." : "Build schema"}
                     </Button>
-                    <Button color="neutral" fill="outlined" onClick={formatTheCode} disabled={loading}>
+                    <Button
+                        id={SCHEMA_EDITOR_PRETTY_BUTTON}
+                        color="neutral"
+                        fill="outlined"
+                        onClick={formatTheCode}
+                        disabled={loading}
+                    >
                         {loading ? "Loading..." : "Prettify (CTRL+L)"}
                     </Button>
-                    <Button color="neutral" fill="outlined" onClick={introspect} disabled={loading}>
+                    <Button
+                        id={SCHEMA_EDITOR_INTROSPECT_BUTTON}
+                        color="neutral"
+                        fill="outlined"
+                        onClick={introspect}
+                        disabled={loading}
+                    >
                         {loading ? "Loading..." : "Generate typeDefs"}
                     </Button>
                 </div>

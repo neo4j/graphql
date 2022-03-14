@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Main from "./components/Main";
+import { Main } from "./components/Main";
 import * as AuthContext from "./contexts/auth";
 import * as SideBarContext from "./contexts/sidebar";
 import * as TopBarContext from "./contexts/topbar";
