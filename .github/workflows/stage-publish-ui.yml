@@ -28,18 +28,24 @@ jobs:
         - name: Build ${{ matrix.package }}
           run: yarn build
           working-directory: packages/${{ matrix.package }}
+        - name: Publish GraphQL UI to surge
+          run: |
+              npm install -g surge
+              surge ./packages/${{ matrix.package }}/dist neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
 
-    publish-ui:
-      needs:
-        - build
+    # publish-ui:
+    #   needs:
+    #     - build
 
-      runs-on: ubuntu-latest
+    #   runs-on: ubuntu-latest
 
-      steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
-      - name: Publish GraphQL UI to surge
-        run: |
-            npm install -g surge
-            surge ./dist neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
-        working-directory: packages/${{ matrix.package }}
+    #   steps:
+    #   - uses: actions/checkout@v2
+    #   - uses: actions/setup-node@v3
+    #     with:
+    #       node-version: lts/*
+    #   - name: Publish GraphQL UI to surge
+    #     run: |
+    #         npm install -g surge
+    #         surge ./dist neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+    #     working-directory: packages/graphql-ui
