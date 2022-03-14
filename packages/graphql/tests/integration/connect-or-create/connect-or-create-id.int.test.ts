@@ -42,6 +42,7 @@ describe("connectorcreate with @id", () => {
         typeDefs = gql`
         type ${typeMovie.name} {
             title: String! @unique
+            subtitle: String @unique
             id: ID! @id
             actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
         }
@@ -243,5 +244,55 @@ describe("connectorcreate with @id", () => {
         const resultActor = (gqlResult as any).data[typeActor.operations.create][typeActor.plural][0];
         expect(resultActor.movies).toHaveLength(1);
         expect(resultActor.movies[0].title).toBe(`${title}-2`);
+    });
+
+    // NOTE: This test case covers a known bug #1124 in which the where field update the values on connectOrCreate
+    /* eslint-disable-next-line jest/no-disabled-tests */
+    test.skip("create -> connectOrCreate does not change value on where", async () => {
+        const title = generate({
+            charset: "alphabetic",
+        });
+
+        const query = gql`
+            mutation {
+              ${typeActor.operations.create}(
+                input: [
+                  {
+                    name: "Tom Hanks"
+                    movies: {
+                      connectOrCreate: {
+                        where: { node: { subtitle: "${title}" } }
+                        onCreate: { node: { title: "${title}"} }
+                      }
+                    }
+                  }
+                ]
+              ) {
+                ${typeActor.plural} {
+                  name,
+                  movies {
+                      id
+                      title
+                      subtitle
+                  }
+                }
+              }
+            }
+            `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: getQuerySource(query),
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult as any).data[typeActor.operations.create][typeActor.plural]).toHaveLength(1);
+
+        const resultActor = (gqlResult as any).data[typeActor.operations.create][typeActor.plural][0];
+        expect(resultActor.movies).toHaveLength(1);
+        console.log(resultActor.movies[0]);
+        expect(resultActor.movies[0].subtitle).toBeNull();
     });
 });
