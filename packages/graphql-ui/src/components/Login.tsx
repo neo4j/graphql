@@ -29,40 +29,44 @@ import {
     LOGIN_URL_INPUT,
     LOGIN_USERNAME_INPUT,
 } from "../constants";
+// @ts-ignore
+import Icon from "../assets/neo4j-color.svg";
 
 export const Login = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const auth = useContext(AuthContext.Context);
 
-    const onSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setLoading(true);
 
-        (async () => {
-            try {
-                const data = new FormData(event.currentTarget);
-                const username = data.get("username") as string;
-                const password = data.get("password") as string;
-                const url = data.get("url") as string;
+        try {
+            const data = new FormData(event.currentTarget);
+            const username = data.get("username") as string;
+            const password = data.get("password") as string;
+            const url = data.get("url") as string;
 
-                await auth.login({
-                    username,
-                    password,
-                    url,
-                });
-            } catch (error) {
-                setError((error as Error).message as string);
-            } finally {
-                setLoading(false);
-            }
-        })();
+            await auth.login({
+                username,
+                password,
+                url,
+            });
+        } catch (error) {
+            setError((error as Error).message as string);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
     return (
-        <div className="grid place-items-center h-screen n-bg-neutral-40">
-            <div className="w-full max-w-md">
-                <form onSubmit={onSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div className="grid place-items-center h-screen n-bg-neutral-90">
+            <div className="flex flex-col align-center justify-center bg-white shadow-md rounded p-8">
+                <div className="mb-3">
+                    <img src={Icon} alt="d.s" className="h-12 w-12 mx-auto" />
+                    <h2 className="text-3xl mx-auto">Neo4j GraphQL UI Login</h2>
+                </div>
+                <form onSubmit={onSubmit}>
                     <div className="mb-4">
                         <FormInput
                             id={LOGIN_USERNAME_INPUT}
@@ -98,7 +102,7 @@ export const Login = () => {
                         ></FormInput>
                     </div>
                     <div className="flex items-center justify-between">
-                        <Button id={LOGIN_BUTTON} fill="outlined" type="submit" disabled={loading}>
+                        <Button id={LOGIN_BUTTON} color="neutral" fill="outlined" type="submit" disabled={loading}>
                             {loading ? <>Logging In</> : <span>Sign In</span>}
                         </Button>
                     </div>

@@ -22,7 +22,7 @@ export interface Props {
     name: string;
     label: string;
     type: string;
-    placeholder: string;
+    placeholder?: string;
     defaultValue?: string;
     required: boolean;
     disabled?: boolean;
