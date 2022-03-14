@@ -1,4 +1,4 @@
-import { EditorThemes } from "src/utils/types";
+import { EditorThemes } from "../../utils/types";
 // @ts-ignore
 import GraphQLIcon from "../../assets/graphql-icon.svg";
 
