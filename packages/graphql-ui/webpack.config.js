@@ -31,7 +31,7 @@ module.exports = {
                 test: /\.tsx?$/,
                 loader: "ts-loader",
                 exclude: "/node_modules/",
-                options: { projectReferences: true, transpileOnly: false },
+                options: { projectReferences: true, transpileOnly: true },
             },
             {
                 test: /\.(png|jpg|gif|svg)$/i,
@@ -64,7 +64,11 @@ module.exports = {
             favicon: "./public/favicon.svg",
             ...(process.env.NODE_ENV === "test" ? { inject: "body" } : {}),
         }),
-        new ForkTsCheckerWebpackPlugin(),
+        new ForkTsCheckerWebpackPlugin({
+            typescript: {
+                build: true
+            },
+        }),
         new NodePolyfillPlugin(),
         ...(process.env.NODE_ENV === "test"
             ? [

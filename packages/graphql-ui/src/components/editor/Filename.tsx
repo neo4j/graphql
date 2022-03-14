@@ -1,6 +1,6 @@
-// @ts-ignore
 import { EditorThemes } from "src/utils/types";
-// import GraphQLIcon from "../../assets/graphql-icon.svg";
+// @ts-ignore
+import GraphQLIcon from "../../assets/graphql-icon.svg";
 
 export enum Extension {
     JSON,
@@ -16,7 +16,7 @@ export interface Props {
 const Icon = (props: { extension: Extension }) => {
     switch (props.extension) {
         case Extension.GQL:
-            return <span>{/* <img src={GraphQLIcon} alt="graphql-logo" className="inline w-1/12 h-1/12" /> */}</span>;
+            return <span>{<img src={GraphQLIcon} alt="graphql-logo" className="inline w-1/12 h-1/12" />}</span>;
         case Extension.JSON:
             return <span className="text-yellow-500 w-1/12 h-1/12">{"{ }"}</span>;
     }
