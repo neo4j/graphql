@@ -9,22 +9,7 @@ on:
         - "packages/graphql-ui/**"
 
 jobs:
-    cache-dependencies:
-      runs-on: ubuntu-latest
-
-      steps:
-        - uses: actions/checkout@v2
-        - uses: actions/setup-node@v3
-          with:
-            node-version: lts/*
-            cache: yarn
-        - name: Install dependencies
-          run: yarn
-
     build:
-        needs:
-          - cache-dependencies
-
         runs-on: ubuntu-latest
 
         strategy:
@@ -37,6 +22,11 @@ jobs:
         steps:
         - uses: actions/checkout@v2
         - uses: actions/setup-node@v3
+          with:
+            node-version: lts/*
+            cache: yarn
+        - name: Install dependencies
+          run: yarn
         - name: Build UI
           run: yarn build
           working-directory: packages/${{ matrix.package }}
