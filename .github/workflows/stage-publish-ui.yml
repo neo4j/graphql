@@ -36,9 +36,10 @@ jobs:
       runs-on: ubuntu-latest
 
       steps:
+      - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
       - name: Publish GraphQL UI to surge
         run: |
             npm install -g surge
             surge ./dist neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
-        working-directory: packages/graphql-ui
+        working-directory: packages/${{ matrix.package }}
