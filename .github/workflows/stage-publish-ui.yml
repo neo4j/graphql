@@ -15,8 +15,6 @@ jobs:
         strategy:
           matrix:
             package:
-              - graphql
-              - introspector
               - graphql-ui
 
         steps:
@@ -27,11 +25,11 @@ jobs:
             cache: yarn
         - name: Install dependencies
           run: yarn
-        - name: Build UI
+        - name: Build ${{ matrix.package }}
           run: yarn build
           working-directory: packages/${{ matrix.package }}
 
-    upload-integration-coverage:
+    publish-ui:
       needs:
         - build
 
@@ -39,7 +37,7 @@ jobs:
 
       steps:
       - uses: actions/setup-node@v3
-      - name: Publish documentation
+      - name: Publish GraphQL UI to surge
         run: |
             npm install -g surge
             surge ./dist neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
