@@ -15,16 +15,16 @@ jobs:
         steps:
         - uses: actions/checkout@v2
         - uses: actions/setup-node@v3
-            with:
-            node-version: lts/*
-            cache: yarn
+          with:
+              node-version: lts/*
+              cache: yarn
         - name: Install dependencies
-            run: yarn
+          run: yarn --immutable
         - name: Build UI
-            run: yarn build
-            working-directory: packages/graphql-ui
+          run: yarn build
+          working-directory: packages/graphql-ui
         - name: Publish documentation
-            run: |
-                npm install -g surge
-                surge ./dist neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
-            working-directory: packages/graphql-ui
+          run: |
+              npm install -g surge
+              surge ./dist neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+          working-directory: packages/graphql-ui
