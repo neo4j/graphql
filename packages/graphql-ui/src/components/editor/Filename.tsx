@@ -1,4 +1,6 @@
-import { EditorThemes } from "../../utils/types";
+import { useContext } from "react";
+import * as TopBarContext from "../../contexts/topbar";
+import { EditorThemes } from "../../contexts/topbar";
 // @ts-ignore
 import GraphQLIcon from "../../assets/graphql-icon.svg";
 
@@ -10,7 +12,6 @@ export enum Extension {
 export interface Props {
     name: string;
     extension: Extension;
-    theme?: EditorThemes;
 }
 
 const Icon = (props: { extension: Extension }) => {
@@ -37,13 +38,15 @@ const Ending = (props: { extension: Extension }) => {
 };
 
 export const FileName = (props: Props) => {
+    const topbar = useContext(TopBarContext.Context);
+
     return (
         <div
             className={`m-0 p-1 pl-2 ${
-                props.theme === EditorThemes.LIGHT ? "bg-white" : "bg-draculaDark"
+                topbar.editorTheme === EditorThemes.LIGHT ? "bg-white" : "bg-draculaDark"
             } w-48 rounded-t`}
         >
-            <p className="text-white text-sm">
+            <p className={`${topbar.editorTheme === EditorThemes.LIGHT ? "text-black" : "text-white"} text-sm`}>
                 <Icon extension={props.extension}></Icon> <span className="pl-1">{props.name}</span>
                 <Ending extension={props.extension}></Ending>
             </p>

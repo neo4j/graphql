@@ -24,6 +24,7 @@ export const LOCAL_STATE_LOGIN = "neo4j.graphql.login";
 export const LOCAL_STATE_DEBUG = "neo4j.graphql.debug";
 export const LOCAL_STATE_CHECK_CONSTRAINT = "neo4j.graphql.checkConstraint";
 export const LOCAL_STATE_CREATE_CONSTRAINT = "neo4j.graphql.createConstraint";
+export const LOCAL_STATE_EDITOR_THEME = "neo4j.graphql.editorTheme";
 
 export const LOGIN_USERNAME_INPUT = "LOGIN_USERNAME_INPUT";
 export const LOGIN_PASSWORD_INPUT = "LOGIN_PASSWORD_INPUT";
@@ -39,6 +40,9 @@ export const EDITOR_RESPONSE_OUTPUT = "EDITOR_RESPONSE_OUTPUT";
 export const EDITOR_QUERY_BUTTON = "EDITOR_QUERY_BUTTON";
 
 export const VERIFY_CONNECTION_INTERVAL_MS = 30000;
+
+export const THEME_EDITOR_LIGHT = "default";
+export const THEME_EDITOR_DARK = "dracula";
 
 export const DEFAULT_TYPE_DEFS = `
     # Write your own type definition in the editor here or 
