@@ -31,7 +31,7 @@ jobs:
         - name: Publish GraphQL UI to surge
           run: |
               npm install -g surge
-              surge --help
+              surge ./dist neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
           working-directory: packages/${{ matrix.package }}
 
 #  run: |
