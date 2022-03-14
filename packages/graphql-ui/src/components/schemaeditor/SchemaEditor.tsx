@@ -24,12 +24,9 @@ import { GraphQLSchema } from "graphql";
 import { Button, Checkbox } from "@neo4j-ndl/react";
 import * as neo4j from "neo4j-driver";
 import { EditorFromTextArea } from "codemirror";
-import { Col, ColsWrapper, Row, RowsWrapper } from "react-grid-resizable";
-import { CodeMirror } from "../utils/utils";
-import * as AuthContext from "../contexts/auth";
+import { CodeMirror } from "../../utils/utils";
+import * as AuthContext from "../../contexts/auth";
 import {
-    DEFAULT_OPTIONS,
-    DEFAULT_TYPE_DEFS,
     LOCAL_STATE_CHECK_CONSTRAINT,
     LOCAL_STATE_CREATE_CONSTRAINT,
     LOCAL_STATE_DEBUG,
@@ -37,13 +34,32 @@ import {
     SCHEMA_EDITOR_BUILD_BUTTON,
     SCHEMA_EDITOR_INPUT,
     THEME_EDITOR_DARK,
-    THEME_EDITOR_LIGHT,
-} from "../constants";
-import { formatCode, ParserOptions } from "./editor/utils";
-import { JSONEditor } from "./editor/JSONEditor";
-import { Extension, FileName } from "./editor/Filename";
-import * as TopBarContext from "../contexts/topbar";
-import { EditorThemes } from "../contexts/topbar";
+} from "../../constants";
+import { formatCode, ParserOptions } from "../editor/utils";
+import { Col, ColsWrapper, Row, RowsWrapper } from "react-grid-resizable";
+import { JSONEditor } from "../editor/JSONEditor";
+import { Extension, FileName } from "../editor/Filename";
+
+const DEFAULT_TYPE_DEFS = `
+    # Write your own type definition in the editor here or 
+    # generate it automatically from the current Neo4j database (introspection)
+
+    # Example type definition:
+    type Movie {
+        title: String!
+    }
+    
+`;
+
+const DEFAULT_OPTIONS = JSON.stringify(
+    {
+        config: {
+            enableRegex: true,
+        },
+    },
+    null,
+    2
+);
 
 export interface Props {
     onChange: (s: GraphQLSchema) => void;
@@ -51,7 +67,6 @@ export interface Props {
 
 export const SchemaEditor = (props: Props) => {
     const auth = useContext(AuthContext.Context);
-    const topbar = useContext(TopBarContext.Context);
     const ref = useRef<HTMLTextAreaElement>();
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const [error, setError] = useState("");
@@ -166,7 +181,7 @@ export const SchemaEditor = (props: Props) => {
             lineNumbers: true,
             tabSize: 2,
             mode: "graphql",
-            theme: topbar.editorTheme === EditorThemes.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
+            theme: THEME_EDITOR_DARK,
             keyMap: "sublime",
             autoCloseBrackets: true,
             matchBrackets: true,
@@ -198,11 +213,6 @@ export const SchemaEditor = (props: Props) => {
             }
         });
     }, [ref]);
-
-    useEffect(() => {
-        const editorTheme = topbar.editorTheme === EditorThemes.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
-        mirror?.setOption("theme", editorTheme);
-    }, [topbar.editorTheme]);
 
     return (
         <div className="w-1/2">
@@ -238,7 +248,7 @@ export const SchemaEditor = (props: Props) => {
                 <div className="mt-3">
                     <Row className={"flex-1"} initialHeight={1200} initialWidth={1200}>
                         <ColsWrapper>
-                            <Col initialWidth={800} left={true}>
+                            <Col initialWidth={700} left={true}>
                                 <RowsWrapper>
                                     <Row>
                                         <div style={{ width: "100%", height: "100%" }}>

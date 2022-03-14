@@ -20,6 +20,7 @@
 import Main from "./components/Main";
 import * as AuthContext from "./contexts/auth";
 import * as SideBarContext from "./contexts/sidebar";
+import * as TopBarContext from "./contexts/topbar";
 import "@neo4j-ndl/base/lib/neo4j-ds-styles.css";
 import "./index.css";
 
@@ -27,7 +28,9 @@ export const App = () => {
     return (
         <AuthContext.Provider>
             <SideBarContext.Provider>
-                <Main />
+                <TopBarContext.Provider>
+                    <Main />
+                </TopBarContext.Provider>
             </SideBarContext.Provider>
         </AuthContext.Provider>
     );

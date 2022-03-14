@@ -17,13 +17,15 @@
  * limitations under the License.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { GraphQLSchema } from "graphql";
 import { CodeMirror } from "../../utils/utils";
 import { EditorFromTextArea } from "codemirror";
-import { EDITOR_QUERY_INPUT } from "src/constants";
+import { EDITOR_QUERY_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "src/constants";
 import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 import { Extension, FileName } from "./Filename";
+import * as TopBarContext from "../../contexts/topbar";
+import { EditorThemes } from "../../contexts/topbar";
 
 export interface Props {
     schema: GraphQLSchema;
@@ -35,6 +37,7 @@ export interface Props {
 }
 
 export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQuery, onChangeQuery }: Props) => {
+    const topbar = useContext(TopBarContext.Context);
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const ref = useRef<HTMLTextAreaElement | null>(null);
 
@@ -56,7 +59,7 @@ export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQ
             lineNumbers: true,
             tabSize: 2,
             mode: "graphql",
-            theme: "dracula",
+            theme: topbar.editorTheme === EditorThemes.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
             keyMap: "sublime",
             autoCloseBrackets: true,
             matchBrackets: true,
@@ -123,6 +126,11 @@ export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQ
         // @ts-ignore
         document[EDITOR_QUERY_INPUT] = mirror;
     }, [mirror]);
+
+    useEffect(() => {
+        const editorTheme = topbar.editorTheme === EditorThemes.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
+        mirror?.setOption("theme", editorTheme);
+    }, [topbar.editorTheme]);
 
     return (
         <div style={{ width: "100%", height: "100%" }}>
