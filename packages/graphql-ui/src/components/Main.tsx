@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Content } from "./Content";
 import { SideBar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import * as AuthContext from "../contexts/auth";
@@ -61,7 +60,7 @@ export const Main = () => {
             />
             <div className="flex w-full h-full flex-col">
                 <TopBar />
-                <Content>
+                <div className="h-content-container w-full p-4 overflow-y-auto n-bg-neutral-20">
                     {activePage === Pages.TYPEDEFS ? (
                         <SchemaEditor
                             onChange={(schema) => {
@@ -72,7 +71,7 @@ export const Main = () => {
                     ) : (
                         <Editor schema={schema} />
                     )}
-                </Content>
+                </div>
             </div>
         </div>
     );
