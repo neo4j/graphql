@@ -22,7 +22,7 @@ import { SideBar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import * as AuthContext from "../contexts/auth";
 import { useContext, useState } from "react";
-import Login from "./Login";
+import { Login } from "./Login";
 import { SchemaEditor } from "./SchemaEditor";
 import { GraphQLSchema } from "graphql";
 import { Editor } from "./editor/Editor";
