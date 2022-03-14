@@ -32,7 +32,7 @@ export const SideBar = (props: Props) => {
     const sidebar = useContext(SideBarContext.Context);
 
     return (
-        <div className="flex flex-col w-16 h-screen overflow-y-auto n-bg-neutral-90">
+        <div className="flex flex-col w-16 h-screen n-bg-neutral-90">
             <div className="flex flex-col justify-between align-center text-white">
                 <ul>
                     <li

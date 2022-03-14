@@ -26,12 +26,18 @@ export const TopBar = () => {
     const redDot = <span className="ml-1 h-3 w-3 bg-red-400 rounded-full inline-block" />;
 
     return (
-        <div className="flex justify-center w-full h-16 n-bg-neutral-20">
-            <div className="flex justify-center w-full h-12 m-2 n-bg-neutral-90">
-                <div className="flex items-center justify-space text-white text-sm">
-                    <div className="mr-3">Connected to: {auth?.connectUrl}</div>
-                    <div className="flex items-center">Status: {auth?.isConnected ? greenDot : redDot}</div>
-                </div>
+        <div
+            className={`
+                flex 
+                justify-center 
+                w-full 
+                h-16 
+                n-bg-neutral-90 
+            `}
+        >
+            <div className="flex items-center justify-space text-white text-lg font-bold">
+                <p>Connected to: {auth?.connectUrl}</p>
+                <p className="ml-1">Status: {auth?.isConnected ? greenDot : redDot}</p>
             </div>
         </div>
     );
