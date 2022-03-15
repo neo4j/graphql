@@ -1,11 +1,18 @@
-name: "Publish UI for stage env"
+name: "Publish UI"
+
+# on:
+#   workflow_run:
+#     workflows:
+#       - "Build UI"
+#     types:
+#       - completed
 
 on:
-  workflow_run:
-    workflows:
-      - "Build UI"
-    types:
-      - completed
+    pull_request:
+      branches:
+        - dev
+      paths:
+        - "packages/graphql-ui/**"
 
 jobs:
     publish-ui:
