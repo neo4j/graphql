@@ -26,7 +26,6 @@ import * as neo4j from "neo4j-driver";
 import { EditorFromTextArea } from "codemirror";
 import { Col, ColsWrapper, Row, RowsWrapper } from "react-grid-resizable";
 import { CodeMirror } from "../utils/utils";
-import * as AuthContext from "../contexts/auth";
 import {
     DEFAULT_OPTIONS,
     DEFAULT_TYPE_DEFS,
@@ -44,16 +43,16 @@ import {
 import { formatCode, ParserOptions } from "./editor/utils";
 import { JSONEditor } from "./editor/JSONEditor";
 import { Extension, FileName } from "./editor/Filename";
-import * as TopBarContext from "../contexts/topbar";
-import { EditorThemes } from "../contexts/topbar";
+import { AuthContext } from "../contexts/auth";
+import { ThemeContext, Theme } from "../contexts/theme";
 
 export interface Props {
     onChange: (s: GraphQLSchema) => void;
 }
 
 export const SchemaEditor = (props: Props) => {
-    const auth = useContext(AuthContext.Context);
-    const topbar = useContext(TopBarContext.Context);
+    const auth = useContext(AuthContext);
+    const theme = useContext(ThemeContext);
     const ref = useRef<HTMLTextAreaElement>();
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const [error, setError] = useState("");
@@ -168,7 +167,7 @@ export const SchemaEditor = (props: Props) => {
             lineNumbers: true,
             tabSize: 2,
             mode: "graphql",
-            theme: topbar.editorTheme === EditorThemes.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
+            theme: theme.editorTheme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
             keyMap: "sublime",
             autoCloseBrackets: true,
             matchBrackets: true,
@@ -202,9 +201,9 @@ export const SchemaEditor = (props: Props) => {
     }, [ref]);
 
     useEffect(() => {
-        const editorTheme = topbar.editorTheme === EditorThemes.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
+        const editorTheme = theme.editorTheme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
         mirror?.setOption("theme", editorTheme);
-    }, [topbar.editorTheme]);
+    }, [theme.editorTheme]);
 
     return (
         <div className="w-1/2">

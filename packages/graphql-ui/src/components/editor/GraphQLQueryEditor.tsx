@@ -21,11 +21,10 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { GraphQLSchema } from "graphql";
 import { CodeMirror } from "../../utils/utils";
 import { EditorFromTextArea } from "codemirror";
-import { EDITOR_QUERY_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "src/constants";
+import { EDITOR_QUERY_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
 import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 import { Extension, FileName } from "./Filename";
-import * as TopBarContext from "../../contexts/topbar";
-import { EditorThemes } from "../../contexts/topbar";
+import { ThemeContext, Theme } from "../../contexts/theme";
 
 export interface Props {
     schema: GraphQLSchema;
@@ -37,7 +36,7 @@ export interface Props {
 }
 
 export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQuery, onChangeQuery }: Props) => {
-    const topbar = useContext(TopBarContext.Context);
+    const theme = useContext(ThemeContext);
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const ref = useRef<HTMLTextAreaElement | null>(null);
 
@@ -59,7 +58,7 @@ export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQ
             lineNumbers: true,
             tabSize: 2,
             mode: "graphql",
-            theme: topbar.editorTheme === EditorThemes.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
+            theme: theme.editorTheme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
             keyMap: "sublime",
             autoCloseBrackets: true,
             matchBrackets: true,
@@ -128,9 +127,9 @@ export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQ
     }, [mirror]);
 
     useEffect(() => {
-        const editorTheme = topbar.editorTheme === EditorThemes.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
+        const editorTheme = theme.editorTheme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
         mirror?.setOption("theme", editorTheme);
-    }, [topbar.editorTheme]);
+    }, [theme.editorTheme]);
 
     return (
         <div style={{ width: "100%", height: "100%" }}>

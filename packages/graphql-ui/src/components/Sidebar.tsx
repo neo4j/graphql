@@ -19,10 +19,10 @@
 
 import { useContext } from "react";
 import { HeroIcon } from "@neo4j-ndl/react/lib/icons";
-import * as AuthContext from "../contexts/auth";
-import * as SideBarContext from "../contexts/sidebar";
 // @ts-ignore
 import Icon from "../assets/neo4j-white.svg";
+import { AuthContext } from "../contexts/auth";
+import { ScreenContext, Screen } from "../contexts/screen";
 
 export interface Props {
     allowRedirectToEdit: boolean;
@@ -30,39 +30,31 @@ export interface Props {
 }
 
 export const SideBar = (props: Props) => {
-    const auth = useContext(AuthContext.Context);
-    const sidebar = useContext(SideBarContext.Context);
+    const auth = useContext(AuthContext);
+    const sidebar = useContext(ScreenContext);
 
     return (
         <div className="flex flex-col w-16 h-screen n-bg-neutral-90">
             <div className="flex flex-col justify-between align-center text-white">
                 <ul>
-                    <li
-                        className={`py-4 flex justify-center ${
-                            sidebar.view === SideBarContext.Views.TYPEDEFS && "n-bg-neutral-80"
-                        }`}
-                    >
+                    <li className={`py-4 flex justify-center ${sidebar.view === Screen.TYPEDEFS && "n-bg-neutral-80"}`}>
                         <span
                             className="font-medium text-2xl cursor-pointer"
                             onClick={() => {
-                                sidebar.setView(SideBarContext.Views.TYPEDEFS);
+                                sidebar.setView(Screen.TYPEDEFS);
                             }}
                         >
                             <HeroIcon className="h-8 w-8" iconName="DocumentTextIcon" type="outline" />
                         </span>
                     </li>
-                    <li
-                        className={`py-4 flex justify-center ${
-                            sidebar.view === SideBarContext.Views.EDITOR && "n-bg-neutral-80"
-                        }`}
-                    >
+                    <li className={`py-4 flex justify-center ${sidebar.view === Screen.EDITOR && "n-bg-neutral-80"}`}>
                         <span
                             className={`font-medium text-2xl ${
                                 props.allowRedirectToEdit ? "cursor-pointer" : "default"
                             }`}
                             onClick={() => {
                                 if (!props.allowRedirectToEdit) return;
-                                sidebar.setView(SideBarContext.Views.EDITOR);
+                                sidebar.setView(Screen.EDITOR);
                             }}
                         >
                             <HeroIcon className="h-8 w-8" iconName="SearchIcon" type="outline" />

@@ -19,19 +19,18 @@
 
 import { useContext } from "react";
 import { Checkbox } from "@neo4j-ndl/react";
-import * as AuthContext from "../contexts/auth";
-import * as TopBarContext from "../contexts/topbar";
-import { EditorThemes } from "src/contexts/topbar";
+import { AuthContext } from "../contexts/auth";
+import { ThemeContext, Theme } from "../contexts/theme";
 
 export const TopBar = () => {
-    const auth = useContext(AuthContext.Context);
-    const topbar = useContext(TopBarContext.Context);
+    const auth = useContext(AuthContext);
+    const theme = useContext(ThemeContext);
     const greenDot = <span className="ml-1 h-3 w-3 bg-green-400 rounded-full inline-block" />;
     const redDot = <span className="ml-1 h-3 w-3 bg-red-400 rounded-full inline-block" />;
 
     const onChangeEditorTheme = (): void => {
-        const next = topbar.editorTheme === EditorThemes.LIGHT ? EditorThemes.DARK : EditorThemes.LIGHT;
-        topbar.setEditorTheme(next);
+        const next = theme.editorTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
+        theme.setEditorTheme(next);
     };
 
     return (
@@ -46,7 +45,7 @@ export const TopBar = () => {
         >
             <div className="flex items-center justify-space text-white mr-8">
                 <Checkbox
-                    checked={topbar.editorTheme === EditorThemes.LIGHT}
+                    checked={theme.editorTheme === Theme.LIGHT}
                     className="m-0"
                     label="Light editor theme"
                     labelBefore={true}

@@ -19,13 +19,13 @@
 
 import { SideBar } from "./Sidebar";
 import { TopBar } from "./TopBar";
-import * as AuthContext from "../contexts/auth";
 import { useContext, useState } from "react";
 import { Login } from "./Login";
 import { SchemaEditor } from "./SchemaEditor";
 import { GraphQLSchema } from "graphql";
 import { Editor } from "./editor/Editor";
-import * as SideBarContext from "../contexts/sidebar";
+import { AuthContext } from "../contexts/auth";
+import { ScreenContext, Screen } from "../contexts/screen";
 
 export enum Pages {
     TYPEDEFS,
@@ -33,8 +33,8 @@ export enum Pages {
 }
 
 export const Main = () => {
-    const auth = useContext(AuthContext.Context);
-    const sidebar = useContext(SideBarContext.Context);
+    const auth = useContext(AuthContext);
+    const sidebar = useContext(ScreenContext);
     const [schema, setSchema] = useState<GraphQLSchema | undefined>(undefined);
 
     if (!auth.driver) {
@@ -52,18 +52,18 @@ export const Main = () => {
             <SideBar
                 allowRedirectToEdit={!!schema}
                 onLogout={() => {
-                    sidebar.setView(SideBarContext.Views.TYPEDEFS);
+                    sidebar.setView(Screen.TYPEDEFS);
                     setSchema(undefined);
                 }}
             />
             <div className="flex w-full h-full flex-col">
                 <TopBar />
                 <div className="h-content-container w-full p-4 overflow-y-auto n-bg-neutral-20">
-                    {sidebar.view === SideBarContext.Views.TYPEDEFS ? (
+                    {sidebar.view === Screen.TYPEDEFS ? (
                         <SchemaEditor
                             onChange={(schema) => {
                                 setSchema(schema);
-                                sidebar.setView(SideBarContext.Views.EDITOR);
+                                sidebar.setView(Screen.EDITOR);
                             }}
                         ></SchemaEditor>
                     ) : (

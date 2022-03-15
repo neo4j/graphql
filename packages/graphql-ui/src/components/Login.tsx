@@ -19,7 +19,6 @@
 
 import { useCallback } from "react";
 import { useContext, useState } from "react";
-import * as AuthContext from "../contexts/auth";
 import { FormInput } from "./FormInput";
 import { Button } from "@neo4j-ndl/react";
 import {
@@ -31,11 +30,12 @@ import {
 } from "../constants";
 // @ts-ignore
 import Icon from "../assets/neo4j-color.svg";
+import { AuthContext } from "../contexts/auth";
 
 export const Login = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const auth = useContext(AuthContext.Context);
+    const auth = useContext(AuthContext);
 
     const onSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

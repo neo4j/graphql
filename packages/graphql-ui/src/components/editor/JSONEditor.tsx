@@ -19,12 +19,11 @@
 
 import { EditorFromTextArea } from "codemirror";
 import { useContext, useEffect, useRef } from "react";
-import { THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "src/constants";
+import { THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
+import { ThemeContext, Theme } from "../../contexts/theme";
 import { CodeMirror } from "../../utils/utils";
 import { Extension, FileName } from "./Filename";
 import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
-import * as TopBarContext from "../../contexts/topbar";
-import { EditorThemes } from "../../contexts/topbar";
 
 export interface Props {
     id: string;
@@ -37,7 +36,7 @@ export interface Props {
 }
 
 export const JSONEditor = (props: Props) => {
-    const topbar = useContext(TopBarContext.Context);
+    const theme = useContext(ThemeContext);
     const ref = useRef<HTMLTextAreaElement | null>(null);
     const mirror = useRef<CodeMirror.Editor | null>(null);
 
@@ -48,7 +47,7 @@ export const JSONEditor = (props: Props) => {
 
         mirror.current = CodeMirror.fromTextArea(ref.current, {
             mode: { name: "javascript", json: true },
-            theme: topbar.editorTheme === EditorThemes.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
+            theme: theme.editorTheme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
             readOnly: props.readonly,
             lineNumbers: true,
             lineWrapping: true,
@@ -87,9 +86,9 @@ export const JSONEditor = (props: Props) => {
     }, [props.loading]);
 
     useEffect(() => {
-        const editorTheme = topbar.editorTheme === EditorThemes.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
+        const editorTheme = theme.editorTheme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
         mirror.current?.setOption("theme", editorTheme);
-    }, [topbar.editorTheme]);
+    }, [theme.editorTheme]);
 
     return (
         <div style={{ width: "100%", height: "100%" }}>

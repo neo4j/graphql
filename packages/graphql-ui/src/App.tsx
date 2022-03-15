@@ -18,20 +18,20 @@
  */
 
 import { Main } from "./components/Main";
-import * as AuthContext from "./contexts/auth";
-import * as SideBarContext from "./contexts/sidebar";
-import * as TopBarContext from "./contexts/topbar";
+import { AuthProvider } from "./contexts/auth";
+import { ScreenProvider } from "./contexts/screen";
+import { ThemeProvider } from "./contexts/theme";
 import "@neo4j-ndl/base/lib/neo4j-ds-styles.css";
 import "./index.css";
 
 export const App = () => {
     return (
-        <AuthContext.Provider>
-            <SideBarContext.Provider>
-                <TopBarContext.Provider>
+        <AuthProvider>
+            <ScreenProvider>
+                <ThemeProvider>
                     <Main />
-                </TopBarContext.Provider>
-            </SideBarContext.Provider>
-        </AuthContext.Provider>
+                </ThemeProvider>
+            </ScreenProvider>
+        </AuthProvider>
     );
 };

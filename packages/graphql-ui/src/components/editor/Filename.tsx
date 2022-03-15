@@ -1,6 +1,5 @@
 import { useContext } from "react";
-import * as TopBarContext from "../../contexts/topbar";
-import { EditorThemes } from "../../contexts/topbar";
+import { ThemeContext, Theme } from "../../contexts/theme";
 // @ts-ignore
 import GraphQLIcon from "../../assets/graphql-icon.svg";
 
@@ -38,15 +37,15 @@ const Ending = (props: { extension: Extension }) => {
 };
 
 export const FileName = (props: Props) => {
-    const topbar = useContext(TopBarContext.Context);
+    const theme = useContext(ThemeContext);
 
     return (
         <div
             className={`m-0 p-1 pl-2 ${
-                topbar.editorTheme === EditorThemes.LIGHT ? "bg-white" : "bg-draculaDark"
+                theme.editorTheme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"
             } w-48 rounded-t`}
         >
-            <p className={`${topbar.editorTheme === EditorThemes.LIGHT ? "text-black" : "text-white"} text-sm`}>
+            <p className={`${theme.editorTheme === Theme.LIGHT ? "text-black" : "text-white"} text-sm`}>
                 <Icon extension={props.extension}></Icon> <span className="pl-1">{props.name}</span>
                 <Ending extension={props.extension}></Ending>
             </p>

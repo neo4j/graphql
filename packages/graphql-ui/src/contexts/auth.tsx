@@ -38,9 +38,9 @@ export interface State {
     logout: () => void;
 }
 
-export const Context = React.createContext(null as unknown as State);
+export const AuthContext = React.createContext(null as unknown as State);
 
-export function Provider(props: any) {
+export function AuthProvider(props: any) {
     let value: State | undefined;
     let setValue: Dispatch<SetStateAction<State>>;
     let intervalId: number;
@@ -107,5 +107,5 @@ export function Provider(props: any) {
 
     resolveNeo4jDesktopLoginPayload().then(processLoginPayload.bind(null, value)).catch(console.error);
 
-    return <Context.Provider value={value as State}>{props.children}</Context.Provider>;
+    return <AuthContext.Provider value={value as State}>{props.children}</AuthContext.Provider>;
 }

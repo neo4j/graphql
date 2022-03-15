@@ -18,29 +18,39 @@
  */
 
 import React, { Dispatch, useState, SetStateAction } from "react";
+import { LOCAL_STATE_EDITOR_THEME } from "src/constants";
 
-export enum Views {
-    TYPEDEFS,
-    EDITOR,
+export enum Theme {
+    LIGHT,
+    DARK,
 }
 
 export interface State {
-    view: Views;
-    setView: (v: Views) => void;
+    editorTheme: Theme;
+    setEditorTheme: (v: Theme) => void;
 }
 
-export const Context = React.createContext(null as unknown as State);
+export const ThemeContext = React.createContext(null as unknown as State);
 
-export function Provider(props: React.PropsWithChildren<any>) {
+export function ThemeProvider(props: React.PropsWithChildren<any>) {
     let value: State | undefined;
     let setValue: Dispatch<SetStateAction<State>>;
 
+    const loadEditorTheme = () => {
+        const storedTheme = localStorage.getItem(LOCAL_STATE_EDITOR_THEME);
+        if (storedTheme) {
+            return storedTheme === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
+        }
+        return Theme.DARK;
+    };
+
     [value, setValue] = useState<State>({
-        view: Views.TYPEDEFS,
-        setView: (view: Views) => {
-            setValue((v) => ({ ...v, view }));
+        editorTheme: loadEditorTheme(),
+        setEditorTheme: (editorTheme: Theme) => {
+            setValue((v) => ({ ...v, editorTheme }));
+            localStorage.setItem(LOCAL_STATE_EDITOR_THEME, editorTheme.toString());
         },
     });
 
-    return <Context.Provider value={value as State}>{props.children}</Context.Provider>;
+    return <ThemeContext.Provider value={value as State}>{props.children}</ThemeContext.Provider>;
 }
