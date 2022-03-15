@@ -24,5 +24,5 @@ jobs:
       - name: Archive UI
         uses: actions/upload-artifact@v2
         with:
-          name: ui
+          name: graphqlui
           path: packages/graphql-ui/dist

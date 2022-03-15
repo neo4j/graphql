@@ -1,6 +1,8 @@
 name: "UI Publish"
 
 on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
   workflow_run:
     workflows: ["UI Build"]
     types:
@@ -23,7 +25,7 @@ jobs:
                run_id: ${{ github.event.workflow_run.id }},
             });
             var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "ui"
+              return artifact.name == "graphqlui"
             })[0];
             var download = await github.rest.actions.downloadArtifact({
                owner: context.repo.owner,
@@ -32,8 +34,8 @@ jobs:
                archive_format: 'zip',
             });
             var fs = require('fs');
-            fs.writeFileSync('${{ github.workspace }}/ui.zip', Buffer.from(download.data));
-      - run: unzip ui.zip
+            fs.writeFileSync('${{ github.workspace }}/graphqlui.zip', Buffer.from(download.data));
+      - run: unzip graphqlui.zip
       # - id: get-pr-number
       #   run: |
       #     number=$(<prnumber)
