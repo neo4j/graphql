@@ -22,7 +22,7 @@ import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createAuthParam from "./create-auth-param";
 import createAuthAndParams from "./create-auth-and-params";
@@ -31,6 +31,9 @@ import createConnectionWhereAndParams from "./where/create-connection-where-and-
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
+import { createEventMeta } from "./subscriptions/create-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import { escapeQuery } from "./utils/escape-query";
 
 interface Res {
     strs: string[];
@@ -49,7 +52,6 @@ function createUpdateAndParams({
     node,
     parentVar,
     chainStr,
-    insideDoWhen,
     withVars,
     context,
     parameterPrefix,
@@ -61,7 +63,6 @@ function createUpdateAndParams({
     chainStr?: string;
     node: Node;
     withVars: string[];
-    insideDoWhen?: boolean;
     context: Context;
     parameterPrefix: string;
     includeRelationshipValidation?: boolean;
@@ -69,7 +70,7 @@ function createUpdateAndParams({
     let hasAppliedTimeStamps = false;
 
     function reducer(res: Res, [key, value]: [string, any]) {
-        let param;
+        let param: string;
 
         if (chainStr) {
             param = `${chainStr}_${key}`;
@@ -166,8 +167,8 @@ function createUpdateAndParams({
                         }
 
                         if (update.update.node) {
-                            subquery.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
-
+                            subquery.push(`CALL apoc.do.when(${_varName} IS NOT NULL, "`);
+                            const nestedWithVars = [...withVars, _varName];
                             const auth = createAuthParam({ context });
                             let innerApocParams = { auth };
 
@@ -195,10 +196,9 @@ function createUpdateAndParams({
                                 node: refNode,
                                 updateInput: nestedUpdateInput,
                                 varName: _varName,
-                                withVars: [...withVars, _varName],
+                                withVars: nestedWithVars,
                                 parentVar: _varName,
                                 chainStr: `${param}${relationField.union ? `_${refNode.name}` : ""}${index}`,
-                                insideDoWhen: true,
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.node`,
@@ -206,7 +206,7 @@ function createUpdateAndParams({
                             });
                             res.params = { ...res.params, ...updateAndParams[1], auth };
                             innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
-                            const updateStrs = [updateAndParams[0]];
+                            const updateStrs = [escapeQuery(updateAndParams[0])];
 
                             if (relationField.interface && update.update.node?._on?.[refNode.name]) {
                                 const onUpdateAndParams = createUpdateAndParams({
@@ -214,12 +214,11 @@ function createUpdateAndParams({
                                     node: refNode,
                                     updateInput: update.update.node._on[refNode.name],
                                     varName: _varName,
-                                    withVars: [...withVars, _varName],
+                                    withVars: nestedWithVars,
                                     parentVar: _varName,
                                     chainStr: `${param}${relationField.union ? `_${refNode.name}` : ""}${index}_on_${
                                         refNode.name
                                     }`,
-                                    insideDoWhen: true,
                                     parameterPrefix: `${parameterPrefix}.${key}${
                                         relationField.union ? `.${refNode.name}` : ""
                                     }${relationField.typeMeta.array ? `[${index}]` : ``}.update.node._on.${
@@ -228,20 +227,28 @@ function createUpdateAndParams({
                                 });
                                 res.params = { ...res.params, ...onUpdateAndParams[1], auth };
                                 innerApocParams = { ...innerApocParams, ...onUpdateAndParams[1] };
-                                updateStrs.push(onUpdateAndParams[0]);
+                                updateStrs.push(escapeQuery(onUpdateAndParams[0]));
                             }
-
-                            updateStrs.push("RETURN count(*)");
+                            if (context.subscriptionsEnabled) {
+                                updateStrs.push(`RETURN ${META_CYPHER_VARIABLE}`);
+                            } else {
+                                updateStrs.push("RETURN count(*)");
+                            }
                             const apocArgs = `{${withVars.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}, ${_varName}:${_varName}REPLACE_ME}`;
 
-                            if (insideDoWhen) {
-                                updateStrs.push(`\\", \\"\\", ${apocArgs})`);
+                            updateStrs.push(
+                                `", ${
+                                    context.subscriptionsEnabled ? `"RETURN ${META_CYPHER_VARIABLE}"` : `""`
+                                }, ${apocArgs})`
+                            );
+                            if (context.subscriptionsEnabled) {
+                                updateStrs.push("YIELD value");
+                                updateStrs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, value.meta AS meta`);
                             } else {
-                                updateStrs.push(`", "", ${apocArgs})`);
+                                updateStrs.push("YIELD value AS _");
                             }
-                            updateStrs.push("YIELD value as _");
 
                             const paramsString = Object.keys(innerApocParams)
                                 .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
@@ -252,9 +259,7 @@ function createUpdateAndParams({
                         }
 
                         if (update.update.edge) {
-                            subquery.push(
-                                `CALL apoc.do.when(${relationshipVariable} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`
-                            );
+                            subquery.push(`CALL apoc.do.when(${relationshipVariable} IS NOT NULL, "`);
 
                             const setProperties = createSetRelationshipProperties({
                                 properties: update.update.edge,
@@ -266,17 +271,14 @@ function createUpdateAndParams({
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
                             });
 
-                            const updateStrs = [setProperties, "RETURN count(*)"];
+                            const updateStrs = [escapeQuery(setProperties), escapeQuery("RETURN count(*)")];
+
                             const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}}`;
 
-                            if (insideDoWhen) {
-                                updateStrs.push(`\\", \\"\\", ${apocArgs})`);
-                            } else {
-                                updateStrs.push(`", "", ${apocArgs})`);
-                            }
-                            updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_edge`);
+                            updateStrs.push(`", "", ${apocArgs})`);
+                            updateStrs.push(`YIELD value AS ${relationshipVariable}_${key}${index}_edge`);
                             subquery.push(updateStrs.join("\n"));
                         }
                     }
@@ -292,7 +294,6 @@ function createUpdateAndParams({
                             relationField,
                             labelOverride: relationField.union ? refNode.name : "",
                             parentNode: node,
-                            insideDoWhen,
                             parameterPrefix: `${parameterPrefix}.${key}${
                                 relationField.union ? `.${refNode.name}` : ""
                             }${relationField.typeMeta.array ? `[${index}]` : ""}.disconnect`,
@@ -312,7 +313,6 @@ function createUpdateAndParams({
                             relationField,
                             labelOverride: relationField.union ? refNode.name : "",
                             parentNode: node,
-                            insideDoWhen,
                         });
                         subquery.push(connectAndParams[0]);
                         res.params = { ...res.params, ...connectAndParams[1] };
@@ -326,6 +326,7 @@ function createUpdateAndParams({
                             relationField,
                             refNode,
                             context,
+                            withVars,
                         });
                         subquery.push(connectOrCreateQuery);
                         res.params = { ...res.params, ...connectOrCreateParams };
@@ -342,7 +343,6 @@ function createUpdateAndParams({
                             chainStr: innerVarName,
                             parentVar,
                             withVars,
-                            insideDoWhen,
                             parameterPrefix: `${parameterPrefix}.${key}${
                                 relationField.typeMeta.array ? `[${index}]` : ``
                             }.delete`, // its use here
@@ -369,7 +369,6 @@ function createUpdateAndParams({
                                 input: create.node,
                                 varName: nodeName,
                                 withVars: [...withVars, nodeName],
-                                insideDoWhen,
                                 includeRelationshipValidation: false,
                             });
                             subquery.push(createAndParams[0]);
@@ -427,6 +426,11 @@ function createUpdateAndParams({
             return res;
         }
 
+        if (context.subscriptionsEnabled) {
+            const oldProps = `WITH ${varName} { .* } AS ${META_OLD_PROPS_CYPHER_VARIABLE}, ${withVars.join(", ")}`;
+            res.strs.push(oldProps);
+        }
+
         if (!hasAppliedTimeStamps) {
             const timestampedFields = node.temporalFields.filter(
                 (temporalField) =>
@@ -458,6 +462,11 @@ function createUpdateAndParams({
             res.params[param] = value;
         }
 
+        if (context.subscriptionsEnabled) {
+            const eventMeta = createEventMeta({ event: "update", nodeVariable: varName });
+            res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, ${eventMeta}`);
+        }
+
         if (authableField) {
             if (authableField.auth) {
                 const preAuth = createAuthAndParams({
@@ -465,7 +474,6 @@ function createUpdateAndParams({
                     operations: "UPDATE",
                     context,
                     allow: { varName, parentNode: node, chainStr: param },
-                    escapeQuotes: Boolean(insideDoWhen),
                 });
                 const postAuth = createAuthAndParams({
                     entity: authableField,
@@ -474,7 +482,6 @@ function createUpdateAndParams({
                     skipIsAuthenticated: true,
                     context,
                     bind: { parentNode: node, varName, chainStr: param },
-                    escapeQuotes: Boolean(insideDoWhen),
                 });
 
                 if (!res.meta) {
@@ -513,7 +520,6 @@ function createUpdateAndParams({
         context,
         allow: { parentNode: node, varName },
         operations: "UPDATE",
-        escapeQuotes: Boolean(insideDoWhen),
     });
     if (preAuth[0]) {
         preAuthStrs.push(preAuth[0]);
@@ -527,7 +533,6 @@ function createUpdateAndParams({
         skipRoles: true,
         operations: "UPDATE",
         bind: { parentNode: node, varName },
-        escapeQuotes: Boolean(insideDoWhen),
     });
     if (postAuth[0]) {
         postAuthStrs.push(postAuth[0]);
@@ -545,7 +550,7 @@ function createUpdateAndParams({
         ? createRelationshipValidationStr({ node, context, varName })
         : "";
 
-    const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
+    const forbiddenString = `"${AUTH_FORBIDDEN_ERROR}"`;
 
     if (preAuthStrs.length) {
         const apocStr = `CALL apoc.util.validate(NOT(${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
@@ -556,7 +561,6 @@ function createUpdateAndParams({
         const apocStr = `CALL apoc.util.validate(NOT(${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
         postAuthStr = `${withStr}\n${apocStr}`;
     }
-
     return [
         [
             preAuthStr,

@@ -70,8 +70,8 @@ describe("#288", () => {
             SET this0.COMPANYID = $this0_COMPANYID
             RETURN this0
             }
-            RETURN
-            this0 { .USERID, .COMPANYID } AS this0"
+            RETURN [
+            this0 { .USERID, .COMPANYID }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -103,7 +103,7 @@ describe("#288", () => {
             "MATCH (this:USER)
             WHERE this.USERID = $this_USERID
             SET this.COMPANYID = $this_update_COMPANYID
-            RETURN this { .USERID, .COMPANYID } AS this"
+            RETURN collect(DISTINCT this { .USERID, .COMPANYID }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

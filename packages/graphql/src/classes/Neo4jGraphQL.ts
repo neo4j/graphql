@@ -55,7 +55,7 @@ export interface Neo4jGraphQLConfig {
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
-    plugins?: Neo4jGraphQLPlugins;
+    plugins?: Omit<Neo4jGraphQLPlugins, "subscriptions">;
 }
 
 class Neo4jGraphQL {
@@ -187,6 +187,7 @@ class Neo4jGraphQL {
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(this.schemaDefinition.typeDefs, {
                 enableRegex: this.config?.enableRegex,
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
+                generateSubscriptions: Boolean(this.plugins?.subscriptions),
             });
 
             this._nodes = nodes;

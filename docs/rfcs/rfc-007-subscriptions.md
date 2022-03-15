@@ -39,6 +39,7 @@ Our users would like to use [GraphQL Subscriptions](https://graphql.org/blog/sub
 ### Won't have (this time)
 
 - Events from changes outside of GraphQL (e.g. via Bolt)
+- Events triggered from custom Cypher (won't do this ever)
 
 ## Proposed Solutions
 
@@ -171,7 +172,7 @@ class Neo4jGraphQLSubscriptionsPlugin {
     this.events = new EventEmitter();
   }
 
-  abstract public publish(eventMeta: EventMeta);
+  abstract public publish(eventMeta: SubscriptionsEvent);
 }
 ```
 
@@ -179,7 +180,7 @@ The "local" implementation of this will look something like:
 
 ```ts
 class Neo4jGraphQLSubscriptionsLocalPlugin extends Neo4jGraphQLSubscriptionsPlugin {
-  public publish(eventMeta: EventMeta) {
+  public publish(eventMeta: SubscriptionsEvent) {
     this.events.emit(eventMeta);
   }
 }
@@ -191,7 +192,7 @@ And in rough pseudocode, an implementation of this using an AMQP broker would lo
 class Neo4jGraphQLSubscriptionsAMQPPlugin extends Neo4jGraphQLSubscriptionsPlugin {
   private amqpConnection;
 
-  public publish(eventMeta: EventMeta) {
+  public publish(eventMeta: SubscriptionsEvent) {
     amqpConnection.publish(eventMeta);
   }
 

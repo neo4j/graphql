@@ -21,7 +21,9 @@ import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
+import { createEventMetaObject } from "./subscriptions/create-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 
 interface Res {
     strs: string[];
@@ -208,11 +210,23 @@ function createDeleteAndParams({
                         }
                     }
 
+                    const nodeToDelete = `${_varName}_to_delete`;
                     res.strs.push(
-                        `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`].join(", ")}`
+                        `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${nodeToDelete}`].join(", ")}`
                     );
-                    res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
 
+                    if (context.subscriptionsEnabled) {
+                        const metaObjectStr = createEventMetaObject({
+                            event: "delete",
+                            nodeVariable: "n",
+                        });
+                        const reduceStr = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${metaObjectStr}) AS ${META_CYPHER_VARIABLE}`;
+                        res.strs.push(
+                            `WITH ${[...filterMetaVariable(withVars), nodeToDelete].join(", ")}, ${reduceStr}`
+                        );
+                    }
+
+                    res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
                     // TODO - relationship validation
                 });
             });

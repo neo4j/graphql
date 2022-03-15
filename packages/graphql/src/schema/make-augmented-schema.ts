@@ -80,10 +80,15 @@ import { CartesianPointInput } from "./types/input-objects/CartesianPointInput";
 import { PointDistance } from "./types/input-objects/PointDistance";
 import { CartesianPointDistance } from "./types/input-objects/CartesianPointDistance";
 import getNodes from "./get-nodes";
+import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
-    { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
+    {
+        enableRegex,
+        skipValidateTypeDefs,
+        generateSubscriptions,
+    }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean; generateSubscriptions?: boolean } = {}
 ): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers: IResolvers } {
     const document = getDocument(typeDefs);
 
@@ -735,6 +740,10 @@ function makeAugmentedSchema(
             });
         }
     });
+
+    if (generateSubscriptions) {
+        generateSubscriptionTypes({ schemaComposer: composer, nodes });
+    }
 
     ["Mutation", "Query"].forEach((type) => {
         const objectComposer = composer[type] as ObjectTypeComposer;

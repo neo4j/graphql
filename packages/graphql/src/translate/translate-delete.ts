@@ -19,12 +19,13 @@
 
 import { Node } from "../classes";
 import { Context } from "../types";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createAuthAndParams from "./create-auth-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
+import { createEventMeta } from "./subscriptions/create-event-meta";
 
-function translateDelete({ context, node }: { context: Context; node: Node }): [string, any] {
+export default function translateDelete({ context, node }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
@@ -32,6 +33,12 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
     let allowStr = "";
     let deleteStr = "";
     let cypherParams: { [k: string]: any } = {};
+
+    const withVars = [varName];
+
+    if (context.subscriptionsEnabled) {
+        withVars.push(META_CYPHER_VARIABLE);
+    }
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "DELETE" });
     matchAndWhereStr = topLevelMatch[0];
@@ -48,7 +55,9 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
     });
     if (allowAuth[0]) {
         cypherParams = { ...cypherParams, ...allowAuth[1] };
-        allowStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        allowStr = `WITH ${withVars.join(", ")}\nCALL apoc.util.validate(NOT(${
+            allowAuth[0]
+        }), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
     if (deleteInput) {
@@ -58,7 +67,7 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
             deleteInput,
             varName,
             parentVar: varName,
-            withVars: [varName],
+            withVars,
             parameterPrefix: `${varName}_${resolveTree.name}.args.delete`,
         });
         [deleteStr] = deleteAndParams;
@@ -71,9 +80,27 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
         };
     }
 
-    const cypher = [matchAndWhereStr, deleteStr, allowStr, `DETACH DELETE ${varName}`];
+    const eventMeta = createEventMeta({ event: "delete", nodeVariable: varName });
+
+    const cypher = [
+        ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
+        matchAndWhereStr,
+        ...(context.subscriptionsEnabled ? [`WITH ${varName}, ${eventMeta}`] : []),
+        deleteStr,
+        allowStr,
+        `DETACH DELETE ${varName}`,
+        ...getDeleteReturn(context),
+    ];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }
 
-export default translateDelete;
+function getDeleteReturn(context: Context): Array<string> {
+    return context.subscriptionsEnabled
+        ? [
+              `WITH ${META_CYPHER_VARIABLE}`,
+              `UNWIND ${META_CYPHER_VARIABLE} AS m`,
+              `RETURN collect(DISTINCT m) AS ${META_CYPHER_VARIABLE}`,
+          ]
+        : [];
+}
