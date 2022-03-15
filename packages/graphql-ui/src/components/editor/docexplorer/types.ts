@@ -1,4 +1,5 @@
 import { MouseEvent } from "react";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import {
     GraphQLField,
     GraphQLInputField,
@@ -10,7 +11,7 @@ import {
     GraphQLNamedType,
 } from "graphql";
 
-export type FieldType = GraphQLField<{}, {}, {}> | GraphQLInputField | GraphQLArgument;
+export type FieldType = GraphQLField<unknown, unknown, unknown> | GraphQLInputField | GraphQLArgument;
 
 export type OnClickFieldFunction = (
     field: FieldType,
