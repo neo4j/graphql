@@ -29,8 +29,8 @@ export const TopBar = () => {
     const redDot = <span className="ml-1 h-3 w-3 bg-red-400 rounded-full inline-block" />;
 
     const onChangeEditorTheme = (): void => {
-        const next = theme.editorTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
-        theme.setEditorTheme(next);
+        const next = theme.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
+        theme.setTheme(next);
     };
 
     return (
@@ -45,7 +45,7 @@ export const TopBar = () => {
         >
             <div className="flex items-center justify-space text-white mr-8">
                 <Checkbox
-                    checked={theme.editorTheme === Theme.LIGHT}
+                    checked={theme.theme === Theme.LIGHT}
                     className="m-0"
                     label="Light editor theme"
                     labelBefore={true}

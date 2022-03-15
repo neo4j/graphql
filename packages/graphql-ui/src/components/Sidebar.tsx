@@ -31,30 +31,30 @@ export interface Props {
 
 export const SideBar = (props: Props) => {
     const auth = useContext(AuthContext);
-    const sidebar = useContext(ScreenContext);
+    const screen = useContext(ScreenContext);
 
     return (
         <div className="flex flex-col w-16 h-screen n-bg-neutral-90">
             <div className="flex flex-col justify-between align-center text-white">
                 <ul>
-                    <li className={`py-4 flex justify-center ${sidebar.view === Screen.TYPEDEFS && "n-bg-neutral-80"}`}>
+                    <li className={`py-4 flex justify-center ${screen.view === Screen.TYPEDEFS && "n-bg-neutral-80"}`}>
                         <span
                             className="font-medium text-2xl cursor-pointer"
                             onClick={() => {
-                                sidebar.setView(Screen.TYPEDEFS);
+                                screen.setScreen(Screen.TYPEDEFS);
                             }}
                         >
                             <HeroIcon className="h-8 w-8" iconName="DocumentTextIcon" type="outline" />
                         </span>
                     </li>
-                    <li className={`py-4 flex justify-center ${sidebar.view === Screen.EDITOR && "n-bg-neutral-80"}`}>
+                    <li className={`py-4 flex justify-center ${screen.view === Screen.EDITOR && "n-bg-neutral-80"}`}>
                         <span
                             className={`font-medium text-2xl ${
                                 props.allowRedirectToEdit ? "cursor-pointer" : "default"
                             }`}
                             onClick={() => {
                                 if (!props.allowRedirectToEdit) return;
-                                sidebar.setView(Screen.EDITOR);
+                                screen.setScreen(Screen.EDITOR);
                             }}
                         >
                             <HeroIcon className="h-8 w-8" iconName="SearchIcon" type="outline" />

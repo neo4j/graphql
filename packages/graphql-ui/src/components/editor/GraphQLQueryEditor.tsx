@@ -58,7 +58,7 @@ export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQ
             lineNumbers: true,
             tabSize: 2,
             mode: "graphql",
-            theme: theme.editorTheme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
+            theme: theme.theme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
             keyMap: "sublime",
             autoCloseBrackets: true,
             matchBrackets: true,
@@ -127,9 +127,9 @@ export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQ
     }, [mirror]);
 
     useEffect(() => {
-        const editorTheme = theme.editorTheme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
-        mirror?.setOption("theme", editorTheme);
-    }, [theme.editorTheme]);
+        const t = theme.theme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
+        mirror?.setOption("theme", t);
+    }, [theme.theme]);
 
     return (
         <div style={{ width: "100%", height: "100%" }}>

@@ -40,12 +40,8 @@ export const FileName = (props: Props) => {
     const theme = useContext(ThemeContext);
 
     return (
-        <div
-            className={`m-0 p-1 pl-2 ${
-                theme.editorTheme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"
-            } w-48 rounded-t`}
-        >
-            <p className={`${theme.editorTheme === Theme.LIGHT ? "text-black" : "text-white"} text-sm`}>
+        <div className={`m-0 p-1 pl-2 ${theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"} w-48 rounded-t`}>
+            <p className={`${theme.theme === Theme.LIGHT ? "text-black" : "text-white"} text-sm`}>
                 <Icon extension={props.extension}></Icon> <span className="pl-1">{props.name}</span>
                 <Ending extension={props.extension}></Ending>
             </p>

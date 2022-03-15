@@ -26,8 +26,8 @@ export enum Theme {
 }
 
 export interface State {
-    editorTheme: Theme;
-    setEditorTheme: (v: Theme) => void;
+    theme: Theme;
+    setTheme: (v: Theme) => void;
 }
 
 export const ThemeContext = React.createContext(null as unknown as State);
@@ -41,14 +41,15 @@ export function ThemeProvider(props: React.PropsWithChildren<any>) {
         if (storedTheme) {
             return storedTheme === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
         }
+
         return Theme.DARK;
     };
 
     [value, setValue] = useState<State>({
-        editorTheme: loadEditorTheme(),
-        setEditorTheme: (editorTheme: Theme) => {
-            setValue((v) => ({ ...v, editorTheme }));
-            localStorage.setItem(LOCAL_STATE_EDITOR_THEME, editorTheme.toString());
+        theme: loadEditorTheme(),
+        setTheme: (t: Theme) => {
+            setValue((v) => ({ ...v, theme: t }));
+            localStorage.setItem(LOCAL_STATE_EDITOR_THEME, t.toString());
         },
     });
 

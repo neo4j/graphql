@@ -47,7 +47,7 @@ export const JSONEditor = (props: Props) => {
 
         mirror.current = CodeMirror.fromTextArea(ref.current, {
             mode: { name: "javascript", json: true },
-            theme: theme.editorTheme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
+            theme: theme.theme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
             readOnly: props.readonly,
             lineNumbers: true,
             lineWrapping: true,
@@ -86,9 +86,9 @@ export const JSONEditor = (props: Props) => {
     }, [props.loading]);
 
     useEffect(() => {
-        const editorTheme = theme.editorTheme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
-        mirror.current?.setOption("theme", editorTheme);
-    }, [theme.editorTheme]);
+        const t = theme.theme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
+        mirror.current?.setOption("theme", t);
+    }, [theme.theme]);
 
     return (
         <div style={{ width: "100%", height: "100%" }}>

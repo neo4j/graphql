@@ -34,7 +34,7 @@ export enum Pages {
 
 export const Main = () => {
     const auth = useContext(AuthContext);
-    const sidebar = useContext(ScreenContext);
+    const screen = useContext(ScreenContext);
     const [schema, setSchema] = useState<GraphQLSchema | undefined>(undefined);
 
     if (!auth.driver) {
@@ -52,18 +52,18 @@ export const Main = () => {
             <SideBar
                 allowRedirectToEdit={!!schema}
                 onLogout={() => {
-                    sidebar.setView(Screen.TYPEDEFS);
+                    screen.setScreen(Screen.TYPEDEFS);
                     setSchema(undefined);
                 }}
             />
             <div className="flex w-full h-full flex-col">
                 <TopBar />
                 <div className="h-content-container w-full p-4 overflow-y-auto n-bg-neutral-20">
-                    {sidebar.view === Screen.TYPEDEFS ? (
+                    {screen.view === Screen.TYPEDEFS ? (
                         <SchemaEditor
                             onChange={(schema) => {
                                 setSchema(schema);
-                                sidebar.setView(Screen.EDITOR);
+                                screen.setScreen(Screen.EDITOR);
                             }}
                         ></SchemaEditor>
                     ) : (

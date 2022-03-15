@@ -26,7 +26,7 @@ export enum Screen {
 
 export interface State {
     view: Screen;
-    setView: (v: Screen) => void;
+    setScreen: (v: Screen) => void;
 }
 
 export const ScreenContext = React.createContext(null as unknown as State);
@@ -37,7 +37,7 @@ export function ScreenProvider(props: React.PropsWithChildren<any>) {
 
     [value, setValue] = useState<State>({
         view: Screen.TYPEDEFS,
-        setView: (view: Screen) => {
+        setScreen: (view: Screen) => {
             setValue((v) => ({ ...v, view }));
         },
     });
