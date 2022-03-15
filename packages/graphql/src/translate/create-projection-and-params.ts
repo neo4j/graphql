@@ -357,7 +357,7 @@ function createProjectionAndParams({
                         const sorts = optionsInput.sort.reduce(sortReducer, []);
 
                         res.projection.push(
-                            `${field.alias}: apoc.coll.sortMulti(collect(${field.alias}), [${sorts.join(
+                            `${field.alias}: apoc.coll.sortMulti(${field.alias}, [${sorts.join(
                                 ", "
                             )}])${offsetLimitStr}`
                         );
@@ -365,11 +365,7 @@ function createProjectionAndParams({
                     }
                 }
 
-                res.projection.push(
-                    `${field.alias}: ${!isArray ? "head(" : ""}collect(${field.alias})${offsetLimitStr}${
-                        !isArray ? ")" : ""
-                    }`
-                );
+                res.projection.push(`${field.alias}: ${field.alias}${offsetLimitStr}`);
 
                 return res;
             }
@@ -554,10 +550,12 @@ function createProjectionAndParams({
                 nodeVariable: varName,
             });
 
-            const connectionParamName = Object.keys(connection[1])[0];
+            const connectionParamNames = Object.keys(connection[1]);
             const runFirstColumnParams = [
                 ...[`${chainStr}: ${chainStr}`],
-                ...(connectionParamName ? [`${connectionParamName}: $${connectionParamName}`] : []),
+                ...connectionParamNames
+                    .filter(Boolean)
+                    .map((connectionParamName) => `${connectionParamName}: $${connectionParamName}`),
                 ...(context.auth ? ["auth: $auth"] : []),
                 ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
             ];

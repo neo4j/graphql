@@ -42,6 +42,7 @@ export function createConnectOrCreateAndParams({
     relationField,
     refNode,
     context,
+    withVars,
 }: {
     input: CreateOrConnectInput[] | CreateOrConnectInput;
     varName: string;
@@ -49,6 +50,7 @@ export function createConnectOrCreateAndParams({
     relationField: RelationField;
     refNode: Node;
     context: Context;
+    withVars: string[];
 }): CypherBuilder.CypherResult {
     const statements = asArray(input).map((inputItem, index) => {
         const subqueryBaseName = `${varName}${index}`;
@@ -68,7 +70,7 @@ export function createConnectOrCreateAndParams({
         return result;
     }, new CypherBuilder.Query());
 
-    return new CypherBuilder.Call(query, parentVar).build(`${varName}_`);
+    return new CypherBuilder.Call(query, withVars).build(`${varName}_`);
 }
 
 function createConnectOrCreatePartialStatement({

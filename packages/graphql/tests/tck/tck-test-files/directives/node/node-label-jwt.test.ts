@@ -133,8 +133,8 @@ describe("Label in Node directive", () => {
             SET this0.title = $this0_title
             RETURN this0
             }
-            RETURN
-            this0 { .title } AS this0"
+            RETURN [
+            this0 { .title }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -22,18 +22,21 @@ import { CypherContext } from "../CypherContext";
 import { Query } from "./Query";
 
 export class Call extends Query {
-    private withStatement: string | undefined;
+    private withStatement: Array<string>;
     private returnStatement: string;
 
-    constructor(query: Query, withStatement?: string, returnStatement = "RETURN COUNT(*)", parent?: Query) {
+    constructor(query: Query, withVars: Array<string> = [], returnStatement = "RETURN COUNT(*)", parent?: Query) {
         super(parent);
-        this.withStatement = withStatement;
+        this.withStatement = withVars;
         this.returnStatement = returnStatement;
         this.addStatement(query);
     }
 
     public cypher(_context: CypherContext, childrenCypher: string): string {
-        const withStr = this.withStatement ? `\tWITH ${this.withStatement}` : "";
+        let withStr = "";
+        if (this.withStatement.length > 0) {
+            withStr = `\tWITH ${this.withStatement.join(", ")}`;
+        }
         return joinStrings([withStr, "CALL {", `${withStr}`, `\t${childrenCypher}`, `\t${this.returnStatement}`, "}"]);
     }
 }

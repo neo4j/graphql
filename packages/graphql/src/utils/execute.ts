@@ -37,7 +37,7 @@ import environment from "../environment";
 
 const debug = Debug(DEBUG_EXECUTE);
 
-interface ExecuteResult {
+export interface ExecuteResult {
     bookmark: string | null;
     result: QueryResult;
     statistics: Record<string, number>;
@@ -100,9 +100,9 @@ async function execute(input: {
     try {
         debug("%s", `About to execute Cypher:\nCypher:\n${cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`);
 
-        const result: QueryResult = await session[
-            `${input.defaultAccessMode.toLowerCase()}Transaction`
-        ]((tx: Transaction) => tx.run(cypher, input.params));
+        const result: QueryResult = await session[`${input.defaultAccessMode.toLowerCase()}Transaction`](
+            (tx: Transaction) => tx.run(cypher, input.params)
+        );
 
         const records = result.records.map((r) => r.toObject());
 

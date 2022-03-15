@@ -20,12 +20,10 @@
 import { IResolvers, TypeSource } from "@graphql-tools/utils";
 import {
     DefinitionNode,
-    DirectiveNode,
     DocumentNode,
     GraphQLScalarType,
     InterfaceTypeDefinitionNode,
     Kind,
-    NamedTypeNode,
     NameNode,
     ObjectTypeDefinitionNode,
     parse,
@@ -34,7 +32,7 @@ import {
 import { InputTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
-import { Auth, BaseField, FullText, PrimitiveField } from "../types";
+import { BaseField, PrimitiveField } from "../types";
 import {
     aggregateResolver,
     createResolver,
@@ -47,7 +45,7 @@ import {
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import * as constants from "../constants";
 import * as Scalars from "./types/scalars";
-import { Exclude, Node } from "../classes";
+import { Node } from "../classes";
 import Relationship from "../classes/Relationship";
 import createConnectionFields from "./create-connection-fields";
 import createRelationshipFields from "./create-relationship-fields";
@@ -66,13 +64,6 @@ import { isString } from "../utils/utils";
 import { upperFirst } from "../utils/upper-first";
 import { getDocument } from "./get-document";
 import { getDefinitionNodes } from "./get-definition-nodes";
-import getAuth from "./get-auth";
-import parseExcludeDirective from "./parse-exclude-directive";
-import { NodeDirective } from "../classes/NodeDirective";
-import parseNodeDirective from "./parse-node-directive";
-import parseFulltextDirective from "./parse/parse-fulltext-directive";
-import { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
-import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
 import { isRootType } from "../utils/is-root-type";
 
 // GraphQL type imports
@@ -88,10 +79,16 @@ import { PointInput } from "./types/input-objects/PointInput";
 import { CartesianPointInput } from "./types/input-objects/CartesianPointInput";
 import { PointDistance } from "./types/input-objects/PointDistance";
 import { CartesianPointDistance } from "./types/input-objects/CartesianPointDistance";
+import getNodes from "./get-nodes";
+import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
-    { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
+    {
+        enableRegex,
+        skipValidateTypeDefs,
+        generateSubscriptions,
+    }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean; generateSubscriptions?: boolean } = {}
 ): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers: IResolvers } {
     const document = getDocument(typeDefs);
 
@@ -100,13 +97,6 @@ function makeAugmentedSchema(
     }
 
     const composer = new SchemaComposer();
-
-    // graphql-compose will break if the Point and CartesianPoint types are created but not used,
-    // because it will purge the unused types but leave behind orphaned field resolvers
-    //
-    // These are flags to check whether the types are used and then create them if they are
-    let pointInTypeDefs = false;
-    let cartesianPointInTypeDefs = false;
 
     let relationships: Relationship[] = [];
 
@@ -127,9 +117,6 @@ function makeAugmentedSchema(
 
     let { interfaceTypes } = definitionNodes;
 
-    const relationshipPropertyInterfaceNames = new Set<string>();
-    const interfaceRelationshipNames = new Set<string>();
-
     const extraDefinitions = [
         ...enumTypes,
         ...scalarTypes,
@@ -149,163 +136,15 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const nodes = objectTypes.map((definition) => {
-        const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude", "node", "fulltext", "queryOptions"].includes(x.name.value)
-        );
-        const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
-        const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
-        const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
-        const fulltextDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "fulltext");
-        const queryOptionsDirectiveDefinition = (definition.directives || []).find(
-            (x) => x.name.value === "queryOptions"
-        );
-        const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
+    const getNodesResult = getNodes(definitionNodes);
 
-        const { interfaceAuthDirectives, interfaceExcludeDirectives } = nodeInterfaces.reduce<{
-            interfaceAuthDirectives: DirectiveNode[];
-            interfaceExcludeDirectives: DirectiveNode[];
-        }>(
-            (res, interfaceName) => {
-                const iface = interfaceTypes.find((i) => i.name.value === interfaceName.name.value);
+    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
 
-                if (iface) {
-                    const interfaceAuthDirective = (iface.directives || []).find((x) => x.name.value === "auth");
-                    const interfaceExcludeDirective = (iface.directives || []).find((x) => x.name.value === "exclude");
-
-                    if (interfaceAuthDirective) {
-                        res.interfaceAuthDirectives.push(interfaceAuthDirective);
-                    }
-
-                    if (interfaceExcludeDirective) {
-                        res.interfaceExcludeDirectives.push(interfaceExcludeDirective);
-                    }
-                }
-
-                return res;
-            },
-            { interfaceAuthDirectives: [], interfaceExcludeDirectives: [] }
-        );
-
-        if (interfaceAuthDirectives.length > 1) {
-            throw new Error(
-                `Multiple interfaces of ${definition.name.value} have @auth directive - cannot determine directive to use`
-            );
-        }
-
-        if (interfaceExcludeDirectives.length > 1) {
-            throw new Error(
-                `Multiple interfaces of ${definition.name.value} have @exclude directive - cannot determine directive to use`
-            );
-        }
-
-        let auth: Auth;
-        if (authDirective || interfaceAuthDirectives.length) {
-            auth = getAuth(authDirective || interfaceAuthDirectives[0]);
-        }
-
-        let exclude: Exclude;
-        if (excludeDirective || interfaceExcludeDirectives.length) {
-            exclude = parseExcludeDirective(excludeDirective || interfaceExcludeDirectives[0]);
-        }
-
-        let nodeDirective: NodeDirective;
-        if (nodeDirectiveDefinition) {
-            nodeDirective = parseNodeDirective(nodeDirectiveDefinition);
-        }
-
-        const nodeFields = getObjFieldMeta({
-            obj: definition,
-            enums: enumTypes,
-            interfaces: interfaceTypes,
-            scalars: scalarTypes,
-            unions: unionTypes,
-            objects: objectTypes,
-        });
-
-        // Ensure that all required fields are returning either a scalar type or an enum
-
-        const violativeRequiredField = nodeFields.computedFields
-            .filter((f) => f.requiredFields.length)
-            .map((f) => f.requiredFields)
-            .flat()
-            .find(
-                (requiredField) =>
-                    ![
-                        ...nodeFields.primitiveFields,
-                        ...nodeFields.scalarFields,
-                        ...nodeFields.enumFields,
-                        ...nodeFields.temporalFields,
-                        ...nodeFields.cypherFields.filter((field) => field.isScalar || field.isEnum),
-                    ]
-                        .map((x) => x.fieldName)
-                        .includes(requiredField)
-            );
-
-        if (violativeRequiredField) {
-            throw new Error(
-                `Cannot have ${violativeRequiredField} as a required field on node ${definition.name.value}. Required fields must return a scalar type.`
-            );
-        }
-
-        let fulltextDirective: FullText;
-        if (fulltextDirectiveDefinition) {
-            fulltextDirective = parseFulltextDirective({
-                directive: fulltextDirectiveDefinition,
-                nodeFields,
-                definition,
-            });
-        }
-
-        let queryOptionsDirective: QueryOptionsDirective | undefined;
-        if (queryOptionsDirectiveDefinition) {
-            queryOptionsDirective = parseQueryOptionsDirective({
-                directive: queryOptionsDirectiveDefinition,
-                definition,
-            });
-        }
-
-        nodeFields.relationFields.forEach((relationship) => {
-            if (relationship.properties) {
-                const propertiesInterface = interfaceTypes.find((i) => i.name.value === relationship.properties);
-                if (!propertiesInterface) {
-                    throw new Error(
-                        `Cannot find interface specified in ${definition.name.value}.${relationship.fieldName}`
-                    );
-                }
-                relationshipPropertyInterfaceNames.add(relationship.properties);
-            }
-            if (relationship.interface) {
-                interfaceRelationshipNames.add(relationship.typeMeta.name);
-            }
-        });
-
-        if (!pointInTypeDefs) {
-            pointInTypeDefs = nodeFields.pointFields.some((field) => field.typeMeta.name === "Point");
-        }
-        if (!cartesianPointInTypeDefs) {
-            cartesianPointInTypeDefs = nodeFields.pointFields.some((field) => field.typeMeta.name === "CartesianPoint");
-        }
-
-        const node = new Node({
-            name: definition.name.value,
-            interfaces: nodeInterfaces,
-            otherDirectives,
-            ...nodeFields,
-            // @ts-ignore we can be sure it's defined
-            auth,
-            // @ts-ignore we can be sure it's defined
-            exclude,
-            // @ts-ignore we can be sure it's defined
-            nodeDirective,
-            // @ts-ignore we can be sure it's defined
-            fulltextDirective,
-            queryOptionsDirective,
-            description: definition.description?.value,
-        });
-
-        return node;
-    });
+    // graphql-compose will break if the Point and CartesianPoint types are created but not used,
+    // because it will purge the unused types but leave behind orphaned field resolvers
+    //
+    // These are flags to check whether the types are used and then create them if they are
+    let { pointInTypeDefs, cartesianPointInTypeDefs } = getNodesResult;
 
     const relationshipProperties = interfaceTypes.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
     const interfaceRelationships = interfaceTypes.filter((i) => interfaceRelationshipNames.has(i.name.value));
@@ -901,6 +740,10 @@ function makeAugmentedSchema(
             });
         }
     });
+
+    if (generateSubscriptions) {
+        generateSubscriptionTypes({ schemaComposer: composer, nodes });
+    }
 
     ["Mutation", "Query"].forEach((type) => {
         const objectComposer = composer[type] as ObjectTypeComposer;

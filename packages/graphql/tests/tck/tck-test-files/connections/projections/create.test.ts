@@ -93,8 +93,8 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN
-            this0 { .title, actorsConnection } AS this0"
+            RETURN [
+            this0 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -151,9 +151,9 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             WITH collect({ screenTime: this1_acted_in_relationship.screenTime, node: { name: this1_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN
-            this0 { .title, actorsConnection } AS this0,
-            this1 { .title, actorsConnection } AS this1"
+            RETURN [
+            this0 { .title, actorsConnection },
+            this1 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -213,9 +213,9 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             WITH collect({ screenTime: this1_acted_in_relationship.screenTime, node: { name: this1_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN
-            this0 { .title, actorsConnection } AS this0,
-            this1 { .title, actorsConnection } AS this1"
+            RETURN [
+            this0 { .title, actorsConnection },
+            this1 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
