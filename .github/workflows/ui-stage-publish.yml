@@ -2,8 +2,7 @@ name: "UI Publish"
 
 on:
   workflow_run:
-    workflows:
-      - "UI Build"
+    workflows: ["UI Build"]
     types:
       - completed
 

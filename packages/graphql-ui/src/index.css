@@ -5,14 +5,12 @@
 /* Global settings for ALL CodeMirror editors */
 .CodeMirror {
     height: 100%;
-    font-weight: bold;
     font-size: 1rem;
     font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
         Courier New;
 }
 
 .CodeMirror-hints {
-    font-weight: bold;
     font-size: 1rem;
     font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
         Courier New;
