@@ -1,0 +1,65 @@
+name: "Publish UI for stage env"
+
+on:
+  workflow_run:
+    workflows: ["Build UI for stage env"]
+    types:
+      - completed
+
+jobs:
+    publish-ui:
+      if: github.event.workflow_run.conclusion == 'success'
+
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: "Download built UI"
+        uses: actions/github-script@v6.0.0
+        with:
+          script: |
+            var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: ${{ github.event.workflow_run.id }},
+            });
+            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "ui"
+            })[0];
+            var download = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{ github.workspace }}/ui.zip', Buffer.from(download.data));
+      - run: unzip ui.zip
+      # - id: get-pr-number
+      #   run: |
+      #     number=$(<prnumber)
+      #     echo "::set-output name=pr-number::$number"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+      - name: Publish UI
+        run: |
+          npm install -g surge
+          surge ./site neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+
+
+        #     steps:
+        # - uses: actions/checkout@v2
+        # - uses: actions/setup-node@v3
+        #   with:
+        #     node-version: lts/*
+        #     cache: yarn
+        # - name: Install dependencies
+        #   run: yarn
+        # - name: Build ${{ matrix.package }}
+        #   run: yarn build
+        #   working-directory: packages/${{ matrix.package }}
+        # - name: Publish GraphQL UI to surge
+        #   run: |
+        #       npm install -g surge
+        #       surge ./dist neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+        #   working-directory: packages/${{ matrix.package }}

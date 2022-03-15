@@ -17,7 +17,12 @@
  * limitations under the License.
  */
 
-import ReactDOM from "react-dom";
-import { App } from "./App";
+import { Page } from "puppeteer";
 
-ReactDOM.render(<App />, document.querySelector("#root"));
+export abstract class Screen {
+    page: Page;
+
+    constructor(p: Page) {
+        this.page = p;
+    }
+}
