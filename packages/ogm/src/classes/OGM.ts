@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL, Neo4jGraphQLConstructor } from "@neo4j/graphql";
+import { Neo4jGraphQL, Neo4jGraphQLConstructor, Node } from "@neo4j/graphql";
 import { GraphQLSchema } from "graphql";
 import Model from "./Model";
 import { filterDocument } from "../utils";
@@ -26,13 +26,9 @@ export type OGMConstructor = Neo4jGraphQLConstructor;
 
 class OGM<ModelMap = {}> {
     public checkNeo4jCompat: () => Promise<void>;
-
     private models: Model[];
-
     private neoSchema: Neo4jGraphQL;
-
     private _schema?: GraphQLSchema;
-
     private initializer?: Promise<void>;
 
     constructor(input: OGMConstructor) {
@@ -61,7 +57,7 @@ class OGM<ModelMap = {}> {
         return this._schema;
     }
 
-    public get nodes() {
+    public get nodes(): Node[] {
         try {
             return this.neoSchema.nodes;
         } catch {
