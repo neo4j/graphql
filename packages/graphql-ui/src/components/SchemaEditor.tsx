@@ -74,15 +74,17 @@ export const SchemaEditor = (props: Props) => {
     };
 
     const onChangeCheckConstraintCheckbox = (): void => {
-        const next = isCheckConstraintChecked === "true" ? "false" : "true";
-        setIsCheckConstraintChecked(next);
-        localStorage.setItem(LOCAL_STATE_CHECK_CONSTRAINT, next);
+        const nextCheck = isCheckConstraintChecked === "true" ? "false" : "true";
+        if (isCreateConstraintChecked === "true") return;
+        setIsCheckConstraintChecked(nextCheck);
+        localStorage.setItem(LOCAL_STATE_CHECK_CONSTRAINT, nextCheck);
     };
 
     const onChangeCreateConstraintCheckbox = (): void => {
-        const next = isCreateConstraintChecked === "true" ? "false" : "true";
-        setIsCreateConstraintChecked(next);
-        localStorage.setItem(LOCAL_STATE_CREATE_CONSTRAINT, next);
+        const nextCreate = isCreateConstraintChecked === "true" ? "false" : "true";
+        if (isCheckConstraintChecked === "true") return;
+        setIsCreateConstraintChecked(nextCreate);
+        localStorage.setItem(LOCAL_STATE_CREATE_CONSTRAINT, nextCreate);
     };
 
     const onChangeEnableRegexCheckbox = (): void => {
