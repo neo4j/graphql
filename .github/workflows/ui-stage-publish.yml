@@ -34,17 +34,17 @@ jobs:
             var fs = require('fs');
             fs.writeFileSync('${{ github.workspace }}/ui.zip', Buffer.from(download.data));
       - run: unzip ui.zip
-      - id: get-pr-number
-        run: |
-          number=$(<prnumber)
-          echo "::set-output name=pr-number::$number"
+      # - id: get-pr-number
+      #   run: |
+      #     number=$(<prnumber)
+      #     echo "::set-output name=pr-number::$number"
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
       - name: Publish UI
         run: |
           npm install -g surge
-          surge ./site neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+          surge ./site neo4j-graphql-ui-stage.surge.sh --token ${{ secrets.SURGE_TOKEN }}
 
 
         #     steps:
