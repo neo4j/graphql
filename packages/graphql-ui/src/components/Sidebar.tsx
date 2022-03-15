@@ -64,17 +64,19 @@ export const SideBar = (props: Props) => {
             </div>
             <div className="flex flex-col-reverse flex-1 justify-between align-center text-white">
                 <ul>
-                    <li className="py-4 flex justify-center">
-                        <span
-                            className="font-medium text-2xl cursor-pointer"
-                            onClick={() => {
-                                if (props.onLogout) props.onLogout();
-                                auth?.logout();
-                            }}
-                        >
-                            <HeroIcon className="h-8 w-8" iconName="LogoutIcon" type="outline" />
-                        </span>
-                    </li>
+                    {!auth.isNeo4jDesktop ? (
+                        <li className="py-4 flex justify-center">
+                            <span
+                                className="font-medium text-2xl cursor-pointer"
+                                onClick={() => {
+                                    if (props.onLogout) props.onLogout();
+                                    auth?.logout();
+                                }}
+                            >
+                                <HeroIcon className="h-8 w-8" iconName="LogoutIcon" type="outline" />
+                            </span>
+                        </li>
+                    ) : null}
                     <li className="py-4 flex justify-center">
                         <img src={Icon} alt="d.s" className="h-8 w-8" />
                     </li>

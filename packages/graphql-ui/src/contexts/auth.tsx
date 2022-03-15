@@ -34,6 +34,7 @@ export interface State {
     driver?: neo4j.Driver;
     connectUrl?: string;
     isConnected?: boolean;
+    isNeo4jDesktop?: boolean;
     login: (options: LoginOptions) => Promise<void>;
     logout: () => void;
 }
@@ -58,6 +59,7 @@ export function AuthProvider(props: any) {
         let loginPayload: LoginPayload | null = null;
         if (loginPayloadFromDesktop) {
             loginPayload = loginPayloadFromDesktop;
+            setValue((v) => ({ ...v, isNeo4jDesktop: true }));
         } else {
             const storedEncryptedPayload = localStorage.getItem(LOCAL_STATE_LOGIN);
             if (storedEncryptedPayload && typeof storedEncryptedPayload === "string") {
