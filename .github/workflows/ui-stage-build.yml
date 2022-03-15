@@ -22,9 +22,9 @@ jobs:
           yarn
           yarn build
           echo ${{ github.event.number }} > ./build/prnumber
-        working-directory: docs/
+        working-directory: packages/graphql-ui
       - name: Archive UI
         uses: actions/upload-artifact@v2
         with:
           name: ui
-          path: dist
+          path: packages/graphql-ui/dist
