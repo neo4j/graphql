@@ -2,13 +2,12 @@ name: "Publish UI for stage env"
 
 on:
   workflow_run:
-    workflows: ["Build UI for stage env"]
-    types:
-      - completed
+    workflows: [Build UI]
+    types: [completed]
 
 jobs:
     publish-ui:
-      # if: github.event.workflow_run.conclusion == 'success'
+      if: github.event.workflow_run.conclusion == 'success'
 
       runs-on: ubuntu-latest
 
