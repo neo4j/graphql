@@ -27,11 +27,11 @@ import { EditorFromTextArea } from "codemirror";
 import { Col, ColsWrapper, Row, RowsWrapper } from "react-grid-resizable";
 import { CodeMirror } from "../utils/utils";
 import {
-    DEFAULT_OPTIONS,
     DEFAULT_TYPE_DEFS,
     LOCAL_STATE_CHECK_CONSTRAINT,
     LOCAL_STATE_CREATE_CONSTRAINT,
     LOCAL_STATE_DEBUG,
+    LOCAL_STATE_ENABLE_REGEX,
     LOCAL_STATE_TYPE_DEFS,
     SCHEMA_EDITOR_BUILD_BUTTON,
     SCHEMA_EDITOR_INPUT,
@@ -41,7 +41,6 @@ import {
     THEME_EDITOR_LIGHT,
 } from "../constants";
 import { formatCode, ParserOptions } from "./editor/utils";
-import { JSONEditor } from "./editor/JSONEditor";
 import { Extension, FileName } from "./editor/Filename";
 import { AuthContext } from "../contexts/auth";
 import { ThemeContext, Theme } from "../contexts/theme";
@@ -58,12 +57,14 @@ export const SchemaEditor = (props: Props) => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [isDebugChecked, setIsDebugChecked] = useState<string | null>(localStorage.getItem(LOCAL_STATE_DEBUG));
-    const [variableValues, setVariableValues] = useState(DEFAULT_OPTIONS);
     const [isCheckConstraintChecked, setIsCheckConstraintChecked] = useState<string | null>(
         localStorage.getItem(LOCAL_STATE_CHECK_CONSTRAINT)
     );
     const [isCreateConstraintChecked, setIsCreateConstraintChecked] = useState<string | null>(
         localStorage.getItem(LOCAL_STATE_CREATE_CONSTRAINT)
+    );
+    const [isEnableDebugChecked, setIsEnableDebugChecked] = useState<string | null>(
+        localStorage.getItem(LOCAL_STATE_ENABLE_REGEX)
     );
 
     const onChangeDebugCheckbox = (): void => {
@@ -84,6 +85,12 @@ export const SchemaEditor = (props: Props) => {
         localStorage.setItem(LOCAL_STATE_CREATE_CONSTRAINT, next);
     };
 
+    const onChangeEnableRegexCheckbox = (): void => {
+        const next = isEnableDebugChecked === "true" ? "false" : "true";
+        setIsEnableDebugChecked(next);
+        localStorage.setItem(LOCAL_STATE_ENABLE_REGEX, next);
+    };
+
     const formatTheCode = (): void => {
         if (!mirror) return;
         formatCode(mirror, ParserOptions.GRAPH_QL);
@@ -96,19 +103,18 @@ export const SchemaEditor = (props: Props) => {
     };
 
     const buildSchema = useCallback(
-        async (typeDefs: string, userOptions: { config: any; [k: string]: unknown }) => {
+        async (typeDefs: string) => {
             try {
                 setLoading(true);
 
                 localStorage.setItem(LOCAL_STATE_TYPE_DEFS, JSON.stringify(typeDefs));
 
                 const options = {
-                    ...userOptions,
                     typeDefs,
                     driver: auth.driver,
                     config: {
-                        ...(userOptions.config ? userOptions.config : {}),
                         enableDebug: isDebugChecked === "true",
+                        enableRegex: isEnableDebugChecked === "true",
                     },
                 };
 
@@ -119,6 +125,7 @@ export const SchemaEditor = (props: Props) => {
                 if (isCheckConstraintChecked === "true") {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: false } });
                 }
+
                 if (isCreateConstraintChecked === "true") {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: true } });
                 }
@@ -131,7 +138,7 @@ export const SchemaEditor = (props: Props) => {
                 setLoading(false);
             }
         },
-        [isDebugChecked, isCheckConstraintChecked, isCreateConstraintChecked]
+        [isDebugChecked, isCheckConstraintChecked, isCreateConstraintChecked, isEnableDebugChecked]
     );
 
     const introspect = useCallback(async () => {
@@ -154,9 +161,9 @@ export const SchemaEditor = (props: Props) => {
 
     const onSubmit = useCallback(() => {
         if (ref.current?.value) {
-            buildSchema(ref.current?.value, JSON.parse(variableValues));
+            buildSchema(ref.current?.value);
         }
-    }, [ref.current?.value, buildSchema, variableValues]);
+    }, [ref.current?.value, buildSchema]);
 
     useEffect(() => {
         if (ref.current === null) {
@@ -270,16 +277,6 @@ export const SchemaEditor = (props: Props) => {
 
                             <Col right={true}>
                                 <RowsWrapper>
-                                    <Row initialHeight={300}>
-                                        <JSONEditor
-                                            fileExtension={Extension.JSON}
-                                            id={"EDITOR_PARAMS_INPUT"}
-                                            loading={loading}
-                                            fileName="options"
-                                            onChange={setVariableValues}
-                                            json={variableValues}
-                                        />
-                                    </Row>
                                     <Row>
                                         <div className="w-full rounded overflow-hidden shadow-lg">
                                             <Tabs fill="underline" onChange={function noRefCheck() {}} value={0}>
@@ -289,19 +286,25 @@ export const SchemaEditor = (props: Props) => {
                                                 <div className="p-3">
                                                     <Checkbox
                                                         className="m-0"
-                                                        label="Enable debug"
+                                                        label="Enable Regex"
+                                                        checked={isEnableDebugChecked === "true"}
+                                                        onChange={onChangeEnableRegexCheckbox}
+                                                    />
+                                                    <Checkbox
+                                                        className="m-0"
+                                                        label="Enable Debug"
                                                         checked={isDebugChecked === "true"}
                                                         onChange={onChangeDebugCheckbox}
                                                     />
                                                     <Checkbox
                                                         className="m-0"
-                                                        label="Check constraint"
+                                                        label="Check Constraint"
                                                         checked={isCheckConstraintChecked === "true"}
                                                         onChange={onChangeCheckConstraintCheckbox}
                                                     />
                                                     <Checkbox
                                                         className="m-0"
-                                                        label="Create constraint"
+                                                        label="Create Constraint"
                                                         checked={isCreateConstraintChecked === "true"}
                                                         onChange={onChangeCreateConstraintCheckbox}
                                                     />

@@ -25,6 +25,7 @@ export const LOCAL_STATE_DEBUG = "neo4j.graphql.debug";
 export const LOCAL_STATE_CHECK_CONSTRAINT = "neo4j.graphql.checkConstraint";
 export const LOCAL_STATE_CREATE_CONSTRAINT = "neo4j.graphql.createConstraint";
 export const LOCAL_STATE_EDITOR_THEME = "neo4j.graphql.editorTheme";
+export const LOCAL_STATE_ENABLE_REGEX = "neo4j.graphql.enable.regex";
 
 export const LOGIN_USERNAME_INPUT = "LOGIN_USERNAME_INPUT";
 export const LOGIN_PASSWORD_INPUT = "LOGIN_PASSWORD_INPUT";
@@ -56,15 +57,5 @@ export const DEFAULT_TYPE_DEFS = `
     }
     
 `;
-
-export const DEFAULT_OPTIONS = JSON.stringify(
-    {
-        config: {
-            enableRegex: true,
-        },
-    },
-    null,
-    2
-);
 
 export const DEFAULT_BOLT_URL = "bolt://localhost:7687";
