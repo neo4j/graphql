@@ -2,8 +2,10 @@ name: "Publish UI for stage env"
 
 on:
   workflow_run:
-    workflows: [Build UI]
-    types: [completed]
+    workflows:
+      - "Build UI"
+    types:
+      - completed
 
 jobs:
     publish-ui:
