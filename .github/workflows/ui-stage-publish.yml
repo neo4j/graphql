@@ -1,9 +1,9 @@
-name: "Publish UI"
+name: "UI Publish"
 
 # on:
 #   workflow_run:
 #     workflows:
-#       - "Build UI"
+#       - "UI Build"
 #     types:
 #       - completed
 
@@ -16,7 +16,7 @@ on:
 
 jobs:
     publish-ui:
-      if: github.event.workflow_run.conclusion == 'success'
+      # if: github.event.workflow_run.conclusion == 'success'
 
       runs-on: ubuntu-latest
 

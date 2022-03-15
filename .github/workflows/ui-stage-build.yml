@@ -1,4 +1,4 @@
-name: "Build UI"
+name: "UI Build"
 
 on:
     pull_request:
