@@ -22,6 +22,7 @@ jobs:
         run: |
           yarn
           yarn build
+          echo ${{ github.event.number }} > ./dist/prnumber
         working-directory: packages/graphql-ui
       - name: Archive UI
         uses: actions/upload-artifact@v2
