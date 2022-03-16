@@ -18,9 +18,12 @@
  */
 
 import { EditorFromTextArea } from "codemirror";
-import prettier from "prettier";
-import prettierBabel from "prettier/parser-babel";
-import parserGraphQL from "prettier/parser-graphql";
+// @ts-ignore
+import prettier from "prettier/esm/standalone";
+// @ts-ignore
+import prettierBabel from "prettier/esm/parser-babel";
+// @ts-ignore
+import parserGraphQL from "prettier/esm/parser-graphql";
 
 export enum ParserOptions {
     GRAPH_QL,

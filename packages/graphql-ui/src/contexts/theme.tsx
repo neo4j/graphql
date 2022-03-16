@@ -18,7 +18,7 @@
  */
 
 import React, { Dispatch, useState, SetStateAction } from "react";
-import { LOCAL_STATE_EDITOR_THEME } from "src/constants";
+import { LOCAL_STATE_EDITOR_THEME } from "../constants";
 
 export enum Theme {
     LIGHT,

@@ -336,4 +336,333 @@ describe("Subscriptions update", () => {
             ])
         );
     });
+
+    test("update mutation with nested create", async () => {
+        const query = `
+        mutation {
+            ${typeMovie.operations.update}(
+                where: { id: "1" }
+                update: {
+                    name: "Terminator 2"
+                    actors: {
+                        create: {
+                            node: {
+                                name: "Arnold"
+                            }
+                        }
+                    }
+                }
+            ) {
+                ${typeMovie.plural} {
+                    id
+                    actors {
+                        name
+                    }
+                }
+            }
+        }
+        `;
+
+        await session.run(`
+            CREATE (m1:${typeMovie.name} { id: "1", name: "Terminator" })
+        `);
+
+        const gqlResult: any = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: { driver },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect(gqlResult.data[typeMovie.operations.update]).toEqual({
+            [typeMovie.plural]: [{ id: "1", actors: [{ name: "Arnold" }] }],
+        });
+
+        expect(plugin.eventList).toHaveLength(2);
+        expect(plugin.eventList).toEqual(
+            expect.arrayContaining([
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "update",
+                    properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "Terminator 2" } },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "create",
+                    properties: {
+                        old: undefined,
+                        new: { name: "Arnold" },
+                    },
+                },
+            ])
+        );
+    });
+
+    test("update mutation with nested delete", async () => {
+        const query = `
+        mutation {
+            ${typeMovie.operations.update}(
+                where: { id: "1" }
+                update: {
+                    name: "Terminator 2"
+                    actors: {
+                        delete: {
+                            where: {
+                                node: {
+                                    name: "Arnold"
+                                }
+                            }
+                        }
+                    }
+                }
+            ) {
+                ${typeMovie.plural} {
+                    id
+                    actors {
+                        name
+                    }
+                }
+            }
+        }
+        `;
+
+        await session.run(`
+            CREATE (m1:${typeMovie.name} { id: "1", name: "Terminator" })
+            CREATE (m1)<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold" })
+        `);
+
+        const gqlResult: any = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: { driver },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect(gqlResult.data[typeMovie.operations.update]).toEqual({
+            [typeMovie.plural]: [{ id: "1", actors: [] }],
+        });
+
+        expect(plugin.eventList).toHaveLength(2);
+        expect(plugin.eventList).toEqual(
+            expect.arrayContaining([
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "update",
+                    properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "Terminator 2" } },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "delete",
+                    properties: {
+                        old: { name: "Arnold" },
+                        new: undefined,
+                    },
+                },
+            ])
+        );
+    });
+
+    test("update mutation with nested delete and create", async () => {
+        const query = `
+        mutation {
+            ${typeMovie.operations.update}(
+                where: { id: "1" }
+                update: {
+                    name: "Terminator 2"
+                    actors: {
+                        delete: {
+                            where: {
+                                node: {
+                                    name: "Arnold"
+                                }
+                            }
+                        }
+                        create: {
+                            node: {
+                                name: "New Arnold"
+                            }
+                        }
+                    }
+                }
+            ) {
+                ${typeMovie.plural} {
+                    id
+                    actors {
+                        name
+                    }
+                }
+            }
+        }
+        `;
+
+        await session.run(`
+            CREATE (m1:${typeMovie.name} { id: "1", name: "Terminator" })
+            CREATE (m1)<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold" })
+        `);
+
+        const gqlResult: any = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: { driver },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect(gqlResult.data[typeMovie.operations.update]).toEqual({
+            [typeMovie.plural]: [{ id: "1", actors: [{ name: "New Arnold" }] }],
+        });
+
+        expect(plugin.eventList).toHaveLength(3);
+        expect(plugin.eventList).toEqual(
+            expect.arrayContaining([
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "update",
+                    properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "Terminator 2" } },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "delete",
+                    properties: {
+                        old: { name: "Arnold" },
+                        new: undefined,
+                    },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "create",
+                    properties: {
+                        old: undefined,
+                        new: { name: "New Arnold" },
+                    },
+                },
+            ])
+        );
+    });
+
+    test("update mutation with nested delete and create deeply nested", async () => {
+        const query = `
+        mutation {
+            ${typeMovie.operations.update}(
+                where: { id: "1" }
+                update: {
+                    name: "Terminator 2"
+                    actors: {
+                        delete: {
+                            where: {
+                                node: {
+                                    name: "Arnold"
+                                }
+                            }
+                            delete: {
+                                movies: {
+                                    where: {
+                                        node: {
+                                            name: "Predator"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        create: {
+                            node: {
+                                name: "New Arnold"
+                                movies: {
+                                    create: {
+                                        node: {
+                                            id: "2"
+                                            name: "Terminator 3"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ) {
+                ${typeMovie.plural} {
+                    id
+                    actors {
+                        name
+                    }
+                }
+            }
+        }
+        `;
+
+        await session.run(`
+            CREATE (m1:${typeMovie.name} { id: "1", name: "Terminator" })
+            CREATE (m1)<-[:ACTED_IN]-(a1:${typeActor.name} { name: "Arnold" })
+            CREATE (a1)-[:ACTED_IN]->(:${typeMovie.name} { name: "Predator" })
+        `);
+
+        const gqlResult: any = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: { driver },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect(gqlResult.data[typeMovie.operations.update]).toEqual({
+            [typeMovie.plural]: [{ id: "1", actors: [{ name: "New Arnold" }] }],
+        });
+
+        expect(plugin.eventList).toHaveLength(5);
+        expect(plugin.eventList).toEqual(
+            expect.arrayContaining([
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "update",
+                    properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "Terminator 2" } },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "delete",
+                    properties: {
+                        old: { name: "Arnold" },
+                        new: undefined,
+                    },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "delete",
+                    properties: {
+                        old: { name: "Predator" },
+                        new: undefined,
+                    },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "create",
+                    properties: {
+                        old: undefined,
+                        new: { name: "New Arnold" },
+                    },
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "create",
+                    properties: {
+                        old: undefined,
+                        new: { id: "2", name: "Terminator 3" },
+                    },
+                },
+            ])
+        );
+    });
 });
