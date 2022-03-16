@@ -63,9 +63,6 @@ export function generateSubscriptionTypes({
                 // type: nodeCreatedEvent,
                 type: "String",
                 subscribe: subscribeToCreate,
-                resolve: (root) => {
-                    return root;
-                },
             },
             [`${lowerFirstNodeName}Updated`]: {
                 args: {},

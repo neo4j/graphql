@@ -836,8 +836,9 @@ function makeAugmentedSchema(
 
     const documentNames = parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value);
 
+    const resolveMethods = getResolveAndSubscriptionMethods(composer);
     const generatedResolvers = {
-        ...Object.entries(composer.getResolveMethods()).reduce((res, [key, value]) => {
+        ...Object.entries(resolveMethods).reduce((res, [key, value]) => {
             if (!documentNames.includes(key)) {
                 return res;
             }
@@ -893,3 +894,16 @@ function makeAugmentedSchema(
 }
 
 export default makeAugmentedSchema;
+
+function getResolveAndSubscriptionMethods(composer: SchemaComposer) {
+    const resolveMethods = composer.getResolveMethods();
+
+    const subscriptionMethods = Object.entries(composer.Subscription.getFields()).reduce((acc, [key, value]) => {
+        acc[key] = { subscribe: value.subscribe };
+        return acc;
+    }, {});
+    return {
+        ...resolveMethods,
+        Subscription: subscriptionMethods,
+    };
+}

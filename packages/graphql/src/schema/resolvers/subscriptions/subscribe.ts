@@ -18,12 +18,22 @@
  */
 
 import { GraphQLResolveInfo } from "graphql";
+import { PubSub } from "graphql-subscriptions";
+import { Neo4jGraphQLSubscriptionsPlugin } from "src/types";
 
-export function subscribeToCreate() {
-    return async function* subs(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
-        console.log("HEY");
-        for (const hi of ["Hi", "Bonjour", "Hola", "Ciao", "Zdravo"]) {
-            yield hi;
-        }
-    };
+export const pubsub = new PubSub();
+
+export type SubscriptionContext = {
+    plugin: Neo4jGraphQLSubscriptionsPlugin;
+};
+
+export async function subscribeToCreate(_root: any, args: any, context: SubscriptionContext, info: GraphQLResolveInfo) {
+    // for (const hi of ["Hi", "Bonjour", "Hola", "Ciao", "Zdravo"]) {
+    //     yield hi;
+    // }
+    context.plugin.events.on("create", (event) => {
+        pubsub.publish("CREATED", { [info.fieldName]: JSON.stringify(event) });
+    });
+
+    return pubsub.asyncIterator(["CREATED"]);
 }

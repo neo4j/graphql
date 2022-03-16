@@ -25,25 +25,21 @@ import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
 import { Context, Neo4jGraphQLPlugins, JwtPayload } from "../../types";
 import { getToken } from "../../utils/get-token";
+import { SubscriptionContext } from "./subscriptions/subscribe";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
+type WrapResolverArguments = {
+    driver?: Driver;
+    config: Neo4jGraphQLConfig;
+    nodes: Node[];
+    relationships: Relationship[];
+    schema: GraphQLSchema;
+    plugins?: Neo4jGraphQLPlugins;
+};
+
 export const wrapResolver =
-    ({
-        driver,
-        config,
-        nodes,
-        relationships,
-        schema,
-        plugins,
-    }: {
-        driver?: Driver;
-        config: Neo4jGraphQLConfig;
-        nodes: Node[];
-        relationships: Relationship[];
-        schema: GraphQLSchema;
-        plugins?: Neo4jGraphQLPlugins;
-    }) =>
+    ({ driver, config, nodes, relationships, schema, plugins }: WrapResolverArguments) =>
     (next) =>
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const { driverConfig } = config;
@@ -97,4 +93,14 @@ export const wrapResolver =
         context.queryOptions = config.queryOptions;
 
         return next(root, args, context, info);
+    };
+
+export const wrapSubscription =
+    (resolverArgs: WrapResolverArguments) =>
+    (next) =>
+    async (root, args, context: unknown, info: GraphQLResolveInfo) => {
+        const subscriptionContext: SubscriptionContext = {
+            plugin: resolverArgs.plugins!.subscriptions!,
+        };
+        return next(root, args, subscriptionContext, info);
     };
