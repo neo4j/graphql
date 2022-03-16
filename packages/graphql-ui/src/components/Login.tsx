@@ -28,7 +28,7 @@ import {
     LOGIN_URL_INPUT,
     LOGIN_USERNAME_INPUT,
 } from "../constants";
-// @ts-ignore
+// @ts-ignore - SVG Import
 import Icon from "../assets/neo4j-color.svg";
 import { AuthContext } from "../contexts/auth";
 

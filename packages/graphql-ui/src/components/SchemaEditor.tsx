@@ -183,7 +183,7 @@ export const SchemaEditor = (props: Props) => {
             showCursorWhenSelecting: true,
             lineWrapping: true,
             foldGutter: {
-                // @ts-ignore
+                // @ts-ignore - Added By GraphQL Plugin
                 minFoldSize: 4,
             },
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
@@ -267,7 +267,7 @@ export const SchemaEditor = (props: Props) => {
                                             <FileName extension={Extension.GQL} name={"typeDefs"}></FileName>
                                             <textarea
                                                 id={SCHEMA_EDITOR_INPUT}
-                                                /* @ts-ignore */
+                                                /* @ts-ignore - Not Sure about this one*/
                                                 ref={ref}
                                                 style={{ width: "100%", height: "100%" }}
                                                 disabled={loading}

@@ -30,7 +30,7 @@ export class SchemaEditor extends Screen {
         await this.page.$eval(
             `#${SCHEMA_EDITOR_INPUT}`,
             (el, injected) => {
-                // @ts-ignore
+                // @ts-ignore - How can we type this ?
                 el.value = injected;
             },
             typeDefs
@@ -44,7 +44,7 @@ export class SchemaEditor extends Screen {
 
     public async getTypeDefs(): Promise<string> {
         const output = await this.page.$eval(`#${SCHEMA_EDITOR_INPUT}`, (el) => {
-            // @ts-ignore
+            // @ts-ignore - Injected in html
             return document.CodeMirror.fromTextArea(el).getValue();
         });
 

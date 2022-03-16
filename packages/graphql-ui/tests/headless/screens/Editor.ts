@@ -30,7 +30,7 @@ export class Editor extends Screen {
         await this.page.waitForSelector(`#${EDITOR_QUERY_BUTTON}`);
         await this.page.evaluate(
             ({ id, query }) => {
-                // @ts-ignore
+                // @ts-ignore - We should not be doing this
                 document[`${id}`].setValue(query);
             },
             { query, id: EDITOR_QUERY_INPUT }
@@ -44,7 +44,7 @@ export class Editor extends Screen {
 
     public async getOutput(): Promise<string> {
         const output = await this.page.evaluate((id) => {
-            // @ts-ignore
+            // @ts-ignore - We should not be doing this
             return document[`${id}`].getValue();
         }, EDITOR_RESPONSE_OUTPUT);
 

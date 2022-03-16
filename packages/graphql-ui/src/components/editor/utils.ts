@@ -18,11 +18,11 @@
  */
 
 import { EditorFromTextArea } from "codemirror";
-// @ts-ignore
+// @ts-ignore - require issue
 import prettier from "prettier/esm/standalone";
-// @ts-ignore
+// @ts-ignore - require issue
 import prettierBabel from "prettier/esm/parser-babel";
-// @ts-ignore
+// @ts-ignore - require issue
 import parserGraphQL from "prettier/esm/parser-graphql";
 
 export enum ParserOptions {
@@ -56,7 +56,7 @@ export const formatCode = (mirror: EditorFromTextArea, parserOption: ParserOptio
             break;
     }
 
-    const formatted = prettier.format(value, options);
+    const formatted = prettier.format(value, options) as unknown as string;
     mirror.setValue(formatted);
     if (cursor) mirror.setCursor(cursor);
 };

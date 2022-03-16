@@ -57,7 +57,7 @@ export const JSONEditor = (props: Props) => {
             matchBrackets: true,
             showCursorWhenSelecting: true,
             foldGutter: {
-                // @ts-ignore
+                // @ts-ignore - Not sure about this one
                 minFoldSize: 4,
             },
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],

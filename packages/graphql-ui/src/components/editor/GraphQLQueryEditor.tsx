@@ -65,7 +65,7 @@ export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQ
             showCursorWhenSelecting: true,
             lineWrapping: true,
             foldGutter: {
-                // @ts-ignore
+                //  - GraphQL Adds this one
                 minFoldSize: 4,
             },
             lint: {
@@ -122,7 +122,7 @@ export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQ
     }, [loading]);
 
     useEffect(() => {
-        // @ts-ignore
+        // @ts-ignore - We should not be doing this
         document[EDITOR_QUERY_INPUT] = mirror;
     }, [mirror]);
 

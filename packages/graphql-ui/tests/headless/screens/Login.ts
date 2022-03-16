@@ -32,7 +32,7 @@ export class Login extends Screen {
         await this.page.$eval(
             `#${LOGIN_USERNAME_INPUT}`,
             (el, injected) => {
-                // @ts-ignore
+                // @ts-ignore - How can we type this?
                 el.value = injected;
             },
             username
@@ -44,7 +44,7 @@ export class Login extends Screen {
         await this.page.$eval(
             `#${LOGIN_PASSWORD_INPUT}`,
             (el, injected) => {
-                // @ts-ignore
+                // @ts-ignore - How can we type this?
                 el.value = injected;
             },
             password
@@ -56,7 +56,7 @@ export class Login extends Screen {
         await this.page.$eval(
             `#${LOGIN_URL_INPUT}`,
             (el, injected) => {
-                // @ts-ignore
+                // @ts-ignore - How can we type this?
                 el.value = injected;
             },
             url

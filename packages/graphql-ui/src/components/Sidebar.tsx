@@ -19,7 +19,7 @@
 
 import { useContext } from "react";
 import { HeroIcon } from "@neo4j-ndl/react/lib/icons";
-// @ts-ignore
+// @ts-ignore - SVG Import
 import Icon from "../assets/neo4j-white.svg";
 import { AuthContext } from "../contexts/auth";
 import { ScreenContext, Screen } from "../contexts/screen";
