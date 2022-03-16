@@ -161,6 +161,7 @@ function createCreateAndParams({
                         relationField,
                         refNode,
                         context,
+                        withVars,
                     });
                     res.creates.push(connectOrCreateQuery);
                     res.params = { ...res.params, ...connectOrCreateParams };

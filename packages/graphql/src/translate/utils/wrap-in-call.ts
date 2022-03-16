@@ -20,7 +20,7 @@
 import { joinStrings } from "../../utils/utils";
 
 /** Wraps a string in a CALL statement */
-export function wrapInCall(statement: string, withVarName: string, returnStatement = "RETURN COUNT(*)"): string {
-    const withString = `WITH ${withVarName}`;
+export function wrapInCall(statement: string, withVars: string[], returnStatement = "RETURN COUNT(*)"): string {
+    const withString = `WITH ${withVars.join(", ")}`;
     return joinStrings([withString, "CALL {", `\t${withString}`, `\t${statement}`, `\t${returnStatement}`, "}"]);
 }
