@@ -2117,6 +2117,9 @@ __metadata:
     webpack-cli: 4.9.2
     webpack-dev-server: 4.7.4
     webpack-notifier: ^1.15.0
+  peerDependencies:
+    graphql: ^16.0.0
+    neo4j-driver: ^4.1.0
   languageName: unknown
   linkType: soft
 

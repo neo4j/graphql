@@ -39,6 +39,10 @@
         "react-grid-resizable": "^1.0.0",
         "uuid": "^8.3.2"
     },
+    "peerDependencies": {
+        "graphql": "^16.0.0",
+        "neo4j-driver": "^4.1.0"
+    },
     "devDependencies": {
         "@tsconfig/create-react-app": "^1.0.2",
         "@types/codemirror": "^5",
