@@ -18,6 +18,7 @@
  */
 
 import { SessionMode, Transaction, QueryResult, Neo4jError } from "neo4j-driver";
+import { TransactionConfig } from "neo4j-driver-core";
 import Debug from "debug";
 import {
     Neo4jGraphQLForbiddenError,
@@ -34,7 +35,6 @@ import {
 import createAuthParam from "../translate/create-auth-param";
 import { Context, DriverConfig } from "../types";
 import environment from "../environment";
-import { TransactionConfig } from "neo4j-driver-core";
 
 const debug = Debug(DEBUG_EXECUTE);
 
