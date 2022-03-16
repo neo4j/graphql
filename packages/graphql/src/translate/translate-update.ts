@@ -410,7 +410,7 @@ export default function translateUpdate({ node, context }: { node: Node; context
         ...(relationshipValidationStr ? [`WITH ${withVars.join(", ")}`, relationshipValidationStr] : []),
         ...connectionStrs,
         ...interfaceStrs,
-        ...(context.subscriptionsEnabled ? [`UNWIND ${META_CYPHER_VARIABLE} AS m`] : []),
+        ...(context.subscriptionsEnabled ? [`WITH ${withVars.join(", ")}`, `UNWIND ${META_CYPHER_VARIABLE} AS m`] : []),
         returnStatement,
     ];
 
