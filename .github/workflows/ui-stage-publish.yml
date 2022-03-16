@@ -44,4 +44,4 @@ jobs:
       - name: Publish UI
         run: |
           npm install -g surge
-          surge ./site neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+          surge ./dist neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
