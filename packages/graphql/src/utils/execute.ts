@@ -34,6 +34,7 @@ import {
 import createAuthParam from "../translate/create-auth-param";
 import { Context, DriverConfig } from "../types";
 import environment from "../environment";
+import { TransactionConfig } from "neo4j-driver-core";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -67,18 +68,6 @@ async function execute(input: {
         }
     }
 
-    const userAgent = `${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`;
-
-    // @ts-ignore: below
-    // eslint-disable-next-line no-underscore-dangle
-    if (input.context.driver?._config) {
-        // @ts-ignore: (driver >= 4.3)
-        input.context.driver._config.userAgent = userAgent; // eslint-disable-line no-underscore-dangle
-    }
-
-    // @ts-ignore: (driver <= 4.2)
-    input.context.driver._userAgent = userAgent; // eslint-disable-line no-underscore-dangle
-
     const session = input.context.driver.session(sessionParams);
 
     // Its really difficult to know when users are using the `auth` param. For Simplicity it better to do the check here
@@ -100,9 +89,30 @@ async function execute(input: {
     try {
         debug("%s", `About to execute Cypher:\nCypher:\n${cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`);
 
-        const result: QueryResult = await session[
-            `${input.defaultAccessMode.toLowerCase()}Transaction`
-        ]((tx: Transaction) => tx.run(cypher, input.params));
+        const app = `${environment.NPM_PACKAGE_NAME}@${environment.NPM_PACKAGE_VERSION}`;
+
+        let result: QueryResult | undefined;
+        const transactionWork = (tx: Transaction) => tx.run(cypher, input.params);
+        const transactionConfig: TransactionConfig = {
+            metadata: {
+                app,
+                type: "user-transpiled",
+            },
+        };
+
+        switch (input.defaultAccessMode) {
+            case "READ":
+                result = await session.readTransaction(transactionWork, transactionConfig);
+                break;
+            case "WRITE":
+                result = await session.writeTransaction(transactionWork, transactionConfig);
+                break;
+            // no default
+        }
+
+        if (!result) {
+            throw new Error("Unable to execute query against Neo4j database");
+        }
 
         const records = result.records.map((r) => r.toObject());
 
