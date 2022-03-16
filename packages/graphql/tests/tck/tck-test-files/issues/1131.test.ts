@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
-describe("https://github.com/neo4j/graphql/issues/988", () => {
+describe("https://github.com/neo4j/graphql/issues/1131", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
