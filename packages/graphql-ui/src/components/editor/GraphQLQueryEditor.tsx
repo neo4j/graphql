@@ -65,7 +65,7 @@ export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQ
             showCursorWhenSelecting: true,
             lineWrapping: true,
             foldGutter: {
-                //  - GraphQL Adds this one
+                // @ts-ignore - GraphQL Adds this one
                 minFoldSize: 4,
             },
             lint: {
