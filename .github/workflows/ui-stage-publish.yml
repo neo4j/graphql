@@ -33,7 +33,7 @@ jobs:
             });
             var fs = require('fs');
             fs.writeFileSync('${{ github.workspace }}/graphqlui.zip', Buffer.from(download.data));
-      - run: unzip graphqlui.zip
+      - run: unzip graphqlui.zip -d /tmp-dist
       - id: get-pr-number
         run: |
           number=$(<prnumber)
@@ -44,4 +44,4 @@ jobs:
       - name: Publish UI
         run: |
           npm install -g surge
-          surge ./dist neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+          surge ./tmp-dist neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
