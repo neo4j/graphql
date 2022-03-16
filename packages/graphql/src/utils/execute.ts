@@ -18,7 +18,6 @@
  */
 
 import { SessionMode, Transaction, QueryResult, Neo4jError } from "neo4j-driver";
-import { TransactionConfig } from "neo4j-driver-core";
 import Debug from "debug";
 import {
     Neo4jGraphQLForbiddenError,
@@ -93,7 +92,7 @@ async function execute(input: {
 
         let result: QueryResult | undefined;
         const transactionWork = (tx: Transaction) => tx.run(cypher, input.params);
-        const transactionConfig: TransactionConfig = {
+        const transactionConfig = {
             metadata: {
                 app,
                 type: "user-transpiled",
