@@ -65,6 +65,7 @@ export function buildMergeStatement({
     context: Context;
 }): CypherStatement {
     const onCreateStatements: Array<CypherStatement> = [];
+    let parameters: Record<string, any> | undefined;
     let leftStatement: CypherStatement | undefined;
     let relationOnCreateStatement: CypherStatement | undefined;
 
@@ -88,6 +89,15 @@ export function buildMergeStatement({
                     {},
                 ]);
             });
+    }
+
+    if (sourceNode.parameters) {
+        parameters = sourceNode.node?.constrainableFields.reduce((params, field) => {
+            if (Object.keys(sourceNode.parameters!).includes(field.fieldName)) {
+                params[field.dbPropertyName || field.fieldName] = sourceNode.parameters![field.fieldName];
+            }
+            return params;
+        }, {} as Record<string, any>);
     }
 
     if (sourceNode.onCreate) {
@@ -148,6 +158,7 @@ export function buildMergeStatement({
     } else {
         leftStatement = buildNodeStatement({
             ...sourceNode,
+            parameters,
             context,
         });
     }
