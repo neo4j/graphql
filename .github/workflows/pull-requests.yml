@@ -267,6 +267,57 @@ jobs:
                   name: tck-coverage-graphql
                   path: packages/graphql/coverage/
 
+    ui-e2e-tests:
+        needs:
+            - cache-dependencies
+
+        strategy:
+            fail-fast: false
+            matrix:
+                package:
+                    - graphql-ui
+                neo4j-version:
+                    - 4.2.9
+                    - 4.2
+                    - 4.3.2
+                    - 4.3
+                    - 4.4
+                graphql-version:
+                    - "^15.0.0"
+                    - "^16.0.0"
+
+        runs-on: ubuntu-latest
+
+        services:
+            neo4j:
+                image: neo4j:${{ matrix.neo4j-version }}-enterprise
+                env:
+                    NEO4J_AUTH: neo4j/password
+                    NEO4JLABS_PLUGINS: '["apoc"]'
+                    NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
+                ports:
+                    - 7687:7687
+
+        steps:
+            - name: Check out repository code
+              uses: actions/checkout@v2
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: lts/*
+                  cache: yarn
+            - name: Install dependencies
+              run: yarn --immutable
+            - name: Overwrite GraphQL version
+              run: yarn up --exact graphql@${{ matrix.graphql-version }}
+            - name: Run @neo4j/graphql-ui e2e tests
+              run: |
+                  yarn test
+              working-directory: packages/${{ matrix.package }}
+              env:
+                  NEO_USER: neo4j
+                  NEO_PASSWORD: password
+                  NEO_URL: bolt://localhost:7687
+
     integration-tests-on-prem:
         needs:
             - cache-dependencies
