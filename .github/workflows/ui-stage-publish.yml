@@ -45,3 +45,15 @@ jobs:
         run: |
           npm install -g surge
           surge . neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ steps.get-pr-number.outputs.pr-number }}
+          message: |
+            Looks like you've updated the UI!
+
+            Check out your changes at
+             http://neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh
+            or
+             https://neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh
+          GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
