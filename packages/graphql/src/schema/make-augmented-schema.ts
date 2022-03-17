@@ -899,7 +899,7 @@ function getResolveAndSubscriptionMethods(composer: SchemaComposer) {
     const resolveMethods = composer.getResolveMethods();
 
     const subscriptionMethods = Object.entries(composer.Subscription.getFields()).reduce((acc, [key, value]) => {
-        acc[key] = { subscribe: value.subscribe };
+        acc[key] = { subscribe: value.subscribe, resolve: value.resolve };
         return acc;
     }, {});
     return {

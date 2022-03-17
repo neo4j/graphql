@@ -16,12 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import EventEmitter from "events";
 import { SubscriptionsEvent } from "../../src/subscriptions/subscriptions-event";
-import { Neo4jGraphQLSubscriptionsPlugin } from "../../src/types";
+import { Neo4jGraphQLSubscriptionsPlugin, PubSubEngine } from "../../src/types";
 
 export class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
-    public events: EventEmitter = {} as EventEmitter;
+    public pubsub = {} as PubSubEngine;
 
     public eventList: SubscriptionsEvent[] = [];
 

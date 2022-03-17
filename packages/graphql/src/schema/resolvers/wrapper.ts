@@ -70,7 +70,7 @@ export const wrapResolver =
         context.relationships = relationships;
         context.schema = schema;
         context.plugins = plugins;
-        context.subscriptionsEnabled = Boolean(context.plugins?.subscriptions) || true;
+        context.subscriptionsEnabled = Boolean(context.plugins?.subscriptions);
 
         if (!context.jwt) {
             if (context.plugins?.auth) {
@@ -102,5 +102,6 @@ export const wrapSubscription =
         const subscriptionContext: SubscriptionContext = {
             plugin: resolverArgs.plugins!.subscriptions!,
         };
+        // TODO: context auth
         return next(root, args, subscriptionContext, info);
     };
