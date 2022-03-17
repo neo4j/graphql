@@ -330,6 +330,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     relationField,
                     refNode,
                     context,
+                    withVars: [varName],
                 });
                 connectStrs.push(connectAndParams[0]);
                 cypherParams = { ...cypherParams, ...connectAndParams[1] };
