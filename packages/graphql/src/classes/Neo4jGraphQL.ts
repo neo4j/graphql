@@ -42,11 +42,16 @@ export interface Neo4jGraphQLJWT {
     rolesPath?: string;
 }
 
+type Neo4jGraphQLCallback = (args: Record<string, any>) => any | Promise<any>;
+
+type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;
+
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
     enableRegex?: boolean;
     skipValidateTypeDefs?: boolean;
     queryOptions?: CypherQueryOptions;
+    callbacks?: Neo4jGraphQLCallbacks;
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {

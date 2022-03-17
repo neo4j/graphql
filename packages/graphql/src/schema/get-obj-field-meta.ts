@@ -124,6 +124,7 @@ function getObjFieldMeta({
             const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
+            // const callbackDirective = directives.find((x) => x.name.value === "callback");
 
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
@@ -152,6 +153,7 @@ function getObjFieldMeta({
                             "timestamp",
                             "alias",
                             "unique",
+                            "callback",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],

@@ -29,6 +29,7 @@ import {
 } from "graphql";
 import { RelationshipQueryDirectionOption } from "../../constants";
 import {
+    CallbackOperationEnum,
     ExcludeOperationEnum,
     RelationshipDirectionEnum,
     RelationshipQueryDirectionEnum,
@@ -43,6 +44,23 @@ export const aliasDirective = new GraphQLDirective({
     args: {
         property: {
             description: "The name of the Neo4j property",
+            type: new GraphQLNonNull(GraphQLString),
+        },
+    },
+});
+
+export const callbackDirective = new GraphQLDirective({
+    name: "callback",
+    description: "TODO",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        operations: {
+            description: "TODO",
+            defaultValue: CallbackOperationEnum.getValues().map((v) => v.value),
+            type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(CallbackOperationEnum))),
+        },
+        name: {
+            description: "TODO",
             type: new GraphQLNonNull(GraphQLString),
         },
     },
