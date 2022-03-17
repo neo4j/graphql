@@ -95,6 +95,7 @@ export function buildMergeStatement({
     if (nodeParameters) {
         parameters = sourceNode.node?.constrainableFields.reduce((params, field) => {
             if (Object.keys(nodeParameters).includes(field.fieldName)) {
+                // eslint-disable-next-line no-param-reassign
                 params[field.dbPropertyName || field.fieldName] = nodeParameters[field.fieldName];
             }
             return params;
