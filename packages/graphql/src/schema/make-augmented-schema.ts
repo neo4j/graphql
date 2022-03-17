@@ -213,7 +213,9 @@ function makeAugmentedSchema(
         composer.createInputTC({
             name: `${relationship.name.value}UpdateInput`,
             fields: objectFieldsToUpdateInputFields([
-                ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.readonly),
+                ...relFields.primitiveFields.filter(
+                    (field) => !field.autogenerate && !field.readonly && !field.callback
+                ),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields.filter((field) => !field.timestamps),
@@ -241,7 +243,7 @@ function makeAugmentedSchema(
         composer.createInputTC({
             name: `${relationship.name.value}CreateInput`,
             fields: objectFieldsToCreateInputFields([
-                ...relFields.primitiveFields.filter((field) => !field.autogenerate),
+                ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.callback),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields.filter((field) => !field.timestamps),
@@ -646,7 +648,7 @@ function makeAugmentedSchema(
             name: `${node.name}CreateInput`,
             fields: objectFieldsToCreateInputFields(
                 [
-                    ...node.primitiveFields,
+                    ...node.primitiveFields.filter((field) => !field.callback),
                     ...node.scalarFields,
                     ...node.enumFields,
                     ...node.temporalFields.filter((field) => !field.timestamps),
@@ -658,7 +660,7 @@ function makeAugmentedSchema(
         composer.createInputTC({
             name: `${node.name}UpdateInput`,
             fields: objectFieldsToUpdateInputFields([
-                ...node.primitiveFields,
+                ...node.primitiveFields.filter((field) => !field.callback),
                 ...node.scalarFields,
                 ...node.enumFields,
                 ...node.temporalFields.filter((field) => !field.timestamps),

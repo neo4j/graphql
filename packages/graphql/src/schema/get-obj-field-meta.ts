@@ -60,6 +60,7 @@ import {
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
 import { upperFirst } from "../utils/upper-first";
+import getCallbackMeta from "./get-callback-meta";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -124,7 +125,7 @@ function getObjFieldMeta({
             const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
-            // const callbackDirective = directives.find((x) => x.name.value === "callback");
+            const callbackDirective = directives.find((x) => x.name.value === "callback");
 
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
@@ -443,6 +444,11 @@ function getObjFieldMeta({
                     const primitiveField: PrimitiveField = {
                         ...baseField,
                     };
+
+                    if (callbackDirective) {
+                        const callback = getCallbackMeta(callbackDirective);
+                        primitiveField.callback = callback;
+                    }
 
                     if (idDirective) {
                         const autogenerate = idDirective.arguments?.find((a) => a.name.value === "autogenerate");

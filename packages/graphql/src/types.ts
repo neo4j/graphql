@@ -111,6 +111,11 @@ export interface Unique {
     constraintName: string;
 }
 
+export interface Callback {
+    operations: CallbackOperations[];
+    name: string;
+}
+
 /**
  * Representation a ObjectTypeDefinitionNode field.
  */
@@ -165,6 +170,7 @@ export interface PrimitiveField extends BaseField {
     autogenerate?: boolean;
     defaultValue?: any;
     coalesceValue?: any;
+    callback?: Callback;
 }
 
 export type CustomScalarField = BaseField;
@@ -269,6 +275,8 @@ export interface DeleteInfo {
 }
 
 export type TimeStampOperations = "CREATE" | "UPDATE";
+
+export type CallbackOperations = "CREATE" | "UPDATE";
 
 export enum CypherRuntime {
     INTERPRETED = "interpreted",
