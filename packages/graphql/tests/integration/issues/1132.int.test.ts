@@ -28,7 +28,7 @@ import { generateUniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
-describe("https://github.com/neo4j/graphql/issues/1050", () => {
+describe("https://github.com/neo4j/graphql/issues/1132", () => {
     const secret = "secret";
 
     let driver: Driver;
