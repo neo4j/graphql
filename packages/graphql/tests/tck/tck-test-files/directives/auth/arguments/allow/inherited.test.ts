@@ -725,28 +725,28 @@ describe("@auth allow when inherited from interface", () => {
             WHERE this.id = $this_id
             WITH this
             CALL {
-            	WITH this
-            	OPTIONAL MATCH (this_connect_posts0_node:Post)
-            	WHERE this_connect_posts0_node.id = $this_connect_posts0_node_id
-            	WITH this, this_connect_posts0_node
-            	CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $thisUser0_allow_auth_allow0_id AND EXISTS((this_connect_posts0_node)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_connect_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0_nodePost1_allow_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-            		)
-            	)
-            	RETURN count(*)
+                WITH this
+                OPTIONAL MATCH (this_connect_posts0_node:Post)
+                WHERE this_connect_posts0_node.id = $this_connect_posts0_node_id
+                WITH this, this_connect_posts0_node
+                CALL apoc.util.validate(NOT(EXISTS((this_connect_posts0_node)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_connect_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0_nodePost0_allow_auth_allow0_creator_id) AND this.id IS NOT NULL AND this.id = $thisUser1_allow_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+                    FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
+                        MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+                    )
+                )
+                RETURN count(*)
             }
             RETURN this { .id } AS this"
-        `);
+            `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"user-id\\",
                 \\"this_connect_posts0_node_id\\": \\"post-id\\",
-                \\"thisUser0_allow_auth_allow0_id\\": \\"user-id\\",
-                \\"this_connect_posts0_nodePost1_allow_auth_allow0_creator_id\\": \\"user-id\\"
+                \\"this_connect_posts0_nodePost0_allow_auth_allow0_creator_id\\": \\"user-id\\",
+                \\"thisUser1_allow_auth_allow0_id\\": \\"user-id\\"
             }"
-        `);
+            `);
     });
 });

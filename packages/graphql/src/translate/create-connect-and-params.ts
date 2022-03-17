@@ -159,8 +159,8 @@ function createConnectAndParams({
             subquery.push(`\tWHERE ${whereStrs.join(" AND ")}`);
         }
 
-        const nodeMatrix: Array<{ node: Node; name: string }> = [ { node: relatedNode, name: nodeName }];
-        if (fromCreate) nodeMatrix.push({ node: parentNode, name: parentVar });
+        const nodeMatrix: Array<{ node: Node; name: string }> = [{ node: relatedNode, name: nodeName }];
+        if (!fromCreate) nodeMatrix.push({ node: parentNode, name: parentVar });
 
         const preAuth = nodeMatrix.reduce(
             (result: Res, { node, name }, i) => {
