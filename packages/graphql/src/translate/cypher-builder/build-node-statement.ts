@@ -43,6 +43,6 @@ export function buildNodeStatement({ varName = "", node, context, parameters }: 
 }
 
 function parseNodeParameters(nodeVar: string, parameters: CypherParams | undefined): CypherStatement {
-    if (!nodeVar && parameters) throw new Error("noveVar not defined with parameters");
+    if (!nodeVar && parameters) throw new Error("nodeVar not defined with parameters");
     return serializeParameters(`${nodeVar}_node`, parameters);
 }
