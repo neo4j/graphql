@@ -91,10 +91,11 @@ export function buildMergeStatement({
             });
     }
 
-    if (sourceNode.parameters) {
+    const nodeParameters = sourceNode.parameters;
+    if (nodeParameters) {
         parameters = sourceNode.node?.constrainableFields.reduce((params, field) => {
-            if (Object.keys(sourceNode.parameters!).includes(field.fieldName)) {
-                params[field.dbPropertyName || field.fieldName] = sourceNode.parameters![field.fieldName];
+            if (Object.keys(nodeParameters).includes(field.fieldName)) {
+                params[field.dbPropertyName || field.fieldName] = nodeParameters[field.fieldName];
             }
             return params;
         }, {} as Record<string, any>);
