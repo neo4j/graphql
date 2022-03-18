@@ -23,7 +23,7 @@ import { addResolversToSchema, IExecutableSchemaDefinition, makeExecutableSchema
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import { forEachField, IResolvers } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
-import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins } from "../types";
+import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins, Neo4jGraphQLCallbacks } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
@@ -41,10 +41,6 @@ export interface Neo4jGraphQLJWT {
     noVerify?: boolean;
     rolesPath?: string;
 }
-
-type Neo4jGraphQLCallback = (args: Record<string, any>) => any | Promise<any>;
-
-type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;

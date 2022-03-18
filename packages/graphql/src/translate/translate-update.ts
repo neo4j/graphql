@@ -32,8 +32,15 @@ import createInterfaceProjectionAndParams from "./create-interface-projection-an
 import translateTopLevelMatch from "./translate-top-level-match";
 import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
+import { CallbackBucket } from "../classes/CallbackBucket";
 
-export default function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
+export default async function translateUpdate({
+    node,
+    context,
+}: {
+    node: Node;
+    context: Context;
+}): Promise<[string, any]> {
     const { resolveTree } = context;
     const updateInput = resolveTree.args.update;
     const connectInput = resolveTree.args.connect;
@@ -42,6 +49,7 @@ export default function translateUpdate({ node, context }: { node: Node; context
     const deleteInput = resolveTree.args.delete;
     const connectOrCreateInput = resolveTree.args.connectOrCreate;
     const varName = "this";
+    const callbackBucket: CallbackBucket = new CallbackBucket(context);
 
     const withVars = [varName];
 
@@ -75,6 +83,7 @@ export default function translateUpdate({ node, context }: { node: Node; context
     if (updateInput) {
         const updateAndParams = createUpdateAndParams({
             context,
+            callbackBucket,
             node,
             updateInput,
             varName,
@@ -259,6 +268,7 @@ export default function translateUpdate({ node, context }: { node: Node; context
 
                     const createAndParams = createCreateAndParams({
                         context,
+                        callbackBucket,
                         node: refNode,
                         input: create.node,
                         varName: nodeName,
@@ -396,6 +406,7 @@ export default function translateUpdate({ node, context }: { node: Node; context
     const returnStatement = generateUpdateReturnStatement(varName, projStr, context.subscriptionsEnabled);
 
     const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";
+    const resolvedParams = await callbackBucket.resolveCallbacks();
 
     const cypher = [
         ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
@@ -416,7 +427,11 @@ export default function translateUpdate({ node, context }: { node: Node; context
 
     return [
         cypher.filter(Boolean).join("\n"),
-        { ...cypherParams, ...(Object.keys(updateArgs).length ? { [resolveTree.name]: { args: updateArgs } } : {}) },
+        {
+            ...cypherParams,
+            ...resolvedParams,
+            ...(Object.keys(updateArgs).length ? { [resolveTree.name]: { args: updateArgs } } : {}),
+        },
     ];
 }
 

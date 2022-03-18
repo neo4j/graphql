@@ -25,12 +25,20 @@ import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import { filterTruthy } from "../utils/utils";
+import { CallbackBucket } from "../classes/CallbackBucket";
 
-export default function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
+export default async function translateCreate({
+    context,
+    node,
+}: {
+    context: Context;
+    node: Node;
+}): Promise<[string, any]> {
     const { resolveTree } = context;
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
     const projectionWith: string[] = [];
+    const callbackBucket: CallbackBucket = new CallbackBucket(context);
 
     let connectionParams: any;
     let interfaceParams: any;
@@ -60,6 +68,7 @@ export default function translateCreate({ context, node }: { context: Context; n
                 withVars,
                 includeRelationshipValidation: true,
                 topLevelNodeVariable: varName,
+                callbackBucket,
             });
 
             create.push(`${createAndParams[0]}`);
@@ -83,6 +92,7 @@ export default function translateCreate({ context, node }: { context: Context; n
         createStrs: string[];
         params: any;
     };
+    const resolvedParams = await callbackBucket.resolveCallbacks();
 
     let replacedProjectionParams: Record<string, unknown> = {};
     let projectionStr: string | undefined;
@@ -220,7 +230,13 @@ export default function translateCreate({ context, node }: { context: Context; n
 
     return [
         cypher.filter(Boolean).join("\n"),
-        { ...params, ...replacedProjectionParams, ...replacedConnectionParams, ...replacedInterfaceParams },
+        {
+            ...params,
+            ...replacedProjectionParams,
+            ...replacedConnectionParams,
+            ...replacedInterfaceParams,
+            ...resolvedParams,
+        },
     ];
 }
 

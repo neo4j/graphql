@@ -34,6 +34,7 @@ import createRelationshipValidationStr from "./create-relationship-validation-st
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { escapeQuery } from "./utils/escape-query";
+import { CallbackBucket } from "../classes/CallbackBucket";
 
 interface Res {
     strs: string[];
@@ -54,6 +55,7 @@ function createUpdateAndParams({
     chainStr,
     withVars,
     context,
+    callbackBucket,
     parameterPrefix,
     includeRelationshipValidation,
 }: {
@@ -64,6 +66,7 @@ function createUpdateAndParams({
     node: Node;
     withVars: string[];
     context: Context;
+    callbackBucket: CallbackBucket;
     parameterPrefix: string;
     includeRelationshipValidation?: boolean;
 }): [string, any] {
@@ -193,6 +196,7 @@ function createUpdateAndParams({
 
                             const updateAndParams = createUpdateAndParams({
                                 context,
+                                callbackBucket,
                                 node: refNode,
                                 updateInput: nestedUpdateInput,
                                 varName: _varName,
@@ -211,6 +215,7 @@ function createUpdateAndParams({
                             if (relationField.interface && update.update.node?._on?.[refNode.name]) {
                                 const onUpdateAndParams = createUpdateAndParams({
                                     context,
+                                    callbackBucket,
                                     node: refNode,
                                     updateInput: update.update.node._on[refNode.name],
                                     varName: _varName,
@@ -365,6 +370,7 @@ function createUpdateAndParams({
 
                             const createAndParams = createCreateAndParams({
                                 context,
+                                callbackBucket: new CallbackBucket(context),
                                 node: refNode,
                                 input: create.node,
                                 varName: nodeName,
@@ -444,6 +450,21 @@ function createUpdateAndParams({
 
             hasAppliedTimeStamps = true;
         }
+
+        node.primitiveFields.forEach((field) => {
+            if (!field.callback) {
+                return;
+            }
+
+            const paramName = `${varName}_${field.fieldName}_${field.callback?.name}`;
+
+            callbackBucket.addCallback({
+                functionName: field.callback?.name,
+                paramName,
+            });
+
+            res.strs.push(`SET ${varName}.${field.dbPropertyName} = $${paramName}`);
+        });
 
         const settableField = node.mutableFields.find((x) => x.fieldName === key);
         const authableField = node.authableFields.find((x) => x.fieldName === key);

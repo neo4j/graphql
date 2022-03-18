@@ -75,6 +75,7 @@ export const wrapResolver =
         context.schema = schema;
         context.plugins = plugins;
         context.subscriptionsEnabled = Boolean(context.plugins?.subscriptions);
+        context.callbacks = config.callbacks;
 
         if (!context.jwt) {
             if (context.plugins?.auth) {

@@ -84,12 +84,14 @@ describe("integration/rfc/autogenerate-properties", () => {
 
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toMatchObject({
-                [testMovie.plural]: [
-                    {
-                        id: movieId,
-                        callback: string1,
-                    },
-                ],
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            callback: string1,
+                        },
+                    ],
+                },
             });
         });
 
@@ -150,12 +152,14 @@ describe("integration/rfc/autogenerate-properties", () => {
 
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toMatchObject({
-                [testMovie.plural]: [
-                    {
-                        id: movieId,
-                        callback: string1,
-                    },
-                ],
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            callback: string1,
+                        },
+                    ],
+                },
             });
         });
 
@@ -224,18 +228,22 @@ describe("integration/rfc/autogenerate-properties", () => {
 
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toMatchObject({
-                [testMovie.plural]: [
-                    {
-                        id: movieId,
-                        callback: string1,
-                    },
-                ],
-                [testMovie.plural]: [
-                    {
-                        id: movieId,
-                        callback: string2,
-                    },
-                ],
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            callback: string1,
+                        },
+                    ],
+                },
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            callback: string2,
+                        },
+                    ],
+                },
             });
         });
     });
@@ -243,9 +251,12 @@ describe("integration/rfc/autogenerate-properties", () => {
     describe("Callback - Int", () => {
         test("should insert callback on CREATE", async () => {
             const testMovie = generateUniqueType("Movie");
-            const int1 = generate({
-                charset: "numberic",
-            });
+            const int1 = Number(
+                generate({
+                    charset: "numeric",
+                    length: 6,
+                })
+            );
 
             const callback = () => Promise.resolve(int1);
 
@@ -288,20 +299,25 @@ describe("integration/rfc/autogenerate-properties", () => {
 
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toMatchObject({
-                [testMovie.plural]: [
-                    {
-                        id: movieId,
-                        callback: int1,
-                    },
-                ],
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            callback: int1,
+                        },
+                    ],
+                },
             });
         });
 
         test("should insert callback on UPDATE", async () => {
             const testMovie = generateUniqueType("Movie");
-            const int1 = generate({
-                charset: "numeric",
-            });
+            const int1 = Number(
+                generate({
+                    charset: "numeric",
+                    length: 6,
+                })
+            );
 
             const callback = () => Promise.resolve(int1);
 
@@ -354,23 +370,31 @@ describe("integration/rfc/autogenerate-properties", () => {
 
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toMatchObject({
-                [testMovie.plural]: [
-                    {
-                        id: movieId,
-                        callback: int1,
-                    },
-                ],
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            callback: int1,
+                        },
+                    ],
+                },
             });
         });
 
         test("should insert callback on CREATE and UPDATE", async () => {
             const testMovie = generateUniqueType("Movie");
-            const int1 = generate({
-                charset: "numeric",
-            });
-            const int2 = generate({
-                charset: "numeric",
-            });
+            const int1 = Number(
+                generate({
+                    charset: "numeric",
+                    length: 6,
+                })
+            );
+            const int2 = Number(
+                generate({
+                    charset: "numeric",
+                    length: 6,
+                })
+            );
 
             let counter = 0;
             const callback = () => {
@@ -428,18 +452,22 @@ describe("integration/rfc/autogenerate-properties", () => {
 
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toMatchObject({
-                [testMovie.plural]: [
-                    {
-                        id: movieId,
-                        callback: int1,
-                    },
-                ],
-                [testMovie.plural]: [
-                    {
-                        id: movieId,
-                        callback: int2,
-                    },
-                ],
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            callback: int1,
+                        },
+                    ],
+                },
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            callback: int2,
+                        },
+                    ],
+                },
             });
         });
     });

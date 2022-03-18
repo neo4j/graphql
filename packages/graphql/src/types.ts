@@ -44,6 +44,7 @@ export interface Context {
     relationships: Relationship[];
     schema: GraphQLSchema;
     auth?: AuthContext;
+    callbacks?: Neo4jGraphQLCallbacks;
     queryOptions?: CypherQueryOptions;
     plugins?: Neo4jGraphQLPlugins;
     jwt?: JwtPayload;
@@ -372,3 +373,7 @@ export interface JwtPayload {
     iat?: number | undefined;
     jti?: string | undefined;
 }
+
+export type Neo4jGraphQLCallback = (args: Record<string, any>) => any | Promise<any>;
+
+export type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;
