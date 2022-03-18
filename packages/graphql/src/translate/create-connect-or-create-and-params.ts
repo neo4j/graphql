@@ -164,22 +164,18 @@ function createAuthStatement({
     node,
     context,
     nodeName,
-    i,
 }: {
     node: Node;
     context: Context;
     nodeName: string;
-    i?: number;
 }): CypherBuilder.Query | undefined {
     if (!node.auth) return undefined;
-
-    const indexStr = i === undefined ? "" : String(i);
 
     const auth = createAuthAndParams({
         entity: node,
         operations: ["CONNECT", "CREATE"],
         context,
-        allow: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${indexStr}_allow` },
+        allow: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}_allow` },
         escapeQuotes: false,
     });
 

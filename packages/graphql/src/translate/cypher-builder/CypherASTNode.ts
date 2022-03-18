@@ -41,11 +41,7 @@ export abstract class CypherASTNode {
             context.addNamedParamReference(name, param); // Only for compatibility reasons
         });
 
-        const childrenCypher = this.children
-            .map((value) => {
-                return value.getCypher(context);
-            })
-            .join(separator);
+        const childrenCypher = this.children.map((value) => value.getCypher(context)).join(separator);
         return this.cypher(context, childrenCypher);
     }
 
