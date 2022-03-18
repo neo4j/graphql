@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -37,8 +37,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -70,8 +70,8 @@ jobs:
           - "^16.0.0"
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -96,8 +96,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -135,8 +135,8 @@ jobs:
           - "^16.0.0"
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -175,8 +175,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -221,8 +221,8 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -240,7 +240,7 @@ jobs:
           NEO_PASSWORD: testpassword
           NEO_URL: bolt://localhost:7687
       - name: Archive coverage report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: integration-coverage-${{ matrix.package }}
           path: packages/${{ matrix.package }}/coverage-${{ matrix.neo4j-version }}/
@@ -259,8 +259,8 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -298,8 +298,8 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -320,7 +320,7 @@ jobs:
           NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
           NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
       - name: Archive coverage report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: integration-coverage-${{ matrix.package }}
           path: packages/${{ matrix.package }}/coverage-aura-${{ matrix.aura-instance }}/
@@ -340,7 +340,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: integration-coverage-${{ matrix.package }}
       - name: Upload coverage to Codecov
@@ -364,11 +364,11 @@ jobs:
       version: ${{ steps.get-version.outputs.version }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           # Fetch all history so yarn version works
           fetch-depth: 0
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -420,10 +420,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: release/${{ needs.bump-version.outputs.version }}
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -436,7 +436,7 @@ jobs:
         run: npm pack
         working-directory: packages/${{ matrix.package }}
       - name: Archive release tarball
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: release-tarballs
           path: packages/${{ matrix.package }}/neo4j-graphql-*.tgz
@@ -452,7 +452,7 @@ jobs:
       name: npm
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: release-tarballs
       - name: npm publish
@@ -486,7 +486,7 @@ jobs:
       name: github
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: master
           fetch-depth: 0
@@ -503,7 +503,7 @@ jobs:
           git tag -a @neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }}"
       - name: git push
         run: git push --follow-tags
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: dev
           fetch-depth: 0
@@ -524,7 +524,7 @@ jobs:
       name: github
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - name: Delete release branch
@@ -547,7 +547,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Extract product label from tag
         id: get-label
         run: |

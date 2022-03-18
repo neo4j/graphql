@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
@@ -29,7 +29,7 @@ jobs:
         run: npm pack
         working-directory: packages/${{ matrix.package }}
       - name: Archive release tarball
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: release-tarballs
           path: packages/${{ matrix.package }}/neo4j-graphql-*.tgz
@@ -44,7 +44,7 @@ jobs:
       name: npm
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: release-tarballs
       - id: get-version
