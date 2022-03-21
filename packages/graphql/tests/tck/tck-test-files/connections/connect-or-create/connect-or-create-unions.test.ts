@@ -162,7 +162,8 @@ describe("Create or connect with unions", () => {
                 \\"this0_relationship_this0_actedIn_Series_connectOrCreate0_on_create_screentime\\": {
                     \\"low\\": 126,
                     \\"high\\": 0
-                }
+                },
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -260,7 +261,8 @@ describe("Create or connect with unions", () => {
                 \\"this_relationship_this_actedIn_Series0_connectOrCreate0_on_create_screentime\\": {
                     \\"low\\": 126,
                     \\"high\\": 0
-                }
+                },
+                \\"callbacks\\": {}
             }"
         `);
     });

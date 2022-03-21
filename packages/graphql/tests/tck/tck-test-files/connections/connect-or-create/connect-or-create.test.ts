@@ -117,7 +117,8 @@ describe("Create or Connect", () => {
                     \\"this0_relationship_this0_movies_connectOrCreate0_on_create_screentime\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"callbacks\\": {}
                 }"
             `);
         });
@@ -178,7 +179,8 @@ describe("Create or Connect", () => {
                     \\"this_relationship_this_movies0_connectOrCreate0_on_create_screentime\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"callbacks\\": {}
                 }"
             `);
         });
@@ -280,7 +282,8 @@ describe("Create or Connect", () => {
                     \\"this0_relationship_this0_movies_connectOrCreate0_on_create_screentime\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"callbacks\\": {}
                 }"
             `);
         });
@@ -345,7 +348,8 @@ describe("Create or Connect", () => {
                     \\"this0_relationship_this0_movies_connectOrCreate0_on_create_screentime\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"callbacks\\": {}
                 }"
             `);
         });
@@ -408,7 +412,8 @@ describe("Create or Connect", () => {
                     \\"this_relationship_this_movies0_connectOrCreate0_on_create_screentime\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"callbacks\\": {}
                 }"
             `);
         });
@@ -470,7 +475,8 @@ describe("Create or Connect", () => {
                     \\"this_relationship_this_movies0_connectOrCreate0_on_create_screentime\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"callbacks\\": {}
                 }"
             `);
         });
@@ -573,7 +579,8 @@ describe("Create or Connect", () => {
                     \\"this0_relationship_this0_movies_connectOrCreate0_on_create_screentime\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"callbacks\\": {}
                 }"
             `);
         });
@@ -636,7 +643,8 @@ describe("Create or Connect", () => {
                     \\"this_relationship_this_movies0_connectOrCreate0_on_create_screentime\\": {
                         \\"low\\": 105,
                         \\"high\\": 0
-                    }
+                    },
+                    \\"callbacks\\": {}
                 }"
             `);
         });

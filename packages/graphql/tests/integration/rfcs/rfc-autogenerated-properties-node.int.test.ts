@@ -25,7 +25,7 @@ import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 
-describe("integration/rfc/autogenerate-properties", () => {
+describe("integration/rfc/autogenerate-properties-node", () => {
     let driver: Driver;
 
     beforeAll(async () => {

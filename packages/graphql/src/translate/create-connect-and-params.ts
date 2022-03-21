@@ -24,6 +24,7 @@ import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createRelationshipValidationString from "./create-relationship-validation-string";
+import { CallbackBucket } from "../classes/CallbackBucket";
 
 interface Res {
     connects: string[];
@@ -38,6 +39,7 @@ function createConnectAndParams({
     parentVar,
     refNodes,
     context,
+    callbackBucket,
     labelOverride,
     parentNode,
     fromCreate,
@@ -50,6 +52,7 @@ function createConnectAndParams({
     relationField: RelationField;
     parentVar: string;
     context: Context;
+    callbackBucket: CallbackBucket;
     refNodes: Node[];
     labelOverride?: string;
     parentNode: Node;
@@ -214,6 +217,7 @@ function createConnectAndParams({
                 varName: relationshipName,
                 relationship,
                 operation: "CREATE",
+                callbackBucket,
             });
             subquery.push(setA[0]);
             params = { ...params, ...setA[1] };
@@ -287,6 +291,7 @@ function createConnectAndParams({
                                     relationField: relField,
                                     parentVar: nodeName,
                                     context,
+                                    callbackBucket,
                                     refNodes: [newRefNode],
                                     parentNode: relatedNode,
                                     labelOverride: relField.union ? newRefNode.name : "",
@@ -335,6 +340,7 @@ function createConnectAndParams({
                                         relationField: relField,
                                         parentVar: nodeName,
                                         context,
+                                        callbackBucket,
                                         refNodes: [newRefNode],
                                         parentNode: relatedNode,
                                         labelOverride: relField.union ? newRefNode.name : "",

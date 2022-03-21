@@ -22,7 +22,7 @@ import { gql } from "apollo-server";
 import { lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("schema/rfc/autogenerate-properties", () => {
+describe("schema/rfc/autogenerate-properties-node", () => {
     test("Callback - String", async () => {
         const callback1 = () => "random-string";
         const callback2 = () => "random-string";

@@ -270,6 +270,7 @@ function createUpdateAndParams({
                                 properties: update.update.edge,
                                 varName: relationshipVariable,
                                 relationship,
+                                callbackBucket,
                                 operation: "UPDATE",
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
@@ -280,7 +281,7 @@ function createUpdateAndParams({
 
                             const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
-                            }: $${parameterPrefix?.split(".")[0]}}`;
+                            }: $${parameterPrefix?.split(".")[0]}, callbacks: $callbacks}`;
 
                             updateStrs.push(`", "", ${apocArgs})`);
                             updateStrs.push(`YIELD value AS ${relationshipVariable}_${key}${index}_edge`);
@@ -310,6 +311,7 @@ function createUpdateAndParams({
                     if (update.connect) {
                         const connectAndParams = createConnectAndParams({
                             context,
+                            callbackBucket,
                             refNodes: [refNode],
                             value: update.connect,
                             varName: `${_varName}_connect`,
@@ -390,6 +392,7 @@ function createUpdateAndParams({
                                     properties: create.edge,
                                     varName: propertiesName,
                                     relationship,
+                                    callbackBucket,
                                     operation: "CREATE",
                                     parameterPrefix: `${parameterPrefix}.${key}${
                                         relationField.union ? `.${refNode.name}` : ""
@@ -463,7 +466,7 @@ function createUpdateAndParams({
                 paramName,
             });
 
-            res.strs.push(`SET ${varName}.${field.dbPropertyName} = $${paramName}`);
+            res.strs.push(`SET ${varName}.${field.dbPropertyName} = $callbacks.${paramName}`);
         });
 
         const settableField = node.mutableFields.find((x) => x.fieldName === key);

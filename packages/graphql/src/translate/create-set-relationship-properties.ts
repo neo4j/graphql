@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { CallbackBucket } from "../classes/CallbackBucket";
 import { Relationship } from "../classes";
 import mapToDbProperty from "../utils/map-to-db-property";
 
@@ -30,12 +31,14 @@ function createSetRelationshipProperties({
     varName,
     relationship,
     operation,
+    callbackBucket,
     parameterPrefix,
 }: {
     properties: Record<string, unknown>;
     varName: string;
     relationship: Relationship;
     operation: "CREATE" | "UPDATE";
+    callbackBucket: CallbackBucket;
     parameterPrefix: string;
 }): string {
     const strs: string[] = [];
@@ -58,6 +61,21 @@ function createSetRelationshipProperties({
                 `SET ${varName}.${temporalField.dbPropertyName} = ${temporalField.typeMeta.name.toLowerCase()}()`
             );
         }
+    });
+
+    relationship.primitiveFields.forEach((field) => {
+        if (!field.callback) {
+            return;
+        }
+
+        const paramName = `${varName}_${field.fieldName}_${field.callback?.name}`;
+
+        callbackBucket.addCallback({
+            functionName: field.callback?.name,
+            paramName,
+        });
+
+        strs.push(`SET ${varName}.${field.dbPropertyName} = $callbacks.${paramName}`);
     });
 
     Object.entries(properties).forEach(([key]) => {

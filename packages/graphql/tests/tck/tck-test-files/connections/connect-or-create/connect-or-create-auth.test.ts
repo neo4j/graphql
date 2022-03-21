@@ -101,19 +101,20 @@ describe("connectOrCreate", () => {
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                    "{
-                        \\"this0_title\\": \\"Cool Movie\\",
-                        \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
-                        \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
-                        \\"auth\\": {
-                            \\"isAuthenticated\\": true,
-                            \\"roles\\": [],
-                            \\"jwt\\": {
-                                \\"roles\\": []
-                            }
+                "{
+                    \\"this0_title\\": \\"Cool Movie\\",
+                    \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
+                    \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"callbacks\\": {},
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {
+                            \\"roles\\": []
                         }
-                    }"
-                    `);
+                    }
+                }"
+            `);
         });
 
         test("Create with createOrConnect and CREATE operation rule", async () => {
@@ -154,19 +155,20 @@ describe("connectOrCreate", () => {
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                            "{
-                                \\"this0_title\\": \\"Cool Movie\\",
-                                \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
-                                \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
-                                \\"auth\\": {
-                                    \\"isAuthenticated\\": true,
-                                    \\"roles\\": [],
-                                    \\"jwt\\": {
-                                        \\"roles\\": []
-                                    }
-                                }
-                            }"
-                            `);
+                "{
+                    \\"this0_title\\": \\"Cool Movie\\",
+                    \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
+                    \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"callbacks\\": {},
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
+                    }
+                }"
+            `);
         });
 
         test("Create with createOrConnect and CREATE, CONNECT operation rule", async () => {
@@ -207,19 +209,20 @@ describe("connectOrCreate", () => {
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                            "{
-                                \\"this0_title\\": \\"Cool Movie\\",
-                                \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
-                                \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
-                                \\"auth\\": {
-                                    \\"isAuthenticated\\": true,
-                                    \\"roles\\": [],
-                                    \\"jwt\\": {
-                                        \\"roles\\": []
-                                    }
-                                }
-                            }"
-                            `);
+                "{
+                    \\"this0_title\\": \\"Cool Movie\\",
+                    \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
+                    \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"callbacks\\": {},
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
+                    }
+                }"
+            `);
         });
 
         test("Create with createOrConnect and DELETE operation rule", async () => {
@@ -262,7 +265,8 @@ describe("connectOrCreate", () => {
                 "{
                     \\"this0_title\\": \\"Cool Movie\\",
                     \\"this0_genres_connectOrCreate0_node_name\\": \\"Horror\\",
-                    \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\"
+                    \\"this0_genres_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"callbacks\\": {}
                 }"
             `);
         });
@@ -326,6 +330,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_genres0_connectOrCreate0_node_name\\": \\"Horror\\",
                     \\"this_genres0_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"callbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -375,6 +380,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_genres0_connectOrCreate0_node_name\\": \\"Horror\\",
                     \\"this_genres0_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"callbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -424,6 +430,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_genres0_connectOrCreate0_node_name\\": \\"Horror\\",
                     \\"this_genres0_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"callbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -471,7 +478,8 @@ describe("connectOrCreate", () => {
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_genres0_connectOrCreate0_node_name\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate0_on_create_name\\": \\"Horror\\"
+                    \\"this_genres0_connectOrCreate0_on_create_name\\": \\"Horror\\",
+                    \\"callbacks\\": {}
                 }"
             `);
         });
@@ -531,6 +539,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_connectOrCreate_genres0_node_name\\": \\"Horror\\",
                     \\"this_connectOrCreate_genres0_on_create_name\\": \\"Horror\\",
+                    \\"callbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -580,6 +589,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_connectOrCreate_genres0_node_name\\": \\"Horror\\",
                     \\"this_connectOrCreate_genres0_on_create_name\\": \\"Horror\\",
+                    \\"callbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -629,6 +639,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_connectOrCreate_genres0_node_name\\": \\"Horror\\",
                     \\"this_connectOrCreate_genres0_on_create_name\\": \\"Horror\\",
+                    \\"callbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -676,7 +687,8 @@ describe("connectOrCreate", () => {
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_connectOrCreate_genres0_node_name\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres0_on_create_name\\": \\"Horror\\"
+                    \\"this_connectOrCreate_genres0_on_create_name\\": \\"Horror\\",
+                    \\"callbacks\\": {}
                 }"
             `);
         });

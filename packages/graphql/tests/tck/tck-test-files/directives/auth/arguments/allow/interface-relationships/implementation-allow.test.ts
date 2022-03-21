@@ -290,7 +290,8 @@ describe("@auth allow on specific interface implementation", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -410,7 +411,8 @@ describe("@auth allow on specific interface implementation", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -513,7 +515,8 @@ describe("@auth allow on specific interface implementation", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -568,7 +571,8 @@ describe("@auth allow on specific interface implementation", () => {
             "{
                 \\"this_id\\": \\"user-id\\",
                 \\"this_connect_content0_node_id\\": \\"post-id\\",
-                \\"this_connect_content0_nodePost1_allow_auth_allow0_creator_id\\": \\"user-id\\"
+                \\"this_connect_content0_nodePost1_allow_auth_allow0_creator_id\\": \\"user-id\\",
+                \\"callbacks\\": {}
             }"
         `);
     });

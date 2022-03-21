@@ -131,7 +131,8 @@ describe("Cypher Union", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_title\\": \\"some movie\\",
-                \\"this0_search_Genre0_node_name\\": \\"some genre\\"
+                \\"this0_search_Genre0_node_name\\": \\"some genre\\",
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -162,7 +163,8 @@ describe("Cypher Union", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_create_search_Genre0_node_name\\": \\"some genre\\"
+                \\"this_create_search_Genre0_node_name\\": \\"some genre\\",
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -215,7 +217,8 @@ describe("Cypher Union", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_title\\": \\"some movie\\",
-                \\"this0_search_Genre_connect0_node_name\\": \\"some genre\\"
+                \\"this0_search_Genre_connect0_node_name\\": \\"some genre\\",
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -292,7 +295,8 @@ describe("Cypher Union", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -355,7 +359,8 @@ describe("Cypher Union", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -414,7 +419,8 @@ describe("Cypher Union", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -459,7 +465,8 @@ describe("Cypher Union", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_title\\": \\"some movie\\",
-                \\"this_connect_search_Genre0_node_name\\": \\"some genre\\"
+                \\"this_connect_search_Genre0_node_name\\": \\"some genre\\",
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -513,7 +520,8 @@ describe("Cypher Union", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"callbacks\\": {}
             }"
         `);
     });

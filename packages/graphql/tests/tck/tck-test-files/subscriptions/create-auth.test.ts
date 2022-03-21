@@ -106,7 +106,8 @@ describe("Subscriptions metadata on create", () => {
                 \\"this0_id\\": \\"1\\",
                 \\"this0_auth_bind0_id\\": \\"super_admin\\",
                 \\"this1_id\\": \\"2\\",
-                \\"this1_auth_bind0_id\\": \\"super_admin\\"
+                \\"this1_auth_bind0_id\\": \\"super_admin\\",
+                \\"callbacks\\": {}
             }"
         `);
     });

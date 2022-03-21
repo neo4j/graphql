@@ -83,7 +83,8 @@ describe("Subscriptions metadata on create", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\"
+                \\"this0_id\\": \\"1\\",
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -128,7 +129,8 @@ describe("Subscriptions metadata on create", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
-                \\"this1_id\\": \\"2\\"
+                \\"this1_id\\": \\"2\\",
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -172,7 +174,8 @@ describe("Subscriptions metadata on create", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
-                \\"this0_actors0_node_name\\": \\"Andrés\\"
+                \\"this0_actors0_node_name\\": \\"Andrés\\",
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -228,7 +231,8 @@ describe("Subscriptions metadata on create", () => {
             "{
                 \\"this0_id\\": \\"1\\",
                 \\"this0_actors0_node_name\\": \\"Andrés\\",
-                \\"this0_actors0_node_movies0_node_id\\": \\"6\\"
+                \\"this0_actors0_node_movies0_node_id\\": \\"6\\",
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -306,7 +310,8 @@ describe("Subscriptions metadata on create", () => {
                 \\"this0_id\\": \\"1\\",
                 \\"this0_actors0_node_name\\": \\"Andrés\\",
                 \\"this0_actors0_node_movies0_node_id\\": \\"6\\",
-                \\"this0_actors0_node_movies0_node_actors0_node_name\\": \\"Thomas\\"
+                \\"this0_actors0_node_movies0_node_actors0_node_name\\": \\"Thomas\\",
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -382,7 +387,8 @@ describe("Subscriptions metadata on create", () => {
                 \\"this0_actors0_node_movies0_node_id\\": \\"6\\",
                 \\"this1_id\\": \\"2\\",
                 \\"this1_actors0_node_name\\": \\"Darrell\\",
-                \\"this1_actors0_node_movies0_node_id\\": \\"8\\"
+                \\"this1_actors0_node_movies0_node_id\\": \\"8\\",
+                \\"callbacks\\": {}
             }"
         `);
     });
@@ -417,7 +423,8 @@ describe("Subscriptions metadata on create", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\"
+                \\"this0_id\\": \\"1\\",
+                \\"callbacks\\": {}
             }"
         `);
     });

@@ -92,7 +92,7 @@ export default async function translateCreate({
         createStrs: string[];
         params: any;
     };
-    const resolvedParams = await callbackBucket.resolveCallbacks();
+    const callbackParams = await callbackBucket.resolveCallbacks();
 
     let replacedProjectionParams: Record<string, unknown> = {};
     let projectionStr: string | undefined;
@@ -235,7 +235,7 @@ export default async function translateCreate({
             ...replacedProjectionParams,
             ...replacedConnectionParams,
             ...replacedInterfaceParams,
-            ...resolvedParams,
+            callbacks: callbackParams,
         },
     ];
 }

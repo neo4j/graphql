@@ -184,6 +184,7 @@ export default async function translateUpdate({
             if (relationField.interface) {
                 const connectAndParams = createConnectAndParams({
                     context,
+                    callbackBucket,
                     parentVar: varName,
                     refNodes,
                     relationField,
@@ -200,6 +201,7 @@ export default async function translateUpdate({
                 refNodes.forEach((refNode) => {
                     const connectAndParams = createConnectAndParams({
                         context,
+                        callbackBucket,
                         parentVar: varName,
                         refNodes: [refNode],
                         relationField,
@@ -289,6 +291,7 @@ export default async function translateUpdate({
                             varName: propertiesName,
                             relationship,
                             operation: "CREATE",
+                            callbackBucket,
                         });
                         createStrs.push(setA[0]);
                         cypherParams = { ...cypherParams, ...setA[1] };
@@ -406,7 +409,7 @@ export default async function translateUpdate({
     const returnStatement = generateUpdateReturnStatement(varName, projStr, context.subscriptionsEnabled);
 
     const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";
-    const resolvedParams = await callbackBucket.resolveCallbacks();
+    const callbackParams = await callbackBucket.resolveCallbacks();
 
     const cypher = [
         ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
@@ -429,8 +432,8 @@ export default async function translateUpdate({
         cypher.filter(Boolean).join("\n"),
         {
             ...cypherParams,
-            ...resolvedParams,
             ...(Object.keys(updateArgs).length ? { [resolveTree.name]: { args: updateArgs } } : {}),
+            callbacks: callbackParams,
         },
     ];
 }
