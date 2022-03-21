@@ -178,7 +178,7 @@ describe("build merge statement", () => {
                 sourceNode: {
                     varName: "this",
                     node: nodeWithAlias,
-                    onCreate: { iri: "new-b", prefLabel: "cert" },
+                    onCreate: { iri: "new-b", prefLabel: ["cert"] },
                 },
                 targetNode: {
                     varName: "that",
