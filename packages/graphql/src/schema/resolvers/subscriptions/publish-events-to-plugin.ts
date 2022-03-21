@@ -46,6 +46,7 @@ function serializeEvent(event: EventMeta): SubscriptionsEvent {
             old: serializeProperties(event.properties.old),
             new: serializeProperties(event.properties.new),
         },
+        typename: event.typename,
     } as SubscriptionsEvent; // Casting here because ts is not smart enough to get the difference between create|update|delete
 }
 

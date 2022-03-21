@@ -20,7 +20,7 @@
 import { SchemaComposer } from "graphql-compose";
 import { Node } from "../../classes";
 import { lowerFirst } from "../../utils/lower-first";
-import { subscribeToCreate, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
+import { createSubscription, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
 
 export function generateSubscriptionTypes({
     schemaComposer,
@@ -62,7 +62,7 @@ export function generateSubscriptionTypes({
                 args: {},
                 // type: nodeCreatedEvent,
                 type: "String",
-                subscribe: subscribeToCreate,
+                subscribe: createSubscription(node),
                 resolve: subscriptionResolve,
             },
             [`${lowerFirstNodeName}Updated`]: {

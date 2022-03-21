@@ -18,6 +18,8 @@
  */
 
 import { GraphQLResolveInfo } from "graphql";
+import Node from "../../../classes/Node";
+import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
 import { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
 
 export type SubscriptionContext = {
@@ -28,6 +30,29 @@ export function subscriptionResolve(payload, args, context, info) {
     return JSON.stringify(payload);
 }
 
-export function subscribeToCreate(_root: any, args: any, context: SubscriptionContext, info: GraphQLResolveInfo) {
-    return context.plugin.pubsub.asyncIterator(["create"]);
+export function createSubscription(node: Node) {
+    return (
+        _root: any,
+        args: any,
+        context: SubscriptionContext,
+        info: GraphQLResolveInfo
+    ): AsyncIterator<SubscriptionsEvent> => {
+        const iterator = context.plugin.pubsub.asyncIterator(["create"]);
+        const iterable: AsyncIterable<SubscriptionsEvent> = iterator[Symbol.asyncIterator]();
+
+        return filterIterable<SubscriptionsEvent>(iterable, (data) => {
+            console.log(data);
+            return data.typename === node.name;
+        });
+    };
+}
+async function* filterIterable<T>(
+    source: AsyncIterable<T>,
+    predicate: (t: T) => boolean | Promise<boolean>
+): AsyncIterator<T> {
+    for await (const item of source) {
+        if (await predicate(item)) {
+            yield item;
+        }
+    }
 }
