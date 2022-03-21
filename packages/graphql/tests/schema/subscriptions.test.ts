@@ -111,10 +111,6 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
-            type MovieCreatedEvent {
-              movie: Movie
-            }
-
             type MovieDeletedEvent {
               movie: Movie
             }
@@ -201,7 +197,7 @@ describe("Subscriptions", () => {
             }
 
             type Subscription {
-              movieCreated: MovieCreatedEvent
+              movieCreated: String
               movieDeleted: MovieDeletedEvent
               movieUpdated: MovieUpdatedEvent
             }

@@ -98,10 +98,14 @@ export const wrapResolver =
 export const wrapSubscription =
     (resolverArgs: WrapResolverArguments) =>
     (next) =>
-    async (root, args, context: unknown, info: GraphQLResolveInfo) => {
-        const subscriptionContext: SubscriptionContext = {
-            plugin: resolverArgs.plugins!.subscriptions!,
-        };
+    async (root, args, context: Record<string, any> = {}, info: GraphQLResolveInfo) => {
+        let subscriptionContext = {}; // SubscriptionContext
+        if (resolverArgs.plugins?.subscriptions) {
+            subscriptionContext = {
+                plugin: resolverArgs.plugins!.subscriptions!,
+            };
+        }
+        return next(root, args, { ...context, ...subscriptionContext }, info);
+
         // TODO: context auth
-        return next(root, args, subscriptionContext, info);
     };
