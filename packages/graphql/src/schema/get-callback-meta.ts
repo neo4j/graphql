@@ -18,16 +18,19 @@
  */
 
 import { DirectiveNode, ArgumentNode, ListValueNode, StringValueNode } from "graphql";
-import { Callback, CallbackOperations } from "../types";
+import { Callback, CallbackOperations, Neo4jGraphQLCallbacks } from "../types";
 
-function getCallbackMeta(directive: DirectiveNode): Callback {
+function getCallbackMeta(directive: DirectiveNode, callbacks?: Neo4jGraphQLCallbacks): Callback {
     const operationsArg = directive.arguments?.find((x) => x.name.value === "operations") as ArgumentNode;
     const nameArg = directive.arguments?.find((x) => x.name.value === "name") as ArgumentNode;
 
     const operationsList = operationsArg.value as ListValueNode;
-
     const operations = operationsList.values.map((value) => (value as StringValueNode).value) as CallbackOperations[];
     const name = (nameArg.value as StringValueNode).value;
+
+    if (typeof (callbacks || {})[name] !== "function") {
+        throw new Error(`Directive callback '${name}' must be of type function`);
+    }
 
     return {
         operations,

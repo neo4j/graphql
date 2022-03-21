@@ -409,9 +409,8 @@ export default async function translateUpdate({
     const returnStatement = generateUpdateReturnStatement(varName, projStr, context.subscriptionsEnabled);
 
     const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";
-    const callbackParams = await callbackBucket.resolveCallbacks();
 
-    const cypher = [
+    let cypher = [
         ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
         matchAndWhereStr,
         updateStr,
@@ -426,10 +425,16 @@ export default async function translateUpdate({
         ...interfaceStrs,
         ...(context.subscriptionsEnabled ? [`WITH ${withVars.join(", ")}`, `UNWIND ${META_CYPHER_VARIABLE} AS m`] : []),
         returnStatement,
-    ];
+    ]
+        .filter(Boolean)
+        .join("\n");
+
+    let callbackParams = {};
+
+    ({ cypher, params: callbackParams } = await callbackBucket.resolveCallbacksAndFilterCypher({ cypher }));
 
     return [
-        cypher.filter(Boolean).join("\n"),
+        cypher,
         {
             ...cypherParams,
             ...(Object.keys(updateArgs).length ? { [resolveTree.name]: { args: updateArgs } } : {}),

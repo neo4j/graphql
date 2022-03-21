@@ -472,7 +472,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
         });
     });
 
-    describe("Callback - Non-required values", () => {
+    describe("Callback - Misc", () => {
         test("should not change the property when returning 'undefined'", async () => {
             const testMovie = generateUniqueType("Movie");
             const string1 = generate({
@@ -607,15 +607,14 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             });
         });
 
-        test("should validate that the callback exists", async () => {
+        test("should have access to parent in callback function", async () => {
             const testMovie = generateUniqueType("Movie");
-
-            const callback = () => null;
+            const callback = (parent) => `${parent.type}-slug`;
 
             const typeDefs = gql`
                 type ${testMovie.name} {
                     id: ID
-                    callback: String @callback(operations: [UPDATE], name: "nonExistingCallback")
+                    callback: String @callback(operations: [UPDATE], name: "callback")
                 }
             `;
 
@@ -643,13 +642,33 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 }
             `;
 
+            const session = driver.session();
+
+            try {
+                await session.run(`
+                    CREATE (:${testMovie.name} { id: "${movieId}", callback: "test" })
+                `);
+            } finally {
+                await session.close();
+            }
+
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver },
             });
 
-            expect(result.errors).toContain("Directive callback 'nonExistingCallback' must be of type function");
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            callback: `${testMovie.name}-slug`,
+                        },
+                    ],
+                },
+            });
         });
     });
 });

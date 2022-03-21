@@ -92,7 +92,6 @@ export default async function translateCreate({
         createStrs: string[];
         params: any;
     };
-    const callbackParams = await callbackBucket.resolveCallbacks();
 
     let replacedProjectionParams: Record<string, unknown> = {};
     let projectionStr: string | undefined;
@@ -219,17 +218,23 @@ export default async function translateCreate({
     const returnStatement = generateCreateReturnStatement(projectionStr, context.subscriptionsEnabled);
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
-    const cypher = filterTruthy([
+    let cypher = filterTruthy([
         `${createStrs.join("\n")}`,
         projectionWithStr,
         authCalls,
         ...replacedConnectionStrs,
         ...replacedInterfaceStrs,
         returnStatement,
-    ]);
+    ])
+        .filter(Boolean)
+        .join("\n");
+
+    let callbackParams = {};
+
+    ({ cypher, params: callbackParams } = await callbackBucket.resolveCallbacksAndFilterCypher({ cypher }));
 
     return [
-        cypher.filter(Boolean).join("\n"),
+        cypher,
         {
             ...params,
             ...replacedProjectionParams,

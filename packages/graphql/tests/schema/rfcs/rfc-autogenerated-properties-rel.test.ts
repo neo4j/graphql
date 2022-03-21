@@ -23,6 +23,29 @@ import { lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("schema/rfc/autogenerate-properties-rel", () => {
+    test("Callback - existance", async () => {
+        const typeDefs = gql`
+            type Movie {
+                id: ID
+                genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
+            }
+
+            interface RelProperties {
+                id: ID!
+                callback1: String! @callback(operations: [CREATE], name: "callback4")
+            }
+
+            type Genre {
+                id: ID!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow("Directive callback 'callback4' must be of type function");
+    });
     test("Callback - String", async () => {
         const callback1 = () => "random-string";
         const callback2 = () => "random-string";

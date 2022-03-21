@@ -23,6 +23,21 @@ import { lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("schema/rfc/autogenerate-properties-node", () => {
+    test("Callback - existance", async () => {
+        const typeDefs = gql`
+            type Movie {
+                id: ID
+                callback1: String! @callback(operations: [CREATE], name: "callback1")
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow("Directive callback 'callback1' must be of type function");
+    });
+
     test("Callback - String", async () => {
         const callback1 = () => "random-string";
         const callback2 = () => "random-string";

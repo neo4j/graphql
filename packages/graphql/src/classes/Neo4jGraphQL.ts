@@ -174,6 +174,7 @@ class Neo4jGraphQL {
                 enableRegex: this.config?.enableRegex,
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
+                callbacks: this.config.callbacks,
             });
 
             this._nodes = nodes;

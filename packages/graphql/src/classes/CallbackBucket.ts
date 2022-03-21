@@ -22,6 +22,7 @@ import { Context, Neo4jGraphQLCallbacks } from "../types";
 export interface Callback {
     functionName: string;
     paramName: string;
+    parent?: any;
 }
 
 export class CallbackBucket {
@@ -37,23 +38,31 @@ export class CallbackBucket {
         this.callbacks.push(callback);
     }
 
-    public async resolveCallbacks(): Promise<Record<string, unknown>> {
+    public async resolveCallbacksAndFilterCypher(options: {
+        cypher: string;
+    }): Promise<{ cypher: string; params: Record<string, unknown> }> {
         const params: Record<string, unknown> = {};
+        let cypher = options.cypher;
 
         await Promise.all(
             this.callbacks.map(async (cb) => {
-                const callbackFunction = (this.context?.callbacks as Neo4jGraphQLCallbacks)[
-                    cb.functionName
-                ] as () => Promise<any>;
+                const callbackFunction = (this.context?.callbacks as Neo4jGraphQLCallbacks)[cb.functionName] as ({
+                    parent: any,
+                }) => Promise<any>;
 
-                if (typeof callbackFunction !== "function") {
-                    throw new Error(`Directive callback '${cb.functionName}' must be of type function`);
+                const param = await callbackFunction({ parent: cb.parent });
+
+                if (param === undefined) {
+                    cypher = cypher
+                        .split("\n")
+                        .filter((line) => !line.includes(`$callbacks.${cb.paramName}`))
+                        .join("\n");
                 }
 
-                params[cb.paramName] = await callbackFunction();
+                params[cb.paramName] = param;
             })
         );
 
-        return params;
+        return { cypher, params };
     }
 }

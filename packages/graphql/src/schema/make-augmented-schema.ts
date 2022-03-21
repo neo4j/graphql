@@ -32,7 +32,7 @@ import {
 import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
-import { BaseField } from "../types";
+import { BaseField, Neo4jGraphQLCallbacks } from "../types";
 import {
     aggregateResolver,
     createResolver,
@@ -88,7 +88,13 @@ function makeAugmentedSchema(
         enableRegex,
         skipValidateTypeDefs,
         generateSubscriptions,
-    }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean; generateSubscriptions?: boolean } = {}
+        callbacks,
+    }: {
+        enableRegex?: boolean;
+        skipValidateTypeDefs?: boolean;
+        generateSubscriptions?: boolean;
+        callbacks?: Neo4jGraphQLCallbacks;
+    } = {}
 ): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers: IResolvers } {
     const document = getDocument(typeDefs);
 
@@ -136,7 +142,7 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const getNodesResult = getNodes(definitionNodes);
+    const getNodesResult = getNodes(definitionNodes, { callbacks });
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
 
@@ -183,6 +189,7 @@ function makeAugmentedSchema(
             scalars: scalarTypes,
             unions: unionTypes,
             obj: relationship,
+            callbacks,
         });
 
         if (!pointInTypeDefs) {
@@ -264,6 +271,7 @@ function makeAugmentedSchema(
             scalars: scalarTypes,
             unions: unionTypes,
             obj: interfaceRelationship,
+            callbacks,
         });
 
         if (!pointInTypeDefs) {
@@ -741,6 +749,7 @@ function makeAugmentedSchema(
                 interfaces: interfaceTypes,
                 unions: unionTypes,
                 objects: objectTypes,
+                callbacks,
             });
 
             const objectComposeFields = objectFieldsToComposeFields([
@@ -778,6 +787,7 @@ function makeAugmentedSchema(
             interfaces: interfaceTypes,
             unions: unionTypes,
             objects: objectTypes,
+            callbacks,
         });
 
         const baseFields: BaseField[][] = Object.values(objectFields);

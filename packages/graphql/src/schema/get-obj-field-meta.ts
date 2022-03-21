@@ -56,6 +56,7 @@ import {
     TimeStampOperations,
     ConnectionField,
     ComputedField,
+    Neo4jGraphQLCallbacks,
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
@@ -84,6 +85,7 @@ function getObjFieldMeta({
     scalars,
     unions,
     enums,
+    callbacks,
 }: {
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
@@ -91,6 +93,7 @@ function getObjFieldMeta({
     unions: UnionTypeDefinitionNode[];
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
+    callbacks?: Neo4jGraphQLCallbacks;
 }) {
     const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
     const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
@@ -446,7 +449,7 @@ function getObjFieldMeta({
                     };
 
                     if (callbackDirective) {
-                        const callback = getCallbackMeta(callbackDirective);
+                        const callback = getCallbackMeta(callbackDirective, callbacks);
                         primitiveField.callback = callback;
                     }
 
