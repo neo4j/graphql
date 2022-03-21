@@ -11649,7 +11649,7 @@ __metadata:
     "@neo4j/graphql": ^3.0.1
     apollo-server: ^3.6.1
     graphql: ^16.2.0
-    neo4j-driver: ^4.2.0
+    neo4j-driver: 4.4.4
   languageName: unknown
   linkType: soft
 
@@ -12065,7 +12065,7 @@ __metadata:
     graphql: 16.3.0
     jest: 27.5.1
     jsonwebtoken: 8.5.1
-    neo4j-driver: 4.4.3
+    neo4j-driver: 4.4.4
     nodemon: 2.0.6
     randomstring: 1.1.5
     ts-jest: 27.1.3
@@ -12074,28 +12074,6 @@ __metadata:
     typescript: 4.2.4
   languageName: unknown
   linkType: soft
-
-"neo4j-driver-bolt-connection@npm:^4.4.2":
-  version: 4.4.2
-  resolution: "neo4j-driver-bolt-connection@npm:4.4.2"
-  dependencies:
-    buffer: ^6.0.3
-    neo4j-driver-core: ^4.4.2
-    string_decoder: ^1.3.0
-  checksum: 8d37e404f8a357c70569f2b312e4d20701dde991aee8f43da97e29ec2aec6c4ba700aa411a8fc7ca6f332ffc1e7e4ee074624d0397d6ac5eae95037c72cf4add
-  languageName: node
-  linkType: hard
-
-"neo4j-driver-bolt-connection@npm:^4.4.3":
-  version: 4.4.3
-  resolution: "neo4j-driver-bolt-connection@npm:4.4.3"
-  dependencies:
-    buffer: ^6.0.3
-    neo4j-driver-core: ^4.4.3
-    string_decoder: ^1.3.0
-  checksum: 6ef6e15d796d00b2d1f1ba68d429b6908b58c8e81a259bf74f39283bd753954e38327dd6550596e9f38f25776f366b4baeb0b903377c48776f5a346322d61213
-  languageName: node
-  linkType: hard
 
 "neo4j-driver-bolt-connection@npm:^4.4.4":
   version: 4.4.4
@@ -12108,36 +12086,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo4j-driver-core@npm:^4.4.2":
-  version: 4.4.2
-  resolution: "neo4j-driver-core@npm:4.4.2"
-  checksum: ac612e33ae9733f5c9433d9186c55bbaa221542bc18d1ab9e9d7eda3c92151571410fc25a9f64c54c09eaf66c7f2e6a06f3f8de410ce1e3536e4943ca1ac24ab
-  languageName: node
-  linkType: hard
-
-"neo4j-driver-core@npm:^4.4.3":
-  version: 4.4.3
-  resolution: "neo4j-driver-core@npm:4.4.3"
-  checksum: 954cc3f94a8662c90f6025e60955b60cd5ed1840897568394893ec80ed9fd8e7ecc6cf30a7cb39dfa3c61c60589ccad486897d5fdd1716da08e69dafb4df8e5b
-  languageName: node
-  linkType: hard
-
 "neo4j-driver-core@npm:^4.4.4":
   version: 4.4.4
   resolution: "neo4j-driver-core@npm:4.4.4"
   checksum: 9db41ecd830d810918ea73c2065a046388a18997551d1a1087a57bff038f05e49cd8205bbd74e4feaf62d18fbc86a44ad72c7f0bf8ed106b179bf53b59c2f07f
-  languageName: node
-  linkType: hard
-
-"neo4j-driver@npm:4.4.3":
-  version: 4.4.3
-  resolution: "neo4j-driver@npm:4.4.3"
-  dependencies:
-    "@babel/runtime": ^7.5.5
-    neo4j-driver-bolt-connection: ^4.4.3
-    neo4j-driver-core: ^4.4.3
-    rxjs: ^6.6.3
-  checksum: 933167fe0726fefec58ebf92542779cba93f7d46755a41f854e5e581c2cdcf32373437f6c10910d2082e2b75380915e21661dcf99de03b814c6dbc4157cd5b61
   languageName: node
   linkType: hard
 
@@ -12150,18 +12102,6 @@ __metadata:
     neo4j-driver-core: ^4.4.4
     rxjs: ^6.6.3
   checksum: 11b7607feb5434c6941d05652f00646ba06c87841e8a5d090d51ac491a5904f3e4dcad49cf0e6057e17dc509a5785468a18d3f57f0e7ec95e8a34fa77a10c424
-  languageName: node
-  linkType: hard
-
-"neo4j-driver@npm:^4.2.0":
-  version: 4.4.2
-  resolution: "neo4j-driver@npm:4.4.2"
-  dependencies:
-    "@babel/runtime": ^7.5.5
-    neo4j-driver-bolt-connection: ^4.4.2
-    neo4j-driver-core: ^4.4.2
-    rxjs: ^6.6.3
-  checksum: b252de02634ba62cade71396b4db17f8d76c07448b4ed6afc60ef85d95b23d6350791104db2a0275b25d78e89b4c2c58a310a66ee3d4576131d2255c9f6f594c
   languageName: node
   linkType: hard
 
