@@ -471,4 +471,185 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             });
         });
     });
+
+    describe("Callback - Non-required values", () => {
+        test("should not change the property when returning 'undefined'", async () => {
+            const testMovie = generateUniqueType("Movie");
+            const string1 = generate({
+                charset: "alphabetic",
+            });
+
+            const callback = () => undefined;
+
+            const typeDefs = gql`
+                type ${testMovie.name} {
+                    id: ID
+                    callback: String @callback(operations: [UPDATE], name: "callback")
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                config: {
+                    callbacks: {
+                        callback,
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                mutation {
+                    ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.plural} {
+                            id
+                            callback
+                        }
+                    }
+                }
+            `;
+
+            const session = driver.session();
+
+            try {
+                await session.run(`
+                    CREATE (:${testMovie.name} { id: "${movieId}", callback: "${string1}" })
+                `);
+            } finally {
+                await session.close();
+            }
+            const result = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: mutation,
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            callback: string1,
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("should remove property when returning 'null'", async () => {
+            const testMovie = generateUniqueType("Movie");
+            const string1 = generate({
+                charset: "alphabetic",
+            });
+
+            const callback = () => null;
+
+            const typeDefs = gql`
+                type ${testMovie.name} {
+                    id: ID
+                    callback: String @callback(operations: [UPDATE], name: "callback")
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                config: {
+                    callbacks: {
+                        callback,
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                mutation {
+                    ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.plural} {
+                            id
+                            callback
+                        }
+                    }
+                }
+            `;
+
+            const session = driver.session();
+
+            try {
+                await session.run(`
+                    CREATE (:${testMovie.name} { id: "${movieId}", callback: "${string1}" })
+                `);
+            } finally {
+                await session.close();
+            }
+            const result = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: mutation,
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            callback: null,
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("should validate that the callback exists", async () => {
+            const testMovie = generateUniqueType("Movie");
+
+            const callback = () => null;
+
+            const typeDefs = gql`
+                type ${testMovie.name} {
+                    id: ID
+                    callback: String @callback(operations: [UPDATE], name: "nonExistingCallback")
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                config: {
+                    callbacks: {
+                        callback,
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                mutation {
+                    ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.plural} {
+                            id
+                            callback
+                        }
+                    }
+                }
+            `;
+
+            const result = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: mutation,
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toContain("Directive callback 'nonExistingCallback' must be of type function");
+        });
+    });
 });
