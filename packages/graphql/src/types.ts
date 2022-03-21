@@ -25,6 +25,8 @@ import { Node, Relationship } from "./classes";
 import { RelationshipQueryDirectionOption } from "./constants";
 import { SubscriptionsEvent } from "./subscriptions/subscriptions-event";
 
+export { Node } from "./classes";
+
 export type DriverConfig = {
     database?: string;
     bookmarks?: string | string[];
