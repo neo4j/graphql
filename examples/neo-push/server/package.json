@@ -22,7 +22,7 @@
         "express": "4.17.1",
         "graphql": "16.3.0",
         "jsonwebtoken": "8.5.1",
-        "neo4j-driver": "4.4.3"
+        "neo4j-driver": "4.4.4"
     },
     "devDependencies": {
         "@faker-js/faker": "^6.0.0-alpha.5",
