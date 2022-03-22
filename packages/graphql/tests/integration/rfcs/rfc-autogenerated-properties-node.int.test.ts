@@ -607,14 +607,15 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             });
         });
 
-        test("should have access to parent in callback function", async () => {
+        test("should have access to parent in callback function for CREATE", async () => {
             const testMovie = generateUniqueType("Movie");
-            const callback = (parent) => `${parent.type}-slug`;
+            const callback = (parent) => `${parent.title}-slug`;
 
             const typeDefs = gql`
                 type ${testMovie.name} {
-                    id: ID
-                    callback: String @callback(operations: [UPDATE], name: "callback")
+                    id: ID!
+                    title: String!
+                    slug: String @callback(operations: [CREATE], name: "callback")
                 }
             `;
 
@@ -627,16 +628,82 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 },
             });
 
+            const movieTitle = generate({
+                charset: "alphabetic",
+            });
+
             const movieId = generate({
                 charset: "alphabetic",
             });
 
             const mutation = `
                 mutation {
-                    ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                    ${testMovie.operations.create}(input: [{ id: "${movieId}", title: "${movieTitle}" }]) {
                         ${testMovie.plural} {
                             id
-                            callback
+                            title
+                            slug
+                        }
+                    }
+                }
+            `;
+
+            const result = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: mutation,
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            title: movieTitle,
+                            slug: `${movieTitle}-slug`,
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("should have access to parent in callback function for UPDATE", async () => {
+            const testMovie = generateUniqueType("Movie");
+            const callback = (parent) => `${parent.title}-slug`;
+
+            const typeDefs = gql`
+                type ${testMovie.name} {
+                    id: ID!
+                    title: String!
+                    slug: String @callback(operations: [UPDATE], name: "callback")
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                config: {
+                    callbacks: {
+                        callback,
+                    },
+                },
+            });
+
+            const movieTitle = generate({
+                charset: "alphabetic",
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                mutation {
+                    ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}", title: "${movieTitle}" }) {
+                        ${testMovie.plural} {
+                            id
+                            title
+                            slug
                         }
                     }
                 }
@@ -646,7 +713,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
 
             try {
                 await session.run(`
-                    CREATE (:${testMovie.name} { id: "${movieId}", callback: "test" })
+                    CREATE (:${testMovie.name} { id: "${movieId}" })
                 `);
             } finally {
                 await session.close();
@@ -664,7 +731,8 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                     [testMovie.plural]: [
                         {
                             id: movieId,
-                            callback: `${testMovie.name}-slug`,
+                            title: movieTitle,
+                            slug: `${movieTitle}-slug`,
                         },
                     ],
                 },

@@ -372,7 +372,7 @@ function createUpdateAndParams({
 
                             const createAndParams = createCreateAndParams({
                                 context,
-                                callbackBucket: new CallbackBucket(context),
+                                callbackBucket,
                                 node: refNode,
                                 input: create.node,
                                 varName: nodeName,
@@ -464,6 +464,7 @@ function createUpdateAndParams({
             callbackBucket.addCallback({
                 functionName: field.callback?.name,
                 paramName,
+                parent: updateInput,
             });
 
             res.strs.push(`SET ${varName}.${field.dbPropertyName} = $callbacks.${paramName}`);

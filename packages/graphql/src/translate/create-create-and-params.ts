@@ -259,6 +259,7 @@ function createCreateAndParams({
         callbackBucket.addCallback({
             functionName: field.callback?.name,
             paramName,
+            parent: input,
         });
 
         initial.push(`SET ${varName}.${field.dbPropertyName} = $callbacks.${paramName}`);

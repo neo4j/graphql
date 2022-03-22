@@ -831,4 +831,237 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
             });
         });
     });
+
+    describe("Callback - Misc", () => {
+        test("should have access to parent in callback function for CREATE", async () => {
+            const testMovie = generateUniqueType("Movie");
+            const testGenre = generateUniqueType("Genre");
+            const callback = (parent) => `${parent.title}-slug`;
+
+            const typeDefs = gql`
+                type ${testMovie.name} {
+                    id: ID
+                    genres: [${testGenre.name}!]! @relationship(
+                        type: "IN_GENRE",
+                        direction: OUT,
+                        properties: "RelProperties"
+                    )
+                }
+
+                interface RelProperties {
+                    id: ID!
+                    title: String!
+                    slug: String! @callback(operations: [CREATE], name: "callback")
+                }
+
+                type ${testGenre.name} {
+                    id: ID!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                config: {
+                    callbacks: {
+                        callback,
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const movieTitle = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                mutation {
+                    ${testMovie.operations.create}(input: [
+                        {
+                            id: "${movieId}",
+                            genres: {
+                                create: [
+                                    {
+                                        node: {
+                                            id: "${genreId}",
+                                        },
+                                        edge: {
+                                            id: "${relId}",
+                                            title: "${movieTitle}"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]) {
+                        ${testMovie.plural} {
+                            id
+                            genresConnection {
+                                edges {
+                                    title
+                                    slug
+                                    node {
+                                        id
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const result = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: mutation,
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        title: movieTitle,
+                                        slug: `${movieTitle}-slug`,
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+
+        test("should have access to parent in callback function for UPDATE", async () => {
+            const testMovie = generateUniqueType("Movie");
+            const testGenre = generateUniqueType("Genre");
+            const callback = (parent) => `${parent.title}-slug`;
+
+            const typeDefs = gql`
+                type ${testMovie.name} {
+                    id: ID
+                    genres: [${testGenre.name}!]! @relationship(
+                        type: "IN_GENRE",
+                        direction: OUT,
+                        properties: "RelProperties"
+                    )
+                }
+
+                interface RelProperties {
+                    id: ID!
+                    title: String!
+                    slug: String! @callback(operations: [UPDATE], name: "callback")
+                }
+
+                type ${testGenre.name} {
+                    id: ID!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                config: {
+                    callbacks: {
+                        callback,
+                    },
+                },
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const movieTitle = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+            const relId = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+            mutation {
+                ${testMovie.operations.update}(
+                    where: { id: "${movieId}" }, 
+                    update: { 
+                        genres: {
+                            update: {
+                                edge: {
+                                    id: "${relId}"
+                                    title: "${movieTitle}"
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    ${testMovie.plural} {
+                        id
+                        genresConnection {
+                            edges {
+                                title
+                                slug
+                                node {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+            const session = driver.session();
+
+            try {
+                await session.run(`
+                CREATE (:${testMovie.name} { id: "${movieId}" })-[:IN_GENRE { id: "${relId}" }]->(:${testGenre.name} { id: "${genreId}" })
+            `);
+            } finally {
+                await session.close();
+            }
+
+            const result = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: mutation,
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.update]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            genresConnection: {
+                                edges: [
+                                    {
+                                        title: movieTitle,
+                                        slug: `${movieTitle}-slug`,
+                                        node: {
+                                            id: genreId,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+        });
+    });
 });

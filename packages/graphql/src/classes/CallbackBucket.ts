@@ -22,7 +22,7 @@ import { Context, Neo4jGraphQLCallbacks } from "../types";
 export interface Callback {
     functionName: string;
     paramName: string;
-    parent?: any;
+    parent?: Record<string, unknown>;
 }
 
 export class CallbackBucket {
@@ -46,11 +46,10 @@ export class CallbackBucket {
 
         await Promise.all(
             this.callbacks.map(async (cb) => {
-                const callbackFunction = (this.context?.callbacks as Neo4jGraphQLCallbacks)[cb.functionName] as ({
-                    parent: any,
-                }) => Promise<any>;
-
-                const param = await callbackFunction({ parent: cb.parent });
+                const callbackFunction = (this.context?.callbacks as Neo4jGraphQLCallbacks)[cb.functionName] as (
+                    args?: Record<string, unknown>
+                ) => Promise<any>;
+                const param = await callbackFunction(cb.parent);
 
                 if (param === undefined) {
                     cypher = cypher

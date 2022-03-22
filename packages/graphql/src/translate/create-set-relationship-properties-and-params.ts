@@ -72,6 +72,7 @@ function createSetRelationshipPropertiesAndParams({
         callbackBucket.addCallback({
             functionName: field.callback?.name,
             paramName,
+            parent: properties,
         });
 
         strs.push(`SET ${varName}.${field.dbPropertyName} = $callbacks.${paramName}`);
