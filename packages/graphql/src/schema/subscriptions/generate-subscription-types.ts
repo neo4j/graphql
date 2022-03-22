@@ -34,42 +34,42 @@ export function generateSubscriptionTypes({
     nodes.forEach((node) => {
         const composeNode = schemaComposer.getOTC(node.name);
 
-        const lowerFirstNodeName = lowerFirst(node.name);
+        const subscribeOperation = node.rootTypeFieldNames.subscribe;
 
         const nodeCreatedEvent = schemaComposer.createObjectTC({
             name: `${node.name}CreatedEvent`,
             fields: {
-                [lowerFirstNodeName]: composeNode,
+                [subscribeOperation.created]: composeNode,
             },
         });
 
         const nodeUpdatedEvent = schemaComposer.createObjectTC({
             name: `${node.name}UpdatedEvent`,
             fields: {
-                [lowerFirstNodeName]: composeNode,
+                [subscribeOperation.updated]: composeNode,
             },
         });
 
         const nodeDeletedEvent = schemaComposer.createObjectTC({
             name: `${node.name}DeletedEvent`,
             fields: {
-                [lowerFirstNodeName]: composeNode,
+                [subscribeOperation.deleted]: composeNode,
             },
         });
 
         subscriptionComposer.addFields({
-            [`${lowerFirstNodeName}Created`]: {
+            [subscribeOperation.created]: {
                 args: {},
                 // type: nodeCreatedEvent,
                 type: "String",
                 subscribe: createSubscription(node),
                 resolve: subscriptionResolve,
             },
-            [`${lowerFirstNodeName}Updated`]: {
+            [subscribeOperation.updated]: {
                 args: {},
                 type: nodeUpdatedEvent,
             },
-            [`${lowerFirstNodeName}Deleted`]: {
+            [subscribeOperation.deleted]: {
                 args: {},
                 type: nodeDeletedEvent,
             },

@@ -21,15 +21,15 @@ import { on } from "events";
 import { GraphQLResolveInfo } from "graphql";
 import Node from "../../../classes/Node";
 import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
-import { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
+import { Context, Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
 
 export type SubscriptionContext = {
     plugin: Neo4jGraphQLSubscriptionsPlugin;
 };
 
-export function subscriptionResolve(payload, args, context, info) {
-    return JSON.stringify(payload);
+export function subscriptionResolve(payload: [SubscriptionsEvent], args, context: Context, info: GraphQLResolveInfo) {
+    return JSON.stringify(payload[0]);
 }
 
 export function createSubscription(node: Node) {

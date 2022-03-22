@@ -95,6 +95,11 @@ export type RootTypeFieldNames = {
     update: string;
     delete: string;
     aggregate: string;
+    subscribe: {
+        created: string;
+        updated: string;
+        deleted: string;
+    };
 };
 
 export type MutationResponseTypeNames = {
@@ -199,6 +204,11 @@ class Node extends GraphElement {
             update: `update${pascalCasePlural}`,
             delete: `delete${pascalCasePlural}`,
             aggregate: `${this.plural}Aggregate`,
+            subscribe: {
+                created: `${this.plural}Created`,
+                updated: `${this.plural}Updated`,
+                deleted: `${this.plural}Deleted`,
+            },
         };
     }
 
