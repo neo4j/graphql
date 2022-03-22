@@ -50,17 +50,15 @@ function getNextPromise<T>(asyncIterator: AsyncIterator<T>, filterFn: FilterFn<T
                         resolve(payload);
                         return;
                     }
-                    Promise.resolve(filterFn(payload.value))
-                        // .catch(() => false) // We ignore errors from filter function
-                        .then((filterResult) => {
-                            if (filterResult === true) {
-                                resolve(payload);
-                                return;
-                            }
-                            // Skip the current value and wait for the next one
-                            inner();
+                    Promise.resolve(filterFn(payload.value)).then((filterResult) => {
+                        if (filterResult === true) {
+                            resolve(payload);
                             return;
-                        });
+                        }
+                        // Skip the current value and wait for the next one
+                        inner();
+                        return;
+                    });
                 })
                 .catch((err) => {
                     reject(err);
