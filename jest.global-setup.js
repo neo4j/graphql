@@ -25,7 +25,7 @@ module.exports = async function globalSetup() {
         await session.writeTransaction((tx) => tx.run(cypher));
         console.log("\nSETUP DONE"); // eslint-disable-line no-console
     } catch (err) {
-        throw new Error(`Setup failure on neo4j @ ${NEO_URL} Error: ${err.message}`);
+        console.log(`Setup failure on neo4j @ ${NEO_URL}, cypher: "${cypher}", Error: ${err.message}`); // eslint-disable-line no-console
     } finally {
         if (session) session.close()
         driver.close()
