@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { on } from "events";
 import { GraphQLResolveInfo } from "graphql";
 import Node from "../../../classes/Node";
 import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
@@ -37,9 +38,9 @@ export function createSubscription(node: Node) {
         context: SubscriptionContext,
         info: GraphQLResolveInfo
     ): AsyncIterator<SubscriptionsEvent> => {
-        const iterator = context.plugin.pubsub.asyncIterator(["create"]);
-        const iterable: AsyncIterable<SubscriptionsEvent> = iterator[Symbol.asyncIterator]();
-
+        // const iterator = context.plugin.pubsub.asyncIterator(["create"]);
+        // const iterable: AsyncIterable<SubscriptionsEvent> = iterator[Symbol.asyncIterator]();
+        const iterable = on(context.plugin.events, "create");
         return filterIterable<SubscriptionsEvent>(iterable, (data) => {
             console.log(data);
             return data.typename === node.name;

@@ -345,16 +345,8 @@ export interface Neo4jGraphQLAuthPlugin {
     decode<T>(token: string): Promise<T | undefined>;
 }
 
-/** based of graphql-subscriptions */
-export interface PubSubEngine {
-    publish(triggerName: string, payload: any): Promise<void>;
-    unsubscribe(subId: number): void;
-    subscribe<T>(triggerName: string, onMessage: (t: T) => void, options?: Object): Promise<number> | undefined;
-    asyncIterator<T>(triggers: string | string[]): AsyncIterator<T>;
-}
-
 export interface Neo4jGraphQLSubscriptionsPlugin {
-    pubsub: PubSubEngine;
+    events: EventEmitter;
 
     publish(eventMeta: SubscriptionsEvent): Promise<void>;
 }
