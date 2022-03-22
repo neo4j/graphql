@@ -22,38 +22,29 @@ import { GraphQLResolveInfo } from "graphql";
 import Node from "../../../classes/Node";
 import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
 import { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
+import { filterAsyncIterator } from "./filter-async-iterator";
 
 export type SubscriptionContext = {
     plugin: Neo4jGraphQLSubscriptionsPlugin;
 };
 
 export function subscriptionResolve(payload, args, context, info) {
+    console.log("RESOLVE");
     return JSON.stringify(payload);
 }
 
 export function createSubscription(node: Node) {
     return (
         _root: any,
-        args: any,
+        _args: any,
         context: SubscriptionContext,
-        info: GraphQLResolveInfo
-    ): AsyncIterator<SubscriptionsEvent> => {
-        // const iterator = context.plugin.pubsub.asyncIterator(["create"]);
-        // const iterable: AsyncIterable<SubscriptionsEvent> = iterator[Symbol.asyncIterator]();
-        const iterable = on(context.plugin.events, "create");
-        return filterIterable<SubscriptionsEvent>(iterable, (data) => {
-            console.log(data);
-            return data.typename === node.name;
+        _info: GraphQLResolveInfo
+    ): AsyncIterator<[SubscriptionsEvent]> => {
+        const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, "create");
+
+        return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
+            // TODO: where
+            return data[0].typename === node.name;
         });
     };
-}
-async function* filterIterable<T>(
-    source: AsyncIterable<T>,
-    predicate: (t: T) => boolean | Promise<boolean>
-): AsyncIterator<T> {
-    for await (const item of source) {
-        if (await predicate(item)) {
-            yield item;
-        }
-    }
 }
