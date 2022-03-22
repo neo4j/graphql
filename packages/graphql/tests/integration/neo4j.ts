@@ -57,18 +57,18 @@ class Neo4j {
             await this.driver.verifyConnectivity({ database: INT_TEST_DB_NAME });
             this.hasIntegrationTestDb = true;
         } catch (error: any) {
-            const errMsg = `Unable to get a routing table for database ${INT_TEST_DB_NAME} because this database does not exist`;
-            if (error instanceof Error && error.message.includes(errMsg)) {
-                try {
-                    await this.driver.verifyConnectivity();
-                } catch (err: any) {
-                    throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${err.message}`);
-                }
-            } else {
-                throw new Error(
-                    `Could not connect to neo4j @ ${NEO_URL}, database ${INT_TEST_DB_NAME}, Error: ${error.message}`
-                );
-            }
+            // const errMsg = `Unable to get a routing table for database ${INT_TEST_DB_NAME} because this database does not exist`;
+            // if (error instanceof Error && error.message.includes(errMsg)) {
+            //     try {
+            //         await this.driver.verifyConnectivity();
+            //     } catch (err: any) {
+            //         throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${err.message}`);
+            //     }
+            // } else {
+            throw new Error(
+                `Could not connect to neo4j @ ${NEO_URL}, database ${INT_TEST_DB_NAME}, Error: ${error.message}`
+            );
+            // }
         }
 
         return this.driver;
