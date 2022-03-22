@@ -22,12 +22,13 @@ import { graphql, GraphQLSchema } from "graphql";
 import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j, { getDriverContextValues, getSession } from "./neo4j";
+import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
 const testLabel = generate({ charset: "alphabetic" });
 
 describe("fragments", () => {
+    let neo4j: Neo4j;
     let driver: Driver;
     let schema: GraphQLSchema;
 
@@ -83,8 +84,9 @@ describe("fragments", () => {
     const seriesScreenTime = faker.datatype.number();
 
     beforeAll(async () => {
-        driver = await neo4j();
-        const session = await getSession();
+        neo4j = new Neo4j();
+        driver = await neo4j.connect();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         schema = await neoSchema.getSchema();
@@ -110,7 +112,7 @@ describe("fragments", () => {
     });
 
     afterAll(async () => {
-        const session = await getSession();
+        const session = await neo4j.getSession();
         await session.run(`MATCH (node:${testLabel}) DETACH DELETE node`);
         await driver.close();
     });
@@ -130,7 +132,7 @@ describe("fragments", () => {
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
-            contextValue: getDriverContextValues(),
+            contextValue: neo4j.getDriverContextValues(),
             variableValues: { actorName },
         });
 
@@ -161,7 +163,7 @@ describe("fragments", () => {
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
-            contextValue: getDriverContextValues(),
+            contextValue: neo4j.getDriverContextValues(),
             variableValues: { actorName },
         });
 
@@ -204,7 +206,7 @@ describe("fragments", () => {
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
-            contextValue: getDriverContextValues(),
+            contextValue: neo4j.getDriverContextValues(),
             variableValues: { actorName },
         });
 

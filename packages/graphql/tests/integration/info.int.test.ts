@@ -20,14 +20,16 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j, { getDriverContextValues, getSession } from "./neo4j";
+import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
 describe("info", () => {
+    let neo4j: Neo4j;
     let driver: Driver;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.connect();
     });
 
     afterAll(async () => {
@@ -35,7 +37,7 @@ describe("info", () => {
     });
 
     test("should return info from a create mutation", async () => {
-        const session = await getSession();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -80,7 +82,7 @@ describe("info", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { title, name },
-                contextValue: getDriverContextValues(session),
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -95,7 +97,7 @@ describe("info", () => {
     });
 
     test("should return info from a delete mutation", async () => {
-        const session = await getSession();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {
@@ -122,7 +124,7 @@ describe("info", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: getDriverContextValues(session),
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -134,7 +136,7 @@ describe("info", () => {
     });
 
     test("should return info from an update mutation", async () => {
-        const session = await getSession();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {
@@ -166,7 +168,7 @@ describe("info", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: getDriverContextValues(session),
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(gqlResult.errors).toBeFalsy();

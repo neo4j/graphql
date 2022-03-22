@@ -20,14 +20,16 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j, { getDriverContextValues, getSession } from "./neo4j";
+import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
 describe("find", () => {
+    let neo4j: Neo4j;
     let driver: Driver;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.connect();
     });
 
     afterAll(async () => {
@@ -35,7 +37,7 @@ describe("find", () => {
     });
 
     test("should find Movie by id", async () => {
-        const session = await getSession();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -78,7 +80,7 @@ describe("find", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: getDriverContextValues(session),
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(result.errors).toBeFalsy();
@@ -90,7 +92,7 @@ describe("find", () => {
     });
 
     test("should find Move by id and limit", async () => {
-        const session = await getSession();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -131,7 +133,7 @@ describe("find", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: getDriverContextValues(session),
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(result.errors).toBeFalsy();
@@ -143,7 +145,7 @@ describe("find", () => {
     });
 
     test("should find Movie IN ids", async () => {
-        const session = await getSession();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -190,7 +192,7 @@ describe("find", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { ids: [id1, id2, id3] },
-                contextValue: getDriverContextValues(session),
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(result.errors).toBeFalsy();
@@ -204,7 +206,7 @@ describe("find", () => {
     });
 
     test("should find Movie IN ids with one other param", async () => {
-        const session = await getSession();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -255,7 +257,7 @@ describe("find", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { ids: [id1, id2, id3], title },
-                contextValue: getDriverContextValues(session),
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(result.errors).toBeFalsy();
@@ -270,7 +272,7 @@ describe("find", () => {
     });
 
     test("should find Movie IN id and many Movie.actor IN id", async () => {
-        const session = await getSession();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -347,7 +349,7 @@ describe("find", () => {
                     movieIds: [movieId1, movieId2, movieId3],
                     actorIds: [actorId1, actorId2, actorId3],
                 },
-                contextValue: getDriverContextValues(session),
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(result.errors).toBeFalsy();
@@ -409,7 +411,7 @@ describe("find", () => {
     });
 
     test("should find Movie and populate nested cypher query", async () => {
-        const session = await getSession();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -485,7 +487,7 @@ describe("find", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { movieIds: [movieId1, movieId2, movieId3], actorIds: [actorId1, actorId2, actorId3] },
-                contextValue: getDriverContextValues(session),
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(result.errors).toBeFalsy();
@@ -503,7 +505,7 @@ describe("find", () => {
     });
 
     test("should use OR and find Movie by id or title", async () => {
-        const session = await getSession();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -550,7 +552,7 @@ describe("find", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { movieWhere: { OR: [{ title, id }] } },
-                contextValue: getDriverContextValues(session),
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(result.errors).toBeFalsy();
