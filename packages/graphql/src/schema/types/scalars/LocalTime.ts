@@ -57,7 +57,7 @@ const parse = (value: any) => {
     return new neo4j.types.LocalTime(hour, minute, second, nanosecond);
 };
 
-export default new GraphQLScalarType({
+export const GraphQLLocalTime = new GraphQLScalarType({
     name: "LocalTime",
     description: "A local time, represented as a time string without timezone information",
     serialize: (value: unknown) => {

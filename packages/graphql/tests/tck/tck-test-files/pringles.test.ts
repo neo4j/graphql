@@ -25,7 +25,6 @@ import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher Create Pringles", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -212,8 +211,8 @@ describe("Cypher Create Pringles", () => {
             }
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -317,8 +316,8 @@ describe("Cypher Create Pringles", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateProducts: $updateProducts, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_connect0_node_name:$this_photos0_color0_connect0_node_name})
-            YIELD value as _
-            RETURN this { .id } AS this"
+            YIELD value AS _
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -38,7 +38,7 @@ jobs:
         run: |
           number=$(<prnumber)
           echo "::set-output name=pr-number::$number"
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
       - name: Publish documentation

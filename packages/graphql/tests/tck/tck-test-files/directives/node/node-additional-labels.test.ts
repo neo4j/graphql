@@ -141,9 +141,9 @@ describe("Node directive with additionalLabels", () => {
             MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
             RETURN this1
             }
-            RETURN
-            this0 { .id } AS this0,
-            this1 { .id } AS this1"
+            RETURN [
+            this0 { .id },
+            this1 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -203,7 +203,7 @@ describe("Node directive with additionalLabels", () => {
             "MATCH (this:\`Film\`:\`Multimedia\`)
             WHERE this.id = $this_id
             SET this.id = $this_update_id
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
