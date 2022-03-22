@@ -60,8 +60,8 @@ export function generateSubscriptionTypes({
         subscriptionComposer.addFields({
             [subscribeOperation.created]: {
                 args: {},
-                // type: nodeCreatedEvent,
-                type: "String",
+                type: nodeCreatedEvent,
+                // type: "String",
                 subscribe: createSubscription(node),
                 resolve: subscriptionResolve,
             },

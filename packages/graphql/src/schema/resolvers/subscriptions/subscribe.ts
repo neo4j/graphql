@@ -29,7 +29,8 @@ export type SubscriptionContext = {
 };
 
 export function subscriptionResolve(payload: [SubscriptionsEvent], args, context: Context, info: GraphQLResolveInfo) {
-    return JSON.stringify(payload[0]);
+    const fieldName = info.fieldName;
+    return { [fieldName]: payload[0].properties.new };
 }
 
 export function createSubscription(node: Node) {
