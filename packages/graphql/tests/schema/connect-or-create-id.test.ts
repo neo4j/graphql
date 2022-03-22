@@ -299,8 +299,7 @@ describe("connect or create with id", () => {
             }
 
             input MovieOnCreateInput {
-              id: ID
-              title: String
+              title: String!
             }
 
             input MovieOptions {
@@ -639,8 +638,8 @@ describe("connect or create with id", () => {
             }
 
             input PostOnCreateInput {
-              content: String
-              id: ID
+              content: String!
+              id: ID!
             }
 
             input PostOptions {
@@ -805,8 +804,7 @@ describe("connect or create with id", () => {
             }
 
             input UserOnCreateInput {
-              id: ID
-              name: String
+              name: String!
             }
 
             input UserOptions {
