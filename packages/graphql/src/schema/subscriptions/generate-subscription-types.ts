@@ -20,6 +20,8 @@
 import { SchemaComposer } from "graphql-compose";
 import { Node } from "../../classes";
 import { lowerFirst } from "../../utils/lower-first";
+import { objectFieldsToComposeFields } from "../to-compose";
+import { generateSubscriptionWhereType } from "./generate-subscription-where-type";
 
 export function generateSubscriptionTypes({
     schemaComposer,
@@ -31,42 +33,63 @@ export function generateSubscriptionTypes({
     const subscriptionComposer = schemaComposer.Subscription;
 
     nodes.forEach((node) => {
-        const composeNode = schemaComposer.getOTC(node.name);
+        // TODO: minify this down to what we actually need
+        const nodeFields = objectFieldsToComposeFields([
+            ...node.primitiveFields,
+            ...node.cypherFields,
+            ...node.enumFields,
+            ...node.scalarFields,
+            ...node.interfaceFields,
+            ...node.objectFields,
+            ...node.unionFields,
+            ...node.temporalFields,
+            ...node.pointFields,
+            ...node.computedFields,
+        ]);
 
+        const where = generateSubscriptionWhereType(node, schemaComposer);
+
+        const eventPayload = schemaComposer.createObjectTC({
+            name: `${node.name}EventPayload`,
+            fields: nodeFields,
+            description: node.description,
+            // directives: graphqlDirectivesToCompose(node.otherDirectives),
+            // interfaces: node.interfaces.map((x) => x.name.value),
+        });
         const lowerFirstNodeName = lowerFirst(node.name);
 
         const nodeCreatedEvent = schemaComposer.createObjectTC({
             name: `${node.name}CreatedEvent`,
             fields: {
-                [lowerFirstNodeName]: composeNode,
+                [lowerFirstNodeName]: eventPayload,
             },
         });
 
         const nodeUpdatedEvent = schemaComposer.createObjectTC({
             name: `${node.name}UpdatedEvent`,
             fields: {
-                [lowerFirstNodeName]: composeNode,
+                [lowerFirstNodeName]: eventPayload,
             },
         });
 
         const nodeDeletedEvent = schemaComposer.createObjectTC({
             name: `${node.name}DeletedEvent`,
             fields: {
-                [lowerFirstNodeName]: composeNode,
+                [lowerFirstNodeName]: eventPayload,
             },
         });
 
         subscriptionComposer.addFields({
             [`${lowerFirstNodeName}Created`]: {
-                args: {},
+                args: { where },
                 type: nodeCreatedEvent,
             },
             [`${lowerFirstNodeName}Updated`]: {
-                args: {},
+                args: { where },
                 type: nodeUpdatedEvent,
             },
             [`${lowerFirstNodeName}Deleted`]: {
-                args: {},
+                args: { where },
                 type: nodeDeletedEvent,
             },
         });
