@@ -44,6 +44,7 @@ export function createConnectOrCreateAndParams({
     relationField,
     refNode,
     context,
+    withVars,
 }: {
     input: CreateOrConnectInput[] | CreateOrConnectInput;
     varName: string;
@@ -51,6 +52,7 @@ export function createConnectOrCreateAndParams({
     relationField: RelationField;
     refNode: Node;
     context: Context;
+    withVars: string[];
 }): CypherStatement {
     const statements = asArray(input).map((inputItem, index): CypherStatement => {
         const subqueryBaseName = `${varName}${index}`;
@@ -64,7 +66,7 @@ export function createConnectOrCreateAndParams({
         });
     });
     const [statement, params] = joinStatements(statements);
-    return [wrapInCall(statement, parentVar), params];
+    return [wrapInCall(statement, withVars), params];
 }
 
 function createConnectOrCreatePartialStatement({

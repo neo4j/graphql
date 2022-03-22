@@ -159,8 +159,11 @@ function createConnectAndParams({
             subquery.push(`\tWHERE ${whereStrs.join(" AND ")}`);
         }
 
-        const preAuth = [...(!fromCreate ? [parentNode] : []), relatedNode].reduce(
-            (result: Res, node, i) => {
+        const nodeMatrix: Array<{ node: Node; name: string }> = [{ node: relatedNode, name: nodeName }];
+        if (!fromCreate) nodeMatrix.push({ node: parentNode, name: parentVar });
+
+        const preAuth = nodeMatrix.reduce(
+            (result: Res, { node, name }, i) => {
                 if (!node.auth) {
                     return result;
                 }
@@ -170,7 +173,7 @@ function createConnectAndParams({
                     operations: "CONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${i}_allow` },
+                    allow: { parentNode: node, varName: name, chainStr: `${name}${node.name}${i}_allow` },
                 });
 
                 if (!str) {

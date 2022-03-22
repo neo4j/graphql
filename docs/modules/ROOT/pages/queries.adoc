@@ -158,7 +158,7 @@ The rest will only expose:
 2. `max`
 
 
-Aggregation queries accepts a `where` argument for xref::filtering.adoc[Filtering] data.
+Aggregation queries accepts a `where` argument for xref::filtering.adoc[filtering] data.
 
 === Counting Using aggregation
 
@@ -216,7 +216,7 @@ query {
 Related nodes can also be aggregated within a query by accessing the aggregation fields in the node.
 In these fields, you can **count**, aggregate the **nodes** or **edges** fields.
 
-The same selections and types as before are available in relation aggregations.
+The same selections and types as before are available in relationship aggregations.
 
 === Counting all posts per users
 
@@ -251,8 +251,8 @@ query {
 }
 ----
 
-=== Aggregate relations
-Relation properties can be aggregated as well by using the `edge` field.
+=== Aggregate relationships
+Relationship properties can be aggregated as well by using the `edge` field.
 
 [source, graphql, indent=0]
 ----

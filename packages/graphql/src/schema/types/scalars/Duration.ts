@@ -117,7 +117,7 @@ const parse = (value: string) => {
     return new neo4j.types.Duration(months, days, seconds, nanoseconds);
 };
 
-export default new GraphQLScalarType({
+export const GraphQLDuration = new GraphQLScalarType({
     name: "Duration",
     description: "A duration, represented as an ISO 8601 duration string",
     serialize: (value: unknown) => {

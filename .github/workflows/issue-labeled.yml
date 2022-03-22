@@ -5,7 +5,7 @@ on:
     types: [labeled]
 
 jobs:
-  add_confirmed_comment:
+  confirmed_label:
     if: ${{ github.event.label.name == 'confirmed' }}
 
     runs-on: ubuntu-latest
@@ -18,6 +18,11 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             We've been able to confirm this bug using the steps to reproduce that you provided - many thanks @${{ github.event.issue.user.login }}! :pray: We will now prioritise the bug and address it appropriately.
+      - uses: alex-page/github-project-automation-plus@v0.8.1
+        with:
+          project: Bug Triage
+          column: Confirmed
+          repo-token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
   add_high_priority_comment:
     if: ${{ github.event.label.name == 'high priority' }}
 

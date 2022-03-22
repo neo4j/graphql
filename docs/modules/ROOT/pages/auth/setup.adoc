@@ -3,7 +3,7 @@
 
 == Configuration
 
-To get started with auth you need an instance of an auth plugin for the Neo4j GraphQL Library. For most use cases you will only need to use our provided plugins at `@neo4j/graphql-plugin-auth`. Below is a basic example using the `Neo4jGraphQLAuthJWTPlugin` class: 
+To get started with auth you need an instance of an auth plugin for the Neo4j GraphQL Library. For most use cases you will only need to use our provided plugins at `@neo4j/graphql-plugin-auth`. Below is a basic example using the `Neo4jGraphQLAuthJWTPlugin` class:
 
 [source, javascript, indent=0]
 ----
@@ -20,7 +20,7 @@ const neoSchema = new Neo4jGraphQL({
 });
 ----
 
-If you would like to use JWKS decoding then use the `Neo4jGraphQLAuthJWKSPlugin` class: 
+If you would like to use JWKS decoding then use the `Neo4jGraphQLAuthJWKSPlugin` class:
 
 [source, javascript, indent=0]
 ----
@@ -37,7 +37,7 @@ const neoSchema = new Neo4jGraphQL({
 });
 ----
 
-If you need to create your own auth plugin then ensure it adheres to the following interface: 
+If you need to create your own auth plugin then ensure it adheres to the following interface:
 
 [source, javascript, indent=0]
 ----
@@ -98,9 +98,11 @@ Then, using Apollo Server as an example, you must include the request in the Gra
 
 [source, javascript, indent=0]
 ----
-const server = new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ req }) => ({ req }),
+neoSchema.getSchema().then((schema) => {
+    const server = new ApolloServer({
+        schema,
+        context: ({ req }) => ({ req }),
+    });
 });
 ----
 
@@ -133,9 +135,11 @@ For example, you might have a function `decodeJWT` which returns a decoded JWT:
 ----
 const decodedJWT = decodeJWT(encodedJWT)
 
-const server = new ApolloServer({
-    schema: neoSchema.schema,
-    context: { jwt: decodedJWT.payload },
+neoSchema.getSchema().then((schema) => {
+    const server = new ApolloServer({
+        schema,
+        context: { jwt: decodedJWT.payload },
+    });
 });
 ----
 

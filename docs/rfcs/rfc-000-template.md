@@ -16,6 +16,11 @@ Feel free to add/remove subheadings below as appropriate:
 
 What risks might cause us to go over the appetite described above?
 
+### Security consideration
+
+Please take some time to think about potential security issues/considerations for the proposed solution.
+For example: How can a malicious user abuse this? How can we prevent that in such case?
+
 ## Out of Scope
 
 What are we definitely not going to implement in this solution?
