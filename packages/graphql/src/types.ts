@@ -376,6 +376,10 @@ export interface JwtPayload {
     jti?: string | undefined;
 }
 
-export type Neo4jGraphQLCallback = (parent: Record<string, unknown>) => any | Promise<any>;
+export type CallbackReturnValue = string | number | boolean | undefined | null;
+
+export type Neo4jGraphQLCallback = (
+    parent: Record<string, unknown>
+) => CallbackReturnValue | Promise<CallbackReturnValue>;
 
 export type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;
