@@ -449,6 +449,14 @@ function getObjFieldMeta({
                     };
 
                     if (callbackDirective) {
+                        if (idDirective) {
+                            throw new Error("Directive @id and directive @callback cannot be used together");
+                        }
+
+                        if (defaultDirective) {
+                            throw new Error("Directive @default and directive @callback cannot be used together");
+                        }
+
                         const callback = getCallbackMeta(callbackDirective, callbacks);
                         primitiveField.callback = callback;
                     }

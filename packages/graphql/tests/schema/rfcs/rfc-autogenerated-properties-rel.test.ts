@@ -23,6 +23,60 @@ import { lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("schema/rfc/autogenerate-properties-rel", () => {
+    describe("Callback - combinations", () => {
+        test("Callback and default directives", async () => {
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
+                }
+
+                interface RelProperties {
+                    id: ID!
+                    callback1: String! @callback(operations: [CREATE], name: "callback4") @default(value: "Test")
+                }
+
+                type Genre {
+                    id: ID!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            await expect(neoSchema.getSchema()).rejects.toThrow(
+                "Directive @default and directive @callback cannot be used together"
+            );
+        });
+
+        test("Callback and id directives", async () => {
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
+                }
+
+                interface RelProperties {
+                    id: ID!
+                    callback1: String! @callback(operations: [CREATE], name: "callback4") @id
+                }
+
+                type Genre {
+                    id: ID!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            await expect(neoSchema.getSchema()).rejects.toThrow(
+                "Directive @id and directive @callback cannot be used together"
+            );
+        });
+    });
+
     test("Callback - existance", async () => {
         const typeDefs = gql`
             type Movie {

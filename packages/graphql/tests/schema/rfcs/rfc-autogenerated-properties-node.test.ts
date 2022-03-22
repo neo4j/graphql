@@ -23,6 +23,42 @@ import { lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("schema/rfc/autogenerate-properties-node", () => {
+    describe("Callback - combinations", () => {
+        test("Callback and default directives", async () => {
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    callback1: String! @callback(operations: [CREATE], name: "callback1") @default(value: "Test")
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            await expect(neoSchema.getSchema()).rejects.toThrow(
+                "Directive @default and directive @callback cannot be used together"
+            );
+        });
+
+        test("Callback and id directives", async () => {
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    callback1: String! @callback(operations: [CREATE], name: "callback1") @id
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            await expect(neoSchema.getSchema()).rejects.toThrow(
+                "Directive @id and directive @callback cannot be used together"
+            );
+        });
+    });
+
     test("Callback - existance", async () => {
         const typeDefs = gql`
             type Movie {
