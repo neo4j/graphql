@@ -29,7 +29,6 @@ export type SubscriptionContext = {
 };
 
 export function subscriptionResolve(payload, args, context, info) {
-    console.log("RESOLVE");
     return JSON.stringify(payload);
 }
 

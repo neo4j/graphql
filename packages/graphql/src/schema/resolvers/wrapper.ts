@@ -99,7 +99,7 @@ export const wrapSubscription =
     (resolverArgs: WrapResolverArguments) =>
     (next) =>
     async (root, args, context: Record<string, any> = {}, info: GraphQLResolveInfo) => {
-        // console.log("context", context); // Context is empty why?
+        // TODO: context auth
         let subscriptionContext = {}; // SubscriptionContext
         if (resolverArgs.plugins?.subscriptions) {
             subscriptionContext = {
@@ -107,6 +107,4 @@ export const wrapSubscription =
             };
         }
         return next(root, args, { ...context, ...subscriptionContext }, info);
-
-        // TODO: context auth
     };

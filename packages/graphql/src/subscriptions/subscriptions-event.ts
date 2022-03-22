@@ -31,7 +31,7 @@ export type EventMeta = {
     timestamp: neo4j.Integer | string | number;
 };
 
-/** Serialized sibscription event */
+/** Serialized subscription event */
 export type SubscriptionsEvent = (
     | {
           event: "create";
