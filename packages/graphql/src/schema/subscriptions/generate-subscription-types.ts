@@ -23,7 +23,7 @@ import { Node } from "../../classes";
 import { EventType } from "../types/enums/EventType";
 import { generateSubscriptionWhereType } from "./generate-subscription-where-type";
 import { generateEventPayloadType } from "./generate-event-payload-type";
-import { createSubscription, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
+import { subscribe, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
 
 export function generateSubscriptionTypes({
     schemaComposer,
@@ -91,16 +91,20 @@ export function generateSubscriptionTypes({
             [subscribeOperation.created]: {
                 args: { where },
                 type: nodeCreatedEvent.NonNull,
-                subscribe: createSubscription(node),
+                subscribe: subscribe(node, "create"),
                 resolve: subscriptionResolve,
             },
             [subscribeOperation.updated]: {
                 args: { where },
                 type: nodeUpdatedEvent.NonNull,
+                subscribe: subscribe(node, "update"),
+                resolve: subscriptionResolve,
             },
             [subscribeOperation.deleted]: {
                 args: { where },
                 type: nodeDeletedEvent.NonNull,
+                subscribe: subscribe(node, "delete"),
+                resolve: subscriptionResolve,
             },
         });
     });
