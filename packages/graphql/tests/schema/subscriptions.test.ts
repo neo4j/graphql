@@ -77,11 +77,13 @@ describe("Subscriptions", () => {
             }
 
             type ActorCreatedEvent {
-              actor: ActorEventPayload
+              createdActor: ActorEventPayload!
+              event: EventType!
             }
 
             type ActorDeletedEvent {
-              actor: ActorEventPayload
+              deletedActor: ActorEventPayload!
+              event: EventType!
             }
 
             type ActorEventPayload {
@@ -113,7 +115,9 @@ describe("Subscriptions", () => {
             }
 
             type ActorUpdatedEvent {
-              actor: ActorEventPayload
+              event: EventType!
+              previousState: ActorEventPayload!
+              updatedActor: ActorEventPayload!
             }
 
             input ActorWhere {
@@ -151,6 +155,12 @@ describe("Subscriptions", () => {
               bookmark: String
               nodesDeleted: Int!
               relationshipsDeleted: Int!
+            }
+
+            enum EventType {
+              CREATE
+              DELETE
+              UPDATE
             }
 
             type FloatAggregateSelectionNullable {
@@ -303,7 +313,8 @@ describe("Subscriptions", () => {
             }
 
             type MovieCreatedEvent {
-              movie: MovieEventPayload
+              createdMovie: MovieEventPayload!
+              event: EventType!
             }
 
             input MovieDeleteInput {
@@ -311,7 +322,8 @@ describe("Subscriptions", () => {
             }
 
             type MovieDeletedEvent {
-              movie: MovieEventPayload
+              deletedMovie: MovieEventPayload!
+              event: EventType!
             }
 
             input MovieDisconnectInput {
@@ -364,7 +376,9 @@ describe("Subscriptions", () => {
             }
 
             type MovieUpdatedEvent {
-              movie: MovieEventPayload
+              event: EventType!
+              previousState: MovieEventPayload!
+              updatedMovie: MovieEventPayload!
             }
 
             input MovieWhere {
@@ -454,12 +468,12 @@ describe("Subscriptions", () => {
             }
 
             type Subscription {
-              actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent
-              actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent
-              actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent
+              actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
+              actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
+              actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
+              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
+              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
+              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
             type UpdateActorsMutationResponse {

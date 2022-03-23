@@ -18,10 +18,12 @@
  */
 
 import { SchemaComposer } from "graphql-compose";
+import { SubscriptionsEvent } from "../../subscriptions/subscriptions-event";
 import { Node } from "../../classes";
 import { lowerFirst } from "../../utils/lower-first";
-import { objectFieldsToComposeFields } from "../to-compose";
+import { EventType } from "../types/enums/EventType";
 import { generateSubscriptionWhereType } from "./generate-subscription-where-type";
+import { generateEventPayloadType } from "./generate-event-payload-type";
 
 export function generateSubscriptionTypes({
     schemaComposer,
@@ -32,65 +34,72 @@ export function generateSubscriptionTypes({
 }) {
     const subscriptionComposer = schemaComposer.Subscription;
 
+    const eventTypeEnum = schemaComposer.createEnumTC(EventType);
+
     nodes.forEach((node) => {
-        // TODO: minify this down to what we actually need
-        const nodeFields = objectFieldsToComposeFields([
-            ...node.primitiveFields,
-            ...node.cypherFields,
-            ...node.enumFields,
-            ...node.scalarFields,
-            ...node.interfaceFields,
-            ...node.objectFields,
-            ...node.unionFields,
-            ...node.temporalFields,
-            ...node.pointFields,
-            ...node.computedFields,
-        ]);
-
+        const eventPayload = generateEventPayloadType(node, schemaComposer);
         const where = generateSubscriptionWhereType(node, schemaComposer);
-
-        const eventPayload = schemaComposer.createObjectTC({
-            name: `${node.name}EventPayload`,
-            fields: nodeFields,
-            description: node.description,
-            // directives: graphqlDirectivesToCompose(node.otherDirectives),
-            // interfaces: node.interfaces.map((x) => x.name.value),
-        });
-        const lowerFirstNodeName = lowerFirst(node.name);
 
         const nodeCreatedEvent = schemaComposer.createObjectTC({
             name: `${node.name}CreatedEvent`,
             fields: {
-                [lowerFirstNodeName]: eventPayload,
+                event: {
+                    type: eventTypeEnum.NonNull,
+                    resolve: () => EventType.getValue("CREATE"),
+                },
+                [`created${node.name}`]: {
+                    type: eventPayload.NonNull,
+                    resolve: (source: SubscriptionsEvent) => source.properties.new,
+                },
             },
         });
+
+        const lowerFirstNodeName = lowerFirst(node.name);
 
         const nodeUpdatedEvent = schemaComposer.createObjectTC({
             name: `${node.name}UpdatedEvent`,
             fields: {
-                [lowerFirstNodeName]: eventPayload,
+                event: {
+                    type: eventTypeEnum.NonNull,
+                    resolve: () => EventType.getValue("UPDATE"),
+                },
+                previousState: {
+                    type: eventPayload.NonNull,
+                    resolve: (source: SubscriptionsEvent) => source.properties.old,
+                },
+                [`updated${node.name}`]: {
+                    type: eventPayload.NonNull,
+                    resolve: (source: SubscriptionsEvent) => source.properties.new,
+                },
             },
         });
 
         const nodeDeletedEvent = schemaComposer.createObjectTC({
             name: `${node.name}DeletedEvent`,
             fields: {
-                [lowerFirstNodeName]: eventPayload,
+                event: {
+                    type: eventTypeEnum.NonNull,
+                    resolve: () => EventType.getValue("DELETE"),
+                },
+                [`deleted${node.name}`]: {
+                    type: eventPayload.NonNull,
+                    resolve: (source: SubscriptionsEvent) => source.properties.old,
+                },
             },
         });
 
         subscriptionComposer.addFields({
             [`${lowerFirstNodeName}Created`]: {
                 args: { where },
-                type: nodeCreatedEvent,
+                type: nodeCreatedEvent.NonNull,
             },
             [`${lowerFirstNodeName}Updated`]: {
                 args: { where },
-                type: nodeUpdatedEvent,
+                type: nodeUpdatedEvent.NonNull,
             },
             [`${lowerFirstNodeName}Deleted`]: {
                 args: { where },
-                type: nodeDeletedEvent,
+                type: nodeDeletedEvent.NonNull,
             },
         });
     });

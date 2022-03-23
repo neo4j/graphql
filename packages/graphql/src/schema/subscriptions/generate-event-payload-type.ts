@@ -17,26 +17,21 @@
  * limitations under the License.
  */
 
-import { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import { objectFieldsToComposeFields } from "../to-compose";
 import { Node } from "../../classes";
-import { objectFieldsToSubscriptionsWhereInputFields } from "../to-compose";
 
-export function generateSubscriptionWhereType(node: Node, schemaComposer: SchemaComposer): InputTypeComposer {
-    const whereFields = objectFieldsToSubscriptionsWhereInputFields([
+export function generateEventPayloadType(node: Node, schemaComposer: SchemaComposer): ObjectTypeComposer {
+    const nodeFields = objectFieldsToComposeFields([
         ...node.primitiveFields,
-        ...node.cypherFields,
         ...node.enumFields,
         ...node.scalarFields,
-        ...node.interfaceFields,
-        ...node.objectFields,
-        ...node.unionFields,
         ...node.temporalFields,
         ...node.pointFields,
-        ...node.computedFields,
     ]);
 
-    return schemaComposer.createInputTC({
-        name: `${node.name}SubscriptionWhere`,
-        fields: whereFields,
+    return schemaComposer.createObjectTC({
+        name: `${node.name}EventPayload`,
+        fields: nodeFields,
     });
 }
