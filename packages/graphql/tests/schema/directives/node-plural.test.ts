@@ -77,7 +77,7 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
-                  techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechConnection!
+                  techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): techsConnection!
                 }
 
                 enum SortDirection {
@@ -101,12 +101,6 @@ describe("Node Directive", () => {
                   count: Int!
                   name: StringAggregateSelectionNullable!
                   value: StringAggregateSelectionNullable!
-                }
-
-                type TechConnection {
-                  edges: [TechEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
                 }
 
                 input TechCreateInput {
@@ -177,6 +171,12 @@ describe("Node Directive", () => {
                 type UpdateTechsMutationResponse {
                   info: UpdateInfo!
                   techs: [Tech!]!
+                }
+
+                type techsConnection {
+                  edges: [TechEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }"
             `);
         });
@@ -234,7 +234,7 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
-                  techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechConnection!
+                  techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): techsConnection!
                 }
 
                 enum SortDirection {
@@ -258,12 +258,6 @@ describe("Node Directive", () => {
                   count: Int!
                   name: StringAggregateSelectionNullable!
                   value: StringAggregateSelectionNullable!
-                }
-
-                type TechConnection {
-                  edges: [TechEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
                 }
 
                 input TechCreateInput {
@@ -334,6 +328,12 @@ describe("Node Directive", () => {
                 type UpdateTechsMutationResponse {
                   info: UpdateInfo!
                   techs: [Tech!]!
+                }
+
+                type techsConnection {
+                  edges: [TechEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }"
             `);
         });
@@ -391,7 +391,7 @@ describe("Node Directive", () => {
                 type Query {
                   technologies(options: TechOptions, where: TechWhere): [Tech!]!
                   technologiesAggregate(where: TechWhere): TechAggregateSelection!
-                  technologiesConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechConnection!
+                  technologiesConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): technologiesConnection!
                 }
 
                 enum SortDirection {
@@ -415,12 +415,6 @@ describe("Node Directive", () => {
                   count: Int!
                   name: StringAggregateSelectionNullable!
                   value: StringAggregateSelectionNullable!
-                }
-
-                type TechConnection {
-                  edges: [TechEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
                 }
 
                 input TechCreateInput {
@@ -491,6 +485,12 @@ describe("Node Directive", () => {
                 type UpdateTechnologiesMutationResponse {
                   info: UpdateInfo!
                   technologies: [Tech!]!
+                }
+
+                type technologiesConnection {
+                  edges: [TechEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }"
             `);
         });
@@ -548,7 +548,7 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: TechsOptions, where: TechsWhere): [Techs!]!
                   techsAggregate(where: TechsWhere): TechsAggregateSelection!
-                  techsConnection(after: String, first: Int, sort: [TechsSort], where: TechsWhere): TechsConnection!
+                  techsConnection(after: String, first: Int, sort: [TechsSort], where: TechsWhere): techsConnection!
                 }
 
                 enum SortDirection {
@@ -570,12 +570,6 @@ describe("Node Directive", () => {
                 type TechsAggregateSelection {
                   count: Int!
                   value: StringAggregateSelectionNullable!
-                }
-
-                type TechsConnection {
-                  edges: [TechsEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
                 }
 
                 input TechsCreateInput {
@@ -633,6 +627,12 @@ describe("Node Directive", () => {
                 type UpdateTechsMutationResponse {
                   info: UpdateInfo!
                   techs: [Techs!]!
+                }
+
+                type techsConnection {
+                  edges: [TechsEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }"
             `);
         });
@@ -690,7 +690,7 @@ describe("Node Directive", () => {
                 type Query {
                   techs(options: UserOptions, where: UserWhere): [User!]!
                   techsAggregate(where: UserWhere): UserAggregateSelection!
-                  techsConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
+                  techsConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): techsConnection!
                 }
 
                 enum SortDirection {
@@ -725,12 +725,6 @@ describe("Node Directive", () => {
                 type UserAggregateSelection {
                   count: Int!
                   value: StringAggregateSelectionNullable!
-                }
-
-                type UserConnection {
-                  edges: [UserEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
                 }
 
                 input UserCreateInput {
@@ -775,6 +769,12 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
+                }
+
+                type techsConnection {
+                  edges: [UserEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }"
             `);
         });
@@ -832,7 +832,7 @@ describe("Node Directive", () => {
                 type Query {
                   users(options: UserOptions, where: UserWhere): [User!]!
                   usersAggregate(where: UserWhere): UserAggregateSelection!
-                  usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
+                  usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): usersConnection!
                 }
 
                 enum SortDirection {
@@ -867,12 +867,6 @@ describe("Node Directive", () => {
                 type UserAggregateSelection {
                   count: Int!
                   value: StringAggregateSelectionNullable!
-                }
-
-                type UserConnection {
-                  edges: [UserEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
                 }
 
                 input UserCreateInput {
@@ -917,6 +911,12 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
+                }
+
+                type usersConnection {
+                  edges: [UserEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }"
             `);
         });
@@ -974,7 +974,7 @@ describe("Node Directive", () => {
                 type Query {
                   users(options: UsersOptions, where: UsersWhere): [Users!]!
                   usersAggregate(where: UsersWhere): UsersAggregateSelection!
-                  usersConnection(after: String, first: Int, sort: [UsersSort], where: UsersWhere): UsersConnection!
+                  usersConnection(after: String, first: Int, sort: [UsersSort], where: UsersWhere): usersConnection!
                 }
 
                 enum SortDirection {
@@ -1009,12 +1009,6 @@ describe("Node Directive", () => {
                 type UsersAggregateSelection {
                   count: Int!
                   value: StringAggregateSelectionNullable!
-                }
-
-                type UsersConnection {
-                  edges: [UsersEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
                 }
 
                 input UsersCreateInput {
@@ -1059,6 +1053,12 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
+                }
+
+                type usersConnection {
+                  edges: [UsersEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }"
             `);
         });

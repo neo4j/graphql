@@ -55,12 +55,6 @@ describe("200", () => {
               name: StringAggregateSelectionNonNullable!
             }
 
-            type CategoryConnection {
-              edges: [CategoryEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input CategoryCreateInput {
               description: String! = \\"\\"
               exampleImageLocations: [String!]
@@ -174,7 +168,7 @@ describe("200", () => {
             type Query {
               categories(options: CategoryOptions, where: CategoryWhere): [Category!]!
               categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
-              categoriesConnection(after: String, first: Int, sort: [CategorySort], where: CategoryWhere): CategoryConnection!
+              categoriesConnection(after: String, first: Int, sort: [CategorySort], where: CategoryWhere): categoriesConnection!
             }
 
             enum SortDirection {
@@ -200,6 +194,12 @@ describe("200", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
+            }
+
+            type categoriesConnection {
+              edges: [CategoryEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

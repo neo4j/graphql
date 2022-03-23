@@ -69,12 +69,6 @@ describe("Enum", () => {
               count: Int!
             }
 
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input MovieCreateInput {
               status: Status
             }
@@ -130,7 +124,7 @@ describe("Enum", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -157,6 +151,12 @@ describe("Enum", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

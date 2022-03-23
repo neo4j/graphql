@@ -104,12 +104,6 @@ describe("Subscriptions", () => {
               id: IDAggregateSelectionNullable!
             }
 
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input MovieCreateInput {
               actorCount: Int
               averageRating: Float
@@ -210,7 +204,7 @@ describe("Subscriptions", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -237,6 +231,12 @@ describe("Subscriptions", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

@@ -164,12 +164,6 @@ describe("Interface Relationships", () => {
               actedIn: [ActorActedInConnectFieldInput!]
             }
 
-            type ActorConnection {
-              edges: [ActorEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input ActorCreateInput {
               actedIn: ActorActedInFieldInput
               name: String!
@@ -277,12 +271,6 @@ describe("Interface Relationships", () => {
               count: Int!
               runtime: IntAggregateSelectionNonNullable!
               title: StringAggregateSelectionNonNullable!
-            }
-
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input MovieCreateInput {
@@ -421,15 +409,15 @@ describe("Interface Relationships", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): actorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): seriesConnection!
             }
-            
+
             type Series implements Production {
               episodes: Int!
               title: String!
@@ -439,12 +427,6 @@ describe("Interface Relationships", () => {
               count: Int!
               episodes: IntAggregateSelectionNonNullable!
               title: StringAggregateSelectionNonNullable!
-            }
-
-            type SeriesConnection {
-              edges: [SeriesEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input SeriesCreateInput {
@@ -535,6 +517,24 @@ describe("Interface Relationships", () => {
             type UpdateSeriesMutationResponse {
               info: UpdateInfo!
               series: [Series!]!
+            }
+
+            type actorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type seriesConnection {
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -696,12 +696,6 @@ describe("Interface Relationships", () => {
               node: ActorWhere!
             }
 
-            type ActorConnection {
-              edges: [ActorEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input ActorCreateInput {
               actedIn: ActorActedInFieldInput
               name: String!
@@ -816,12 +810,6 @@ describe("Interface Relationships", () => {
 
             input EpisodeConnectWhere {
               node: EpisodeWhere!
-            }
-
-            type EpisodeConnection {
-              edges: [EpisodeEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input EpisodeCreateInput {
@@ -1119,12 +1107,6 @@ describe("Interface Relationships", () => {
 
             input MovieConnectInput {
               actors: [ProductionActorsConnectFieldInput!]
-            }
-
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input MovieCreateInput {
@@ -1480,16 +1462,16 @@ describe("Interface Relationships", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): actorsConnection!
               episodes(options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
               episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection!
-              episodesConnection(after: String, first: Int, sort: [EpisodeSort], where: EpisodeWhere): EpisodeConnection!
+              episodesConnection(after: String, first: Int, sort: [EpisodeSort], where: EpisodeWhere): episodesConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): seriesConnection!
             }
 
             type Series implements Production {
@@ -1597,12 +1579,6 @@ describe("Interface Relationships", () => {
 
             input SeriesConnectWhere {
               node: SeriesWhere!
-            }
-
-            type SeriesConnection {
-              edges: [SeriesEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input SeriesCreateInput {
@@ -1860,6 +1836,30 @@ describe("Interface Relationships", () => {
             type UpdateSeriesMutationResponse {
               info: UpdateInfo!
               series: [Series!]!
+            }
+
+            type actorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type episodesConnection {
+              edges: [EpisodeEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type seriesConnection {
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -2185,19 +2185,19 @@ describe("Interface Relationships", () => {
             type Query {
               type1Interface1s(options: Type1Interface1Options, where: Type1Interface1Where): [Type1Interface1!]!
               type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
-              type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort], where: Type1Interface1Where): Type1Interface1Connection!
+              type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort], where: Type1Interface1Where): type1Interface1sConnection!
               type1Interface2s(options: Type1Interface2Options, where: Type1Interface2Where): [Type1Interface2!]!
               type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection!
-              type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort], where: Type1Interface2Where): Type1Interface2Connection!
+              type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort], where: Type1Interface2Where): type1Interface2sConnection!
               type1s(options: Type1Options, where: Type1Where): [Type1!]!
               type1sAggregate(where: Type1Where): Type1AggregateSelection!
-              type1sConnection(after: String, first: Int, sort: [Type1Sort], where: Type1Where): Type1Connection!
+              type1sConnection(after: String, first: Int, sort: [Type1Sort], where: Type1Where): type1sConnection!
               type2Interface1s(options: Type2Interface1Options, where: Type2Interface1Where): [Type2Interface1!]!
               type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection!
-              type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort], where: Type2Interface1Where): Type2Interface1Connection!
+              type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort], where: Type2Interface1Where): type2Interface1sConnection!
               type2Interface2s(options: Type2Interface2Options, where: Type2Interface2Where): [Type2Interface2!]!
               type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection!
-              type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort], where: Type2Interface2Where): Type2Interface2Connection!
+              type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort], where: Type2Interface2Where): type2Interface2sConnection!
             }
 
             enum SortDirection {
@@ -2225,12 +2225,6 @@ describe("Interface Relationships", () => {
 
             input Type1ConnectInput {
               interface1: [Type1Interface1ConnectFieldInput!]
-            }
-
-            type Type1Connection {
-              edges: [Type1Edge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input Type1CreateInput {
@@ -2272,7 +2266,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1Connection {
-              edges: [Type1Interface1Edge!]!
+              edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
@@ -2367,6 +2361,11 @@ describe("Interface Relationships", () => {
               interface2: [Type1Interface1Interface2CreateFieldInput!]
             }
 
+            type Type1Interface1Relationship {
+              cursor: String!
+              node: Interface1!
+            }
+
             \\"\\"\\"
             Fields to sort Type1Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface1Sort object.
             \\"\\"\\"
@@ -2420,12 +2419,6 @@ describe("Interface Relationships", () => {
             type Type1Interface2AggregateSelection {
               count: Int!
               field2: StringAggregateSelectionNonNullable!
-            }
-
-            type Type1Interface2Connection {
-              edges: [Type1Interface2Edge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input Type1Interface2CreateInput {
@@ -2533,12 +2526,6 @@ describe("Interface Relationships", () => {
               interface2: [Type2Interface1Interface2ConnectFieldInput!]
             }
 
-            type Type2Interface1Connection {
-              edges: [Type2Interface1Edge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input Type2Interface1CreateInput {
               field1: String!
               interface2: Interface1Interface2FieldInput
@@ -2641,12 +2628,6 @@ describe("Interface Relationships", () => {
               field2: StringAggregateSelectionNonNullable!
             }
 
-            type Type2Interface2Connection {
-              edges: [Type2Interface2Edge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input Type2Interface2CreateInput {
               field2: String!
             }
@@ -2722,6 +2703,36 @@ describe("Interface Relationships", () => {
             type UpdateType2Interface2sMutationResponse {
               info: UpdateInfo!
               type2Interface2s: [Type2Interface2!]!
+            }
+
+            type type1Interface1sConnection {
+              edges: [Type1Interface1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type type1Interface2sConnection {
+              edges: [Type1Interface2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type type1sConnection {
+              edges: [Type1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type type2Interface1sConnection {
+              edges: [Type2Interface1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type type2Interface2sConnection {
+              edges: [Type2Interface2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
 
@@ -2793,12 +2804,6 @@ describe("Interface Relationships", () => {
 
             input CommentConnectWhere {
               node: CommentWhere!
-            }
-
-            type CommentConnection {
-              edges: [CommentEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input CommentCreateInput {
@@ -3429,12 +3434,6 @@ describe("Interface Relationships", () => {
               node: PostWhere!
             }
 
-            type PostConnection {
-              edges: [PostEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input PostCreateInput {
               comments: PostCommentsFieldInput
               content: String
@@ -3583,13 +3582,13 @@ describe("Interface Relationships", () => {
             type Query {
               comments(options: CommentOptions, where: CommentWhere): [Comment!]!
               commentsAggregate(where: CommentWhere): CommentAggregateSelection!
-              commentsConnection(after: String, first: Int, sort: [CommentSort], where: CommentWhere): CommentConnection!
+              commentsConnection(after: String, first: Int, sort: [CommentSort], where: CommentWhere): commentsConnection!
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostConnection!
+              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): postsConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): usersConnection!
             }
 
             enum SortDirection {
@@ -3646,12 +3645,6 @@ describe("Interface Relationships", () => {
 
             input UserConnectWhere {
               node: UserWhere!
-            }
-
-            type UserConnection {
-              edges: [UserEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input UserContentConnectFieldInput {
@@ -3788,6 +3781,24 @@ describe("Interface Relationships", () => {
               name_NOT_IN: [String]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
+            }
+
+            type commentsConnection {
+              edges: [CommentEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type postsConnection {
+              edges: [PostEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type usersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

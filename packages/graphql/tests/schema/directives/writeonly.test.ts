@@ -73,7 +73,7 @@ describe("@writeonly directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): usersConnection!
             }
 
             enum SortDirection {
@@ -109,12 +109,6 @@ describe("@writeonly directive", () => {
               count: Int!
               password: StringAggregateSelectionNonNullable!
               username: StringAggregateSelectionNonNullable!
-            }
-
-            type UserConnection {
-              edges: [UserEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input UserCreateInput {
@@ -172,6 +166,12 @@ describe("@writeonly directive", () => {
               username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
+            }
+
+            type usersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -231,7 +231,7 @@ describe("@writeonly directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): usersConnection!
             }
 
             enum SortDirection {
@@ -267,12 +267,6 @@ describe("@writeonly directive", () => {
               count: Int!
               password: StringAggregateSelectionNonNullable!
               username: StringAggregateSelectionNonNullable!
-            }
-
-            type UserConnection {
-              edges: [UserEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input UserCreateInput {
@@ -334,6 +328,12 @@ describe("@writeonly directive", () => {
               username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
+            }
+
+            type usersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -369,12 +369,6 @@ describe("@writeonly directive", () => {
 
             input ActorConnectWhere {
               node: ActorWhere!
-            }
-
-            type ActorConnection {
-              edges: [ActorEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input ActorCreateInput {
@@ -538,12 +532,6 @@ describe("@writeonly directive", () => {
               actors: [MovieActorsConnectFieldInput!]
             }
 
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input MovieCreateInput {
               actors: MovieActorsFieldInput
               id: ID
@@ -639,10 +627,10 @@ describe("@writeonly directive", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): actorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -673,6 +661,18 @@ describe("@writeonly directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type actorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

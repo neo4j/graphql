@@ -84,7 +84,7 @@ describe("@private directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): usersConnection!
             }
 
             enum SortDirection {
@@ -114,12 +114,6 @@ describe("@private directive", () => {
             type UserAggregateSelection {
               count: Int!
               id: IDAggregateSelectionNullable!
-            }
-
-            type UserConnection {
-              edges: [UserEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input UserCreateInput {
@@ -168,6 +162,12 @@ describe("@private directive", () => {
               id_NOT_IN: [ID]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
+            }
+
+            type usersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

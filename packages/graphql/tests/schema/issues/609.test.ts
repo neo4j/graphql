@@ -64,12 +64,6 @@ describe("609", () => {
               deprecatedField: StringAggregateSelectionNullable!
             }
 
-            type DeprecatedConnection {
-              edges: [DeprecatedEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input DeprecatedCreateInput {
               deprecatedField: String
             }
@@ -131,7 +125,7 @@ describe("609", () => {
             type Query {
               deprecateds(options: DeprecatedOptions, where: DeprecatedWhere): [Deprecated!]!
               deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
-              deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort], where: DeprecatedWhere): DeprecatedConnection!
+              deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort], where: DeprecatedWhere): deprecatedsConnection!
             }
 
             enum SortDirection {
@@ -157,6 +151,12 @@ describe("609", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
+            }
+
+            type deprecatedsConnection {
+              edges: [DeprecatedEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

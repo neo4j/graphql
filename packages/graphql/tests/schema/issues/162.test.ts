@@ -110,13 +110,13 @@ describe("162", () => {
             type Query {
               tigerJawLevel2Part1s(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
               tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection!
-              tigerJawLevel2Part1sConnection(after: String, first: Int, sort: [TigerJawLevel2Part1Sort], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1Connection!
+              tigerJawLevel2Part1sConnection(after: String, first: Int, sort: [TigerJawLevel2Part1Sort], where: TigerJawLevel2Part1Where): tigerJawLevel2Part1sConnection!
               tigerJawLevel2s(options: TigerJawLevel2Options, where: TigerJawLevel2Where): [TigerJawLevel2!]!
               tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection!
-              tigerJawLevel2sConnection(after: String, first: Int, sort: [TigerJawLevel2Sort], where: TigerJawLevel2Where): TigerJawLevel2Connection!
+              tigerJawLevel2sConnection(after: String, first: Int, sort: [TigerJawLevel2Sort], where: TigerJawLevel2Where): tigerJawLevel2sConnection!
               tigers(options: TigerOptions, where: TigerWhere): [Tiger!]!
               tigersAggregate(where: TigerWhere): TigerAggregateSelection!
-              tigersConnection(after: String, first: Int, sort: [TigerSort], where: TigerWhere): TigerConnection!
+              tigersConnection(after: String, first: Int, sort: [TigerSort], where: TigerWhere): tigersConnection!
             }
 
             enum SortDirection {
@@ -137,12 +137,6 @@ describe("162", () => {
 
             input TigerConnectWhere {
               node: TigerWhere!
-            }
-
-            type TigerConnection {
-              edges: [TigerEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input TigerCreateInput {
@@ -168,12 +162,6 @@ describe("162", () => {
 
             input TigerJawLevel2ConnectInput {
               part1: TigerJawLevel2Part1ConnectFieldInput
-            }
-
-            type TigerJawLevel2Connection {
-              edges: [TigerJawLevel2Edge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input TigerJawLevel2CreateInput {
@@ -567,6 +555,24 @@ describe("162", () => {
             type UpdateTigersMutationResponse {
               info: UpdateInfo!
               tigers: [Tiger!]!
+            }
+
+            type tigerJawLevel2Part1sConnection {
+              edges: [TigerJawLevel2Part1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type tigerJawLevel2sConnection {
+              edges: [TigerJawLevel2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type tigersConnection {
+              edges: [TigerEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

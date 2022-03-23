@@ -159,12 +159,6 @@ describe("Aggregations", () => {
               title: StringAggregateSelectionNullable!
             }
 
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input MovieCreateInput {
               createdAt: DateTime
               id: ID
@@ -340,7 +334,7 @@ describe("Aggregations", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -379,6 +373,12 @@ describe("Aggregations", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -684,12 +684,6 @@ describe("Aggregations", () => {
 
             input PostConnectInput {
               likes: [PostLikesConnectFieldInput!]
-            }
-
-            type PostConnection {
-              edges: [PostEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input PostCreateInput {
@@ -1248,10 +1242,10 @@ describe("Aggregations", () => {
             type Query {
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostConnection!
+              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): postsConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): usersConnection!
             }
 
             enum SortDirection {
@@ -1321,12 +1315,6 @@ describe("Aggregations", () => {
 
             input UserConnectWhere {
               node: UserWhere!
-            }
-
-            type UserConnection {
-              edges: [UserEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input UserCreateInput {
@@ -1472,6 +1460,18 @@ describe("Aggregations", () => {
               someTime_LTE: Time
               someTime_NOT: Time
               someTime_NOT_IN: [Time]
+            }
+
+            type postsConnection {
+              edges: [PostEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type usersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

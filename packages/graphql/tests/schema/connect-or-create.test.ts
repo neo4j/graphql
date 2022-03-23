@@ -64,12 +64,6 @@ describe("Connect Or Create", () => {
               movies: [ActorMoviesConnectOrCreateFieldInput!]
             }
 
-            type ActorConnection {
-              edges: [ActorEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input ActorCreateInput {
               movies: ActorMoviesFieldInput
               name: String!
@@ -319,12 +313,6 @@ describe("Connect Or Create", () => {
               node: MovieWhere!
             }
 
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input MovieCreateInput {
               isan: String!
               title: String!
@@ -411,10 +399,10 @@ describe("Connect Or Create", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): actorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -445,6 +433,18 @@ describe("Connect Or Create", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type actorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -536,12 +536,6 @@ describe("Connect Or Create", () => {
 
             input ActorConnectOrCreateInput {
               movies: [ActorMoviesConnectOrCreateFieldInput!]
-            }
-
-            type ActorConnection {
-              edges: [ActorEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input ActorCreateInput {
@@ -866,12 +860,6 @@ describe("Connect Or Create", () => {
               node: MovieWhere!
             }
 
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input MovieCreateInput {
               isan: String!
               title: String!
@@ -958,10 +946,10 @@ describe("Connect Or Create", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): actorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -997,6 +985,18 @@ describe("Connect Or Create", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type actorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

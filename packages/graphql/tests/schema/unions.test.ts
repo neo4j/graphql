@@ -81,12 +81,6 @@ describe("Unions", () => {
               node: GenreWhere!
             }
 
-            type GenreConnection {
-              edges: [GenreEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input GenreCreateInput {
               id: ID
             }
@@ -154,12 +148,6 @@ describe("Unions", () => {
 
             input MovieConnectWhere {
               node: MovieWhere!
-            }
-
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input MovieCreateInput {
@@ -377,10 +365,10 @@ describe("Unions", () => {
             type Query {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
-              genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenreConnection!
+              genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): genresConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             input QueryOptions {
@@ -418,6 +406,18 @@ describe("Unions", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type genresConnection {
+              edges: [GenreEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

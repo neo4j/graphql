@@ -59,12 +59,6 @@ describe("Cypher", () => {
               name: StringAggregateSelectionNullable!
             }
 
-            type ActorConnection {
-              edges: [ActorEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input ActorCreateInput {
               name: String
             }
@@ -146,12 +140,6 @@ describe("Cypher", () => {
               id: IDAggregateSelectionNullable!
             }
 
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input MovieCreateInput {
               id: ID
             }
@@ -216,10 +204,10 @@ describe("Cypher", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): actorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -250,6 +238,18 @@ describe("Cypher", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type actorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -296,12 +296,6 @@ describe("Cypher", () => {
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelectionNullable!
-            }
-
-            type ActorConnection {
-              edges: [ActorEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input ActorCreateInput {
@@ -386,12 +380,6 @@ describe("Cypher", () => {
               id: IDAggregateSelectionNullable!
             }
 
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input MovieCreateInput {
               id: ID
             }
@@ -456,10 +444,10 @@ describe("Cypher", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): actorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -490,6 +478,18 @@ describe("Cypher", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type actorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

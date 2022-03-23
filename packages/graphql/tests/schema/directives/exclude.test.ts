@@ -100,12 +100,6 @@ describe("@exclude directive", () => {
               title: StringAggregateSelectionNullable!
             }
 
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input MovieCreateInput {
               title: String
             }
@@ -170,7 +164,7 @@ describe("@exclude directive", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -201,6 +195,12 @@ describe("@exclude directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -227,12 +227,6 @@ describe("@exclude directive", () => {
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelectionNullable!
-            }
-
-            type ActorConnection {
-              edges: [ActorEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             type ActorEdge {
@@ -297,7 +291,7 @@ describe("@exclude directive", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): actorsConnection!
             }
 
             enum SortDirection {
@@ -323,6 +317,12 @@ describe("@exclude directive", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
+            }
+
+            type actorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -370,12 +370,6 @@ describe("@exclude directive", () => {
             type MovieAggregateSelection {
               count: Int!
               title: StringAggregateSelectionNullable!
-            }
-
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input MovieCreateInput {
@@ -439,7 +433,7 @@ describe("@exclude directive", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -465,6 +459,12 @@ describe("@exclude directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -520,12 +520,6 @@ describe("@exclude directive", () => {
             type MovieAggregateSelection {
               count: Int!
               title: StringAggregateSelectionNullable!
-            }
-
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input MovieCreateInput {
@@ -590,7 +584,7 @@ describe("@exclude directive", () => {
               customActorQuery: Actor
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -616,6 +610,12 @@ describe("@exclude directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -821,12 +821,6 @@ describe("@exclude directive", () => {
               actors: [MovieActorsConnectFieldInput!]
             }
 
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input MovieCreateInput {
               actors: MovieActorsFieldInput
               title: String
@@ -919,7 +913,7 @@ describe("@exclude directive", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -945,6 +939,12 @@ describe("@exclude directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -971,12 +971,6 @@ describe("@exclude directive", () => {
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelectionNullable!
-            }
-
-            type ActorConnection {
-              edges: [ActorEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input ActorCreateInput {
@@ -1057,7 +1051,7 @@ describe("@exclude directive", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): actorsConnection!
             }
 
             enum SortDirection {
@@ -1083,6 +1077,12 @@ describe("@exclude directive", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
+            }
+
+            type actorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -1134,12 +1134,6 @@ describe("@exclude directive", () => {
             type MovieAggregateSelection {
               count: Int!
               title: StringAggregateSelectionNullable!
-            }
-
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             type MovieEdge {
@@ -1204,10 +1198,10 @@ describe("@exclude directive", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): seriesConnection!
             }
 
             type Series implements Production {
@@ -1217,12 +1211,6 @@ describe("@exclude directive", () => {
             type SeriesAggregateSelection {
               count: Int!
               title: StringAggregateSelectionNullable!
-            }
-
-            type SeriesConnection {
-              edges: [SeriesEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input SeriesCreateInput {
@@ -1288,6 +1276,18 @@ describe("@exclude directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type seriesConnection {
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

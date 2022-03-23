@@ -78,7 +78,7 @@ describe("@readonly directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): usersConnection!
             }
 
             enum SortDirection {
@@ -115,12 +115,6 @@ describe("@readonly directive", () => {
               count: Int!
               id: IDAggregateSelectionNonNullable!
               username: StringAggregateSelectionNonNullable!
-            }
-
-            type UserConnection {
-              edges: [UserEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input UserCreateInput {
@@ -177,6 +171,12 @@ describe("@readonly directive", () => {
               username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
+            }
+
+            type usersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -241,7 +241,7 @@ describe("@readonly directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): usersConnection!
             }
 
             enum SortDirection {
@@ -278,12 +278,6 @@ describe("@readonly directive", () => {
               count: Int!
               id: IDAggregateSelectionNonNullable!
               username: StringAggregateSelectionNonNullable!
-            }
-
-            type UserConnection {
-              edges: [UserEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input UserCreateInput {
@@ -345,6 +339,12 @@ describe("@readonly directive", () => {
               username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
+            }
+
+            type usersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

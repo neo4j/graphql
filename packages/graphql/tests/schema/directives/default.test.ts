@@ -124,7 +124,7 @@ describe("@default directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): usersConnection!
             }
 
             enum SortDirection {
@@ -173,12 +173,6 @@ describe("@default directive", () => {
               rating: FloatAggregateSelectionNonNullable!
               toBeOverridden: StringAggregateSelectionNonNullable!
               verifiedDate: DateTimeAggregateSelectionNonNullable!
-            }
-
-            type UserConnection {
-              edges: [UserEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input UserCreateInput {
@@ -312,6 +306,12 @@ describe("@default directive", () => {
               verifiedDate_NOT: DateTime
               verifiedDate_NOT_IN: [DateTime!]
               verified_NOT: Boolean
+            }
+
+            type usersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

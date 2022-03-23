@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { generateUniqueType } from "../utils/graphql-types";
 
 describe("root-connections", () => {
     let driver: Driver;
@@ -37,24 +38,27 @@ describe("root-connections", () => {
     test("should return an empty array of edges and a totalCount of zero when there are no records", async () => {
         const session = driver.session();
 
-        const typeDefs = `
-      type Pilot {
-        name: String
-        aircraft: [Aircraft!]! @relationship(type: "FLIES_IN", direction: IN)
-      }
+        const pilotType = generateUniqueType("Pilot");
+        const aircraftType = generateUniqueType("Aircraft");
 
-      type Aircraft {
-        id: ID!
-        name: String!
-        pilots: [Pilot!]! @relationship(type: "FLIES_IN", direction: OUT)
-      }
-    `;
+        const typeDefs = `
+          type ${pilotType.name} {
+            name: String
+            aircraft: [${aircraftType.name}!]! @relationship(type: "FLIES_IN", direction: IN)
+          }
+
+          type ${aircraftType.name} {
+            id: ID!
+            name: String!
+            pilots: [${pilotType.name}!]! @relationship(type: "FLIES_IN", direction: OUT)
+          }
+        `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
           query {
-            aircraftConnection {
+            ${aircraftType.operations.connection} {
               totalCount
               edges {
                 cursor
@@ -77,7 +81,7 @@ describe("root-connections", () => {
             });
 
             expect(result.errors).toBeFalsy();
-            expect(result?.data?.aircraftConnection).toEqual({
+            expect(result?.data?.[aircraftType.operations.connection]).toEqual({
                 totalCount: 0,
                 edges: [],
             });
@@ -88,16 +92,19 @@ describe("root-connections", () => {
     test("should return an array of edges and the correct totalCount", async () => {
         const session = driver.session();
 
+        const pilotType = generateUniqueType("Pilot");
+        const aircraftType = generateUniqueType("Aircraft");
+
         const typeDefs = `
-      type Pilot {
+      type ${pilotType.name} {
         name: String
-        aircraft: [Aircraft!]! @relationship(type: "FLIES_IN", direction: IN)
+        aircraft: [${aircraftType.name}!]! @relationship(type: "FLIES_IN", direction: IN)
       }
 
-      type Aircraft {
+      type ${aircraftType.name} {
         id: ID!
         name: String!
-        pilots: [Pilot!]! @relationship(type: "FLIES_IN", direction: OUT)
+        pilots: [${pilotType.name}!]! @relationship(type: "FLIES_IN", direction: OUT)
       }
     `;
 
@@ -110,7 +117,7 @@ describe("root-connections", () => {
 
         const query = `
           query {
-            aircraftConnection {
+            ${aircraftType.operations.connection} {
               totalCount
               edges {
                 cursor
@@ -124,8 +131,8 @@ describe("root-connections", () => {
       `;
 
         const create = `
-        mutation($input: [AircraftCreateInput!]!) {
-          createAircraft(input: $input) {
+        mutation($input: [${aircraftType.name}CreateInput!]!) {
+          ${aircraftType.operations.create}(input: $input) {
             aircraft {
               id
             }
@@ -151,7 +158,7 @@ describe("root-connections", () => {
             });
 
             expect(result.errors).toBeFalsy();
-            expect(result?.data?.aircraftConnection).toEqual({
+            expect(result?.data?.[aircraftType.operations.connection]).toEqual({
                 totalCount: 20,
                 edges: dummyAircrafts.map((node) => ({
                     cursor: expect.any(String),
@@ -160,7 +167,7 @@ describe("root-connections", () => {
             });
         } finally {
             await session.run(`
-              MATCH (a:Aircraft)
+              MATCH (a:${aircraftType.name})
               DETACH DELETE a
             `);
 

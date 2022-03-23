@@ -27,8 +27,16 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
 
-function translateRead({ node, context }: { context: Context; node: Node }): [string, any] {
-    const { resolveTree, isRootConnectionField } = context;
+function translateRead({
+    node,
+    context,
+    isRootConnectionField,
+}: {
+    context: Context;
+    node: Node;
+    isRootConnectionField?: boolean;
+}): [string, any] {
+    const { resolveTree } = context;
     const varName = "this";
 
     let matchAndWhereStr = "";

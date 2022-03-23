@@ -74,12 +74,6 @@ describe("@fulltext schema", () => {
               title: StringAggregateSelectionNullable!
             }
 
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input MovieCreateInput {
               description: String
               title: String
@@ -169,7 +163,7 @@ describe("@fulltext schema", () => {
             type Query {
               movies(fulltext: MovieFulltext, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(fulltext: MovieFulltext, where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, fulltext: MovieFulltext, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, fulltext: MovieFulltext, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -195,6 +189,12 @@ describe("@fulltext schema", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

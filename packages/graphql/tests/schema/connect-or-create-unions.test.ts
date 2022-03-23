@@ -275,12 +275,6 @@ describe("Connect Or Create", () => {
               actedIn: ActorActedInConnectOrCreateInput
             }
 
-            type ActorConnection {
-              edges: [ActorEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input ActorCreateInput {
               actedIn: ActorActedInCreateInput
               name: String!
@@ -391,12 +385,6 @@ describe("Connect Or Create", () => {
               node: MovieWhere!
             }
 
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input MovieCreateInput {
               isan: String!
               title: String!
@@ -493,13 +481,13 @@ describe("Connect Or Create", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): actorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): seriesConnection!
             }
 
             input QueryOptions {
@@ -524,12 +512,6 @@ describe("Connect Or Create", () => {
 
             input SeriesConnectWhere {
               node: SeriesWhere!
-            }
-
-            type SeriesConnection {
-              edges: [SeriesEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input SeriesCreateInput {
@@ -631,6 +613,24 @@ describe("Connect Or Create", () => {
             type UpdateSeriesMutationResponse {
               info: UpdateInfo!
               series: [Series!]!
+            }
+
+            type actorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type seriesConnection {
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

@@ -85,10 +85,10 @@ describe("Pluralize consistency", () => {
             type Query {
               superFriends(options: super_friendOptions, where: super_friendWhere): [super_friend!]!
               superFriendsAggregate(where: super_friendWhere): super_friendAggregateSelection!
-              superFriendsConnection(after: String, first: Int, sort: [super_friendSort], where: super_friendWhere): super_friendConnection!
+              superFriendsConnection(after: String, first: Int, sort: [super_friendSort], where: super_friendWhere): superFriendsConnection!
               superUsers(options: super_userOptions, where: super_userWhere): [super_user!]!
               superUsersAggregate(where: super_userWhere): super_userAggregateSelection!
-              superUsersConnection(after: String, first: Int, sort: [super_userSort], where: super_userWhere): super_userConnection!
+              superUsersConnection(after: String, first: Int, sort: [super_userSort], where: super_userWhere): superUsersConnection!
             }
 
             enum SortDirection {
@@ -121,6 +121,18 @@ describe("Pluralize consistency", () => {
               superUsers: [super_user!]!
             }
 
+            type superFriendsConnection {
+              edges: [super_friendEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type superUsersConnection {
+              edges: [super_userEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type super_friend {
               name: String!
             }
@@ -132,12 +144,6 @@ describe("Pluralize consistency", () => {
 
             input super_friendConnectWhere {
               node: super_friendWhere!
-            }
-
-            type super_friendConnection {
-              edges: [super_friendEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input super_friendCreateInput {
@@ -198,12 +204,6 @@ describe("Pluralize consistency", () => {
 
             input super_userConnectInput {
               my_friend: [super_userMy_friendConnectFieldInput!]
-            }
-
-            type super_userConnection {
-              edges: [super_userEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input super_userCreateInput {

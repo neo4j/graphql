@@ -64,12 +64,6 @@ describe("connect or create with id", () => {
               movies: [ActorMoviesConnectOrCreateFieldInput!]
             }
 
-            type ActorConnection {
-              edges: [ActorEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input ActorCreateInput {
               movies: ActorMoviesFieldInput
               name: String!
@@ -305,12 +299,6 @@ describe("connect or create with id", () => {
               node: MovieWhere!
             }
 
-            type MovieConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input MovieCreateInput {
               title: String!
             }
@@ -394,10 +382,10 @@ describe("connect or create with id", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): actorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
             }
 
             enum SortDirection {
@@ -428,6 +416,18 @@ describe("connect or create with id", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            type actorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type moviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -537,12 +537,6 @@ describe("connect or create with id", () => {
 
             input PostConnectWhere {
               node: PostWhere!
-            }
-
-            type PostConnection {
-              edges: [PostEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input PostCreateInput {
@@ -761,10 +755,10 @@ describe("connect or create with id", () => {
             type Query {
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostConnection!
+              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): postsConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): usersConnection!
             }
 
             enum SortDirection {
@@ -825,12 +819,6 @@ describe("connect or create with id", () => {
 
             input UserConnectWhere {
               node: UserWhere!
-            }
-
-            type UserConnection {
-              edges: [UserEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input UserCreateInput {
@@ -1058,6 +1046,18 @@ describe("connect or create with id", () => {
               posts_SINGLE: PostWhere
               \\"\\"\\"Return Users where some of the related Posts match this filter\\"\\"\\"
               posts_SOME: PostWhere
+            }
+
+            type postsConnection {
+              edges: [PostEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type usersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

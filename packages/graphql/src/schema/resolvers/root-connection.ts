@@ -33,13 +33,12 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
         const context = _context as Context;
         const resolveTree = getNeo4jResolveTree(info);
 
-        const edgeTree = resolveTree.fieldsByTypeName[`${node.name}Connection`].edges;
+        const edgeTree = resolveTree.fieldsByTypeName[`${node.plural}Connection`].edges;
         const nodeTree = edgeTree.fieldsByTypeName[`${node.name}Edge`].node;
 
         context.resolveTree = { ...nodeTree, args: resolveTree.args };
-        context.isRootConnectionField = true;
 
-        const [cypher, params] = translateRead({ context, node });
+        const [cypher, params] = translateRead({ context, node, isRootConnectionField: true });
 
         const executeResult = await execute({
             cypher,
@@ -48,12 +47,6 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
             context,
         });
 
-        // TODO: Ask neo4j team how to resolve this issue
-        // TCK Tests Run the Resolver But Expect a Return Value
-        // So in order to get the tests to pass we have to return
-        // an empty connection. But it may be more preferable to
-        // throw an error if there is no record, but that might
-        // require modification to the "translateQuery" function
         let totalCount = 0;
         let edges: any[] = [];
         let pageInfo: PageInfo = {
@@ -95,7 +88,7 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
     });
 
     const rootConnection = composer.createObjectTC({
-        name: `${node.name}Connection`,
+        name: `${node.plural}Connection`,
         fields: {
             totalCount: "Int!",
             pageInfo: "PageInfo!",
@@ -105,10 +98,9 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
 
     // since sort is not created when there is nothing to sort, we check for its existence
     let sortArg: InputTypeComposer<any> | undefined;
-    try {
+    if (composer.has(`${node.name}Sort`)) {
         sortArg = composer.getITC(`${node.name}Sort`);
-        /* eslint-disable-next-line no-empty */
-    } catch (e) {}
+    }
 
     return {
         type: rootConnection.NonNull,

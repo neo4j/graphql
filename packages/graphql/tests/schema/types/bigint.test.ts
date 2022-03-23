@@ -79,12 +79,6 @@ describe("Bigint", () => {
               size: BigIntAggregateSelectionNonNullable!
             }
 
-            type FileConnection {
-              edges: [FileEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input FileCreateInput {
               name: String!
               size: BigInt!
@@ -157,7 +151,7 @@ describe("Bigint", () => {
             type Query {
               files(options: FileOptions, where: FileWhere): [File!]!
               filesAggregate(where: FileWhere): FileAggregateSelection!
-              filesConnection(after: String, first: Int, sort: [FileSort], where: FileWhere): FileConnection!
+              filesConnection(after: String, first: Int, sort: [FileSort], where: FileWhere): filesConnection!
             }
 
             enum SortDirection {
@@ -183,6 +177,12 @@ describe("Bigint", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
+            }
+
+            type filesConnection {
+              edges: [FileEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

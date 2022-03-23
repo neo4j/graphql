@@ -55,12 +55,6 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               count: Int!
             }
 
-            type AWSAccountConnection {
-              edges: [AWSAccountEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
             input AWSAccountCreateInput {
               accountName: String
               code: String
@@ -143,12 +137,6 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               awsId: StringAggregateSelectionNullable!
               count: Int!
               zoneType: StringAggregateSelectionNullable!
-            }
-
-            type DNSZoneConnection {
-              edges: [DNSZoneEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             input DNSZoneCreateInput {
@@ -234,10 +222,10 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             type Query {
               awsAccounts(options: AWSAccountOptions, where: AWSAccountWhere): [AWSAccount!]!
               awsAccountsAggregate(where: AWSAccountWhere): AWSAccountAggregateSelection!
-              awsAccountsConnection(after: String, first: Int, sort: [AWSAccountSort], where: AWSAccountWhere): AWSAccountConnection!
+              awsAccountsConnection(after: String, first: Int, sort: [AWSAccountSort], where: AWSAccountWhere): awsAccountsConnection!
               dnsZones(options: DNSZoneOptions, where: DNSZoneWhere): [DNSZone!]!
               dnsZonesAggregate(where: DNSZoneWhere): DNSZoneAggregateSelection!
-              dnsZonesConnection(after: String, first: Int, sort: [DNSZoneSort], where: DNSZoneWhere): DNSZoneConnection!
+              dnsZonesConnection(after: String, first: Int, sort: [DNSZoneSort], where: DNSZoneWhere): dnsZonesConnection!
             }
 
             enum SortDirection {
@@ -268,6 +256,18 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
+            }
+
+            type awsAccountsConnection {
+              edges: [AWSAccountEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type dnsZonesConnection {
+              edges: [DNSZoneEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
