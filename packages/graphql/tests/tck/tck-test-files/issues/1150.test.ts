@@ -25,6 +25,8 @@ import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test
 
 describe("https://github.com/neo4j/graphql/issues/1150", () => {
     test("union types with auth and connection-where", async () => {
+        const secret = "secret";
+
         const typeDefs = gql`
             type Battery {
                 id: ID! @id(autogenerate: false)
@@ -62,7 +64,11 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             config: { enableRegex: true },
-            plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret: "secret" }) },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
 
         const query = gql`
@@ -97,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { roles: ["admin"] });
+        const req = createJwtRequest(secret, { roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
             req,
         });

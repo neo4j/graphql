@@ -26,6 +26,7 @@ import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("https://github.com/neo4j/graphql/issues/1150", () => {
+    const secret = "secret";
     let schema: GraphQLSchema;
     let driver: Driver;
 
@@ -70,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             driver,
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
+                    secret,
                 }),
             },
         });
@@ -114,7 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { roles: "admin" });
+        const req = createJwtRequest(secret, { roles: "admin" });
         const res = await graphql({
             schema,
             source: query,
