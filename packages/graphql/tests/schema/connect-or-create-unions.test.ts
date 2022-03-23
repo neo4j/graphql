@@ -537,15 +537,14 @@ describe("Connect Or Create", () => {
               title: String!
             }
 
-<<<<<<< HEAD
             type SeriesEdge {
               cursor: String!
               node: Series!
-=======
+            }
+
             input SeriesOnCreateInput {
               isan: String!
               title: String!
->>>>>>> dev
             }
 
             input SeriesOptions {

@@ -55,9 +55,20 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               count: Int!
             }
 
+            type AWSAccountConnection {
+              edges: [AWSAccountEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input AWSAccountCreateInput {
               accountName: String
               code: String
+            }
+
+            type AWSAccountEdge {
+              cursor: String!
+              node: AWSAccount!
             }
 
             input AWSAccountOptions {
@@ -134,9 +145,20 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               zoneType: StringAggregateSelectionNullable!
             }
 
+            type DNSZoneConnection {
+              edges: [DNSZoneEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input DNSZoneCreateInput {
               awsId: String
               zoneType: String
+            }
+
+            type DNSZoneEdge {
+              cursor: String!
+              node: DNSZone!
             }
 
             input DNSZoneOptions {
@@ -201,11 +223,21 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               updateDnsZones(update: DNSZoneUpdateInput, where: DNSZoneWhere): UpdateDnsZonesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               awsAccounts(options: AWSAccountOptions, where: AWSAccountWhere): [AWSAccount!]!
               awsAccountsAggregate(where: AWSAccountWhere): AWSAccountAggregateSelection!
+              awsAccountsConnection(after: String, first: Int, sort: [AWSAccountSort], where: AWSAccountWhere): AWSAccountConnection!
               dnsZones(options: DNSZoneOptions, where: DNSZoneWhere): [DNSZone!]!
               dnsZonesAggregate(where: DNSZoneWhere): DNSZoneAggregateSelection!
+              dnsZonesConnection(after: String, first: Int, sort: [DNSZoneSort], where: DNSZoneWhere): DNSZoneConnection!
             }
 
             enum SortDirection {

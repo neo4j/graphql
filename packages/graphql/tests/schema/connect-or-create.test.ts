@@ -877,15 +877,14 @@ describe("Connect Or Create", () => {
               title: String!
             }
 
-<<<<<<< HEAD
             type MovieEdge {
               cursor: String!
               node: Movie!
-=======
+            }
+
             input MovieOnCreateInput {
               isan: String!
               title: String!
->>>>>>> dev
             }
 
             input MovieOptions {

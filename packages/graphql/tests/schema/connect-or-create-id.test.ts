@@ -667,15 +667,14 @@ describe("connect or create with id", () => {
               creator: PostCreatorDisconnectFieldInput
             }
 
-<<<<<<< HEAD
             type PostEdge {
               cursor: String!
               node: Post!
-=======
+            }
+
             input PostOnCreateInput {
               content: String!
               id: ID!
->>>>>>> dev
             }
 
             input PostOptions {
@@ -847,14 +846,13 @@ describe("connect or create with id", () => {
               posts: [UserPostsDisconnectFieldInput!]
             }
 
-<<<<<<< HEAD
             type UserEdge {
               cursor: String!
               node: User!
-=======
+            }
+
             input UserOnCreateInput {
               name: String!
->>>>>>> dev
             }
 
             input UserOptions {

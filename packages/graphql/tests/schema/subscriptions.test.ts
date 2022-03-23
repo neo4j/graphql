@@ -104,6 +104,12 @@ describe("Subscriptions", () => {
               id: IDAggregateSelectionNullable!
             }
 
+            type MovieConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input MovieCreateInput {
               actorCount: Int
               averageRating: Float
@@ -117,6 +123,11 @@ describe("Subscriptions", () => {
 
             type MovieDeletedEvent {
               movie: Movie
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
             }
 
             input MovieOptions {
@@ -188,9 +199,18 @@ describe("Subscriptions", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
             }
 
             enum SortDirection {

@@ -76,6 +76,12 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               movies: [Actor2MoviesConnectOrCreateFieldInput!]
             }
 
+            type Actor2Connection {
+              edges: [Actor2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input Actor2CreateInput {
               movies: Actor2MoviesFieldInput
               name: String!
@@ -87,6 +93,11 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input Actor2DisconnectInput {
               movies: [Actor2MoviesDisconnectFieldInput!]
+            }
+
+            type Actor2Edge {
+              cursor: String!
+              node: Actor2!
             }
 
             type Actor2MovieMoviesAggregationSelection {
@@ -273,6 +284,12 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               movies: [ActorMoviesConnectOrCreateFieldInput!]
             }
 
+            type ActorConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input ActorCreateInput {
               movies: ActorMoviesFieldInput
               name: String!
@@ -284,6 +301,11 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input ActorDisconnectInput {
               movies: [ActorMoviesDisconnectFieldInput!]
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
             }
 
             type ActorMovieMoviesAggregationSelection {
@@ -508,8 +530,19 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               node: MovieWhere!
             }
 
+            type MovieConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input MovieCreateInput {
               title: String!
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
             }
 
             input MovieOnCreateInput {
@@ -589,10 +622,13 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             type Query {
               actor2s(options: Actor2Options, where: Actor2Where): [Actor2!]!
               actor2sAggregate(where: Actor2Where): Actor2AggregateSelection!
+              actor2sConnection(after: String, first: Int, sort: [Actor2Sort], where: Actor2Where): Actor2Connection!
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MovieConnection!
             }
 
             enum SortDirection {

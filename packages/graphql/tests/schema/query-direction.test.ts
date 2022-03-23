@@ -74,6 +74,7 @@ describe("Query Direction", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
             }
 
             enum SortDirection {
@@ -121,6 +122,12 @@ describe("Query Direction", () => {
               node: UserWhere!
             }
 
+            type UserConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input UserCreateInput {
               friends: UserFriendsFieldInput
               name: String!
@@ -132,6 +139,11 @@ describe("Query Direction", () => {
 
             input UserDisconnectInput {
               friends: [UserFriendsDisconnectFieldInput!]
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
             }
 
             input UserFriendsAggregateInput {
@@ -347,6 +359,7 @@ describe("Query Direction", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
             }
 
             enum SortDirection {
@@ -394,6 +407,12 @@ describe("Query Direction", () => {
               node: UserWhere!
             }
 
+            type UserConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input UserCreateInput {
               friends: UserFriendsFieldInput
               name: String!
@@ -405,6 +424,11 @@ describe("Query Direction", () => {
 
             input UserDisconnectInput {
               friends: [UserFriendsDisconnectFieldInput!]
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
             }
 
             input UserFriendsAggregateInput {
@@ -620,6 +644,7 @@ describe("Query Direction", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UserConnection!
             }
 
             enum SortDirection {
@@ -667,6 +692,12 @@ describe("Query Direction", () => {
               node: UserWhere!
             }
 
+            type UserConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input UserCreateInput {
               friends: UserFriendsFieldInput
               name: String!
@@ -678,6 +709,11 @@ describe("Query Direction", () => {
 
             input UserDisconnectInput {
               friends: [UserFriendsDisconnectFieldInput!]
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
             }
 
             input UserFriendsAggregateInput {
