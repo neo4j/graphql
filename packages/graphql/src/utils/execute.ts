@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { SessionMode, Transaction, QueryResult, Neo4jError } from "neo4j-driver";
+import { SessionMode, QueryResult, Neo4jError, Session, Driver, Transaction } from "neo4j-driver";
 import Debug from "debug";
 import {
     Neo4jGraphQLForbiddenError,
@@ -44,12 +44,7 @@ export interface ExecuteResult {
     records: Record<PropertyKey, any>[];
 }
 
-async function execute(input: {
-    cypher: string;
-    params: any;
-    defaultAccessMode: SessionMode;
-    context: Context;
-}): Promise<ExecuteResult> {
+const getSessionParams = (input: { defaultAccessMode: SessionMode; context: Context }) => {
     const sessionParams: {
         defaultAccessMode?: SessionMode;
         bookmarks?: string | string[];
@@ -67,7 +62,60 @@ async function execute(input: {
         }
     }
 
-    const session = input.context.driver.session(sessionParams);
+    return sessionParams;
+};
+
+const getTransactionConfig = () => {
+    const app = `${environment.NPM_PACKAGE_NAME}@${environment.NPM_PACKAGE_VERSION}`;
+    return {
+        metadata: {
+            app,
+            type: "user-transpiled",
+        },
+    };
+}
+
+const getExecutor = (input: {
+    defaultAccessMode: SessionMode;
+    context: Context;
+}): { driver?: Driver; session?: Session; transaction: Transaction } => {
+    if (!input.context.executionContext) {
+        const driver = input.context.driver;
+        const session = driver.session(getSessionParams(input));
+        const transaction = session.beginTransaction(getTransactionConfig());
+        return { driver, session, transaction };
+    }
+
+    const executionContextType = Object.getPrototypeOf(input.context.executionContext).constructor.name;
+
+    if (executionContextType === "Driver") {
+        const driver = input.context.executionContext as Driver;
+        const session = driver.session(getSessionParams(input));
+        const transaction = session.beginTransaction(getTransactionConfig());
+        return { driver, session, transaction };
+    }
+
+    if (executionContextType === "Session") {
+        const session = input.context.executionContext as Session;
+        const transaction = session.beginTransaction(getTransactionConfig());
+        return { session, transaction };
+    }
+
+    if (executionContextType === "Transaction") {
+        const transaction = input.context.executionContext as Transaction;
+        return { transaction };
+    }
+
+    throw Error("Not reached");
+};
+
+async function execute(input: {
+    cypher: string;
+    params: any;
+    defaultAccessMode: SessionMode;
+    context: Context;
+}): Promise<ExecuteResult> {
+    const executor = getExecutor(input);
 
     // Its really difficult to know when users are using the `auth` param. For Simplicity it better to do the check here
     if (
@@ -88,40 +136,25 @@ async function execute(input: {
     try {
         debug("%s", `About to execute Cypher:\nCypher:\n${cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`);
 
-        const app = `${environment.NPM_PACKAGE_NAME}@${environment.NPM_PACKAGE_VERSION}`;
-
-        let result: QueryResult | undefined;
-        const transactionWork = (tx: Transaction) => tx.run(cypher, input.params);
-        const transactionConfig = {
-            metadata: {
-                app,
-                type: "user-transpiled",
-            },
-        };
-
-        switch (input.defaultAccessMode) {
-            case "READ":
-                result = await session.readTransaction(transactionWork, transactionConfig);
-                break;
-            case "WRITE":
-                result = await session.writeTransaction(transactionWork, transactionConfig);
-                break;
-            // no default
-        }
+        const result: QueryResult | undefined = await executor.transaction.run(cypher, input.params);
 
         if (!result) {
             throw new Error("Unable to execute query against Neo4j database");
+        }
+
+        if (executor.session) {
+            await executor.transaction.commit();
         }
 
         const records = result.records.map((r) => r.toObject());
 
         debug(`Execute successful, received ${records.length} records`);
 
-        const bookmark = session.lastBookmark();
+        const bookmark = executor.session ? executor.session.lastBookmark() : null;
 
         return {
             // Despite being typed as `string | null`, seems to return `string[]`
-            bookmark: Array.isArray(bookmark) ? bookmark[0] : bookmark,
+            bookmark: bookmark && Array.isArray(bookmark) && bookmark[0] ? bookmark[0] : null,
             result,
             statistics: result.summary.counters.updates(),
             records: result.records.map((r) => r.toObject()),
@@ -150,7 +183,9 @@ async function execute(input: {
 
         throw error;
     } finally {
-        await session.close();
+        if (executor.driver && executor.session) {
+            await executor.session.close();
+        }
     }
 }
 

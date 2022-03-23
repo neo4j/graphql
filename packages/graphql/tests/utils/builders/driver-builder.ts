@@ -59,6 +59,12 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
         this.with({
             session() {
                 return {
+                    beginTransaction: () => {
+                        return {
+                            run: runMock,
+                            commit() {},
+                        };
+                    },
                     readTransaction: (cb: any) => {
                         return cb({ run: runMock });
                     },
