@@ -19,16 +19,19 @@
 
 import * as neo4j from "neo4j-driver";
 
+/** Raw event metadata returned from queries */
 export type EventMeta = {
     event: "create" | "update" | "delete";
     properties: {
         old: Record<string, any>;
         new: Record<string, any>;
     };
+    typename: string;
     id: neo4j.Integer | string | number;
     timestamp: neo4j.Integer | string | number;
 };
 
+/** Serialized subscription event */
 export type SubscriptionsEvent = (
     | {
           event: "create";
@@ -51,4 +54,4 @@ export type SubscriptionsEvent = (
               new: undefined;
           };
       }
-) & { id: number; timestamp: number };
+) & { id: number; timestamp: number; typename: string };

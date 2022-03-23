@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { ExecuteResult } from "../../../utils/execute";
-import { serializeNeo4jValue } from "../../../utils/neo4j-serializers";
-import { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
-import { EventMeta, SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
+import { ExecuteResult } from "../../utils/execute";
+import { serializeNeo4jValue } from "../../utils/neo4j-serializers";
+import { Neo4jGraphQLSubscriptionsPlugin } from "../../types";
+import { EventMeta, SubscriptionsEvent } from "../../subscriptions/subscriptions-event";
 
 export function publishEventsToPlugin(
     executeResult: ExecuteResult,
@@ -46,6 +46,7 @@ function serializeEvent(event: EventMeta): SubscriptionsEvent {
             old: serializeProperties(event.properties.old),
             new: serializeProperties(event.properties.new),
         },
+        typename: event.typename,
     } as SubscriptionsEvent; // Casting here because ts is not smart enough to get the difference between create|update|delete
 }
 
