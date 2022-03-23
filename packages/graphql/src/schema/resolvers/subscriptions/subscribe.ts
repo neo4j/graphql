@@ -38,7 +38,6 @@ export function createSubscription(node: Node) {
         _root: any,
         _args: any,
         context: SubscriptionContext,
-        _info: GraphQLResolveInfo
     ): AsyncIterator<[SubscriptionsEvent]> => {
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, "create");
 
