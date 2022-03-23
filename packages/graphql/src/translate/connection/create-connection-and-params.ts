@@ -219,22 +219,6 @@ function createConnectionAndParams({
                 unionInterfaceSubquery.push(`WITH ${nodeVariable}`);
                 unionInterfaceSubquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
-                const allowAndParams = createAuthAndParams({
-                    operations: "READ",
-                    entity: n,
-                    context,
-                    allow: {
-                        parentNode: n,
-                        varName: relatedNodeVariable,
-                    },
-                });
-                if (allowAndParams[0]) {
-                    globalParams = { ...globalParams, ...allowAndParams[1] };
-                    unionInterfaceSubquery.push(
-                        `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-                    );
-                }
-
                 const whereStrs: string[] = [];
                 const unionInterfaceWhere = field.relationship.union ? (whereInput || {})[n.name] : whereInput || {};
 
@@ -252,9 +236,7 @@ function createConnectionAndParams({
                     });
                     const [whereClause] = where;
                     if (whereClause) {
-                        if (whereClause) {
-                            whereStrs.push(whereClause);
-                        }
+                        whereStrs.push(whereClause);
                     }
                 }
 
@@ -271,6 +253,23 @@ function createConnectionAndParams({
 
                 if (whereStrs.length) {
                     unionInterfaceSubquery.push(`WHERE ${whereStrs.join(" AND ")}`);
+                }
+
+                const allowAndParams = createAuthAndParams({
+                    operations: "READ",
+                    entity: n,
+                    context,
+                    allow: {
+                        parentNode: n,
+                        varName: relatedNodeVariable,
+                    },
+                });
+
+                if (allowAndParams[0]) {
+                    globalParams = { ...globalParams, ...allowAndParams[1] };
+                    unionInterfaceSubquery.push(
+                        `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                    );
                 }
 
                 if (nestedSubqueries.length) {
