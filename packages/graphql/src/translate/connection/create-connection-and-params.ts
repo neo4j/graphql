@@ -228,6 +228,7 @@ function createConnectionAndParams({
                         varName: relatedNodeVariable,
                     },
                 });
+                console.log(allowAndParams);
                 if (allowAndParams[0]) {
                     globalParams = { ...globalParams, ...allowAndParams[1] };
                     unionInterfaceSubquery.push(
@@ -238,7 +239,8 @@ function createConnectionAndParams({
                 const whereStrs: string[] = [];
                 const unionInterfaceWhere = field.relationship.union ? (whereInput || {})[n.name] : whereInput || {};
 
-                if (unionInterfaceWhere) {
+                if (unionInterfaceWhere && !allowAndParams[0]) {
+                    console.log("ffff", field, unionInterfaceWhere);
                     const where = createConnectionWhereAndParams({
                         whereInput: unionInterfaceWhere,
                         node: n,
@@ -250,11 +252,10 @@ function createConnectionAndParams({
                             resolveTree.alias
                         }.args.where${field.relationship.union ? `.${n.name}` : ""}`,
                     });
+                    // here
                     const [whereClause] = where;
                     if (whereClause) {
-                        if (whereClause) {
-                            whereStrs.push(whereClause);
-                        }
+                        whereStrs.push(whereClause);
                     }
                 }
 
@@ -268,8 +269,8 @@ function createConnectionAndParams({
                     whereStrs.push(whereAuth[0]);
                     globalParams = { ...globalParams, ...whereAuth[1] };
                 }
-
                 if (whereStrs.length) {
+                    // Here
                     unionInterfaceSubquery.push(`WHERE ${whereStrs.join(" AND ")}`);
                 }
 

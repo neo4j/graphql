@@ -220,6 +220,7 @@ function createElementWhereAndParams({
             (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
         );
 
+        console.log("GGGGe", param);
         res.clauses.push(createWhereClause({ param, property, operator, isNot, pointField, durationField }));
 
         res.params[key] = value;
