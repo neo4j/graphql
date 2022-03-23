@@ -116,7 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
+        const req = createJwtRequest("secret", { roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
             req,
         });
@@ -133,6 +133,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             CALL {
             WITH this_drivecomposition
             MATCH (this_drivecomposition)-[this_drivecomposition_has_relationship:HAS]->(this_drivecomposition_Battery:Battery)
+            WHERE this_drivecomposition_has_relationship.current = $this_driveCompositionsConnection.edges.node.driveComponentConnection.args.where.Battery.edge.current
             CALL apoc.util.validate(NOT((ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH { current: this_drivecomposition_has_relationship.current, node: { __resolveType: \\"Battery\\", id: this_drivecomposition_Battery.id, batterySeriesNumber: this_drivecomposition_Battery.batterySeriesNumber, nameMigrated: this_drivecomposition_Battery.nameMigrated } } AS edge
             RETURN edge
@@ -186,9 +187,13 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                 },
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
                     \\"jwt\\": {
-                        \\"roles\\": []
+                        \\"roles\\": [
+                            \\"admin\\"
+                        ]
                     }
                 }
             }"

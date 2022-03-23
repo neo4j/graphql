@@ -72,7 +72,6 @@ function createConnectionWhereAndParams({
                     context,
                     parameterPrefix: `${parameterPrefix}.${k}`,
                 });
-                // here
                 const whereStrs = [
                     ...res.whereStrs,
                     k === "edge_NOT" ? `(NOT ${relationshipWhere[0]})` : relationshipWhere[0],
