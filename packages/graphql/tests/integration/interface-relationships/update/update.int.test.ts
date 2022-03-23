@@ -19,7 +19,7 @@
 
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "../../neo4j";
@@ -86,8 +86,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const movieNewTitle = generate({
             readable: true,
@@ -98,7 +98,7 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation UpdateUpdate($name: String, $oldTitle: String, $newTitle: String) {
@@ -139,7 +139,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -191,8 +191,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const movieNewTitle = generate({
             readable: true,
@@ -203,7 +203,7 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation UpdateUpdate($name: String, $newName: String, $oldTitle: String, $newTitle: String) {
@@ -247,7 +247,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -304,15 +304,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const movieNewTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
 
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation UpdateUpdate(
@@ -365,7 +365,8 @@ describe("interface relationships", () => {
                 `
                 CREATE (a:Actor { name: $actorName })
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })<-[:ACTED_IN { screenTime: $movieScreenTime }]-(:Actor { name: $actorOldName })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $movieTitle })<-[:ACTED_IN { screenTime: $seriesScreenTime }]-(:Actor { name: $actorOldName })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(s:Series { title: $movieTitle })<-[:ACTED_IN { screenTime: $seriesScreenTime }]-(:Actor { name: $actorOldName })
+                CREATE (s)-[:HAS_EPISODE]->(:Episode {runtime: 123})
             `,
                 {
                     actorName,
@@ -378,7 +379,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -465,15 +466,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const movieNewTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
 
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation UpdateUpdate($name: String, $newName: String, $oldName: String, $oldTitle: String, $newTitle: String) {
@@ -529,7 +530,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {

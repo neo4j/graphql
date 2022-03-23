@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
 import neo4jDriver, { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { parseTime } from "../../../src/schema/scalars/Time";
+import { parseTime } from "../../../src/schema/types/scalars/Time";
 
 describe("Time", () => {
     let driver: Driver;
@@ -47,9 +47,8 @@ describe("Time", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const time = faker.date.past().toISOString().split("T")[1];
@@ -109,12 +108,11 @@ describe("Time", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
-            const times = [...new Array(faker.random.number({ min: 2, max: 4 }))].map(
+            const times = [...new Array(faker.datatype.number({ min: 2, max: 4 }))].map(
                 () => faker.date.past().toISOString().split("T")[1]
             );
             const parsedTimes = times.map((time) => parseTime(time));
@@ -191,9 +189,8 @@ describe("Time", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const time = faker.date.past().toISOString().split("T")[1];
@@ -263,9 +260,8 @@ describe("Time", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const date = faker.date.future();
@@ -320,7 +316,8 @@ describe("Time", () => {
                         }
                     `;
 
-                    const { schema } = new Neo4jGraphQL({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
                     const future = "13:00:00";
@@ -449,7 +446,8 @@ describe("Time", () => {
                         }
                     `;
 
-                    const { schema } = new Neo4jGraphQL({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
                     const future = "13:00:00";

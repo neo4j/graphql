@@ -75,7 +75,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -128,7 +128,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -171,7 +171,7 @@ describe("find", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const query = `
-            query($ids: [ID]){
+            query($ids: [ID!]){
                 movies(where: {id_IN: $ids}){
                     id
                 }
@@ -187,7 +187,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { ids: [id1, id2, id3] },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -235,7 +235,7 @@ describe("find", () => {
         });
 
         const query = `
-            query($ids: [ID], $title: String){
+            query($ids: [ID!], $title: String){
                 movies(where: {id_IN: $ids, title: $title}){
                     id
                     title
@@ -252,7 +252,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { ids: [id1, id2, id3], title },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -307,7 +307,7 @@ describe("find", () => {
         });
 
         const query = `
-            query($movieIds: [ID], $actorIds: [ID]){
+            query($movieIds: [ID!], $actorIds: [ID!]){
                 movies(where: {id_IN: $movieIds}){
                     id
                     actors(where: {id_IN: $actorIds}){
@@ -341,7 +341,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {
                     movieIds: [movieId1, movieId2, movieId3],
@@ -418,7 +418,7 @@ describe("find", () => {
 
             type Movie {
                 id: ID!
-                actors(actorIds: [ID]): [Actor!]! @cypher(
+                actors(actorIds: [ID!]): [Actor!]! @cypher(
                    statement:  """
                    MATCH (a:Actor)
                    WHERE a.id IN $actorIds
@@ -451,7 +451,7 @@ describe("find", () => {
         });
 
         const query = `
-            query($movieIds: [ID], $actorIds: [ID]){
+            query($movieIds: [ID!], $actorIds: [ID!]){
                 movies(where: {id_IN: $movieIds}){
                     id
                     actors(actorIds: $actorIds) {
@@ -482,7 +482,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { movieIds: [movieId1, movieId2, movieId3], actorIds: [actorId1, actorId2, actorId3] },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -547,7 +547,7 @@ describe("find", () => {
             );
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { movieWhere: { OR: [{ title, id }] } },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },

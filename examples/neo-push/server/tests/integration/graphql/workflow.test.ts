@@ -72,7 +72,7 @@ describe("workflow", () => {
                 CREATE (:User {id: "${user.id}"})
             `);
 
-            const apolloServer = server(driver, { req });
+            const apolloServer = await server(driver, { req });
 
             const mutate = async (str) => {
                 const response = await apolloServer.executeOperation({

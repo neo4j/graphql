@@ -55,3 +55,15 @@ export function haveSharedElement(arr1: Array<any>, arr2: Array<any>): boolean {
     }
     return false;
 }
+
+/** Removes duplicate elements of an array */
+export function removeDuplicates<T>(arr: T[]): T[] {
+    return Array.from(new Set(arr));
+}
+
+/** Awaitable version of setTimeout */
+export function delay(ms: number): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}

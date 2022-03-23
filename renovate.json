@@ -21,8 +21,18 @@
         },
         {
             "matchDepTypes": ["dependencies"],
+            "matchFiles": ["packages/graphql-plugin-auth/package.json"],
+            "labels": ["dependency upgrade", "graphql-plugin-auth"]
+        },
+        {
+            "matchDepTypes": ["dependencies"],
             "matchUpdateTypes": ["major"],
             "automerge": false
+        },
+        {
+            "matchPackagePatterns": ["graphql"],
+            "matchFiles": ["packages/package-tests/graphql-15/package.json"],
+            "allowedVersions": "15"
         }
     ]
 }

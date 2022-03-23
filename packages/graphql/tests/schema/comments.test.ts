@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Comments", () => {
-    test("Simple", () => {
+    test("Simple", async () => {
         const typeDefs = gql`
             "A custom scalar."
             scalar CustomScalar
@@ -57,7 +57,7 @@ describe("Comments", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -150,7 +150,7 @@ describe("Comments", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -246,7 +246,7 @@ describe("Comments", () => {
     });
 
     describe("Relationship", () => {
-        test("Simple", () => {
+        test("Simple", async () => {
             const typeDefs = gql`
                 type Actor {
                     name: String
@@ -259,7 +259,7 @@ describe("Comments", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -290,7 +290,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [ActorSort]
+                  sort: [ActorSort!]
                 }
 
                 \\"\\"\\"
@@ -348,9 +348,9 @@ describe("Comments", () => {
 
                 type Movie {
                   \\"\\"\\"Actors in Movie\\"\\"\\"
-                  actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+                  actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -483,7 +483,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [MovieSort]
+                  sort: [MovieSort!]
                 }
 
                 input MovieRelationInput {
@@ -505,11 +505,23 @@ describe("Comments", () => {
                 input MovieWhere {
                   AND: [MovieWhere!]
                   OR: [MovieWhere!]
-                  actors: ActorWhere
+                  actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsAggregate: MovieActorsAggregateInput
-                  actorsConnection: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere
-                  actors_NOT: ActorWhere
+                  actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  actors_ALL: ActorWhere
+                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  actors_NONE: ActorWhere
+                  actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  actors_SINGLE: ActorWhere
+                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  actors_SOME: ActorWhere
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -578,7 +590,7 @@ describe("Comments", () => {
             `);
         });
 
-        test("Interface", () => {
+        test("Interface", async () => {
             const typeDefs = gql`
                 interface Production {
                     title: String!
@@ -605,7 +617,7 @@ describe("Comments", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -635,17 +647,17 @@ describe("Comments", () => {
                   screenTime: Int
                   screenTime_GT: Int
                   screenTime_GTE: Int
-                  screenTime_IN: [Int]
+                  screenTime_IN: [Int!]
                   screenTime_LT: Int
                   screenTime_LTE: Int
                   screenTime_NOT: Int
-                  screenTime_NOT_IN: [Int]
+                  screenTime_NOT_IN: [Int!]
                 }
 
                 type Actor {
                   \\"\\"\\"Acted in Production\\"\\"\\"
-                  actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-                  actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+                  actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
 
@@ -662,6 +674,7 @@ describe("Comments", () => {
 
                 input ActorActedInConnectionSort {
                   edge: ActedInSort
+                  node: ProductionSort
                 }
 
                 input ActorActedInConnectionWhere {
@@ -739,7 +752,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [ActorSort]
+                  sort: [ActorSort!]
                 }
 
                 input ActorRelationInput {
@@ -761,16 +774,20 @@ describe("Comments", () => {
                 input ActorWhere {
                   AND: [ActorWhere!]
                   OR: [ActorWhere!]
-                  actedInConnection: ActorActedInConnectionWhere
-                  actedInConnection_NOT: ActorActedInConnectionWhere
+                  actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+                  actedInConnection_ALL: ActorActedInConnectionWhere
+                  actedInConnection_NONE: ActorActedInConnectionWhere
+                  actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  actedInConnection_SINGLE: ActorActedInConnectionWhere
+                  actedInConnection_SOME: ActorActedInConnectionWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_IN: [String]
+                  name_IN: [String!]
                   name_NOT: String
                   name_NOT_CONTAINS: String
                   name_NOT_ENDS_WITH: String
-                  name_NOT_IN: [String]
+                  name_NOT_IN: [String!]
                   name_NOT_STARTS_WITH: String
                   name_STARTS_WITH: String
                 }
@@ -831,7 +848,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [MovieSort]
+                  sort: [MovieSort!]
                 }
 
                 \\"\\"\\"
@@ -853,19 +870,19 @@ describe("Comments", () => {
                   runtime: Int
                   runtime_GT: Int
                   runtime_GTE: Int
-                  runtime_IN: [Int]
+                  runtime_IN: [Int!]
                   runtime_LT: Int
                   runtime_LTE: Int
                   runtime_NOT: Int
-                  runtime_NOT_IN: [Int]
+                  runtime_NOT_IN: [Int!]
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_IN: [String]
+                  title_IN: [String!]
                   title_NOT: String
                   title_NOT_CONTAINS: String
                   title_NOT_ENDS_WITH: String
-                  title_NOT_IN: [String]
+                  title_NOT_IN: [String!]
                   title_NOT_STARTS_WITH: String
                   title_STARTS_WITH: String
                 }
@@ -913,6 +930,22 @@ describe("Comments", () => {
                   Series: SeriesWhere
                 }
 
+                input ProductionOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [ProductionSort]
+                }
+
+                \\"\\"\\"
+                Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+                \\"\\"\\"
+                input ProductionSort {
+                  title: SortDirection
+                }
+
                 input ProductionUpdateInput {
                   _on: ProductionImplementationsUpdateInput
                   title: String
@@ -923,11 +956,11 @@ describe("Comments", () => {
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_IN: [String]
+                  title_IN: [String!]
                   title_NOT: String
                   title_NOT_CONTAINS: String
                   title_NOT_ENDS_WITH: String
-                  title_NOT_IN: [String]
+                  title_NOT_IN: [String!]
                   title_NOT_STARTS_WITH: String
                   title_STARTS_WITH: String
                 }
@@ -939,11 +972,6 @@ describe("Comments", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-                }
-
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
                 }
 
                 type Series implements Production {
@@ -968,7 +996,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [SeriesSort]
+                  sort: [SeriesSort!]
                 }
 
                 \\"\\"\\"
@@ -990,19 +1018,19 @@ describe("Comments", () => {
                   episodes: Int
                   episodes_GT: Int
                   episodes_GTE: Int
-                  episodes_IN: [Int]
+                  episodes_IN: [Int!]
                   episodes_LT: Int
                   episodes_LTE: Int
                   episodes_NOT: Int
-                  episodes_NOT_IN: [Int]
+                  episodes_NOT_IN: [Int!]
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_IN: [String]
+                  title_IN: [String!]
                   title_NOT: String
                   title_NOT_CONTAINS: String
                   title_NOT_ENDS_WITH: String
-                  title_NOT_IN: [String]
+                  title_NOT_IN: [String!]
                   title_NOT_STARTS_WITH: String
                   title_STARTS_WITH: String
                 }
@@ -1044,7 +1072,7 @@ describe("Comments", () => {
             `);
         });
 
-        test("Unions", () => {
+        test("Unions", async () => {
             const typeDefs = gql`
                 union Search = Movie | Genre
 
@@ -1059,7 +1087,7 @@ describe("Comments", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -1112,7 +1140,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [GenreSort]
+                  sort: [GenreSort!]
                 }
 
                 \\"\\"\\"
@@ -1148,8 +1176,8 @@ describe("Comments", () => {
 
                 type Movie {
                   id: ID
-                  search(options: QueryOptions, where: SearchWhere): [Search!]!
-                  searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
+                  search(directed: Boolean = true, options: QueryOptions, where: SearchWhere): [Search!]!
+                  searchConnection(after: String, directed: Boolean = true, first: Int, where: MovieSearchConnectionWhere): MovieSearchConnection!
                   searchNoDirective: Search
                 }
 
@@ -1185,7 +1213,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [MovieSort]
+                  sort: [MovieSort!]
                 }
 
                 input MovieRelationInput {
@@ -1203,23 +1231,9 @@ describe("Comments", () => {
                   totalCount: Int!
                 }
 
-                input MovieSearchConnectionGenreWhere {
-                  AND: [MovieSearchConnectionGenreWhere]
-                  OR: [MovieSearchConnectionGenreWhere]
-                  node: GenreWhere
-                  node_NOT: GenreWhere
-                }
-
-                input MovieSearchConnectionMovieWhere {
-                  AND: [MovieSearchConnectionMovieWhere]
-                  OR: [MovieSearchConnectionMovieWhere]
-                  node: MovieWhere
-                  node_NOT: MovieWhere
-                }
-
                 input MovieSearchConnectionWhere {
-                  Genre: MovieSearchConnectionGenreWhere
-                  Movie: MovieSearchConnectionMovieWhere
+                  Genre: MovieSearchGenreConnectionWhere
+                  Movie: MovieSearchMovieConnectionWhere
                 }
 
                 input MovieSearchCreateFieldInput {
@@ -1362,8 +1376,12 @@ describe("Comments", () => {
                   id_NOT_IN: [ID]
                   id_NOT_STARTS_WITH: ID
                   id_STARTS_WITH: ID
-                  searchConnection: MovieSearchConnectionWhere
-                  searchConnection_NOT: MovieSearchConnectionWhere
+                  searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
+                  searchConnection_ALL: MovieSearchConnectionWhere
+                  searchConnection_NONE: MovieSearchConnectionWhere
+                  searchConnection_NOT: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
+                  searchConnection_SINGLE: MovieSearchConnectionWhere
+                  searchConnection_SOME: MovieSearchConnectionWhere
                 }
 
                 type Mutation {

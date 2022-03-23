@@ -29,13 +29,18 @@ import {
     ObjectTypeDefinitionNode,
     ScalarTypeDefinitionNode,
     StringValueNode,
+    EnumValueNode,
     UnionTypeDefinitionNode,
+    ValueNode,
 } from "graphql";
-import getFieldTypeMeta from "./get-field-type-meta";
-import getCypherMeta from "./get-cypher-meta";
-import getAliasMeta from "./get-alias-meta";
 import getAuth from "./get-auth";
+import getAliasMeta from "./get-alias-meta";
+import getCypherMeta from "./get-cypher-meta";
+import getFieldTypeMeta from "./get-field-type-meta";
+import getComputedMeta from "./get-computed-meta";
 import getRelationshipMeta from "./get-relationship-meta";
+import getUniqueMeta from "./parse/get-unique-meta";
+import { SCALAR_TYPES } from "../constants";
 import {
     RelationField,
     CypherField,
@@ -50,10 +55,10 @@ import {
     PointField,
     TimeStampOperations,
     ConnectionField,
+    ComputedField,
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
-import getUniqueMeta from "./parse/get-unique-meta";
 import { upperFirst } from "../utils/upper-first";
 
 export interface ObjectFields {
@@ -68,7 +73,7 @@ export interface ObjectFields {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    ignoredFields: BaseField[];
+    computedFields: ComputedField[];
 }
 
 function getObjFieldMeta({
@@ -111,6 +116,7 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
+            const computedMeta = getComputedMeta(field, interfaceField);
             const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
@@ -140,7 +146,7 @@ function getObjFieldMeta({
                             "auth",
                             "readonly",
                             "writeonly",
-                            "ignore",
+                            "computed",
                             "default",
                             "coalesce",
                             "timestamp",
@@ -295,8 +301,12 @@ function getObjFieldMeta({
                 const cypherField: CypherField = {
                     ...baseField,
                     ...cypherMeta,
+                    isEnum: !!fieldEnum,
+                    isScalar: !!fieldScalar || SCALAR_TYPES.includes(typeMeta.name),
                 };
                 res.cypherFields.push(cypherField);
+            } else if (computedMeta) {
+                res.computedFields.push({ ...baseField, ...computedMeta });
             } else if (fieldScalar) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
@@ -306,18 +316,32 @@ function getObjFieldMeta({
                 };
                 res.scalarFields.push(scalarField);
             } else if (fieldEnum) {
-                if (defaultDirective) {
-                    throw new Error("@default directive can only be used on primitive type fields");
-                }
-
-                if (coalesceDirective) {
-                    throw new Error("@coalesce directive can only be used on primitive type fields");
-                }
-
                 const enumField: CustomEnumField = {
                     kind: "Enum",
                     ...baseField,
                 };
+
+                if (defaultDirective) {
+                    const defaultValue = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
+
+                    if (!defaultValue || !isEnumValue(defaultValue)) {
+                        throw new Error("@default value on enum fields must be an enum value");
+                    }
+
+                    enumField.defaultValue = defaultValue.value;
+                }
+
+                if (coalesceDirective) {
+                    const coalesceValue = coalesceDirective.arguments?.find((a) => a.name.value === "value")?.value;
+
+                    if (!coalesceValue || !isEnumValue(coalesceValue)) {
+                        throw new Error("@coalesce value on enum fields must be an enum value");
+                    }
+
+                    // TODO: avoid duplication with primitives
+                    enumField.coalesceValue = `"${coalesceValue.value}"`;
+                }
+
                 res.enumFields.push(enumField);
             } else if (fieldUnion) {
                 if (defaultDirective) {
@@ -357,11 +381,6 @@ function getObjFieldMeta({
                     ...baseField,
                 };
                 res.objectFields.push(objectField);
-            } else if (
-                field.directives?.some((d) => d.name.value === "ignore") ||
-                interfaceField?.directives?.some((d) => d.name.value === "ignore")
-            ) {
-                res.ignoredFields.push(baseField);
             } else {
                 // eslint-disable-next-line no-lonely-if
                 if (["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeMeta.name)) {
@@ -469,7 +488,7 @@ function getObjFieldMeta({
                                 break;
                             default:
                                 throw new Error(
-                                    "@default directive can only be used on types: Int | Float | String | Boolean | ID | DateTime"
+                                    "@default directive can only be used on types: Int | Float | String | Boolean | ID | DateTime | Enum"
                                 );
                         }
                     }
@@ -528,9 +547,13 @@ function getObjFieldMeta({
             objectFields: [],
             temporalFields: [],
             pointFields: [],
-            ignoredFields: [],
+            computedFields: [],
         }
     ) as ObjectFields;
+}
+
+function isEnumValue(value: ValueNode): value is EnumValueNode {
+    return value.kind === Kind.ENUM;
 }
 
 export default getObjFieldMeta;

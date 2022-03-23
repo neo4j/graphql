@@ -1,0 +1,31 @@
+name: "UI Teardown"
+
+on:
+  pull_request_target:
+    branches:
+      - dev
+    paths:
+      - "packages/graphql-ui/**"
+    types:
+      - closed
+
+jobs:
+  teardown-graphql-ui:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+      - name: Teardown graphql-ui
+        run: |
+          npm install -g surge
+          surge teardown neo4j-graphql-ui-stage-${{ github.event.pull_request.number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: |
+            Thanks for the UI updates.
+
+            The UI has now been torn down - reopening this PR will republish it.
+          GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}

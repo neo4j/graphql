@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Pluralize consistency", () => {
-    test("Schema with underscore types", () => {
+    test("Schema with underscore types", async () => {
         const typeDefs = gql`
             type super_user {
                 name: String!
@@ -35,7 +35,7 @@ describe("Pluralize consistency", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -49,14 +49,14 @@ describe("Pluralize consistency", () => {
               relationshipsCreated: Int!
             }
 
-            type CreateSuper_friendsMutationResponse {
+            type CreateSuperFriendsMutationResponse {
               info: CreateInfo!
-              super_friends: [super_friend!]!
+              superFriends: [super_friend!]!
             }
 
-            type CreateSuper_usersMutationResponse {
+            type CreateSuperUsersMutationResponse {
               info: CreateInfo!
-              super_users: [super_user!]!
+              superUsers: [super_user!]!
             }
 
             type DeleteInfo {
@@ -66,12 +66,12 @@ describe("Pluralize consistency", () => {
             }
 
             type Mutation {
-              createSuper_friends(input: [super_friendCreateInput!]!): CreateSuper_friendsMutationResponse!
-              createSuper_users(input: [super_userCreateInput!]!): CreateSuper_usersMutationResponse!
-              deleteSuper_friends(where: super_friendWhere): DeleteInfo!
-              deleteSuper_users(delete: super_userDeleteInput, where: super_userWhere): DeleteInfo!
-              updateSuper_friends(update: super_friendUpdateInput, where: super_friendWhere): UpdateSuper_friendsMutationResponse!
-              updateSuper_users(connect: super_userConnectInput, create: super_userRelationInput, delete: super_userDeleteInput, disconnect: super_userDisconnectInput, update: super_userUpdateInput, where: super_userWhere): UpdateSuper_usersMutationResponse!
+              createSuperFriends(input: [super_friendCreateInput!]!): CreateSuperFriendsMutationResponse!
+              createSuperUsers(input: [super_userCreateInput!]!): CreateSuperUsersMutationResponse!
+              deleteSuperFriends(where: super_friendWhere): DeleteInfo!
+              deleteSuperUsers(delete: super_userDeleteInput, where: super_userWhere): DeleteInfo!
+              updateSuperFriends(update: super_friendUpdateInput, where: super_friendWhere): UpdateSuperFriendsMutationResponse!
+              updateSuperUsers(connect: super_userConnectInput, create: super_userRelationInput, delete: super_userDeleteInput, disconnect: super_userDisconnectInput, update: super_userUpdateInput, where: super_userWhere): UpdateSuperUsersMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -83,10 +83,10 @@ describe("Pluralize consistency", () => {
             }
 
             type Query {
-              super_friends(options: super_friendOptions, where: super_friendWhere): [super_friend!]!
-              super_friendsAggregate(where: super_friendWhere): super_friendAggregateSelection!
-              super_users(options: super_userOptions, where: super_userWhere): [super_user!]!
-              super_usersAggregate(where: super_userWhere): super_userAggregateSelection!
+              superFriends(options: super_friendOptions, where: super_friendWhere): [super_friend!]!
+              superFriendsAggregate(where: super_friendWhere): super_friendAggregateSelection!
+              superUsers(options: super_userOptions, where: super_userWhere): [super_user!]!
+              superUsersAggregate(where: super_userWhere): super_userAggregateSelection!
             }
 
             enum SortDirection {
@@ -109,14 +109,14 @@ describe("Pluralize consistency", () => {
               relationshipsDeleted: Int!
             }
 
-            type UpdateSuper_friendsMutationResponse {
+            type UpdateSuperFriendsMutationResponse {
               info: UpdateInfo!
-              super_friends: [super_friend!]!
+              superFriends: [super_friend!]!
             }
 
-            type UpdateSuper_usersMutationResponse {
+            type UpdateSuperUsersMutationResponse {
               info: UpdateInfo!
-              super_users: [super_user!]!
+              superUsers: [super_user!]!
             }
 
             type super_friend {
@@ -140,13 +140,13 @@ describe("Pluralize consistency", () => {
               limit: Int
               offset: Int
               \\"\\"\\"
-              Specify one or more super_friendSort objects to sort Super_friends by. The sorts will be applied in the order in which they are arranged in the array.
+              Specify one or more super_friendSort objects to sort SuperFriends by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [super_friendSort]
+              sort: [super_friendSort!]
             }
 
             \\"\\"\\"
-            Fields to sort Super_friends by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_friendSort object.
+            Fields to sort SuperFriends by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_friendSort object.
             \\"\\"\\"
             input super_friendSort {
               name: SortDirection
@@ -162,19 +162,19 @@ describe("Pluralize consistency", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
 
             type super_user {
-              my_friend(options: super_friendOptions, where: super_friendWhere): [super_friend!]!
-              my_friendAggregate(where: super_friendWhere): super_usersuper_friendMy_friendAggregationSelection
-              my_friendConnection(after: String, first: Int, sort: [super_userMy_friendConnectionSort!], where: super_userMy_friendConnectionWhere): super_userMy_friendConnection!
+              my_friend(directed: Boolean = true, options: super_friendOptions, where: super_friendWhere): [super_friend!]!
+              my_friendAggregate(directed: Boolean = true, where: super_friendWhere): super_usersuper_friendMy_friendAggregationSelection
+              my_friendConnection(after: String, directed: Boolean = true, first: Int, sort: [super_userMy_friendConnectionSort!], where: super_userMy_friendConnectionWhere): super_userMy_friendConnection!
               name: String!
             }
 
@@ -296,9 +296,9 @@ describe("Pluralize consistency", () => {
               limit: Int
               offset: Int
               \\"\\"\\"
-              Specify one or more super_userSort objects to sort Super_users by. The sorts will be applied in the order in which they are arranged in the array.
+              Specify one or more super_userSort objects to sort SuperUsers by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [super_userSort]
+              sort: [super_userSort!]
             }
 
             input super_userRelationInput {
@@ -306,7 +306,7 @@ describe("Pluralize consistency", () => {
             }
 
             \\"\\"\\"
-            Fields to sort Super_users by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_userSort object.
+            Fields to sort SuperUsers by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_userSort object.
             \\"\\"\\"
             input super_userSort {
               name: SortDirection
@@ -320,19 +320,39 @@ describe("Pluralize consistency", () => {
             input super_userWhere {
               AND: [super_userWhere!]
               OR: [super_userWhere!]
-              my_friend: super_friendWhere
+              my_friend: super_friendWhere @deprecated(reason: \\"Use \`my_friend_SOME\` instead.\\")
               my_friendAggregate: super_userMy_friendAggregateInput
-              my_friendConnection: super_userMy_friendConnectionWhere
-              my_friendConnection_NOT: super_userMy_friendConnectionWhere
-              my_friend_NOT: super_friendWhere
+              my_friendConnection: super_userMy_friendConnectionWhere @deprecated(reason: \\"Use \`my_friendConnection_SOME\` instead.\\")
+              my_friendConnection_ALL: super_userMy_friendConnectionWhere
+              my_friendConnection_NONE: super_userMy_friendConnectionWhere
+              my_friendConnection_NOT: super_userMy_friendConnectionWhere @deprecated(reason: \\"Use \`my_friendConnection_NONE\` instead.\\")
+              my_friendConnection_SINGLE: super_userMy_friendConnectionWhere
+              my_friendConnection_SOME: super_userMy_friendConnectionWhere
+              \\"\\"\\"
+              Return super_users where all of the related super_friends match this filter
+              \\"\\"\\"
+              my_friend_ALL: super_friendWhere
+              \\"\\"\\"
+              Return super_users where none of the related super_friends match this filter
+              \\"\\"\\"
+              my_friend_NONE: super_friendWhere
+              my_friend_NOT: super_friendWhere @deprecated(reason: \\"Use \`my_friend_NONE\` instead.\\")
+              \\"\\"\\"
+              Return super_users where one of the related super_friends match this filter
+              \\"\\"\\"
+              my_friend_SINGLE: super_friendWhere
+              \\"\\"\\"
+              Return super_users where some of the related super_friends match this filter
+              \\"\\"\\"
+              my_friend_SOME: super_friendWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }

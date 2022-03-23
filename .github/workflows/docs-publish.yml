@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: "Download built documentation"
-        uses: actions/github-script@v5.1.0
+        uses: actions/github-script@v6.0.0
         with:
           script: |
             var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
@@ -38,7 +38,7 @@ jobs:
         run: |
           number=$(<prnumber)
           echo "::set-output name=pr-number::$number"
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
       - name: Publish documentation

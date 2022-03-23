@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-const fetch = require("node-fetch");
+const fetch = require("cross-fetch");
 const { getIntrospectionQuery, buildClientSchema, printSchema } = require("graphql");
 const server = require("./server");
 

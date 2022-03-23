@@ -21,7 +21,7 @@ import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 import { DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition, Directive } from "graphql-compose";
 import getFieldTypeMeta from "./get-field-type-meta";
 import parseValueNode from "./parse-value-node";
-import { BaseField } from "../types";
+import { BaseField, InputField, PrimitiveField, TemporalField } from "../types";
 import { numericalResolver, idResolver } from "./resolvers";
 
 export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
@@ -49,9 +49,9 @@ export function graphqlDirectivesToCompose(directives: DirectiveNode[]): Directi
     }));
 }
 
-export function objectFieldsToComposeFields(
-    fields: BaseField[]
-): { [k: string]: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> } {
+export function objectFieldsToComposeFields(fields: BaseField[]): {
+    [k: string]: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
+} {
     return fields.reduce((res, field) => {
         if (field.writeonly) {
             return res;
@@ -80,5 +80,40 @@ export function objectFieldsToComposeFields(
         }
 
         return { ...res, [field.fieldName]: newField };
+    }, {});
+}
+
+export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<string, InputField> {
+    return fields
+        .filter((f) => !(f as PrimitiveField)?.autogenerate && !(f as TemporalField)?.timestamps)
+        .reduce((res, f) => {
+            const fieldType = f.typeMeta.input.create.pretty;
+            const defaultValue = (f as PrimitiveField)?.defaultValue;
+
+            if (defaultValue !== undefined) {
+                res[f.fieldName] = {
+                    type: fieldType,
+                    defaultValue,
+                };
+            } else {
+                res[f.fieldName] = fieldType;
+            }
+
+            return res;
+        }, {} as Record<string, InputField>);
+}
+
+export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<string, InputField> {
+    return fields.reduce((res, f) => {
+        const staticField = f.readonly || (f as PrimitiveField)?.autogenerate;
+        if (staticField) {
+            return res;
+        }
+
+        const fieldType = f.typeMeta.input.update.pretty;
+
+        res[f.fieldName] = fieldType;
+
+        return res;
     }, {});
 }

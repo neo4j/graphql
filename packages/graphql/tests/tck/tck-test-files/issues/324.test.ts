@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#324", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -54,7 +53,7 @@ describe("#324", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -115,13 +114,37 @@ describe("#324", () => {
             	)
             	RETURN count(*)
             }
+            WITH this, this_car0, this_car0_manufacturer0
+            CALL {
+            	WITH this_car0_manufacturer0
+            	MATCH (this_car0_manufacturer0)-[this_car0_manufacturer0_logo_Logo_unique:LOGO]->(:Logo)
+            	WITH count(this_car0_manufacturer0_logo_Logo_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDManufacturer.logo required', [0])
+            	RETURN c AS this_car0_manufacturer0_logo_Logo_unique_ignored
+            }
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_car0:this_car0, updatePeople: $updatePeople, this_car0_manufacturer0:this_car0_manufacturer0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
-            YIELD value as _
+            YIELD value AS _
+            WITH this, this_car0
+            CALL {
+            	WITH this_car0
+            	MATCH (this_car0)-[this_car0_manufacturer_Manufacturer_unique:MANUFACTURER]->(:Manufacturer)
+            	WITH count(this_car0_manufacturer_Manufacturer_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDCar.manufacturer required', [0])
+            	RETURN c AS this_car0_manufacturer_Manufacturer_unique_ignored
+            }
             RETURN count(*)
             \\", \\"\\", {this:this, updatePeople: $updatePeople, this_car0:this_car0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
-            YIELD value as _
-            RETURN this { .identifier } AS this"
+            YIELD value AS _
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)-[this_car_Car_unique:CAR]->(:Car)
+            	WITH count(this_car_Car_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPerson.car required', [0])
+            	RETURN c AS this_car_Car_unique_ignored
+            }
+            RETURN collect(DISTINCT this { .identifier }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -130,11 +153,8 @@ describe("#324", () => {
                 \\"this_update_car0_manufacturer0_name\\": \\"Manufacturer\\",
                 \\"this_car0_manufacturer0_logo0_connect0_node_identifier\\": \\"Opel Logo\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 },
                 \\"updatePeople\\": {
                     \\"args\\": {

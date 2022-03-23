@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Cypher TimeStamps On DateTime Fields", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -47,7 +46,7 @@ describe("Cypher TimeStamps On DateTime Fields", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -76,8 +75,8 @@ describe("Cypher TimeStamps On DateTime Fields", () => {
             SET this0.id = $this0_id
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -109,7 +108,7 @@ describe("Cypher TimeStamps On DateTime Fields", () => {
             SET this.interfaceTimestamp = datetime()
             SET this.id = $this_update_id
             SET this.name = $this_update_name
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -35,7 +35,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     let projAuth = "";
     let projStr = "";
 
-    const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
+    const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
     let limitStr = "";
     let offsetStr = "";
     let sortStr = "";
@@ -43,6 +43,10 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     let cypherParams: { [k: string]: any } = {};
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
+
+    if (node.queryOptions) {
+        optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit);
+    }
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });
     matchAndWhereStr = topLevelMatch[0];
@@ -87,7 +91,6 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
                 resolveTree: interfaceResolveTree,
                 field: relationshipField,
                 context,
-                node,
                 nodeVariable: varName,
             });
             interfaceStrs.push(interfaceProjection.cypher);
@@ -111,14 +114,13 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
 
     if (optionsInput) {
         const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
-        const hasLimit = Boolean(optionsInput.limit) || optionsInput.limit === 0;
 
         if (hasOffset) {
             offsetStr = `SKIP $${varName}_offset`;
             cypherParams[`${varName}_offset`] = optionsInput.offset;
         }
 
-        if (hasLimit) {
+        if (optionsInput.limit) {
             limitStr = `LIMIT $${varName}_limit`;
             cypherParams[`${varName}_limit`] = optionsInput.limit;
         }

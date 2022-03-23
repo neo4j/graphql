@@ -26,6 +26,7 @@ Assuming a running Neo4j database at "bolt://localhost:7687" with username "neo4
 ----
 const { Neo4jGraphQL } = require("@neo4j/graphql");
 const { OGM } = require("@neo4j/graphql-ogm");
+const { Neo4jGraphQLAuthJWTPlugin } = require("@neo4j/graphql-plugin-auth");
 const { ApolloServer } = require("apollo-server");
 const neo4j = require("neo4j-driver");
 
@@ -102,20 +103,22 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
     resolvers,
-    config: {
-        jwt: {
-            secret: "secret",
-        },
-    },
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({
+            secret: "secret"
+        })
+    }
 });
 
-const server = new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ req }) => ({ req }),
-});
+Promise.all([neoSchema.getSchema(), ogm.init()]).then(([schema]) => {
+    const server = new ApolloServer({
+        schema,
+        context: ({ req }) => ({ req }),
+    });
 
-server.listen().then(({ url }) => {
-    console.log(`🚀 Server ready at ${url}`);
+    server.listen().then(({ url }) => {
+        console.log(`🚀 Server ready at ${url}`);
+    });
 });
 ----
 

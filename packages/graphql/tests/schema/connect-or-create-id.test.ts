@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("connect or create with id", () => {
-    test("connect or create with id", () => {
+    test("connect or create with id", async () => {
         const typeDefs = gql`
             type Movie {
                 title: String!
@@ -36,7 +36,7 @@ describe("connect or create with id", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -45,9 +45,9 @@ describe("connect or create with id", () => {
             }
 
             type Actor {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
-              moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
 
@@ -108,7 +108,7 @@ describe("connect or create with id", () => {
             }
 
             input ActorMoviesConnectOrCreateFieldInputOnCreate {
-              node: MovieCreateInput!
+              node: MovieOnCreateInput!
             }
 
             type ActorMoviesConnection {
@@ -197,7 +197,7 @@ describe("connect or create with id", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
@@ -219,19 +219,31 @@ describe("connect or create with id", () => {
             input ActorWhere {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
-              movies: MovieWhere
+              movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
-              moviesConnection: ActorMoviesConnectionWhere
-              moviesConnection_NOT: ActorMoviesConnectionWhere
-              movies_NOT: MovieWhere
+              moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              moviesConnection_ALL: ActorMoviesConnectionWhere
+              moviesConnection_NONE: ActorMoviesConnectionWhere
+              moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              moviesConnection_SOME: ActorMoviesConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              movies_ALL: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              movies_NONE: MovieWhere
+              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              movies_SINGLE: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              movies_SOME: MovieWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -286,13 +298,17 @@ describe("connect or create with id", () => {
               title: String!
             }
 
+            input MovieOnCreateInput {
+              title: String!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -317,21 +333,21 @@ describe("connect or create with id", () => {
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_IN: [ID]
+              id_IN: [ID!]
               id_NOT: ID
               id_NOT_CONTAINS: ID
               id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
+              id_NOT_IN: [ID!]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -391,7 +407,7 @@ describe("connect or create with id", () => {
             }"
         `);
     });
-    test("connect or create with non-autogenerated id", () => {
+    test("connect or create with non-autogenerated id", async () => {
         const typeDefs = gql`
             type Post {
                 id: ID! @id(autogenerate: false)
@@ -407,7 +423,7 @@ describe("connect or create with id", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -470,9 +486,9 @@ describe("connect or create with id", () => {
             type Post {
               content: String!
               createdAt: DateTime!
-              creator(options: UserOptions, where: UserWhere): User!
-              creatorAggregate(where: UserWhere): PostUserCreatorAggregationSelection
-              creatorConnection(after: String, first: Int, sort: [PostCreatorConnectionSort!], where: PostCreatorConnectionWhere): PostCreatorConnection!
+              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              creatorAggregate(directed: Boolean = true, where: UserWhere): PostUserCreatorAggregationSelection
+              creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostCreatorConnectionSort!], where: PostCreatorConnectionWhere): PostCreatorConnection!
               id: ID!
             }
 
@@ -528,7 +544,7 @@ describe("connect or create with id", () => {
             }
 
             input PostCreatorConnectOrCreateFieldInputOnCreate {
-              node: UserCreateInput!
+              node: UserOnCreateInput!
             }
 
             type PostCreatorConnection {
@@ -621,13 +637,18 @@ describe("connect or create with id", () => {
               creator: PostCreatorDisconnectFieldInput
             }
 
+            input PostOnCreateInput {
+              content: String!
+              id: ID!
+            }
+
             input PostOptions {
               limit: Int
               offset: Int
               \\"\\"\\"
               Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [PostSort]
+              sort: [PostSort!]
             }
 
             input PostRelationInput {
@@ -670,21 +691,21 @@ describe("connect or create with id", () => {
               content: String
               content_CONTAINS: String
               content_ENDS_WITH: String
-              content_IN: [String]
+              content_IN: [String!]
               content_NOT: String
               content_NOT_CONTAINS: String
               content_NOT_ENDS_WITH: String
-              content_NOT_IN: [String]
+              content_NOT_IN: [String!]
               content_NOT_STARTS_WITH: String
               content_STARTS_WITH: String
               createdAt: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
-              createdAt_IN: [DateTime]
+              createdAt_IN: [DateTime!]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
               createdAt_NOT: DateTime
-              createdAt_NOT_IN: [DateTime]
+              createdAt_NOT_IN: [DateTime!]
               creator: UserWhere
               creatorAggregate: PostCreatorAggregateInput
               creatorConnection: PostCreatorConnectionWhere
@@ -693,11 +714,11 @@ describe("connect or create with id", () => {
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_IN: [ID]
+              id_IN: [ID!]
               id_NOT: ID
               id_NOT_CONTAINS: ID
               id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
+              id_NOT_IN: [ID!]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
             }
@@ -742,9 +763,9 @@ describe("connect or create with id", () => {
             type User {
               id: ID!
               name: String!
-              posts(options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): UserPostPostsAggregationSelection
-              postsConnection(after: String, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
+              posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
+              postsAggregate(directed: Boolean = true, where: PostWhere): UserPostPostsAggregationSelection
+              postsConnection(after: String, directed: Boolean = true, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
             }
 
             type UserAggregateSelection {
@@ -782,13 +803,17 @@ describe("connect or create with id", () => {
               posts: [UserPostsDisconnectFieldInput!]
             }
 
+            input UserOnCreateInput {
+              name: String!
+            }
+
             input UserOptions {
               limit: Int
               offset: Int
               \\"\\"\\"
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [UserSort]
+              sort: [UserSort!]
             }
 
             type UserPostPostsAggregationSelection {
@@ -824,7 +849,7 @@ describe("connect or create with id", () => {
             }
 
             input UserPostsConnectOrCreateFieldInputOnCreate {
-              node: PostCreateInput!
+              node: PostOnCreateInput!
             }
 
             type UserPostsConnection {
@@ -951,28 +976,40 @@ describe("connect or create with id", () => {
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_IN: [ID]
+              id_IN: [ID!]
               id_NOT: ID
               id_NOT_CONTAINS: ID
               id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
+              id_NOT_IN: [ID!]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
-              posts: PostWhere
+              posts: PostWhere @deprecated(reason: \\"Use \`posts_SOME\` instead.\\")
               postsAggregate: UserPostsAggregateInput
-              postsConnection: UserPostsConnectionWhere
-              postsConnection_NOT: UserPostsConnectionWhere
-              posts_NOT: PostWhere
+              postsConnection: UserPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_SOME\` instead.\\")
+              postsConnection_ALL: UserPostsConnectionWhere
+              postsConnection_NONE: UserPostsConnectionWhere
+              postsConnection_NOT: UserPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              postsConnection_SINGLE: UserPostsConnectionWhere
+              postsConnection_SOME: UserPostsConnectionWhere
+              \\"\\"\\"Return Users where all of the related Posts match this filter\\"\\"\\"
+              posts_ALL: PostWhere
+              \\"\\"\\"Return Users where none of the related Posts match this filter\\"\\"\\"
+              posts_NONE: PostWhere
+              posts_NOT: PostWhere @deprecated(reason: \\"Use \`posts_NONE\` instead.\\")
+              \\"\\"\\"Return Users where one of the related Posts match this filter\\"\\"\\"
+              posts_SINGLE: PostWhere
+              \\"\\"\\"Return Users where some of the related Posts match this filter\\"\\"\\"
+              posts_SOME: PostWhere
             }"
         `);
     });

@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -47,7 +46,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -82,8 +81,8 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
             RETURN count(*)
             \\", \\"\\", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies})
-            YIELD value as this_acted_in0_relationship_actors0_edge
-            RETURN this { .title } AS this"
+            YIELD value AS this_acted_in0_relationship_actors0_edge
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -152,13 +151,13 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             SET this_actors0.name = $this_update_actors0_name
             RETURN count(*)
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-            YIELD value as _
+            YIELD value AS _
             CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
             SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
             RETURN count(*)
             \\", \\"\\", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies})
-            YIELD value as this_acted_in0_relationship_actors0_edge
-            RETURN this { .title } AS this"
+            YIELD value AS this_acted_in0_relationship_actors0_edge
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -166,11 +165,8 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
                 \\"this_title\\": \\"Forrest Gump\\",
                 \\"this_update_actors0_name\\": \\"Tom Hanks\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 },
                 \\"updateMovies\\": {
                     \\"args\\": {

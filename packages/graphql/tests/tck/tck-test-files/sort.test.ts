@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
@@ -58,7 +59,12 @@ describe("Cypher sort tests", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -81,6 +87,30 @@ describe("Cypher sort tests", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 RETURN this { .id, .title } as this
+                ORDER BY this.id DESC"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+
+        test("with field aliased in selection set", async () => {
+            const query = gql`
+                {
+                    movies(options: { sort: [{ id: DESC }] }) {
+                        aliased: id
+                        title
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:Movie)
+                RETURN this { aliased: this.id, .title, .id } as this
                 ORDER BY this.id DESC"
             `);
 
@@ -171,7 +201,7 @@ describe("Cypher sort tests", () => {
 
     test("Sort with offset limit & with other variables", async () => {
         const query = gql`
-            query($title: String, $offset: Int, $limit: Int) {
+            query ($title: String, $offset: Int, $limit: Int) {
                 movies(
                     options: { sort: [{ id: DESC }, { title: ASC }], offset: $offset, limit: $limit }
                     where: { title: $title }

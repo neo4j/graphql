@@ -19,19 +19,19 @@
 
 import { GraphQLScalarType, Kind } from "graphql";
 
-export const ScalarType = new GraphQLScalarType({
-    name: "Scalar",
-    description: "Int | Float | String | Boolean | ID | DateTime | Date",
+export const ScalarOrEnumType = new GraphQLScalarType({
+    name: "ScalarOrEnum",
+    description: "Int | Float | String | Boolean | ID | DateTime | Date | Enum",
     serialize(value) {
         if (!["string", "number", "boolean"].includes(typeof value)) {
-            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime | Date");
+            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime | Date | Enum");
         }
 
         return value;
     },
     parseValue(value) {
         if (!["string", "number", "boolean"].includes(typeof value)) {
-            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime | Date");
+            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime | Date | Enum");
         }
 
         return value;
@@ -47,7 +47,9 @@ export const ScalarType = new GraphQLScalarType({
             case Kind.BOOLEAN:
                 return ast.value;
             default:
-                throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime | Date");
+                throw new Error(
+                    "Value must be one of types: Int | Float | String | Boolean | ID | DateTime | Date | Enum"
+                );
         }
     },
 });

@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
 import neo4jDriver, { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { parseLocalDateTime } from "../../../src/schema/scalars/LocalDateTime";
+import { parseLocalDateTime } from "../../../src/schema/types/scalars/LocalDateTime";
 
 describe("LocalDateTime", () => {
     let driver: Driver;
@@ -47,9 +47,8 @@ describe("LocalDateTime", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const localDT = faker.date.past().toISOString().split("Z")[0];
@@ -110,12 +109,11 @@ describe("LocalDateTime", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
-            const localDTs = [...new Array(faker.random.number({ min: 2, max: 4 }))].map(
+            const localDTs = [...new Array(faker.datatype.number({ min: 2, max: 4 }))].map(
                 () => faker.date.past().toISOString().split("Z")[0]
             );
             const parsedLocalDateTimes = localDTs.map((localDT) => parseLocalDateTime(localDT));
@@ -194,9 +192,8 @@ describe("LocalDateTime", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const localDT = faker.date.past().toISOString().split("Z")[0];
@@ -267,9 +264,8 @@ describe("LocalDateTime", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const date = faker.date.future();
@@ -324,7 +320,8 @@ describe("LocalDateTime", () => {
                         }
                     `;
 
-                    const { schema } = new Neo4jGraphQL({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
                     const future = faker.date.future(100).toISOString().split("Z")[0];
@@ -459,7 +456,8 @@ describe("LocalDateTime", () => {
                         }
                     `;
 
-                    const { schema } = new Neo4jGraphQL({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
                     const future = faker.date.future(100).toISOString().split("Z")[0];

@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Interfaces", () => {
-    test("Interfaces", () => {
+    test("Interfaces", async () => {
         const typeDefs = gql`
             interface MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
                 id: ID
@@ -51,7 +51,7 @@ describe("Interfaces", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -84,9 +84,9 @@ describe("Interfaces", () => {
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieMovieMoviesAggregationSelection
-              moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
+              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(directed: Boolean = true, where: MovieWhere): MovieMovieMoviesAggregationSelection
+              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
               nodes: [MovieNode]
             }
 
@@ -214,7 +214,7 @@ describe("Interfaces", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
@@ -246,11 +246,23 @@ describe("Interfaces", () => {
               id_NOT_IN: [ID]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
-              movies: MovieWhere
+              movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: MovieMoviesAggregateInput
-              moviesConnection: MovieNodeMoviesConnectionWhere
-              moviesConnection_NOT: MovieNodeMoviesConnectionWhere
-              movies_NOT: MovieWhere
+              moviesConnection: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              moviesConnection_ALL: MovieNodeMoviesConnectionWhere
+              moviesConnection_NONE: MovieNodeMoviesConnectionWhere
+              moviesConnection_NOT: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              moviesConnection_SOME: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Movies match this filter\\"\\"\\"
+              movies_ALL: MovieWhere
+              \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
+              movies_NONE: MovieWhere
+              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
+              movies_SINGLE: MovieWhere
+              \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
+              movies_SOME: MovieWhere
             }
 
             type Mutation {

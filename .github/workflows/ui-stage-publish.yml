@@ -1,0 +1,59 @@
+name: "UI Publish"
+
+on:
+  workflow_run:
+    workflows: ["UI Build"]
+    types:
+      - completed
+
+jobs:
+  publish-ui:
+    if: github.event.workflow_run.conclusion == 'success'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Download built UI"
+        uses: actions/github-script@v6.0.0
+        with:
+          script: |
+            var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: ${{ github.event.workflow_run.id }},
+            });
+            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "graphqlui"
+            })[0];
+            var download = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{ github.workspace }}/graphqlui.zip', Buffer.from(download.data));
+      - run: unzip graphqlui.zip
+      - id: get-pr-number
+        run: |
+          number=$(<prnumber)
+          echo "::set-output name=pr-number::$number"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+      - name: Publish UI
+        run: |
+          npm install -g surge
+          surge . neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ steps.get-pr-number.outputs.pr-number }}
+          message: |
+            Looks like you've updated the UI!
+
+            Check out your changes at
+             http://neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh (=> for local development; use for instance [Neo4j Desktop](https://neo4j.com/download/))
+            or
+             https://neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh (=> use to connect to an [Aura Free](https://neo4j.com/cloud/aura-free/) dbms)
+          GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}

@@ -16,7 +16,7 @@ describe("signUp", () => {
     });
 
     test("should throw user with that email already exists", async () => {
-        const apolloServer = server(driver);
+        const apolloServer = await server(driver);
         const session = driver.session();
 
         const mutation = `
@@ -60,7 +60,7 @@ describe("signUp", () => {
     });
 
     test("should create user and return JWT", async () => {
-        const apolloServer = server(driver);
+        const apolloServer = await server(driver);
         const session = driver.session();
 
         const mutation = `

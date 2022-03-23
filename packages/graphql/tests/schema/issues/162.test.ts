@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("162", () => {
-    test("2 instances of DeleteInput type created", () => {
+    test("2 instances of DeleteInput type created", async () => {
         const typeDefs = gql`
             type Tiger {
                 x: Int
@@ -40,7 +40,7 @@ describe("162", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -142,9 +142,9 @@ describe("162", () => {
 
             type TigerJawLevel2 {
               id: ID
-              part1(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1!
-              part1Aggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
-              part1Connection(after: String, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
+              part1(directed: Boolean = true, options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1!
+              part1Aggregate(directed: Boolean = true, where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
+              part1Connection(after: String, directed: Boolean = true, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
             }
 
             type TigerJawLevel2AggregateSelection {
@@ -175,14 +175,14 @@ describe("162", () => {
               \\"\\"\\"
               Specify one or more TigerJawLevel2Sort objects to sort TigerJawLevel2s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [TigerJawLevel2Sort]
+              sort: [TigerJawLevel2Sort!]
             }
 
             type TigerJawLevel2Part1 {
               id: ID
-              tiger(options: TigerOptions, where: TigerWhere): Tiger!
-              tigerAggregate(where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection
-              tigerConnection(after: String, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
+              tiger(directed: Boolean = true, options: TigerOptions, where: TigerWhere): Tiger!
+              tigerAggregate(directed: Boolean = true, where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection
+              tigerConnection(after: String, directed: Boolean = true, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
             }
 
             input TigerJawLevel2Part1AggregateInput {
@@ -275,7 +275,7 @@ describe("162", () => {
               \\"\\"\\"
               Specify one or more TigerJawLevel2Part1Sort objects to sort TigerJawLevel2Part1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [TigerJawLevel2Part1Sort]
+              sort: [TigerJawLevel2Part1Sort!]
             }
 
             input TigerJawLevel2Part1RelationInput {
@@ -489,7 +489,7 @@ describe("162", () => {
               \\"\\"\\"
               Specify one or more TigerSort objects to sort Tigers by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [TigerSort]
+              sort: [TigerSort!]
             }
 
             \\"\\"\\"

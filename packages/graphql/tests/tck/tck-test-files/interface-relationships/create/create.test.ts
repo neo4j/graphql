@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Create create", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -56,7 +55,7 @@ describe("Interface Relationships - Create create", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -119,8 +118,9 @@ describe("Interface Relationships - Create create", () => {
             MATCH (this0)-[:ACTED_IN]->(this0_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS actedIn
             }
-            RETURN
-            this0 { .name, actedIn: collect(actedIn) } AS this0"
+            WITH this0, collect(actedIn) AS actedIn
+            RETURN [
+            this0 { .name, actedIn: actedIn }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

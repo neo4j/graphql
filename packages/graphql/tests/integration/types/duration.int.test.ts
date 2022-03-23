@@ -22,7 +22,7 @@ import neo4jDriver, { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { parseDuration } from "../../../src/schema/scalars/Duration";
+import { parseDuration } from "../../../src/schema/types/scalars/Duration";
 
 describe("Duration", () => {
     let driver: Driver;
@@ -46,9 +46,8 @@ describe("Duration", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const years = 3;
@@ -115,9 +114,8 @@ describe("Duration", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const durations = ["P34Y4M2DT23.44H", "P-34W", "P19980314T120000", "P4Y-5M-3.75D"];
@@ -195,9 +193,8 @@ describe("Duration", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const duration = "-P5Y6M";
@@ -268,9 +265,8 @@ describe("Duration", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const days = 4;
@@ -325,7 +321,8 @@ describe("Duration", () => {
                         }
                     `;
 
-                    const { schema } = new Neo4jGraphQL({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const schema = await neoSchema.getSchema();
 
                     const longId = generate({ readable: false });
                     const long = "P2Y";
