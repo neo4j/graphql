@@ -41,6 +41,12 @@ describe("200", () => {
               mutation: Mutation
             }
 
+            type CategoriesConnection {
+              edges: [CategoryEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Category {
               categoryId: ID!
               description: String!
@@ -168,7 +174,7 @@ describe("200", () => {
             type Query {
               categories(options: CategoryOptions, where: CategoryWhere): [Category!]!
               categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
-              categoriesConnection(after: String, first: Int, sort: [CategorySort], where: CategoryWhere): categoriesConnection!
+              categoriesConnection(after: String, first: Int, sort: [CategorySort], where: CategoryWhere): CategoriesConnection!
             }
 
             enum SortDirection {
@@ -194,12 +200,6 @@ describe("200", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }
-
-            type categoriesConnection {
-              edges: [CategoryEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }"
         `);
     });

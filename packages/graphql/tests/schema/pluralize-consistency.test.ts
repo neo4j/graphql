@@ -85,10 +85,10 @@ describe("Pluralize consistency", () => {
             type Query {
               superFriends(options: super_friendOptions, where: super_friendWhere): [super_friend!]!
               superFriendsAggregate(where: super_friendWhere): super_friendAggregateSelection!
-              superFriendsConnection(after: String, first: Int, sort: [super_friendSort], where: super_friendWhere): superFriendsConnection!
+              superFriendsConnection(after: String, first: Int, sort: [super_friendSort], where: super_friendWhere): SuperFriendsConnection!
               superUsers(options: super_userOptions, where: super_userWhere): [super_user!]!
               superUsersAggregate(where: super_userWhere): super_userAggregateSelection!
-              superUsersConnection(after: String, first: Int, sort: [super_userSort], where: super_userWhere): superUsersConnection!
+              superUsersConnection(after: String, first: Int, sort: [super_userSort], where: super_userWhere): SuperUsersConnection!
             }
 
             enum SortDirection {
@@ -101,6 +101,18 @@ describe("Pluralize consistency", () => {
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
+            }
+
+            type SuperFriendsConnection {
+              edges: [super_friendEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type SuperUsersConnection {
+              edges: [super_userEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type UpdateInfo {
@@ -119,18 +131,6 @@ describe("Pluralize consistency", () => {
             type UpdateSuperUsersMutationResponse {
               info: UpdateInfo!
               superUsers: [super_user!]!
-            }
-
-            type superFriendsConnection {
-              edges: [super_friendEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type superUsersConnection {
-              edges: [super_userEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             type super_friend {

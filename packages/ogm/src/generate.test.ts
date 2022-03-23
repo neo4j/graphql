@@ -191,7 +191,7 @@ describe("generate", () => {
             };
 
             export type UsersConnection = {
-              __typename?: \\"usersConnection\\";
+              __typename?: \\"UsersConnection\\";
               totalCount: Scalars[\\"Int\\"];
               pageInfo: PageInfo;
               edges: Array<UserEdge>;
@@ -455,7 +455,7 @@ describe("generate", () => {
             };
 
             export type UsersConnection = {
-              __typename?: \\"usersConnection\\";
+              __typename?: \\"UsersConnection\\";
               totalCount: Scalars[\\"Int\\"];
               pageInfo: PageInfo;
               edges: Array<UserEdge>;
@@ -734,7 +734,7 @@ describe("generate", () => {
             };
 
             export type UsersConnection = {
-              __typename?: \\"usersConnection\\";
+              __typename?: \\"UsersConnection\\";
               totalCount: Scalars[\\"Int\\"];
               pageInfo: PageInfo;
               edges: Array<UserEdge>;
@@ -1082,7 +1082,7 @@ describe("generate", () => {
             };
 
             export type MoviesConnection = {
-              __typename?: \\"moviesConnection\\";
+              __typename?: \\"MoviesConnection\\";
               totalCount: Scalars[\\"Int\\"];
               pageInfo: PageInfo;
               edges: Array<MovieEdge>;
@@ -1098,7 +1098,7 @@ describe("generate", () => {
             };
 
             export type PeopleConnection = {
-              __typename?: \\"peopleConnection\\";
+              __typename?: \\"PeopleConnection\\";
               totalCount: Scalars[\\"Int\\"];
               pageInfo: PageInfo;
               edges: Array<PersonEdge>;

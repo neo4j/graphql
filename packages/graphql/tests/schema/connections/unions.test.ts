@@ -287,6 +287,12 @@ describe("Unions", () => {
               publicationsConnection_SOME: AuthorPublicationsConnectionWhere
             }
 
+            type AuthorsConnection {
+              edges: [AuthorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Book {
               author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorAggregate(directed: Boolean = true, where: AuthorWhere): BookAuthorAuthorAggregationSelection
@@ -527,6 +533,12 @@ describe("Unions", () => {
               title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
+            }
+
+            type BooksConnection {
+              edges: [BookEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type CreateAuthorsMutationResponse {
@@ -805,6 +817,12 @@ describe("Unions", () => {
               subject_STARTS_WITH: String
             }
 
+            type JournalsConnection {
+              edges: [JournalEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createAuthors(input: [AuthorCreateInput!]!): CreateAuthorsMutationResponse!
               createBooks(input: [BookCreateInput!]!): CreateBooksMutationResponse!
@@ -835,13 +853,13 @@ describe("Unions", () => {
             type Query {
               authors(options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
-              authorsConnection(after: String, first: Int, sort: [AuthorSort], where: AuthorWhere): authorsConnection!
+              authorsConnection(after: String, first: Int, sort: [AuthorSort], where: AuthorWhere): AuthorsConnection!
               books(options: BookOptions, where: BookWhere): [Book!]!
               booksAggregate(where: BookWhere): BookAggregateSelection!
-              booksConnection(after: String, first: Int, sort: [BookSort], where: BookWhere): booksConnection!
+              booksConnection(after: String, first: Int, sort: [BookSort], where: BookWhere): BooksConnection!
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
               journalsAggregate(where: JournalWhere): JournalAggregateSelection!
-              journalsConnection(after: String, first: Int, sort: [JournalSort], where: JournalWhere): journalsConnection!
+              journalsConnection(after: String, first: Int, sort: [JournalSort], where: JournalWhere): JournalsConnection!
             }
 
             input QueryOptions {
@@ -911,24 +929,6 @@ describe("Unions", () => {
               words_LTE: Int
               words_NOT: Int
               words_NOT_IN: [Int!]
-            }
-
-            type authorsConnection {
-              edges: [AuthorEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type booksConnection {
-              edges: [BookEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type journalsConnection {
-              edges: [JournalEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }"
         `);
     });

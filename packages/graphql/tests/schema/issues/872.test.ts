@@ -265,6 +265,12 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               name_STARTS_WITH: String
             }
 
+            type Actor2sConnection {
+              edges: [Actor2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelectionNonNullable!
@@ -467,6 +473,12 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               name_STARTS_WITH: String
             }
 
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type CreateActor2sMutationResponse {
               actor2s: [Actor2!]!
               info: CreateInfo!
@@ -581,6 +593,12 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createActor2s(input: [Actor2CreateInput!]!): CreateActor2sMutationResponse!
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
@@ -604,13 +622,13 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             type Query {
               actor2s(options: Actor2Options, where: Actor2Where): [Actor2!]!
               actor2sAggregate(where: Actor2Where): Actor2AggregateSelection!
-              actor2sConnection(after: String, first: Int, sort: [Actor2Sort], where: Actor2Where): actor2sConnection!
+              actor2sConnection(after: String, first: Int, sort: [Actor2Sort], where: Actor2Where): Actor2sConnection!
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): actorsConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -646,24 +664,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-
-            type actor2sConnection {
-              edges: [Actor2Edge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type actorsConnection {
-              edges: [ActorEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type moviesConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }"
         `);
     });

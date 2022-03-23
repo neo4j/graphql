@@ -24,7 +24,6 @@ import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-ut
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("Root Connection Query tests", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 

@@ -85,7 +85,7 @@ describe("@computed directive", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): usersConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
             enum SortDirection {
@@ -202,7 +202,7 @@ describe("@computed directive", () => {
               username_STARTS_WITH: String
             }
 
-            type usersConnection {
+            type UsersConnection {
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

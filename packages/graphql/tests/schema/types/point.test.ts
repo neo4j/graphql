@@ -106,6 +106,12 @@ describe("Point", () => {
               filmedAt_NOT_IN: [PointInput!]
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
@@ -143,7 +149,7 @@ describe("Point", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): moviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -164,12 +170,6 @@ describe("Point", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-
-            type moviesConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }"
         `);
     });
@@ -276,6 +276,12 @@ describe("Point", () => {
               partLocation_NOT_IN: [CartesianPointInput!]
             }
 
+            type MachinesConnection {
+              edges: [MachineEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
               deleteMachines(where: MachineWhere): DeleteInfo!
@@ -293,7 +299,7 @@ describe("Point", () => {
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
-              machinesConnection(after: String, first: Int, sort: [MachineSort], where: MachineWhere): machinesConnection!
+              machinesConnection(after: String, first: Int, sort: [MachineSort], where: MachineWhere): MachinesConnection!
             }
 
             enum SortDirection {
@@ -314,12 +320,6 @@ describe("Point", () => {
             type UpdateMachinesMutationResponse {
               info: UpdateInfo!
               machines: [Machine!]!
-            }
-
-            type machinesConnection {
-              edges: [MachineEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }"
         `);
     });
@@ -391,6 +391,12 @@ describe("Point", () => {
               filmedAt_NOT_INCLUDES: PointInput
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
@@ -422,7 +428,7 @@ describe("Point", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, where: MovieWhere): moviesConnection!
+              moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
             type UpdateInfo {
@@ -436,12 +442,6 @@ describe("Point", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-
-            type moviesConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }"
         `);
     });
@@ -527,6 +527,12 @@ describe("Point", () => {
               partLocations_NOT_INCLUDES: CartesianPointInput
             }
 
+            type MachinesConnection {
+              edges: [MachineEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
               deleteMachines(where: MachineWhere): DeleteInfo!
@@ -544,7 +550,7 @@ describe("Point", () => {
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
-              machinesConnection(after: String, first: Int, where: MachineWhere): machinesConnection!
+              machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
             }
 
             type UpdateInfo {
@@ -558,12 +564,6 @@ describe("Point", () => {
             type UpdateMachinesMutationResponse {
               info: UpdateInfo!
               machines: [Machine!]!
-            }
-
-            type machinesConnection {
-              edges: [MachineEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }"
         `);
     });

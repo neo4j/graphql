@@ -133,7 +133,7 @@ describe("root-connections", () => {
         const create = `
         mutation($input: [${aircraftType.name}CreateInput!]!) {
           ${aircraftType.operations.create}(input: $input) {
-            aircraft {
+          ${aircraftType.plural} {
               id
             }
           }
