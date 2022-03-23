@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-/* eslint-disable no-underscore-dangle */
+
 import { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../classes";
 import {
@@ -65,9 +65,11 @@ describe("execute", () => {
 
                                 return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                             },
+                            commit() {},
                         };
 
                         return {
+                            beginTransaction: () => tx,
                             readTransaction: (fn) => {
                                 // @ts-ignore
                                 return fn(tx);
@@ -134,9 +136,11 @@ describe("execute", () => {
 
                             return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                         },
+                        commit() {},
                     };
 
                     return {
+                        beginTransaction: () => tx,
                         readTransaction: (fn) => {
                             // @ts-ignore
                             return fn(tx);
@@ -207,9 +211,11 @@ describe("execute", () => {
 
                             return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                         },
+                        commit() {},
                     };
 
                     return {
+                        beginTransaction: () => tx,
                         readTransaction: (fn) => {
                             // @ts-ignore
                             return fn(tx);

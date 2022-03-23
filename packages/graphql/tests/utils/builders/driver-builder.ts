@@ -56,9 +56,16 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
 
     private addFakeSession(): RunMock {
         const runMock = this.createRunMock();
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         this.with({
             session() {
                 return {
+                    beginTransaction: () => {
+                        return {
+                            run: runMock,
+                            commit() {},
+                        };
+                    },
                     readTransaction: (cb: any) => {
                         return cb({ run: runMock });
                     },
