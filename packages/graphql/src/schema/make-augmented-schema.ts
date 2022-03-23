@@ -81,6 +81,7 @@ import { PointDistance } from "./types/input-objects/PointDistance";
 import { CartesianPointDistance } from "./types/input-objects/CartesianPointDistance";
 import getNodes from "./get-nodes";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
+import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -876,16 +877,3 @@ function makeAugmentedSchema(
 }
 
 export default makeAugmentedSchema;
-
-function getResolveAndSubscriptionMethods(composer: SchemaComposer) {
-    const resolveMethods = composer.getResolveMethods();
-
-    const subscriptionMethods = Object.entries(composer.Subscription.getFields()).reduce((acc, [key, value]) => {
-        acc[key] = { subscribe: value.subscribe, resolve: value.resolve };
-        return acc;
-    }, {});
-    return {
-        ...resolveMethods,
-        Subscription: subscriptionMethods,
-    };
-}
