@@ -20,6 +20,7 @@
 import { filterAsyncIterator } from "./filter-async-iterator";
 
 describe("FilterAsyncIterator", () => {
+    // eslint-disable-next-line @typescript-eslint/require-await
     async function* generatorFunction() {
         yield "Hello";
         yield "PANIC";

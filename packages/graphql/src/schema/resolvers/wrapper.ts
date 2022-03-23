@@ -25,7 +25,6 @@ import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
 import { Context, Neo4jGraphQLPlugins, JwtPayload } from "../../types";
 import { getToken } from "../../utils/get-token";
-import { SubscriptionContext } from "./subscriptions/subscribe";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -98,12 +97,12 @@ export const wrapResolver =
 export const wrapSubscription =
     (resolverArgs: WrapResolverArguments) =>
     (next) =>
-    async (root, args, context: Record<string, any> = {}, info: GraphQLResolveInfo) => {
+    (root, args, context: Record<string, any>, info: GraphQLResolveInfo) => {
         // TODO: context auth
-        let subscriptionContext = {}; // SubscriptionContext
+        let subscriptionContext = {};
         if (resolverArgs.plugins?.subscriptions) {
             subscriptionContext = {
-                plugin: resolverArgs.plugins!.subscriptions!,
+                plugin: resolverArgs.plugins.subscriptions,
             };
         }
         return next(root, args, { ...context, ...subscriptionContext }, info);

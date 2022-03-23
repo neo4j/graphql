@@ -42,6 +42,7 @@ import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
 import { QueryOptionsDirective } from "./QueryOptionsDirective";
 import { upperFirst } from "../utils/upper-first";
+import { lowerFirst } from "../utils/lower-first";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -142,18 +143,6 @@ class Node extends GraphElement {
         this.plural = this.generatePlural();
     }
 
-    private generatePlural(): string {
-        const name = this.nodeDirective?.plural || this.name;
-
-        const re = /^(_+).+/;
-        const match = re.exec(name);
-        const leadingUnderscores = match?.[1] || "";
-
-        const plural = this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
-
-        return `${leadingUnderscores}${plural}`;
-    }
-
     // Fields you can set in a create or update mutation
     public get mutableFields(): MutableField[] {
         return [
@@ -197,6 +186,7 @@ class Node extends GraphElement {
 
     public get rootTypeFieldNames(): RootTypeFieldNames {
         const pascalCasePlural = this.pascalCasePlural;
+        const lowercaseSingular = this.generateSingular();
 
         return {
             create: `create${pascalCasePlural}`,
@@ -205,9 +195,9 @@ class Node extends GraphElement {
             delete: `delete${pascalCasePlural}`,
             aggregate: `${this.plural}Aggregate`,
             subscribe: {
-                created: `${this.plural}Created`,
-                updated: `${this.plural}Updated`,
-                deleted: `${this.plural}Deleted`,
+                created: `${lowercaseSingular}Created`,
+                updated: `${lowercaseSingular}Updated`,
+                deleted: `${lowercaseSingular}Deleted`,
             },
         };
     }
@@ -231,6 +221,26 @@ class Node extends GraphElement {
 
     public getMainLabel(): string {
         return this.nodeDirective?.label || this.name;
+    }
+
+    private generatePlural(): string {
+        const name = this.nodeDirective?.plural || this.name;
+        const plural = this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
+
+        return `${this.leadingUnderscores(name)}${plural}`;
+    }
+
+    private generateSingular(): string {
+        const name = this.name;
+        const singular = camelcase(name);
+
+        return `${this.leadingUnderscores(name)}${singular}`;
+    }
+
+    private leadingUnderscores(name: string): string {
+        const re = /^(_+).+/;
+        const match = re.exec(name);
+        return match?.[1] || "";
     }
 }
 

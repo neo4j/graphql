@@ -29,9 +29,11 @@ export function filterAsyncIterator<T>(
             return getNextPromise(asyncIterator, filterFn);
         },
         return() {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return asyncIterator.return!();
         },
         throw(error) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return asyncIterator.throw!(error);
         },
         [Symbol.asyncIterator]() {
@@ -50,19 +52,21 @@ function getNextPromise<T>(asyncIterator: AsyncIterator<T>, filterFn: FilterFn<T
                         resolve(payload);
                         return;
                     }
-                    Promise.resolve(filterFn(payload.value)).then((filterResult) => {
-                        if (filterResult === true) {
-                            resolve(payload);
-                            return;
-                        }
-                        // Skip the current value and wait for the next one
-                        inner();
-                        return;
-                    });
+                    Promise.resolve(filterFn(payload.value))
+                        .then((filterResult) => {
+                            if (filterResult === true) {
+                                resolve(payload);
+                            } else {
+                                // Skip the current value and wait for the next one
+                                inner();
+                            }
+                        })
+                        .catch((err) => {
+                            reject(err);
+                        });
                 })
                 .catch((err) => {
                     reject(err);
-                    return;
                 });
         };
 

@@ -111,8 +111,12 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
+            type MovieCreatedEvent {
+              movieCreated: Movie
+            }
+
             type MovieDeletedEvent {
-              movie: Movie
+              movieDeleted: Movie
             }
 
             input MovieOptions {
@@ -142,7 +146,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieUpdatedEvent {
-              movie: Movie
+              movieUpdated: Movie
             }
 
             input MovieWhere {
@@ -197,7 +201,7 @@ describe("Subscriptions", () => {
             }
 
             type Subscription {
-              movieCreated: String
+              movieCreated: MovieCreatedEvent
               movieDeleted: MovieDeletedEvent
               movieUpdated: MovieUpdatedEvent
             }
