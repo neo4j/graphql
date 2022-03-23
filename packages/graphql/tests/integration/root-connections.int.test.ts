@@ -70,7 +70,7 @@ describe("root-connections", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -137,14 +137,14 @@ describe("root-connections", () => {
             await neoSchema.checkNeo4jCompat();
 
             await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: dummyAircrafts },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
