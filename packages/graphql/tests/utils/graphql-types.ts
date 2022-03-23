@@ -30,6 +30,11 @@ type UniqueTypeOperations = {
     delete: string;
     aggregate: string;
     connection: string;
+    subscribe: {
+        created: string;
+        updated: string;
+        deleted: string;
+    };
 };
 
 export class UniqueType {
@@ -49,6 +54,7 @@ export class UniqueType {
 
     public get operations(): UniqueTypeOperations {
         const pascalCasePlural = upperFirst(this.plural);
+        const singular = camelcase(this.name);
 
         return {
             create: `create${pascalCasePlural}`,
@@ -56,6 +62,11 @@ export class UniqueType {
             delete: `delete${pascalCasePlural}`,
             aggregate: `${this.plural}Aggregate`,
             connection: `${this.plural}Connection`,
+            subscribe: {
+                created: `${singular}Created`,
+                updated: `${singular}Updated`,
+                deleted: `${singular}Deleted`,
+            },
         };
     }
 

@@ -112,11 +112,11 @@ describe("Subscriptions", () => {
             }
 
             type MovieCreatedEvent {
-              movie: Movie
+              movieCreated: Movie
             }
 
             type MovieDeletedEvent {
-              movie: Movie
+              movieDeleted: Movie
             }
 
             type MovieEdge {
@@ -151,7 +151,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieUpdatedEvent {
-              movie: Movie
+              movieUpdated: Movie
             }
 
             input MovieWhere {

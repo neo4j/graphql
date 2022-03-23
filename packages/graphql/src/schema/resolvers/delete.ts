@@ -23,7 +23,7 @@ import { execute } from "../../utils";
 import { translateDelete } from "../../translate";
 import { Context } from "../../types";
 import { Node } from "../../classes";
-import { publishEventsToPlugin } from "./subscriptions/publish-events-to-plugin";
+import { publishEventsToPlugin } from "../subscriptions/publish-events-to-plugin";
 
 export default function deleteResolver({ node }: { node: Node }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
