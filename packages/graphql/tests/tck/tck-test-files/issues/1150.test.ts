@@ -26,48 +26,32 @@ import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test
 describe("https://github.com/neo4j/graphql/issues/1150", () => {
     test("union types with auth and connection-where", async () => {
         const typeDefs = gql`
-            type Battery @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                batterySeriesNumber: String
-                nameMigrated: String
+            type Battery {
+                id: ID! @id(autogenerate: false)
+                current: Boolean!
             }
 
             extend type Battery @auth(rules: [{ isAuthenticated: true, roles: ["admin"] }])
 
-            extend type Battery {
+            type CombustionEngine {
                 id: ID! @id(autogenerate: false)
                 current: Boolean!
             }
 
-            type CombustionEngine @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                power: Int
-                torqueMaximum: Int
-            }
-
-            extend type CombustionEngine {
+            type Drive {
                 id: ID! @id(autogenerate: false)
                 current: Boolean!
-            }
-
-            type Drive @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 driveCompositions: [DriveComposition!]!
                     @relationship(type: "CONSISTS_OF", properties: "RelationProps", direction: OUT)
             }
 
-            extend type Drive {
-                id: ID! @id(autogenerate: false)
-                current: Boolean!
-            }
-
             union DriveComponent = Battery | CombustionEngine
 
-            type DriveComposition @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                driveComponent: [DriveComponent!]!
-                    @relationship(type: "HAS", properties: "RelationProps", direction: OUT)
-            }
-
-            extend type DriveComposition {
+            type DriveComposition {
                 id: ID! @id(autogenerate: false)
                 current: Boolean!
+                driveComponent: [DriveComponent!]!
+                    @relationship(type: "HAS", properties: "RelationProps", direction: OUT)
             }
 
             interface RelationProps {
@@ -99,12 +83,9 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                                         node {
                                             ... on Battery {
                                                 id
-                                                batterySeriesNumber
-                                                nameMigrated
                                             }
                                             ... on CombustionEngine {
-                                                power
-                                                torqueMaximum
+                                                id
                                             }
                                         }
                                     }
@@ -135,13 +116,13 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             MATCH (this_drivecomposition)-[this_drivecomposition_has_relationship:HAS]->(this_drivecomposition_Battery:Battery)
             WHERE this_drivecomposition_has_relationship.current = $this_driveCompositionsConnection.edges.node.driveComponentConnection.args.where.Battery.edge.current
             CALL apoc.util.validate(NOT((ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH { current: this_drivecomposition_has_relationship.current, node: { __resolveType: \\"Battery\\", id: this_drivecomposition_Battery.id, batterySeriesNumber: this_drivecomposition_Battery.batterySeriesNumber, nameMigrated: this_drivecomposition_Battery.nameMigrated } } AS edge
+            WITH { current: this_drivecomposition_has_relationship.current, node: { __resolveType: \\"Battery\\", id: this_drivecomposition_Battery.id } } AS edge
             RETURN edge
             UNION
             WITH this_drivecomposition
             MATCH (this_drivecomposition)-[this_drivecomposition_has_relationship:HAS]->(this_drivecomposition_CombustionEngine:CombustionEngine)
             WHERE this_drivecomposition_has_relationship.current = $this_driveCompositionsConnection.edges.node.driveComponentConnection.args.where.CombustionEngine.edge.current
-            WITH { current: this_drivecomposition_has_relationship.current, node: { __resolveType: \\"CombustionEngine\\", power: this_drivecomposition_CombustionEngine.power, torqueMaximum: this_drivecomposition_CombustionEngine.torqueMaximum } } AS edge
+            WITH { current: this_drivecomposition_has_relationship.current, node: { __resolveType: \\"CombustionEngine\\", id: this_drivecomposition_CombustionEngine.id } } AS edge
             RETURN edge
             }
             WITH collect(edge) as edges

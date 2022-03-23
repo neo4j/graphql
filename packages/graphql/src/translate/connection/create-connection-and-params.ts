@@ -246,7 +246,6 @@ function createConnectionAndParams({
                     context,
                     where: { varName: relatedNodeVariable, node: n },
                 });
-
                 if (whereAuth[0]) {
                     whereStrs.push(whereAuth[0]);
                     globalParams = { ...globalParams, ...whereAuth[1] };

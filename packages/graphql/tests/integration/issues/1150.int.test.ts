@@ -18,6 +18,7 @@
  */
 
 import { graphql, GraphQLSchema } from "graphql";
+import { gql } from "apollo-server";
 import { Driver } from "neo4j-driver";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import neo4j from "../neo4j";
@@ -31,49 +32,33 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
     beforeAll(async () => {
         driver = await neo4j();
 
-        const typeDefs = `
-            type Battery @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                batterySeriesNumber: String
-                nameMigrated: String
+        const typeDefs = gql`
+            type Battery {
+                id: ID! @id(autogenerate: false)
+                current: Boolean!
             }
 
             extend type Battery @auth(rules: [{ isAuthenticated: true, roles: ["admin"] }])
 
-            extend type Battery {
+            type CombustionEngine {
                 id: ID! @id(autogenerate: false)
                 current: Boolean!
             }
 
-            type CombustionEngine @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                power: Int
-                torqueMaximum: Int
-            }
-
-            extend type CombustionEngine {
+            type Drive {
                 id: ID! @id(autogenerate: false)
                 current: Boolean!
-            }
-
-            type Drive @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 driveCompositions: [DriveComposition!]!
                     @relationship(type: "CONSISTS_OF", properties: "RelationProps", direction: OUT)
             }
 
-            extend type Drive {
-                id: ID! @id(autogenerate: false)
-                current: Boolean!
-            }
-
             union DriveComponent = Battery | CombustionEngine
 
-            type DriveComposition @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                driveComponent: [DriveComponent!]!
-                    @relationship(type: "HAS", properties: "RelationProps", direction: OUT)
-            }
-
-            extend type DriveComposition {
+            type DriveComposition {
                 id: ID! @id(autogenerate: false)
                 current: Boolean!
+                driveComponent: [DriveComponent!]!
+                    @relationship(type: "HAS", properties: "RelationProps", direction: OUT)
             }
 
             interface RelationProps {
@@ -115,12 +100,9 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                                         node {
                                             ... on Battery {
                                                 id
-                                                batterySeriesNumber
-                                                nameMigrated
                                             }
                                             ... on CombustionEngine {
-                                                power
-                                                torqueMaximum
+                                                id
                                             }
                                         }
                                     }
