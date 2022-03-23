@@ -73,6 +73,11 @@ describe("Node", () => {
                     update: "updateAccounts",
                     delete: "deleteAccounts",
                     aggregate: "accountsAggregate",
+                    subscribe: {
+                        created: "accountCreated",
+                        updated: "accountUpdated",
+                        deleted: "accountDeleted",
+                    },
                 },
             ],
             [
@@ -83,6 +88,11 @@ describe("Node", () => {
                     update: "updateAwsAccounts",
                     delete: "deleteAwsAccounts",
                     aggregate: "awsAccountsAggregate",
+                    subscribe: {
+                        created: "awsAccountCreated",
+                        updated: "awsAccountUpdated",
+                        deleted: "awsAccountDeleted",
+                    },
                 },
             ],
             [
@@ -93,6 +103,11 @@ describe("Node", () => {
                     update: "updateAwsAccounts",
                     delete: "deleteAwsAccounts",
                     aggregate: "awsAccountsAggregate",
+                    subscribe: {
+                        created: "awsAccountCreated",
+                        updated: "awsAccountUpdated",
+                        deleted: "awsAccountDeleted",
+                    },
                 },
             ],
             [
@@ -103,6 +118,11 @@ describe("Node", () => {
                     update: "updateAwsAccounts",
                     delete: "deleteAwsAccounts",
                     aggregate: "awsAccountsAggregate",
+                    subscribe: {
+                        created: "awsAccountCreated",
+                        updated: "awsAccountUpdated",
+                        deleted: "awsAccountDeleted",
+                    },
                 },
             ],
             [
@@ -113,6 +133,11 @@ describe("Node", () => {
                     update: "updateAwsAccounts",
                     delete: "deleteAwsAccounts",
                     aggregate: "awsAccountsAggregate",
+                    subscribe: {
+                        created: "awsAccountCreated",
+                        updated: "awsAccountUpdated",
+                        deleted: "awsAccountDeleted",
+                    },
                 },
             ],
             [
@@ -123,6 +148,11 @@ describe("Node", () => {
                     update: "updateAccounts",
                     delete: "deleteAccounts",
                     aggregate: "accountsAggregate",
+                    subscribe: {
+                        created: "accountCreated",
+                        updated: "accountUpdated",
+                        deleted: "accountDeleted",
+                    },
                 },
             ],
             [
@@ -133,6 +163,11 @@ describe("Node", () => {
                     update: "updateAccounts",
                     delete: "deleteAccounts",
                     aggregate: "accountsAggregate",
+                    subscribe: {
+                        created: "accountCreated",
+                        updated: "accountUpdated",
+                        deleted: "accountDeleted",
+                    },
                 },
             ],
             [
@@ -143,6 +178,11 @@ describe("Node", () => {
                     update: "updateAs",
                     delete: "deleteAs",
                     aggregate: "asAggregate",
+                    subscribe: {
+                        created: "aCreated",
+                        updated: "aUpdated",
+                        deleted: "aDeleted",
+                    },
                 },
             ],
             [
@@ -153,6 +193,11 @@ describe("Node", () => {
                     update: "update_2Numbers",
                     delete: "delete_2Numbers",
                     aggregate: "_2NumbersAggregate",
+                    subscribe: {
+                        created: "_2NumberCreated",
+                        updated: "_2NumberUpdated",
+                        deleted: "_2NumberDeleted",
+                    },
                 },
             ],
             [
@@ -163,6 +208,11 @@ describe("Node", () => {
                     update: "update__2Numbers",
                     delete: "delete__2Numbers",
                     aggregate: "__2NumbersAggregate",
+                    subscribe: {
+                        created: "__2NumberCreated",
+                        updated: "__2NumberUpdated",
+                        deleted: "__2NumberDeleted",
+                    },
                 },
             ],
             [
@@ -173,6 +223,11 @@ describe("Node", () => {
                     update: "update_numbers",
                     delete: "delete_numbers",
                     aggregate: "_numbersAggregate",
+                    subscribe: {
+                        created: "_numberCreated",
+                        updated: "_numberUpdated",
+                        deleted: "_numberDeleted",
+                    },
                 },
             ],
         ])("should pluralize %s as expected", (typename: string, rootTypeFieldNames: RootTypeFieldNames) => {
@@ -192,6 +247,11 @@ describe("Node", () => {
                     update: "updateAccounts",
                     delete: "deleteAccounts",
                     aggregate: "accountsAggregate",
+                    subscribe: {
+                        created: "testCreated",
+                        updated: "testUpdated",
+                        deleted: "testDeleted",
+                    },
                 },
             ],
             [
@@ -202,6 +262,11 @@ describe("Node", () => {
                     update: "updateAwsAccounts",
                     delete: "deleteAwsAccounts",
                     aggregate: "awsAccountsAggregate",
+                    subscribe: {
+                        created: "testCreated",
+                        updated: "testUpdated",
+                        deleted: "testDeleted",
+                    },
                 },
             ],
             [
@@ -212,6 +277,11 @@ describe("Node", () => {
                     update: "updateAwsAccounts",
                     delete: "deleteAwsAccounts",
                     aggregate: "awsAccountsAggregate",
+                    subscribe: {
+                        created: "testCreated",
+                        updated: "testUpdated",
+                        deleted: "testDeleted",
+                    },
                 },
             ],
             [
@@ -222,6 +292,11 @@ describe("Node", () => {
                     update: "updateAwsAccounts",
                     delete: "deleteAwsAccounts",
                     aggregate: "awsAccountsAggregate",
+                    subscribe: {
+                        created: "testCreated",
+                        updated: "testUpdated",
+                        deleted: "testDeleted",
+                    },
                 },
             ],
             [
@@ -232,6 +307,11 @@ describe("Node", () => {
                     update: "updateAwsAccounts",
                     delete: "deleteAwsAccounts",
                     aggregate: "awsAccountsAggregate",
+                    subscribe: {
+                        created: "testCreated",
+                        updated: "testUpdated",
+                        deleted: "testDeleted",
+                    },
                 },
             ],
             [
@@ -242,6 +322,11 @@ describe("Node", () => {
                     update: "updateAccounts",
                     delete: "deleteAccounts",
                     aggregate: "accountsAggregate",
+                    subscribe: {
+                        created: "testCreated",
+                        updated: "testUpdated",
+                        deleted: "testDeleted",
+                    },
                 },
             ],
             [
@@ -252,6 +337,11 @@ describe("Node", () => {
                     update: "updateAccounts",
                     delete: "deleteAccounts",
                     aggregate: "accountsAggregate",
+                    subscribe: {
+                        created: "testCreated",
+                        updated: "testUpdated",
+                        deleted: "testDeleted",
+                    },
                 },
             ],
         ])(

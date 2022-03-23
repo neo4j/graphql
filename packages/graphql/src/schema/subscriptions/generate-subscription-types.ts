@@ -20,10 +20,10 @@
 import { SchemaComposer } from "graphql-compose";
 import { SubscriptionsEvent } from "../../subscriptions/subscriptions-event";
 import { Node } from "../../classes";
-import { lowerFirst } from "../../utils/lower-first";
 import { EventType } from "../types/enums/EventType";
 import { generateSubscriptionWhereType } from "./generate-subscription-where-type";
 import { generateEventPayloadType } from "./generate-event-payload-type";
+import { createSubscription, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
 
 export function generateSubscriptionTypes({
     schemaComposer,
@@ -39,6 +39,7 @@ export function generateSubscriptionTypes({
     nodes.forEach((node) => {
         const eventPayload = generateEventPayloadType(node, schemaComposer);
         const where = generateSubscriptionWhereType(node, schemaComposer);
+        const subscribeOperation = node.rootTypeFieldNames.subscribe;
 
         const nodeCreatedEvent = schemaComposer.createObjectTC({
             name: `${node.name}CreatedEvent`,
@@ -53,8 +54,6 @@ export function generateSubscriptionTypes({
                 },
             },
         });
-
-        const lowerFirstNodeName = lowerFirst(node.name);
 
         const nodeUpdatedEvent = schemaComposer.createObjectTC({
             name: `${node.name}UpdatedEvent`,
@@ -89,15 +88,17 @@ export function generateSubscriptionTypes({
         });
 
         subscriptionComposer.addFields({
-            [`${lowerFirstNodeName}Created`]: {
+            [subscribeOperation.created]: {
                 args: { where },
                 type: nodeCreatedEvent.NonNull,
+                subscribe: createSubscription(node),
+                resolve: subscriptionResolve,
             },
-            [`${lowerFirstNodeName}Updated`]: {
+            [subscribeOperation.updated]: {
                 args: { where },
                 type: nodeUpdatedEvent.NonNull,
             },
-            [`${lowerFirstNodeName}Deleted`]: {
+            [subscribeOperation.deleted]: {
                 args: { where },
                 type: nodeDeletedEvent.NonNull,
             },
