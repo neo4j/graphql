@@ -23,14 +23,14 @@ import { lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Node Interface Types", () => {
-    test("nodes should impelment the Node Interface and generate a top-level node query", () => {
+    test("nodes should implement the Node Interface and generate a top-level node query", async () => {
         const typeDefs = gql`
             type Movie @node(global: true) {
                 title: String! @unique
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -75,7 +75,7 @@ describe("Node Interface Types", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -96,11 +96,11 @@ describe("Node Interface Types", () => {
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }

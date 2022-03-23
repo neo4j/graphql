@@ -27,9 +27,8 @@ import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 import { fromGlobalId } from "../../utils/global-ids";
 
 export default function globalNodeResolver({ nodes }: { nodes: Node[] }) {
-    // todo: REMOVE
-    async function resolve(_root: any, _args: { id: string }, _context: unknown, info: GraphQLResolveInfo) {
-        const { label, field, id } = fromGlobalId(_args.id);
+    async function resolve(_root: any, args: { id: string }, context: Context, info: GraphQLResolveInfo) {
+        const { label, field, id } = fromGlobalId(args.id);
 
         if (!label || !field || !id) return null;
 
@@ -58,7 +57,6 @@ export default function globalNodeResolver({ nodes }: { nodes: Node[] }) {
             fieldsByTypeName,
         };
 
-        const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { resolveTree });
 
         const [cypher, params] = translateRead({ context, node });
@@ -73,7 +71,7 @@ export default function globalNodeResolver({ nodes }: { nodes: Node[] }) {
         // we should return null if no record is found, but if you
         // return null here it throws off the tck tests. Same issue as in the
         // root-connections PR
-        let obj = { id: _args.id, __resolveType: node.name };
+        let obj = { id: args.id, __resolveType: node.name };
         if (executeResult.records.length && executeResult.records[0].this) {
             obj = { ...executeResult.records[0].this, ...obj };
         }

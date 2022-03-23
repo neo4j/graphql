@@ -35,17 +35,12 @@ function parseNodeDirective(nodeDirective: DirectiveNode | undefined, definition
         if (idField) {
             if (!idField.directives?.find((dir) => dir.name.value === "alias")) {
                 throw new Error(
-                    "Type `Movie` already has a field `id`. Either remove it, or if you need access to this property, consider using the `@alias` directive to access it via another field"
+                    `Type ${definition.name.value} already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
                 );
             }
         }
 
-        const candidates = fields.filter(
-            (x) =>
-                x.type.kind === "NonNullType" &&
-                x.type.type.kind === "NamedType" &&
-                (x.type.type.name.value === "ID" || x.type.type.name.value === "String")
-        );
+        const candidates = fields.filter((x) => x.type.kind === "NonNullType" && x.type.type.kind === "NamedType");
 
         const idDirectiveField = candidates.find((x) => x.directives?.find((dir) => dir.name.value === "id"));
         const uniqueDirectiveField = candidates.find((x) => x.directives?.find((dir) => dir.name.value === "unique"));

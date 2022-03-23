@@ -102,7 +102,7 @@ describe("parseNodeDirective", () => {
             const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
             const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
             expect(() => parseNodeDirective(directive, definition)).toThrow(
-                "Type `Movie` already has a field `id`. Either remove it, or if you need access to this property, consider using the `@alias` directive to access it via another field"
+                `Type Movie already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
             );
         });
 

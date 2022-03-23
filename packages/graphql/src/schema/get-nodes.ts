@@ -107,7 +107,7 @@ function getNodes(definitionNodes: DefinitionNodes): Nodes {
 
         let nodeDirective: NodeDirective;
         if (nodeDirectiveDefinition) {
-            nodeDirective = parseNodeDirective(nodeDirectiveDefinition);
+            nodeDirective = parseNodeDirective(nodeDirectiveDefinition, definition);
         }
 
         const nodeFields = getObjFieldMeta({

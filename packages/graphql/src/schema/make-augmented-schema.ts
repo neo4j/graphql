@@ -24,6 +24,7 @@ import {
     GraphQLID,
     GraphQLNonNull,
     GraphQLScalarType,
+    InterfaceTypeDefinitionNode,
     Kind,
     NameNode,
     ObjectTypeDefinitionNode,
@@ -865,7 +866,6 @@ function makeAugmentedSchema(
             }
             return res;
         }, {}),
-        // eslint-disable-next-line no-underscore-dangle
         ...(globalNodes.length > 0 ? { Node: { __resolveType: (root) => root.__resolveType } } : {}),
     };
 
