@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Connect Or Create", () => {
-    test("With Unions", () => {
+    test("With Unions", async () => {
         const typeDefs = gql`
             type Movie {
                 title: String!
@@ -47,7 +47,7 @@ describe("Connect Or Create", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -77,16 +77,16 @@ describe("Connect Or Create", () => {
               screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
-              screenTime_IN: [Int]
+              screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
               screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
+              screenTime_NOT_IN: [Int!]
             }
 
             type Actor {
               actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(directed: Boolean = true, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -106,31 +106,13 @@ describe("Connect Or Create", () => {
               totalCount: Int!
             }
 
-            input ActorActedInConnectionMovieWhere {
-              AND: [ActorActedInConnectionMovieWhere]
-              OR: [ActorActedInConnectionMovieWhere]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
-              node: MovieWhere
-              node_NOT: MovieWhere
-            }
-
-            input ActorActedInConnectionSeriesWhere {
-              AND: [ActorActedInConnectionSeriesWhere]
-              OR: [ActorActedInConnectionSeriesWhere]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
-              node: SeriesWhere
-              node_NOT: SeriesWhere
-            }
-
             input ActorActedInConnectionSort {
               edge: ActedInSort
             }
 
             input ActorActedInConnectionWhere {
-              Movie: ActorActedInConnectionMovieWhere
-              Series: ActorActedInConnectionSeriesWhere
+              Movie: ActorActedInMovieConnectionWhere
+              Series: ActorActedInSeriesConnectionWhere
             }
 
             input ActorActedInCreateFieldInput {
@@ -165,7 +147,7 @@ describe("Connect Or Create", () => {
 
             input ActorActedInMovieConnectOrCreateFieldInputOnCreate {
               edge: ActedInCreateInput!
-              node: MovieCreateInput!
+              node: MovieOnCreateInput!
             }
 
             input ActorActedInMovieConnectionWhere {
@@ -229,7 +211,7 @@ describe("Connect Or Create", () => {
 
             input ActorActedInSeriesConnectOrCreateFieldInputOnCreate {
               edge: ActedInCreateInput!
-              node: SeriesCreateInput!
+              node: SeriesOnCreateInput!
             }
 
             input ActorActedInSeriesConnectionWhere {
@@ -323,7 +305,7 @@ describe("Connect Or Create", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
@@ -345,16 +327,20 @@ describe("Connect Or Create", () => {
             input ActorWhere {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
-              actedInConnection: ActorActedInConnectionWhere
-              actedInConnection_NOT: ActorActedInConnectionWhere
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -421,13 +407,18 @@ describe("Connect Or Create", () => {
               node: Movie!
             }
 
+            input MovieOnCreateInput {
+              isan: String!
+              title: String!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -453,21 +444,21 @@ describe("Connect Or Create", () => {
               isan: String
               isan_CONTAINS: String
               isan_ENDS_WITH: String
-              isan_IN: [String]
+              isan_IN: [String!]
               isan_NOT: String
               isan_NOT_CONTAINS: String
               isan_NOT_ENDS_WITH: String
-              isan_NOT_IN: [String]
+              isan_NOT_IN: [String!]
               isan_NOT_STARTS_WITH: String
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -546,9 +537,15 @@ describe("Connect Or Create", () => {
               title: String!
             }
 
+<<<<<<< HEAD
             type SeriesEdge {
               cursor: String!
               node: Series!
+=======
+            input SeriesOnCreateInput {
+              isan: String!
+              title: String!
+>>>>>>> dev
             }
 
             input SeriesOptions {
@@ -557,7 +554,7 @@ describe("Connect Or Create", () => {
               \\"\\"\\"
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [SeriesSort]
+              sort: [SeriesSort!]
             }
 
             \\"\\"\\"
@@ -583,21 +580,21 @@ describe("Connect Or Create", () => {
               isan: String
               isan_CONTAINS: String
               isan_ENDS_WITH: String
-              isan_IN: [String]
+              isan_IN: [String!]
               isan_NOT: String
               isan_NOT_CONTAINS: String
               isan_NOT_ENDS_WITH: String
-              isan_NOT_IN: [String]
+              isan_NOT_IN: [String!]
               isan_NOT_STARTS_WITH: String
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }

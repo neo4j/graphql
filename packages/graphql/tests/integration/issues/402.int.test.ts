@@ -60,7 +60,7 @@ describe("402", () => {
 
         // testing the missing non non-null array
         const query = `
-            query ($area: [ID]) {
+            query ($area: [ID!]) {
                events (
                  where: {
                    id: "${eventId}"
@@ -87,7 +87,7 @@ describe("402", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });

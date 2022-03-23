@@ -57,8 +57,8 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
         const createMutation = `
             mutation {
-                createUSERS(input: { USERID: "${userid}", COMPANYID: "${companyid1}" }) {
-                    uSERS {
+                createUsers(input: { USERID: "${userid}", COMPANYID: "${companyid1}" }) {
+                    users {
                         USERID
                         COMPANYID
                     }
@@ -68,8 +68,8 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
         const updateMutation = `
             mutation {
-                updateUSERS(where: { USERID: "${userid}" }, update: { COMPANYID: "${companyid2}" }) {
-                    uSERS {
+                updateUsers(where: { USERID: "${userid}" }, update: { COMPANYID: "${companyid2}" }) {
+                    users {
                         USERID
                         COMPANYID
                     }
@@ -81,26 +81,26 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
             await neoSchema.checkNeo4jCompat();
 
             const createResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: createMutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(createResult.errors).toBeFalsy();
 
-            expect((createResult?.data as any)?.createUSERS?.uSERS).toEqual([
+            expect((createResult?.data as any)?.createUsers?.users).toEqual([
                 { USERID: userid, COMPANYID: companyid1 },
             ]);
 
             const updateResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: updateMutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(updateResult.errors).toBeFalsy();
 
-            expect((updateResult?.data as any)?.updateUSERS?.uSERS).toEqual([
+            expect((updateResult?.data as any)?.updateUsers?.users).toEqual([
                 { USERID: userid, COMPANYID: companyid2 },
             ]);
 

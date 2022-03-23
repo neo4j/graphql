@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher Time", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -38,7 +37,7 @@ describe("Cypher Time", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -130,8 +129,8 @@ describe("Cypher Time", () => {
             SET this0.time = $this0_time
             RETURN this0
             }
-            RETURN
-            this0 { .time } AS this0"
+            RETURN [
+            this0 { .time }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -167,7 +166,7 @@ describe("Cypher Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.time = $this_update_time
-            RETURN this { .id, .time } AS this"
+            RETURN collect(DISTINCT this { .id, .time }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -27,6 +28,9 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 describe("auth/where", () => {
     let driver: Driver;
     const secret = "secret";
+    const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
+        secret: "secret",
+    });
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -60,7 +64,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -70,7 +74,7 @@ describe("auth/where", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -120,7 +124,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -134,7 +138,7 @@ describe("auth/where", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -197,7 +201,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -212,7 +216,7 @@ describe("auth/where", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -274,7 +278,7 @@ describe("auth/where", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+                const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
                 try {
                     await session.run(`
@@ -288,7 +292,7 @@ describe("auth/where", () => {
                     const req = createJwtRequest(secret, { sub: userId });
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source: query,
                         contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
@@ -352,7 +356,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -367,7 +371,7 @@ describe("auth/where", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -415,7 +419,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -425,7 +429,7 @@ describe("auth/where", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -464,7 +468,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -474,7 +478,7 @@ describe("auth/where", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -532,7 +536,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -543,7 +547,7 @@ describe("auth/where", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -593,7 +597,7 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
             try {
                 await session.run(`
@@ -604,7 +608,7 @@ describe("auth/where", () => {
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -639,13 +643,16 @@ describe("auth/where", () => {
             const userId = generate({
                 charset: "alphabetic",
             });
-            const postId = generate({
+            const postId1 = generate({
+                charset: "alphabetic",
+            });
+            const postId2 = generate({
                 charset: "alphabetic",
             });
 
             const query = `
                 mutation {
-                    updateUsers(update: { posts: { disconnect: { where: { node: { id: "${postId}" } } } } }) {
+                    updateUsers(update: { posts: { disconnect: { where: { node: { id: "${postId1}" } } } } }) {
                         users {
                             id
                             posts {
@@ -656,24 +663,26 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                    CREATE (u:User {id: "${userId}"})
+                    CREATE (u)-[:HAS_POST]->(:Post {id: "${postId1}"})
+                    CREATE (u)-[:HAS_POST]->(:Post {id: "${postId2}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
                 const users = (gqlResult.data as any).updateUsers.users as any[];
-                expect(users).toEqual([{ id: userId, posts: [] }]);
+                expect(users).toEqual([{ id: userId, posts: [{ id: postId2 }] }]);
             } finally {
                 await session.close();
             }
@@ -699,13 +708,16 @@ describe("auth/where", () => {
             const userId = generate({
                 charset: "alphabetic",
             });
-            const postId = generate({
+            const postId1 = generate({
+                charset: "alphabetic",
+            });
+            const postId2 = generate({
                 charset: "alphabetic",
             });
 
             const query = `
                 mutation {
-                    updateUsers(disconnect: { posts: { where: {node: { id : "${postId}"}}}}) {
+                    updateUsers(disconnect: { posts: { where: {node: { id : "${postId1}"}}}}) {
                         users {
                             id
                             posts {
@@ -716,24 +728,26 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                    CREATE (u:User {id: "${userId}"})
+                    CREATE(u)-[:HAS_POST]->(:Post {id: "${postId1}"})
+                    CREATE(u)-[:HAS_POST]->(:Post {id: "${postId2}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
                 const users = (gqlResult.data as any).updateUsers.users as any[];
-                expect(users).toEqual([{ id: userId, posts: [] }]);
+                expect(users).toEqual([{ id: userId, posts: [{ id: postId2 }] }]);
             } finally {
                 await session.close();
             }

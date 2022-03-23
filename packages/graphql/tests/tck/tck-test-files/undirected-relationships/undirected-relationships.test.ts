@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
@@ -38,7 +39,11 @@ describe("Undirected relationships", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { jwt: { secret } },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
         const query = gql`
             query {
@@ -60,9 +65,9 @@ describe("Undirected relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | this_friends { .name } ], directedFriends: [ (this)-[:FRIENDS_WITH]->(this_directedFriends:User)   | this_directedFriends { .name } ] } as this"
-`);
+            "MATCH (this:User)
+            RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | this_friends { .name } ], directedFriends: [ (this)-[:FRIENDS_WITH]->(this_directedFriends:User)   | this_directedFriends { .name } ] } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -88,7 +93,11 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | t
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { jwt: { secret } },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
         const query = gql`
             query Users {
@@ -111,9 +120,9 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | t
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-RETURN this { content:  [this_content IN [(this)-[:HAS_CONTENT]-(this_content) WHERE (\\"Blog\\" IN labels(this_content)) OR (\\"Post\\" IN labels(this_content)) | head( [ this_content IN [this_content] WHERE (\\"Blog\\" IN labels(this_content)) | this_content { __resolveType: \\"Blog\\",  .title } ] + [ this_content IN [this_content] WHERE (\\"Post\\" IN labels(this_content)) | this_content { __resolveType: \\"Post\\",  .content } ] ) ] WHERE this_content IS NOT NULL]  } as this"
-`);
+            "MATCH (this:User)
+            RETURN this { content:  [this_content IN [(this)-[:HAS_CONTENT]-(this_content) WHERE (\\"Blog\\" IN labels(this_content)) OR (\\"Post\\" IN labels(this_content)) | head( [ this_content IN [this_content] WHERE (\\"Blog\\" IN labels(this_content)) | this_content { __resolveType: \\"Blog\\",  .title } ] + [ this_content IN [this_content] WHERE (\\"Post\\" IN labels(this_content)) | this_content { __resolveType: \\"Post\\",  .content } ] ) ] WHERE this_content IS NOT NULL]  } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -149,7 +158,11 @@ RETURN this { content:  [this_content IN [(this)-[:HAS_CONTENT]-(this_content) W
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { jwt: { secret } },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
         const query = gql`
             query Actors {
@@ -167,19 +180,20 @@ RETURN this { content:  [this_content IN [(this)-[:HAS_CONTENT]-(this_content) W
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Actor)
-WITH this
-CALL {
-WITH this
-MATCH (this)-[:ACTED_IN]-(this_Movie:Movie)
-RETURN { __resolveType: \\"Movie\\", title: this_Movie.title } AS actedIn
-UNION
-WITH this
-MATCH (this)-[:ACTED_IN]-(this_Series:Series)
-RETURN { __resolveType: \\"Series\\", title: this_Series.title } AS actedIn
-}
-RETURN this { actedIn: collect(actedIn) } as this"
-`);
+            "MATCH (this:Actor)
+            WITH this
+            CALL {
+            WITH this
+            MATCH (this)-[:ACTED_IN]-(this_Movie:Movie)
+            RETURN { __resolveType: \\"Movie\\", title: this_Movie.title } AS actedIn
+            UNION
+            WITH this
+            MATCH (this)-[:ACTED_IN]-(this_Series:Series)
+            RETURN { __resolveType: \\"Series\\", title: this_Series.title } AS actedIn
+            }
+            WITH this, collect(actedIn) AS actedIn
+            RETURN this { actedIn: actedIn } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -202,7 +216,11 @@ RETURN this { actedIn: collect(actedIn) } as this"
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { jwt: { secret } },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
         const query = gql`
             query Query {
@@ -223,9 +241,9 @@ RETURN this { actedIn: collect(actedIn) } as this"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Foo)
-RETURN this { DrinksAt: head([ (this)-[:DRINKS_AT]->(this_DrinksAt:Bar)   | this_DrinksAt { .id, Customers: [ (this_DrinksAt)-[:DRINKS_AT]-(this_DrinksAt_Customers:Foo)   | this_DrinksAt_Customers { .Name } ] } ]) } as this"
-`);
+            "MATCH (this:Foo)
+            RETURN this { DrinksAt: head([ (this)-[:DRINKS_AT]->(this_DrinksAt:Bar)   | this_DrinksAt { .id, Customers: [ (this_DrinksAt)-[:DRINKS_AT]-(this_DrinksAt_Customers:Foo)   | this_DrinksAt_Customers { .Name } ] } ]) } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });

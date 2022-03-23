@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
             await session.run(`CREATE (:Place { name: "${name}" })`);
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver },
             });
@@ -136,7 +136,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver },
         });

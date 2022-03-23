@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@exclude directive", () => {
-    test("can be used to skip generation of Query", () => {
+    test("can be used to skip generation of Query", async () => {
         const typeDefs = gql`
             type Actor @exclude(operations: [READ]) {
                 name: String
@@ -34,7 +34,7 @@ describe("@exclude directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -121,7 +121,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -205,14 +205,14 @@ describe("@exclude directive", () => {
         `);
     });
 
-    test("can be used to skip generation of Mutation", () => {
+    test("can be used to skip generation of Mutation", async () => {
         const typeDefs = gql`
             type Actor @exclude(operations: [CREATE]) {
                 name: String
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -246,7 +246,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             \\"\\"\\"
@@ -327,7 +327,7 @@ describe("@exclude directive", () => {
         `);
     });
 
-    test("can be used with no arguments to skip generation of all Queries and Mutations and removes the type itself if not referenced elsewhere", () => {
+    test("can be used with no arguments to skip generation of all Queries and Mutations and removes the type itself if not referenced elsewhere", async () => {
         const typeDefs = gql`
             type Actor @exclude {
                 name: String
@@ -338,7 +338,7 @@ describe("@exclude directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -393,7 +393,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -469,7 +469,7 @@ describe("@exclude directive", () => {
         `);
     });
 
-    test("can be used with no arguments to skip generation of all Queries and Mutations but retains the type itself if referenced elsewhere", () => {
+    test("can be used with no arguments to skip generation of all Queries and Mutations but retains the type itself if referenced elsewhere", async () => {
         const typeDefs = gql`
             type Actor @exclude {
                 name: String
@@ -484,7 +484,7 @@ describe("@exclude directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -543,7 +543,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -620,7 +620,7 @@ describe("@exclude directive", () => {
         `);
     });
 
-    test("can be used with no arguments to skip generation of all Queries and Mutations but retains the type itself if referenced in a `@relationship` directive", () => {
+    test("can be used with no arguments to skip generation of all Queries and Mutations but retains the type itself if referenced in a `@relationship` directive", async () => {
         const typeDefs = gql`
             type Actor @exclude {
                 name: String
@@ -632,7 +632,7 @@ describe("@exclude directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -658,7 +658,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             \\"\\"\\"
@@ -851,7 +851,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
@@ -873,11 +873,23 @@ describe("@exclude directive", () => {
             input MovieWhere {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
-              actors: ActorWhere
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
-              actorsConnection: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere
-              actors_NOT: ActorWhere
+              actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -937,14 +949,14 @@ describe("@exclude directive", () => {
         `);
     });
 
-    test("doesn't break if provided with an empty array", () => {
+    test("doesn't break if provided with an empty array", async () => {
         const typeDefs = gql`
             type Actor @exclude(operations: []) {
                 name: String
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -982,7 +994,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ActorSort]
+              sort: [ActorSort!]
             }
 
             \\"\\"\\"
@@ -1075,7 +1087,7 @@ describe("@exclude directive", () => {
         `);
     });
 
-    test("can be used with interfaces", () => {
+    test("can be used with interfaces", async () => {
         const typeDefs = gql`
             interface Production @exclude(operations: [CREATE]) {
                 title: String
@@ -1090,7 +1102,7 @@ describe("@exclude directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -1141,7 +1153,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -1228,7 +1240,7 @@ describe("@exclude directive", () => {
               \\"\\"\\"
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [SeriesSort]
+              sort: [SeriesSort!]
             }
 
             \\"\\"\\"

@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#360", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -41,13 +40,13 @@ describe("#360", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
     test("Should exclude undefined members in AND", async () => {
         const query = gql`
-            query($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
+            query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
                 events(
                     where: { AND: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }
                 ) {
@@ -97,7 +96,7 @@ describe("#360", () => {
 
     test("Should exclude undefined members in OR", async () => {
         const query = gql`
-            query($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
+            query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
                 events(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }) {
                     start
                     activity

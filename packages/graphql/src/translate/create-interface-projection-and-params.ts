@@ -18,45 +18,41 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { Node } from "../classes";
+import { asArray, removeDuplicates } from "../utils/utils";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { ConnectionField, Context, InterfaceWhereArg, RelationField } from "../types";
 import filterInterfaceNodes from "../utils/filter-interface-nodes";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
-import createNodeWhereAndParams from "./where/create-node-where-and-params";
+import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
+import createElementWhereAndParams from "./where/create-element-where-and-params";
 
 function createInterfaceProjectionAndParams({
     resolveTree,
     field,
     context,
-    node,
     nodeVariable,
     parameterPrefix,
+    withVars,
 }: {
     resolveTree: ResolveTree;
     field: RelationField;
     context: Context;
-    node: Node;
     nodeVariable: string;
     parameterPrefix?: string;
+    withVars?: string[];
 }): { cypher: string; params: Record<string, any> } {
     let globalParams = {};
     let params: { args?: any } = {};
-
-    let inStr = field.direction === "IN" ? "<-" : "-";
+    const fullWithVars = removeDuplicates([...asArray(withVars), nodeVariable]);
     const relTypeStr = `[:${field.type}]`;
-    let outStr = field.direction === "OUT" ? "->" : "-";
 
-    if (resolveTree.args.directed === false) {
-        inStr = "-";
-        outStr = "-";
-    }
+    const { inStr, outStr } = getRelationshipDirection(field, resolveTree.args);
 
     const whereInput = resolveTree.args.where as InterfaceWhereArg;
 
-    const referenceNodes = context.neoSchema.nodes.filter(
+    const referenceNodes = context.nodes.filter(
         (x) => field.interface?.implementations?.includes(x.name) && filterInterfaceNodes({ node: x, whereInput })
     );
 
@@ -65,7 +61,7 @@ function createInterfaceProjectionAndParams({
     const subqueries = referenceNodes.map((refNode) => {
         const param = `${nodeVariable}_${refNode.name}`;
         const subquery = [
-            `WITH ${nodeVariable}`,
+            `WITH ${fullWithVars.join(", ")}`,
             `MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}(${param}:${refNode.name})`,
         ];
 
@@ -87,7 +83,7 @@ function createInterfaceProjectionAndParams({
 
         if (resolveTree.args.where) {
             // For root filters
-            const rootNodeWhereAndParams = createNodeWhereAndParams({
+            const rootNodeWhereAndParams = createElementWhereAndParams({
                 whereInput: {
                     ...Object.entries(whereInput).reduce((args, [k, v]) => {
                         if (k !== "_on") {
@@ -102,8 +98,8 @@ function createInterfaceProjectionAndParams({
                     }, {}),
                 },
                 context,
-                node: refNode,
-                nodeVariable: param,
+                element: refNode,
+                varName: param,
                 parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                     resolveTree.alias
                 }.args.where`,
@@ -115,7 +111,7 @@ function createInterfaceProjectionAndParams({
 
             // For _on filters
             if (whereInput?._on?.[refNode.name]) {
-                const onTypeNodeWhereAndParams = createNodeWhereAndParams({
+                const onTypeNodeWhereAndParams = createElementWhereAndParams({
                     whereInput: {
                         ...Object.entries(whereInput).reduce((args, [k, v]) => {
                             if (k !== "_on") {
@@ -130,8 +126,8 @@ function createInterfaceProjectionAndParams({
                         }, {}),
                     },
                     context,
-                    node: refNode,
-                    nodeVariable: param,
+                    element: refNode,
+                    varName: param,
                     parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                         resolveTree.alias
                     }.args.where._on.${refNode.name}`,
@@ -196,7 +192,6 @@ function createInterfaceProjectionAndParams({
                     resolveTree: interfaceResolveTree,
                     field: relationshipField,
                     context,
-                    node: refNode,
                     nodeVariable: param,
                 });
                 subquery.push(interfaceProjection.cypher);
@@ -212,7 +207,12 @@ function createInterfaceProjectionAndParams({
 
         return subquery.join("\n");
     });
-    const interfaceProjection = [`WITH ${nodeVariable}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
+    const interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
+
+    if (field.typeMeta.array) {
+        interfaceProjection.push(`WITH ${fullWithVars.join(", ")}, collect(${field.fieldName}) AS ${field.fieldName}`);
+    }
+
     if (Object.keys(whereArgs).length) {
         params.args = { where: whereArgs };
     }

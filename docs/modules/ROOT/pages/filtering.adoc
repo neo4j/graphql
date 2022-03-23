@@ -90,6 +90,106 @@ query {
 }
 ----
 
+== Relationship Filtering
+
+For each relationship field, `field`, a set of filters are available depending on whether the relationship is `n..1` or `n..m`. In the case of `n..1`, filtering is done on equality or inequality of the related node by specifying a filter on `field` or `field_NOT`, respectively. In the case of `n..m`, filtering is done on the list of related nodes and is based on the https://neo4j.com/docs/cypher-manual/current/functions/predicate/[List Predicates] available in Cypher.
+
+=== Available Filters
+
+`n..1`::
+    ** `field` - equality
+    ** `field_NOT` - inequality
+
+`n..m`::
+    ** `field_ALL` - https://neo4j.com/docs/cypher-manual/current/functions/predicate/#functions-all[all]
+    ** `field_NONE` - https://neo4j.com/docs/cypher-manual/current/functions/predicate/#functions-none[none]
+    ** `field_SOME` - https://neo4j.com/docs/cypher-manual/current/functions/predicate/#functions-any[any]
+    ** `field_SINGLE` - https://neo4j.com/docs/cypher-manual/current/functions/predicate/#functions-single[single]
+
+
+=== Relationship Filtering Usage Examples
+
+For this section take as type definitions the following:
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID!
+    name: String
+    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+}
+
+type Post {
+    id: ID!
+    content: String
+    author: User! @relationship(type: "HAS_POST", direction: IN)
+    likes: [User!]! @relationship(type: "LIKES", direction: IN)
+}
+----
+=== `n..1` Relationships
+In the above, an `author` represents a `n..1` relationship on `Post` where a given `Post` is authored by one, and only one, `author`. The available filters here will be `author` and `author_NOT`.
+
+==== Find all posts by a desired author
+[source, graphql, indent=0]
+----
+query {
+    posts(where: { author: { id: "7CF1D9D6-E527-4ACD-9C2A-207AE0F5CB8C" } }) {
+        content
+    }
+}
+----
+==== Find all posts not by an undesired author
+[source, graphql, indent=0]
+----
+query {
+    posts(where: { author_NOT: { id: "7CF1D9D6-E527-4ACD-9C2A-207AE0F5CB8C" } }) {
+        content
+    }
+}
+----
+=== `n..m` Relationships
+In the above, `posts` represents a `n..m` relationship on `User` where a given `User` can have any number of `posts`.
+
+==== Find all users where all of their posts contain search term: `"neo4j"`
+[source, graphql, indent=0]
+----
+query {
+    users(where: { posts_ALL: { content_CONTAINS: "neo4j" } }) {
+        name
+    }
+}
+----
+
+==== Find all users where none of their posts contain search term: `"cypher"`
+[source, graphql, indent=0]
+----
+query {
+    users(where: { posts_NONE: { content_CONTAINS: "cypher" } }) {
+        name
+    }
+}
+----
+
+==== Find all users where some of their posts contain search term: `"graphql"`
+[source, graphql, indent=0]
+----
+query {
+    users(where: { posts_SOME: { content_CONTAINS: "graphql" } }) {
+        name
+    }
+}
+----
+
+==== Find all users where only one of their posts contain search term: `"graph"`
+[source, graphql, indent=0]
+----
+query {
+    users(where: { posts_SINGLE: { content_CONTAINS: "graph" } }) {
+        name
+    }
+}
+----
+
 == Aggregation Filtering
 
 This library offers, for each relationship, an aggregation key inside the where argument. You can use the aggregation key to satisfy questions such as:

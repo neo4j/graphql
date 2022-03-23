@@ -18,7 +18,7 @@
  */
 
 import { Driver, int, Session } from "neo4j-driver";
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
@@ -63,8 +63,8 @@ describe("Point", () => {
     });
 
     test("enables creation of a node with a wgs-84 point", async () => {
-        const id = faker.random.uuid();
-        const size = faker.random.number({});
+        const id = faker.datatype.uuid();
+        const size = faker.datatype.number({});
         const longitude = parseFloat(faker.address.longitude());
         const latitude = parseFloat(faker.address.latitude());
 
@@ -88,7 +88,7 @@ describe("Point", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: create,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { id, size, longitude, latitude },
@@ -117,11 +117,11 @@ describe("Point", () => {
     });
 
     test("enables creation of a node with a wgs-84-3d point", async () => {
-        const id = faker.random.uuid();
-        const size = faker.random.number({});
+        const id = faker.datatype.uuid();
+        const size = faker.datatype.number({});
         const longitude = parseFloat(faker.address.longitude());
         const latitude = parseFloat(faker.address.latitude());
-        const height = faker.random.float();
+        const height = faker.datatype.float();
 
         const create = `
             mutation CreatePhotographs(
@@ -155,7 +155,7 @@ describe("Point", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: create,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { id, size, longitude, latitude, height },
@@ -185,8 +185,8 @@ describe("Point", () => {
     });
 
     test("enables update of a node with a wgs-84 point", async () => {
-        const id = faker.random.uuid();
-        const size = faker.random.number({});
+        const id = faker.datatype.uuid();
+        const size = faker.datatype.number({});
         const longitude = parseFloat(faker.address.longitude());
         const latitude = parseFloat(faker.address.latitude());
         const newLatitude = parseFloat(faker.address.latitude());
@@ -228,7 +228,7 @@ describe("Point", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: update,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { id, longitude, latitude: newLatitude },
@@ -257,11 +257,11 @@ describe("Point", () => {
     });
 
     test("enables update of a node with a wgs-84-3d point", async () => {
-        const id = faker.random.uuid();
-        const size = faker.random.number({});
+        const id = faker.datatype.uuid();
+        const size = faker.datatype.number({});
         const longitude = parseFloat(faker.address.longitude());
         const latitude = parseFloat(faker.address.latitude());
-        const height = faker.random.float();
+        const height = faker.datatype.float();
         const newLatitude = parseFloat(faker.address.latitude());
 
         const beforeResult = await session.run(`
@@ -302,7 +302,7 @@ describe("Point", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: update,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { id, longitude, latitude: newLatitude, height },
@@ -333,8 +333,8 @@ describe("Point", () => {
 
     test("enables query of a node with a wgs-84 point", async () => {
         // Create node
-        const id = faker.random.uuid();
-        const size = faker.random.number({});
+        const id = faker.datatype.uuid();
+        const size = faker.datatype.number({});
         const longitude = parseFloat(faker.address.longitude());
         const latitude = parseFloat(faker.address.latitude(88));
 
@@ -371,7 +371,7 @@ describe("Point", () => {
         `;
 
         const equalsResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: photographsEqualsQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { longitude, latitude },
@@ -391,7 +391,7 @@ describe("Point", () => {
 
         // Test IN functionality
         const photographsInQuery = `
-            query Photographs($locations: [PointInput]) {
+            query Photographs($locations: [PointInput!]) {
                 photographs(where: { location_IN: $locations }) {
                     id
                     size
@@ -406,7 +406,7 @@ describe("Point", () => {
         `;
 
         const inResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: photographsInQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: {
@@ -434,7 +434,7 @@ describe("Point", () => {
 
         // Test NOT IN functionality
         const photographsNotInQuery = `
-            query Photographs($locations: [PointInput]) {
+            query Photographs($locations: [PointInput!]) {
                 photographs(where: { location_NOT_IN: $locations }) {
                     id
                     size
@@ -449,7 +449,7 @@ describe("Point", () => {
         `;
 
         const notInResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: photographsNotInQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: {
@@ -497,7 +497,7 @@ describe("Point", () => {
         `;
 
         const lessThanResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: photographsLessThanQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { longitude, latitude: latitude + 1 },
@@ -534,7 +534,7 @@ describe("Point", () => {
         `;
 
         const greaterThanResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: photographsGreaterThanQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { longitude, latitude: latitude + 1 },
@@ -554,11 +554,11 @@ describe("Point", () => {
     });
 
     test("enables query for equality of a node with a wgs-84-3d point", async () => {
-        const id = faker.random.uuid();
-        const size = faker.random.number({});
+        const id = faker.datatype.uuid();
+        const size = faker.datatype.number({});
         const longitude = parseFloat(faker.address.longitude());
         const latitude = parseFloat(faker.address.latitude());
-        const height = faker.random.float();
+        const height = faker.datatype.float();
 
         const result = await session.run(`
             CALL {
@@ -593,7 +593,7 @@ describe("Point", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: photographsQuery,
             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             variableValues: { longitude, latitude, height },

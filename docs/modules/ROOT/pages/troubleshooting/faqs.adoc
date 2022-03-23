@@ -34,3 +34,58 @@ type Cookie {
     # f: String # If you don't want _emptyInput, uncomment this line.
 }
 ```
+
+== Relationship nullability isn't being enforced in my graph
+
+Currently, and given the typeDefs below, Neo4j GraphQL will enforce cardinality when creating and updating a one-one relationship such as the movie director field below: 
+
+[source, graphql, indent=0]
+----
+type Movie {
+    title: String!
+    director: Person! @relationship(type: "DIRECTED", direction: IN)
+    actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
+}
+
+type Person {
+    name: String!
+}
+----
+
+However, at this point, there is no mechanism to support validating the actors relationship. Furthermore, there is a known limitation given if you were create a movie and a director in one mutation: 
+
+[source, graphql, indent=0]
+----
+mutation {
+  createMovies(
+    input: [
+      {
+        title: "Forrest Gump"
+        director: { create: { node: { name: "Robert Zemeckis" } } }
+      }
+    ]
+  ) {
+    movies {
+      title
+      director {
+        name
+      }
+    }
+  }
+}
+----
+
+Then delete the director node: 
+
+[source, graphql, indent=0]
+----
+mutation {
+  deletePeople(where: { name: "Robert Zemeckis" }) {
+    nodesDeleted
+  }
+}
+----
+
+No error is thrown, even though the schema states that all movies must have a director thus technically rendering the movie node invalid. 
+
+Finally, we do not enforce relationship cardinality on union or interface relationships.

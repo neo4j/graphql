@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
@@ -38,7 +39,12 @@ describe("Simple Cypher tests", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -99,7 +105,7 @@ describe("Simple Cypher tests", () => {
 
     test("Multi selection, Movie by title via variable", async () => {
         const query = gql`
-            query($title: String) {
+            query ($title: String) {
                 movies(where: { title: $title }) {
                     id
                     title

@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#288", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -43,15 +42,15 @@ describe("#288", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
     test("Can create a USER and COMPANYID is populated", async () => {
         const query = gql`
             mutation {
-                createUSERS(input: { USERID: "userid", COMPANYID: "companyid" }) {
-                    uSERS {
+                createUsers(input: { USERID: "userid", COMPANYID: "companyid" }) {
+                    users {
                         USERID
                         COMPANYID
                     }
@@ -71,8 +70,8 @@ describe("#288", () => {
             SET this0.COMPANYID = $this0_COMPANYID
             RETURN this0
             }
-            RETURN
-            this0 { .USERID, .COMPANYID } AS this0"
+            RETURN [
+            this0 { .USERID, .COMPANYID }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -86,8 +85,8 @@ describe("#288", () => {
     test("Can update a USER and COMPANYID is populated", async () => {
         const query = gql`
             mutation {
-                updateUSERS(where: { USERID: "userid" }, update: { COMPANYID: "companyid2" }) {
-                    uSERS {
+                updateUsers(where: { USERID: "userid" }, update: { COMPANYID: "companyid2" }) {
+                    users {
                         USERID
                         COMPANYID
                     }
@@ -104,7 +103,7 @@ describe("#288", () => {
             "MATCH (this:USER)
             WHERE this.USERID = $this_USERID
             SET this.COMPANYID = $this_update_COMPANYID
-            RETURN this { .USERID, .COMPANYID } AS this"
+            RETURN collect(DISTINCT this { .USERID, .COMPANYID }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

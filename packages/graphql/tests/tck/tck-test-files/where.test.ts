@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher WHERE", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -45,13 +44,13 @@ describe("Cypher WHERE", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
     test("Simple", async () => {
         const query = gql`
-            query($title: String, $isFavorite: Boolean) {
+            query ($title: String, $isFavorite: Boolean) {
                 movies(where: { title: $title, isFavorite: $isFavorite }) {
                     title
                 }

@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql, GraphQLSchema } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("cypher", () => {
     let driver: Driver;
@@ -91,7 +93,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -161,7 +163,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle, name: actorName },
@@ -208,7 +210,14 @@ describe("cypher", () => {
 
                 const secret = "secret";
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+                const neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    plugins: {
+                        auth: new Neo4jGraphQLAuthJWTPlugin({
+                            secret: "secret",
+                        }),
+                    },
+                });
 
                 const source = `
                     query($title: String!, $name: String) {
@@ -235,7 +244,7 @@ describe("cypher", () => {
                     const req = createJwtRequest(secret);
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle, name: actorName },
@@ -313,7 +322,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
@@ -420,7 +429,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title },
@@ -498,7 +507,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -568,7 +577,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -638,7 +647,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -653,7 +662,10 @@ describe("cypher", () => {
 
         // Reproduces https://github.com/neo4j/graphql/issues/595 with missing value test
         describe("Null Values", () => {
-            const testLabel = generate({ charset: "alphabetic" });
+            let schemaWithDefaultValue: GraphQLSchema;
+            let schemaWithMissingValue: GraphQLSchema;
+
+            const accountType = generateUniqueType("Account");
 
             const defaultOffset = 0;
             const defaultLimit = 30;
@@ -662,7 +674,7 @@ describe("cypher", () => {
             const limit = 10;
 
             const generateTypeDefs = (withDefaultValue: boolean) => `
-                type Account {
+                type ${accountType.name} {
                     id: ID!
                     name: String!
                 }
@@ -673,10 +685,12 @@ describe("cypher", () => {
                 }
 
                 type Query {
-                    listAccounts(options: ListAccountOptions${withDefaultValue ? "= null" : ""}): [Account!]!
+                    listAccounts(options: ListAccountOptions${withDefaultValue ? "= null" : ""}): [${
+                accountType.name
+            }!]!
                         @cypher(
                             statement: """
-                                MATCH (accounts:Account)
+                                MATCH (accounts:${accountType.name})
                                 RETURN accounts
                                 SKIP coalesce($options.offset, toInteger(${defaultOffset}))
                                 LIMIT coalesce($options.limit, toInteger(${defaultLimit}))
@@ -685,24 +699,27 @@ describe("cypher", () => {
                 }
             `;
 
-            const { schema: schemaWithDefaultValue } = new Neo4jGraphQL({
-                typeDefs: generateTypeDefs(true),
-            });
-
-            const { schema: schemaWithMissingValue } = new Neo4jGraphQL({
-                typeDefs: generateTypeDefs(false),
-            });
-
             beforeAll(async () => {
                 const session = driver.session();
+
+                const neoSchemaWithDefaultValue = new Neo4jGraphQL({
+                    typeDefs: generateTypeDefs(true),
+                });
+                const neoSchemaWithMissingValue = new Neo4jGraphQL({
+                    typeDefs: generateTypeDefs(false),
+                });
+
+                schemaWithDefaultValue = await neoSchemaWithDefaultValue.getSchema();
+                schemaWithMissingValue = await neoSchemaWithMissingValue.getSchema();
+
                 // Create 50 Account nodes with ids 1, 2, 3...
-                await session.run(`FOREACH (x in range(1,50) | CREATE (:Account:${testLabel} {id: x}))`);
+                await session.run(`FOREACH (x in range(1,50) | CREATE (:${accountType.name} {id: x}))`);
                 await session.close();
             });
 
             afterAll(async () => {
                 const session = driver.session();
-                await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
+                await session.run(`MATCH (n:${accountType.name}) DETACH DELETE n`);
                 await session.close();
             });
 
@@ -842,7 +859,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { id: townId },
@@ -861,6 +878,9 @@ describe("cypher", () => {
     describe("Field level cypher", () => {
         // Reproduces https://github.com/neo4j/graphql/issues/444 with default value test
         describe("Null Values", () => {
+            let schemaWithDefaultValue: GraphQLSchema;
+            let schemaWithMissingValue: GraphQLSchema;
+
             const testLabel = generate({ charset: "alphabetic" });
 
             const townId = generate({ charset: "alphabetic" });
@@ -886,16 +906,19 @@ describe("cypher", () => {
                 }
             `;
 
-            const { schema: schemaWithDefaultValue } = new Neo4jGraphQL({
-                typeDefs: generateTypeDefs(true),
-            });
-
-            const { schema: schemaWithMissingValue } = new Neo4jGraphQL({
-                typeDefs: generateTypeDefs(false),
-            });
-
             beforeAll(async () => {
                 const session = driver.session();
+
+                const neoSchemaWithDefaultValue = new Neo4jGraphQL({
+                    typeDefs: generateTypeDefs(true),
+                });
+                const neoSchemaWithMissingValue = new Neo4jGraphQL({
+                    typeDefs: generateTypeDefs(false),
+                });
+
+                schemaWithDefaultValue = await neoSchemaWithDefaultValue.getSchema();
+                schemaWithMissingValue = await neoSchemaWithMissingValue.getSchema();
+
                 await session.run(
                     `
                         CREATE (t:Town:${testLabel} {id: $townId})

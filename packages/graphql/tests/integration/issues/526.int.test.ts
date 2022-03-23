@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
         await neoSchema.checkNeo4jCompat();
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, driverConfig: { bookmarks } },
         });

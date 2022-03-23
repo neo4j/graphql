@@ -16,9 +16,13 @@ const ogm = new OGM({
 });
 ----
 
+== `init`
+
+Asynchronous method to initialize the OGM. Internally, calls xref::api-reference/neo4jgraphql.adoc#api-reference-getschema[`Neo4jGraphQL.getSchema()`] to generate a GraphQL schema, and stores the result. Initializes any models which have been created before this execution, and will throw an error if any of them are invalid.
+
 == `model`
 
-Returns a `Model` instance matching the passed in name, or throws an `Error` if one can't be found.
+Returns a `Model` instance matching the passed in name, or (if the OGM has been initialized) throws an `Error` if one can't be found.
 
 Accepts a single argument `name` of type `string`.
 

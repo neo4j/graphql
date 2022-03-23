@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("200", () => {
-    test("Preserve schema array non null", () => {
+    test("Preserve schema array non null", async () => {
         const typeDefs = gql`
             type Category {
                 categoryId: ID! @id
@@ -33,7 +33,7 @@ describe("200", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -78,7 +78,7 @@ describe("200", () => {
               \\"\\"\\"
               Specify one or more CategorySort objects to sort Categories by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [CategorySort]
+              sort: [CategorySort!]
             }
 
             \\"\\"\\"
@@ -102,21 +102,21 @@ describe("200", () => {
               categoryId: ID
               categoryId_CONTAINS: ID
               categoryId_ENDS_WITH: ID
-              categoryId_IN: [ID]
+              categoryId_IN: [ID!]
               categoryId_NOT: ID
               categoryId_NOT_CONTAINS: ID
               categoryId_NOT_ENDS_WITH: ID
-              categoryId_NOT_IN: [ID]
+              categoryId_NOT_IN: [ID!]
               categoryId_NOT_STARTS_WITH: ID
               categoryId_STARTS_WITH: ID
               description: String
               description_CONTAINS: String
               description_ENDS_WITH: String
-              description_IN: [String]
+              description_IN: [String!]
               description_NOT: String
               description_NOT_CONTAINS: String
               description_NOT_ENDS_WITH: String
-              description_NOT_IN: [String]
+              description_NOT_IN: [String!]
               description_NOT_STARTS_WITH: String
               description_STARTS_WITH: String
               exampleImageLocations: [String!]
@@ -126,11 +126,11 @@ describe("200", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }

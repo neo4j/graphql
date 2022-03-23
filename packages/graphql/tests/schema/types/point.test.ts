@@ -23,14 +23,14 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Point", () => {
-    test("Point", () => {
+    test("Point", async () => {
         const typeDefs = gql`
             type Movie {
                 filmedAt: Point!
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -84,7 +84,7 @@ describe("Point", () => {
               \\"\\"\\"
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieSort]
+              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -105,11 +105,11 @@ describe("Point", () => {
               filmedAt_DISTANCE: PointDistance
               filmedAt_GT: PointDistance
               filmedAt_GTE: PointDistance
-              filmedAt_IN: [PointInput]
+              filmedAt_IN: [PointInput!]
               filmedAt_LT: PointDistance
               filmedAt_LTE: PointDistance
               filmedAt_NOT: PointInput
-              filmedAt_NOT_IN: [PointInput]
+              filmedAt_NOT_IN: [PointInput!]
             }
 
             type Mutation {
@@ -174,14 +174,14 @@ describe("Point", () => {
         `);
     });
 
-    test("CartesianPoint", () => {
+    test("CartesianPoint", async () => {
         const typeDefs = gql`
             type Machine {
                 partLocation: CartesianPoint!
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -254,7 +254,7 @@ describe("Point", () => {
               \\"\\"\\"
               Specify one or more MachineSort objects to sort Machines by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MachineSort]
+              sort: [MachineSort!]
             }
 
             \\"\\"\\"
@@ -275,11 +275,11 @@ describe("Point", () => {
               partLocation_DISTANCE: CartesianPointDistance
               partLocation_GT: CartesianPointDistance
               partLocation_GTE: CartesianPointDistance
-              partLocation_IN: [CartesianPointInput]
+              partLocation_IN: [CartesianPointInput!]
               partLocation_LT: CartesianPointDistance
               partLocation_LTE: CartesianPointDistance
               partLocation_NOT: CartesianPointInput
-              partLocation_NOT_IN: [CartesianPointInput]
+              partLocation_NOT_IN: [CartesianPointInput!]
             }
 
             type Mutation {
@@ -324,14 +324,14 @@ describe("Point", () => {
         `);
     });
 
-    test("Points", () => {
+    test("Points", async () => {
         const typeDefs = gql`
             type Movie {
                 filmedAt: [Point!]!
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -446,14 +446,14 @@ describe("Point", () => {
         `);
     });
 
-    test("CartesianPoints", () => {
+    test("CartesianPoints", async () => {
         const typeDefs = gql`
             type Machine {
                 partLocations: [CartesianPoint!]!
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

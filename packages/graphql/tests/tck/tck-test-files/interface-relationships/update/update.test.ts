@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Update update", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -59,7 +58,7 @@ describe("Interface Relationships - Update update", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -94,7 +93,7 @@ describe("Interface Relationships - Update update", () => {
             SET this_actedIn0.title = $this_update_actedIn0_title
             RETURN count(*)
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_title:$this_update_actedIn0_title})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             UNION
             WITH this
@@ -104,21 +103,18 @@ describe("Interface Relationships - Update update", () => {
             SET this_actedIn0.title = $this_update_actedIn0_title
             RETURN count(*)
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_title:$this_update_actedIn0_title})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_update_actedIn0_title\\": \\"New Title\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 },
                 \\"updateActors\\": {
                     \\"args\\": {
@@ -181,10 +177,10 @@ describe("Interface Relationships - Update update", () => {
             SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             UNION
             WITH this
@@ -197,24 +193,21 @@ describe("Interface Relationships - Update update", () => {
             SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_update_actedIn0_actors0_name\\": \\"New Actor Name\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 },
                 \\"updateActors\\": {
                     \\"args\\": {
@@ -287,10 +280,10 @@ describe("Interface Relationships - Update update", () => {
             SET this_actedIn0_actors0.name = $this_update_actedIn0_on_Movie_actors0_name
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             UNION
             WITH this
@@ -299,20 +292,17 @@ describe("Interface Relationships - Update update", () => {
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
             RETURN count(*)
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 },
                 \\"this_update_actedIn0_on_Movie_actors0_name\\": \\"New Actor Name\\",
                 \\"updateActors\\": {
@@ -393,10 +383,10 @@ describe("Interface Relationships - Update update", () => {
             SET this_actedIn0_actors0.name = $this_update_actedIn0_on_Movie_actors0_name
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             UNION
             WITH this
@@ -409,23 +399,20 @@ describe("Interface Relationships - Update update", () => {
             SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 },
                 \\"this_update_actedIn0_on_Movie_actors0_name\\": \\"Different Actor Name\\",
                 \\"this_update_actedIn0_actors0_name\\": \\"New Actor Name\\",
