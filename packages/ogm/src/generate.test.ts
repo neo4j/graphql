@@ -77,7 +77,7 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
-              usersConnection: UserConnection;
+              usersConnection: UsersConnection;
             };
 
             export type QueryUsersArgs = {
@@ -184,17 +184,17 @@ describe("generate", () => {
               name: StringAggregateSelectionNullable;
             };
 
-            export type UserConnection = {
-              __typename?: \\"UserConnection\\";
-              totalCount: Scalars[\\"Int\\"];
-              pageInfo: PageInfo;
-              edges: Array<UserEdge>;
-            };
-
             export type UserEdge = {
               __typename?: \\"UserEdge\\";
               cursor: Scalars[\\"String\\"];
               node: User;
+            };
+
+            export type UsersConnection = {
+              __typename?: \\"usersConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<UserEdge>;
             };
 
             export type UserCreateInput = {
@@ -338,7 +338,7 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
-              usersConnection: UserConnection;
+              usersConnection: UsersConnection;
             };
 
             export type QueryUsersArgs = {
@@ -448,17 +448,17 @@ describe("generate", () => {
               name: StringAggregateSelectionNullable;
             };
 
-            export type UserConnection = {
-              __typename?: \\"UserConnection\\";
-              totalCount: Scalars[\\"Int\\"];
-              pageInfo: PageInfo;
-              edges: Array<UserEdge>;
-            };
-
             export type UserEdge = {
               __typename?: \\"UserEdge\\";
               cursor: Scalars[\\"String\\"];
               node: User;
+            };
+
+            export type UsersConnection = {
+              __typename?: \\"usersConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<UserEdge>;
             };
 
             export type UserCreateInput = {
@@ -620,7 +620,7 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
-              usersConnection: UserConnection;
+              usersConnection: UsersConnection;
             };
 
             export type QueryUsersArgs = {
@@ -727,17 +727,17 @@ describe("generate", () => {
               name: StringAggregateSelectionNullable;
             };
 
-            export type UserConnection = {
-              __typename?: \\"UserConnection\\";
-              totalCount: Scalars[\\"Int\\"];
-              pageInfo: PageInfo;
-              edges: Array<UserEdge>;
-            };
-
             export type UserEdge = {
               __typename?: \\"UserEdge\\";
               cursor: Scalars[\\"String\\"];
               node: User;
+            };
+
+            export type UsersConnection = {
+              __typename?: \\"usersConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<UserEdge>;
             };
 
             export type UserCreateInput = {
@@ -887,10 +887,10 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               movies: Array<Movie>;
               moviesAggregate: MovieAggregateSelection;
-              moviesConnection: MovieConnection;
+              moviesConnection: MoviesConnection;
               people: Array<Person>;
               peopleAggregate: PersonAggregateSelection;
-              peopleConnection: PersonConnection;
+              peopleConnection: PeopleConnection;
             };
 
             export type QueryMoviesArgs = {
@@ -1058,13 +1058,6 @@ describe("generate", () => {
               title: StringAggregateSelectionNonNullable;
             };
 
-            export type MovieConnection = {
-              __typename?: \\"MovieConnection\\";
-              totalCount: Scalars[\\"Int\\"];
-              pageInfo: PageInfo;
-              edges: Array<MovieEdge>;
-            };
-
             export type MovieEdge = {
               __typename?: \\"MovieEdge\\";
               cursor: Scalars[\\"String\\"];
@@ -1088,6 +1081,13 @@ describe("generate", () => {
               name: StringAggregateSelectionNonNullable;
             };
 
+            export type MoviesConnection = {
+              __typename?: \\"moviesConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<MovieEdge>;
+            };
+
             /** Pagination information (Relay) */
             export type PageInfo = {
               __typename?: \\"PageInfo\\";
@@ -1095,6 +1095,13 @@ describe("generate", () => {
               hasPreviousPage: Scalars[\\"Boolean\\"];
               startCursor?: Maybe<Scalars[\\"String\\"]>;
               endCursor?: Maybe<Scalars[\\"String\\"]>;
+            };
+
+            export type PeopleConnection = {
+              __typename?: \\"peopleConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<PersonEdge>;
             };
 
             export type Person = {
@@ -1106,13 +1113,6 @@ describe("generate", () => {
               __typename?: \\"PersonAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               name: StringAggregateSelectionNonNullable;
-            };
-
-            export type PersonConnection = {
-              __typename?: \\"PersonConnection\\";
-              totalCount: Scalars[\\"Int\\"];
-              pageInfo: PageInfo;
-              edges: Array<PersonEdge>;
             };
 
             export type PersonEdge = {
