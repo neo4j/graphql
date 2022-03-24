@@ -73,7 +73,7 @@ describe("Subscriptions metadata on create", () => {
             WITH [] AS meta
             CREATE (this0:Movie)
             SET this0.id = $this0_id
-            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
+            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
             WITH this0, this0_meta AS meta
@@ -109,14 +109,14 @@ describe("Subscriptions metadata on create", () => {
             WITH [] AS meta
             CREATE (this0:Movie)
             SET this0.id = $this0_id
-            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
+            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
             CALL {
             WITH [] AS meta
             CREATE (this1:Movie)
             SET this1.id = $this1_id
-            WITH meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp() } AS meta, this1
+            WITH meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this1
             RETURN this1, meta AS this1_meta
             }
             WITH this0, this1, this0_meta + this1_meta AS meta
@@ -159,9 +159,9 @@ describe("Subscriptions metadata on create", () => {
             SET this0.id = $this0_id
             CREATE (this0_actors0_node:Actor)
             SET this0_actors0_node.name = $this0_actors0_node_name
-            WITH meta + { event: \\"create\\", id: id(this0_actors0_node), properties: { old: null, new: this0_actors0_node { .* } }, timestamp: timestamp() } AS meta, this0, this0_actors0_node
+            WITH meta + { event: \\"create\\", id: id(this0_actors0_node), properties: { old: null, new: this0_actors0_node { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this0, this0_actors0_node
             MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
-            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
+            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
             WITH this0, this0_meta AS meta
@@ -212,11 +212,11 @@ describe("Subscriptions metadata on create", () => {
             SET this0_actors0_node.name = $this0_actors0_node_name
             CREATE (this0_actors0_node_movies0_node:Movie)
             SET this0_actors0_node_movies0_node.id = $this0_actors0_node_movies0_node_id
-            WITH meta + { event: \\"create\\", id: id(this0_actors0_node_movies0_node), properties: { old: null, new: this0_actors0_node_movies0_node { .* } }, timestamp: timestamp() } AS meta, this0, this0_actors0_node, this0_actors0_node_movies0_node
+            WITH meta + { event: \\"create\\", id: id(this0_actors0_node_movies0_node), properties: { old: null, new: this0_actors0_node_movies0_node { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this0, this0_actors0_node, this0_actors0_node_movies0_node
             MERGE (this0_actors0_node)-[:ACTED_IN]->(this0_actors0_node_movies0_node)
-            WITH meta + { event: \\"create\\", id: id(this0_actors0_node), properties: { old: null, new: this0_actors0_node { .* } }, timestamp: timestamp() } AS meta, this0, this0_actors0_node
+            WITH meta + { event: \\"create\\", id: id(this0_actors0_node), properties: { old: null, new: this0_actors0_node { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this0, this0_actors0_node
             MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
-            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
+            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
             WITH this0, this0_meta AS meta
@@ -287,13 +287,13 @@ describe("Subscriptions metadata on create", () => {
             SET this0_actors0_node_movies0_node.id = $this0_actors0_node_movies0_node_id
             CREATE (this0_actors0_node_movies0_node_actors0_node:Actor)
             SET this0_actors0_node_movies0_node_actors0_node.name = $this0_actors0_node_movies0_node_actors0_node_name
-            WITH meta + { event: \\"create\\", id: id(this0_actors0_node_movies0_node_actors0_node), properties: { old: null, new: this0_actors0_node_movies0_node_actors0_node { .* } }, timestamp: timestamp() } AS meta, this0, this0_actors0_node, this0_actors0_node_movies0_node, this0_actors0_node_movies0_node_actors0_node
+            WITH meta + { event: \\"create\\", id: id(this0_actors0_node_movies0_node_actors0_node), properties: { old: null, new: this0_actors0_node_movies0_node_actors0_node { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this0, this0_actors0_node, this0_actors0_node_movies0_node, this0_actors0_node_movies0_node_actors0_node
             MERGE (this0_actors0_node_movies0_node)<-[:ACTED_IN]-(this0_actors0_node_movies0_node_actors0_node)
-            WITH meta + { event: \\"create\\", id: id(this0_actors0_node_movies0_node), properties: { old: null, new: this0_actors0_node_movies0_node { .* } }, timestamp: timestamp() } AS meta, this0, this0_actors0_node, this0_actors0_node_movies0_node
+            WITH meta + { event: \\"create\\", id: id(this0_actors0_node_movies0_node), properties: { old: null, new: this0_actors0_node_movies0_node { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this0, this0_actors0_node, this0_actors0_node_movies0_node
             MERGE (this0_actors0_node)-[:ACTED_IN]->(this0_actors0_node_movies0_node)
-            WITH meta + { event: \\"create\\", id: id(this0_actors0_node), properties: { old: null, new: this0_actors0_node { .* } }, timestamp: timestamp() } AS meta, this0, this0_actors0_node
+            WITH meta + { event: \\"create\\", id: id(this0_actors0_node), properties: { old: null, new: this0_actors0_node { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this0, this0_actors0_node
             MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
-            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
+            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
             WITH this0, this0_meta AS meta
@@ -347,11 +347,11 @@ describe("Subscriptions metadata on create", () => {
             SET this0_actors0_node.name = $this0_actors0_node_name
             CREATE (this0_actors0_node_movies0_node:Movie)
             SET this0_actors0_node_movies0_node.id = $this0_actors0_node_movies0_node_id
-            WITH meta + { event: \\"create\\", id: id(this0_actors0_node_movies0_node), properties: { old: null, new: this0_actors0_node_movies0_node { .* } }, timestamp: timestamp() } AS meta, this0, this0_actors0_node, this0_actors0_node_movies0_node
+            WITH meta + { event: \\"create\\", id: id(this0_actors0_node_movies0_node), properties: { old: null, new: this0_actors0_node_movies0_node { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this0, this0_actors0_node, this0_actors0_node_movies0_node
             MERGE (this0_actors0_node)-[:ACTED_IN]->(this0_actors0_node_movies0_node)
-            WITH meta + { event: \\"create\\", id: id(this0_actors0_node), properties: { old: null, new: this0_actors0_node { .* } }, timestamp: timestamp() } AS meta, this0, this0_actors0_node
+            WITH meta + { event: \\"create\\", id: id(this0_actors0_node), properties: { old: null, new: this0_actors0_node { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this0, this0_actors0_node
             MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
-            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
+            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
             CALL {
@@ -362,11 +362,11 @@ describe("Subscriptions metadata on create", () => {
             SET this1_actors0_node.name = $this1_actors0_node_name
             CREATE (this1_actors0_node_movies0_node:Movie)
             SET this1_actors0_node_movies0_node.id = $this1_actors0_node_movies0_node_id
-            WITH meta + { event: \\"create\\", id: id(this1_actors0_node_movies0_node), properties: { old: null, new: this1_actors0_node_movies0_node { .* } }, timestamp: timestamp() } AS meta, this1, this1_actors0_node, this1_actors0_node_movies0_node
+            WITH meta + { event: \\"create\\", id: id(this1_actors0_node_movies0_node), properties: { old: null, new: this1_actors0_node_movies0_node { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this1, this1_actors0_node, this1_actors0_node_movies0_node
             MERGE (this1_actors0_node)-[:ACTED_IN]->(this1_actors0_node_movies0_node)
-            WITH meta + { event: \\"create\\", id: id(this1_actors0_node), properties: { old: null, new: this1_actors0_node { .* } }, timestamp: timestamp() } AS meta, this1, this1_actors0_node
+            WITH meta + { event: \\"create\\", id: id(this1_actors0_node), properties: { old: null, new: this1_actors0_node { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this1, this1_actors0_node
             MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
-            WITH meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp() } AS meta, this1
+            WITH meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this1
             RETURN this1, meta AS this1_meta
             }
             WITH this0, this1, this0_meta + this1_meta AS meta
@@ -408,7 +408,7 @@ describe("Subscriptions metadata on create", () => {
             WITH [] AS meta
             CREATE (this0:Movie)
             SET this0.id = $this0_id
-            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta, this0
+            WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
             WITH this0, this0_meta AS meta

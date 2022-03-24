@@ -16,17 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventEmitter } from "events";
-import { SubscriptionsEvent } from "../../src/subscriptions/subscriptions-event";
-import { Neo4jGraphQLSubscriptionsPlugin } from "../../src/types";
 
-export class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
-    public events = {} as EventEmitter;
+import { SchemaComposer } from "graphql-compose";
 
-    public eventList: SubscriptionsEvent[] = [];
+export function getResolveAndSubscriptionMethods(composer: SchemaComposer) {
+    const resolveMethods = composer.getResolveMethods();
 
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async publish(eventMeta: SubscriptionsEvent): Promise<void> {
-        this.eventList.push(eventMeta);
-    }
+    const subscriptionMethods = Object.entries(composer.Subscription.getFields()).reduce((acc, [key, value]) => {
+        acc[key] = { subscribe: value.subscribe, resolve: value.resolve };
+        return acc;
+    }, {});
+    return {
+        ...resolveMethods,
+        Subscription: subscriptionMethods,
+    };
 }
