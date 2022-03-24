@@ -29,6 +29,11 @@ type UniqueTypeOperations = {
     update: string;
     delete: string;
     aggregate: string;
+    subscribe: {
+        created: string;
+        updated: string;
+        deleted: string;
+    };
 };
 
 export class UniqueType {
@@ -48,12 +53,18 @@ export class UniqueType {
 
     public get operations(): UniqueTypeOperations {
         const pascalCasePlural = upperFirst(this.plural);
+        const singular = camelcase(this.name);
 
         return {
             create: `create${pascalCasePlural}`,
             update: `update${pascalCasePlural}`,
             delete: `delete${pascalCasePlural}`,
             aggregate: `${this.plural}Aggregate`,
+            subscribe: {
+                created: `${singular}Created`,
+                updated: `${singular}Updated`,
+                deleted: `${singular}Deleted`,
+            },
         };
     }
 

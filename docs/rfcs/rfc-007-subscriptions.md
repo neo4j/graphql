@@ -20,7 +20,6 @@ Our users would like to use [GraphQL Subscriptions](https://graphql.org/blog/sub
 - All events are sent (for example, if node created and then deleted, we get both events)
 - Database transactions must be successful - no optimisticness  
 - Garbage collection of old subscriptions
-- We return "full objects" including nested relationships (for example, a movie subscription must return type `Movie` with nested `actors`)
 - Auth (on read)
 
 ### Should have
@@ -29,6 +28,7 @@ Our users would like to use [GraphQL Subscriptions](https://graphql.org/blog/sub
   - CONNECT
   - DISCONNECT
 - Ability to filter which nodes are subscribed to (i.e. `where` clause) - full filtering feature set
+- We return "full objects" including nested relationships (for example, a movie subscription must return type `Movie` with nested `actors`)
 
 ### Could have
 

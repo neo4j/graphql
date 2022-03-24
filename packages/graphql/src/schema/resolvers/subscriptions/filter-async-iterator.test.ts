@@ -16,17 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventEmitter } from "events";
-import { SubscriptionsEvent } from "../../src/subscriptions/subscriptions-event";
-import { Neo4jGraphQLSubscriptionsPlugin } from "../../src/types";
 
-export class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
-    public events = {} as EventEmitter;
+import { filterAsyncIterator } from "./filter-async-iterator";
 
-    public eventList: SubscriptionsEvent[] = [];
-
+describe("FilterAsyncIterator", () => {
     // eslint-disable-next-line @typescript-eslint/require-await
-    async publish(eventMeta: SubscriptionsEvent): Promise<void> {
-        this.eventList.push(eventMeta);
+    async function* generatorFunction() {
+        yield "Hello";
+        yield "PANIC";
+        yield "Bye";
     }
-}
+
+    test("should filter string from generator function", async () => {
+        const iterator = generatorFunction();
+        const newIterator = filterAsyncIterator<string>(iterator, (data) => {
+            return data !== "PANIC";
+        });
+
+        const values: string[] = [];
+        for await (const value of newIterator) {
+            values.push(value);
+        }
+
+        expect(values).toEqual(["Hello", "Bye"]);
+    });
+});

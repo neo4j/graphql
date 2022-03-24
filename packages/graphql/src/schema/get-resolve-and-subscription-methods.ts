@@ -17,26 +17,17 @@
  * limitations under the License.
  */
 
-export {
-    DriverConfig,
-    GraphQLOptionsArg,
-    GraphQLWhereArg,
-    DeleteInfo,
-    GraphQLSortArg,
-    CypherConnectComponentsPlanner,
-    CypherExpressionEngine,
-    CypherInterpretedPipesFallback,
-    CypherOperatorEngine,
-    CypherPlanner,
-    CypherReplanning,
-    CypherRuntime,
-    Neo4jGraphQLAuthPlugin,
-    CypherUpdateStrategy,
-    Node,
-} from "./types";
-export {
-    Neo4jGraphQL,
-    Neo4jGraphQLConstructor,
-    Neo4jGraphQLAuthenticationError,
-    Neo4jGraphQLForbiddenError,
-} from "./classes";
+import { SchemaComposer } from "graphql-compose";
+
+export function getResolveAndSubscriptionMethods(composer: SchemaComposer) {
+    const resolveMethods = composer.getResolveMethods();
+
+    const subscriptionMethods = Object.entries(composer.Subscription.getFields()).reduce((acc, [key, value]) => {
+        acc[key] = { subscribe: value.subscribe, resolve: value.resolve };
+        return acc;
+    }, {});
+    return {
+        ...resolveMethods,
+        Subscription: subscriptionMethods,
+    };
+}
