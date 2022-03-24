@@ -18,13 +18,13 @@
  */
 
 import { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../src/classes";
-import { generateUniqueType } from "../utils/graphql-types";
-import { ApolloTestServer, TestGraphQLServer } from "./setup/apollo-server";
 import supertest, { Response } from "supertest";
-import { TestSubscriptionsPlugin } from "../utils/TestSubscriptionPlugin";
-import { WebSocketClient, WebSocketTestClient } from "./setup/ws-client";
-import neo4j from "../integration/neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../utils/graphql-types";
+import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
+import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
+import neo4j from "../../integration/neo4j";
 
 describe("Subscriptions", () => {
     let driver: Driver;
@@ -49,7 +49,7 @@ describe("Subscriptions", () => {
         driver = await neo4j();
 
         const neoSchema = new Neo4jGraphQL({
-            typeDefs: typeDefs,
+            typeDefs,
             driver,
             plugins: {
                 subscriptions: new TestSubscriptionsPlugin(),
@@ -58,16 +58,20 @@ describe("Subscriptions", () => {
 
         server = new ApolloTestServer(neoSchema);
         await server.start();
+    });
+
+    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterAll(async () => {
         await server.close();
         await driver.close();
-        await wsClient.close();
     });
 
-    afterEach(async () => {});
+    afterEach(async () => {
+        await wsClient.close();
+    });
 
     test("simple mutation", async () => {
         // TODO: move to separate e2e
@@ -80,14 +84,14 @@ describe("Subscriptions", () => {
 
     test("create subscription", async () => {
         await wsClient.subscribe(`
-                            subscription {
-                                ${typeMovie.operations.subscribe.created} {
-                                    ${typeMovie.operations.subscribe.created} {
-                                        title
-                                    }
-                                }
-                            }
-                            `);
+            subscription {
+                ${typeMovie.operations.subscribe.created} {
+                    ${typeMovie.fieldNames.subscriptions.created} {
+                        title
+                    }
+                }
+            }
+        `);
 
         await createMovie("movie1");
         await createMovie("movie2");
@@ -95,12 +99,35 @@ describe("Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.created]: { title: "movie1" },
+                    [typeMovie.fieldNames.subscriptions.created]: { title: "movie1" },
                 },
             },
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.created]: { title: "movie2" },
+                    [typeMovie.fieldNames.subscriptions.created]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
+
+    test("create subscription with where", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { title: "movie1" }) {
+                    ${typeMovie.fieldNames.subscriptions.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie("movie1");
+        await createMovie("movie2");
+
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.fieldNames.subscriptions.created]: { title: "movie1" },
                 },
             },
         ]);
