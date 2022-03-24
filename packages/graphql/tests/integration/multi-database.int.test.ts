@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { isMultiDbUnsupportedError } from "../utils/is-multi-db-unsupported-error";
 
 describe("multi-database", () => {
     let driver: Driver;
@@ -51,12 +52,7 @@ describe("multi-database", () => {
             await waitSession.close();
         } catch (e) {
             if (e instanceof Error) {
-                if (
-                    e.message.includes(
-                        "This is an administration command and it should be executed against the system database"
-                    ) ||
-                    e.message.includes("Unsupported administration command")
-                ) {
+                if (isMultiDbUnsupportedError(e)) {
                     // No multi-db support, so we skip tests
                     MULTIDB_SUPPORT = false;
                 } else {

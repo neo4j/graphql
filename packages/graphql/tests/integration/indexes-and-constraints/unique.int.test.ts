@@ -24,6 +24,7 @@ import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
+import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
 
 describe("assertIndexesAndConstraints/unique", () => {
     let driver: Driver;
@@ -41,12 +42,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await session.run(cypher);
         } catch (e) {
             if (e instanceof Error) {
-                if (
-                    e.message.includes(
-                        "This is an administration command and it should be executed against the system database"
-                    ) ||
-                    e.message.includes(`Neo4jError: Unsupported administration command: ${cypher}`)
-                ) {
+                if (isMultiDbUnsupportedError(e)) {
                     // No multi-db support, so we skip tests
                     MULTIDB_SUPPORT = false;
                 } else {
