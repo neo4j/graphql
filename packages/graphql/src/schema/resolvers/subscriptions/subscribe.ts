@@ -19,6 +19,7 @@
 
 import { on } from "events";
 import { GraphQLResolveInfo } from "graphql";
+import { Neo4jGraphQLError } from "../../../classes";
 import Node from "../../../classes/Node";
 import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
 import { Context, Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
@@ -29,6 +30,7 @@ export type SubscriptionContext = {
 };
 
 export function subscriptionResolve(payload: [SubscriptionsEvent], args, context: Context, info: GraphQLResolveInfo) {
+    if (!payload) throw new Neo4jGraphQLError("Payload is undefined. Can't call subscriptions resolver directly.");
     const fieldName = info.fieldName;
     return { [fieldName]: payload[0].properties.new };
 }
