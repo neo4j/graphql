@@ -21,16 +21,11 @@ import { SideBar } from "./REMOVE_Sidebar";
 import { TopBar } from "./TopBar";
 import { useContext, useState } from "react";
 import { Login } from "./Login";
-import { SchemaEditor } from "./SchemaEditor";
+import { SchemaEditor } from "./schema/SchemaEditor";
 import { GraphQLSchema } from "graphql";
 import { Editor } from "./editor/Editor";
 import { AuthContext } from "../contexts/auth";
 import { ScreenContext, Screen } from "../contexts/screen";
-
-export enum Pages {
-    TYPEDEFS,
-    EDITOR,
-}
 
 export const Main = () => {
     const auth = useContext(AuthContext);
@@ -50,9 +45,10 @@ export const Main = () => {
     return (
         <div className="flex w-full h-full flex-col">
             <TopBar />
-            <div className="h-content-container w-full p-4 overflow-y-auto bg-contentBlue">
+            <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
                 {screen.view === Screen.TYPEDEFS ? (
                     <SchemaEditor
+                        hasSchema={!!schema}
                         onChange={(schema) => {
                             setSchema(schema);
                             screen.setScreen(Screen.EDITOR);

@@ -28,28 +28,8 @@ export const TopBar = () => {
     const greenDot = <span className="ml-1 mr-2 h-2 w-2 bg-green-400 rounded-full inline-block" />;
     const redDot = <span className="ml-1 mr-2 h-2 w-2 bg-red-400 rounded-full inline-block" />;
 
-    // const theme = useContext(ThemeContext);
-
-    // const onChangeEditorTheme = (): void => {
-    //     const next = theme.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
-    //     theme.setTheme(next);
-    // };
-
-    {
-        /* <div className="flex items-center justify-space text-white mr-8">
-                <Checkbox
-                    checked={theme.theme === Theme.LIGHT}
-                    className="m-0"
-                    label="Light editor theme"
-                    labelBefore={true}
-                    onChange={onChangeEditorTheme}
-                />
-            </div>
-            */
-    }
-
     return (
-        <div className="flex w-full h-16 bg-color-white">
+        <div className="flex w-full h-16 bg-white border-b border-gray-100">
             <div className="flex-1 flex justify-start">
                 <div className="flex items-center justify-space text-sm">
                     <img src={Neo4jLogoIcon} alt="Neo4j logo Icon" className="ml-8 w-24" />

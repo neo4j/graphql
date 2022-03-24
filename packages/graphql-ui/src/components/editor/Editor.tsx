@@ -20,7 +20,7 @@
 import { useCallback, useState, useRef, useEffect } from "react";
 import { graphql, GraphQLSchema } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
-import { Button } from "@neo4j-ndl/react";
+import { Button, HeroIcon } from "@neo4j-ndl/react";
 import { EditorFromTextArea } from "codemirror";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
@@ -34,7 +34,7 @@ import { Frame } from "./Frame";
 import { DocExplorer } from "./docexplorer/index";
 import { formatCode, ParserOptions } from "./utils";
 import { Extension } from "./Filename";
-import ViewSelectorComponent from "../ViewSelectorComponent";
+import { ViewSelectorComponent } from "../ViewSelectorComponent";
 
 const DEFAULT_QUERY = `
     # Type queries into this side of the screen, and you will 
@@ -97,96 +97,102 @@ export const Editor = (props: Props) => {
     }, []);
 
     return (
-        <div>
-            <div className="border-b n-border-neutral-40 p-3 grid grid-cols-4 gap-4" style={{ width: "1200px" }}>
-                <ViewSelectorComponent />
-
-                <Button
-                    id={EDITOR_QUERY_BUTTON}
-                    color="neutral"
-                    fill="outlined"
-                    onClick={() => onSubmit()}
-                    disabled={!props.schema || loading}
-                >
-                    {!loading ? "Query (CTRL+ENTER)" : "Loading..."}
-                </Button>
-                <Button color="neutral" fill="outlined" onClick={formatTheCode} disabled={loading}>
-                    {!loading ? "Prettify (CTRL+L)" : "Loading..."}
-                </Button>
-                <Button
-                    color="neutral"
-                    fill="outlined"
-                    onClick={() => isShowExplorer(!showExplorer)}
-                    disabled={loading}
-                >
-                    {!loading ? "Explorer" : "Loading..."}
-                </Button>
-                <Button color="neutral" fill="outlined" onClick={() => isShowDocs(!showDocs)} disabled={loading}>
-                    {!loading ? "Docs" : "Loading..."}
-                </Button>
+        <div className="w-full flex">
+            <div className="h-content-container flex justify-start w-96 bg-white graphiql-container">
+                <div className="p-6">
+                    <GraphiQLExplorer
+                        schema={props.schema}
+                        query={query}
+                        onEdit={setQuery}
+                        onRunOperation={onSubmit}
+                        explorerIsOpen={true}
+                    />
+                </div>
             </div>
-            <div className="flex justify-start flex-row flex-grow w-full h-full mt-3">
-                <Frame
-                    queryEditor={
-                        props.schema ? (
-                            <GraphQLQueryEditor
-                                schema={props.schema}
-                                query={query}
-                                loading={loading}
-                                mirrorRef={refForQueryEditorMirror}
-                                onChangeQuery={(query) => {
-                                    setQuery(query);
-                                    localStorage.setItem(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
-                                }}
-                                executeQuery={onSubmit}
+            <div className="flex-1 flex justify-start w-full p-6">
+                <div className="flex flex-col w-full">
+                    <div className="flex items-center w-full pb-4">
+                        <div className="flex-1 justify-start">
+                            <ViewSelectorComponent
+                                key="editor-view-selector"
+                                elementKey="editor-view-selector"
+                                isEditorEnabled={!!props.schema || !loading}
                             />
-                        ) : null
-                    }
-                    parameterEditor={
-                        <JSONEditor
-                            id={EDITOR_PARAMS_INPUT}
-                            fileName="params"
-                            loading={loading}
-                            fileExtension={Extension.JSON}
-                            readonly={false}
-                            onChange={setVariableValues}
-                        />
-                    }
-                    resultView={
-                        <JSONEditor
-                            id={EDITOR_RESPONSE_OUTPUT}
-                            fileName="response"
-                            loading={loading}
-                            fileExtension={Extension.JSON}
-                            readonly={true}
-                            json={output}
-                            onChange={setOutput}
-                        />
-                    }
-                    showExplorer={showExplorer}
-                    explorer={
-                        <GraphiQLExplorer
-                            schema={props.schema}
-                            query={query}
-                            onEdit={setQuery}
-                            onRunOperation={onSubmit}
-                            onToggleExplorer={() => isShowExplorer(!showExplorer)}
-                            explorerIsOpen={showExplorer}
-                        />
-                    }
-                    showDocs={showDocs}
-                    documentation={
-                        <DocExplorer schema={props.schema}>
-                            <button
-                                className="docExplorerHide"
-                                onClick={() => isShowDocs(!showDocs)}
-                                aria-label="Close Documentation Explorer"
+                        </div>
+                        <div className="flex-1 flex justify-end">
+                            <Button
+                                id={EDITOR_QUERY_BUTTON}
+                                className="mr-4"
+                                color="neutral"
+                                fill="outlined"
+                                onClick={() => onSubmit()}
+                                disabled={!props.schema || loading}
                             >
-                                {"\u2715"}
-                            </button>
-                        </DocExplorer>
-                    }
-                />
+                                {!loading ? "Query (CTRL+ENTER)" : "Loading..."}
+                            </Button>
+                            <Button
+                                className="p-3"
+                                color="neutral"
+                                fill="outlined"
+                                onClick={formatTheCode}
+                                disabled={loading}
+                            >
+                                <HeroIcon className="h-7 w-7" iconName="SparklesIcon" type="outline" />
+                            </Button>
+                        </div>
+                    </div>
+                    <Frame
+                        queryEditor={
+                            props.schema ? (
+                                <GraphQLQueryEditor
+                                    schema={props.schema}
+                                    query={query}
+                                    loading={loading}
+                                    mirrorRef={refForQueryEditorMirror}
+                                    onChangeQuery={(query) => {
+                                        setQuery(query);
+                                        localStorage.setItem(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
+                                    }}
+                                    executeQuery={onSubmit}
+                                />
+                            ) : null
+                        }
+                        parameterEditor={
+                            <JSONEditor
+                                id={EDITOR_PARAMS_INPUT}
+                                fileName="params"
+                                loading={loading}
+                                fileExtension={Extension.JSON}
+                                readonly={false}
+                                onChange={setVariableValues}
+                            />
+                        }
+                        resultView={
+                            <JSONEditor
+                                id={EDITOR_RESPONSE_OUTPUT}
+                                fileName="response"
+                                loading={loading}
+                                fileExtension={Extension.JSON}
+                                readonly={true}
+                                json={output}
+                                onChange={setOutput}
+                            />
+                        }
+                    />
+                </div>
+            </div>
+            <div className="h-content-container flex justify-start w-96 bg-white">
+                <div className="p-6">
+                    <DocExplorer schema={props.schema}>
+                        <button
+                            className="docExplorerHide"
+                            onClick={() => isShowDocs(!showDocs)}
+                            aria-label="Close Documentation Explorer"
+                        >
+                            {"\u2715"}
+                        </button>
+                    </DocExplorer>
+                </div>
             </div>
         </div>
     );

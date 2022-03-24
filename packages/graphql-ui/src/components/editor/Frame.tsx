@@ -23,50 +23,22 @@ export interface Props {
     queryEditor: any | null;
     resultView: any;
     parameterEditor: any;
-    explorer?: any;
-    showExplorer: boolean;
-    showDocs: boolean;
-    documentation?: any;
 }
 
-export const Frame = (props: Props) => {
+export const Frame = ({ queryEditor, parameterEditor, resultView }: Props) => {
     return (
-        <div className="h-full flex flex-row">
-            {props.showExplorer ? (
-                <div className="w-80 bg-white graphiql-container" style={{ maxHeight: "1200px" }}>
-                    {props.explorer}
-                </div>
-            ) : null}
-            <Row className={"flex-1"} initialHeight={1200}>
+        <div className="h-full flex flex-row" style={{ maxHeight: "90vh" }}>
+            <Row className={"flex-1"}>
                 <ColsWrapper>
-                    <Col initialWidth={600} left={false}>
+                    <Col left={false}>
                         <RowsWrapper>
-                            <Row initialHeight={900}>{props.queryEditor}</Row>
-                            <Row initialHeight={300}>{props.parameterEditor}</Row>
+                            <Row>{queryEditor}</Row>
+                            <Row>{parameterEditor}</Row>
                         </RowsWrapper>
                     </Col>
-                    <Col initialWidth={600}>
+                    <Col>
                         <RowsWrapper>
-                            <Row initialHeight={1200}>
-                                <div className="relative h-full w-full">
-                                    <div className="absolute h-full w-full">{props.resultView}</div>
-                                    {props.showDocs ? (
-                                        <div
-                                            style={{
-                                                position: "absolute",
-                                                top: 0,
-                                                bottom: 0,
-                                                right: 0,
-                                                width: "400px",
-                                                backgroundColor: "white",
-                                                overflowY: "auto",
-                                            }}
-                                        >
-                                            {props.documentation}
-                                        </div>
-                                    ) : null}
-                                </div>
-                            </Row>
+                            <Row>{resultView}</Row>
                         </RowsWrapper>
                     </Col>
                 </ColsWrapper>

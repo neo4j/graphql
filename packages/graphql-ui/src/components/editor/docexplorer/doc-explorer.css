@@ -1,5 +1,6 @@
 .docExplorerWrap {
     overflow-y: auto !important;
+    max-height: 1200px;
 }
 
 .docExplorerHide {
@@ -10,6 +11,10 @@
     background: 0;
     border: 0;
     line-height: 14px;
+}
+
+.graphiql-container .graphiql-explorer-root {
+    font-size: 15px !important;
 }
 
 .graphiql-container .doc-explorer {

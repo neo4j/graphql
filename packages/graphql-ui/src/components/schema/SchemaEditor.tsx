@@ -17,15 +17,14 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useEffect, useRef, useState, Fragment } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import { GraphQLSchema } from "graphql";
-import { Button, Checkbox, Tab, TabPanel, Tabs, ViewSelector, ViewSelectorItem } from "@neo4j-ndl/react";
+import { Button, Checkbox, HeroIcon } from "@neo4j-ndl/react";
 import * as neo4j from "neo4j-driver";
 import { EditorFromTextArea } from "codemirror";
-import { Col, ColsWrapper, Row, RowsWrapper } from "react-grid-resizable";
-import { CodeMirror } from "../utils/utils";
+import { CodeMirror } from "../../utils/utils";
 import {
     DEFAULT_TYPE_DEFS,
     LOCAL_STATE_CHECK_CONSTRAINT,
@@ -39,18 +38,20 @@ import {
     SCHEMA_EDITOR_PRETTY_BUTTON,
     THEME_EDITOR_DARK,
     THEME_EDITOR_LIGHT,
-} from "../constants";
-import { formatCode, ParserOptions } from "./editor/utils";
-import { Extension, FileName } from "./editor/Filename";
-import { AuthContext } from "../contexts/auth";
-import { ThemeContext, Theme } from "../contexts/theme";
-import ViewSelectorComponent from "./ViewSelectorComponent";
+} from "../../constants";
+import { formatCode, ParserOptions } from "../editor/utils";
+import { Extension, FileName } from "../editor/Filename";
+import { AuthContext } from "../../contexts/auth";
+import { ThemeContext, Theme } from "../../contexts/theme";
+import { ViewSelectorComponent } from "../ViewSelectorComponent";
+import { AppSettings } from "../AppSettings";
 
 export interface Props {
+    hasSchema: boolean;
     onChange: (s: GraphQLSchema) => void;
 }
 
-export const SchemaEditor = (props: Props) => {
+export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
     const auth = useContext(AuthContext);
     const theme = useContext(ThemeContext);
     const ref = useRef<HTMLTextAreaElement>();
@@ -133,7 +134,7 @@ export const SchemaEditor = (props: Props) => {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: true } });
                 }
 
-                props.onChange(schema);
+                onChange(schema);
             } catch (error) {
                 const msg = (error as Error).message;
                 setError(msg);
@@ -216,110 +217,102 @@ export const SchemaEditor = (props: Props) => {
     }, [theme.theme]);
 
     return (
-        <div className="w-1/2">
-            <div className="w-full">
-                <div className="border-b n-border-neutral-40 p-3 grid grid-cols-6 gap-4" style={{ width: "1200px" }}>
-                    <ViewSelectorComponent />
-                    <Button
-                        id={SCHEMA_EDITOR_BUILD_BUTTON}
-                        color="neutral"
-                        fill="outlined"
-                        onClick={onSubmit}
-                        disabled={loading}
-                    >
-                        {loading ? "Loading..." : "Build schema"}
-                    </Button>
-                    <Button
-                        id={SCHEMA_EDITOR_PRETTY_BUTTON}
-                        color="neutral"
-                        fill="outlined"
-                        onClick={formatTheCode}
-                        disabled={loading}
-                    >
-                        {loading ? "Loading..." : "Prettify (CTRL+L)"}
-                    </Button>
-                    <Button
-                        id={SCHEMA_EDITOR_INTROSPECT_BUTTON}
-                        color="neutral"
-                        fill="outlined"
-                        onClick={introspect}
-                        disabled={loading}
-                    >
-                        {loading ? "Loading..." : "Generate typeDefs"}
-                    </Button>
+        <div className="w-full flex">
+            <div className="h-content-container flex justify-start w-96 bg-white">
+                <div className="p-6">
+                    <h3>Schema settings</h3>
+                    <Checkbox
+                        className="m-0"
+                        label="Enable Regex"
+                        checked={isEnableDebugChecked === "true"}
+                        onChange={onChangeEnableRegexCheckbox}
+                    />
+                    <Checkbox
+                        className="m-0"
+                        label="Enable Debug"
+                        checked={isDebugChecked === "true"}
+                        onChange={onChangeDebugCheckbox}
+                    />
+                    <Checkbox
+                        className="m-0"
+                        label="Check Constraint"
+                        checked={isCheckConstraintChecked === "true"}
+                        onChange={onChangeCheckConstraintCheckbox}
+                    />
+                    <Checkbox
+                        className="m-0"
+                        label="Create Constraint"
+                        checked={isCreateConstraintChecked === "true"}
+                        onChange={onChangeCreateConstraintCheckbox}
+                    />
                 </div>
-
-                {error && (
-                    <div
-                        className="mt-5 mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                        role="alert"
-                    >
-                        <strong className="font-bold">Holy smokes! </strong>
-                        <span className="block sm:inline">{error}</span>
+            </div>
+            <div className="flex-1 flex justify-start w-full p-6" style={{ height: "94vh" }}>
+                <div className="flex flex-col w-full">
+                    <div className="flex items-center w-full pb-4">
+                        <div className="justify-start">
+                            <ViewSelectorComponent
+                                key="schema-editor-view-selector"
+                                elementKey="schema-editor-view-selector"
+                                isEditorEnabled={!hasSchema}
+                            />
+                        </div>
+                        <div className="flex-1 flex justify-end">
+                            <Button
+                                id={SCHEMA_EDITOR_PRETTY_BUTTON}
+                                className="mr-4 p-3"
+                                color="neutral"
+                                fill="outlined"
+                                onClick={formatTheCode}
+                                disabled={loading}
+                            >
+                                <HeroIcon className="h-7 w-7" iconName="SparklesIcon" type="outline" />
+                            </Button>
+                            <Button
+                                id={SCHEMA_EDITOR_INTROSPECT_BUTTON}
+                                className="mr-4"
+                                color="neutral"
+                                fill="outlined"
+                                onClick={introspect}
+                                disabled={loading}
+                            >
+                                Generate typeDefs
+                            </Button>
+                            <Button
+                                id={SCHEMA_EDITOR_BUILD_BUTTON}
+                                style={{ backgroundColor: "#006FD6" }}
+                                fill="filled"
+                                onClick={onSubmit}
+                                disabled={loading}
+                            >
+                                Build schema
+                            </Button>
+                        </div>
                     </div>
-                )}
-
-                <div className="mt-3">
-                    <Row className={"flex-1"} initialHeight={1200} initialWidth={1200}>
-                        <ColsWrapper>
-                            <Col initialWidth={800} left={true}>
-                                <RowsWrapper>
-                                    <Row>
-                                        <div style={{ width: "100%", height: "100%" }}>
-                                            <FileName extension={Extension.GQL} name={"typeDefs"}></FileName>
-                                            <textarea
-                                                id={SCHEMA_EDITOR_INPUT}
-                                                /* @ts-ignore - Not Sure about this one*/
-                                                ref={ref}
-                                                style={{ width: "100%", height: "100%" }}
-                                                disabled={loading}
-                                            />
-                                        </div>
-                                    </Row>
-                                </RowsWrapper>
-                            </Col>
-
-                            <Col right={true}>
-                                <RowsWrapper>
-                                    <Row>
-                                        <div className="w-full rounded overflow-hidden shadow-lg">
-                                            <Tabs fill="underline" onChange={function noRefCheck() {}} value={0}>
-                                                <Tab tabId={0}>Settings</Tab>
-                                            </Tabs>
-                                            <TabPanel tabId={0} value={0}>
-                                                <div className="p-3">
-                                                    <Checkbox
-                                                        className="m-0"
-                                                        label="Enable Regex"
-                                                        checked={isEnableDebugChecked === "true"}
-                                                        onChange={onChangeEnableRegexCheckbox}
-                                                    />
-                                                    <Checkbox
-                                                        className="m-0"
-                                                        label="Enable Debug"
-                                                        checked={isDebugChecked === "true"}
-                                                        onChange={onChangeDebugCheckbox}
-                                                    />
-                                                    <Checkbox
-                                                        className="m-0"
-                                                        label="Check Constraint"
-                                                        checked={isCheckConstraintChecked === "true"}
-                                                        onChange={onChangeCheckConstraintCheckbox}
-                                                    />
-                                                    <Checkbox
-                                                        className="m-0"
-                                                        label="Create Constraint"
-                                                        checked={isCreateConstraintChecked === "true"}
-                                                        onChange={onChangeCreateConstraintCheckbox}
-                                                    />
-                                                </div>
-                                            </TabPanel>
-                                        </div>
-                                    </Row>
-                                </RowsWrapper>
-                            </Col>
-                        </ColsWrapper>
-                    </Row>
+                    {error && (
+                        <div
+                            className="mt-5 mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                            role="alert"
+                        >
+                            <strong className="font-bold">Holy smokes! </strong>
+                            <span className="block sm:inline">{error}</span>
+                        </div>
+                    )}
+                    <div style={{ width: "100%", height: "100%" }}>
+                        <FileName extension={Extension.GQL} name={"typeDefs"}></FileName>
+                        <textarea
+                            id={SCHEMA_EDITOR_INPUT}
+                            /* @ts-ignore - Not Sure about this one*/
+                            ref={ref}
+                            style={{ width: "100%", height: "100%" }}
+                            disabled={loading}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className="h-content-container flex justify-start w-96 bg-white">
+                <div className="p-6 w-full">
+                    <AppSettings />
                 </div>
             </div>
         </div>
