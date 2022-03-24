@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState, Fragment } from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import { GraphQLSchema } from "graphql";
-import { Button, Checkbox, Tab, TabPanel, Tabs } from "@neo4j-ndl/react";
+import { Button, Checkbox, Tab, TabPanel, Tabs, ViewSelector, ViewSelectorItem } from "@neo4j-ndl/react";
 import * as neo4j from "neo4j-driver";
 import { EditorFromTextArea } from "codemirror";
 import { Col, ColsWrapper, Row, RowsWrapper } from "react-grid-resizable";
@@ -44,6 +44,7 @@ import { formatCode, ParserOptions } from "./editor/utils";
 import { Extension, FileName } from "./editor/Filename";
 import { AuthContext } from "../contexts/auth";
 import { ThemeContext, Theme } from "../contexts/theme";
+import ViewSelectorComponent from "./ViewSelectorComponent";
 
 export interface Props {
     onChange: (s: GraphQLSchema) => void;
@@ -218,6 +219,7 @@ export const SchemaEditor = (props: Props) => {
         <div className="w-1/2">
             <div className="w-full">
                 <div className="border-b n-border-neutral-40 p-3 grid grid-cols-6 gap-4" style={{ width: "1200px" }}>
+                    <ViewSelectorComponent />
                     <Button
                         id={SCHEMA_EDITOR_BUILD_BUTTON}
                         color="neutral"

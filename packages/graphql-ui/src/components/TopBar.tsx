@@ -18,24 +18,25 @@
  */
 
 import { useContext } from "react";
-import { Checkbox } from "@neo4j-ndl/react";
+import { HeroIcon } from "@neo4j-ndl/react";
+// @ts-ignore - SVG Import
+import Neo4jLogoIcon from "../assets/neo4j-logo-color.svg";
 import { AuthContext } from "../contexts/auth";
-import { ThemeContext, Theme } from "../contexts/theme";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
-    const theme = useContext(ThemeContext);
-    const greenDot = <span className="ml-1 h-3 w-3 bg-green-400 rounded-full inline-block" />;
-    const redDot = <span className="ml-1 h-3 w-3 bg-red-400 rounded-full inline-block" />;
+    const greenDot = <span className="ml-1 mr-2 h-2 w-2 bg-green-400 rounded-full inline-block" />;
+    const redDot = <span className="ml-1 mr-2 h-2 w-2 bg-red-400 rounded-full inline-block" />;
 
-    const onChangeEditorTheme = (): void => {
-        const next = theme.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
-        theme.setTheme(next);
-    };
+    // const theme = useContext(ThemeContext);
 
-    return (
-        <div className="flex justify-center w-full h-16 n-bg-neutral-90">
-            <div className="flex items-center justify-space text-white mr-8">
+    // const onChangeEditorTheme = (): void => {
+    //     const next = theme.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT;
+    //     theme.setTheme(next);
+    // };
+
+    {
+        /* <div className="flex items-center justify-space text-white mr-8">
                 <Checkbox
                     checked={theme.theme === Theme.LIGHT}
                     className="m-0"
@@ -44,9 +45,48 @@ export const TopBar = () => {
                     onChange={onChangeEditorTheme}
                 />
             </div>
-            <div className="flex items-center justify-space text-white text-base font-bold">
-                <p>Connected to: {auth?.connectUrl}</p>
-                <p className="ml-1">Status: {auth?.isConnected ? greenDot : redDot}</p>
+            */
+    }
+
+    return (
+        <div className="flex w-full h-16 bg-color-white">
+            <div className="flex-1 flex justify-start">
+                <div className="flex items-center justify-space text-sm">
+                    <img src={Neo4jLogoIcon} alt="Neo4j logo Icon" className="ml-8 w-24" />
+                    <p className="ml-8 text-base">GraphQL Toolbox</p>
+                </div>
+            </div>
+            <div className="flex-1 flex justify-center">
+                <div className="flex items-center justify-space text-sm">
+                    <p>{auth?.connectUrl}</p>
+                    <p className="ml-1">
+                        {auth?.isConnected ? greenDot : redDot} {auth?.isConnected ? "Online" : "Offline"}
+                    </p>
+                </div>
+            </div>
+            <div className="flex-1 flex justify-end">
+                <div className="flex items-center justify-space text-sm">
+                    <p className="flex items-center">
+                        <span
+                            className="cursor-pointer"
+                            onClick={() => {
+                                auth?.logout();
+                            }}
+                        >
+                            <HeroIcon className="h-7 w-7" iconName="LogoutIcon" type="outline" />
+                        </span>
+                        <span className="ml-4">Log out</span>
+                    </p>
+                    <span className="ml-6 mr-6">|</span>
+                    <p className="flex items-center">
+                        <span className="cursor-pointer" onClick={() => {}}>
+                            <HeroIcon className="h-7 w-7" iconName="QuestionMarkCircleIcon" type="outline" />
+                        </span>
+                        <span className="ml-4 mr-4 cursor-pointer" onClick={() => {}}>
+                            <HeroIcon className="h-7 w-7" iconName="CogIcon" type="outline" />
+                        </span>
+                    </p>
+                </div>
             </div>
         </div>
     );

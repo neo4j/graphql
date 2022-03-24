@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { SideBar } from "./Sidebar";
+import { SideBar } from "./REMOVE_Sidebar";
 import { TopBar } from "./TopBar";
 import { useContext, useState } from "react";
 import { Login } from "./Login";
@@ -48,28 +48,19 @@ export const Main = () => {
     }
 
     return (
-        <div className="flex">
-            <SideBar
-                allowRedirectToEdit={!!schema}
-                onLogout={() => {
-                    screen.setScreen(Screen.TYPEDEFS);
-                    setSchema(undefined);
-                }}
-            />
-            <div className="flex w-full h-full flex-col">
-                <TopBar />
-                <div className="h-content-container w-full p-4 overflow-y-auto n-bg-neutral-20">
-                    {screen.view === Screen.TYPEDEFS ? (
-                        <SchemaEditor
-                            onChange={(schema) => {
-                                setSchema(schema);
-                                screen.setScreen(Screen.EDITOR);
-                            }}
-                        ></SchemaEditor>
-                    ) : (
-                        <Editor schema={schema} />
-                    )}
-                </div>
+        <div className="flex w-full h-full flex-col">
+            <TopBar />
+            <div className="h-content-container w-full p-4 overflow-y-auto bg-contentBlue">
+                {screen.view === Screen.TYPEDEFS ? (
+                    <SchemaEditor
+                        onChange={(schema) => {
+                            setSchema(schema);
+                            screen.setScreen(Screen.EDITOR);
+                        }}
+                    ></SchemaEditor>
+                ) : (
+                    <Editor schema={schema} />
+                )}
             </div>
         </div>
     );

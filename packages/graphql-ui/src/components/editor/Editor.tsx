@@ -34,6 +34,7 @@ import { Frame } from "./Frame";
 import { DocExplorer } from "./docexplorer/index";
 import { formatCode, ParserOptions } from "./utils";
 import { Extension } from "./Filename";
+import ViewSelectorComponent from "../ViewSelectorComponent";
 
 const DEFAULT_QUERY = `
     # Type queries into this side of the screen, and you will 
@@ -98,6 +99,8 @@ export const Editor = (props: Props) => {
     return (
         <div>
             <div className="border-b n-border-neutral-40 p-3 grid grid-cols-4 gap-4" style={{ width: "1200px" }}>
+                <ViewSelectorComponent />
+
                 <Button
                     id={EDITOR_QUERY_BUTTON}
                     color="neutral"
