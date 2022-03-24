@@ -65,6 +65,7 @@ export function buildMergeStatement({
     context: Context;
 }): CypherStatement {
     const onCreateStatements: Array<CypherStatement> = [];
+    let parameters: Record<string, any> | undefined;
     let leftStatement: CypherStatement | undefined;
     let relationOnCreateStatement: CypherStatement | undefined;
 
@@ -88,6 +89,16 @@ export function buildMergeStatement({
                     {},
                 ]);
             });
+    }
+
+    const nodeParameters = sourceNode.parameters;
+    if (nodeParameters) {
+        parameters = sourceNode.node?.constrainableFields.reduce((params, field) => {
+            if (Object.keys(nodeParameters).includes(field.fieldName)) {
+                params[field.dbPropertyName || field.fieldName] = nodeParameters[field.fieldName];
+            }
+            return params;
+        }, {} as Record<string, any>);
     }
 
     if (sourceNode.onCreate) {
@@ -148,6 +159,7 @@ export function buildMergeStatement({
     } else {
         leftStatement = buildNodeStatement({
             ...sourceNode,
+            parameters,
             context,
         });
     }
@@ -166,11 +178,10 @@ function buildOnCreate(onCreate: Record<string, any>, varName: string, node?: No
         const nodeField = node?.primitiveFields.find((f) => f.fieldName === key);
         const nodeFieldName = nodeField?.dbPropertyName || nodeField?.fieldName;
         const fieldName = nodeFieldName || key;
-        const valueOrArray = nodeField?.typeMeta.array ? [value] : value;
         const parameterKey = generateParameterKey(`${varName}_on_create`, fieldName);
 
         queries.push(`${varName}.${fieldName} = $${parameterKey}`);
-        parameters[parameterKey] = valueOrArray;
+        parameters[parameterKey] = value;
     });
     return [joinStrings(queries, ",\n"), parameters];
 }

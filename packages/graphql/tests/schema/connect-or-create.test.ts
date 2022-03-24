@@ -314,8 +314,8 @@ describe("Connect Or Create", () => {
             }
 
             input MovieOnCreateInput {
-              isan: String
-              title: String
+              isan: String!
+              title: String!
             }
 
             input MovieOptions {
@@ -837,8 +837,8 @@ describe("Connect Or Create", () => {
             }
 
             input MovieOnCreateInput {
-              isan: String
-              title: String
+              isan: String!
+              title: String!
             }
 
             input MovieOptions {
