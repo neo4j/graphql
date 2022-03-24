@@ -23,7 +23,7 @@ import { Node } from "../../classes";
 import { EventType } from "../types/enums/EventType";
 import { generateSubscriptionWhereType } from "./generate-subscription-where-type";
 import { generateEventPayloadType } from "./generate-event-payload-type";
-import { subscribe, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
+import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
 
 export function generateSubscriptionTypes({
     schemaComposer,
@@ -40,15 +40,17 @@ export function generateSubscriptionTypes({
         const eventPayload = generateEventPayloadType(node, schemaComposer);
         const where = generateSubscriptionWhereType(node, schemaComposer);
         const subscribeOperation = node.rootTypeFieldNames.subscribe;
+        const subscriptionEventTypeNames = node.subscriptionEventTypeNames;
+        const subscriptionEventPayloadFieldNames = node.subscriptionEventPayloadFieldNames;
 
         const nodeCreatedEvent = schemaComposer.createObjectTC({
-            name: `${node.name}CreatedEvent`,
+            name: subscriptionEventTypeNames.create,
             fields: {
                 event: {
                     type: eventTypeEnum.NonNull,
                     resolve: () => EventType.getValue("CREATE"),
                 },
-                [`created${node.name}`]: {
+                [subscriptionEventPayloadFieldNames.create]: {
                     type: eventPayload.NonNull,
                     resolve: (source: SubscriptionsEvent) => source.properties.new,
                 },
@@ -56,7 +58,7 @@ export function generateSubscriptionTypes({
         });
 
         const nodeUpdatedEvent = schemaComposer.createObjectTC({
-            name: `${node.name}UpdatedEvent`,
+            name: subscriptionEventTypeNames.update,
             fields: {
                 event: {
                     type: eventTypeEnum.NonNull,
@@ -66,7 +68,7 @@ export function generateSubscriptionTypes({
                     type: eventPayload.NonNull,
                     resolve: (source: SubscriptionsEvent) => source.properties.old,
                 },
-                [`updated${node.name}`]: {
+                [subscriptionEventPayloadFieldNames.update]: {
                     type: eventPayload.NonNull,
                     resolve: (source: SubscriptionsEvent) => source.properties.new,
                 },
@@ -74,13 +76,13 @@ export function generateSubscriptionTypes({
         });
 
         const nodeDeletedEvent = schemaComposer.createObjectTC({
-            name: `${node.name}DeletedEvent`,
+            name: subscriptionEventTypeNames.delete,
             fields: {
                 event: {
                     type: eventTypeEnum.NonNull,
                     resolve: () => EventType.getValue("DELETE"),
                 },
-                [`deleted${node.name}`]: {
+                [subscriptionEventPayloadFieldNames.delete]: {
                     type: eventPayload.NonNull,
                     resolve: (source: SubscriptionsEvent) => source.properties.old,
                 },
@@ -91,19 +93,19 @@ export function generateSubscriptionTypes({
             [subscribeOperation.created]: {
                 args: { where },
                 type: nodeCreatedEvent.NonNull,
-                subscribe: subscribe(node, "create"),
+                subscribe: generateSubscribeMethod(node, "create"),
                 resolve: subscriptionResolve,
             },
             [subscribeOperation.updated]: {
                 args: { where },
                 type: nodeUpdatedEvent.NonNull,
-                subscribe: subscribe(node, "update"),
+                subscribe: generateSubscribeMethod(node, "update"),
                 resolve: subscriptionResolve,
             },
             [subscribeOperation.deleted]: {
                 args: { where },
                 type: nodeDeletedEvent.NonNull,
-                subscribe: subscribe(node, "delete"),
+                subscribe: generateSubscribeMethod(node, "delete"),
                 resolve: subscriptionResolve,
             },
         });

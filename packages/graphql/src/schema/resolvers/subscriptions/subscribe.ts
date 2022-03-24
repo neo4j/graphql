@@ -31,7 +31,7 @@ export function subscriptionResolve(payload: [SubscriptionsEvent]): Subscription
     return payload[0];
 }
 
-export function subscribe(node: Node, type: "create" | "update" | "delete") {
+export function generateSubscribeMethod(node: Node, type: "create" | "update" | "delete") {
     return (_root: any, _args: any, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
 
