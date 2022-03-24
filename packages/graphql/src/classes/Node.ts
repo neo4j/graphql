@@ -42,7 +42,6 @@ import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
 import { QueryOptionsDirective } from "./QueryOptionsDirective";
 import { upperFirst } from "../utils/upper-first";
-import { lowerFirst } from "../utils/lower-first";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
