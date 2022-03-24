@@ -1,0 +1,100 @@
+[[getting-started]]
+
+= Getting Started With Subscriptions
+
+To get started with subscriptions you need a GraphQL server with subscription capabilities.
+
+== Example using Apollo and WebSockets
+For this example, we will use [Apollo](https://www.apollographql.com/) and [graphql-ws](https://github.com/enisdenjo/graphql-ws).
+
+```typescript
+import { ApolloServer } from "apollo-server-express";
+import { createServer } from "http";
+import express from "express";
+import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { WebSocketServer } from "ws";
+import { useServer } from "graphql-ws/lib/use/ws";
+import { Neo4jGraphQL } from "./src";
+import * as neo4j from "neo4j-driver";
+// import { Neo4jGraphQLAuthJWTPlugin } from "..graphql-plugin-auth/.";
+import { EventEmitter } from "events";
+import { Neo4jGraphQLSubscriptionsPlugin } from "./src/types";
+import { SubscriptionsEvent } from "./src/subscriptions/subscriptions-event";
+// import { PubSub, PubSubEngine } from "graphql-subscriptions";
+import { execute, subscribe } from "graphql";
+
+export class SubsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
+    public events: EventEmitter = new EventEmitter();
+
+    // eslint-disable-next-line @typescript-eslint/require-await
+    async publish(eventMeta: SubscriptionsEvent): Promise<void> {
+        this.events.emit(eventMeta.event, eventMeta);
+    }
+}
+
+const typeDefs = `
+type Movie {
+    title: String
+}
+
+type Actor {
+    name: String
+}
+`;
+
+const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "dontpanic42"));
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs: typeDefs,
+    driver,
+    plugins: {
+        // auth: new Neo4jGraphQLAuthJWTPlugin({
+        //     secret: "secret",
+        // }),
+        subscriptions: new SubsPlugin(),
+    } as any,
+});
+
+async function main() {
+    const app = express();
+    const httpServer = createServer(app);
+    const wsServer = new WebSocketServer({
+        server: httpServer,
+        path: "/graphql",
+    });
+    const schema = await neoSchema.getSchema();
+    // Save the returned server's info so we can shutdown this server later
+    const serverCleanup = useServer({ schema }, wsServer);
+
+    // Set up ApolloServer.
+    const server = new ApolloServer({
+        schema,
+        plugins: [
+            // Proper shutdown for the HTTP server.
+            ApolloServerPluginDrainHttpServer({ httpServer }),
+
+            // Proper shutdown for the WebSocket server.
+            {
+                async serverWillStart() {
+                    return {
+                        async drainServer() {
+                            await serverCleanup.dispose();
+                        },
+                    };
+                },
+            },
+        ],
+    });
+    await server.start();
+    server.applyMiddleware({ app });
+
+    const PORT = 4000;
+    // Now that our HTTP server is fully set up, we can listen to it.
+    httpServer.listen(PORT, () => {
+        console.log(`Server is now running on http://localhost:${PORT}${server.graphqlPath}`);
+    });
+}
+
+main();
+```

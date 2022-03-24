@@ -35,6 +35,8 @@
 **** xref:auth/authorization/roles.adoc[]
 **** xref:auth/authorization/where.adoc[]
 ** xref:directives.adoc[]
+** xref:subscriptions/index.adoc[]
+*** xref:subscriptions/getting-started.adoc[Getting Started]
 ** xref:api-reference/index.adoc[]
 *** xref:api-reference/neo4jgraphql.adoc[]
 *** xref:api-reference/ogm.adoc[]

@@ -33,6 +33,7 @@ This documentation covers the following topics:
 - xref::custom-resolvers.adoc[Custom Resolvers] - Learn how to implement custom functionality accessible through your API.
 - xref::auth/index.adoc[Auth] - Covers the authentication and authorisation options offered by this library.
 - xref::directives.adoc[Directives] - An index of all of the directives offered by the Neo4j GraphQL Library.
+- xref::subscriptions/index.adoc[Subscriptions] - GraphQL Subscriptions for real-time data updates.
 - xref::api-reference/index.adoc[API Reference] - API reference for constructing an instance of the library.
 - xref::ogm/index.adoc[OGM] - This chapter covers the OGM (Object Graph Mapper), a programmatic way of using your API.
 - xref:introspector.adoc[Introspector] - This chapter covers how you can introspect an existing Neo4j database and automatically generate GraphQL type definitions from that.
