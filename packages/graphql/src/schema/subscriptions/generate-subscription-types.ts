@@ -50,10 +50,6 @@ export function generateSubscriptionTypes({
                     type: eventTypeEnum.NonNull,
                     resolve: () => EventType.getValue("CREATE"),
                 },
-                [subscriptionEventPayloadFieldNames.create]: {
-                    type: eventPayload.NonNull,
-                    resolve: (source: SubscriptionsEvent) => source.properties.new,
-                },
             },
         });
 
@@ -63,14 +59,6 @@ export function generateSubscriptionTypes({
                 event: {
                     type: eventTypeEnum.NonNull,
                     resolve: () => EventType.getValue("UPDATE"),
-                },
-                previousState: {
-                    type: eventPayload.NonNull,
-                    resolve: (source: SubscriptionsEvent) => source.properties.old,
-                },
-                [subscriptionEventPayloadFieldNames.update]: {
-                    type: eventPayload.NonNull,
-                    resolve: (source: SubscriptionsEvent) => source.properties.new,
                 },
             },
         });
@@ -82,12 +70,35 @@ export function generateSubscriptionTypes({
                     type: eventTypeEnum.NonNull,
                     resolve: () => EventType.getValue("DELETE"),
                 },
+            },
+        });
+
+        if (Object.keys(eventPayload.getFields()).length) {
+            nodeCreatedEvent.addFields({
+                [subscriptionEventPayloadFieldNames.create]: {
+                    type: eventPayload.NonNull,
+                    resolve: (source: SubscriptionsEvent) => source.properties.new,
+                },
+            });
+
+            nodeUpdatedEvent.addFields({
+                previousState: {
+                    type: eventPayload.NonNull,
+                    resolve: (source: SubscriptionsEvent) => source.properties.old,
+                },
+                [subscriptionEventPayloadFieldNames.update]: {
+                    type: eventPayload.NonNull,
+                    resolve: (source: SubscriptionsEvent) => source.properties.new,
+                },
+            });
+
+            nodeDeletedEvent.addFields({
                 [subscriptionEventPayloadFieldNames.delete]: {
                     type: eventPayload.NonNull,
                     resolve: (source: SubscriptionsEvent) => source.properties.old,
                 },
-            },
-        });
+            });
+        }
 
         subscriptionComposer.addFields({
             [subscribeOperation.created]: {
