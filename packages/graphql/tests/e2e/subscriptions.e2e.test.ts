@@ -22,9 +22,9 @@ import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "./setup/apollo-server";
 import supertest, { Response } from "supertest";
-import * as neo4j from "neo4j-driver";
 import { TestSubscriptionsPlugin } from "../utils/TestSubscriptionPlugin";
 import { WebSocketClient, WebSocketTestClient } from "./setup/ws-client";
+import neo4j from "../integration/neo4j";
 
 describe("Subscriptions", () => {
     let driver: Driver;
@@ -46,7 +46,7 @@ describe("Subscriptions", () => {
          }
          `;
 
-        driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "dontpanic42"));
+        driver = await neo4j();
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs: typeDefs,

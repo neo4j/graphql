@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+/* eslint-disable import/no-extraneous-dependencies */
 import { ApolloServer } from "apollo-server-express";
 import { createServer, Server } from "http";
 import express from "express";
@@ -70,12 +71,12 @@ export class ApolloTestServer implements TestGraphQLServer {
             plugins: [
                 ApolloServerPluginDrainHttpServer({ httpServer }),
                 {
-                    async serverWillStart() {
-                        return {
+                    serverWillStart() {
+                        return Promise.resolve({
                             async drainServer() {
                                 await serverCleanup.dispose();
                             },
-                        };
+                        });
                     },
                 },
             ],
@@ -126,3 +127,4 @@ export class ApolloTestServer implements TestGraphQLServer {
         });
     }
 }
+/* eslint-enable import/no-extraneous-dependencies */

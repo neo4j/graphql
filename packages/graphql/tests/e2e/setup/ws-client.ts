@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/* eslint-disable import/no-extraneous-dependencies */
 import ws from "ws";
 import { Client, createClient } from "graphql-ws";
 
@@ -64,7 +64,7 @@ export class WebSocketTestClient implements WebSocketClient {
             });
 
             client.on("closed", () => {
-                client.dispose();
+                return client.dispose();
             });
         });
     }
@@ -73,3 +73,4 @@ export class WebSocketTestClient implements WebSocketClient {
         if (this.client) await this.client?.dispose();
     }
 }
+/* eslint-enable import/no-extraneous-dependencies */
