@@ -17,11 +17,13 @@
  * limitations under the License.
  */
 
+import { EventEmitter } from "events";
 import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Driver, Integer } from "neo4j-driver";
 import { Node, Relationship } from "./classes";
 import { RelationshipQueryDirectionOption } from "./constants";
+import { SubscriptionsEvent } from "./subscriptions/subscriptions-event";
 
 export { Node } from "./classes";
 
@@ -47,6 +49,7 @@ export interface Context {
     queryOptions?: CypherQueryOptions;
     plugins?: Neo4jGraphQLPlugins;
     jwt?: JwtPayload;
+    subscriptionsEnabled: boolean;
     [k: string]: any;
 }
 
@@ -342,8 +345,15 @@ export interface Neo4jGraphQLAuthPlugin {
     decode<T>(token: string): Promise<T | undefined>;
 }
 
+export interface Neo4jGraphQLSubscriptionsPlugin {
+    events: EventEmitter;
+
+    publish(eventMeta: SubscriptionsEvent): Promise<void>;
+}
+
 export interface Neo4jGraphQLPlugins {
     auth?: Neo4jGraphQLAuthPlugin;
+    subscriptions?: Neo4jGraphQLSubscriptionsPlugin;
 }
 
 export interface JwtPayload {

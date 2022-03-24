@@ -31,7 +31,7 @@ import checkNeo4jCompat from "./utils/verify-database";
 import assertIndexesAndConstraints, {
     AssertIndexesAndConstraintsOptions,
 } from "./utils/asserts-indexes-and-constraints";
-import { wrapResolver } from "../schema/resolvers/wrapper";
+import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers";
 import { asArray } from "../utils/utils";
 
@@ -52,7 +52,7 @@ export interface Neo4jGraphQLConfig {
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
-    plugins?: Neo4jGraphQLPlugins;
+    plugins?: Omit<Neo4jGraphQLPlugins, "subscriptions">;
 }
 
 class Neo4jGraphQL {
@@ -153,17 +153,16 @@ class Neo4jGraphQL {
         const resolversComposition = {
             "Query.*": [wrapResolver(wrapResolverArgs)],
             "Mutation.*": [wrapResolver(wrapResolverArgs)],
+            "Subscription.*": [wrapSubscription(wrapResolverArgs)],
         };
 
         // Merge generated and custom resolvers
         const mergedResolvers = mergeResolvers([resolvers, ...asArray(this.schemaDefinition.resolvers)]);
-
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
     private addWrappedResolversToSchema(resolverlessSchema: GraphQLSchema, resolvers: IResolvers): GraphQLSchema {
         const schema = addResolversToSchema(resolverlessSchema, resolvers);
-
         return this.addDefaultFieldResolvers(schema);
     }
 
@@ -172,6 +171,7 @@ class Neo4jGraphQL {
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(this.schemaDefinition.typeDefs, {
                 enableRegex: this.config?.enableRegex,
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
+                generateSubscriptions: Boolean(this.plugins?.subscriptions),
             });
 
             this._nodes = nodes;
