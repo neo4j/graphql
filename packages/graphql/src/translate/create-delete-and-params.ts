@@ -219,6 +219,7 @@ function createDeleteAndParams({
                         const metaObjectStr = createEventMetaObject({
                             event: "delete",
                             nodeVariable: "n",
+                            typename: refNode.name,
                         });
                         const reduceStr = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${metaObjectStr}) AS ${META_CYPHER_VARIABLE}`;
                         res.strs.push(

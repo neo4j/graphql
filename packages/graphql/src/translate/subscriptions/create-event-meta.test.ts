@@ -21,20 +21,20 @@ import { createEventMeta } from "./create-event-meta";
 
 describe("createEventMeta", () => {
     test("create", () => {
-        expect(createEventMeta({ event: "create", nodeVariable: "this0" })).toBe(
-            `meta + { event: "create", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp() } AS meta`
+        expect(createEventMeta({ event: "create", nodeVariable: "this0", typename: "MyNode" })).toBe(
+            `meta + { event: "create", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: "MyNode" } AS meta`
         );
     });
 
     test("update", () => {
-        expect(createEventMeta({ event: "update", nodeVariable: "this" })).toBe(
-            `meta + { event: "update", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp() } AS meta`
+        expect(createEventMeta({ event: "update", nodeVariable: "this", typename: "MyNode" })).toBe(
+            `meta + { event: "update", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: "MyNode" } AS meta`
         );
     });
 
     test("delete", () => {
-        expect(createEventMeta({ event: "delete", nodeVariable: "this" })).toBe(
-            `meta + { event: "delete", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp() } AS meta`
+        expect(createEventMeta({ event: "delete", nodeVariable: "this", typename: "MyNode" })).toBe(
+            `meta + { event: "delete", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: "MyNode" } AS meta`
         );
     });
 });
