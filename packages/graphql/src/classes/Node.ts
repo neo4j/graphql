@@ -107,6 +107,12 @@ export type MutationResponseTypeNames = {
     update: string;
 };
 
+export type SubscriptionEvents = {
+    create: string;
+    update: string;
+    delete: string;
+};
+
 class Node extends GraphElement {
     public relationFields: RelationField[];
     public connectionFields: ConnectionField[];
@@ -122,6 +128,7 @@ class Node extends GraphElement {
     public auth?: Auth;
     public description?: string;
     public queryOptions?: QueryOptionsDirective;
+    public singular: string;
     public plural: string;
 
     constructor(input: NodeConstructor) {
@@ -139,6 +146,7 @@ class Node extends GraphElement {
         this.fulltextDirective = input.fulltextDirective;
         this.auth = input.auth;
         this.queryOptions = input.queryOptionsDirective;
+        this.singular = this.generateSingular();
         this.plural = this.generatePlural();
     }
 
@@ -179,13 +187,16 @@ class Node extends GraphElement {
         return this.constrainableFields.filter((field) => field.unique);
     }
 
+    private get pascalCaseSingular(): string {
+        return upperFirst(this.singular);
+    }
+
     private get pascalCasePlural(): string {
         return upperFirst(this.plural);
     }
 
     public get rootTypeFieldNames(): RootTypeFieldNames {
         const pascalCasePlural = this.pascalCasePlural;
-        const lowercaseSingular = this.generateSingular();
 
         return {
             create: `create${pascalCasePlural}`,
@@ -194,9 +205,9 @@ class Node extends GraphElement {
             delete: `delete${pascalCasePlural}`,
             aggregate: `${this.plural}Aggregate`,
             subscribe: {
-                created: `${lowercaseSingular}Created`,
-                updated: `${lowercaseSingular}Updated`,
-                deleted: `${lowercaseSingular}Deleted`,
+                created: `${this.singular}Created`,
+                updated: `${this.singular}Updated`,
+                deleted: `${this.singular}Deleted`,
             },
         };
     }
@@ -207,6 +218,26 @@ class Node extends GraphElement {
         return {
             create: `Create${pascalCasePlural}MutationResponse`,
             update: `Update${pascalCasePlural}MutationResponse`,
+        };
+    }
+
+    public get subscriptionEventTypeNames(): SubscriptionEvents {
+        const pascalCaseSingular = this.pascalCaseSingular;
+
+        return {
+            create: `${pascalCaseSingular}CreatedEvent`,
+            update: `${pascalCaseSingular}UpdatedEvent`,
+            delete: `${pascalCaseSingular}DeletedEvent`,
+        };
+    }
+
+    public get subscriptionEventPayloadFieldNames(): SubscriptionEvents {
+        const pascalCaseSingular = this.pascalCaseSingular;
+
+        return {
+            create: `created${pascalCaseSingular}`,
+            update: `updated${pascalCaseSingular}`,
+            delete: `deleted${pascalCaseSingular}`,
         };
     }
 
@@ -222,18 +253,17 @@ class Node extends GraphElement {
         return this.nodeDirective?.label || this.name;
     }
 
+    private generateSingular(): string {
+        const singular = camelcase(this.name);
+
+        return `${this.leadingUnderscores(this.name)}${singular}`;
+    }
+
     private generatePlural(): string {
         const name = this.nodeDirective?.plural || this.name;
         const plural = this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
 
         return `${this.leadingUnderscores(name)}${plural}`;
-    }
-
-    private generateSingular(): string {
-        const name = this.name;
-        const singular = camelcase(name);
-
-        return `${this.leadingUnderscores(name)}${singular}`;
     }
 
     private leadingUnderscores(name: string): string {

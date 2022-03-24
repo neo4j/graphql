@@ -22,26 +22,21 @@ import { GraphQLResolveInfo } from "graphql";
 import { Neo4jGraphQLError } from "../../../classes";
 import Node from "../../../classes/Node";
 import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
-import { Context, Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
+import { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
 
 export type SubscriptionContext = {
     plugin: Neo4jGraphQLSubscriptionsPlugin;
 };
 
-export function subscriptionResolve(payload: [SubscriptionsEvent], args, context: Context, info: GraphQLResolveInfo) {
+export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
     if (!payload) throw new Neo4jGraphQLError("Payload is undefined. Can't call subscriptions resolver directly.");
-    const fieldName = info.fieldName;
-    return { [fieldName]: payload[0].properties.new };
+    return payload[0];
 }
 
-export function createSubscription(node: Node) {
-    return (
-        _root: any,
-        _args: any,
-        context: SubscriptionContext,
-    ): AsyncIterator<[SubscriptionsEvent]> => {
-        const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, "create");
+export function generateSubscribeMethod(node: Node, type: "create" | "update" | "delete") {
+    return (_root: any, _args: any, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
+        const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
 
         return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
             // TODO: where
