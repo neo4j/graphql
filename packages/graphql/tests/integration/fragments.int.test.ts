@@ -85,7 +85,7 @@ describe("fragments", () => {
 
     beforeAll(async () => {
         neo4j = new Neo4j();
-        driver = await neo4j.connect();
+        driver = await neo4j.getDriver();
         const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });

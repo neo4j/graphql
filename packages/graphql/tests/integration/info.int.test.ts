@@ -29,7 +29,7 @@ describe("info", () => {
 
     beforeAll(async () => {
         neo4j = new Neo4j();
-        driver = await neo4j.connect();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {

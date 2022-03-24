@@ -39,7 +39,7 @@ class Neo4j {
         this.hasIntegrationTestDb = false;
     }
 
-    public async connect(): Promise<neo4j.Driver> {
+    public async getDriver(): Promise<neo4j.Driver> {
         if (this.driver) {
             return this.driver;
         }
@@ -57,41 +57,45 @@ class Neo4j {
             await this.driver.verifyConnectivity({ database: INT_TEST_DB_NAME });
             this.hasIntegrationTestDb = true;
         } catch (error: any) {
-            // const errMsg = `Unable to get a routing table for database ${INT_TEST_DB_NAME} because this database does not exist`;
-            // if (error instanceof Error && error.message.includes(errMsg)) {
-            //     try {
-            //         await this.driver.verifyConnectivity();
-            //     } catch (err: any) {
-            //         throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${err.message}`);
-            //     }
-            // } else {
-            throw new Error(
-                `Could not connect to neo4j @ ${NEO_URL}, database ${INT_TEST_DB_NAME}, Error: ${error.message}`
-            );
-            // }
+            if (error.message.includes("Could not perform discovery. No routing servers available.")) {
+                await this.checkConnectivityToDefaultDatabase(this.driver, NEO_URL);
+            } else {
+                throw new Error(
+                    `Could not connect to neo4j @ ${NEO_URL}, database ${INT_TEST_DB_NAME}, Error: ${error.message}`
+                );
+            }
         }
 
         return this.driver;
     }
 
+    private async checkConnectivityToDefaultDatabase(driver: neo4j.Driver, NEO_URL: string) {
+        try {
+            await driver.verifyConnectivity();
+            this.hasIntegrationTestDb = false;
+        } catch (err: any) {
+            throw new Error(`Could not connect to neo4j @ ${NEO_URL}, default database, Error: ${err.message}`);
+        }
+    }
+
     public async getSession(): Promise<neo4j.Session> {
         if (!this.driver) {
-            await this.connect();
+            await this.getDriver();
         }
 
         let options = {};
         if (this.hasIntegrationTestDb) {
             options = { database: INT_TEST_DB_NAME };
         }
-        console.log("Options:", options); // eslint-disable-line no-console
-        // @ts-ignore connect() has be executed if driver does not exist
+        // @ts-ignore getDriver() has be executed if driver does not exist
         return this.driver.session(options);
     }
 
     public getDriverContextValues(session?: neo4j.Session): DriverContext {
+        const database = this.hasIntegrationTestDb ? INT_TEST_DB_NAME : "neo4j";
         return {
             driver: this.driver,
-            driverConfig: { database: INT_TEST_DB_NAME, ...(session && { bookmarks: session.lastBookmark() }) },
+            driverConfig: { database, ...(session && { bookmarks: session.lastBookmark() }) },
         };
     }
 }

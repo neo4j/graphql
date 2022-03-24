@@ -29,7 +29,7 @@ describe("find", () => {
 
     beforeAll(async () => {
         neo4j = new Neo4j();
-        driver = await neo4j.connect();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -69,12 +69,7 @@ describe("find", () => {
         try {
             await neoSchema.checkNeo4jCompat();
 
-            await session.run(
-                `
-              CREATE (:Movie {id: $id}), (:Movie {id: $id}), (:Movie {id: $id})
-            `,
-                { id }
-            );
+            await session.run(`CREATE (:Movie {id: $id}), (:Movie {id: $id}), (:Movie {id: $id})`, { id });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
