@@ -22,7 +22,7 @@ import { ApolloServer } from "apollo-server-express";
 import { createServer, Server } from "http";
 import express from "express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
-import { WebSocketServer } from "ws";
+import { AddressInfo, WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { Neo4jGraphQL } from "../../../src";
 
@@ -52,8 +52,8 @@ export class ApolloTestServer implements TestGraphQLServer {
         return this.path.replace("http://", "ws://");
     }
 
-    async start(port = 4001): Promise<void> {
-        await this.close();
+    async start(): Promise<void> {
+        if (this.server) throw new Error(`Server already running on "${this.path}"`);
         const app = express();
         const httpServer = createServer(app);
         const wsServer = new WebSocketServer({
@@ -85,8 +85,10 @@ export class ApolloTestServer implements TestGraphQLServer {
         server.applyMiddleware({ app });
 
         return new Promise<void>((resolve) => {
+            const port = 0; // Automatically assigns a free port
             httpServer.listen(port, () => {
-                this._path = `http://localhost:${port}${server.graphqlPath}`;
+                const serverAddress = httpServer.address() as AddressInfo;
+                this._path = `http://localhost:${serverAddress.port}${server.graphqlPath}`;
                 resolve();
             });
         });
@@ -94,18 +96,7 @@ export class ApolloTestServer implements TestGraphQLServer {
 
     async close(): Promise<void> {
         await this.closeWebsocketServer();
-        await new Promise<void>((resolve, reject) => {
-            if (this.server) {
-                this.server.close((err) => {
-                    if (err) reject(err);
-                    resolve();
-                });
-                this.server = undefined;
-                this._path = undefined;
-            } else {
-                resolve();
-            }
-        });
+        await this.closeHttpServer();
     }
 
     private closeWebsocketServer(): Promise<void> {
@@ -122,6 +113,21 @@ export class ApolloTestServer implements TestGraphQLServer {
                 });
             } else {
                 this.wsServer = undefined;
+                resolve();
+            }
+        });
+    }
+
+    private closeHttpServer(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            if (this.server) {
+                this.server.close((err) => {
+                    if (err) reject(err);
+                    resolve();
+                });
+                this.server = undefined;
+                this._path = undefined;
+            } else {
                 resolve();
             }
         });

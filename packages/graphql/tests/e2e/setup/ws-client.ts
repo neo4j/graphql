@@ -31,22 +31,19 @@ export class WebSocketTestClient implements WebSocketClient {
     public events: Array<any> = [];
 
     private path: string;
-    private client?: Client;
+    private client: Client;
 
     constructor(path: string) {
         this.path = path;
-    }
-
-    public async subscribe(query: string): Promise<void> {
-        await this.close();
-
-        const client = createClient({
+        this.client = createClient({
             url: this.path,
             webSocketImpl: ws,
         });
-        this.client = client;
+    }
+
+    public async subscribe(query: string): Promise<void> {
         await new Promise<void>((resolve, reject) => {
-            client.subscribe(
+            this.client.subscribe(
                 { query },
                 {
                     next: (value) => {
@@ -59,18 +56,19 @@ export class WebSocketTestClient implements WebSocketClient {
                 }
             );
 
-            client.on("connected", () => {
+            this.client.on("connected", () => {
                 resolve();
             });
 
-            client.on("closed", () => {
-                return client.dispose();
+            this.client.on("closed", () => {
+                return this.close();
             });
         });
     }
 
     public async close(): Promise<void> {
         if (this.client) await this.client?.dispose();
+        this.events = [];
     }
 }
 /* eslint-enable import/no-extraneous-dependencies */
