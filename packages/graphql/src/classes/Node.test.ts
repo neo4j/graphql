@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Node, { MutationResponseTypeNames, NodeConstructor, RootTypeFieldNames } from "./Node";
+import Node, { MutationResponseTypeNames, NodeConstructor, RootTypeFieldNames, SubscriptionEvents } from "./Node";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { NodeDirective } from "./NodeDirective";
@@ -506,6 +506,210 @@ describe("Node", () => {
                 }).instance();
 
                 expect(node.mutationResponseTypeNames).toStrictEqual(mutationResponseTypeNames);
+            }
+        );
+    });
+
+    describe("Subscription event type names", () => {
+        test.each<[string, SubscriptionEvents]>([
+            [
+                "Account",
+                {
+                    create: "AccountCreatedEvent",
+                    update: "AccountUpdatedEvent",
+                    delete: "AccountDeletedEvent",
+                },
+            ],
+            [
+                "AWSAccount",
+                {
+                    create: "AwsAccountCreatedEvent",
+                    update: "AwsAccountUpdatedEvent",
+                    delete: "AwsAccountDeletedEvent",
+                },
+            ],
+            [
+                "AWS_ACCOUNT",
+                {
+                    create: "AwsAccountCreatedEvent",
+                    update: "AwsAccountUpdatedEvent",
+                    delete: "AwsAccountDeletedEvent",
+                },
+            ],
+            [
+                "aws-account",
+                {
+                    create: "AwsAccountCreatedEvent",
+                    update: "AwsAccountUpdatedEvent",
+                    delete: "AwsAccountDeletedEvent",
+                },
+            ],
+            [
+                "aws_account",
+                {
+                    create: "AwsAccountCreatedEvent",
+                    update: "AwsAccountUpdatedEvent",
+                    delete: "AwsAccountDeletedEvent",
+                },
+            ],
+            [
+                "account",
+                {
+                    create: "AccountCreatedEvent",
+                    update: "AccountUpdatedEvent",
+                    delete: "AccountDeletedEvent",
+                },
+            ],
+            [
+                "ACCOUNT",
+                {
+                    create: "AccountCreatedEvent",
+                    update: "AccountUpdatedEvent",
+                    delete: "AccountDeletedEvent",
+                },
+            ],
+            [
+                "A",
+                {
+                    create: "ACreatedEvent",
+                    update: "AUpdatedEvent",
+                    delete: "ADeletedEvent",
+                },
+            ],
+            [
+                "_2number",
+                {
+                    create: "_2NumberCreatedEvent",
+                    update: "_2NumberUpdatedEvent",
+                    delete: "_2NumberDeletedEvent",
+                },
+            ],
+            [
+                "__2number",
+                {
+                    create: "__2NumberCreatedEvent",
+                    update: "__2NumberUpdatedEvent",
+                    delete: "__2NumberDeletedEvent",
+                },
+            ],
+            [
+                "_number",
+                {
+                    create: "_numberCreatedEvent",
+                    update: "_numberUpdatedEvent",
+                    delete: "_numberDeletedEvent",
+                },
+            ],
+        ])(
+            "should generate Subscription event type names for %s as expected",
+            (typename: string, subscriptionEventTypeNames: SubscriptionEvents) => {
+                const node = new NodeBuilder({
+                    name: typename,
+                }).instance();
+
+                expect(node.subscriptionEventTypeNames).toStrictEqual(subscriptionEventTypeNames);
+            }
+        );
+    });
+
+    describe("Subscription event payload field names", () => {
+        test.each<[string, SubscriptionEvents]>([
+            [
+                "Account",
+                {
+                    create: "createdAccount",
+                    update: "updatedAccount",
+                    delete: "deletedAccount",
+                },
+            ],
+            [
+                "AWSAccount",
+                {
+                    create: "createdAwsAccount",
+                    update: "updatedAwsAccount",
+                    delete: "deletedAwsAccount",
+                },
+            ],
+            [
+                "AWS_ACCOUNT",
+                {
+                    create: "createdAwsAccount",
+                    update: "updatedAwsAccount",
+                    delete: "deletedAwsAccount",
+                },
+            ],
+            [
+                "aws-account",
+                {
+                    create: "createdAwsAccount",
+                    update: "updatedAwsAccount",
+                    delete: "deletedAwsAccount",
+                },
+            ],
+            [
+                "aws_account",
+                {
+                    create: "createdAwsAccount",
+                    update: "updatedAwsAccount",
+                    delete: "deletedAwsAccount",
+                },
+            ],
+            [
+                "account",
+                {
+                    create: "createdAccount",
+                    update: "updatedAccount",
+                    delete: "deletedAccount",
+                },
+            ],
+            [
+                "ACCOUNT",
+                {
+                    create: "createdAccount",
+                    update: "updatedAccount",
+                    delete: "deletedAccount",
+                },
+            ],
+            [
+                "A",
+                {
+                    create: "createdA",
+                    update: "updatedA",
+                    delete: "deletedA",
+                },
+            ],
+            [
+                "_2number",
+                {
+                    create: "created_2Number",
+                    update: "updated_2Number",
+                    delete: "deleted_2Number",
+                },
+            ],
+            [
+                "__2number",
+                {
+                    create: "created__2Number",
+                    update: "updated__2Number",
+                    delete: "deleted__2Number",
+                },
+            ],
+            [
+                "_number",
+                {
+                    create: "created_number",
+                    update: "updated_number",
+                    delete: "deleted_number",
+                },
+            ],
+        ])(
+            "should generate Subscription event type names for %s as expected",
+            (typename: string, subscriptionEventPayloadFieldNames: SubscriptionEvents) => {
+                const node = new NodeBuilder({
+                    name: typename,
+                }).instance();
+
+                expect(node.subscriptionEventPayloadFieldNames).toStrictEqual(subscriptionEventPayloadFieldNames);
             }
         );
     });
