@@ -112,7 +112,7 @@ export const Editor = (props: Props) => {
             <div className="flex-1 flex justify-start w-full p-6">
                 <div className="flex flex-col w-full">
                     <div className="flex items-center w-full pb-4">
-                        <div className="flex-1 justify-start">
+                        <div className="justify-start">
                             <ViewSelectorComponent
                                 key="editor-view-selector"
                                 elementKey="editor-view-selector"

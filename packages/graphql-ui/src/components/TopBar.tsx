@@ -20,7 +20,7 @@
 import { useContext } from "react";
 import { HeroIcon } from "@neo4j-ndl/react";
 // @ts-ignore - SVG Import
-import Neo4jLogoIcon from "../assets/neo4j-logo-color.svg";
+import Neo4jLogoIcon from "../assets/Neo4j-logo-color.svg";
 import { AuthContext } from "../contexts/auth";
 
 export const TopBar = () => {
