@@ -43,8 +43,8 @@ export default function globalNodeResolver({ nodes }: { nodes: Node[] }) {
             if (key === "Node") return res;
 
             if (key === typeName) {
-                // const fields = { ...value, id: { name: "id", alias: "id", args: {}, fieldsByTypeName: {} } };
-                return { ...res, [key]: value };
+                const fields = { ...value, id: { name: "id", alias: "id", args: {}, fieldsByTypeName: {} } };
+                return { ...res, [key]: fields };
             }
 
             return { ...res, [key]: value };

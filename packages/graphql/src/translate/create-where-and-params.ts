@@ -46,7 +46,6 @@ function createWhereAndParams({
     if (!Object.keys(whereInput).length) {
         return ["", {}];
     }
-
     function reducer(res: Res, [key, value]: [string, any | GraphQLWhereArg | GraphQLWhereArg[]]): Res {
         let param = "";
         if (chainStr) {

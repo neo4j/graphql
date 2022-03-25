@@ -83,7 +83,7 @@ describe("Global node resolution", () => {
                 },
             ],
         })
-            .withNodeDirective({ global: true, nodeIdField: "title" })
+            .withNodeDirective({ global: true, idField: "title" })
             .instance();
 
         const expectedId = node.toGlobalId("2001: A Space Odyssey");

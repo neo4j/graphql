@@ -109,7 +109,7 @@ describe("parseNodeDirective", () => {
         test("should NOT throw if an id field contains an id field that is aliased", () => {
             const typeDefs = `
                 type Movie @node(global: true) {
-                    id: ID! @id @alias(property: "dbId")
+                    dbId: ID! @id @alias(property: "id")
                     title: String!
                 }
             `;
@@ -162,7 +162,7 @@ describe("parseNodeDirective", () => {
           `;
             const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
             const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-            const expected = new NodeDirective({ global: true, nodeIdField: "aId" });
+            const expected = new NodeDirective({ global: true, idField: "aId" });
             expect(parseNodeDirective(directive, definition)).toMatchObject(expected);
         });
     });

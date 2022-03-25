@@ -504,7 +504,7 @@ describe("Node", () => {
             const isGlobalNode = node.isGlobalNode();
             expect(isGlobalNode).toBe(true);
         });
-        test("should convert the a db id to a global relay id with the main label name", () => {
+        test("should convert the a db id to a global relay id with the correct typename", () => {
             const node = new NodeBuilder({
                 name: "Film",
             })
@@ -519,12 +519,12 @@ describe("Node", () => {
             const relayId = node.toGlobalId(value);
 
             expect(node.fromGlobalId(relayId)).toEqual({
-                label: "Film",
+                typeName: "Film",
                 field: "title",
                 id: value,
             });
         });
-        test("should convert a relay id to an object of { field: string, value: string | number }", () => {
+        test("should convert a relay id to an object of { typeName: string, field: string, id: any }", () => {
             const node = new NodeBuilder({
                 name: "Film",
             })
@@ -538,7 +538,7 @@ describe("Node", () => {
 
             const relayId = node.toGlobalId(value);
 
-            expect(node.fromGlobalId(relayId)).toMatchObject({ field: "title", label: "Film", id: value });
+            expect(node.fromGlobalId(relayId)).toMatchObject({ field: "title", typeName: "Film", id: value });
         });
 
         test("should properly convert a relay id to an object when the id has a colon in the name", () => {
@@ -555,7 +555,7 @@ describe("Node", () => {
 
             const relayId = node.toGlobalId(value);
 
-            expect(node.fromGlobalId(relayId)).toMatchObject({ field: "title", label: "Film", id: value });
+            expect(node.fromGlobalId(relayId)).toMatchObject({ field: "title", typeName: "Film", id: value });
         });
     });
 });

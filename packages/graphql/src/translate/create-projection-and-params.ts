@@ -635,7 +635,7 @@ function createProjectionAndParams({
     // Include fields of implemented interfaces to allow for fragments on interfaces
     // cf. https://github.com/neo4j/graphql/issues/476
     const mergedSelectedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
-        resolveTree.fieldsByTypeName[node.name],
+        nodeFields,
         ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value]),
     ]);
 

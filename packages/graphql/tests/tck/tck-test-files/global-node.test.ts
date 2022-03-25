@@ -32,7 +32,6 @@ describe("Global nodes", () => {
             }
 
             type Movie @node(global: true) {
-                dbId: ID! @id @alias(property: "id")
                 title: String! @unique
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -65,7 +64,47 @@ describe("Global nodes", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title = $this_title
-            RETURN this { .title, id: this.dbId } as this"
+            RETURN this { .title } as this"
+        `);
+    });
+    test("it should project the correct node and fields when id is the idField", async () => {
+        const typeDefs = gql`
+            type Actor @node(global: true) {
+                dbId: ID! @id @alias(property: "id")
+                name: String!
+                movies: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+            type Movie @node(global: true) {
+                title: String! @unique
+                actors: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: {},
+        });
+        const query = gql`
+            query Node($id: ID!) {
+                node(id: $id) {
+                    id
+                    ... on Actor {
+                        name
+                    }
+                    ... on Movie {
+                        title
+                    }
+                }
+            }
+        `;
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+            variableValues: { id: toGlobalId("Actor", "dbId", "123455") },
+        });
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Actor\`)
+            WHERE this.id = $this_dbId
+            RETURN this { .name, dbId: this.id } as this"
         `);
     });
 });

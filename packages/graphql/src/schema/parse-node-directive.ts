@@ -25,14 +25,13 @@ function parseNodeDirective(nodeDirective: DirectiveNode | undefined, definition
         throw new Error("Undefined or incorrect directive passed into parseNodeDirective function");
     }
 
-    let nodeIdField: string | undefined;
+    let idField: string | undefined;
     const global = getArgumentValue<boolean>(nodeDirective, "global");
 
     if (global) {
         const fields = alphabeticallySortFields([...(definition.fields ?? [])]);
 
-        const idField = fields.find((x) => x.name.value === "id");
-        if (idField) {
+        if (fields.find((x) => x.name.value === "id")) {
             throw new Error(
                 `Type ${definition.name.value} already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
             );
@@ -44,9 +43,9 @@ function parseNodeDirective(nodeDirective: DirectiveNode | undefined, definition
         const uniqueDirectiveField = candidates.find((x) => x.directives?.find((dir) => dir.name.value === "unique"));
 
         if (idDirectiveField) {
-            nodeIdField = idDirectiveField.name.value;
+            idField = idDirectiveField.name.value;
         } else if (uniqueDirectiveField) {
-            nodeIdField = uniqueDirectiveField.name.value;
+            idField = uniqueDirectiveField.name.value;
         } else {
             throw new Error(
                 "The `global` flag on the `@node` directive requires at least one field with the `@id` or `@unique` directive"
@@ -56,7 +55,7 @@ function parseNodeDirective(nodeDirective: DirectiveNode | undefined, definition
 
     return new NodeDirective({
         global,
-        nodeIdField,
+        idField,
         label: getArgumentValue<string>(nodeDirective, "label"),
         additionalLabels: getArgumentValue<string[]>(nodeDirective, "additionalLabels"),
         plural: getArgumentValue<string>(nodeDirective, "plural"),
