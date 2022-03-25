@@ -21,6 +21,7 @@ import { Main } from "./components/Main";
 import { AuthProvider } from "./contexts/auth";
 import { ScreenProvider } from "./contexts/screen";
 import { ThemeProvider } from "./contexts/theme";
+import { SettingsProvider } from "./contexts/settings";
 import "@neo4j-ndl/base/lib/neo4j-ds-styles.css";
 import "./index.css";
 
@@ -29,7 +30,9 @@ export const App = () => {
         <AuthProvider>
             <ScreenProvider>
                 <ThemeProvider>
-                    <Main />
+                    <SettingsProvider>
+                        <Main />
+                    </SettingsProvider>
                 </ThemeProvider>
             </ScreenProvider>
         </AuthProvider>

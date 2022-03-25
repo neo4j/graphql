@@ -22,11 +22,24 @@ import { HeroIcon } from "@neo4j-ndl/react";
 // @ts-ignore - SVG Import
 import Neo4jLogoIcon from "../assets/Neo4j-logo-color.svg";
 import { AuthContext } from "../contexts/auth";
+import { ScreenContext, Screen } from "../contexts/screen";
+import { SettingsContext } from "../contexts/settings";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
+    const screen = useContext(ScreenContext);
+    const settings = useContext(SettingsContext);
     const greenDot = <span className="ml-1 mr-2 h-2 w-2 bg-green-400 rounded-full inline-block" />;
     const redDot = <span className="ml-1 mr-2 h-2 w-2 bg-red-400 rounded-full inline-block" />;
+
+    const handleHelpClick = () => {
+        if (screen.view !== Screen.EDITOR) return;
+        settings.setIsShowDocsDrawer(!settings.isShowDocsDrawer);
+    };
+
+    const handleSettingsClick = () => {
+        settings.setIsShowSettingsDrawer(!settings.isShowSettingsDrawer);
+    };
 
     return (
         <div className="flex w-full h-16 bg-white border-b border-gray-100">
@@ -59,10 +72,13 @@ export const TopBar = () => {
                     </p>
                     <span className="ml-6 mr-6">|</span>
                     <p className="flex items-center">
-                        <span className="cursor-pointer" onClick={() => {}}>
+                        <span
+                            className={`cursor-pointer ${screen.view !== Screen.EDITOR ? "opacity-30" : "opacity-100"}`}
+                            onClick={handleHelpClick}
+                        >
                             <HeroIcon className="h-7 w-7" iconName="QuestionMarkCircleIcon" type="outline" />
                         </span>
-                        <span className="ml-4 mr-4 cursor-pointer" onClick={() => {}}>
+                        <span className="ml-4 mr-4 cursor-pointer" onClick={handleSettingsClick}>
                             <HeroIcon className="h-7 w-7" iconName="CogIcon" type="outline" />
                         </span>
                     </p>

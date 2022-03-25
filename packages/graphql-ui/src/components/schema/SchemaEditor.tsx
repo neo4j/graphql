@@ -42,6 +42,7 @@ import {
 import { formatCode, ParserOptions } from "../editor/utils";
 import { Extension, FileName } from "../editor/Filename";
 import { AuthContext } from "../../contexts/auth";
+import { SettingsContext } from "../../contexts/settings";
 import { ThemeContext, Theme } from "../../contexts/theme";
 import { ViewSelectorComponent } from "../ViewSelectorComponent";
 import { AppSettings } from "../AppSettings";
@@ -54,6 +55,7 @@ export interface Props {
 export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
     const auth = useContext(AuthContext);
     const theme = useContext(ThemeContext);
+    const settings = useContext(SettingsContext);
     const ref = useRef<HTMLTextAreaElement>();
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const [error, setError] = useState("");
@@ -310,11 +312,11 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="h-content-container flex justify-start w-96 bg-white">
-                <div className="p-6 w-full">
-                    <AppSettings />
+            {settings.isShowSettingsDrawer ? (
+                <div className="h-content-container flex justify-start w-96 bg-white">
+                    <AppSettings onClickClose={() => settings.setIsShowSettingsDrawer(false)} />
                 </div>
-            </div>
+            ) : null}
         </div>
     );
 };

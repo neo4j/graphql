@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import { SideBar } from "./REMOVE_Sidebar";
-import { TopBar } from "./TopBar";
 import { useContext, useState } from "react";
+import { GraphQLSchema } from "graphql";
+import { TopBar } from "./TopBar";
 import { Login } from "./Login";
 import { SchemaEditor } from "./schema/SchemaEditor";
-import { GraphQLSchema } from "graphql";
 import { Editor } from "./editor/Editor";
 import { AuthContext } from "../contexts/auth";
 import { ScreenContext, Screen } from "../contexts/screen";

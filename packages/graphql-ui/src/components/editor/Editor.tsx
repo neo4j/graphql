@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useState, useRef, useEffect } from "react";
+import { useCallback, useState, useRef, useEffect, useContext } from "react";
 import { graphql, GraphQLSchema } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
 import { Button, HeroIcon } from "@neo4j-ndl/react";
@@ -35,15 +35,17 @@ import { DocExplorer } from "./docexplorer/index";
 import { formatCode, ParserOptions } from "./utils";
 import { Extension } from "./Filename";
 import { ViewSelectorComponent } from "../ViewSelectorComponent";
+import { SettingsContext } from "../../contexts/settings";
+import { AppSettings } from "../AppSettings";
 
 const DEFAULT_QUERY = `
-    # Type queries into this side of the screen, and you will 
-    # see intelligent typeaheads aware of the current GraphQL type schema.
-    # Try the Explorer and use the Documentation
+# Type queries into this side of the screen, and you will 
+# see intelligent typeaheads aware of the current GraphQL type schema.
+# Try the Explorer and use the Documentation
 
-    query {
-        __typename
-    }
+query {
+    __typename
+}
 `;
 
 export interface Props {
@@ -51,11 +53,11 @@ export interface Props {
 }
 
 export const Editor = (props: Props) => {
+    const settings = useContext(SettingsContext);
     const [loading, setLoading] = useState(false);
     const [query, setQuery] = useState("");
     const [variableValues, setVariableValues] = useState("");
     const [output, setOutput] = useState("");
-    const [showExplorer, isShowExplorer] = useState(false);
     const [showDocs, isShowDocs] = useState(false);
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
 
@@ -181,19 +183,26 @@ export const Editor = (props: Props) => {
                     />
                 </div>
             </div>
-            <div className="h-content-container flex justify-start w-96 bg-white">
-                <div className="p-6">
-                    <DocExplorer schema={props.schema}>
-                        <button
-                            className="docExplorerHide"
-                            onClick={() => isShowDocs(!showDocs)}
-                            aria-label="Close Documentation Explorer"
-                        >
-                            {"\u2715"}
-                        </button>
-                    </DocExplorer>
+            {settings.isShowDocsDrawer || settings.isShowSettingsDrawer ? (
+                <div className="h-content-container flex justify-start w-96 bg-white">
+                    {settings.isShowDocsDrawer ? (
+                        <div className="p-6">
+                            <DocExplorer schema={props.schema}>
+                                <button
+                                    className="docExplorerHide"
+                                    onClick={() => settings.setIsShowDocsDrawer(false)}
+                                    aria-label="Close Documentation Explorer"
+                                >
+                                    {"\u2715"}
+                                </button>
+                            </DocExplorer>
+                        </div>
+                    ) : null}
+                    {settings.isShowSettingsDrawer ? (
+                        <AppSettings onClickClose={() => settings.setIsShowSettingsDrawer(false)} />
+                    ) : null}
                 </div>
-            </div>
+            ) : null}
         </div>
     );
 };

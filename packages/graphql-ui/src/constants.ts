@@ -48,14 +48,13 @@ export const THEME_EDITOR_LIGHT = "default";
 export const THEME_EDITOR_DARK = "dracula";
 
 export const DEFAULT_TYPE_DEFS = `
-    # Write your own type definition in the editor here or 
-    # generate it automatically from the current Neo4j database (introspection)
+# Write your own type definition in the editor here or 
+# generate it automatically from the current Neo4j database (introspection)
 
-    # Example type definition:
-    type Movie {
-        title: String!
-    }
-    
+# Example type definition:
+type Movie {
+    title: String!
+}
 `;
 
 export const DEFAULT_BOLT_URL = "bolt://localhost:7687";

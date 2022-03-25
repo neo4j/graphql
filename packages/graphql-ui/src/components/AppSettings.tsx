@@ -21,7 +21,11 @@ import { useContext } from "react";
 import { Radio } from "@neo4j-ndl/react";
 import { Theme, ThemeContext } from "../contexts/theme";
 
-export const AppSettings = () => {
+interface Props {
+    onClickClose: () => void;
+}
+
+export const AppSettings = ({ onClickClose }: Props) => {
     const theme = useContext(ThemeContext);
 
     const handleOThemeClick = (e: any) => {
@@ -30,10 +34,12 @@ export const AppSettings = () => {
     };
 
     return (
-        <div>
+        <div className="p-6 w-full">
             <div className="pb-6 flex justify-between items-center">
                 <h3>Settings</h3>
-                <span className="text-lg cursor-pointer">{"\u2715"}</span>
+                <span className="text-lg cursor-pointer" onClick={onClickClose}>
+                    {"\u2715"}
+                </span>
             </div>
             <div>
                 <h4>Editors</h4>
