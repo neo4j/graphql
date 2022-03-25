@@ -29,8 +29,8 @@ export const TopBar = () => {
     const auth = useContext(AuthContext);
     const screen = useContext(ScreenContext);
     const settings = useContext(SettingsContext);
-    const greenDot = <span className="ml-1 mr-2 h-2 w-2 bg-green-400 rounded-full inline-block" />;
-    const redDot = <span className="ml-1 mr-2 h-2 w-2 bg-red-400 rounded-full inline-block" />;
+    const greenDot = <span className="ml-1 mr-1 h-2 w-2 bg-green-400 rounded-full inline-block" />;
+    const redDot = <span className="ml-1 mr-1 h-2 w-2 bg-red-400 rounded-full inline-block" />;
 
     const handleHelpClick = () => {
         if (screen.view !== Screen.EDITOR) return;
