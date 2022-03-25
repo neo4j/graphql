@@ -16,17 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventEmitter } from "events";
-import { SubscriptionsEvent } from "../../src/subscriptions/subscriptions-event";
-import { Neo4jGraphQLSubscriptionsPlugin } from "../../src/types";
 
-export class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
-    public events = {} as EventEmitter;
-
-    public eventList: SubscriptionsEvent[] = [];
-
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async publish(eventMeta: SubscriptionsEvent): Promise<void> {
-        this.eventList.push(eventMeta);
+export function isMultiDbUnsupportedError(e: Error) {
+    if (
+        e.message.includes("This is an administration command and it should be executed against the system database") ||
+        e.message.includes("Neo4jError: Unsupported administration command") ||
+        e.message.includes("Neo4jError: Unable to route write operation to leader for database 'system'")
+    ) {
+        return true;
     }
+
+    return false;
 }

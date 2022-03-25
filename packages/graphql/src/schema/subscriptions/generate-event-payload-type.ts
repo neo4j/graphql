@@ -16,17 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventEmitter } from "events";
-import { SubscriptionsEvent } from "../../src/subscriptions/subscriptions-event";
-import { Neo4jGraphQLSubscriptionsPlugin } from "../../src/types";
 
-export class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
-    public events = {} as EventEmitter;
+import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import { objectFieldsToComposeFields } from "../to-compose";
+import { Node } from "../../classes";
 
-    public eventList: SubscriptionsEvent[] = [];
+export function generateEventPayloadType(node: Node, schemaComposer: SchemaComposer): ObjectTypeComposer {
+    const nodeFields = objectFieldsToComposeFields([
+        ...node.primitiveFields,
+        ...node.enumFields,
+        ...node.scalarFields,
+        ...node.temporalFields,
+        ...node.pointFields,
+    ]);
 
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async publish(eventMeta: SubscriptionsEvent): Promise<void> {
-        this.eventList.push(eventMeta);
-    }
+    return schemaComposer.createObjectTC({
+        name: `${node.name}EventPayload`,
+        fields: nodeFields,
+    });
 }
