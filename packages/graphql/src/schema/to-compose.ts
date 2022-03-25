@@ -103,6 +103,16 @@ export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<str
         }, {} as Record<string, InputField>);
 }
 
+export function objectFieldsToSubscriptionsWhereInputFields(fields: BaseField[]): Record<string, InputField> {
+    return fields.reduce((res, f) => {
+        const fieldType = f.typeMeta.input.update.pretty;
+
+        res[f.fieldName] = fieldType;
+
+        return res;
+    }, {});
+}
+
 export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<string, InputField> {
     return fields.reduce((res, f) => {
         const staticField = f.readonly || (f as PrimitiveField)?.autogenerate;
