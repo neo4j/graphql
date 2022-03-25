@@ -275,6 +275,7 @@ class Node extends GraphElement {
 
     public fromGlobalId(relayId: string): { typeName: string; id: string; field: string } {
         return fromGlobalId(relayId);
+    }
 
     private generateSingular(): string {
         const singular = camelcase(this.name);
