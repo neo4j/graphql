@@ -46,7 +46,7 @@ describe("Global node resolver", () => {
                 },
             ],
         })
-            .withNodeDirective({ global: true, idField: "title" })
+            .withNodeDirective({ global: true, nodeIdField: "title" })
             .instance();
 
         const result = globalNodeResolver({ nodes: [node] });

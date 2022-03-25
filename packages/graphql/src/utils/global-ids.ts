@@ -19,15 +19,15 @@
 import { GraphQLID } from "graphql";
 import { base64, unbase64 } from "graphql-relay/utils/base64";
 
-export function toGlobalId(label: string, field: string, id: string | number): string {
-    return base64([label, field, GraphQLID.serialize(id)].join(":"));
+export function toGlobalId(typeName: string, field: string, id: string | number): string {
+    return base64([typeName, field, GraphQLID.serialize(id)].join(":"));
 }
 
-export function fromGlobalId(id: string): { field: string; label: string; id: string } {
+export function fromGlobalId(id: string): { field: string; typeName: string; id: string } {
     const unbasedGlobalId = unbase64(id);
-    const [label, field, ...rest] = unbasedGlobalId.split(":");
+    const [typeName, field, ...rest] = unbasedGlobalId.split(":");
     return {
-        label,
+        typeName,
         field,
         id: rest.join(":"),
     };

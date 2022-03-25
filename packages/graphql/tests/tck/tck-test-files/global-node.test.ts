@@ -32,7 +32,7 @@ describe("Global nodes", () => {
             }
 
             type Movie @node(global: true) {
-                id: ID! @id @alias(property: "dbId")
+                dbId: ID! @id @alias(property: "id")
                 title: String! @unique
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }

@@ -30,6 +30,7 @@ export default function createResolver({ node }: { node: Node }) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { args });
         const [cypher, params] = translateCreate({ context, node });
+        console.log(cypher);
 
         const executeResult = await execute({
             cypher,
@@ -37,6 +38,7 @@ export default function createResolver({ node }: { node: Node }) {
             defaultAccessMode: "WRITE",
             context,
         });
+        console.log(executeResult.records[0]);
 
         const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
             (selection) => selection.kind === "Field" && selection.name.value === node.plural

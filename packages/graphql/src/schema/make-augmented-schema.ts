@@ -23,6 +23,7 @@ import {
     DocumentNode,
     GraphQLID,
     GraphQLNonNull,
+    GraphQLResolveInfo,
     GraphQLScalarType,
     InterfaceTypeDefinitionNode,
     Kind,
@@ -31,10 +32,11 @@ import {
     parse,
     print,
 } from "graphql";
-import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import { ObjectTypeComposer, ObjectTypeComposerFieldConfigAsObjectDefinition, SchemaComposer } from "graphql-compose";
+import { nodeDefinitions } from "graphql-relay";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
-import { BaseField } from "../types";
+import { BaseField, Context } from "../types";
 import {
     aggregateResolver,
     createResolver,
@@ -158,6 +160,24 @@ function makeAugmentedSchema(
     //
     // These are flags to check whether the types are used and then create them if they are
     let { pointInTypeDefs, cartesianPointInTypeDefs } = getNodesResult;
+
+    const globalNodes = nodes.filter((node) => node.isGlobalNode());
+
+    if (globalNodes.length > 0) {
+        const fetchById = (id: string, context: Context, info: GraphQLResolveInfo) => {
+            const resolver = globalNodeResolver({ nodes: globalNodes });
+            return resolver.resolve(null, { id }, context, info);
+        };
+
+        const resolveType = (obj: { [key: string]: unknown; __resolveType: string }) => obj.__resolveType;
+
+        const { nodeInterface, nodeField } = nodeDefinitions(fetchById, resolveType);
+
+        composer.createInterfaceTC(nodeInterface);
+        composer.Query.addFields({
+            node: nodeField as ObjectTypeComposerFieldConfigAsObjectDefinition<null, Context, { id: string }>,
+        });
+    }
 
     const relationshipProperties = interfaceTypes.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
     const interfaceRelationships = interfaceTypes.filter((i) => interfaceRelationshipNames.has(i.name.value));
@@ -535,7 +555,7 @@ function makeAugmentedSchema(
                 resolve: (src) => {
                     const field = node.getGlobalIdField();
                     const value = src[field] as string | number;
-                    return node.toGlobalId(value.toString());
+                    return typeof value === "string" ? node.toGlobalId(value.toString()) : undefined;
                 },
             });
 
@@ -819,13 +839,6 @@ function makeAugmentedSchema(
 
     if (!Object.values(composer.Mutation.getFields()).length) {
         composer.delete("Mutation");
-    }
-
-    const globalNodes = nodes.filter((node) => node.isGlobalNode());
-    if (globalNodes.length > 0) {
-        composer.Query.addFields({
-            node: globalNodeResolver({ nodes: globalNodes }),
-        });
     }
 
     const generatedTypeDefs = composer.toSDL();

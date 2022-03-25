@@ -28,11 +28,11 @@ import { fromGlobalId } from "../../utils/global-ids";
 
 export default function globalNodeResolver({ nodes }: { nodes: Node[] }) {
     async function resolve(_root: any, args: { id: string }, context: Context, info: GraphQLResolveInfo) {
-        const { label, field, id } = fromGlobalId(args.id);
+        const { typeName, field, id } = fromGlobalId(args.id);
 
-        if (!label || !field || !id) return null;
+        if (!typeName || !field || !id) return null;
 
-        const node = nodes.find((n) => n.getMainLabel() === label);
+        const node = nodes.find((n) => n.name === typeName);
 
         if (!node) return null;
 
@@ -42,9 +42,9 @@ export default function globalNodeResolver({ nodes }: { nodes: Node[] }) {
         const fieldsByTypeName = Object.entries(parseInfo.fieldsByTypeName).reduce((res, [key, value]) => {
             if (key === "Node") return res;
 
-            if (key === label) {
-                const fields = { ...value, id: { name: "id", alias: "id", args: {}, fieldsByTypeName: {} } };
-                return { ...res, [key]: fields };
+            if (key === typeName) {
+                // const fields = { ...value, id: { name: "id", alias: "id", args: {}, fieldsByTypeName: {} } };
+                return { ...res, [key]: value };
             }
 
             return { ...res, [key]: value };

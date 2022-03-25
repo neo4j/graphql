@@ -33,11 +33,9 @@ function parseNodeDirective(nodeDirective: DirectiveNode | undefined, definition
 
         const idField = fields.find((x) => x.name.value === "id");
         if (idField) {
-            if (!idField.directives?.find((dir) => dir.name.value === "alias")) {
-                throw new Error(
-                    `Type ${definition.name.value} already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
-                );
-            }
+            throw new Error(
+                `Type ${definition.name.value} already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
+            );
         }
 
         const candidates = fields.filter((x) => x.type.kind === "NonNullType" && x.type.type.kind === "NamedType");
@@ -58,7 +56,7 @@ function parseNodeDirective(nodeDirective: DirectiveNode | undefined, definition
 
     return new NodeDirective({
         global,
-        idField: nodeIdField,
+        nodeIdField,
         label: getArgumentValue<string>(nodeDirective, "label"),
         additionalLabels: getArgumentValue<string[]>(nodeDirective, "additionalLabels"),
         plural: getArgumentValue<string>(nodeDirective, "plural"),

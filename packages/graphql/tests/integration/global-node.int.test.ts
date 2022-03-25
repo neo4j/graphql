@@ -83,14 +83,14 @@ describe("Global node resolution", () => {
                 },
             ],
         })
-            .withNodeDirective({ global: true, idField: "title" })
+            .withNodeDirective({ global: true, nodeIdField: "title" })
             .instance();
 
         const expectedId = node.toGlobalId("2001: A Space Odyssey");
 
         try {
             const mutationResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: [{ title: "2001: A Space Odyssey" }] },
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
@@ -135,14 +135,14 @@ describe("Global node resolution", () => {
 
         try {
             await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: [{ title: "2001: A Space Odyssey" }] },
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -194,7 +194,7 @@ describe("Global node resolution", () => {
             };
 
             await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 variableValues: { input: [{ title: film.title, website: film.website }] },
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 source: `
@@ -214,7 +214,7 @@ describe("Global node resolution", () => {
             };
 
             await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 variableValues: { input: [{ name: actor.name, hairColor: actor.hairColor }] },
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 source: `
@@ -229,7 +229,7 @@ describe("Global node resolution", () => {
             });
 
             const filmQueryResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookMarks: [session.lastBookmark()] } },
                 variableValues: { id: film.id },
@@ -241,7 +241,7 @@ describe("Global node resolution", () => {
             expect(filmResult).toEqual(film);
 
             const actorQueryResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookMarks: [session.lastBookmark()] } },
                 variableValues: { id: actor.id },

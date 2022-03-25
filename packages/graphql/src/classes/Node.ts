@@ -40,7 +40,6 @@ import type {
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
-import { lowerFirst } from "../utils/lower-first";
 import { fromGlobalId, toGlobalId } from "../utils/global-ids";
 import { QueryOptionsDirective } from "./QueryOptionsDirective";
 import { upperFirst } from "../utils/upper-first";
@@ -230,21 +229,21 @@ class Node extends GraphElement {
     }
 
     public getGlobalIdField(): string {
-        if (!this.isGlobalNode()) {
+        if (!this.nodeDirective || !this.isGlobalNode()) {
             throw new Error(
                 "The 'global' property needs to be set to true on the @node directive before accessing the unique node id field"
             );
         }
-        return this.nodeDirective?.idField as string;
+        return this.nodeDirective.getIdField() as string;
     }
 
     public toGlobalId(value: string): string {
-        const label = this.getMainLabel();
+        const typeName = this.name;
         const field = this.getGlobalIdField();
-        return toGlobalId(label, field, value);
+        return toGlobalId(typeName, field, value);
     }
 
-    public fromGlobalId(relayId: string): { field: string; id: string; label: string } {
+    public fromGlobalId(relayId: string): { typeName: string; id: string; field: string } {
         return fromGlobalId(relayId);
     }
 }

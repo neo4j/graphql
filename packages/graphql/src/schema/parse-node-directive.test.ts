@@ -162,7 +162,7 @@ describe("parseNodeDirective", () => {
           `;
             const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
             const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-            const expected = new NodeDirective({ global: true, idField: "aId" });
+            const expected = new NodeDirective({ global: true, nodeIdField: "aId" });
             expect(parseNodeDirective(directive, definition)).toMatchObject(expected);
         });
     });

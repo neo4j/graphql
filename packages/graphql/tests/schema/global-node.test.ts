@@ -111,15 +111,20 @@ describe("Node Interface Types", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-            \\"\\"\\"An object with a globally-unique ID\\"\\"\\"
+            \\"\\"\\"An object with an ID\\"\\"\\"
             interface Node {
+              \\"\\"\\"The id of the object.\\"\\"\\"
               id: ID!
             }
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              node(id: ID!): Node
+              \\"\\"\\"Fetches an object given its ID\\"\\"\\"
+              node(
+                \\"\\"\\"The ID of an object\\"\\"\\"
+                id: ID!
+              ): Node
             }
 
             enum SortDirection {

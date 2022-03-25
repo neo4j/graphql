@@ -602,13 +602,15 @@ function createProjectionAndParams({
         // check to see if the idField has been projected, and include it if it hasn't
         if (!Object.values(existingProjection).find((field) => field.name === globalIdField)) {
             existingProjection[globalIdField] = {
-                alias: node.getGlobalIdField(),
+                alias: globalIdField,
                 args: {},
                 fieldsByTypeName: {},
-                name: node.getGlobalIdField(),
+                name: globalIdField,
             };
         }
-        delete existingProjection.id;
+        if (globalIdField !== "id" && !!existingProjection.id) {
+            delete existingProjection.id;
+        }
     }
 
     // Fields of reference node to sort on. Since sorting is done on projection, if field is not selected

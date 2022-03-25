@@ -26,7 +26,7 @@ export interface NodeDirectiveConstructor {
     additionalLabels?: string[];
     plural?: string;
     global?: boolean;
-    idField?: string;
+    nodeIdField?: string | undefined;
 }
 
 export class NodeDirective {
@@ -34,14 +34,18 @@ export class NodeDirective {
     public readonly additionalLabels: string[];
     public readonly plural: string | undefined;
     public readonly global: boolean;
-    public readonly idField: string | undefined;
+    private _idField: string | undefined;
 
     constructor(input: NodeDirectiveConstructor) {
         this.label = input.label;
         this.additionalLabels = input.additionalLabels || [];
         this.plural = input.plural;
         this.global = Boolean(input.global);
-        this.idField = input.idField;
+        this._idField = input.nodeIdField;
+    }
+
+    public getIdField(): string | undefined {
+        return this._idField;
     }
 
     public getLabelsString(typeName: string, context: Context): string {
