@@ -189,7 +189,7 @@ export const Editor = (props: Props) => {
                         <div className="p-6">
                             <DocExplorer schema={props.schema}>
                                 <button
-                                    className="docExplorerHide"
+                                    className="docExplorerCloseIcon"
                                     onClick={() => settings.setIsShowDocsDrawer(false)}
                                     aria-label="Close Documentation Explorer"
                                 >
