@@ -40,7 +40,7 @@ import {
     THEME_EDITOR_LIGHT,
 } from "../../constants";
 import { formatCode, ParserOptions } from "../editor/utils";
-import { Extension, FileName } from "../editor/Filename";
+import { Extension, FileName } from "../Filename";
 import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
 import { ThemeContext, Theme } from "../../contexts/theme";

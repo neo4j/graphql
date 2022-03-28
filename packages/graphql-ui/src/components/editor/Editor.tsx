@@ -33,7 +33,7 @@ import {
 import { Frame } from "./Frame";
 import { DocExplorer } from "./docexplorer/index";
 import { formatCode, ParserOptions } from "./utils";
-import { Extension } from "./Filename";
+import { Extension } from "../Filename";
 import { ViewSelectorComponent } from "../ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
 import { AppSettings } from "../AppSettings";

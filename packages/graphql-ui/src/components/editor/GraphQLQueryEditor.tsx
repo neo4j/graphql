@@ -23,7 +23,7 @@ import { CodeMirror } from "../../utils/utils";
 import { EditorFromTextArea } from "codemirror";
 import { EDITOR_QUERY_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
 import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
-import { Extension, FileName } from "./Filename";
+import { Extension, FileName } from "../Filename";
 import { ThemeContext, Theme } from "../../contexts/theme";
 
 export interface Props {

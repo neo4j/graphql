@@ -59,21 +59,24 @@ export const TopBar = () => {
             </div>
             <div className="flex-1 flex justify-end">
                 <div className="flex items-center justify-space text-sm">
+                    {!auth.isNeo4jDesktop ? (
+                        <p className="flex items-center mr-6 pr-6 border-r border-gray-700">
+                            <span
+                                className="cursor-pointer"
+                                onClick={() => {
+                                    auth?.logout();
+                                }}
+                            >
+                                <HeroIcon className="h-7 w-7" iconName="LogoutIcon" type="outline" />
+                            </span>
+                            <span className="ml-4">Log out</span>
+                        </p>
+                    ) : null}
                     <p className="flex items-center">
                         <span
-                            className="cursor-pointer"
-                            onClick={() => {
-                                auth?.logout();
-                            }}
-                        >
-                            <HeroIcon className="h-7 w-7" iconName="LogoutIcon" type="outline" />
-                        </span>
-                        <span className="ml-4">Log out</span>
-                    </p>
-                    <span className="ml-6 mr-6">|</span>
-                    <p className="flex items-center">
-                        <span
-                            className={`cursor-pointer ${screen.view !== Screen.EDITOR ? "opacity-30" : "opacity-100"}`}
+                            className={`cursor-pointer mr-4 ${
+                                screen.view !== Screen.EDITOR ? "opacity-30" : "opacity-100"
+                            }`}
                             onClick={handleHelpClick}
                         >
                             <HeroIcon className="h-7 w-7" iconName="QuestionMarkCircleIcon" type="outline" />
