@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { HeroIcon } from "@neo4j-ndl/react";
 // @ts-ignore - SVG Import
 import Neo4jLogoIcon from "../assets/Neo4j-logo-color.svg";
 import { AuthContext } from "../contexts/auth";
 import { ScreenContext, Screen } from "../contexts/screen";
 import { SettingsContext } from "../contexts/settings";
+import { ProTooltip } from "./ProTooltip";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
@@ -53,7 +54,8 @@ export const TopBar = () => {
                 <div className="flex items-center justify-space text-sm">
                     <p>{auth?.connectUrl}</p>
                     <p className="ml-1">
-                        {auth?.isConnected ? greenDot : redDot} {auth?.isConnected ? "Online" : "Offline"}
+                        {auth?.isConnected ? greenDot : redDot}{" "}
+                        <span className="opacity-60">{auth?.isConnected ? "Online" : "Offline"}</span>
                     </p>
                 </div>
             </div>
@@ -72,19 +74,23 @@ export const TopBar = () => {
                             <span className="ml-4">Log out</span>
                         </p>
                     ) : null}
-                    <p className="flex items-center">
-                        <span
-                            className={`cursor-pointer mr-4 ${
-                                screen.view !== Screen.EDITOR ? "opacity-30" : "opacity-100"
-                            }`}
-                            onClick={handleHelpClick}
-                        >
-                            <HeroIcon className="h-7 w-7" iconName="QuestionMarkCircleIcon" type="outline" />
-                        </span>
-                        <span className="ml-4 mr-4 cursor-pointer" onClick={handleSettingsClick}>
+                    <div className="flex items-center">
+                        <div className="cursor-pointer mr-4">
+                            <ProTooltip tooltipText="Show Documentation explorer">
+                                <HeroIcon
+                                    onClick={handleHelpClick}
+                                    className={`h-7 w-7 opacity-30 ${
+                                        screen.view !== Screen.EDITOR ? "opacity-30" : "opacity-100"
+                                    }`}
+                                    iconName="QuestionMarkCircleIcon"
+                                    type="outline"
+                                />
+                            </ProTooltip>
+                        </div>
+                        <div className="ml-2 mr-6 cursor-pointer" onClick={handleSettingsClick}>
                             <HeroIcon className="h-7 w-7" iconName="CogIcon" type="outline" />
-                        </span>
-                    </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -20,6 +20,7 @@
 import { Fragment, useContext } from "react";
 import { ViewSelector, ViewSelectorItem } from "@neo4j-ndl/react";
 import { Screen, ScreenContext } from "../contexts/screen";
+import { ProTooltip } from "./ProTooltip";
 
 interface Props {
     isEditorDisabled?: boolean;

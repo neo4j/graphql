@@ -43,7 +43,7 @@ export const AppSettings = ({ onClickClose }: Props) => {
             </div>
             <div>
                 <span className="h6">Editors</span>
-                <div className="pt-4">
+                <div className="pt-3">
                     <Radio
                         id={Theme.LIGHT.toString()}
                         className="cursor-pointer"
