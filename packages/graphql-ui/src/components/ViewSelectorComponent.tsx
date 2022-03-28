@@ -37,6 +37,9 @@ export const ViewSelectorComponent = ({ isEditorEnabled = true, elementKey }: Pr
     return (
         <ViewSelector
             key={`${elementKey}-selector-main`}
+            style={{
+                backgroundColor: "#FFF",
+            }}
             onChange={handleOnScreenChange}
             selected={screen.view.toString()}
         >

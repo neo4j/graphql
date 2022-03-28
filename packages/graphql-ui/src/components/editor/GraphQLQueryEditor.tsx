@@ -30,12 +30,21 @@ export interface Props {
     schema: GraphQLSchema;
     query: string;
     loading: boolean;
+    buttons: any;
     mirrorRef: React.MutableRefObject<EditorFromTextArea | null>;
     executeQuery: (override?: string) => Promise<void>;
     onChangeQuery: (query: string) => void;
 }
 
-export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQuery, onChangeQuery }: Props) => {
+export const GraphQLQueryEditor = ({
+    schema,
+    mirrorRef,
+    query,
+    loading,
+    buttons,
+    executeQuery,
+    onChangeQuery,
+}: Props) => {
     const theme = useContext(ThemeContext);
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const ref = useRef<HTMLTextAreaElement | null>(null);
@@ -133,7 +142,7 @@ export const GraphQLQueryEditor = ({ schema, mirrorRef, query, loading, executeQ
 
     return (
         <div style={{ width: "100%", height: "100%" }}>
-            <FileName name={"query"} extension={Extension.GQL}></FileName>
+            <FileName name={"query"} extension={Extension.GQL} buttons={buttons}></FileName>
             <textarea ref={ref} className="w-full h-full" />;
         </div>
     );

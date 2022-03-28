@@ -20,7 +20,7 @@
 import { useContext, useState } from "react";
 import { GraphQLSchema } from "graphql";
 import { TopBar } from "./TopBar";
-import { Login } from "./Login";
+import { Login } from "./login/Login";
 import { SchemaEditor } from "./schema/SchemaEditor";
 import { Editor } from "./editor/Editor";
 import { AuthContext } from "../contexts/auth";

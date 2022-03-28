@@ -27,10 +27,10 @@ import {
     LOGIN_PASSWORD_INPUT,
     LOGIN_URL_INPUT,
     LOGIN_USERNAME_INPUT,
-} from "../constants";
+} from "../../constants";
 // @ts-ignore - SVG Import
-import Icon from "../assets/neo4j-color.svg";
-import { AuthContext } from "../contexts/auth";
+import Icon from "../../assets/neo4j-color.svg";
+import { AuthContext } from "../../contexts/auth";
 
 export const Login = () => {
     const [loading, setLoading] = useState(false);

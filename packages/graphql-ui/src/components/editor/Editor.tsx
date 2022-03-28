@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useState, useRef, useEffect, useContext } from "react";
+import { useCallback, useState, useRef, useEffect, useContext, Fragment } from "react";
 import { graphql, GraphQLSchema } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
 import { Button, HeroIcon } from "@neo4j-ndl/react";
@@ -58,7 +58,6 @@ export const Editor = (props: Props) => {
     const [query, setQuery] = useState("");
     const [variableValues, setVariableValues] = useState("");
     const [output, setOutput] = useState("");
-    const [showDocs, isShowDocs] = useState(false);
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
 
     const formatTheCode = (): void => {
@@ -121,27 +120,7 @@ export const Editor = (props: Props) => {
                                 isEditorEnabled={!!props.schema || !loading}
                             />
                         </div>
-                        <div className="flex-1 flex justify-end">
-                            <Button
-                                id={EDITOR_QUERY_BUTTON}
-                                className="mr-4"
-                                color="neutral"
-                                fill="outlined"
-                                onClick={() => onSubmit()}
-                                disabled={!props.schema || loading}
-                            >
-                                {!loading ? "Query (CTRL+ENTER)" : "Loading..."}
-                            </Button>
-                            <Button
-                                className="p-3"
-                                color="neutral"
-                                fill="outlined"
-                                onClick={formatTheCode}
-                                disabled={loading}
-                            >
-                                <HeroIcon className="h-7 w-7" iconName="SparklesIcon" type="outline" />
-                            </Button>
-                        </div>
+                        <div className="flex-1 flex justify-end"></div>
                     </div>
                     <Frame
                         queryEditor={
@@ -156,6 +135,32 @@ export const Editor = (props: Props) => {
                                         localStorage.setItem(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
                                     }}
                                     executeQuery={onSubmit}
+                                    buttons={
+                                        <Fragment>
+                                            <Button
+                                                className="p-3"
+                                                color="neutral"
+                                                fill="outlined"
+                                                buttonSize="small"
+                                                style={{ padding: "0.5rem" }}
+                                                onClick={formatTheCode}
+                                                disabled={loading}
+                                            >
+                                                <HeroIcon className="h-5 w-5" iconName="SparklesIcon" type="outline" />
+                                            </Button>
+                                            <Button
+                                                id={EDITOR_QUERY_BUTTON}
+                                                className="mr-4 ml-4"
+                                                color="primary"
+                                                fill="text"
+                                                style={{ padding: "0.5rem" }}
+                                                onClick={() => onSubmit()}
+                                                disabled={!props.schema || loading}
+                                            >
+                                                <HeroIcon className="h-7 w-7" iconName="PlayIcon" type="outline" />
+                                            </Button>
+                                        </Fragment>
+                                    }
                                 />
                             ) : null
                         }

@@ -249,7 +249,7 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                     />
                 </div>
             </div>
-            <div className="flex-1 flex justify-start w-full p-6" style={{ height: "94vh" }}>
+            <div className="flex-1 flex justify-start w-full p-6" style={{ height: "93vh" }}>
                 <div className="flex flex-col w-full">
                     <div className="flex items-center w-full pb-4">
                         <div className="justify-start">
@@ -262,9 +262,10 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                         <div className="flex-1 flex justify-end">
                             <Button
                                 id={SCHEMA_EDITOR_PRETTY_BUTTON}
-                                className="mr-4 p-3"
+                                className="mr-4"
                                 color="neutral"
                                 fill="outlined"
+                                style={{ padding: "0.75rem" }}
                                 onClick={formatTheCode}
                                 disabled={loading}
                             >
