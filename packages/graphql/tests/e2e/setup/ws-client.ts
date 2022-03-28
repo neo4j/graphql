@@ -64,7 +64,8 @@ export class WebSocketTestClient implements WebSocketClient {
             });
 
             client.on("closed", () => {
-                return client.dispose();
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                client.dispose();
             });
         });
     }

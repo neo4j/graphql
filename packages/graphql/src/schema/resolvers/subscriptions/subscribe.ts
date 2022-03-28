@@ -18,7 +18,6 @@
  */
 
 import { on } from "events";
-import { GraphQLResolveInfo } from "graphql";
 import { Neo4jGraphQLError } from "../../../classes";
 import Node from "../../../classes/Node";
 import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
