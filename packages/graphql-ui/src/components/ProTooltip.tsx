@@ -36,9 +36,9 @@ export const ProTooltip = ({ children, tooltipText }: Props) => {
                     arrowPosition="top"
                     style={{
                         position: "absolute",
-                        width: "150px",
+                        width: "140px",
                         zIndex: "30",
-                        left: "-60px",
+                        left: "-55px",
                         top: "35px",
                     }}
                 >

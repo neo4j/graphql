@@ -71,12 +71,12 @@ export const TopBar = () => {
                             >
                                 <HeroIcon className="h-7 w-7" iconName="LogoutIcon" type="outline" />
                             </span>
-                            <span className="ml-4">Log out</span>
+                            <span className="ml-4">Disconnect</span>
                         </p>
                     ) : null}
                     <div className="flex items-center">
                         <div className="cursor-pointer mr-4">
-                            <ProTooltip tooltipText="Show Documentation explorer">
+                            <ProTooltip tooltipText="Show Documentation">
                                 <HeroIcon
                                     onClick={handleHelpClick}
                                     className={`h-7 w-7 opacity-30 ${

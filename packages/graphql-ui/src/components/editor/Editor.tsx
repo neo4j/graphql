@@ -149,7 +149,7 @@ export const Editor = (props: Props) => {
                                                 onClick={formatTheCode}
                                                 disabled={loading}
                                             >
-                                                <HeroIcon className="h-5 w-5" iconName="SparklesIcon" type="outline" />
+                                                Prettify
                                             </Button>
                                             <Button
                                                 id={EDITOR_QUERY_BUTTON}

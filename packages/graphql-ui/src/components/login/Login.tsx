@@ -103,7 +103,7 @@ export const Login = () => {
                     </div>
                     <div className="flex items-center justify-between">
                         <Button id={LOGIN_BUTTON} color="neutral" fill="outlined" type="submit" disabled={loading}>
-                            {loading ? <>Logging In</> : <span>Sign In</span>}
+                            {loading ? <>Connecting...</> : <span>Connect</span>}
                         </Button>
                     </div>
 
