@@ -17,15 +17,10 @@
  * limitations under the License.
  */
 
-// eslint-disable import/no-unresolved
 import { EditorFromTextArea } from "codemirror";
-// @ts-ignore - require issue
-import prettier from "prettier/esm/standalone";
-// @ts-ignore - require issue
-import prettierBabel from "prettier/esm/parser-babel";
-// @ts-ignore - require issue
-import parserGraphQL from "prettier/esm/parser-graphql";
-// eslint-enable import/no-unresolved
+import prettier from "prettier/standalone";
+import prettierBabel from "prettier/parser-babel";
+import parserGraphQL from "prettier/parser-graphql";
 
 export enum ParserOptions {
     GRAPH_QL,
