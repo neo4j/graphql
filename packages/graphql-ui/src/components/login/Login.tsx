@@ -64,7 +64,7 @@ export const Login = () => {
             <div className="flex flex-col align-center justify-center bg-white shadow-md rounded p-8">
                 <div className="mb-3">
                     <img src={Icon} alt="d.s" className="h-12 w-12 mx-auto" />
-                    <h2 className="text-3xl mx-auto">Neo4j GraphQL UI Login</h2>
+                    <h2 className="text-3xl mx-auto">Neo4j GraphQL Toolbox</h2>
                 </div>
                 <form onSubmit={onSubmit}>
                     <div className="mb-4">

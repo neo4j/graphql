@@ -117,7 +117,7 @@ export const Editor = (props: Props) => {
                             <ViewSelectorComponent
                                 key="editor-view-selector"
                                 elementKey="editor-view-selector"
-                                isEditorEnabled={!!props.schema || !loading}
+                                isEditorDisabled={!!props.schema || loading}
                             />
                         </div>
                         <div className="flex-1 flex justify-end"></div>

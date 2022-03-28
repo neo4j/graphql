@@ -141,9 +141,9 @@ export const GraphQLQueryEditor = ({
     }, [theme.theme]);
 
     return (
-        <div style={{ width: "100%", height: "100%" }}>
+        <div className="rounded-b-xl" style={{ width: "100%", height: "100%" }}>
             <FileName name={"query"} extension={Extension.GQL} buttons={buttons}></FileName>
-            <textarea ref={ref} className="w-full h-full" />;
+            <textarea ref={ref} className="w-full h-full" />
         </div>
     );
 };

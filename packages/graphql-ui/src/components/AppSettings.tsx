@@ -36,27 +36,29 @@ export const AppSettings = ({ onClickClose }: Props) => {
     return (
         <div className="p-6 w-full">
             <div className="pb-6 flex justify-between items-center">
-                <h3>Settings</h3>
+                <span className="h5">Settings</span>
                 <span className="text-lg cursor-pointer" onClick={onClickClose}>
                     {"\u2715"}
                 </span>
             </div>
             <div>
-                <h4>Editors</h4>
-                <Radio
-                    id={Theme.LIGHT.toString()}
-                    className="cursor-pointer"
-                    label="Light theme"
-                    checked={theme.theme === Theme.LIGHT}
-                    onChange={handleOThemeClick}
-                />
-                <Radio
-                    id={Theme.DARK.toString()}
-                    className="cursor-pointer"
-                    label="Dark theme"
-                    checked={theme.theme === Theme.DARK}
-                    onChange={handleOThemeClick}
-                />
+                <span className="h6">Editors</span>
+                <div className="pt-4">
+                    <Radio
+                        id={Theme.LIGHT.toString()}
+                        className="cursor-pointer"
+                        label="Light theme"
+                        checked={theme.theme === Theme.LIGHT}
+                        onChange={handleOThemeClick}
+                    />
+                    <Radio
+                        id={Theme.DARK.toString()}
+                        className="cursor-pointer"
+                        label="Dark theme"
+                        checked={theme.theme === Theme.DARK}
+                        onChange={handleOThemeClick}
+                    />
+                </div>
             </div>
         </div>
     );

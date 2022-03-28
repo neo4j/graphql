@@ -44,7 +44,7 @@ export const EDITOR_QUERY_BUTTON = "EDITOR_QUERY_BUTTON";
 
 export const VERIFY_CONNECTION_INTERVAL_MS = 30000;
 
-export const THEME_EDITOR_LIGHT = "default";
+export const THEME_EDITOR_LIGHT = "neo";
 export const THEME_EDITOR_DARK = "dracula";
 
 export const DEFAULT_TYPE_DEFS = `

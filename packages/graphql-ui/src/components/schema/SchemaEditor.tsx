@@ -222,31 +222,33 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
         <div className="w-full flex">
             <div className="h-content-container flex justify-start w-96 bg-white">
                 <div className="p-6">
-                    <h3>Schema settings</h3>
-                    <Checkbox
-                        className="m-0"
-                        label="Enable Regex"
-                        checked={isEnableDebugChecked === "true"}
-                        onChange={onChangeEnableRegexCheckbox}
-                    />
-                    <Checkbox
-                        className="m-0"
-                        label="Enable Debug"
-                        checked={isDebugChecked === "true"}
-                        onChange={onChangeDebugCheckbox}
-                    />
-                    <Checkbox
-                        className="m-0"
-                        label="Check Constraint"
-                        checked={isCheckConstraintChecked === "true"}
-                        onChange={onChangeCheckConstraintCheckbox}
-                    />
-                    <Checkbox
-                        className="m-0"
-                        label="Create Constraint"
-                        checked={isCreateConstraintChecked === "true"}
-                        onChange={onChangeCreateConstraintCheckbox}
-                    />
+                    <span className="h5">Schema settings</span>
+                    <div className="pt-4">
+                        <Checkbox
+                            className="m-0"
+                            label="Enable Regex"
+                            checked={isEnableDebugChecked === "true"}
+                            onChange={onChangeEnableRegexCheckbox}
+                        />
+                        <Checkbox
+                            className="m-0"
+                            label="Enable Debug"
+                            checked={isDebugChecked === "true"}
+                            onChange={onChangeDebugCheckbox}
+                        />
+                        <Checkbox
+                            className="m-0"
+                            label="Check Constraint"
+                            checked={isCheckConstraintChecked === "true"}
+                            onChange={onChangeCheckConstraintCheckbox}
+                        />
+                        <Checkbox
+                            className="m-0"
+                            label="Create Constraint"
+                            checked={isCreateConstraintChecked === "true"}
+                            onChange={onChangeCreateConstraintCheckbox}
+                        />
+                    </div>
                 </div>
             </div>
             <div className="flex-1 flex justify-start w-full p-6" style={{ height: "93vh" }}>
@@ -256,7 +258,7 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                             <ViewSelectorComponent
                                 key="schema-editor-view-selector"
                                 elementKey="schema-editor-view-selector"
-                                isEditorEnabled={!hasSchema}
+                                isEditorDisabled={false}
                             />
                         </div>
                         <div className="flex-1 flex justify-end">

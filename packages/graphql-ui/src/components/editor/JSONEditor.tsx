@@ -93,7 +93,7 @@ export const JSONEditor = (props: Props) => {
     return (
         <div style={{ width: "100%", height: "100%" }}>
             <FileName extension={props.fileExtension} name={props.fileName}></FileName>
-            <textarea id={props.id} style={{ width: "100%", height: "100%" }} ref={ref} />;
+            <textarea id={props.id} style={{ width: "100%", height: "100%" }} ref={ref} />
         </div>
     );
 };

@@ -22,14 +22,18 @@ import { ViewSelector, ViewSelectorItem } from "@neo4j-ndl/react";
 import { Screen, ScreenContext } from "../contexts/screen";
 
 interface Props {
-    isEditorEnabled?: boolean;
+    isEditorDisabled?: boolean;
     elementKey: string;
+    onClickEditorButton?: () => void;
 }
 
-export const ViewSelectorComponent = ({ isEditorEnabled = true, elementKey }: Props) => {
+export const ViewSelectorComponent = ({ isEditorDisabled = true, elementKey, onClickEditorButton }: Props) => {
     const screen = useContext(ScreenContext);
 
     const handleOnScreenChange = (selectedScreen: string) => {
+        if (selectedScreen === Screen.EDITOR.toString()) {
+            onClickEditorButton && onClickEditorButton();
+        }
         const next = selectedScreen === Screen.TYPEDEFS.toString() ? Screen.TYPEDEFS : Screen.EDITOR;
         screen.setScreen(next);
     };
@@ -45,7 +49,7 @@ export const ViewSelectorComponent = ({ isEditorEnabled = true, elementKey }: Pr
         >
             <Fragment key={`${elementKey}-screen-fragment`}>
                 <ViewSelectorItem value={Screen.TYPEDEFS.toString()}>Definition</ViewSelectorItem>
-                <ViewSelectorItem value={Screen.EDITOR.toString()} disabled={isEditorEnabled}>
+                <ViewSelectorItem value={Screen.EDITOR.toString()} disabled={isEditorDisabled}>
                     Editor
                 </ViewSelectorItem>
             </Fragment>
