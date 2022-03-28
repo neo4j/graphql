@@ -67,7 +67,7 @@ describe("Delete Subscription", () => {
         try{
             await session.run(`CREATE (:${typeMovie.name} {title: "my-title"})`);
         } finally {
-            session.close();
+            await session.close();
         }
         await wsClient.subscribe(`
                             subscription {
