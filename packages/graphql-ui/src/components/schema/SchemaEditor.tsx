@@ -258,7 +258,7 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                             <ViewSelectorComponent
                                 key="schema-editor-view-selector"
                                 elementKey="schema-editor-view-selector"
-                                isEditorDisabled={false}
+                                isEditorDisabled={!hasSchema}
                             />
                         </div>
                         <div className="flex-1 flex justify-end">

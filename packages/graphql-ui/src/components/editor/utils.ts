@@ -48,6 +48,8 @@ export const formatCode = (mirror: EditorFromTextArea, parserOption: ParserOptio
             options = {
                 parser: "json",
                 plugins: [prettierBabel],
+                endOfLine: "auto",
+                printWidth: 60,
             };
             break;
         default:

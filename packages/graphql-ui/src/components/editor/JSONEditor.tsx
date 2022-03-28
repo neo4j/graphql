@@ -31,6 +31,7 @@ export interface Props {
     loading: boolean;
     readonly?: boolean;
     fileName: string;
+    initialValue?: string;
     fileExtension: Extension;
     onChange?: (json: string) => void;
 }
@@ -80,6 +81,14 @@ export const JSONEditor = (props: Props) => {
             formatCode(mirror.current as EditorFromTextArea, ParserOptions.JSON);
         }
     }, [props.json]);
+
+    useEffect(() => {
+        if (mirror.current && props.initialValue) {
+            const cursor = mirror.current.getCursor();
+            mirror.current.setValue(props.initialValue as string);
+            if (cursor) mirror.current.setCursor(cursor);
+        }
+    }, [props.initialValue]);
 
     useEffect(() => {
         handleEditorDisableState(mirror.current as EditorFromTextArea, props.loading);

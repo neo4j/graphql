@@ -28,6 +28,7 @@ import {
     EDITOR_PARAMS_INPUT,
     EDITOR_QUERY_BUTTON,
     EDITOR_RESPONSE_OUTPUT,
+    LOCAL_STATE_TYPE_LAST_PARAMS,
     LOCAL_STATE_TYPE_LAST_QUERY,
 } from "../../constants";
 import { Frame } from "./Frame";
@@ -94,7 +95,9 @@ export const Editor = (props: Props) => {
 
     useEffect(() => {
         const initQuery = JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_QUERY) as string) || DEFAULT_QUERY;
+        const initParams = JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_PARAMS) as string) || "";
         setQuery(initQuery);
+        setVariableValues(initParams);
     }, []);
 
     return (
@@ -171,7 +174,11 @@ export const Editor = (props: Props) => {
                                 loading={loading}
                                 fileExtension={Extension.JSON}
                                 readonly={false}
-                                onChange={setVariableValues}
+                                initialValue={variableValues}
+                                onChange={(params) => {
+                                    setVariableValues(params);
+                                    localStorage.setItem(LOCAL_STATE_TYPE_LAST_PARAMS, JSON.stringify(params));
+                                }}
                             />
                         }
                         resultView={
