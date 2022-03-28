@@ -11694,7 +11694,7 @@ __metadata:
     "@neo4j/graphql": ^3.0.3
     apollo-server: ^3.6.1
     graphql: ^16.2.0
-    neo4j-driver: 4.4.4
+    neo4j-driver: 4.4.5
   languageName: unknown
   linkType: soft
 
@@ -12117,7 +12117,7 @@ __metadata:
     graphql: 16.3.0
     jest: 27.5.1
     jsonwebtoken: 8.5.1
-    neo4j-driver: 4.4.4
+    neo4j-driver: 4.4.5
     nodemon: 2.0.6
     randomstring: 1.1.5
     ts-jest: 27.1.3
@@ -12126,17 +12126,6 @@ __metadata:
     typescript: 4.2.4
   languageName: unknown
   linkType: soft
-
-"neo4j-driver-bolt-connection@npm:^4.4.4":
-  version: 4.4.4
-  resolution: "neo4j-driver-bolt-connection@npm:4.4.4"
-  dependencies:
-    buffer: ^6.0.3
-    neo4j-driver-core: ^4.4.4
-    string_decoder: ^1.3.0
-  checksum: 218cb67282f53343b44c0d79c68570a380495be6a7b7f713179ee4726155eaa2458bb7b832fd061792b368005c8cd0144e53cdf74a76df6a332435141086e8f3
-  languageName: node
-  linkType: hard
 
 "neo4j-driver-bolt-connection@npm:^4.4.5":
   version: 4.4.5
@@ -12149,29 +12138,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo4j-driver-core@npm:^4.4.4":
-  version: 4.4.4
-  resolution: "neo4j-driver-core@npm:4.4.4"
-  checksum: 9db41ecd830d810918ea73c2065a046388a18997551d1a1087a57bff038f05e49cd8205bbd74e4feaf62d18fbc86a44ad72c7f0bf8ed106b179bf53b59c2f07f
-  languageName: node
-  linkType: hard
-
 "neo4j-driver-core@npm:^4.4.5":
   version: 4.4.5
   resolution: "neo4j-driver-core@npm:4.4.5"
   checksum: 4c1f8caf95442986f6554f8c437428bfbb774a84c8550b3e8879c65287bb31c9b2bc8207ec353c7b268968448f896a65673c0794f1a4f9c1f186b74ae3e477ea
-  languageName: node
-  linkType: hard
-
-"neo4j-driver@npm:4.4.4":
-  version: 4.4.4
-  resolution: "neo4j-driver@npm:4.4.4"
-  dependencies:
-    "@babel/runtime": ^7.5.5
-    neo4j-driver-bolt-connection: ^4.4.4
-    neo4j-driver-core: ^4.4.4
-    rxjs: ^6.6.3
-  checksum: 11b7607feb5434c6941d05652f00646ba06c87841e8a5d090d51ac491a5904f3e4dcad49cf0e6057e17dc509a5785468a18d3f57f0e7ec95e8a34fa77a10c424
   languageName: node
   linkType: hard
 
