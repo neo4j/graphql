@@ -29,7 +29,10 @@ export type SubscriptionContext = {
 };
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
-    if (!payload) throw new Neo4jGraphQLError("Payload is undefined. Can't call subscriptions resolver directly.");
+    if (!payload) { 
+        throw new Neo4jGraphQLError("Payload is undefined. Can't call subscriptions resolver directly.");
+    }
+    
     return payload[0];
 }
 
