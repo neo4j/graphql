@@ -51,8 +51,9 @@ const movieNode = new CypherBuilder.Node({
 });
 const relationship = new CypherBuilder.Relationship({ source: node1, target: node2, type: "ACTED_IN" });
 
+// NOTE: Alternatively, Match should take a "MatchPattern" instead of a relationship 
+const query = new CypherBuilder.Match(relationship).where(actorNode, {name: "Arthur"}).return(movieNode, ["title"]);
 
-const query = new CypherBuilder.Match(relationship).where(actorNode, {name: "Arthur"}).return(movieNode, ["title"])
 const { cypher, params } = query.build()
 cypher // "MATCH(this1:Actor)...."
 params // { param1: "Arthur" }
@@ -100,7 +101,7 @@ query.print() // MATCH(pepe:Actor:MyOtherLabel)-[:ACTED_IN]->(m:Movie) ....
 ```
 
 ## Risks & Unknowns
-* An [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) for GraphQL to Cypher has yet to be defined. Some aspects of this builder (e.g. parameters) may be depend on the solution agreed for an AST 
+* An [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) for GraphQL to Cypher has yet to be defined. Some aspects of this builder (e.g. parameters) may be depend on the solution agreed for an AST
 
 ## Related work
 
@@ -122,11 +123,11 @@ The current prototype is build as a collection of functions, all returning a uni
 * **`buildRelationshipStatement`**: Builds expressions of type `(n:Label {key: "value"})-[r:RELATION {key: "value"}]-(m:Label2 {key: "Value"})`
 	* This builder uses `buildNodeStatement`  to generate the node sub-statements
 * **`buildMergeStatement`**: Builds `MERGE .. ON CREATE` expressions, these expressions may be of the following types:
-	* Targeting a single node: 
+	* Targeting a single node:
 		```
-		MERGE (n:Label {key:"value"}) 
-		ON CREATE 
-		SET 
+		MERGE (n:Label {key:"value"})
+		ON CREATE
+		SET
 		this.key="value2"
 		```
 	* Targeting a relationship:
@@ -184,4 +185,3 @@ const authStatement = joinStatements(["CALL apoc.util.validate(NOT(", auth, `), 
 return joinStatements([authStatement, mergeRelatedNodeStatement, mergeRelationStatement]);
 
 ```
-
