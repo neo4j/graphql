@@ -20,7 +20,6 @@
 /** Represents a reference in AST */
 export interface CypherReference {
     readonly prefix: string;
-    // getCypher(context: CypherContext): string;
 }
 
 /** Represents a CypherParam */

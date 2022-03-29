@@ -57,8 +57,6 @@ export class Relationship implements CypherReference {
             parametersStr = padLeft(parameters);
         }
 
-        // const sourceStr = this.source.getCypher(context);
-        // const targetStr = this.target.getCypher(context);
         const sourceStr = `(${this.source.getReference(context)})`;
         const targetStr = `(${this.target.getReference(context)})`;
         const arrowStr = this.getRelationshipArrow();
