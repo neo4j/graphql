@@ -26,11 +26,10 @@ import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
 import neo4j from "../../integration/neo4j";
 
-describe("Subscriptions", () => {
+describe("Create Subscription", () => {
     let driver: Driver;
 
     const typeMovie = generateUniqueType("Movie");
-    const typeActor = generateUniqueType("Actor");
 
     let server: TestGraphQLServer;
     let wsClient: WebSocketClient;
@@ -39,10 +38,6 @@ describe("Subscriptions", () => {
         const typeDefs = `
          type ${typeMovie} {
              title: String
-         }
-
-         type ${typeActor} {
-             name: String
          }
          `;
 
@@ -69,20 +64,16 @@ describe("Subscriptions", () => {
         await driver.close();
     });
 
-    afterEach(async () => {
-        await wsClient.close();
-    });
-
     test("create subscription", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.created} {
-                    ${typeMovie.fieldNames.subscriptions.created} {
-                        title
-                    }
-                }
-            }
-        `);
+                            subscription {
+                                ${typeMovie.operations.subscribe.created} {
+                                    ${typeMovie.operations.subscribe.payload.created} {
+                                        title
+                                    }
+                                }
+                            }
+                            `);
 
         await createMovie("movie1");
         await createMovie("movie2");
@@ -90,7 +81,7 @@ describe("Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.fieldNames.subscriptions.created]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
                 },
             },
             {

@@ -18,11 +18,11 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import { ApolloServer } from "apollo-server-express";
 import { createServer, Server } from "http";
+import { AddressInfo, WebSocketServer } from "ws";
+import { ApolloServer } from "apollo-server-express";
 import express from "express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
-import { AddressInfo, WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { Neo4jGraphQL } from "../../../src";
 

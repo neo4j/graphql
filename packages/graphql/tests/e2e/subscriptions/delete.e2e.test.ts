@@ -26,11 +26,10 @@ import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
 import neo4j from "../../integration/neo4j";
 
-describe("Subscriptions", () => {
+describe("Delete Subscription", () => {
     let driver: Driver;
 
     const typeMovie = generateUniqueType("Movie");
-    const typeActor = generateUniqueType("Actor");
 
     let server: TestGraphQLServer;
     let wsClient: WebSocketClient;
@@ -39,10 +38,6 @@ describe("Subscriptions", () => {
         const typeDefs = `
          type ${typeMovie} {
              title: String
-         }
-
-         type ${typeActor} {
-             name: String
          }
          `;
 
@@ -60,17 +55,13 @@ describe("Subscriptions", () => {
         await server.start();
     });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterAll(async () => {
         await server.close();
         await driver.close();
-    });
-
-    afterEach(async () => {
-        await wsClient.close();
     });
 
     test("delete subscription", async () => {
