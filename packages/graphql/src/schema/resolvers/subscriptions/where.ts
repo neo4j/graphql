@@ -16,18 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventEmitter } from "events";
-import { SubscriptionsEvent } from "../../src/subscriptions/subscriptions-event";
-import { Neo4jGraphQLSubscriptionsPlugin } from "../../src/types";
 
-export class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
-    public events = new EventEmitter();
+import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
 
-    public eventList: SubscriptionsEvent[] = [];
-
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async publish(eventMeta: SubscriptionsEvent): Promise<void> {
-        this.eventList.push(eventMeta);
-        this.events.emit(eventMeta.event, eventMeta);
+function compareArgsToProperties(args: Record<string, any>, properties: Record<string, any>): boolean {
+    for (const [k, v] of Object.entries(args)) {
+        if (properties[k] !== v) {
+            return false;
+        }
     }
+
+    return true;
+}
+
+export function subscriptionWhere(where: Record<string, any> | undefined, event: SubscriptionsEvent): boolean {
+    if (!where) {
+        return true;
+    }
+
+    if (event.event === "create") {
+        return compareArgsToProperties(where, event.properties.new);
+    }
+
+    return compareArgsToProperties(where, event.properties.old);
 }
