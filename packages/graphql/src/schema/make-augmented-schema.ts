@@ -830,7 +830,6 @@ function makeAugmentedSchema(
                         name: `${node.name}${upperFirst(index.name)}Fulltext`,
                         fields: {
                             phrase: "String!",
-                            score_EQUAL: "Int",
                         },
                     }),
                 }),
