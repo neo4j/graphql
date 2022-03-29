@@ -19,9 +19,9 @@
 
 import createCreateAndParams from "./create-create-and-params";
 import { Neo4jGraphQL } from "../classes";
-import { Context } from "../types";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { CallbackBucket } from "../classes/CallbackBucket";
 
 describe("createCreateAndParams", () => {
@@ -73,8 +73,10 @@ describe("createCreateAndParams", () => {
         const neoSchema: Neo4jGraphQL = {
             nodes: [node],
         };
-        // @ts-ignore
-        const context = { neoSchema } as Context;
+        const context = new ContextBuilder({
+            neoSchema,
+        }).instance();
+
         const result = createCreateAndParams({
             input,
             node,
