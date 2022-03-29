@@ -41,6 +41,14 @@ type UniqueTypeOperations = {
     };
 };
 
+type UniqueTypeFieldNames = {
+    subscriptions: {
+        created: string;
+        updated: string;
+        deleted: string;
+    };
+};
+
 export class UniqueType {
     public readonly name: string;
 
@@ -75,6 +83,18 @@ export class UniqueType {
                     updated: `updated${pascalCaseSingular}`,
                     deleted: `deleted${pascalCaseSingular}`,
                 }
+            },
+        };
+    }
+
+    public get fieldNames(): UniqueTypeFieldNames {
+        const singular = upperFirst(camelcase(this.name));
+
+        return {
+            subscriptions: {
+                created: `created${singular}`,
+                updated: `updated${singular}`,
+                deleted: `deleted${singular}`,
             },
         };
     }
