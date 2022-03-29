@@ -2143,7 +2143,7 @@ __metadata:
     "@types/supertest": ^2.0.12
     "@types/ws": ^8
     apollo-server: 3.6.6
-    apollo-server-express: ^3.6.5
+    apollo-server-express: 3.6.6
     camelcase: ^6.2.0
     debug: ^4.3.2
     dedent: 0.7.0
@@ -4273,7 +4273,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server-express@npm:^3.6.1, apollo-server-express@npm:^3.6.5, apollo-server-express@npm:^3.6.6":
+"apollo-server-express@npm:3.6.6, apollo-server-express@npm:^3.6.1, apollo-server-express@npm:^3.6.6":
   version: 3.6.6
   resolution: "apollo-server-express@npm:3.6.6"
   dependencies:
