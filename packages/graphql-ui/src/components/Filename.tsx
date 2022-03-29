@@ -6,6 +6,7 @@ import GraphQLIcon from "../assets/graphql-icon.svg";
 export enum Extension {
     JSON,
     GQL,
+    GRAPHQL,
 }
 
 export interface Props {
@@ -17,6 +18,7 @@ export interface Props {
 const Icon = (props: { extension: Extension }) => {
     switch (props.extension) {
         case Extension.GQL:
+        case Extension.GRAPHQL:
             return <span>{<img src={GraphQLIcon} alt="graphql-logo" className="inline w-5 h-5" />}</span>;
         case Extension.JSON:
             return <span className="text-yellow-500  w-5 h-5">{"{ }"}</span>;
@@ -28,6 +30,9 @@ const Ending = (props: { extension: Extension }) => {
     switch (props.extension) {
         case Extension.GQL:
             content = ".gql";
+            break;
+        case Extension.GRAPHQL:
+            content = ".graphql";
             break;
         case Extension.JSON:
             content = ".json";
