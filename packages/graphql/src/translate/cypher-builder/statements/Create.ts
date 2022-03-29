@@ -42,7 +42,7 @@ export class Create extends Query {
     }
 
     private composeSet(context: CypherContext): string {
-        const nodeAlias = context.getReferenceId(this.node);
+        const nodeAlias = context.getVariableId(this.node);
         const params = Object.entries(this.params).map(([key, value]) => {
             return `${nodeAlias}.${key} = ${value instanceof Param ? value.getCypher(context) : value}`;
         });
@@ -71,7 +71,7 @@ class ReturnStatement extends CypherASTNode {
         if ((this.returnArgs[2] || []).length > 0) {
             alias = ` AS ${this.returnArgs[2]}`;
         }
-        const nodeAlias = context.getReferenceId(this.returnArgs[0]);
+        const nodeAlias = context.getVariableId(this.returnArgs[0]);
 
         return `RETURN ${nodeAlias}${projection}${alias}`;
     }

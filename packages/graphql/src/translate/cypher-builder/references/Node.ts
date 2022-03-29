@@ -20,15 +20,15 @@
 import { CypherContext } from "../CypherContext";
 import { escapeLabel, padLeft } from "../utils";
 import { Param } from "./Param";
-import { CypherReference } from "./Reference";
 import { serializeParameters } from "./utils";
+import { CypherVariable } from "./Variable";
 
 type NodeInput = {
     labels?: Array<string>;
     parameters?: Record<string, Param<any>>;
 };
 
-export class Node implements CypherReference {
+export class Node implements CypherVariable {
     public readonly prefix = "this";
     private labels: Array<string>;
     private parameters: Record<string, Param<any>>;
@@ -50,7 +50,7 @@ export class Node implements CypherReference {
 
     // TODO: should be private or protected
     public getReference(context: CypherContext): string {
-        return context.getReferenceId(this);
+        return context.getVariableId(this);
     }
 
     private hasParameters(): boolean {

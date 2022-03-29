@@ -17,34 +17,36 @@
  * limitations under the License.
  */
 
-import { CypherParam, CypherReference } from "./references/Reference";
+import { CypherParameter } from "./references/Param";
+import { CypherVariable } from "./references/Variable";
 
 export interface CypherContextInterface {
-    getReferenceId(reference: CypherReference): string;
-    getParamId(reference: CypherParam): string;
+    getVariableId(reference: CypherVariable): string;
+    getParamId(reference: CypherParameter): string;
 }
 
+/** Hold the internal references of parameters and variables */
 export class CypherContext implements CypherContextInterface {
     private prefix: string;
-    private params: Map<CypherParam, string> = new Map();
-    private references: Map<CypherReference, string> = new Map();
+    private params: Map<CypherParameter, string> = new Map();
+    private variables: Map<CypherVariable, string> = new Map();
 
     constructor(prefix?: string) {
         this.prefix = prefix || "";
     }
 
-    public getParamId(reference: CypherParam): string {
-        const id = this.params.get(reference);
+    public getParamId(param: CypherParameter): string {
+        const id = this.params.get(param);
         if (!id) {
-            return this.addParamReference(reference);
+            return this.addParamReference(param);
         }
         return id;
     }
 
-    public getReferenceId(reference: CypherReference): string {
-        const id = this.references.get(reference);
+    public getVariableId(variable: CypherVariable): string {
+        const id = this.variables.get(variable);
         if (!id) {
-            return this.addReference(reference);
+            return this.addReference(variable);
         }
         return id;
     }
@@ -52,25 +54,25 @@ export class CypherContext implements CypherContextInterface {
     public getParams(): Record<string, any> {
         const paramList = Array.from(this.params.keys());
 
-        return paramList.reduce((acc, param: CypherParam) => {
+        return paramList.reduce((acc, param: CypherParameter) => {
             const key = this.getParamId(param);
             acc[key] = param.value;
             return acc;
         }, {} as Record<string, any>);
     }
 
-    public addNamedParamReference(name: string, param: CypherParam): void {
+    public addNamedParamReference(name: string, param: CypherParameter): void {
         this.params.set(param, name);
     }
 
-    private addReference(reference: CypherReference): string {
-        const refIndex = this.references.size;
+    private addReference(reference: CypherVariable): string {
+        const refIndex = this.variables.size;
         const referenceId = `${this.prefix}${reference.prefix}${refIndex}`;
-        this.references.set(reference, referenceId);
+        this.variables.set(reference, referenceId);
         return referenceId;
     }
 
-    private addParamReference(param: CypherParam): string {
+    private addParamReference(param: CypherParameter): string {
         const refIndex = this.params.size;
         const paramId = `${this.prefix}${param.prefix}${refIndex}`;
         this.params.set(param, paramId);

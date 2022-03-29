@@ -21,8 +21,8 @@ import { CypherContext } from "../CypherContext";
 import { escapeLabel, padLeft } from "../utils";
 import { Node } from "./Node";
 import { Param } from "./Param";
-import { CypherReference } from "./Reference";
 import { serializeParameters } from "./utils";
+import { CypherVariable } from "./Variable";
 
 export type RelationshipInput = {
     source: Node;
@@ -32,7 +32,7 @@ export type RelationshipInput = {
     directed?: boolean;
 };
 
-export class Relationship implements CypherReference {
+export class Relationship implements CypherVariable {
     public readonly prefix: string = "this";
     public readonly source: Node;
     public readonly target: Node;
@@ -50,7 +50,7 @@ export class Relationship implements CypherReference {
     }
 
     public getCypher(context: CypherContext) {
-        const referenceId = context.getReferenceId(this);
+        const referenceId = context.getVariableId(this);
         let parametersStr = "";
         if (this.hasParameters()) {
             const parameters = serializeParameters(this.parameters, context);

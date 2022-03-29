@@ -17,12 +17,7 @@
  * limitations under the License.
  */
 
-/** Represents a reference in AST */
-export interface CypherReference {
+/** Represents a Cypher Variable Reference <https://neo4j.com/docs/cypher-manual/current/syntax/variables/> */
+export interface CypherVariable {
     readonly prefix: string;
-}
-
-/** Represents a CypherParam */
-export interface CypherParam extends CypherReference {
-    value: any;
 }

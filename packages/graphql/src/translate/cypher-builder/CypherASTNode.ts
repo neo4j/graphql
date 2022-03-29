@@ -20,6 +20,7 @@
 import { CypherContext } from "./CypherContext";
 import { Param } from "./references/Param";
 
+/** Abstract class representing a Cypher Statement in the AST*/
 export abstract class CypherASTNode {
     protected children: Array<CypherASTNode> = [];
     protected parent?: CypherASTNode;
@@ -36,6 +37,7 @@ export abstract class CypherASTNode {
         return this;
     }
 
+    /** Visitor pattern to generate the Cypher on nested nodes */
     public getCypher(context: CypherContext, separator = "\n"): string {
         Object.entries(this.namedParams).forEach(([name, param]) => {
             context.addNamedParamReference(name, param); // Only for compatibility reasons
@@ -45,6 +47,7 @@ export abstract class CypherASTNode {
         return this.cypher(context, childrenCypher);
     }
 
+    /** Defines the internal Cypher to generate by the ASTNode */
     protected abstract cypher(context: CypherContext, childrenCypher: string): string;
 
     protected getContext(prefix?: string): CypherContext {

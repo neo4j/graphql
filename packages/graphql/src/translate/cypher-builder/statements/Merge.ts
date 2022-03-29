@@ -70,14 +70,14 @@ export class Merge<T extends Node | Relationship> extends Query {
 
     private onCreateSetStatement(context: CypherContext): string {
         const source = this.element instanceof Relationship ? this.element.source : this.element;
-        const sourceId = context.getReferenceId(source);
+        const sourceId = context.getVariableId(source);
 
         let onCreateStatements: Array<string> = Object.entries(this.onCreateParameters.source).map(([key, value]) => {
             return `${sourceId}.${key} = ${value.getCypher(context)}`;
         });
 
         if (this.element instanceof Relationship) {
-            const relationshipId = context.getReferenceId(this.element);
+            const relationshipId = context.getVariableId(this.element);
             const relationshipOnCreateStatements = Object.entries(this.onCreateParameters.relationship).map(
                 ([key, value]) => {
                     return `${relationshipId}.${key} = ${value.getCypher(context)}`;

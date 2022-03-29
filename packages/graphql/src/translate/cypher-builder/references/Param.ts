@@ -18,9 +18,14 @@
  */
 
 import { CypherContext } from "../CypherContext";
-import { CypherParam } from "./Reference";
 
-export class Param<T = any> implements CypherParam {
+/** Represents a CypherParam */
+export interface CypherParameter {
+    readonly prefix: string;
+    value: any;
+}
+
+export class Param<T = any> implements CypherParameter {
     public readonly prefix: string = "param";
     public readonly value: T;
 
