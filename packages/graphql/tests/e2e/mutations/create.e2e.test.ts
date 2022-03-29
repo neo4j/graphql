@@ -24,7 +24,7 @@ import { generateUniqueType } from "../../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
 import neo4j from "../../integration/neo4j";
 
-describe("Subscriptions", () => {
+describe("Create", () => {
     let driver: Driver;
 
     const typeMovie = generateUniqueType("Movie");

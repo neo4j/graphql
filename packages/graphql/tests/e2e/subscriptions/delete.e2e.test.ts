@@ -55,7 +55,7 @@ describe("Delete Subscription", () => {
         await server.start();
     });
 
-    beforeEach(async () => {
+    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 

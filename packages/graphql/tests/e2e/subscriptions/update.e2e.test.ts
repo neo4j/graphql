@@ -26,7 +26,7 @@ import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
 import neo4j from "../../integration/neo4j";
 
-describe("Subscriptions", () => {
+describe("Update Subscriptions", () => {
     let driver: Driver;
 
     const typeMovie = generateUniqueType("Movie");
