@@ -283,20 +283,11 @@ jobs:
     needs:
       - cache-dependencies
 
-    strategy:
-      matrix:
-        package:
-          - graphql-ui
-        neo4j-version:
-          - 4.4
-        graphql-version:
-          - "^16.0.0"
-
     runs-on: ubuntu-latest
 
     services:
       neo4j:
-        image: neo4j:${{ matrix.neo4j-version }}-enterprise
+        image: neo4j:4.4-enterprise
         env:
           NEO4J_AUTH: neo4j/testpassword
           NEO4JLABS_PLUGINS: '["apoc"]'
@@ -314,11 +305,11 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
       - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
+        run: yarn up --exact graphql@^16.0.0
       - name: Run @neo4j/graphql-ui e2e tests
         run: |
           yarn test
-        working-directory: packages/${{ matrix.package }}
+        working-directory: packages/graphql-ui
         env:
           NEO_USER: neo4j
           NEO_PASSWORD: testpassword
