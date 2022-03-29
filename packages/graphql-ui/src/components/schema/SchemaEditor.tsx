@@ -257,10 +257,10 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                     <div className="flex items-center w-full pb-4">
                         <div className="justify-start">
                             <ProTooltip
-                                tooltipText="You must build the schema to use the Editor"
+                                tooltipText="Build the schema to use the Editor"
                                 arrowPositionLeft={true}
                                 blockVisibility={hasSchema}
-                                width={270}
+                                width={210}
                                 left={200}
                                 top={1}
                             >

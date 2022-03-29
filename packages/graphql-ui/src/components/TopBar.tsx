@@ -26,7 +26,11 @@ import { ScreenContext, Screen } from "../contexts/screen";
 import { SettingsContext } from "../contexts/settings";
 import { ProTooltip } from "./ProTooltip";
 
-export const TopBar = () => {
+interface Props {
+    hasSchema: boolean;
+}
+
+export const TopBar = ({ hasSchema }: Props) => {
     const auth = useContext(AuthContext);
     const screen = useContext(ScreenContext);
     const settings = useContext(SettingsContext);
@@ -76,7 +80,10 @@ export const TopBar = () => {
                     ) : null}
                     <div className="flex items-center">
                         <div className="cursor-pointer mr-4">
-                            <ProTooltip tooltipText="Show Documentation">
+                            <ProTooltip
+                                tooltipText="Build the schema to show the Documentation"
+                                blockVisibility={hasSchema}
+                            >
                                 <HeroIcon
                                     onClick={handleHelpClick}
                                     className={`h-7 w-7 opacity-30 ${
