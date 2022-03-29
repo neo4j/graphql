@@ -488,7 +488,7 @@ function createUpdateAndParams({
         }
 
         if (context.subscriptionsEnabled) {
-            const eventMeta = createEventMeta({ event: "update", nodeVariable: varName });
+            const eventMeta = createEventMeta({ event: "update", nodeVariable: varName, typename: node.name });
             res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, ${eventMeta}`);
         }
 

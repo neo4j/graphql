@@ -23,7 +23,7 @@ import { translateCreate } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
-import { publishEventsToPlugin } from "./subscriptions/publish-events-to-plugin";
+import { publishEventsToPlugin } from "../subscriptions/publish-events-to-plugin";
 
 export default function createResolver({ node }: { node: Node }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {

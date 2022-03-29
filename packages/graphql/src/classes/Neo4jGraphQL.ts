@@ -31,7 +31,7 @@ import checkNeo4jCompat from "./utils/verify-database";
 import assertIndexesAndConstraints, {
     AssertIndexesAndConstraintsOptions,
 } from "./utils/asserts-indexes-and-constraints";
-import { wrapResolver } from "../schema/resolvers/wrapper";
+import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers";
 import { asArray } from "../utils/utils";
 
@@ -154,17 +154,16 @@ class Neo4jGraphQL {
         const resolversComposition = {
             "Query.*": [wrapResolver(wrapResolverArgs)],
             "Mutation.*": [wrapResolver(wrapResolverArgs)],
+            "Subscription.*": [wrapSubscription(wrapResolverArgs)],
         };
 
         // Merge generated and custom resolvers
         const mergedResolvers = mergeResolvers([resolvers, ...asArray(this.schemaDefinition.resolvers)]);
-
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
     private addWrappedResolversToSchema(resolverlessSchema: GraphQLSchema, resolvers: IResolvers): GraphQLSchema {
         const schema = addResolversToSchema(resolverlessSchema, resolvers);
-
         return this.addDefaultFieldResolvers(schema);
     }
 

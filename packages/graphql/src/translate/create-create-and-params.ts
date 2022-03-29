@@ -277,7 +277,7 @@ function createCreateAndParams({
     });
 
     if (context.subscriptionsEnabled) {
-        const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName });
+        const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName, typename: node.name });
         const withStrs = [eventWithMetaStr];
         creates.push(`WITH ${withStrs.join(", ")}, ${filterMetaVariable(withVars).join(", ")}`);
     }

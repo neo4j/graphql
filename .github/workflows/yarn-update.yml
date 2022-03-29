@@ -34,7 +34,7 @@ jobs:
           echo ::set-output name=title::"[Test] Update yarn $(date +%Y-%m-%d)"
           echo ::set-output name=branch::"yarn-update-$(date +%Y-%m-%d)"
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
           commit-message: ${{ steps.vars.outputs.title }}

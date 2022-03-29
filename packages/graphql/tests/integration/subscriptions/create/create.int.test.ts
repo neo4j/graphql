@@ -98,36 +98,42 @@ describe("Subscriptions create", () => {
                 timestamp: expect.any(Number),
                 event: "create",
                 properties: { old: undefined, new: { id: "2" } },
+                typename: typeMovie.name,
             },
             {
                 id: expect.any(Number),
                 timestamp: expect.any(Number),
                 event: "create",
                 properties: { old: undefined, new: { name: "Andrés" } },
+                typename: typeActor.name,
             },
             {
                 id: expect.any(Number),
                 timestamp: expect.any(Number),
                 event: "create",
                 properties: { old: undefined, new: { id: "1" } },
+                typename: typeMovie.name,
             },
             {
                 id: expect.any(Number),
                 timestamp: expect.any(Number),
                 event: "create",
                 properties: { old: undefined, new: { id: "4" } },
+                typename: typeMovie.name,
             },
             {
                 id: expect.any(Number),
                 timestamp: expect.any(Number),
                 event: "create",
                 properties: { old: undefined, new: { name: "Darrell" } },
+                typename: typeActor.name,
             },
             {
                 id: expect.any(Number),
                 timestamp: expect.any(Number),
                 event: "create",
                 properties: { old: undefined, new: { id: "3" } },
+                typename: typeMovie.name,
             },
         ]);
     });
