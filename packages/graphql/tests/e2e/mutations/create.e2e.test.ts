@@ -22,17 +22,14 @@ import supertest, { Response } from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
 import neo4j from "../../integration/neo4j";
 
-describe("Create Subscription", () => {
+describe("Create", () => {
     let driver: Driver;
 
     const typeMovie = generateUniqueType("Movie");
 
     let server: TestGraphQLServer;
-    let wsClient: WebSocketClient;
 
     beforeAll(async () => {
         const typeDefs = `
@@ -46,17 +43,10 @@ describe("Create Subscription", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
-                subscriptions: new TestSubscriptionsPlugin(),
-            } as any,
         });
 
         server = new ApolloTestServer(neoSchema);
         await server.start();
-    });
-
-    beforeEach(() => {
-        wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterAll(async () => {
@@ -64,55 +54,12 @@ describe("Create Subscription", () => {
         await driver.close();
     });
 
-    test("create subscription", async () => {
-        await wsClient.subscribe(`
-                            subscription {
-                                ${typeMovie.operations.subscribe.created} {
-                                    ${typeMovie.operations.subscribe.payload.created} {
-                                        title
-                                    }
-                                }
-                            }
-                            `);
+    test("simple mutation", async () => {
+        const result = await createMovie("dsa");
 
-        await createMovie("movie1");
-        await createMovie("movie2");
-
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.fieldNames.subscriptions.created]: { title: "movie2" },
-                },
-            },
-        ]);
-    });
-
-    test("create subscription with where", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title: "movie1" }) {
-                    ${typeMovie.fieldNames.subscriptions.created} {
-                        title
-                    }
-                }
-            }
-        `);
-
-        await createMovie("movie1");
-        await createMovie("movie2");
-
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.fieldNames.subscriptions.created]: { title: "movie1" },
-                },
-            },
-        ]);
+        expect(result.body).toEqual({
+            data: { [typeMovie.operations.create]: { [typeMovie.plural]: [{ title: "dsa" }] } },
+        });
     });
 
     async function createMovie(title: string): Promise<Response> {

@@ -53,42 +53,91 @@ describe("Delete Subscription", () => {
 
         server = new ApolloTestServer(neoSchema);
         await server.start();
+    });
+
+    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterAll(async () => {
         await server.close();
         await driver.close();
-        await wsClient.close();
     });
 
     test("delete subscription", async () => {
-        const session = driver.session();
-        try{
-            await session.run(`CREATE (:${typeMovie.name} {title: "my-title"})`);
-        } finally {
-            await session.close();
-        }
         await wsClient.subscribe(`
-                            subscription {
-                                ${typeMovie.operations.subscribe.deleted} {
-                                    ${typeMovie.operations.subscribe.payload.deleted} {
-                                        title
-                                    }
-                                }
-                            }
-                            `);
+            subscription {
+                ${typeMovie.operations.subscribe.deleted} {
+                    ${typeMovie.fieldNames.subscriptions.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
 
-        await deleteMovie("my-title");
+        await createMovie("movie1");
+        await createMovie("movie2");
+
+        await deleteMovie("movie1");
+        await deleteMovie("movie2");
 
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "my-title" },
+                    [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie1" },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie2" },
                 },
             },
         ]);
     });
+
+    test("delete subscription with where", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { title: "movie3" }) {
+                    ${typeMovie.fieldNames.subscriptions.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie("movie3");
+        await createMovie("movie4");
+
+        await deleteMovie("movie3");
+        await deleteMovie("movie4");
+
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie3" },
+                },
+            },
+        ]);
+    });
+
+    async function createMovie(title: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+        return result;
+    }
 
     async function deleteMovie(title: string): Promise<Response> {
         const result = await supertest(server.path)
@@ -96,7 +145,7 @@ describe("Delete Subscription", () => {
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(where: {title: "${title}"}) {
+                        ${typeMovie.operations.delete}(where: { title: "${title}" }) {
                             nodesDeleted
                         }
                     }
