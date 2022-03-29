@@ -56,7 +56,7 @@
         "@types/supertest": "^2.0.12",
         "@types/ws": "^8",
         "apollo-server": "3.6.6",
-        "apollo-server-express": "^3.6.5",
+        "apollo-server-express": "3.6.6",
         "dedent": "0.7.0",
         "graphql-middleware": "6.1.20",
         "graphql-tag": "2.12.6",
