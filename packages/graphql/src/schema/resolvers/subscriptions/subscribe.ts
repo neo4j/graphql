@@ -23,6 +23,7 @@ import Node from "../../../classes/Node";
 import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
 import { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
+import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where";
 
 export type SubscriptionContext = {
@@ -45,7 +46,9 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
 
         return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
-            return data[0].typename === node.name && subscriptionWhere(args.where, data[0]);
+            return (
+                data[0].typename === node.name && subscriptionWhere(args.where, data[0]) && updateDiffFilter(data[0])
+            );
         });
     };
 }
