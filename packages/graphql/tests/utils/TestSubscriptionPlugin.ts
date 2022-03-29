@@ -21,12 +21,13 @@ import { SubscriptionsEvent } from "../../src/subscriptions/subscriptions-event"
 import { Neo4jGraphQLSubscriptionsPlugin } from "../../src/types";
 
 export class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
-    public events = {} as EventEmitter;
+    public events = new EventEmitter();
 
     public eventList: SubscriptionsEvent[] = [];
 
     // eslint-disable-next-line @typescript-eslint/require-await
     async publish(eventMeta: SubscriptionsEvent): Promise<void> {
         this.eventList.push(eventMeta);
+        this.events.emit(eventMeta.event, eventMeta);
     }
 }
