@@ -119,7 +119,7 @@ type User {
 [[type-definitions-autogeneration-callback]]
 == `@callback`
 
-The `@callback` directive is used to specify a function that will be envoked when updating or creating the properties on a node or relationship.
+The `@callback` directive is used to specify a function that will be invoked when updating or creating the properties on a node or relationship.
 
 For non-required values, callbacks may return `undefined` (meaning that nothing will be changed or added to the property) or `null` (meaning that the property will be removed).
 
@@ -132,9 +132,9 @@ enum CallbackOperation {
     UPDATE
 }
 
-"""Instructs @neo4j/graphql to envoke the specified callback function when updating or creating the properties on a node or relationship."""
+"""Instructs @neo4j/graphql to invoke the specified callback function when updating or creating the properties on a node or relationship."""
 directive @callback(
-    """Which events to envoke the callback on."""
+    """Which events to invoke the callback on."""
     operations: [CallbackOperation!]! = [CREATE, UPDATE]
     """The name of the callback function."""
     name: String!
@@ -155,7 +155,7 @@ type Product {
 
 Schema Construction: 
 
-> Note that the callback is async!
+> Note that the callback is asynchronous!
 
 [source, javascript, indent=0]
 ----

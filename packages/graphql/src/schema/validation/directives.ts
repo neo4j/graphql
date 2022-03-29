@@ -52,11 +52,11 @@ export const aliasDirective = new GraphQLDirective({
 export const callbackDirective = new GraphQLDirective({
     name: "callback",
     description:
-        "Instructs @neo4j/graphql to envoke the specified callback function when updating or creating the properties on a node or relationship.",
+        "Instructs @neo4j/graphql to invoke the specified callback function when updating or creating the properties on a node or relationship.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
     args: {
         operations: {
-            description: "Which events to envoke the callback on.",
+            description: "Which events to invoke the callback on.",
             defaultValue: CallbackOperationEnum.getValues().map((v) => v.value),
             type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(CallbackOperationEnum))),
         },
