@@ -37,7 +37,9 @@ import { formatCode, ParserOptions } from "./utils";
 import { Extension } from "../Filename";
 import { ViewSelectorComponent } from "../ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
+import { Theme, ThemeContext } from "../../contexts/theme";
 import { AppSettings } from "../AppSettings";
+import { ProTooltip } from "../ProTooltip";
 
 const DEFAULT_QUERY = `
 # Type queries into this side of the screen, and you will 
@@ -55,6 +57,7 @@ export interface Props {
 
 export const Editor = (props: Props) => {
     const settings = useContext(SettingsContext);
+    const theme = useContext(ThemeContext);
     const [loading, setLoading] = useState(false);
     const [query, setQuery] = useState("");
     const [variableValues, setVariableValues] = useState("");
@@ -140,20 +143,22 @@ export const Editor = (props: Props) => {
                                     executeQuery={onSubmit}
                                     buttons={
                                         <Fragment>
-                                            <Button
-                                                className="p-3"
-                                                color="neutral"
-                                                fill="outlined"
-                                                buttonSize="small"
-                                                style={{ padding: "0.5rem" }}
-                                                onClick={formatTheCode}
-                                                disabled={loading}
-                                            >
-                                                Prettify
-                                            </Button>
+                                            <ProTooltip tooltipText="Prettify" width={60} left={-10} top={38}>
+                                                <Button
+                                                    className="p-2"
+                                                    color={theme.theme === Theme.DARK ? "success" : "neutral"}
+                                                    fill="text"
+                                                    buttonSize="small"
+                                                    style={{ padding: "0.5rem", display: "flex" }}
+                                                    onClick={formatTheCode}
+                                                    disabled={loading}
+                                                >
+                                                    <HeroIcon className="h-6 w-6" iconName="CodeIcon" type="outline" />
+                                                </Button>
+                                            </ProTooltip>
                                             <Button
                                                 id={EDITOR_QUERY_BUTTON}
-                                                className="mr-4 ml-4"
+                                                className="mr-4 ml-2"
                                                 color="primary"
                                                 fill="text"
                                                 style={{ padding: "0.5rem" }}

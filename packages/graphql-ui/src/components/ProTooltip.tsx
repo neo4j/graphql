@@ -23,23 +23,44 @@ import { Tooltip } from "@neo4j-ndl/react";
 interface Props {
     children?: any;
     tooltipText: string;
+    width?: number;
+    left?: number;
+    top?: number;
+    arrowPositionLeft?: boolean;
+    blockVisibility?: boolean;
 }
 
-export const ProTooltip = ({ children, tooltipText }: Props) => {
+export const ProTooltip = ({
+    children,
+    tooltipText,
+    width,
+    top,
+    left,
+    arrowPositionLeft,
+    blockVisibility = false,
+}: Props) => {
     const [visible, setVisible] = useState(false);
 
+    const onMouseAction = (nextVisibilityState: boolean) => {
+        if (blockVisibility) {
+            setVisible(false);
+            return;
+        }
+        setVisible(nextVisibilityState);
+    };
+
     return (
-        <div className="relative" onMouseOver={() => setVisible(true)} onMouseOut={() => setVisible(false)}>
+        <div className="relative" onMouseOver={() => onMouseAction(true)} onMouseOut={() => onMouseAction(false)}>
             {children}
             {visible ? (
                 <Tooltip
-                    arrowPosition="top"
+                    arrowPosition={arrowPositionLeft ? "left" : "top"}
                     style={{
                         position: "absolute",
-                        width: "140px",
-                        zIndex: "30",
-                        left: "-55px",
-                        top: "35px",
+                        width: `${width || 140}px`,
+                        zIndex: 300,
+                        left: `${left || -55}px`,
+                        top: `${top || 35}px`,
                     }}
                 >
                     {tooltipText}

@@ -21,7 +21,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import { GraphQLSchema } from "graphql";
-import { Button, Checkbox } from "@neo4j-ndl/react";
+import { Button, Checkbox, HeroIcon } from "@neo4j-ndl/react";
 import * as neo4j from "neo4j-driver";
 import { EditorFromTextArea } from "codemirror";
 import { CodeMirror } from "../../utils/utils";
@@ -46,6 +46,7 @@ import { SettingsContext } from "../../contexts/settings";
 import { ThemeContext, Theme } from "../../contexts/theme";
 import { ViewSelectorComponent } from "../ViewSelectorComponent";
 import { AppSettings } from "../AppSettings";
+import { ProTooltip } from "../ProTooltip";
 
 export interface Props {
     hasSchema: boolean;
@@ -251,28 +252,39 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="flex-1 flex justify-start w-full p-6" style={{ height: "91vh" }}>
+            <div className="flex-1 flex justify-start w-full p-6" style={{ height: "90vh" }}>
                 <div className="flex flex-col w-full">
                     <div className="flex items-center w-full pb-4">
                         <div className="justify-start">
-                            <ViewSelectorComponent
-                                key="schema-editor-view-selector"
-                                elementKey="schema-editor-view-selector"
-                                isEditorDisabled={!hasSchema}
-                            />
+                            <ProTooltip
+                                tooltipText="You must build the schema to use the Editor"
+                                arrowPositionLeft={true}
+                                blockVisibility={hasSchema}
+                                width={270}
+                                left={200}
+                                top={1}
+                            >
+                                <ViewSelectorComponent
+                                    key="schema-editor-view-selector"
+                                    elementKey="schema-editor-view-selector"
+                                    isEditorDisabled={!hasSchema}
+                                />
+                            </ProTooltip>
                         </div>
                         <div className="flex-1 flex justify-end">
-                            <Button
-                                id={SCHEMA_EDITOR_PRETTY_BUTTON}
-                                className="mr-4"
-                                color="neutral"
-                                fill="outlined"
-                                style={{ padding: "0.75rem" }}
-                                onClick={formatTheCode}
-                                disabled={loading}
-                            >
-                                Prettify
-                            </Button>
+                            <ProTooltip tooltipText="Prettify" width={60} left={-2} top={45}>
+                                <Button
+                                    id={SCHEMA_EDITOR_PRETTY_BUTTON}
+                                    className="mr-4"
+                                    color="neutral"
+                                    fill="outlined"
+                                    style={{ padding: "0.75rem" }}
+                                    onClick={formatTheCode}
+                                    disabled={loading}
+                                >
+                                    <HeroIcon className="h-7 w-7" iconName="CodeIcon" type="outline" />
+                                </Button>
+                            </ProTooltip>
                             <Button
                                 id={SCHEMA_EDITOR_INTROSPECT_BUTTON}
                                 className="mr-4"
