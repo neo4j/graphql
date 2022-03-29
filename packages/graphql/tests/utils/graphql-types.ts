@@ -33,6 +33,11 @@ type UniqueTypeOperations = {
         created: string;
         updated: string;
         deleted: string;
+        payload: {
+            created: string;
+            updated: string;
+            deleted: string
+        }
     };
 };
 
@@ -54,6 +59,7 @@ export class UniqueType {
     public get operations(): UniqueTypeOperations {
         const pascalCasePlural = upperFirst(this.plural);
         const singular = camelcase(this.name);
+        const pascalCaseSingular=upperFirst(singular)
 
         return {
             create: `create${pascalCasePlural}`,
@@ -64,6 +70,11 @@ export class UniqueType {
                 created: `${singular}Created`,
                 updated: `${singular}Updated`,
                 deleted: `${singular}Deleted`,
+                payload: {
+                    created: `created${pascalCaseSingular}`,
+                    updated: `updated${pascalCaseSingular}`,
+                    deleted: `deleted${pascalCaseSingular}`,
+                }
             },
         };
     }
