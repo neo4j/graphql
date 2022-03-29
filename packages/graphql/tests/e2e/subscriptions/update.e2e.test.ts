@@ -80,6 +80,7 @@ describe("Update Subscriptions", () => {
                     ${typeMovie.fieldNames.subscriptions.updated} {
                         title
                     }
+                    event
                 }
             }
         `);
@@ -94,11 +95,13 @@ describe("Update Subscriptions", () => {
             {
                 [typeMovie.operations.subscribe.updated]: {
                     [typeMovie.fieldNames.subscriptions.updated]: { title: "movie3" },
+                    event: "UPDATE",
                 },
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
                     [typeMovie.fieldNames.subscriptions.updated]: { title: "movie4" },
+                    event: "UPDATE",
                 },
             },
         ]);

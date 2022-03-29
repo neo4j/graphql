@@ -33,7 +33,6 @@ export function subscriptionResolve(payload: [SubscriptionsEvent]): Subscription
     if (!payload) {
         throw new Neo4jGraphQLError("Payload is undefined. Can't call subscriptions resolver directly.");
     }
-
     return payload[0];
 }
 
