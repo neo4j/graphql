@@ -37,7 +37,7 @@ describe("schema/rfc/autogenerate-properties-node", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toThrow(
-                "Directive @default and directive @callback cannot be used together"
+                "Directive @callback cannot be used in combination with @default"
             );
         });
 
@@ -54,7 +54,7 @@ describe("schema/rfc/autogenerate-properties-node", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toThrow(
-                "Directive @id and directive @callback cannot be used together"
+                "Directive @callback cannot be used in combination with @id"
             );
         });
     });
