@@ -7,7 +7,7 @@ on:
     branches:
       - dev
     paths:
-      - "packages/graphql-ui/**"
+      - "packages/graphql-toolbox/**"
 
 jobs:
   build-ui:
@@ -23,9 +23,9 @@ jobs:
           yarn
           yarn build
           echo ${{ github.event.number }} > ./dist/prnumber
-        working-directory: packages/graphql-ui
+        working-directory: packages/graphql-toolbox
       - name: Archive UI
         uses: actions/upload-artifact@v3
         with:
           name: graphqlui
-          path: packages/graphql-ui/dist
+          path: packages/graphql-toolbox/dist

@@ -2060,9 +2060,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql-ui@workspace:packages/graphql-ui":
+"@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox":
   version: 0.0.0-use.local
-  resolution: "@neo4j/graphql-ui@workspace:packages/graphql-ui"
+  resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@neo4j-ndl/base": ^0.1.2
     "@neo4j-ndl/react": ^0.1.2

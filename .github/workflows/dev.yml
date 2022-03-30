@@ -306,10 +306,10 @@ jobs:
         run: yarn --immutable
       - name: Overwrite GraphQL version
         run: yarn up --exact graphql@^16.0.0
-      - name: Run @neo4j/graphql-ui e2e tests
+      - name: Run @neo4j/graphql-toolbox e2e tests
         run: |
           yarn test
-        working-directory: packages/graphql-ui
+        working-directory: packages/graphql-toolbox
         env:
           NEO_USER: neo4j
           NEO_PASSWORD: testpassword

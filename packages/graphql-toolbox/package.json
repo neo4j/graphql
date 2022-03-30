@@ -1,5 +1,5 @@
 {
-    "name": "@neo4j/graphql-ui",
+    "name": "@neo4j/graphql-toolbox",
     "version": "1.0.0-alpha.1",
     "description": "Developer UI For Neo4j GraphQL",
     "exports": "./dist/main.js",
