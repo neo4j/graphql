@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { Dispatch, useState, SetStateAction } from "react";
+import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
 import * as neo4j from "neo4j-driver";
 import { encrypt, decrypt } from "../utils/utils";
 import { LOCAL_STATE_LOGIN, VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
@@ -107,7 +107,9 @@ export function AuthProvider(props: any) {
         },
     });
 
-    resolveNeo4jDesktopLoginPayload().then(processLoginPayload.bind(null, value)).catch(console.error);
+    useEffect(() => {
+        resolveNeo4jDesktopLoginPayload().then(processLoginPayload.bind(null, value)).catch(console.error);
+    }, []);
 
     return <AuthContext.Provider value={value as State}>{props.children}</AuthContext.Provider>;
 }

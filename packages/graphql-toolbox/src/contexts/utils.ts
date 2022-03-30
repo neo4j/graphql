@@ -81,6 +81,9 @@ export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | 
         }
 
         const { url: boltUrl, username, password } = graphsData[0].connection.principals.protocols.bolt;
+
+        // INFO: to get the current database name and all available databases use cypher "SHOW databases"
+
         return {
             url: boltUrl,
             username,
