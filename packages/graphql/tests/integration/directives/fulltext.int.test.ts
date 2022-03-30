@@ -26,7 +26,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { delay } from "../../../src/utils/utils";
 
-describe("assertIndexesAndConstraints/fulltext", () => {
+describe("@fulltext directive", () => {
     let driver: Driver;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
