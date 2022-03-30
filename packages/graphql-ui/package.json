@@ -43,19 +43,16 @@
         "codemirror-graphql": "^1.2.14",
         "crypto-js": "^4.1.1",
         "graphiql-explorer": "^0.9.0",
+        "graphql": "^16.0.0",
         "graphql-request": "^4.2.0",
         "markdown-it": "^12.3.2",
         "neo4j-driver": "^4.4.5",
         "prettier": "^2.6.1",
         "process": "0.11.10",
-        "react": "17.0.2",
-        "react-dom": "17.0.2",
+        "react": "18.0.0",
+        "react-dom": "18.0.0",
         "react-grid-resizable": "^1.0.0",
         "uuid": "^8.3.2"
-    },
-    "peerDependencies": {
-        "graphql": "^16.0.0",
-        "neo4j-driver": "^4.1.0"
     },
     "devDependencies": {
         "@tsconfig/create-react-app": "^1.0.2",
