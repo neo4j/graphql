@@ -109,21 +109,21 @@ main();
 With the previous server running, we have subscriptions available for `Movie` and `Actor`. We can subscribe to new movies created with the following statement:
 ```graphql
 subscription {
-  movieCreated(where: { title: "The Matrix" }) {
-    createdMovie {
-      title
+    movieCreated(where: { title: "The Matrix" }) {
+        createdMovie {
+            title
+        }
     }
-  }
-}
+    }
 ```
 
 Any new movie created with the matching title will trigger a subscription. You can try this with the following query:
 ```graphql
 mutation {
-  createMovies(input: [{ title: "The Matrix" }]) {
-    movies {
-      title
+    createMovies(input: [{ title: "The Matrix" }]) {
+        movies {
+            title
+        }
     }
-  }
 }
 ```

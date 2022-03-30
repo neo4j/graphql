@@ -19,23 +19,23 @@ NOTE: Update events will only be triggered if the properties have changed. An up
 Considering the following type definitions:
 ```graphql
 type Movie {
-  title: String
-  genre: String
+    title: String
+    genre: String
 }
 ```
 
 A subscription to any `Movie` updated would look like:
 ```graphql
 subscription MovieUpdated {
-  movieUpdated {
-    event
-    previousState {
-      title
+    movieUpdated {
+        event
+        previousState {
+            title
+        }
+        updatedMovie {
+            title
+        }
     }
-    updatedMovie {
-      title
-    }
-  }
 }
 ```
 
@@ -48,9 +48,9 @@ Assuming the same type definitions as before, we can filter our movies by their 
 
 ```graphql
 movieUpdate(where: { genre: "Drama" }) {
-  updatedMovie {
-    title
-  }
+    updatedMovie {
+        title
+    }
 }
 ```
 
