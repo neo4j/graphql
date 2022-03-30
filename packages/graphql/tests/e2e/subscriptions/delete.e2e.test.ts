@@ -48,7 +48,7 @@ describe("Delete Subscription", () => {
             driver,
             plugins: {
                 subscriptions: new TestSubscriptionsPlugin(),
-            } as any,
+            },
         });
 
         server = new ApolloTestServer(neoSchema);

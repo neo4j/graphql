@@ -76,7 +76,7 @@ describe("interface relationships", () => {
             typeDefs,
             plugins: {
                 subscriptions: subscriptionsPlugin,
-            } as any,
+            },
         });
     });
 

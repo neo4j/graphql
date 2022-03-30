@@ -53,7 +53,7 @@ describe("Update Subscriptions", () => {
             driver,
             plugins: {
                 subscriptions: new TestSubscriptionsPlugin(),
-            } as any,
+            },
         });
 
         server = new ApolloTestServer(neoSchema);

@@ -53,7 +53,7 @@ describe("Subscriptions create", () => {
             config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
     });
 
