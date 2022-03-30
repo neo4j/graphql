@@ -187,7 +187,7 @@ class Node extends GraphElement {
         return this.constrainableFields.filter((field) => field.unique);
     }
 
-    private get pascalCaseSingular(): string {
+    get pascalCaseSingular(): string {
         return upperFirst(this.singular);
     }
 
