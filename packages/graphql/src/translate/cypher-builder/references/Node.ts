@@ -21,7 +21,7 @@ import { CypherContext } from "../CypherContext";
 import { escapeLabel, padLeft } from "../utils";
 import { Param } from "./Param";
 import { serializeParameters } from "./utils";
-import { CypherVariable } from "./Variable";
+import { CypherVariable } from "./References";
 
 type NodeInput = {
     labels?: Array<string>;

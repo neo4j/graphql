@@ -22,7 +22,7 @@ import { escapeLabel, padLeft } from "../utils";
 import { Node } from "./Node";
 import { Param } from "./Param";
 import { serializeParameters } from "./utils";
-import { CypherVariable } from "./Variable";
+import { CypherVariable } from "./References";
 
 export type RelationshipInput = {
     source: Node;

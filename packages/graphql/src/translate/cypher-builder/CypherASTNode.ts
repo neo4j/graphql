@@ -20,7 +20,7 @@
 import { CypherContext } from "./CypherContext";
 import { Param } from "./references/Param";
 
-/** Abstract class representing a Cypher Statement in the AST*/
+/** Abstract class representing a Cypher Statement in the AST */
 export abstract class CypherASTNode {
     protected children: Array<CypherASTNode> = [];
     protected parent?: CypherASTNode;
