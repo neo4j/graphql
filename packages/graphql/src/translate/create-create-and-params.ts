@@ -24,7 +24,7 @@ import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
-import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
+import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
@@ -161,7 +161,7 @@ function createCreateAndParams({
                 }
 
                 if (v.connectOrCreate) {
-                    const [connectOrCreateQuery, connectOrCreateParams] = createConnectOrCreateAndParams({
+                    const { cypher, params } = createConnectOrCreateAndParams({
                         input: v.connectOrCreate,
                         varName: `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}_connectOrCreate`,
                         parentVar: varName,
@@ -170,8 +170,8 @@ function createCreateAndParams({
                         context,
                         withVars,
                     });
-                    res.creates.push(connectOrCreateQuery);
-                    res.params = { ...res.params, ...connectOrCreateParams };
+                    res.creates.push(cypher);
+                    res.params = { ...res.params, ...params };
                 }
             });
 

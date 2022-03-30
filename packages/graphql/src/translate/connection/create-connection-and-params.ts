@@ -32,10 +32,9 @@ import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
-import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
-import { CypherStatement } from "../types";
 import { asArray, isString, removeDuplicates } from "../../utils/utils";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";
+import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 
 function createConnectionAndParams({
     resolveTree,
@@ -51,7 +50,7 @@ function createConnectionAndParams({
     nodeVariable: string;
     parameterPrefix?: string;
     withVars?: string[];
-}): CypherStatement {
+}): [string, Record<string, any>] {
     let globalParams = {};
     let nestedConnectionFieldParams: any;
 
