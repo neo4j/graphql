@@ -44,7 +44,7 @@ jobs:
       - name: Publish UI
         run: |
           npm install -g surge
-          surge . neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+          surge . neo4j-graphql-toolbox-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
       - name: Comment on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
@@ -53,7 +53,7 @@ jobs:
             Looks like you've updated the UI!
 
             Check out your changes at
-             http://neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh (=> for local development; use for instance [Neo4j Desktop](https://neo4j.com/download/))
+             http://neo4j-graphql-toolbox-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh (=> for local development; use for instance [Neo4j Desktop](https://neo4j.com/download/))
             or
-             https://neo4j-graphql-ui-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh (=> use to connect to an [Aura Free](https://neo4j.com/cloud/aura-free/) dbms)
+             https://neo4j-graphql-toolbox-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh (=> use to connect to an [Aura Free](https://neo4j.com/cloud/aura-free/) dbms)
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
