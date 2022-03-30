@@ -131,7 +131,7 @@ export const GraphQLQueryEditor = ({
     }, [loading]);
 
     useEffect(() => {
-        // @ts-ignore - We should not be doing this
+        // @ts-ignore - Find a better solution
         document[EDITOR_QUERY_INPUT] = mirror;
     }, [mirror]);
 

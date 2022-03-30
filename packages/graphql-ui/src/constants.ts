@@ -58,4 +58,14 @@ type Movie {
 }
 `;
 
+export const DEFAULT_QUERY = `
+# Type queries into this side of the screen, and you will 
+# see intelligent typeaheads aware of the current GraphQL type schema.
+# Try the Explorer and use the Documentation
+
+query {
+    __typename
+}
+`;
+
 export const DEFAULT_BOLT_URL = "bolt://localhost:7687";

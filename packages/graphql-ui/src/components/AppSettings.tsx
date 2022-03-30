@@ -28,8 +28,8 @@ interface Props {
 export const AppSettings = ({ onClickClose }: Props) => {
     const theme = useContext(ThemeContext);
 
-    const handleOThemeClick = (e: any) => {
-        const next = e.target.id === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
+    const handleOThemeClick = (event: any) => {
+        const next = event?.target?.id === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
         theme.setTheme(next);
     };
 

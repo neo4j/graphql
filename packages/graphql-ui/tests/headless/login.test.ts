@@ -18,7 +18,7 @@
  */
 
 import { getBrowser, getPage, Browser } from "./puppeteer";
-import { Login } from "./screens/Login";
+import { Login } from "./pages/Login";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 

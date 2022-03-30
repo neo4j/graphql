@@ -41,7 +41,7 @@ import "codemirror-graphql/mode";
 import "codemirror/theme/dracula.css";
 import "codemirror/theme/neo.css";
 
-// @ts-ignore: Needed for the tests
+// @ts-ignore - Needed for the tests
 document.CodeMirror = CodeMirror;
 
 export interface EncryptedData {

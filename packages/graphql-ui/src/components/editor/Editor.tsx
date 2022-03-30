@@ -27,6 +27,7 @@ import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
 import {
     EDITOR_PARAMS_INPUT,
     EDITOR_QUERY_BUTTON,
+    DEFAULT_QUERY,
     EDITOR_RESPONSE_OUTPUT,
     LOCAL_STATE_TYPE_LAST_PARAMS,
     LOCAL_STATE_TYPE_LAST_QUERY,
@@ -40,16 +41,6 @@ import { SettingsContext } from "../../contexts/settings";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { AppSettings } from "../AppSettings";
 import { ProTooltip } from "../ProTooltip";
-
-const DEFAULT_QUERY = `
-# Type queries into this side of the screen, and you will 
-# see intelligent typeaheads aware of the current GraphQL type schema.
-# Try the Explorer and use the Documentation
-
-query {
-    __typename
-}
-`;
 
 export interface Props {
     schema?: GraphQLSchema;

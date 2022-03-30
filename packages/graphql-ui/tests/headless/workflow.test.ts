@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { getBrowser, getPage, Browser } from "./puppeteer";
 import { generate } from "randomstring";
 import * as neo4j from "neo4j-driver";
-import { Login } from "./screens/Login";
-import { SchemaEditor } from "./screens/SchemaEditor";
-import { Editor } from "./screens/Editor";
+import { getBrowser, getPage, Browser } from "./puppeteer";
+import { Login } from "./pages/Login";
+import { SchemaEditor } from "./pages/SchemaEditor";
+import { Editor } from "./pages/Editor";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 

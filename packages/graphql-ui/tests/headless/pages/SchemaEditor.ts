@@ -30,7 +30,7 @@ export class SchemaEditor extends Screen {
         await this.page.$eval(
             `#${SCHEMA_EDITOR_INPUT}`,
             (el, injected) => {
-                // @ts-ignore - How can we type this ?
+                // @ts-ignore - Find a way to type this
                 el.value = injected;
             },
             typeDefs

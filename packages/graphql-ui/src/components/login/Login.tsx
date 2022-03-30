@@ -72,7 +72,7 @@ export const Login = () => {
                             id={LOGIN_USERNAME_INPUT}
                             label="Username"
                             name="username"
-                            placeholder="admin"
+                            placeholder="neo4j"
                             required={true}
                             type="text"
                             disabled={loading}
