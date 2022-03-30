@@ -30,7 +30,7 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
-import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
+import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 
 export default function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
@@ -328,7 +328,7 @@ export default function translateUpdate({ node, context }: { node: Node; context
             }
 
             refNodes.forEach((refNode) => {
-                const connectAndParams = createConnectOrCreateAndParams({
+                const { cypher, params } = createConnectOrCreateAndParams({
                     input: input[refNode.name] || input, // Deals with different input from update -> connectOrCreate
                     varName: `${varName}_connectOrCreate_${key}${relationField.union ? `_${refNode.name}` : ""}`,
                     parentVar: varName,
@@ -337,8 +337,8 @@ export default function translateUpdate({ node, context }: { node: Node; context
                     context,
                     withVars,
                 });
-                connectStrs.push(connectAndParams[0]);
-                cypherParams = { ...cypherParams, ...connectAndParams[1] };
+                connectStrs.push(cypher);
+                cypherParams = { ...cypherParams, ...params };
             });
         });
     }
