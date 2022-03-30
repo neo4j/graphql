@@ -20,14 +20,15 @@
 import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
 import { compareProperties } from "./utils/compare-properties";
 
-export function subscriptionWhere(where: Record<string, any> | undefined, event: SubscriptionsEvent): boolean {
-    if (!where) {
+export function updateDiffFilter(event: SubscriptionsEvent): boolean {
+    if (event.event !== "update") {
         return true;
     }
 
-    if (event.event === "create") {
-        return compareProperties(where, event.properties.new);
-    }
+    const sameLength = Object.keys(event.properties.old).length === Object.keys(event.properties.new).length;
+    if (!sameLength) return true;
+    const sameProperties = compareProperties(event.properties.old, event.properties.new);
+    if (!sameProperties) return true;
 
-    return compareProperties(where, event.properties.old);
+    return false;
 }

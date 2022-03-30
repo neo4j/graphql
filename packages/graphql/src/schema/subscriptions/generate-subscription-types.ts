@@ -48,7 +48,7 @@ export function generateSubscriptionTypes({
             fields: {
                 event: {
                     type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("CREATE"),
+                    resolve: () => EventType.getValue("CREATE")?.value,
                 },
             },
         });
@@ -58,7 +58,7 @@ export function generateSubscriptionTypes({
             fields: {
                 event: {
                     type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("UPDATE"),
+                    resolve: () => EventType.getValue("UPDATE")?.value,
                 },
             },
         });
@@ -68,7 +68,7 @@ export function generateSubscriptionTypes({
             fields: {
                 event: {
                     type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("DELETE"),
+                    resolve: () => EventType.getValue("DELETE")?.value,
                 },
             },
         });

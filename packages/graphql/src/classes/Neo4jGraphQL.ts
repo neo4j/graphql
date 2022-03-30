@@ -52,7 +52,7 @@ export interface Neo4jGraphQLConfig {
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
-    plugins?: Omit<Neo4jGraphQLPlugins, "subscriptions">;
+    plugins?: Neo4jGraphQLPlugins;
 }
 
 class Neo4jGraphQL {
