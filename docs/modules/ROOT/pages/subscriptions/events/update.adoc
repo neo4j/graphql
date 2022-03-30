@@ -19,8 +19,8 @@ NOTE: Update events will only be triggered if the properties have changed. An up
 Considering the following type definitions:
 ```graphql
 type Movie {
-    title: String
-    genre: String
+  title: String
+  genre: String
 }
 ```
 
@@ -47,7 +47,7 @@ The filtering will be done against the properties right **before** the update (i
 Assuming the same type definitions as before, we can filter our movies by their genre:
 
 ```graphql
-movieUpdate(where: {genre: "Drama"}) {
+movieUpdate(where: { genre: "Drama" }) {
   updatedMovie {
     title
   }

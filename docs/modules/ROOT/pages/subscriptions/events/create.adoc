@@ -18,8 +18,8 @@ A subscription to a type can be made with the top-level subscription `\[type\]Cr
 Considering the following type definitions:
 ```graphql
 type Movie {
-    title: String
-    genre: String
+  title: String
+  genre: String
 }
 ```
 
