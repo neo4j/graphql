@@ -20,6 +20,7 @@
 import { CallbackBucket } from "../classes/CallbackBucket";
 import { Relationship } from "../classes";
 import mapToDbProperty from "../utils/map-to-db-property";
+import { addCallbackAndSetParam } from "./utils/callback-utils";
 
 /*
     TODO - lets reuse this function for setting either node or rel properties.
@@ -63,21 +64,9 @@ function createSetRelationshipProperties({
         }
     });
 
-    relationship.primitiveFields.forEach((field) => {
-        if (!field.callback) {
-            return;
-        }
-
-        const paramName = `${varName}_${field.fieldName}_${field.callback?.name}`;
-
-        callbackBucket.addCallback({
-            functionName: field.callback?.name,
-            paramName,
-            parent: properties,
-        });
-
-        strs.push(`SET ${varName}.${field.dbPropertyName} = $callbacks.${paramName}`);
-    });
+    relationship.primitiveFields.forEach((field) =>
+        addCallbackAndSetParam(field, varName, properties, callbackBucket, strs)
+    );
 
     Object.entries(properties).forEach(([key]) => {
         const paramName = `${parameterPrefix}.${key}`;

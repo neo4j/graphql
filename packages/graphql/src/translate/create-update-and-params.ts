@@ -35,6 +35,7 @@ import { createEventMeta } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { escapeQuery } from "./utils/escape-query";
 import { CallbackBucket } from "../classes/CallbackBucket";
+import { addCallbackAndSetParam } from "./utils/callback-utils";
 
 interface Res {
     strs: string[];
@@ -454,21 +455,9 @@ function createUpdateAndParams({
             hasAppliedTimeStamps = true;
         }
 
-        node.primitiveFields.forEach((field) => {
-            if (!field.callback) {
-                return;
-            }
-
-            const paramName = `${varName}_${field.fieldName}_${field.callback?.name}`;
-
-            callbackBucket.addCallback({
-                functionName: field.callback?.name,
-                paramName,
-                parent: updateInput,
-            });
-
-            res.strs.push(`SET ${varName}.${field.dbPropertyName} = $callbacks.${paramName}`);
-        });
+        node.primitiveFields.forEach((field) =>
+            addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs)
+        );
 
         const settableField = node.mutableFields.find((x) => x.fieldName === key);
         const authableField = node.authableFields.find((x) => x.fieldName === key);
