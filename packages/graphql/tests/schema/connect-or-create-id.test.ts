@@ -640,6 +640,7 @@ describe("connect or create with id", () => {
 
             input PostOnCreateInput {
               content: String!
+              createdAt: DateTime!
               id: ID!
             }
 
