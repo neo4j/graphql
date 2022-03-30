@@ -64,7 +64,7 @@ const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
 async function main() {
-    const schema = await neoSchema.generateSchema();
+    const schema = await neoSchema.getSchema();
 
     const server = new ApolloServer({
         schema,
