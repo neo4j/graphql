@@ -17,9 +17,16 @@
  * limitations under the License.
  */
 
-import { NestedRecord } from "../types";
+// These are interfaces, mainly to avoid coupling and circular dependencies between context and statements
 
-export type CypherParams = NestedRecord<string>;
+/** Represents a Cypher Variable Reference <https://neo4j.com/docs/cypher-manual/current/syntax/variables/> */
+export interface CypherVariable {
+    readonly prefix: string;
+}
 
-/** Represent a cypher statement with params */
-export type CypherStatement = [string, CypherParams];
+
+/** Represents a CypherParam */
+export interface CypherParameter {
+    readonly prefix: string;
+    value: any;
+}
