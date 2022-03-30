@@ -17,27 +17,15 @@
  * limitations under the License.
  */
 
-import { CallbackBucket } from "../../classes/CallbackBucket";
-import { PrimitiveField } from "../../types";
+import { stringifyObject } from "../../utils/stringify-object";
+import { CypherContext } from "../CypherContext";
+import { Param } from "./Param";
 
-export const addCallbackAndSetParam = (
-    field: PrimitiveField,
-    varName: string,
-    parent: any,
-    callbackBucket: CallbackBucket,
-    strs: string[]
-) => {
-    if (!field.callback) {
-        return;
-    }
+export function serializeParameters(parameters: Record<string, Param<any>>, context: CypherContext): string {
+    const paramValues = Object.entries(parameters).reduce((acc, [key, param]) => {
+        acc[key] = param.getCypher(context);
+        return acc;
+    }, {} as Record<string, string>);
 
-    const paramName = `${varName}_${field.fieldName}_${field.callback?.name}`;
-
-    callbackBucket.addCallback({
-        functionName: field.callback?.name,
-        paramName,
-        parent,
-    });
-
-    strs.push(`SET ${varName}.${field.dbPropertyName} = $callbacks.${paramName}`);
-};
+    return stringifyObject(paramValues);
+}

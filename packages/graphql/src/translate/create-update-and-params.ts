@@ -29,7 +29,7 @@ import createAuthAndParams from "./create-auth-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
-import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
+import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
@@ -327,7 +327,7 @@ function createUpdateAndParams({
                     }
 
                     if (update.connectOrCreate) {
-                        const [connectOrCreateQuery, connectOrCreateParams] = createConnectOrCreateAndParams({
+                        const { cypher, params } = createConnectOrCreateAndParams({
                             input: update.connectOrCreate,
                             varName: `${_varName}_connectOrCreate`,
                             parentVar: varName,
@@ -336,8 +336,8 @@ function createUpdateAndParams({
                             context,
                             withVars,
                         });
-                        subquery.push(connectOrCreateQuery);
-                        res.params = { ...res.params, ...connectOrCreateParams };
+                        subquery.push(cypher);
+                        res.params = { ...res.params, ...params };
                     }
 
                     if (update.delete) {

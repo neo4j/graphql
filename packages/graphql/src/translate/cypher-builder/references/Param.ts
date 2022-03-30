@@ -17,20 +17,25 @@
  * limitations under the License.
  */
 
-import { serializeParameters } from "./utils";
+import { CypherContext } from "../CypherContext";
+import { CypherParameter } from "./References";
 
-describe("cypher builder utils", () => {
-    describe("serializeParameters", () => {
-        test("serialize node parameters", () => {
-            const result = serializeParameters("this", { param1: "Arthur", param2: "Zaphod" });
 
-            expect(result).toEqual([
-                "{ param1: $this_param1, param2: $this_param2 }",
-                {
-                    this_param1: "Arthur",
-                    this_param2: "Zaphod",
-                },
-            ]);
-        });
-    });
-});
+export class Param<T = any> implements CypherParameter {
+    public readonly prefix: string = "param";
+    public readonly value: T;
+
+    constructor(value: T) {
+        this.value = value;
+    }
+
+    public getCypher(context: CypherContext): string {
+        return `$${context.getParamId(this)}`;
+    }
+}
+
+export class RawParam<T> extends Param<T> {
+    public getCypher(_context: CypherContext): string {
+        return `${this.value}`;
+    }
+}

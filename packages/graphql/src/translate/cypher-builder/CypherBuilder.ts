@@ -17,27 +17,14 @@
  * limitations under the License.
  */
 
-import { CallbackBucket } from "../../classes/CallbackBucket";
-import { PrimitiveField } from "../../types";
+export { Query } from "./statements/Query";
+export { Create } from "./statements/Create";
+export { Merge } from "./statements/Merge";
+export { Apoc } from "./statements/Apoc";
+export { Call } from "./statements/Call";
 
-export const addCallbackAndSetParam = (
-    field: PrimitiveField,
-    varName: string,
-    parent: any,
-    callbackBucket: CallbackBucket,
-    strs: string[]
-) => {
-    if (!field.callback) {
-        return;
-    }
+export { Node, NamedNode } from "./references/Node";
+export { Param, RawParam } from "./references/Param";
+export { Relationship } from "./references/Relationship";
 
-    const paramName = `${varName}_${field.fieldName}_${field.callback?.name}`;
-
-    callbackBucket.addCallback({
-        functionName: field.callback?.name,
-        paramName,
-        parent,
-    });
-
-    strs.push(`SET ${varName}.${field.dbPropertyName} = $callbacks.${paramName}`);
-};
+export { CypherResult } from "./types";
