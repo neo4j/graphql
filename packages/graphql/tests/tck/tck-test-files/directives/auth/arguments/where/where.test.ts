@@ -458,7 +458,8 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"this_update_name\\": \\"Bob\\"
+                \\"this_update_name\\": \\"Bob\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -490,7 +491,8 @@ describe("Cypher Auth Where", () => {
             "{
                 \\"this_name\\": \\"bob\\",
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"this_update_name\\": \\"Bob\\"
+                \\"this_update_name\\": \\"Bob\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -568,7 +570,8 @@ describe("Cypher Auth Where", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -710,7 +713,8 @@ describe("Cypher Auth Where", () => {
                 \\"this0_id\\": \\"123\\",
                 \\"this0_name\\": \\"Bob\\",
                 \\"this0_password\\": \\"password\\",
-                \\"this0_posts_connect0_node_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this0_posts_connect0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -770,7 +774,8 @@ describe("Cypher Auth Where", () => {
                 \\"this0_name\\": \\"Bob\\",
                 \\"this0_password\\": \\"password\\",
                 \\"this0_posts_connect0_node_id\\": \\"post-id\\",
-                \\"this0_posts_connect0_node_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this0_posts_connect0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -814,7 +819,8 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"this_posts0_connect0_node_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this_posts0_connect0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -859,7 +865,8 @@ describe("Cypher Auth Where", () => {
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
                 \\"this_posts0_connect0_node_id\\": \\"new-id\\",
-                \\"this_posts0_connect0_node_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this_posts0_connect0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -903,7 +910,8 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"this_connect_posts0_node_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this_connect_posts0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -948,7 +956,8 @@ describe("Cypher Auth Where", () => {
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
                 \\"this_connect_posts0_node_id\\": \\"some-id\\",
-                \\"this_connect_posts0_node_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this_connect_posts0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -990,7 +999,8 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"this_posts0_disconnect0_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this_posts0_disconnect0_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -1051,7 +1061,8 @@ describe("Cypher Auth Where", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -1104,7 +1115,8 @@ describe("Cypher Auth Where", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -1161,7 +1173,8 @@ describe("Cypher Auth Where", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

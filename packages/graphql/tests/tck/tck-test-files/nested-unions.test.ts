@@ -136,7 +136,8 @@ describe("Nested Unions", () => {
             "{
                 \\"this_title\\": \\"Movie\\",
                 \\"this_connect_actors_LeadActor0_node_name\\": \\"Actor\\",
-                \\"this_connect_actors_LeadActor0_node_actedIn_Series0_node_name\\": \\"Series\\"
+                \\"this_connect_actors_LeadActor0_node_actedIn_Series0_node_name\\": \\"Series\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -235,7 +236,8 @@ describe("Nested Unions", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

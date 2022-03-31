@@ -23,7 +23,7 @@ import { addResolversToSchema, IExecutableSchemaDefinition, makeExecutableSchema
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import { forEachField, IResolvers } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
-import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins } from "../types";
+import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins, Neo4jGraphQLCallbacks } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
@@ -47,6 +47,7 @@ export interface Neo4jGraphQLConfig {
     enableRegex?: boolean;
     skipValidateTypeDefs?: boolean;
     queryOptions?: CypherQueryOptions;
+    callbacks?: Neo4jGraphQLCallbacks;
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
@@ -172,6 +173,7 @@ class Neo4jGraphQL {
                 enableRegex: this.config?.enableRegex,
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
+                callbacks: this.config.callbacks,
             });
 
             this._nodes = nodes;

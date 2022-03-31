@@ -93,7 +93,8 @@ describe("Cypher Auth Allow", () => {
             "{
                 \\"this0_id\\": \\"user-id\\",
                 \\"this0_name\\": \\"bob\\",
-                \\"this0_auth_bind0_id\\": \\"id-01\\"
+                \\"this0_auth_bind0_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -167,7 +168,8 @@ describe("Cypher Auth Allow", () => {
                 \\"this0_posts0_node_creator0_node_id\\": \\"some-user-id\\",
                 \\"this0_posts0_node_creator0_node_auth_bind0_id\\": \\"id-01\\",
                 \\"this0_posts0_node_auth_bind0_creator_id\\": \\"id-01\\",
-                \\"this0_auth_bind0_id\\": \\"id-01\\"
+                \\"this0_auth_bind0_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -201,7 +203,8 @@ describe("Cypher Auth Allow", () => {
             "{
                 \\"this_id\\": \\"id-01\\",
                 \\"this_update_id\\": \\"not bound\\",
-                \\"this_auth_bind0_id\\": \\"id-01\\"
+                \\"this_auth_bind0_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -305,7 +308,8 @@ describe("Cypher Auth Allow", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -359,7 +363,8 @@ describe("Cypher Auth Allow", () => {
                 \\"this_id\\": \\"post-id\\",
                 \\"this_connect_creator0_node_id\\": \\"user-id\\",
                 \\"this_connect_creator0_nodePost0_bind_auth_bind0_creator_id\\": \\"id-01\\",
-                \\"this_connect_creator0_nodeUser1_bind_auth_bind0_id\\": \\"id-01\\"
+                \\"this_connect_creator0_nodeUser1_bind_auth_bind0_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -423,7 +428,8 @@ describe("Cypher Auth Allow", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

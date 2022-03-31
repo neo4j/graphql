@@ -79,9 +79,10 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_connect_targets0_node_id\\": \\"1\\",
-                \\"thisSource1_allow_auth_allow0_id\\": \\"1\\"
+                \\"thisSource1_allow_auth_allow0_id\\": \\"1\\",
+                \\"resolvedCallbacks\\": {}
             }"
-            `);
+        `);
     });
 
     test("Auth DISCONNECT rules checked against correct property", async () => {
@@ -151,7 +152,8 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
