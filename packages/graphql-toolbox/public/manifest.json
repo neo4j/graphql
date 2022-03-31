@@ -1,0 +1,19 @@
+{
+    "name": "@neo4j/graphql-toolbox",
+    "description": "Developer UI For Neo4j GraphQL",
+    "icons": [
+        {
+            "src": "favicon.svg",
+            "type": "svg"
+        }
+    ],
+    "homepage": "http://neo4j.com",
+    "pluginDependencies": [
+        "org.neo4j.procedure/apoc"
+    ],
+    "permissions": [
+        "backgroundProcess",
+        "allGraphs",
+        "activeGraph"
+    ]
+}
