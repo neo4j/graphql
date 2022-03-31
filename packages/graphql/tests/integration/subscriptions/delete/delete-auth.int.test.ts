@@ -75,7 +75,7 @@ describe("Subscriptions delete", () => {
                     secret: "secret",
                 }),
                 subscriptions: plugin,
-            } as any,
+            },
         });
 
         try {

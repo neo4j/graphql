@@ -115,7 +115,8 @@ describe("Relationship Properties Connect Cypher", () => {
                 \\"this0_actors_connect0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -187,7 +188,8 @@ describe("Relationship Properties Connect Cypher", () => {
                 \\"this0_actors_connect0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -247,7 +249,8 @@ describe("Relationship Properties Connect Cypher", () => {
                 \\"this_connect_actors0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -312,7 +315,8 @@ describe("Relationship Properties Connect Cypher", () => {
                 \\"this_connect_actors0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

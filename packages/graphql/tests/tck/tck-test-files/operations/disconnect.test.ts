@@ -269,7 +269,8 @@ describe("Cypher Disconnect", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

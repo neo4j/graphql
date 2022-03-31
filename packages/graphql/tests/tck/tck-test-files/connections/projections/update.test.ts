@@ -96,7 +96,8 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"this_title\\": \\"Forrest Gump\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

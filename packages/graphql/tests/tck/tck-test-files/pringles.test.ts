@@ -237,7 +237,8 @@ describe("Cypher Create Pringles", () => {
                 \\"this0_photos2_node_id\\": \\"107\\",
                 \\"this0_photos2_node_description\\": \\"Red photo\\",
                 \\"this0_photos2_node_url\\": \\"r.png\\",
-                \\"this0_photos2_node_color_connect0_node_id\\": \\"100\\"
+                \\"this0_photos2_node_color_connect0_node_id\\": \\"100\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -367,7 +368,8 @@ describe("Cypher Create Pringles", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

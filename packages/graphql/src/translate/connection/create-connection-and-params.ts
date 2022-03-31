@@ -32,10 +32,9 @@ import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
-import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
-import { CypherStatement } from "../types";
 import { asArray, isString, removeDuplicates } from "../../utils/utils";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";
+import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 
 function createConnectionAndParams({
     resolveTree,
@@ -51,7 +50,7 @@ function createConnectionAndParams({
     nodeVariable: string;
     parameterPrefix?: string;
     withVars?: string[];
-}): CypherStatement {
+}): [string, Record<string, any>] {
     let globalParams = {};
     let nestedConnectionFieldParams: any;
 
@@ -223,22 +222,6 @@ function createConnectionAndParams({
                 unionInterfaceSubquery.push(`WITH ${nodeVariable}`);
                 unionInterfaceSubquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
-                const allowAndParams = createAuthAndParams({
-                    operations: "READ",
-                    entity: n,
-                    context,
-                    allow: {
-                        parentNode: n,
-                        varName: relatedNodeVariable,
-                    },
-                });
-                if (allowAndParams[0]) {
-                    globalParams = { ...globalParams, ...allowAndParams[1] };
-                    unionInterfaceSubquery.push(
-                        `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-                    );
-                }
-
                 const whereStrs: string[] = [];
                 const unionInterfaceWhere = field.relationship.union ? (whereInput || {})[n.name] : whereInput || {};
 
@@ -256,9 +239,7 @@ function createConnectionAndParams({
                     });
                     const [whereClause] = where;
                     if (whereClause) {
-                        if (whereClause) {
-                            whereStrs.push(whereClause);
-                        }
+                        whereStrs.push(whereClause);
                     }
                 }
 
@@ -275,6 +256,23 @@ function createConnectionAndParams({
 
                 if (whereStrs.length) {
                     unionInterfaceSubquery.push(`WHERE ${whereStrs.join(" AND ")}`);
+                }
+
+                const allowAndParams = createAuthAndParams({
+                    operations: "READ",
+                    entity: n,
+                    context,
+                    allow: {
+                        parentNode: n,
+                        varName: relatedNodeVariable,
+                    },
+                });
+
+                if (allowAndParams[0]) {
+                    globalParams = { ...globalParams, ...allowAndParams[1] };
+                    unionInterfaceSubquery.push(
+                        `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                    );
                 }
 
                 if (nestedSubqueries.length) {

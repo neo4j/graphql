@@ -85,7 +85,7 @@ query {
 === Relationship filters
 `where` filters for relationship queries now explicitly state `ALL`, `NONE`, `SINGLE`, and `SOME` as part of filter name.
 
-Queries using old relationship filters, will now need to use `{relationship}_SOME`. For example:
+Queries using old relationship filters, will now need to use `\{relationship\}_SOME`. For example:
 
 [source, graphql, indent=0]
 ----

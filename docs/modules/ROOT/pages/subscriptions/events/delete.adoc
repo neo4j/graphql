@@ -1,0 +1,54 @@
+[[delete]]
+= Delete Subscriptions
+
+WARNING: Subscriptions are only available as a beta its API may change in the future. It is not recommended to use subscriptions in production environments.
+
+Subscriptions to `DELETE` events will trigger on deleted nodes.
+
+NOTE: Only deleted nodes will trigger this event, deleted relationships will **not** trigger any event.
+
+== `DELETE` event
+A subscription to a type can be made with the top-level subscription `\[type\]Deleted`. The subscription will contain the following fields:
+
+* `event`: The event triggering this subscription, in this case it will always be `"DELETE"`.
+* `deleted\[type\]`: The top-level properties of the deleted node, these will be the properties right before the node was deleted. Relationships are not available.
+
+=== Example
+Considering the following type definitions:
+```graphql
+type Movie {
+    title: String
+    genre: String
+}
+```
+
+A subscription to any deleted `Movie` would look like:
+```graphql
+subscription {
+    movieDeleted {
+        deletedMovie {
+            title
+        }
+        event
+    }
+}
+```
+
+== Using `where`
+Basic filtering of events can be done with the `where` parameter. This lets you filter on top-level properties of the deleted nodes.
+Only events matching these properties and type will be returned to this subscription.
+
+=== Example
+Assuming the same type definitions as before, we can filter our movies by their genre:
+
+```graphql
+movieCreated(where: {genre: "Drama"}) {
+    createdMovie {
+        title
+    }
+}
+```
+
+This way, only deleted movies with the genre `"Drama"` will trigger events to this subscription.
+
+NOTE: Where will only filter by existing properties right before deletion.
