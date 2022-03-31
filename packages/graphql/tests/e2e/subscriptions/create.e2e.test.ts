@@ -48,7 +48,7 @@ describe("Create Subscription", () => {
             driver,
             plugins: {
                 subscriptions: new TestSubscriptionsPlugin(),
-            } as any,
+            },
         });
 
         server = new ApolloTestServer(neoSchema);
@@ -71,6 +71,7 @@ describe("Create Subscription", () => {
                                     ${typeMovie.operations.subscribe.payload.created} {
                                         title
                                     }
+                                    event
                                 }
                             }
                             `);
@@ -82,11 +83,13 @@ describe("Create Subscription", () => {
             {
                 [typeMovie.operations.subscribe.created]: {
                     [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                    event: "CREATE",
                 },
             },
             {
                 [typeMovie.operations.subscribe.created]: {
                     [typeMovie.fieldNames.subscriptions.created]: { title: "movie2" },
+                    event: "CREATE",
                 },
             },
         ]);

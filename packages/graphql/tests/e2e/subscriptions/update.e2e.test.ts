@@ -53,7 +53,7 @@ describe("Update Subscriptions", () => {
             driver,
             plugins: {
                 subscriptions: new TestSubscriptionsPlugin(),
-            } as any,
+            },
         });
 
         server = new ApolloTestServer(neoSchema);
@@ -80,6 +80,10 @@ describe("Update Subscriptions", () => {
                     ${typeMovie.fieldNames.subscriptions.updated} {
                         title
                     }
+                    previousState {
+                        title
+                    }
+                    event
                 }
             }
         `);
@@ -94,11 +98,15 @@ describe("Update Subscriptions", () => {
             {
                 [typeMovie.operations.subscribe.updated]: {
                     [typeMovie.fieldNames.subscriptions.updated]: { title: "movie3" },
+                    previousState: { title: "movie1" },
+                    event: "UPDATE",
                 },
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
                     [typeMovie.fieldNames.subscriptions.updated]: { title: "movie4" },
+                    previousState: { title: "movie2" },
+                    event: "UPDATE",
                 },
             },
         ]);
@@ -165,4 +173,31 @@ describe("Update Subscriptions", () => {
             .expect(200);
         return result;
     }
+
+    test("update subscription with same fields after update won't be triggered", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated} {
+                    ${typeMovie.fieldNames.subscriptions.updated} {
+                        title
+                    }
+                    event
+                }
+            }
+        `);
+
+        await createMovie("movie10");
+
+        await updateMovie("movie10", "movie20");
+        await updateMovie("movie20", "movie20");
+
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.updated]: {
+                    [typeMovie.fieldNames.subscriptions.updated]: { title: "movie20" },
+                    event: "UPDATE",
+                },
+            },
+        ]);
+    });
 });

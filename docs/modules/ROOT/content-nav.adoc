@@ -19,6 +19,12 @@
 *** xref:mutations/create.adoc[]
 *** xref:mutations/update.adoc[]
 *** xref:mutations/delete.adoc[]
+** xref:subscriptions/index.adoc[]
+*** xref:subscriptions/getting-started.adoc[Getting Started]
+*** Events
+**** xref:subscriptions/events/create.adoc[Create]
+**** xref:subscriptions/events/update.adoc[Update]
+**** xref:subscriptions/events/delete.adoc[Delete]
 ** xref:filtering.adoc[]
 ** xref:sorting.adoc[]
 ** xref:pagination/index.adoc[]

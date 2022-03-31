@@ -48,7 +48,7 @@ describe("Delete Subscription", () => {
             driver,
             plugins: {
                 subscriptions: new TestSubscriptionsPlugin(),
-            } as any,
+            },
         });
 
         server = new ApolloTestServer(neoSchema);
@@ -71,6 +71,7 @@ describe("Delete Subscription", () => {
                     ${typeMovie.fieldNames.subscriptions.deleted} {
                         title
                     }
+                    event
                 }
             }
         `);
@@ -85,11 +86,13 @@ describe("Delete Subscription", () => {
             {
                 [typeMovie.operations.subscribe.deleted]: {
                     [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie1" },
+                    event: "DELETE",
                 },
             },
             {
                 [typeMovie.operations.subscribe.deleted]: {
                     [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie2" },
+                    event: "DELETE",
                 },
             },
         ]);
