@@ -139,7 +139,8 @@ describe("Label in Node directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"Titanic\\"
+                \\"this0_title\\": \\"Titanic\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

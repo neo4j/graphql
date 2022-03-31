@@ -132,7 +132,8 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                 \\"this_isInPublication_iri_IN\\": [
                     \\"new-f\\",
                     \\"new-e\\"
-                ]
+                ],
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
