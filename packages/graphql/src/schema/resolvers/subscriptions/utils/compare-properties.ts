@@ -17,17 +17,12 @@
  * limitations under the License.
  */
 
-import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
-import { compareProperties } from "./utils/compare-properties";
-
-export function subscriptionWhere(where: Record<string, any> | undefined, event: SubscriptionsEvent): boolean {
-    if (!where) {
-        return true;
+/** Returns true if all properties in obj1 exists in obj2, false otherwise */
+export function compareProperties<T>(obj1: Record<string, T>, obj2: Record<string, T>): boolean {
+    for (const [k, value] of Object.entries(obj1)) {
+        if (obj2[k] !== value) {
+            return false;
+        }
     }
-
-    if (event.event === "create") {
-        return compareProperties(where, event.properties.new);
-    }
-
-    return compareProperties(where, event.properties.old);
+    return true;
 }

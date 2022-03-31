@@ -27,6 +27,7 @@ This documentation covers the following topics:
 - xref::type-definitions/index.adoc[Type Definitions] - Define your nodes and relationships using type definitions as documented here.
 - xref::queries.adoc[Queries] - GraphQL Queries allow you to read data in your Neo4j database.
 - xref::mutations/index.adoc[Mutations] - GraphQL Mutations allow you to change data in your Neo4j database.
+- xref::subscriptions/index.adoc[Subscriptions] - GraphQL Subscriptions for real-time data updates.
 - xref::filtering.adoc[Filtering] - This chapter covers how to filter your data in Queries and Mutations.
 - xref::sorting.adoc[Sorting] - This chapter covers how to sort the data being returned.
 - xref::pagination/index.adoc[Pagination] - This chapter covers the pagination options offered by the Neo4j GraphQL Library.
