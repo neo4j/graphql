@@ -1,0 +1,12 @@
+query AggregateByLongest {
+    movies {
+        title
+        actorsAggregate {
+            node {
+                name {
+                    longest
+                }
+            }
+        }
+    }
+}
