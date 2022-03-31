@@ -97,6 +97,11 @@ export type RootTypeFieldNames = {
     aggregate: string;
 };
 
+export type AggregateTypeNames = {
+    selection: string;
+    input: string;
+};
+
 export type MutationResponseTypeNames = {
     create: string;
     update: string;
@@ -199,6 +204,13 @@ class Node extends GraphElement {
             update: `update${pascalCasePlural}`,
             delete: `delete${pascalCasePlural}`,
             aggregate: `${this.plural}Aggregate`,
+        };
+    }
+
+    public get aggregateTypeNames(): AggregateTypeNames {
+        return {
+            selection: `${this.name}AggregateSelection`,
+            input: `${this.name}AggregateSelectionInput`,
         };
     }
 

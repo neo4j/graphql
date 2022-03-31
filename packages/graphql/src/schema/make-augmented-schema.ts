@@ -796,7 +796,7 @@ function makeAugmentedSchema(
         };
 
         composer.createObjectTC({
-            name: `${node.name}AggregateSelection`,
+            name: node.aggregateTypeNames.selection,
             fields: {
                 count: countField,
                 ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
