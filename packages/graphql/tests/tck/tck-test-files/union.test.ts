@@ -132,7 +132,7 @@ describe("Cypher Union", () => {
             "{
                 \\"this0_title\\": \\"some movie\\",
                 \\"this0_search_Genre0_node_name\\": \\"some genre\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -164,7 +164,7 @@ describe("Cypher Union", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_create_search_Genre0_node_name\\": \\"some genre\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -218,7 +218,7 @@ describe("Cypher Union", () => {
             "{
                 \\"this0_title\\": \\"some movie\\",
                 \\"this0_search_Genre_connect0_node_name\\": \\"some genre\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -296,7 +296,7 @@ describe("Cypher Union", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -360,7 +360,7 @@ describe("Cypher Union", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -420,7 +420,7 @@ describe("Cypher Union", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -466,7 +466,7 @@ describe("Cypher Union", () => {
             "{
                 \\"this_title\\": \\"some movie\\",
                 \\"this_connect_search_Genre0_node_name\\": \\"some genre\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -521,7 +521,7 @@ describe("Cypher Union", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

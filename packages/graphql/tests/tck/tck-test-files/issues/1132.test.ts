@@ -80,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             "{
                 \\"this_connect_targets0_node_id\\": \\"1\\",
                 \\"thisSource1_allow_auth_allow0_id\\": \\"1\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -153,7 +153,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

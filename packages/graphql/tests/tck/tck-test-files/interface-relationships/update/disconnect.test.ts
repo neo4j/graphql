@@ -118,7 +118,7 @@ describe("Interface Relationships - Update disconnect", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -217,7 +217,7 @@ describe("Interface Relationships - Update disconnect", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -312,7 +312,7 @@ describe("Interface Relationships - Update disconnect", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -429,7 +429,7 @@ describe("Interface Relationships - Update disconnect", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

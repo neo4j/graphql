@@ -152,7 +152,7 @@ describe("Node directive with additionalLabels", () => {
                 \\"this0_actors0_node_name\\": \\"actor 1\\",
                 \\"this1_id\\": \\"2\\",
                 \\"this1_actors0_node_name\\": \\"actor 2\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -211,7 +211,7 @@ describe("Node directive with additionalLabels", () => {
             "{
                 \\"this_id\\": \\"1\\",
                 \\"this_update_id\\": \\"2\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

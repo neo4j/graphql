@@ -116,7 +116,7 @@ describe("Interface Relationships - Update connect", () => {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -212,7 +212,7 @@ describe("Interface Relationships - Update connect", () => {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -299,7 +299,7 @@ describe("Interface Relationships - Update connect", () => {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -410,7 +410,7 @@ describe("Interface Relationships - Update connect", () => {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

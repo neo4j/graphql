@@ -142,7 +142,7 @@ describe("Cypher Time", () => {
                     \\"nanosecond\\": 555000000,
                     \\"timeZoneOffsetSeconds\\": -3600
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -179,7 +179,7 @@ describe("Cypher Time", () => {
                     \\"nanosecond\\": 845512000,
                     \\"timeZoneOffsetSeconds\\": 23400
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -78,7 +78,7 @@ describe("#288", () => {
             "{
                 \\"this0_USERID\\": \\"userid\\",
                 \\"this0_COMPANYID\\": \\"companyid\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -111,7 +111,7 @@ describe("#288", () => {
             "{
                 \\"this_USERID\\": \\"userid\\",
                 \\"this_update_COMPANYID\\": \\"companyid2\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -104,7 +104,7 @@ describe("connectOrCreate", () => {
                     \\"this0_title\\": \\"Cool Movie\\",
                     \\"this0_genres_connectOrCreate_param0\\": \\"Horror\\",
                     \\"this0_genres_connectOrCreate_param1\\": \\"Horror\\",
-                    \\"callbacks\\": {},
+                    \\"resolvedCallbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -157,7 +157,7 @@ describe("connectOrCreate", () => {
                     \\"this0_title\\": \\"Cool Movie\\",
                     \\"this0_genres_connectOrCreate_param0\\": \\"Horror\\",
                     \\"this0_genres_connectOrCreate_param1\\": \\"Horror\\",
-                    \\"callbacks\\": {},
+                    \\"resolvedCallbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -210,7 +210,7 @@ describe("connectOrCreate", () => {
                     \\"this0_title\\": \\"Cool Movie\\",
                     \\"this0_genres_connectOrCreate_param0\\": \\"Horror\\",
                     \\"this0_genres_connectOrCreate_param1\\": \\"Horror\\",
-                    \\"callbacks\\": {},
+                    \\"resolvedCallbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -262,7 +262,7 @@ describe("connectOrCreate", () => {
                     \\"this0_title\\": \\"Cool Movie\\",
                     \\"this0_genres_connectOrCreate_param0\\": \\"Horror\\",
                     \\"this0_genres_connectOrCreate_param1\\": \\"Horror\\",
-                    \\"callbacks\\": {}
+                    \\"resolvedCallbacks\\": {}
                 }"
             `);
         });
@@ -325,7 +325,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_genres0_connectOrCreate_param0\\": \\"Horror\\",
                     \\"this_genres0_connectOrCreate_param1\\": \\"Horror\\",
-                    \\"callbacks\\": {},
+                    \\"resolvedCallbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -374,7 +374,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_genres0_connectOrCreate_param0\\": \\"Horror\\",
                     \\"this_genres0_connectOrCreate_param1\\": \\"Horror\\",
-                    \\"callbacks\\": {},
+                    \\"resolvedCallbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -423,7 +423,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_genres0_connectOrCreate_param0\\": \\"Horror\\",
                     \\"this_genres0_connectOrCreate_param1\\": \\"Horror\\",
-                    \\"callbacks\\": {},
+                    \\"resolvedCallbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -471,7 +471,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_genres0_connectOrCreate_param0\\": \\"Horror\\",
                     \\"this_genres0_connectOrCreate_param1\\": \\"Horror\\",
-                    \\"callbacks\\": {}
+                    \\"resolvedCallbacks\\": {}
                 }"
             `);
         });
@@ -530,7 +530,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_connectOrCreate_genres_param0\\": \\"Horror\\",
                     \\"this_connectOrCreate_genres_param1\\": \\"Horror\\",
-                    \\"callbacks\\": {},
+                    \\"resolvedCallbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -579,7 +579,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_connectOrCreate_genres_param0\\": \\"Horror\\",
                     \\"this_connectOrCreate_genres_param1\\": \\"Horror\\",
-                    \\"callbacks\\": {},
+                    \\"resolvedCallbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -628,7 +628,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_connectOrCreate_genres_param0\\": \\"Horror\\",
                     \\"this_connectOrCreate_genres_param1\\": \\"Horror\\",
-                    \\"callbacks\\": {},
+                    \\"resolvedCallbacks\\": {},
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],
@@ -676,7 +676,7 @@ describe("connectOrCreate", () => {
                     \\"this_update_title\\": \\"Cool Movie\\",
                     \\"this_connectOrCreate_genres_param0\\": \\"Horror\\",
                     \\"this_connectOrCreate_genres_param1\\": \\"Horror\\",
-                    \\"callbacks\\": {}
+                    \\"resolvedCallbacks\\": {}
                 }"
             `);
         });
@@ -734,7 +734,7 @@ describe("connectOrCreate", () => {
                     \\"this_connectOrCreate_genres0Genre_allow_auth_allow0_name\\": \\"test\\",
                     \\"this_connectOrCreate_genres_param1\\": \\"Horror\\",
                     \\"this_connectOrCreate_genres_param2\\": \\"Horror\\",
-                    \\"callbacks\\": {}
+                    \\"resolvedCallbacks\\": {}
                 }"
             `);
         });

@@ -429,16 +429,16 @@ export default async function translateUpdate({
         .filter(Boolean)
         .join("\n");
 
-    let callbackParams = {};
+    let resolvedCallbacks = {};
 
-    ({ cypher, params: callbackParams } = await callbackBucket.resolveCallbacksAndFilterCypher({ cypher }));
+    ({ cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({ cypher }));
 
     return [
         cypher,
         {
             ...cypherParams,
             ...(Object.keys(updateArgs).length ? { [resolveTree.name]: { args: updateArgs } } : {}),
-            callbacks: callbackParams,
+            resolvedCallbacks,
         },
     ];
 }

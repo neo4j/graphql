@@ -282,7 +282,7 @@ function createUpdateAndParams({
 
                             const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
-                            }: $${parameterPrefix?.split(".")[0]}, callbacks: $callbacks}`;
+                            }: $${parameterPrefix?.split(".")[0]}, resolvedCallbacks: $resolvedCallbacks}`;
 
                             updateStrs.push(`", "", ${apocArgs})`);
                             updateStrs.push(`YIELD value AS ${relationshipVariable}_${key}${index}_edge`);

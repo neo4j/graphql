@@ -197,7 +197,7 @@ describe("Cypher alias directive", () => {
                     \\"low\\": 120,
                     \\"high\\": 0
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

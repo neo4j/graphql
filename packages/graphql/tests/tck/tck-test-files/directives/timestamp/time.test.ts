@@ -82,7 +82,7 @@ describe("Cypher TimeStamps On Time Fields", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"123\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -116,7 +116,7 @@ describe("Cypher TimeStamps On Time Fields", () => {
             "{
                 \\"this_update_id\\": \\"123\\",
                 \\"this_update_name\\": \\"dan\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

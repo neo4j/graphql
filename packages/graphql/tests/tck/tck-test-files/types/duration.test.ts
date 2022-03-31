@@ -157,7 +157,7 @@ describe("Cypher Duration", () => {
                         \\"high\\": 0
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -199,7 +199,7 @@ describe("Cypher Duration", () => {
                         \\"high\\": 0
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

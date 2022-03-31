@@ -229,9 +229,9 @@ export default async function translateCreate({
         .filter(Boolean)
         .join("\n");
 
-    let callbackParams = {};
+    let resolvedCallbacks = {};
 
-    ({ cypher, params: callbackParams } = await callbackBucket.resolveCallbacksAndFilterCypher({ cypher }));
+    ({ cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({ cypher }));
 
     return [
         cypher,
@@ -240,7 +240,7 @@ export default async function translateCreate({
             ...replacedProjectionParams,
             ...replacedConnectionParams,
             ...replacedInterfaceParams,
-            callbacks: callbackParams,
+            resolvedCallbacks,
         },
     ];
 }

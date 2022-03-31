@@ -116,7 +116,7 @@ describe("Create or Connect", () => {
                     },
                     \\"this0_movies_connectOrCreate_param1\\": \\"The Terminal\\",
                     \\"this0_movies_connectOrCreate_param2\\": \\"The Terminal\\",
-                    \\"callbacks\\": {}
+                    \\"resolvedCallbacks\\": {}
                 }"
             `);
         });
@@ -176,7 +176,7 @@ describe("Create or Connect", () => {
                     },
                     \\"this_movies0_connectOrCreate_param1\\": \\"The Terminal\\",
                     \\"this_movies0_connectOrCreate_param2\\": \\"The Terminal\\",
-                    \\"callbacks\\": {}
+                    \\"resolvedCallbacks\\": {}
                 }"
             `);
         });
@@ -277,7 +277,7 @@ describe("Create or Connect", () => {
                     },
                     \\"this0_movies_connectOrCreate_param1\\": \\"The Terminal\\",
                     \\"this0_movies_connectOrCreate_param2\\": \\"The Terminal\\",
-                    \\"callbacks\\": {}
+                    \\"resolvedCallbacks\\": {}
                 }"
             `);
         });
@@ -341,7 +341,7 @@ describe("Create or Connect", () => {
                     },
                     \\"this0_movies_connectOrCreate_param1\\": \\"movieId\\",
                     \\"this0_movies_connectOrCreate_param2\\": \\"The Terminal\\",
-                    \\"callbacks\\": {}
+                    \\"resolvedCallbacks\\": {}
                 }"
             `);
         });
@@ -403,7 +403,7 @@ describe("Create or Connect", () => {
                     },
                     \\"this_movies0_connectOrCreate_param1\\": \\"The Terminal\\",
                     \\"this_movies0_connectOrCreate_param2\\": \\"The Terminal\\",
-                    \\"callbacks\\": {}
+                    \\"resolvedCallbacks\\": {}
                 }"
             `);
         });
@@ -464,7 +464,7 @@ describe("Create or Connect", () => {
                     },
                     \\"this_movies0_connectOrCreate_param1\\": \\"movieId\\",
                     \\"this_movies0_connectOrCreate_param2\\": \\"The Terminal\\",
-                    \\"callbacks\\": {}
+                    \\"resolvedCallbacks\\": {}
                 }"
             `);
         });
@@ -566,7 +566,7 @@ describe("Create or Connect", () => {
                     },
                     \\"this0_movies_connectOrCreate_param1\\": \\"The Terminal\\",
                     \\"this0_movies_connectOrCreate_param2\\": \\"The Terminal\\",
-                    \\"callbacks\\": {}
+                    \\"resolvedCallbacks\\": {}
                 }"
             `);
         });
@@ -628,7 +628,7 @@ describe("Create or Connect", () => {
                     },
                     \\"this_movies0_connectOrCreate_param1\\": \\"The Terminal\\",
                     \\"this_movies0_connectOrCreate_param2\\": \\"The Terminal\\",
-                    \\"callbacks\\": {}
+                    \\"resolvedCallbacks\\": {}
                 }"
             `);
         });

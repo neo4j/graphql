@@ -54,7 +54,7 @@ export class CallbackBucket {
                 if (param === undefined) {
                     cypher = cypher
                         .split("\n")
-                        .filter((line) => !line.includes(`$callbacks.${cb.paramName}`))
+                        .filter((line) => !line.includes(`$resolvedCallbacks.${cb.paramName}`))
                         .join("\n");
                 }
 

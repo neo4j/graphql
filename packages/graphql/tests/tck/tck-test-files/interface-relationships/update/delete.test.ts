@@ -110,7 +110,7 @@ describe("Interface Relationships - Update delete", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -191,7 +191,7 @@ describe("Interface Relationships - Update delete", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -273,7 +273,7 @@ describe("Interface Relationships - Update delete", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -372,7 +372,7 @@ describe("Interface Relationships - Update delete", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

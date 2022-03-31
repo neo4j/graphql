@@ -116,7 +116,7 @@ describe("Relationship Properties Connect Cypher", () => {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -189,7 +189,7 @@ describe("Relationship Properties Connect Cypher", () => {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -250,7 +250,7 @@ describe("Relationship Properties Connect Cypher", () => {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -316,7 +316,7 @@ describe("Relationship Properties Connect Cypher", () => {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -184,7 +184,7 @@ describe("#324", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -270,7 +270,7 @@ describe("Cypher Disconnect", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -120,7 +120,7 @@ describe("Interface Relationships - Update create", () => {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

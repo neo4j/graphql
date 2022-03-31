@@ -159,7 +159,7 @@ describe("Create or connect with unions", () => {
                 \\"this0_actedIn_Series_connectOrCreate_param1\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
                 \\"this0_actedIn_Series_connectOrCreate_param2\\": \\"Band of Brothers\\",
                 \\"this0_actedIn_Series_connectOrCreate_param3\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -254,7 +254,7 @@ describe("Create or connect with unions", () => {
                 \\"this_actedIn_Series0_connectOrCreate_param1\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
                 \\"this_actedIn_Series0_connectOrCreate_param2\\": \\"Band of Brothers\\",
                 \\"this_actedIn_Series0_connectOrCreate_param3\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -130,7 +130,7 @@ describe("Cypher Projection", () => {
                 \\"projection_photos_url\\": \\"url.com\\",
                 \\"projection_colors_id\\": \\"123\\",
                 \\"projection_sizes_name\\": \\"small\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

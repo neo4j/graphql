@@ -230,7 +230,7 @@ describe("Cypher Auth isAuthenticated", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
-                \\"callbacks\\": {},
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -282,7 +282,7 @@ describe("Cypher Auth isAuthenticated", () => {
             "{
                 \\"this0_id\\": \\"1\\",
                 \\"this0_password\\": \\"super-password\\",
-                \\"callbacks\\": {},
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -328,7 +328,7 @@ describe("Cypher Auth isAuthenticated", () => {
             "{
                 \\"this_id\\": \\"1\\",
                 \\"this_update_id\\": \\"id-1\\",
-                \\"callbacks\\": {},
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -374,7 +374,7 @@ describe("Cypher Auth isAuthenticated", () => {
             "{
                 \\"this_id\\": \\"1\\",
                 \\"this_update_password\\": \\"password\\",
-                \\"callbacks\\": {},
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -427,7 +427,7 @@ describe("Cypher Auth isAuthenticated", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"callbacks\\": {},
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -487,7 +487,7 @@ describe("Cypher Auth isAuthenticated", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {},
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [

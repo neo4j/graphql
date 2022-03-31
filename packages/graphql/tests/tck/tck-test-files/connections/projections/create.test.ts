@@ -100,7 +100,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_title\\": \\"Forrest Gump\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -161,7 +161,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             "{
                 \\"this0_title\\": \\"Forrest Gump\\",
                 \\"this1_title\\": \\"Toy Story\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -242,7 +242,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

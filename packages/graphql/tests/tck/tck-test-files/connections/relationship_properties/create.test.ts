@@ -117,7 +117,7 @@ describe("Relationship Properties Create Cypher", () => {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

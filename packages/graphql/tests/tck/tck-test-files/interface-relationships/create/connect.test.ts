@@ -146,7 +146,7 @@ describe("Interface Relationships - Create connect", () => {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

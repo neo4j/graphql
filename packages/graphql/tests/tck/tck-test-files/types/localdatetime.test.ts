@@ -148,7 +148,7 @@ describe("Cypher LocalDateTime", () => {
                     \\"second\\": 15,
                     \\"nanosecond\\": 555000000
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -187,7 +187,7 @@ describe("Cypher LocalDateTime", () => {
                     \\"second\\": 40,
                     \\"nanosecond\\": 845512000
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

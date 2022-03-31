@@ -133,7 +133,7 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                     \\"new-f\\",
                     \\"new-e\\"
                 ],
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

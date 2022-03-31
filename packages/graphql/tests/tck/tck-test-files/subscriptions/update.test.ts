@@ -84,7 +84,7 @@ describe("Subscriptions metadata on update", () => {
             "{
                 \\"this_id\\": \\"1\\",
                 \\"this_update_id\\": \\"2\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

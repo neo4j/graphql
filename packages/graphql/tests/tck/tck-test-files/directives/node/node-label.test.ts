@@ -165,7 +165,7 @@ describe("Label in Node directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -221,7 +221,7 @@ describe("Label in Node directive", () => {
                 \\"this0_actors0_node_name\\": \\"actor 1\\",
                 \\"this1_id\\": \\"2\\",
                 \\"this1_actors0_node_name\\": \\"actor 2\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -253,7 +253,7 @@ describe("Label in Node directive", () => {
             "{
                 \\"this_id\\": \\"1\\",
                 \\"this_update_id\\": \\"2\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -324,7 +324,7 @@ describe("Label in Node directive", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -367,7 +367,7 @@ describe("Label in Node directive", () => {
             "{
                 \\"this_id\\": \\"1\\",
                 \\"this_connect_actors0_node_name\\": \\"Daniel\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -422,7 +422,7 @@ describe("Label in Node directive", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

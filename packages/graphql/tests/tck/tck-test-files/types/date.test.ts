@@ -136,7 +136,7 @@ describe("Cypher Date", () => {
                     \\"month\\": 1,
                     \\"day\\": 1
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -171,7 +171,7 @@ describe("Cypher Date", () => {
                     \\"month\\": 1,
                     \\"day\\": 1
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -145,7 +145,7 @@ describe("Cypher Auth Allow", () => {
                 \\"this0_contentPost0_node_creator0_node_auth_bind0_id\\": \\"id-01\\",
                 \\"this0_contentPost0_node_auth_bind0_creator_id\\": \\"id-01\\",
                 \\"this0_auth_bind0_id\\": \\"id-01\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -280,7 +280,7 @@ describe("Cypher Auth Allow", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -340,7 +340,7 @@ describe("Cypher Auth Allow", () => {
                 \\"this_connect_content0_nodeUser0_bind_auth_bind0_id\\": \\"id-01\\",
                 \\"this_connect_content0_nodeComment1_bind_auth_bind0_creator_id\\": \\"id-01\\",
                 \\"this_connect_content0_nodePost1_bind_auth_bind0_creator_id\\": \\"id-01\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -413,7 +413,7 @@ describe("Cypher Auth Allow", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

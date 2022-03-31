@@ -39,5 +39,5 @@ export const addCallbackAndSetParam = (
         parent,
     });
 
-    strs.push(`SET ${varName}.${field.dbPropertyName} = $callbacks.${paramName}`);
+    strs.push(`SET ${varName}.${field.dbPropertyName} = $resolvedCallbacks.${paramName}`);
 };

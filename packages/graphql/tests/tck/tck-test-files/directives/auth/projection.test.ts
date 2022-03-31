@@ -83,7 +83,7 @@ describe("Cypher Auth Projection", () => {
                 \\"this_update_id\\": \\"new-id\\",
                 \\"this_update_id_auth_allow0_id\\": \\"super_admin\\",
                 \\"this_id_auth_allow0_id\\": \\"super_admin\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -127,7 +127,7 @@ describe("Cypher Auth Projection", () => {
                 \\"this0_id\\": \\"id-1\\",
                 \\"this1_id\\": \\"id-2\\",
                 \\"projection_id_auth_allow0_id\\": \\"super_admin\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

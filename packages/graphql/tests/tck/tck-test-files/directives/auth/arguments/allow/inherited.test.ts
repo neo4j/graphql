@@ -270,7 +270,7 @@ describe("@auth allow when inherited from interface", () => {
                 \\"this_id\\": \\"old-id\\",
                 \\"this_update_id\\": \\"new-id\\",
                 \\"this_auth_allow0_id\\": \\"old-id\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -306,7 +306,7 @@ describe("@auth allow when inherited from interface", () => {
                 \\"this_update_password\\": \\"new-password\\",
                 \\"this_update_password_auth_allow0_id\\": \\"id-01\\",
                 \\"this_auth_allow0_id\\": \\"id-01\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -383,7 +383,7 @@ describe("@auth allow when inherited from interface", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -464,7 +464,7 @@ describe("@auth allow when inherited from interface", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -606,7 +606,7 @@ describe("@auth allow when inherited from interface", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -705,7 +705,7 @@ describe("@auth allow when inherited from interface", () => {
                         }
                     }
                 },
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -752,7 +752,7 @@ describe("@auth allow when inherited from interface", () => {
                 \\"this_connect_posts0_node_id\\": \\"post-id\\",
                 \\"this_connect_posts0_nodePost0_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"thisUser1_allow_auth_allow0_id\\": \\"user-id\\",
-                \\"callbacks\\": {}
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

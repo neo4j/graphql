@@ -75,7 +75,7 @@ describe("integration/rfs/003", () => {
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
                         \\"this0_id\\": \\"movieId-1\\",
-                        \\"callbacks\\": {}
+                        \\"resolvedCallbacks\\": {}
                     }"
                 `);
             });
@@ -130,7 +130,7 @@ describe("integration/rfs/003", () => {
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
                         \\"this0_id\\": \\"movieId-1\\",
-                        \\"callbacks\\": {}
+                        \\"resolvedCallbacks\\": {}
                     }"
                 `);
             });
@@ -205,7 +205,7 @@ describe("integration/rfs/003", () => {
                         "{
                             \\"this0_id\\": \\"movieId-2\\",
                             \\"this0_director0_node_id\\": \\"directorId-2\\",
-                            \\"callbacks\\": {}
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -279,7 +279,7 @@ describe("integration/rfs/003", () => {
                         "{
                             \\"this0_id\\": \\"movieId-2\\",
                             \\"this0_director0_node_id\\": \\"directorId-2\\",
-                            \\"callbacks\\": {}
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -335,7 +335,7 @@ describe("integration/rfs/003", () => {
                         "{
                             \\"this_id\\": \\"movieId-3\\",
                             \\"this_update_id\\": \\"movieId-3\\",
-                            \\"callbacks\\": {}
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -389,7 +389,7 @@ describe("integration/rfs/003", () => {
                         "{
                             \\"this_id\\": \\"movieId-3\\",
                             \\"this_update_id\\": \\"movieId-3\\",
-                            \\"callbacks\\": {}
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -484,7 +484,7 @@ describe("integration/rfs/003", () => {
                                         }
                                     }
                                 },
-                                \\"callbacks\\": {}
+                                \\"resolvedCallbacks\\": {}
                             }"
                         `);
                     });
@@ -578,7 +578,7 @@ describe("integration/rfs/003", () => {
                                         }
                                     }
                                 },
-                                \\"callbacks\\": {}
+                                \\"resolvedCallbacks\\": {}
                             }"
                         `);
                     });
@@ -652,7 +652,7 @@ describe("integration/rfs/003", () => {
                             "{
                                 \\"this_id\\": \\"movieId-4\\",
                                 \\"this_director0_create0_node_id\\": \\"directorId-3\\",
-                                \\"callbacks\\": {}
+                                \\"resolvedCallbacks\\": {}
                             }"
                         `);
                     });
@@ -766,7 +766,7 @@ describe("integration/rfs/003", () => {
                                         }
                                     }
                                 },
-                                \\"callbacks\\": {}
+                                \\"resolvedCallbacks\\": {}
                             }"
                         `);
                     });
@@ -876,7 +876,7 @@ describe("integration/rfs/003", () => {
                                         }
                                     }
                                 },
-                                \\"callbacks\\": {}
+                                \\"resolvedCallbacks\\": {}
                             }"
                         `);
                     });
@@ -948,7 +948,7 @@ describe("integration/rfs/003", () => {
                         "{
                             \\"this0_id\\": \\"movieId-4\\",
                             \\"this0_director_connect0_node_id\\": \\"directorId-4\\",
-                            \\"callbacks\\": {}
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -1017,7 +1017,7 @@ describe("integration/rfs/003", () => {
                         "{
                             \\"this0_id\\": \\"movieId-4\\",
                             \\"this0_director_connect0_node_id\\": \\"directorId-4\\",
-                            \\"callbacks\\": {}
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -1125,7 +1125,7 @@ describe("integration/rfs/003", () => {
                                 \\"this0_id\\": \\"movieId-4\\",
                                 \\"this0_director_connect0_node_id\\": \\"directorId-4\\",
                                 \\"this0_director_connect0_node_address0_node_street\\": \\"some-street\\",
-                                \\"callbacks\\": {}
+                                \\"resolvedCallbacks\\": {}
                             }"
                         `);
                     });
@@ -1204,7 +1204,7 @@ describe("integration/rfs/003", () => {
                                     }
                                 }
                             },
-                            \\"callbacks\\": {}
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -1307,7 +1307,7 @@ describe("integration/rfs/003", () => {
                                     }
                                 }
                             },
-                            \\"callbacks\\": {}
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -1408,7 +1408,7 @@ describe("integration/rfs/003", () => {
                                     }
                                 }
                             },
-                            \\"callbacks\\": {}
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
