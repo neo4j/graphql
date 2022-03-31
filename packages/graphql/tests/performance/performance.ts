@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-import * as fs from "fs/promises";
-import * as path from "path";
 import { Driver, ProfiledPlan } from "neo4j-driver";
 import neo4j from "./utils/neo4j";
 import { setDb, cleanDb } from "./utils/setup-database";
@@ -28,7 +26,11 @@ import { DocumentNode } from "graphql";
 import { createJwtRequest } from "../utils/create-jwt-request";
 import { translateQuery } from "../tck/utils/tck-test-utils";
 import assert from "assert";
+import { collectTests } from "./utils/collect-files";
+import Debug from "debug";
+import { DEBUG_EXECUTE } from "../../src/constants";
 
+const debug = Debug(DEBUG_EXECUTE);
 let driver: Driver;
 
 const typeDefs = gql`
@@ -80,7 +82,7 @@ async function dbReset() {
 async function main() {
     try {
         await beforeAll();
-        await runTests();
+        await runTests(true);
     } finally {
         await afterAll();
     }
@@ -88,19 +90,37 @@ async function main() {
 
 main();
 
-async function runTests() {
+async function runTests(display: boolean) {
     const tests = await collectTests(__dirname);
 
-    const results: Array<[string, any]> = [];
+    const results: Array<any> = [];
     for (const test of tests) {
         const perfResult = await runPerformanceTest(gql(test.query));
-        results.push([test.name, perfResult]);
+        results.push({ name: test.name, result: perfResult, file: test.filename });
     }
 
-    console.log(results);
+    const ResetTTYColor = "\x1b[0m";
+    const FgYellowTTYColor = "\x1b[33m";
+    const FgCyanTTYColor = "\x1b[36m";
+    if (display) {
+        console.table(
+            results.reduce((acc, { name, result, file }) => {
+                const coloredFile = `${FgYellowTTYColor}${file}${ResetTTYColor}`;
+                const coloredName = name.replace(/_only$/i, `${FgCyanTTYColor}_only${ResetTTYColor}`);
+
+                acc[`${coloredFile}.${coloredName}`] = result;
+                return acc;
+            }, {})
+        );
+    }
+
+    return results;
 }
 
-async function runPerformanceTest(query: DocumentNode, expectedResultCount?: number): Promise<ProfileResult> {
+async function runPerformanceTest(
+    query: DocumentNode,
+    expectedResultCount?: number
+): Promise<ProfileResult & { time: number }> {
     const session = driver.session();
     try {
         const req = createJwtRequest("secret", {});
@@ -109,7 +129,18 @@ async function runPerformanceTest(query: DocumentNode, expectedResultCount?: num
         });
 
         const profiledQuery = wrapQueryInProfile(cypherQuery.cypher);
+        debug(
+            "%s",
+            `About to profile and execute Cypher:\nCypher:\n${cypherQuery.cypher}\nParams:\n${JSON.stringify(
+                cypherQuery.params,
+                null,
+                2
+            )}`
+        );
+
+        const t1 = new Date().getTime();
         const result = await session.run(profiledQuery, cypherQuery.params);
+        const t2 = new Date().getTime();
 
         const profiledPlan = result.summary.profile as ProfiledPlan;
         if (expectedResultCount) {
@@ -121,7 +152,8 @@ async function runPerformanceTest(query: DocumentNode, expectedResultCount?: num
         assert.strictEqual(profiledPlan.arguments.runtime, "PIPELINED");
         assert.strictEqual(profiledPlan.arguments.planner, "COST");
 
-        return aggregateProfile(profiledPlan);
+        const aggregatedProfile = aggregateProfile(profiledPlan);
+        return { ...aggregatedProfile, time: t2 - t1 };
     } finally {
         session.close();
     }
@@ -165,42 +197,4 @@ function aggregateProfile(plan: ProfiledPlan): ProfileResult {
     }, nodeResult);
 
     return result;
-}
-
-async function fromDir(startPath: string, filter: string): Promise<string[]> {
-    var files = await fs.readdir(startPath);
-    const filenames = await Promise.all(
-        files.map(async (file) => {
-            var filename = path.join(startPath, file);
-            var stat = await fs.lstat(filename);
-            if (stat.isDirectory()) {
-                return fromDir(filename, filter); //recurse
-            } else if (filename.indexOf(filter) >= 0) {
-                return [filename];
-            } else return [];
-        })
-    );
-    return filenames.flat();
-}
-
-async function collectTests(path: string): Promise<Array<{ query: string; name: string; filename: string }>> {
-    const files = await fromDir(path, ".graphql");
-
-    const result = await Promise.all(
-        files.map(async (filePath) => {
-            const fileData = await fs.readFile(filePath, "utf-8");
-            const result = fileData.split(/^query\s/gm);
-            result.shift();
-            return result.map((query: string) => {
-                const name = query.split(" {")[0];
-                return {
-                    query: `query ${query}`,
-                    name: name,
-                    filename: filePath,
-                };
-            });
-        })
-    );
-
-    return result.flat();
 }
