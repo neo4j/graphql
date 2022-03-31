@@ -108,7 +108,7 @@ export async function translateQuery(
     }
 
     return {
-        cypher: driverBuilder.runMock.calls[0][0],
-        params: driverBuilder.runMock.calls[0][1],
+        cypher: driverBuilder.runFunction.calls[0][0],
+        params: driverBuilder.runFunction.calls[0][1],
     };
 }
