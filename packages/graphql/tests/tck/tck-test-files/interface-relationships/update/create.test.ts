@@ -119,7 +119,8 @@ describe("Interface Relationships - Update create", () => {
                 \\"this_create_actedIn_Movie0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

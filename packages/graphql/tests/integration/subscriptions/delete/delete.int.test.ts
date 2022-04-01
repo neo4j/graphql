@@ -62,7 +62,7 @@ describe("Subscriptions delete", () => {
             config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
     });
 

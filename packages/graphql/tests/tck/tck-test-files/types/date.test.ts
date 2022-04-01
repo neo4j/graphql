@@ -135,7 +135,8 @@ describe("Cypher Date", () => {
                     \\"year\\": 1970,
                     \\"month\\": 1,
                     \\"day\\": 1
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -169,7 +170,8 @@ describe("Cypher Date", () => {
                     \\"year\\": 1970,
                     \\"month\\": 1,
                     \\"day\\": 1
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

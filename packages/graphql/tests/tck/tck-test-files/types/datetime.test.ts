@@ -114,7 +114,8 @@ describe("Cypher DateTime", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -153,7 +154,8 @@ describe("Cypher DateTime", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

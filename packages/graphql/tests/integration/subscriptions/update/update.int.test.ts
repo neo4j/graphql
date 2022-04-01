@@ -63,7 +63,7 @@ describe("Subscriptions update", () => {
             config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
     });
 

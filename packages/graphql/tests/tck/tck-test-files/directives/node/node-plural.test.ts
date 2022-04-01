@@ -119,7 +119,8 @@ describe("Plural in Node directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_name\\": \\"Highlander\\"
+                \\"this0_name\\": \\"Highlander\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -148,7 +149,8 @@ describe("Plural in Node directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_name\\": \\"Matrix\\"
+                \\"this_update_name\\": \\"Matrix\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -134,7 +134,8 @@ describe("Interface Relationships - Create create", () => {
                 \\"this0_actedInMovie0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

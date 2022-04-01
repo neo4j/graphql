@@ -1,0 +1,129 @@
+[[getting-started]]
+= Getting Started With Subscriptions
+
+WARNING: Subscriptions are only available as a beta its API may change in the future. It is not recommended to use subscriptions in production environments.
+
+To get started with subscriptions you need a GraphQL server with subscription capabilities.
+
+== Example using Apollo and WebSockets
+For this example, we will use link:https://www.apollographql.com/[Apollo] and link:https://github.com/enisdenjo/graphql-ws[graphql-ws].
+
+=== Setting up the server
+
+Install the following dependencies:
+```bash
+npm i --save ws graphql-ws neo4j-driver @neo4j/graphql express apollo-server-express apollo-server-core
+```
+
+The following code implements a simple apollo-express server with subscriptions. You can find more examples and documentations
+on subscriptions in link:https://www.apollographql.com/docs/apollo-server/data/subscriptions/[apollo docs]
+```javascript
+const { createServer } = require("http");
+const { EventEmitter } = require('events');
+const neo4j = require('neo4j-driver');
+const { Neo4jGraphQL } = require('@neo4j/graphql');
+const { WebSocketServer } = require("ws");
+const { useServer } = require("graphql-ws/lib/use/ws");
+const express = require('express');
+const  { ApolloServer } = require("apollo-server-express");
+const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
+
+// Handles subscription messages.
+class SubscriptionsPlugin {
+    constructor() {
+        this.events = new EventEmitter();
+    }
+
+    publish(eventMeta) {
+        this.events.emit(eventMeta.event, eventMeta);
+    }
+}
+
+const typeDefs = `
+type Movie {
+    title: String
+}
+
+type Actor {
+    name: String
+}
+`;
+
+const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "dontpanic42"));
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs: typeDefs,
+    driver,
+    plugins: {
+        subscriptions: new SubscriptionsPlugin(),
+    },
+});
+
+async function main() {
+    // Apollo server setup
+    const app = express();
+    const httpServer = createServer(app);
+    const wsServer = new WebSocketServer({
+        server: httpServer,
+        path: "/graphql",
+    });
+
+    // Neo4j schema
+    const schema = await neoSchema.getSchema();
+    const serverCleanup = useServer({
+        schema
+    }, wsServer);
+
+    const server = new ApolloServer({
+        schema,
+        plugins: [
+            ApolloServerPluginDrainHttpServer({
+                httpServer
+            }),
+            {
+                async serverWillStart() {
+                    return {
+                        async drainServer() {
+                            await serverCleanup.dispose();
+                        },
+                    };
+                },
+            },
+        ],
+    });
+    await server.start();
+    server.applyMiddleware({
+        app
+    });
+
+    const PORT = 4000;
+    httpServer.listen(PORT, () => {
+        console.log(`Server is now running on http://localhost:${PORT}/grahpql`);
+    });
+}
+
+main();
+```
+
+=== GraphQL subscriptions
+With the previous server running, we have subscriptions available for `Movie` and `Actor`. We can subscribe to new movies created with the following statement:
+```graphql
+subscription {
+    movieCreated(where: { title: "The Matrix" }) {
+        createdMovie {
+            title
+        }
+    }
+    }
+```
+
+Any new movie created with the matching title will trigger a subscription. You can try this with the following query:
+```graphql
+mutation {
+    createMovies(input: [{ title: "The Matrix" }]) {
+        movies {
+            title
+        }
+    }
+}
+```

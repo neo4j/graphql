@@ -115,7 +115,8 @@ describe("Interface Relationships - Update connect", () => {
                 \\"this_connect_actedIn0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -210,7 +211,8 @@ describe("Interface Relationships - Update connect", () => {
                 \\"this_connect_actedIn0_node_actors0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -296,7 +298,8 @@ describe("Interface Relationships - Update connect", () => {
                 \\"this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -406,7 +409,8 @@ describe("Interface Relationships - Update connect", () => {
                 \\"this_connect_actedIn0_node_actors0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

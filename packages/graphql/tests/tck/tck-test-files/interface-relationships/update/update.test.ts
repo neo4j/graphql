@@ -135,7 +135,8 @@ describe("Interface Relationships - Update update", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -236,7 +237,8 @@ describe("Interface Relationships - Update update", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -336,7 +338,8 @@ describe("Interface Relationships - Update update", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -456,7 +459,8 @@ describe("Interface Relationships - Update update", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
