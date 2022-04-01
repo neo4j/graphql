@@ -17,23 +17,25 @@
  * limitations under the License.
  */
 
-import { Driver, Session } from "neo4j-driver";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
+import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { toGlobalId } from "../../src/utils/global-ids";
 import { NodeBuilder } from "../utils/builders/node-builder";
 import { generateUniqueType } from "../utils/graphql-types";
+import { createJwtRequest } from "../utils/create-jwt-request";
 
 describe("Global node resolution", () => {
     let driver: Driver;
-    let session: Session;
+    const secret = "secret";
 
     const typeFilm = generateUniqueType("Film");
+    const typeUser = generateUniqueType("User");
 
     beforeAll(async () => {
         driver = await neo4j();
-        session = driver.session();
     });
 
     afterAll(async () => {
@@ -41,6 +43,8 @@ describe("Global node resolution", () => {
     });
 
     test("returns the correct id after create mutation", async () => {
+        const session = driver.session();
+
         const typeDefs = `type ${typeFilm.name} @node(global: true) {
             title: String! @unique
         }`;
@@ -107,6 +111,7 @@ describe("Global node resolution", () => {
         }
     });
     test("returns the correct id when queried", async () => {
+        const session = driver.session();
         const typeDefs = `type ${typeFilm.name} @node(global: true) {
             title: String! @unique
         }`;
@@ -199,7 +204,7 @@ describe("Global node resolution", () => {
         await graphql({
             schema: await neoSchema.getSchema(),
             variableValues: { input: [{ title: film.title, website: film.website }] },
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver, driverConfig: { bookmarks: [] } },
             source: `
                   mutation($input: [${typeFilm.name}CreateInput!]!) {
                     ${typeFilm.operations.create}(input: $input) {
@@ -219,7 +224,7 @@ describe("Global node resolution", () => {
         await graphql({
             schema: await neoSchema.getSchema(),
             variableValues: { input: [{ name: actor.name, hairColor: actor.hairColor }] },
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver, driverConfig: { bookmarks: [] } },
             source: `
                   mutation($input: [FilmActorCreateInput!]!) {
                     createFilmActors(input: $input) {
@@ -234,7 +239,7 @@ describe("Global node resolution", () => {
         const filmQueryResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookMarks: [session.lastBookmark()] } },
+            contextValue: { driver, driverConfig: { bookMarks: [] } },
             variableValues: { id: film.id },
         });
 
@@ -246,7 +251,7 @@ describe("Global node resolution", () => {
         const actorQueryResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookMarks: [session.lastBookmark()] } },
+            contextValue: { driver, driverConfig: { bookMarks: [] } },
             variableValues: { id: actor.id },
         });
 
@@ -255,5 +260,67 @@ describe("Global node resolution", () => {
         const actorResult = (actorQueryResult as { data: { [key: string]: any } }).data.node;
         expect(actorResult).toEqual(actor);
     });
-    test("it enforces provided auth rules", async () => {});
+    test("it should throw forbidden when incorrect allow on a top-level node query", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+          type ${typeUser.name} @node(global:true) {
+            dbId: ID! @id @alias(property: "id")
+            name: String!
+            created: [${typeFilm.name}!]! @relationship(type: "CREATED", direction: OUT)
+          }
+
+          type ${typeFilm.name} @node(global:true) {
+            title: String! @unique  
+            creator: ${typeUser.name}! @relationship(type: "CREATED", direction: IN)
+          }
+
+          extend type ${typeFilm.name} @auth(rules: [{ allow: { creator: { dbId: "$jwt.sub" } } }])
+        `;
+
+        const query = `
+          query ($id: ID!) {
+            node(id: $id) {
+              id
+              ...on ${typeFilm.name} {
+                title
+              }
+              ...on ${typeUser.name} {
+                name
+              }
+            }
+          }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
+        });
+
+        try {
+            const mutation = `CREATE (this:${typeUser.name} { dbId: randomUUID(), name: "Johnny Appleseed" })-[:CREATED]->(film:${typeFilm.name} { title: randomUUID() }) RETURN this { .dbId, film: film }`;
+            const { records } = await session.run(mutation);
+
+            const record = records[0].toObject();
+            // const dbId = record.this.dbId;
+            const filmTitle = record.this.film.properties.title;
+
+            const req = createJwtRequest(secret, { sub: "invalid" });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: { driver, req },
+                variableValues: { id: toGlobalId({ typeName: typeFilm.name, field: "title", id: filmTitle }) },
+            });
+
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+        } finally {
+            await session.close();
+        }
+    });
 });

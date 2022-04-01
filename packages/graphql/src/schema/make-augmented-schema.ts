@@ -23,7 +23,6 @@ import {
     DocumentNode,
     GraphQLID,
     GraphQLNonNull,
-    GraphQLResolveInfo,
     GraphQLScalarType,
     InterfaceTypeDefinitionNode,
     Kind,
@@ -32,11 +31,10 @@ import {
     parse,
     print,
 } from "graphql";
-import { ObjectTypeComposer, ObjectTypeComposerFieldConfigAsObjectDefinition, SchemaComposer } from "graphql-compose";
-import { nodeDefinitions } from "graphql-relay";
+import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
-import { BaseField, Context, Neo4jGraphQLCallbacks } from "../types";
+import { BaseField, Neo4jGraphQLCallbacks } from "../types";
 import {
     aggregateResolver,
     createResolver,
@@ -65,7 +63,6 @@ import {
 import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
 import { upperFirst } from "../utils/upper-first";
-import globalNodeResolver from "./resolvers/global-node";
 import { ensureNonEmptyInput } from "./ensureNonEmptyInput";
 import { getDocument } from "./get-document";
 import { getDefinitionNodes } from "./get-definition-nodes";
@@ -87,6 +84,7 @@ import { CartesianPointDistance } from "./types/input-objects/CartesianPointDist
 import getNodes from "./get-nodes";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
+import { addGlobalNodeFields } from "./create-global-nodes";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -158,23 +156,7 @@ function makeAugmentedSchema(
     // These are flags to check whether the types are used and then create them if they are
     let { pointInTypeDefs, cartesianPointInTypeDefs } = getNodesResult;
 
-    const globalNodes = nodes.filter((node) => node.isGlobalNode());
-
-    if (globalNodes.length > 0) {
-        const fetchById = (id: string, context: Context, info: GraphQLResolveInfo) => {
-            const resolver = globalNodeResolver({ nodes: globalNodes });
-            return resolver.resolve(null, { id }, context, info);
-        };
-
-        const resolveType = (obj: { [key: string]: unknown; __resolveType: string }) => obj.__resolveType;
-
-        const { nodeInterface, nodeField } = nodeDefinitions(fetchById, resolveType);
-
-        composer.createInterfaceTC(nodeInterface);
-        composer.Query.addFields({
-            node: nodeField as ObjectTypeComposerFieldConfigAsObjectDefinition<null, Context, { id: string }>,
-        });
-    }
+    const hasGlobalNodes = addGlobalNodeFields(nodes, composer);
 
     const relationshipProperties = interfaceTypes.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
     const interfaceRelationships = interfaceTypes.filter((i) => interfaceRelationshipNames.has(i.name.value));
@@ -883,7 +865,7 @@ function makeAugmentedSchema(
             }
             return res;
         }, {}),
-        ...(globalNodes.length > 0 ? { Node: { __resolveType: (root) => root.__resolveType } } : {}),
+        ...(hasGlobalNodes ? { Node: { __resolveType: (root) => root.__resolveType } } : {}),
     };
 
     unionTypes.forEach((union) => {
