@@ -140,6 +140,7 @@ function createProjectionAndParams({
     inRelationshipProjection?: boolean;
 }): [string, any, ProjectionMeta?] {
     function reducer(res: Res, field: ResolveTree): Res {
+        console.log("field", field);
         const alias = field.alias;
         let param = "";
         if (chainStr) {
@@ -207,12 +208,23 @@ function createProjectionAndParams({
             }
 
             if (referenceUnion) {
+                console.log("referenceUnion?.types", referenceUnion?.types);
+                console.log("context.nodes", context.nodes);
+                console.log("fieldFields", fieldFields);
+                console.log(
+                    "ddd",
+                    referenceUnion?.types
+                        ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
+                        ?.filter((b) => b !== undefined)
+                        ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? ""))
+                );
                 const headStrs: string[] = [];
                 const referencedNodes =
                     referenceUnion?.types
                         ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
-                        ?.filter((b) => b !== undefined)
-                        ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? "")) || [];
+                        ?.filter((b) => b !== undefined) || [];
+                // TODO: why this line?      ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? ""))
+                console.log("referencedNodes", referencedNodes);
 
                 referencedNodes.forEach((refNode) => {
                     if (refNode) {
@@ -299,6 +311,10 @@ function createProjectionAndParams({
             const apocParamsStr = `{this: ${chainStr || varName}${
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}`;
+            console.log("apocParamsStr", apocParamsStr);
+            console.log("projectionStr", projectionStr);
+            // console.log("referenceUnion", referenceUnion);
+            console.log("param", param);
             const apocStr = `${
                 !cypherField.isScalar && !cypherField.isEnum ? `${param} IN` : ""
             } apoc.cypher.runFirstColumn("${cypherField.statement}", ${apocParamsStr}, ${expectMultipleValues})${
@@ -314,6 +330,7 @@ function createProjectionAndParams({
             }
 
             if (cypherField.typeMeta.array) {
+                console.log("res", alias, apocStr);
                 res.projection.push(`${alias}: [${apocStr}]`);
 
                 return res;
