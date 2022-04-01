@@ -33,6 +33,11 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
                 name: String!
             }
 
+            type Place implements Entity {
+                id: String! @unique
+                location: Point!
+            }
+
             type Interaction {
                 id: ID! @id
                 kind: String!
@@ -69,15 +74,23 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             WITH this
             MATCH (this)<-[:ACTED_IN]-(this_Person:Person)
             RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS subjects
+            UNION
+            WITH this
+            MATCH (this)<-[:ACTED_IN]-(this_Place:Place)
+            RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS subjects
             }
             WITH this, collect(subjects) AS subjects
-            WITH this
+            WITH subjects, this
             CALL {
-            WITH this
+            WITH subjects, this
             MATCH (this)-[:ACTED_IN]->(this_Person:Person)
             RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS objects
+            UNION
+            WITH subjects, this
+            MATCH (this)-[:ACTED_IN]->(this_Place:Place)
+            RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS objects
             }
-            WITH this, collect(objects) AS objects
+            WITH subjects, this, collect(objects) AS objects
             RETURN this { .id, subjects: subjects, objects: objects } as this"
         `);
 
