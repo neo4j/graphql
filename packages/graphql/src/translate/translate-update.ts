@@ -390,7 +390,7 @@ export default async function translateUpdate({
 
         if (projection[2]?.interfaceFields?.length) {
             const prevRelationshipFields: string[] = [];
-            projection[2].interfaceFields.forEach((interfaceResolveTree, i) => {
+            projection[2].interfaceFields.forEach((interfaceResolveTree) => {
                 const relationshipField = node.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
                 ) as RelationField;

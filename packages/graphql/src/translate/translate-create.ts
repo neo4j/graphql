@@ -135,7 +135,7 @@ export default async function translateCreate({
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
             .join("\n");
 
-        const withVars: string[] = context.subscriptionsEnabled ? [META_CYPHER_VARIABLE] : [];
+        const withVars = context.subscriptionsEnabled ? [META_CYPHER_VARIABLE] : [];
         if (projection[2]?.connectionFields?.length) {
             projection[2].connectionFields.forEach((connectionResolveTree) => {
                 const connectionField = node.connectionFields.find(
@@ -156,7 +156,7 @@ export default async function translateCreate({
 
         if (projection[2]?.interfaceFields?.length) {
             const prevRelationshipFields: string[] = [];
-            projection[2].interfaceFields.forEach((interfaceResolveTree, i) => {
+            projection[2].interfaceFields.forEach((interfaceResolveTree) => {
                 const relationshipField = node.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
                 ) as RelationField;
