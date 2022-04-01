@@ -126,7 +126,6 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
         // TODO: find a better solution
         const interactionId = (mutationRes.data as any)?.[interactionType.operations.create][interactionType.plural][0]
             .id;
-
         expect(interactionId).toBeDefined();
 
         const query = `
@@ -149,29 +148,25 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
 
         expect(queryRes.errors).toBeUndefined();
 
-        expect((queryRes?.data as any)?.[interactionType.plural][0]?.id).toBe(interactionId);
-        expect((queryRes?.data as any)?.[interactionType.plural][0]?.subjects).toHaveLength(2);
-        expect((queryRes?.data as any)?.[interactionType.plural][0]?.objects).toHaveLength(1);
-
-        // expect(queryRes.data).toEqual({
-        //     [interactionType.plural]: [
-        //         {
-        //             id: interactionId,
-        //             subjects: [
-        //                 {
-        //                     id: "eve",
-        //                 },
-        //                 {
-        //                     id: "adam",
-        //                 },
-        //             ],
-        //             objects: [
-        //                 {
-        //                     id: "cain",
-        //                 },
-        //             ],
-        //         },
-        //     ],
-        // });
+        expect(queryRes.data).toEqual({
+            [interactionType.plural]: [
+                {
+                    id: interactionId,
+                    subjects: expect.arrayContaining([
+                        {
+                            id: "eve",
+                        },
+                        {
+                            id: "adam",
+                        },
+                    ]),
+                    objects: expect.arrayContaining([
+                        {
+                            id: "cain",
+                        },
+                    ]),
+                },
+            ],
+        });
     });
 });

@@ -184,7 +184,7 @@ function createInterfaceProjectionAndParams({
         }
 
         if (recurse[2]?.interfaceFields?.length) {
-            recurse[2].interfaceFields.forEach((interfaceResolveTree) => {
+            recurse[2].interfaceFields.forEach((interfaceResolveTree, i) => {
                 const relationshipField = refNode.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
                 ) as RelationField;
@@ -193,6 +193,7 @@ function createInterfaceProjectionAndParams({
                     field: relationshipField,
                     context,
                     nodeVariable: param,
+                    withVars: recurse[2]?.interfaceFields?.slice(0, i).map((f) => f.alias),
                 });
                 subquery.push(interfaceProjection.cypher);
                 params = { ...params, ...interfaceProjection.params };

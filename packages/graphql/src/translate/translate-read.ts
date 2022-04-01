@@ -83,8 +83,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     }
 
     if (projection[2]?.interfaceFields?.length) {
-        const priorRelationshipFields: string[] = [];
-        projection[2].interfaceFields.forEach((interfaceResolveTree) => {
+        projection[2].interfaceFields.forEach((interfaceResolveTree, i) => {
             const relationshipField = node.relationFields.find(
                 (x) => x.fieldName === interfaceResolveTree.name
             ) as RelationField;
@@ -93,9 +92,8 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
                 field: relationshipField,
                 context,
                 nodeVariable: varName,
-                withVars: priorRelationshipFields,
+                withVars: projection[2]?.interfaceFields?.slice(0, i).map((f) => f.alias),
             });
-            priorRelationshipFields.push(relationshipField.fieldName);
             interfaceStrs.push(interfaceProjection.cypher);
             cypherParams = { ...cypherParams, ...interfaceProjection.params };
         });
