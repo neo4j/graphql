@@ -209,8 +209,8 @@ class Node extends GraphElement {
 
     public get aggregateTypeNames(): AggregateTypeNames {
         return {
-            selection: `${this.name}AggregateSelection`,
-            input: `${this.name}AggregateSelectionInput`,
+            selection: `${this.pascalCaseSingular}AggregateSelection`,
+            input: `${this.pascalCaseSingular}AggregateSelectionInput`,
         };
     }
 
