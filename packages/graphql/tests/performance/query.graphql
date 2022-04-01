@@ -80,3 +80,13 @@ query OrFilterOnRelationshipsAndNested {
         }
     }
 }
+
+query QueryWithNestedIn {
+    movies(where: { actors_SOME: { born_IN: [1997, 1998, 1999, 1956, 1975, 1976] } }) {
+        title
+        actors {
+            name
+            born
+        }
+    }
+}

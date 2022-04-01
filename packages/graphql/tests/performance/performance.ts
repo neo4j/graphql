@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import * as fs from "fs/promises";
 import { Driver, ProfiledPlan } from "neo4j-driver";
 import neo4j from "./utils/neo4j";
 import { setDb, cleanDb } from "./utils/setup-database";
@@ -34,6 +35,8 @@ const debug = Debug(DEBUG_EXECUTE);
 let driver: Driver;
 
 const typeDefs = gql`
+    union Likable = Person | Movie
+
     type Person {
         name: String!
         born: Int!
@@ -47,6 +50,11 @@ const typeDefs = gql`
         tagline: String
         actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
         directors: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+    }
+
+    type User {
+        name: String!
+        liked: [Likable!]! @relationship(type: "LIKES", direction: OUT)
     }
 `;
 
@@ -79,10 +87,27 @@ async function dbReset() {
     }
 }
 
+async function getOldResults(path: string): Promise<Record<string, any> | undefined> {
+    try {
+        const oldResults = JSON.parse(await fs.readFile(path, "utf-8"));
+        return oldResults.reduce((acc, result) => {
+            acc[`${result.file}.${result.name}`] = result;
+            return acc;
+        }, {});
+    } catch {
+        return undefined;
+    }
+}
+
 async function main() {
     try {
         await beforeAll();
-        await runTests(true);
+        const resultsPath = __dirname + "/performance.json";
+        const oldResults = await getOldResults(resultsPath);
+        const result = await runTests(true, oldResults);
+        if (process.argv.includes("-u")) {
+            await fs.writeFile(resultsPath, JSON.stringify(result));
+        }
     } finally {
         await afterAll();
     }
@@ -90,7 +115,17 @@ async function main() {
 
 main();
 
-async function runTests(display: boolean) {
+function moreThan(a: number, b: number, delta: number): boolean {
+    const upperBound = b + b * delta;
+    return a > upperBound;
+}
+
+function lessThan(a: number, b: number, delta: number): boolean {
+    const lowerBound = b - b * delta;
+    return a < lowerBound;
+}
+
+async function runTests(display: boolean, oldResults: Record<string, any> | undefined) {
     const tests = await collectTests(__dirname);
 
     const results: Array<any> = [];
@@ -102,13 +137,28 @@ async function runTests(display: boolean) {
     const ResetTTYColor = "\x1b[0m";
     const FgYellowTTYColor = "\x1b[33m";
     const FgCyanTTYColor = "\x1b[36m";
+    const FgRedTTYColor = "\x1b[31m";
+    const FgGreenTTYColor = "\x1b[32m";
+
     if (display) {
         console.table(
             results.reduce((acc, { name, result, file }) => {
                 const coloredFile = `${FgYellowTTYColor}${file}${ResetTTYColor}`;
-                const coloredName = name.replace(/_only$/i, `${FgCyanTTYColor}_only${ResetTTYColor}`);
+                let coloredName = name.replace(/_only$/i, `${FgCyanTTYColor}_only${ResetTTYColor}`);
 
-                acc[`${coloredFile}.${coloredName}`] = result;
+                const oldResult = oldResults ? oldResults[`${file}.${name}`] : undefined;
+
+                const result2 = { ...result, "time (ms)": result.time };
+                if (oldResult) {
+                    if (lessThan(result2.dbHits, oldResult.result.dbHits, 0.1)) {
+                        coloredName = `${FgGreenTTYColor}${coloredName}${ResetTTYColor}`;
+                    } else if (moreThan(result2.dbHits, oldResult.result.dbHits, 0.1)) {
+                        coloredName = `${FgRedTTYColor}${coloredName}${ResetTTYColor}`;
+                    }
+                }
+
+                delete result2.time;
+                acc[`${coloredFile}.${coloredName}`] = result2;
                 return acc;
             }, {})
         );
@@ -127,16 +177,7 @@ async function runPerformanceTest(
         const cypherQuery = await translateQuery(neoSchema, query, {
             req,
         });
-
         const profiledQuery = wrapQueryInProfile(cypherQuery.cypher);
-        debug(
-            "%s",
-            `About to profile and execute Cypher:\nCypher:\n${cypherQuery.cypher}\nParams:\n${JSON.stringify(
-                cypherQuery.params,
-                null,
-                2
-            )}`
-        );
 
         const t1 = new Date().getTime();
         const result = await session.run(profiledQuery, cypherQuery.params);

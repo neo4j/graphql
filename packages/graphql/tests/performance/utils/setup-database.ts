@@ -506,6 +506,15 @@ CREATE
 (JessicaThompson)-[:REVIEWED {summary:'A solid romp', rating:68}]->(TheDaVinciCode),
 (JamesThompson)-[:REVIEWED {summary:'Fun, but a little far fetched', rating:65}]->(TheDaVinciCode),
 (JessicaThompson)-[:REVIEWED {summary:'You had me at Jerry', rating:92}]->(JerryMaguire)
+
+
+CREATE (user1:User {name: "Ford Prefect"})
+CREATE (user2:User {name: "Arthur Dent"})
+
+CREATE (user1)-[:LIKES]->(TheMatrix)
+CREATE (user1)-[:LIKES]->(Keanu)
+CREATE (user2)-[:LIKES]->(TheMatrix)
+CREATE (user2)-[:LIKES]->(JessicaThompson)
 `;
 
 export async function cleanDb(session: Session) {
