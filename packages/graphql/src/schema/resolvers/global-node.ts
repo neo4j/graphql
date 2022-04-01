@@ -67,13 +67,9 @@ export default function globalNodeResolver({ nodes }: { nodes: Node[] }) {
             context,
         });
 
-        // TODO: Determine workaround for TCK tests
-        // we should return null if no record is found, but if you
-        // return null here it throws off the tck tests. Same issue as in the
-        // root-connections PR
-        let obj = { id: args.id, __resolveType: node.name };
+        let obj = null;
         if (executeResult.records.length && executeResult.records[0].this) {
-            obj = { ...executeResult.records[0].this, ...obj };
+            obj = { ...executeResult.records[0].this, id: args.id, __resolveType: node.name };
         }
 
         return obj;

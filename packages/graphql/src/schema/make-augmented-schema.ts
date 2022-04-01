@@ -113,16 +113,6 @@ function makeAugmentedSchema(
     composer.createInputTC(QueryOptions);
     const sortDirection = composer.createEnumTC(SortDirection);
 
-    composer.createInterfaceTC({
-        name: "Node",
-        description: "An object with a globally-unique ID",
-        fields: {
-            id: {
-                type: new GraphQLNonNull(GraphQLID),
-            },
-        },
-    });
-
     const aggregationTypesMapper = new AggregationTypesMapper(composer);
 
     const customResolvers = getCustomResolvers(document);

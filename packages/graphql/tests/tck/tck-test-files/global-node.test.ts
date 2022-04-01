@@ -58,7 +58,7 @@ describe("Global nodes", () => {
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
             req,
-            variableValues: { id: toGlobalId("Movie", "title", "A River Runs Through It") },
+            variableValues: { id: toGlobalId({ typeName: "Movie", field: "title", id: "A River Runs Through It" }) },
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -99,7 +99,7 @@ describe("Global nodes", () => {
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
             req,
-            variableValues: { id: toGlobalId("Actor", "dbId", "123455") },
+            variableValues: { id: toGlobalId({ typeName: "Actor", field: "dbId", id: "123455" }) },
         });
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)

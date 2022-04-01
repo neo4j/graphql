@@ -19,6 +19,7 @@
 
 import createWhereAndParams from "./create-where-and-params";
 import { Context } from "../../types";
+import { ContextBuilder } from "../../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
 
 describe("createWhereAndParams", () => {
@@ -35,8 +36,7 @@ describe("createWhereAndParams", () => {
 
         const node = new NodeBuilder().instance();
 
-        // @ts-ignore
-        const context: Context = { neoSchema: { nodes: [] } };
+        const context = new ContextBuilder({}).instance();
 
         const result = createWhereAndParams({ whereInput, varName, node, context });
 
@@ -71,7 +71,7 @@ describe("createWhereAndParams", () => {
                 },
             ],
         })
-            .withNodeDirective({ global: true, idField: "title" })
+            .withNodeDirective({ global: true, globalIdField: "title" })
             .instance();
 
         const whereInput = {

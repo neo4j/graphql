@@ -19,8 +19,7 @@
 
 import { ResolveTree } from "graphql-parse-resolve-info";
 import createProjectionAndParams from "./create-projection-and-params";
-import { Neo4jGraphQL } from "../classes";
-import { Context } from "../types";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 
 describe("createProjectionAndParams", () => {
@@ -71,13 +70,10 @@ describe("createProjectionAndParams", () => {
             ],
         }).instance();
 
-        // @ts-ignore
-        const neoSchema: Neo4jGraphQL = {
-            nodes: [node],
-        };
-
-        // @ts-ignore
-        const context: Context = { neoSchema, resolveTree };
+        const context = new ContextBuilder({
+            neoSchema: { nodes: [node] },
+            resolveTree,
+        }).instance();
 
         const result = createProjectionAndParams({ resolveTree, node, context, varName: "this" });
 
@@ -128,17 +124,15 @@ describe("createProjectionAndParams", () => {
         })
             .withNodeDirective({
                 global: true,
-                idField: "title",
+                globalIdField: "title",
             })
             .instance();
 
-        // @ts-ignore
-        const neoSchema: Neo4jGraphQL = {
-            nodes: [node],
-        };
+        const context = new ContextBuilder({
+            neoSchema: { nodes: [node] },
+            resolveTree,
+        }).instance();
 
-        // @ts-ignore
-        const context: Context = { neoSchema, resolveTree };
         const result = createProjectionAndParams({ resolveTree, node, context, varName: "this" });
         expect(result[0]).toBe(`{ .title }`);
     });

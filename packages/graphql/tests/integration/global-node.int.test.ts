@@ -83,7 +83,7 @@ describe("Global node resolution", () => {
                 },
             ],
         })
-            .withNodeDirective({ global: true, idField: "title" })
+            .withNodeDirective({ global: true, globalIdField: "title" })
             .instance();
 
         const expectedId = node.toGlobalId("2001: A Space Odyssey");
@@ -131,7 +131,11 @@ describe("Global node resolution", () => {
           }
         `;
 
-        const expectedId = toGlobalId(typeFilm.name, "title", "2001: A Space Odyssey");
+        const expectedId = toGlobalId({
+            typeName: typeFilm.name,
+            field: "title",
+            id: "2001: A Space Odyssey",
+        });
 
         try {
             await graphql({
@@ -186,18 +190,17 @@ describe("Global node resolution", () => {
           }
         `;
 
-        try {
-            const film = {
-                id: toGlobalId(typeFilm.name, "title", "The Matrix 2022"),
-                title: "The Matrix 2022",
-                website: "http://whatisthematrix.com",
-            };
+        const film = {
+            id: toGlobalId({ typeName: typeFilm.name, field: "title", id: "The Matrix 2022" }),
+            title: "The Matrix 2022",
+            website: "http://whatisthematrix.com",
+        };
 
-            await graphql({
-                schema: await neoSchema.getSchema(),
-                variableValues: { input: [{ title: film.title, website: film.website }] },
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
-                source: `
+        await graphql({
+            schema: await neoSchema.getSchema(),
+            variableValues: { input: [{ title: film.title, website: film.website }] },
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            source: `
                   mutation($input: [${typeFilm.name}CreateInput!]!) {
                     ${typeFilm.operations.create}(input: $input) {
                       ${typeFilm.plural} {
@@ -206,18 +209,18 @@ describe("Global node resolution", () => {
                     }
                   }
                 `,
-            });
-            const actor = {
-                id: toGlobalId(`FilmActor`, "name", "Keanu Reeves"),
-                name: "Keanu Reeves",
-                hairColor: "BLACK",
-            };
+        });
+        const actor = {
+            id: toGlobalId({ typeName: `FilmActor`, field: "name", id: "Keanu Reeves" }),
+            name: "Keanu Reeves",
+            hairColor: "BLACK",
+        };
 
-            await graphql({
-                schema: await neoSchema.getSchema(),
-                variableValues: { input: [{ name: actor.name, hairColor: actor.hairColor }] },
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
-                source: `
+        await graphql({
+            schema: await neoSchema.getSchema(),
+            variableValues: { input: [{ name: actor.name, hairColor: actor.hairColor }] },
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            source: `
                   mutation($input: [FilmActorCreateInput!]!) {
                     createFilmActors(input: $input) {
                       filmActors {
@@ -226,33 +229,31 @@ describe("Global node resolution", () => {
                     }
                   }
                 `,
-            });
+        });
 
-            const filmQueryResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: { driver, driverConfig: { bookMarks: [session.lastBookmark()] } },
-                variableValues: { id: film.id },
-            });
+        const filmQueryResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: { driver, driverConfig: { bookMarks: [session.lastBookmark()] } },
+            variableValues: { id: film.id },
+        });
 
-            expect(filmQueryResult.errors).toBeUndefined();
+        expect(filmQueryResult.errors).toBeUndefined();
 
-            const filmResult = (filmQueryResult as { data: { [key: string]: any } }).data.node;
-            expect(filmResult).toEqual(film);
+        const filmResult = (filmQueryResult as { data: { [key: string]: any } }).data.node;
+        expect(filmResult).toEqual(film);
 
-            const actorQueryResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: { driver, driverConfig: { bookMarks: [session.lastBookmark()] } },
-                variableValues: { id: actor.id },
-            });
+        const actorQueryResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: { driver, driverConfig: { bookMarks: [session.lastBookmark()] } },
+            variableValues: { id: actor.id },
+        });
 
-            expect(actorQueryResult.errors).toBeUndefined();
+        expect(actorQueryResult.errors).toBeUndefined();
 
-            const actorResult = (actorQueryResult as { data: { [key: string]: any } }).data.node;
-            expect(actorResult).toEqual(actor);
-        } finally {
-            await session.close();
-        }
+        const actorResult = (actorQueryResult as { data: { [key: string]: any } }).data.node;
+        expect(actorResult).toEqual(actor);
     });
+    test("it enforces provided auth rules", async () => {});
 });

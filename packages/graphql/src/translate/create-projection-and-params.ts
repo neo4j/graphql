@@ -34,6 +34,7 @@ import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
+import { addGlobalIdField } from "../utils/global-node-projection";
 import { removeDuplicates } from "../utils/utils";
 
 interface Res {
@@ -594,23 +595,13 @@ function createProjectionAndParams({
         return res;
     }
 
-    const existingProjection = { ...resolveTree.fieldsByTypeName[node.name] };
+    let existingProjection = { ...resolveTree.fieldsByTypeName[node.name] };
 
-    // if we have a global node, and the selection set includes the id field
+    // If we have a query for a globalNode and it includes the "id" field
+    // we modify the projection to include the appropriate db fields
+
     if (node.isGlobalNode() && existingProjection.id) {
-        const globalIdField = node.getGlobalIdField();
-        // check to see if the idField has been projected, and include it if it hasn't
-        if (!Object.values(existingProjection).find((field) => field.name === globalIdField)) {
-            existingProjection[globalIdField] = {
-                alias: globalIdField,
-                args: {},
-                fieldsByTypeName: {},
-                name: globalIdField,
-            };
-        }
-        if (globalIdField !== "id" && !!existingProjection.id) {
-            delete existingProjection.id;
-        }
+        existingProjection = addGlobalIdField(existingProjection, node.getGlobalIdField());
     }
 
     // Fields of reference node to sort on. Since sorting is done on projection, if field is not selected
