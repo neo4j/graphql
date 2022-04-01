@@ -122,8 +122,6 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
         expect((mutationRes.data as any)[interactionType.operations.create].info).toEqual({
             nodesCreated: 1,
         });
-
-        // TODO: find a better solution
         const interactionId = (mutationRes.data as any)?.[interactionType.operations.create][interactionType.plural][0]
             .id;
         expect(interactionId).toBeDefined();

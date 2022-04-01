@@ -155,21 +155,19 @@ export default async function translateCreate({
         }
 
         if (projection[2]?.interfaceFields?.length) {
+            const prevRelationshipFields: string[] = [];
             projection[2].interfaceFields.forEach((interfaceResolveTree, i) => {
                 const relationshipField = node.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
                 ) as RelationField;
-                const nextWithVars = [
-                    ...withVars,
-                    ...(projection[2]?.interfaceFields?.slice(0, i).map((f) => f.alias) as string[]),
-                ];
                 const interfaceProjection = createInterfaceProjectionAndParams({
                     resolveTree: interfaceResolveTree,
                     field: relationshipField,
                     context,
                     nodeVariable: "REPLACE_ME",
-                    withVars: nextWithVars as string[],
+                    withVars: [...withVars, ...prevRelationshipFields],
                 });
+                prevRelationshipFields.push(relationshipField.dbPropertyName || relationshipField.fieldName);
                 interfaceStrs.push(interfaceProjection.cypher);
                 if (!interfaceParams) interfaceParams = {};
                 interfaceParams = { ...interfaceParams, ...interfaceProjection.params };
