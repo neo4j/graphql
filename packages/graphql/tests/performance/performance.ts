@@ -189,10 +189,10 @@ async function runPerformanceTest(
         }
 
         // Check for the profile plan to have the correct settings
-        assert.ok(profiledPlan);
-        assert.strictEqual(profiledPlan.arguments.runtime, "PIPELINED");
+        assert.ok(profiledPlan.arguments);
+        assert.strictEqual(profiledPlan.arguments.runtime, "INTERPRETED");
         assert.strictEqual(profiledPlan.arguments.planner, "COST");
-
+        assert.strictEqual(profiledPlan.arguments["planner-impl"], "DP");
         const aggregatedProfile = aggregateProfile(profiledPlan);
         return { ...aggregatedProfile, time: t2 - t1 };
     } finally {
@@ -201,7 +201,10 @@ async function runPerformanceTest(
 }
 
 function wrapQueryInProfile(query: string): string {
-    return `PROFILE ${query}`;
+    return `CYPHER
+    planner=dp
+    runtime=interpreted
+    PROFILE ${query}`;
 }
 
 type ProfileResult = {
