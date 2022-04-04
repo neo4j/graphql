@@ -89,7 +89,7 @@ function translateTopLevelMatch({
         }
     }
 
-    const whereEntries = (whereInput || resolveTree.args.where?.[node.name]) as undefined | Record<string, unknown>;
+    const whereEntries = (whereInput || resolveTree.args.where) as undefined | Record<string, unknown>;
     if (whereEntries) {
         const where = createWhereAndParams({
             whereInput: whereEntries,
