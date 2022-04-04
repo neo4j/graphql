@@ -18,32 +18,37 @@
  */
 
 import { on } from "events";
-import { GraphQLResolveInfo } from "graphql";
+import { Neo4jGraphQLError } from "../../../classes";
 import Node from "../../../classes/Node";
 import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
-import { Context, Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
+import { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
+import { updateDiffFilter } from "./update-diff-filter";
+import { subscriptionWhere } from "./where";
 
 export type SubscriptionContext = {
     plugin: Neo4jGraphQLSubscriptionsPlugin;
 };
 
-export function subscriptionResolve(payload: [SubscriptionsEvent], args, context: Context, info: GraphQLResolveInfo) {
-    const fieldName = info.fieldName;
-    return { [fieldName]: payload[0].properties.new };
+export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
+    if (!payload) {
+        throw new Neo4jGraphQLError("Payload is undefined. Can't call subscriptions resolver directly.");
+    }
+    return payload[0];
 }
 
-export function createSubscription(node: Node) {
-    return (
-        _root: any,
-        _args: any,
-        context: SubscriptionContext,
-    ): AsyncIterator<[SubscriptionsEvent]> => {
-        const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, "create");
+type SubscriptionArgs = {
+    where?: Record<string, any>;
+};
+
+export function generateSubscribeMethod(node: Node, type: "create" | "update" | "delete") {
+    return (_root: any, args: SubscriptionArgs, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
+        const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
 
         return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
-            // TODO: where
-            return data[0].typename === node.name;
+            return (
+                data[0].typename === node.name && subscriptionWhere(args.where, data[0]) && updateDiffFilter(data[0])
+            );
         });
     };
 }

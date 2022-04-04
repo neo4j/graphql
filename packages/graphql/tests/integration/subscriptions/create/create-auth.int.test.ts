@@ -91,7 +91,7 @@ describe("auth/bind", () => {
                         secret: "secret",
                     }),
                     subscriptions: plugin,
-                } as any,
+                },
             });
 
             try {

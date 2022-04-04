@@ -313,7 +313,8 @@ describe("@auth allow with interface relationships", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -393,7 +394,8 @@ describe("@auth allow with interface relationships", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -523,7 +525,8 @@ describe("@auth allow with interface relationships", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -633,7 +636,8 @@ describe("@auth allow with interface relationships", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -692,8 +696,9 @@ describe("@auth allow with interface relationships", () => {
                 \\"this_connect_content0_node_id\\": \\"post-id\\",
                 \\"this_connect_content0_nodeComment0_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"thisUser1_allow_auth_allow0_id\\": \\"user-id\\",
-                \\"this_connect_content0_nodePost0_allow_auth_allow0_creator_id\\": \\"user-id\\"
+                \\"this_connect_content0_nodePost0_allow_auth_allow0_creator_id\\": \\"user-id\\",
+                \\"resolvedCallbacks\\": {}
             }"
-            `);
+        `);
     });
 });

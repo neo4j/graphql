@@ -437,7 +437,8 @@ describe("Cypher Points", () => {
                 \\"this0_point\\": {
                     \\"longitude\\": 1,
                     \\"latitude\\": 2
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -479,7 +480,8 @@ describe("Cypher Points", () => {
                 \\"this_update_point\\": {
                     \\"longitude\\": 1,
                     \\"latitude\\": 2
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -32,7 +32,7 @@ import {
 import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
-import { BaseField } from "../types";
+import { BaseField, Neo4jGraphQLCallbacks } from "../types";
 import {
     aggregateResolver,
     createResolver,
@@ -90,7 +90,13 @@ function makeAugmentedSchema(
         enableRegex,
         skipValidateTypeDefs,
         generateSubscriptions,
-    }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean; generateSubscriptions?: boolean } = {}
+        callbacks,
+    }: {
+        enableRegex?: boolean;
+        skipValidateTypeDefs?: boolean;
+        generateSubscriptions?: boolean;
+        callbacks?: Neo4jGraphQLCallbacks;
+    } = {}
 ): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers: IResolvers } {
     const document = getDocument(typeDefs);
 
@@ -138,7 +144,7 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const getNodesResult = getNodes(definitionNodes);
+    const getNodesResult = getNodes(definitionNodes, { callbacks });
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
 
@@ -185,6 +191,7 @@ function makeAugmentedSchema(
             scalars: scalarTypes,
             unions: unionTypes,
             obj: relationship,
+            callbacks,
         });
 
         if (!pointInTypeDefs) {
@@ -215,7 +222,9 @@ function makeAugmentedSchema(
         composer.createInputTC({
             name: `${relationship.name.value}UpdateInput`,
             fields: objectFieldsToUpdateInputFields([
-                ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.readonly),
+                ...relFields.primitiveFields.filter(
+                    (field) => !field.autogenerate && !field.readonly && !field.callback
+                ),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields.filter((field) => !field.timestamps),
@@ -243,7 +252,7 @@ function makeAugmentedSchema(
         composer.createInputTC({
             name: `${relationship.name.value}CreateInput`,
             fields: objectFieldsToCreateInputFields([
-                ...relFields.primitiveFields,
+                ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.callback),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields,
@@ -264,6 +273,7 @@ function makeAugmentedSchema(
             scalars: scalarTypes,
             unions: unionTypes,
             obj: interfaceRelationship,
+            callbacks,
         });
 
         if (!pointInTypeDefs) {
@@ -631,7 +641,7 @@ function makeAugmentedSchema(
         composer.createInputTC({
             name: `${node.name}CreateInput`,
             fields: objectFieldsToCreateInputFields([
-                ...node.primitiveFields,
+                ...node.primitiveFields.filter((field) => !field.callback),
                 ...node.scalarFields,
                 ...node.enumFields,
                 ...node.temporalFields,
@@ -642,7 +652,7 @@ function makeAugmentedSchema(
         composer.createInputTC({
             name: `${node.name}UpdateInput`,
             fields: objectFieldsToUpdateInputFields([
-                ...node.primitiveFields,
+                ...node.primitiveFields.filter((field) => !field.callback),
                 ...node.scalarFields,
                 ...node.enumFields,
                 ...node.temporalFields.filter((field) => !field.timestamps),
@@ -745,6 +755,7 @@ function makeAugmentedSchema(
                 interfaces: interfaceTypes,
                 unions: unionTypes,
                 objects: objectTypes,
+                callbacks,
             });
 
             const objectComposeFields = objectFieldsToComposeFields([
@@ -782,6 +793,7 @@ function makeAugmentedSchema(
             interfaces: interfaceTypes,
             unions: unionTypes,
             objects: objectTypes,
+            callbacks,
         });
 
         const baseFields: BaseField[][] = Object.values(objectFields);
