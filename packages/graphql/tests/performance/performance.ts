@@ -39,6 +39,8 @@ const typeDefs = gql`
         born: Int!
         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
         directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
+        reviewed: [Movie!]! @relationship(type: "REVIEWED", direction: OUT)
+        produced: [Movie!]! @relationship(type: "PRODUCED", direction: OUT)
     }
 
     type Movie {
@@ -47,6 +49,8 @@ const typeDefs = gql`
         tagline: String
         actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
         directors: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+        reviewers: [Person!]! @relationship(type: "REVIEWED", direction: IN)
+        producers: [Person!]! @relationship(type: "PRODUCED", direction: IN)
     }
 
     type User {
