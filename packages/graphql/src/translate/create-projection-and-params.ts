@@ -216,7 +216,6 @@ function createProjectionAndParams({
                     referenceUnion?.types
                         ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
                         ?.filter((b) => b !== undefined)
-                        ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? ""))
                 );
                 const headStrs: string[] = [];
                 const referencedNodes =

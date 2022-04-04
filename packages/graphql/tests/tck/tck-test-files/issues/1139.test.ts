@@ -33,6 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
             type Post {
                 name: String
             }
+
             type Movie {
                 name: String
             }
