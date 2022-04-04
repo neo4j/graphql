@@ -510,11 +510,54 @@ CREATE
 
 CREATE (user1:User {name: "Ford Prefect"})
 CREATE (user2:User {name: "Arthur Dent"})
+CREATE (user3:User {name: "Zaphod Beeblebrox the Fourth"})
+CREATE (user4:User {name: "Marvin The Paranoid Android"})
+CREATE (user5:User {name: "Slartibartfast"})
+CREATE (user6:User {name: "Trillian"})
+CREATE (user7:User {name: "Agrajag"})
+CREATE (user8:User {name: "Fenchurch"})
 
 CREATE (user1)-[:LIKES]->(TheMatrix)
 CREATE (user1)-[:LIKES]->(Keanu)
+
 CREATE (user2)-[:LIKES]->(TheMatrix)
 CREATE (user2)-[:LIKES]->(JessicaThompson)
+
+CREATE (user3)-[:LIKES]->(TheMatrix)
+CREATE (user3)-[:LIKES]->(RobertZ)
+CREATE (user3)-[:LIKES]->(JessicaThompson)
+CREATE (user3)-[:LIKES]->(Unforgiven)
+
+CREATE (user4)-[:LIKES]->(ThatThingYouDo)
+CREATE (user4)-[:LIKES]->(CloudAtlas)
+CREATE (user4)-[:LIKES]->(HalleB)
+CREATE (user4)-[:LIKES]->(TheDaVinciCode)
+CREATE (user4)-[:LIKES]->(AudreyT)
+CREATE (user4)-[:LIKES]->(StephenR)
+CREATE (user4)-[:LIKES]->(JohnH)
+CREATE (user4)-[:LIKES]->(VforVendetta)
+CREATE (user4)-[:LIKES]->(NaomieH)
+CREATE (user4)-[:LIKES]->(FrostNixon)
+
+
+CREATE (user5)-[:LIKES]->(VictorG)
+CREATE (user5)-[:LIKES]->(JackN)
+CREATE (user5)-[:LIKES]->(CubaG)
+CREATE (user5)-[:LIKES]->(KevinP)
+CREATE (user5)-[:LIKES]->(JTW)
+
+CREATE (user6)-[:LIKES]->(VictorG)
+CREATE (user6)-[:LIKES]->(TheMatrixReloaded)
+CREATE (user6)-[:LIKES]->(JoelS)
+CREATE (user6)-[:LIKES]->(JackN)
+CREATE (user6)-[:LIKES]->(CubaG)
+CREATE (user6)-[:LIKES]->(KevinP)
+CREATE (user6)-[:LIKES]->(JTW)
+CREATE (user6)-[:LIKES]->(TheReplacements)
+CREATE (user6)-[:LIKES]->(AFewGoodMen)
+CREATE (user6)-[:LIKES]->(Brooke)
+CREATE (user6)-[:LIKES]->(JohnnyMnemonic)
+CREATE (user6)-[:LIKES]->(CloudAtlas)
 `;
 
 export async function cleanDb(session: Session) {

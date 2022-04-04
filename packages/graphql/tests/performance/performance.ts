@@ -28,10 +28,7 @@ import { createJwtRequest } from "../utils/create-jwt-request";
 import { translateQuery } from "../tck/utils/tck-test-utils";
 import assert from "assert";
 import { collectTests } from "./utils/collect-files";
-import Debug from "debug";
-import { DEBUG_EXECUTE } from "../../src/constants";
 
-const debug = Debug(DEBUG_EXECUTE);
 let driver: Driver;
 
 const typeDefs = gql`
