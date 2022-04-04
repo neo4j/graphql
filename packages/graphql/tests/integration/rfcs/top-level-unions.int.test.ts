@@ -85,7 +85,7 @@ describe("integration/rfc/top-level-unions", () => {
                 CREATE (:${testSeries.name} { id: "${seriesId}" })
             `);
         } finally {
-            session.close();
+            await session.close();
         }
 
         const result = await graphql({
@@ -182,7 +182,7 @@ describe("integration/rfc/top-level-unions", () => {
                 CREATE (:${testSeries.name} { id: "${seriesId}" })<-[:HAS_EPISODE]-(:${testEpisode.name} { id: "${episodeId}" })
             `);
         } finally {
-            session.close();
+            await session.close();
         }
 
         const result = await graphql({
@@ -259,7 +259,7 @@ describe("integration/rfc/top-level-unions", () => {
                 CREATE (:${testSeries.name} { id: randomUUID() })
             `);
         } finally {
-            session.close();
+            await session.close();
         }
 
         const result = await graphql({
@@ -336,7 +336,7 @@ describe("integration/rfc/top-level-unions", () => {
                 CREATE (:${testSeries.name} { id: randomUUID() })
             `);
         } finally {
-            session.close();
+            await session.close();
         }
 
         const result = await graphql({
