@@ -80,8 +80,10 @@ import { CartesianPointInput } from "./types/input-objects/CartesianPointInput";
 import { PointDistance } from "./types/input-objects/PointDistance";
 import { CartesianPointDistance } from "./types/input-objects/CartesianPointDistance";
 import getNodes from "./get-nodes";
+import getUnions from "./get-unions";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
+import topLevelUnionReadResolver from "./resolvers/top-level-union-read";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -146,6 +148,8 @@ function makeAugmentedSchema(
     const getNodesResult = getNodes(definitionNodes, { callbacks });
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
+
+    const unionsResult = getUnions(unionTypes, { nodes });
 
     // graphql-compose will break if the Point and CartesianPoint types are created but not used,
     // because it will purge the unused types but leave behind orphaned field resolvers
@@ -732,6 +736,14 @@ function makeAugmentedSchema(
                 }),
             });
         }
+    });
+
+    unionsResult.unions.forEach((union) => {
+        composer.Query.addFields({
+            [union.rootTypeFieldNames.read]: topLevelUnionReadResolver({ union }),
+        });
+
+        composer.createInputTC(union.whereTypeMeta);
     });
 
     if (generateSubscriptions) {

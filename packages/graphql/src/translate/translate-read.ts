@@ -26,9 +26,21 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
 
-function translateRead({ node, context }: { context: Context; node: Node }): [string, any] {
+function translateRead({
+    node,
+    context,
+    overrideVarName,
+    resolveType,
+    whereInput,
+}: {
+    context: Context;
+    node: Node;
+    overrideVarName?: string;
+    resolveType?: boolean;
+    whereInput?: Record<string, unknown>;
+}): [string, any] {
     const { resolveTree } = context;
-    const varName = "this";
+    const varName = overrideVarName || "this";
 
     let matchAndWhereStr = "";
     let authStr = "";
@@ -48,7 +60,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit);
     }
 
-    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });
+    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ", whereInput });
     matchAndWhereStr = topLevelMatch[0];
     cypherParams = { ...cypherParams, ...topLevelMatch[1] };
 
@@ -57,6 +69,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         context,
         resolveTree,
         varName,
+        resolveType,
     });
     [projStr] = projection;
     cypherParams = { ...cypherParams, ...projection[1] };

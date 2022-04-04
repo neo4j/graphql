@@ -19,7 +19,7 @@
 
 import { dedent } from "graphql-compose";
 import { Node } from "../classes";
-import { AuthOperations, Context, GraphQLWhereArg } from "../types";
+import { AuthOperations, Context } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createWhereAndParams from "./where/create-where-and-params";
 
@@ -28,16 +28,17 @@ function translateTopLevelMatch({
     context,
     varName,
     operation,
+    whereInput,
 }: {
     context: Context;
     node: Node;
     varName: string;
     operation: AuthOperations;
+    whereInput?: Record<string, unknown>;
 }): [string, Record<string, unknown>] {
     const cyphers: string[] = [];
     let cypherParams = {};
     const { resolveTree } = context;
-    const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string; score_EQUAL?: number }>;
     const whereStrs: string[] = [];
 
@@ -88,9 +89,10 @@ function translateTopLevelMatch({
         }
     }
 
-    if (whereInput) {
+    const whereEntries = (whereInput || resolveTree.args.where?.[node.name]) as undefined | Record<string, unknown>;
+    if (whereEntries) {
         const where = createWhereAndParams({
-            whereInput,
+            whereInput: whereEntries,
             varName,
             node,
             context,
