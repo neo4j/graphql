@@ -32,12 +32,14 @@ function translateRead({
     overrideVarName,
     resolveType,
     whereInput,
+    optionsInput,
 }: {
     context: Context;
     node: Node;
     overrideVarName?: string;
     resolveType?: boolean;
     whereInput?: Record<string, unknown>;
+    optionsInput?: Record<string, unknown>;
 }): [string, any] {
     const { resolveTree } = context;
     const varName = overrideVarName || "this";
@@ -47,7 +49,10 @@ function translateRead({
     let projAuth = "";
     let projStr = "";
 
-    const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
+    const options = {
+        ...(optionsInput || {}),
+        ...((resolveTree.args.options as Record<string, unknown>) || {}),
+    } as GraphQLOptionsArg;
     let limitStr = "";
     let offsetStr = "";
     let sortStr = "";
@@ -57,7 +62,7 @@ function translateRead({
     const interfaceStrs: string[] = [];
 
     if (node.queryOptions) {
-        optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit);
+        options.limit = node.queryOptions.getLimit(options.limit as number);
     }
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ", whereInput });
@@ -138,8 +143,8 @@ function translateRead({
             cypherParams[`${varName}_limit`] = optionsInput.limit;
         }
 
-        if (optionsInput.sort && optionsInput.sort.length) {
-            const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {
+        if (optionsInput.sort && options?.sort?.length) {
+            const sortArr = options.sort.reduce((res: string[], sort: GraphQLSortArg) => {
                 return [
                     ...res,
                     ...Object.entries(sort).map(([field, direction]) => {

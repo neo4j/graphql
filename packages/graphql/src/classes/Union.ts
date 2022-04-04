@@ -49,11 +49,23 @@ export class Union extends AbstractGraphElement {
 
     public get whereTypeMeta() {
         return {
-            name: `${this.name}Where`,
+            name: `${this.name}TopLevelWhere`,
             fields: this.members.reduce((res, member) => {
                 return {
                     ...res,
                     [member.name]: `${member.name}Where`,
+                };
+            }, {}),
+        };
+    }
+
+    public get optionsTypeMeta() {
+        return {
+            name: `${this.name}TopLevelOptions`,
+            fields: this.members.reduce((res, member) => {
+                return {
+                    ...res,
+                    [member.name]: `${member.name}Options`,
                 };
             }, {}),
         };

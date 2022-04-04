@@ -75,7 +75,13 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
 
     private createRunMock() {
         return jest.fn().mockReturnValue({
-            records: [],
+            records: [
+                {
+                    toObject() {
+                        return {};
+                    },
+                },
+            ],
             summary: {
                 counters: {
                     updates() {

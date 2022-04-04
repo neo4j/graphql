@@ -49,6 +49,7 @@ export default function topLevelUnionReadResolver({ union }: { union: Union }) {
         resolve,
         args: {
             where: `${union.whereTypeMeta.name}`,
+            options: `${union.optionsTypeMeta.name}`,
         },
     };
 }
