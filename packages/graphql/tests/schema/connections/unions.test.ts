@@ -812,6 +812,16 @@ describe("Unions", () => {
 
             union Publication = Book | Journal
 
+            input PublicationTopLevelOptions {
+              Book: BookOptions
+              Journal: JournalOptions
+            }
+
+            input PublicationTopLevelWhere {
+              Book: BookWhere
+              Journal: JournalWhere
+            }
+
             input PublicationWhere {
               Book: BookWhere
               Journal: JournalWhere
@@ -824,6 +834,7 @@ describe("Unions", () => {
               booksAggregate(where: BookWhere): BookAggregateSelection!
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
               journalsAggregate(where: JournalWhere): JournalAggregateSelection!
+              publications(options: PublicationTopLevelOptions, where: PublicationTopLevelWhere): [Publication!]!
             }
 
             input QueryOptions {

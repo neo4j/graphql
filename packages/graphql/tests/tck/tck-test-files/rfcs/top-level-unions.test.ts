@@ -165,12 +165,8 @@ describe("integration/rfs/top-level-unions", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const movieId = generate({
-            charset: "alphabetic",
-        });
-        const seriesId = generate({
-            charset: "alphabetic",
-        });
+        const movieId = "123";
+        const seriesId = "321";
 
         const query = gql`
             query {
@@ -213,8 +209,8 @@ describe("integration/rfs/top-level-unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_Movie1_id\\": \\"gTMMDPmxXbtjpCSjuwSwUJfAEYfGgapj\\",
-                \\"this_Series2_id\\": \\"qUOzMckqPtVFvigdiltQcdMlpZqiGpAh\\"
+                \\"this_Movie1_id\\": \\"123\\",
+                \\"this_Series2_id\\": \\"321\\"
             }"
         `);
     });

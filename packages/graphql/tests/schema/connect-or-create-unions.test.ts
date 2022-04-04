@@ -463,6 +463,16 @@ describe("Connect Or Create", () => {
 
             union Production = Movie | Series
 
+            input ProductionTopLevelOptions {
+              Movie: MovieOptions
+              Series: SeriesOptions
+            }
+
+            input ProductionTopLevelWhere {
+              Movie: MovieWhere
+              Series: SeriesWhere
+            }
+
             input ProductionWhere {
               Movie: MovieWhere
               Series: SeriesWhere
@@ -473,6 +483,7 @@ describe("Connect Or Create", () => {
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              productions(options: ProductionTopLevelOptions, where: ProductionTopLevelWhere): [Production!]!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
             }

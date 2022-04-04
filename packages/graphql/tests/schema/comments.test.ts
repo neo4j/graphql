@@ -1406,6 +1406,7 @@ describe("Comments", () => {
                   genresAggregate(where: GenreWhere): GenreAggregateSelection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  searches(options: SearchTopLevelOptions, where: SearchTopLevelWhere): [Search!]!
                 }
 
                 input QueryOptions {
@@ -1414,6 +1415,16 @@ describe("Comments", () => {
                 }
 
                 union Search = Genre | Movie
+
+                input SearchTopLevelOptions {
+                  Genre: GenreOptions
+                  Movie: MovieOptions
+                }
+
+                input SearchTopLevelWhere {
+                  Genre: GenreWhere
+                  Movie: MovieWhere
+                }
 
                 input SearchWhere {
                   Genre: GenreWhere
