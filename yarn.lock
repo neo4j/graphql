@@ -2066,7 +2066,7 @@ __metadata:
   dependencies:
     "@neo4j-ndl/base": ^0.1.2
     "@neo4j-ndl/react": ^0.1.2
-    "@neo4j/graphql": ^3.0.3
+    "@neo4j/graphql": ^3.0.4
     "@neo4j/introspector": ^1.0.1
     "@tsconfig/create-react-app": ^1.0.2
     "@types/codemirror": ^5.60.5
@@ -2123,7 +2123,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@^3.0.3, @neo4j/graphql@^3.0.4, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^3.0.4, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
