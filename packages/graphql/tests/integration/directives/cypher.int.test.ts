@@ -1085,9 +1085,6 @@ describe("cypher", () => {
                             users (where: { id: "${userId}"}) {
                                 updates {
                                     __typename
-                                    ... on Post {
-                                        name
-                                    }
                                 }
                             }
                         }
@@ -1102,10 +1099,14 @@ describe("cypher", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
                 expect(gqlResult?.data as any).toEqual({
-                    updates: [
+                    users: [
                         {
-                            __typename: "Post",
-                            name: "Postname",
+                            updates: [
+                                {
+                                    __typename: "Post",
+                                    name: "Postname",
+                                },
+                            ],
                         },
                     ],
                 });

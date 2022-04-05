@@ -70,6 +70,12 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
                 users(where: { id: "test-id" }) {
                     updates {
                         __typename
+                        ... on Post {
+                            name
+                        }
+                        ... on Movie {
+                            name
+                        }
                     }
                 }
             }
@@ -89,7 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
             UNWIND allUpdates as update
             RETURN update
             ORDER BY update.date_added DESC
-            LIMIT 5\\", {this: this, auth: $auth}, false) WHERE (\\"Post\\" IN labels(this_updates)) OR (\\"Movie\\" IN labels(this_updates)) OR (\\"User\\" IN labels(this_updates))  |   [ this_updates IN [this_updates] WHERE (\\"Post\\" IN labels(this_updates)) | this_updates { __resolveType: \\"Post\\" }  ] + [ this_updates IN [this_updates] WHERE (\\"Movie\\" IN labels(this_updates)) | this_updates { __resolveType: \\"Movie\\" }  ] + [ this_updates IN [this_updates] WHERE (\\"User\\" IN labels(this_updates)) | this_updates { __resolveType: \\"User\\" }  ] ] } as this"
+            LIMIT 5\\", {this: this, auth: $auth}, false) WHERE (\\"Post\\" IN labels(this_updates)) OR (\\"Movie\\" IN labels(this_updates))  |   [ this_updates IN [this_updates] WHERE (\\"Post\\" IN labels(this_updates)) | this_updates { __resolveType: \\"Post\\",  .name } ] + [ this_updates IN [this_updates] WHERE (\\"Movie\\" IN labels(this_updates)) | this_updates { __resolveType: \\"Movie\\",  .name } ] ] } as this"
         `);
 
         // "MATCH (this:User)
