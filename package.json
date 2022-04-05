@@ -43,7 +43,7 @@
         "lint-staged": "12.3.7",
         "neo4j-driver": "4.4.5",
         "npm-run-all": "4.1.5",
-        "prettier": "2.6.1",
+        "prettier": "2.6.2",
         "set-tz": "0.2.0",
         "ts-jest": "27.1.4",
         "typescript": "4.6.3"
