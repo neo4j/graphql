@@ -221,8 +221,8 @@ function createProjectionAndParams({
                 const referencedNodes =
                     referenceUnion?.types
                         ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
-                        ?.filter((b) => b !== undefined) || [];
-                // TODO: why this line?      ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? ""))
+                        ?.filter((b) => b !== undefined)
+                        ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? "")) || [];
                 console.log("referencedNodes", referencedNodes);
 
                 referencedNodes.forEach((refNode) => {
@@ -264,6 +264,9 @@ function createProjectionAndParams({
                         headStrs.push(innerHeadStr.join(" "));
                     }
                 });
+                // if (!referencedNodes.length) {
+                //     headStrs.push(`{ __resolveType: "${Object.keys(fieldFields).join("")}" }`);
+                // }
 
                 projectionStr = `${!isArray ? "head(" : ""} ${headStrs.join(" + ")} ${!isArray ? ")" : ""}`;
             }
@@ -311,7 +314,8 @@ function createProjectionAndParams({
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}`;
             console.log("apocParamsStr", apocParamsStr);
-            console.log("projectionStr", projectionStr);
+            console.log("projectionStr", projectionStr.toString());
+            console.log("projectionStr length", projectionStr.length);
             // console.log("referenceUnion", referenceUnion);
             console.log("param", param);
             const apocStr = `${
@@ -319,7 +323,7 @@ function createProjectionAndParams({
             } apoc.cypher.runFirstColumn("${cypherField.statement}", ${apocParamsStr}, ${expectMultipleValues})${
                 apocWhere ? ` ${apocWhere}` : ""
             }${unionWhere ? ` ${unionWhere} ` : ""}${
-                projectionStr ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""
+                projectionStr ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ` | ${param}`
             }`;
 
             if (cypherField.isScalar || cypherField.isEnum) {

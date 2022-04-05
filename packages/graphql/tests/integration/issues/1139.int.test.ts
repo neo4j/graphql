@@ -73,6 +73,10 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
                 users (where: { id: "test-id" }) {
                     updates {
                         __typename
+                        ... on Post {
+                            __typename
+                            name
+                        }
                     }
                 }
             }

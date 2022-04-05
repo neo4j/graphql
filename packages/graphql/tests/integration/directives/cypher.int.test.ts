@@ -1079,7 +1079,7 @@ describe("cypher", () => {
                 await session.close();
             });
 
-            test("should return __typename", async () => {
+            test.only("should return __typename", async () => {
                 const source = `
                         query {
                             users (where: { id: "${userId}"}) {

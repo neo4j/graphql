@@ -161,7 +161,7 @@ describe("Cypher directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            RETURN this { randomNumber:  apoc.cypher.runFirstColumn(\\"RETURN rand()\\", {this: this, auth: $auth}, false) } as this"
+            RETURN this { randomNumber:  apoc.cypher.runFirstColumn(\\"RETURN rand()\\", {this: this, auth: $auth}, false) | this_randomNumber } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -366,7 +366,7 @@ describe("Cypher directive", () => {
             "MATCH (this:Actor)
             RETURN this { movieOrTVShow: [this_movieOrTVShow IN apoc.cypher.runFirstColumn(\\"MATCH (n)
             WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
-            RETURN n\\", {this: this, auth: $auth, title: $this_movieOrTVShow_title}, false) WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) OR (\\"TVShow\\" IN labels(this_movieOrTVShow))  |   [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) | this_movieOrTVShow { __resolveType: \\"Movie\\" }  ] + [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (\\"TVShow\\" IN labels(this_movieOrTVShow)) | this_movieOrTVShow { __resolveType: \\"TVShow\\" }  ] ] } as this"
+            RETURN n\\", {this: this, auth: $auth, title: $this_movieOrTVShow_title}, false) | this_movieOrTVShow] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
