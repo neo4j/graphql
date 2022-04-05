@@ -13737,7 +13737,7 @@ __metadata:
     lint-staged: 12.3.7
     neo4j-driver: 4.4.5
     npm-run-all: 4.1.5
-    prettier: 2.6.1
+    prettier: 2.6.2
     set-tz: 0.2.0
     ts-jest: 27.1.4
     typescript: 4.6.3
@@ -15601,7 +15601,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:2.6.1, prettier@npm:^2.5.1, prettier@npm:^2.6.1":
+"prettier@npm:2.6.2":
+  version: 2.6.2
+  resolution: "prettier@npm:2.6.2"
+  bin:
+    prettier: bin-prettier.js
+  checksum: 48d08dde8e9fb1f5bccdd205baa7f192e9fc8bc98f86e1b97d919de804e28c806b0e6cc685e4a88211aa7987fa9668f30baae19580d87ced3ed0f2ec6572106f
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^2.5.1, prettier@npm:^2.6.1":
   version: 2.6.1
   resolution: "prettier@npm:2.6.1"
   bin:
