@@ -98,7 +98,7 @@ describe("Interface Relationships - Update disconnect", () => {
             )
             RETURN count(*)
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -117,7 +117,8 @@ describe("Interface Relationships - Update disconnect", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -185,7 +186,7 @@ describe("Interface Relationships - Update disconnect", () => {
             }
             RETURN count(*)
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -215,7 +216,8 @@ describe("Interface Relationships - Update disconnect", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -273,7 +275,7 @@ describe("Interface Relationships - Update disconnect", () => {
             )
             RETURN count(*)
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -309,7 +311,8 @@ describe("Interface Relationships - Update disconnect", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -380,7 +383,7 @@ describe("Interface Relationships - Update disconnect", () => {
             }
             RETURN count(*)
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -425,7 +428,8 @@ describe("Interface Relationships - Update disconnect", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -65,13 +65,14 @@ describe("Cypher autogenerate directive", () => {
             SET this0.name = $this0_name
             RETURN this0
             }
-            RETURN
-            this0 { .id, .name } AS this0"
+            RETURN [
+            this0 { .id, .name }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_name\\": \\"dan\\"
+                \\"this0_name\\": \\"dan\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -96,12 +97,13 @@ describe("Cypher autogenerate directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.name = $this_update_name
-            RETURN this { .id, .name } AS this"
+            RETURN collect(DISTINCT this { .id, .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_name\\": \\"dan\\"
+                \\"this_update_name\\": \\"dan\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

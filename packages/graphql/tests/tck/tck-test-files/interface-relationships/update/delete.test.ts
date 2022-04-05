@@ -90,7 +90,7 @@ describe("Interface Relationships - Update delete", () => {
             WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors.args.delete.actedIn[0].where.node.title_STARTS_WITH
             WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
             FOREACH(x IN this_delete_actedIn_Series0_to_delete | DETACH DELETE x)
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -109,7 +109,8 @@ describe("Interface Relationships - Update delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -159,7 +160,7 @@ describe("Interface Relationships - Update delete", () => {
             FOREACH(x IN this_delete_actedIn_Series0_actors0_to_delete | DETACH DELETE x)
             WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
             FOREACH(x IN this_delete_actedIn_Series0_to_delete | DETACH DELETE x)
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -189,7 +190,8 @@ describe("Interface Relationships - Update delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -234,7 +236,7 @@ describe("Interface Relationships - Update delete", () => {
             WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors.args.delete.actedIn[0].where.node.title_STARTS_WITH
             WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
             FOREACH(x IN this_delete_actedIn_Series0_to_delete | DETACH DELETE x)
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -270,7 +272,8 @@ describe("Interface Relationships - Update delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -323,7 +326,7 @@ describe("Interface Relationships - Update delete", () => {
             FOREACH(x IN this_delete_actedIn_Series0_actors0_to_delete | DETACH DELETE x)
             WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
             FOREACH(x IN this_delete_actedIn_Series0_to_delete | DETACH DELETE x)
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -368,7 +371,8 @@ describe("Interface Relationships - Update delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

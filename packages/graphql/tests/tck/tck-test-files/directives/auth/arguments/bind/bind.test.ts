@@ -85,15 +85,16 @@ describe("Cypher Auth Allow", () => {
             CALL apoc.util.validate(NOT(this0.id IS NOT NULL AND this0.id = $this0_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"user-id\\",
                 \\"this0_name\\": \\"bob\\",
-                \\"this0_auth_bind0_id\\": \\"id-01\\"
+                \\"this0_auth_bind0_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -155,8 +156,8 @@ describe("Cypher Auth Allow", () => {
             CALL apoc.util.validate(NOT(this0.id IS NOT NULL AND this0.id = $this0_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -167,7 +168,8 @@ describe("Cypher Auth Allow", () => {
                 \\"this0_posts0_node_creator0_node_id\\": \\"some-user-id\\",
                 \\"this0_posts0_node_creator0_node_auth_bind0_id\\": \\"id-01\\",
                 \\"this0_posts0_node_auth_bind0_creator_id\\": \\"id-01\\",
-                \\"this0_auth_bind0_id\\": \\"id-01\\"
+                \\"this0_auth_bind0_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -194,14 +196,15 @@ describe("Cypher Auth Allow", () => {
             SET this.id = $this_update_id
             WITH this
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"id-01\\",
                 \\"this_update_id\\": \\"not bound\\",
-                \\"this_auth_bind0_id\\": \\"id-01\\"
+                \\"this_auth_bind0_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -242,10 +245,10 @@ describe("Cypher Auth Allow", () => {
             CALL apoc.do.when(this_posts0_creator0 IS NOT NULL, \\\\\\"
             SET this_posts0_creator0.id = $this_update_posts0_creator0_id
             WITH this, this_posts0, this_posts0_creator0
-            CALL apoc.util.validate(NOT(this_posts0_creator0.id IS NOT NULL AND this_posts0_creator0.id = $this_posts0_creator0_auth_bind0_id), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
+            CALL apoc.util.validate(NOT(this_posts0_creator0.id IS NOT NULL AND this_posts0_creator0.id = $this_posts0_creator0_auth_bind0_id), \\\\\\\\\\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\\\\\\\\\", [0])
             RETURN count(*)
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_posts0:this_posts0, updateUsers: $updateUsers, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id})
-            YIELD value as _
+            YIELD value AS _
             WITH this, this_posts0
             CALL {
             	WITH this_posts0
@@ -256,10 +259,10 @@ describe("Cypher Auth Allow", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id})
-            YIELD value as _
+            YIELD value AS _
             WITH this
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -305,7 +308,8 @@ describe("Cypher Auth Allow", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -351,7 +355,7 @@ describe("Cypher Auth Allow", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -359,7 +363,8 @@ describe("Cypher Auth Allow", () => {
                 \\"this_id\\": \\"post-id\\",
                 \\"this_connect_creator0_node_id\\": \\"user-id\\",
                 \\"this_connect_creator0_nodePost0_bind_auth_bind0_creator_id\\": \\"id-01\\",
-                \\"this_connect_creator0_nodeUser1_bind_auth_bind0_id\\": \\"id-01\\"
+                \\"this_connect_creator0_nodeUser1_bind_auth_bind0_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -403,7 +408,7 @@ describe("Cypher Auth Allow", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -423,7 +428,8 @@ describe("Cypher Auth Allow", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

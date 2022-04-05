@@ -209,7 +209,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     where?: ${node.name}Where;
                     ${node.relationFields.length ? `delete?: ${node.name}DeleteInput` : ""}
                     context?: any;
-                    rootValue: any;
+                    rootValue?: any;
                 }): Promise<{ nodesDeleted: number; relationshipsDeleted: number; }>
                 public aggregate(args: {
                     where?: ${node.name}Where;

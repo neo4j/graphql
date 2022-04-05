@@ -124,14 +124,15 @@ describe("Cypher Union", () => {
             MERGE (this0)-[:SEARCH]->(this0_search_Genre0_node)
             RETURN this0
             }
-            RETURN
-            this0 { .title } AS this0"
+            RETURN [
+            this0 { .title }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_title\\": \\"some movie\\",
-                \\"this0_search_Genre0_node_name\\": \\"some genre\\"
+                \\"this0_search_Genre0_node_name\\": \\"some genre\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -157,12 +158,13 @@ describe("Cypher Union", () => {
             CREATE (this_create_search_Genre0_node:Genre)
             SET this_create_search_Genre0_node.name = $this_create_search_Genre0_node_name
             MERGE (this)-[:SEARCH]->(this_create_search_Genre0_node)
-            RETURN this { .title } AS this"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_create_search_Genre0_node_name\\": \\"some genre\\"
+                \\"this_create_search_Genre0_node_name\\": \\"some genre\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -208,14 +210,15 @@ describe("Cypher Union", () => {
             }
             RETURN this0
             }
-            RETURN
-            this0 { .title } AS this0"
+            RETURN [
+            this0 { .title }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_title\\": \\"some movie\\",
-                \\"this0_search_Genre_connect0_node_name\\": \\"some genre\\"
+                \\"this0_search_Genre_connect0_node_name\\": \\"some genre\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -256,8 +259,8 @@ describe("Cypher Union", () => {
             SET this_search_Genre0.name = $this_update_search_Genre0_name
             RETURN count(*)
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name})
-            YIELD value as _
-            RETURN this { .title } AS this"
+            YIELD value AS _
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -292,7 +295,8 @@ describe("Cypher Union", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -329,7 +333,7 @@ describe("Cypher Union", () => {
             )
             RETURN count(*)
             }
-            RETURN this { .title } AS this"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -355,7 +359,8 @@ describe("Cypher Union", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -392,7 +397,7 @@ describe("Cypher Union", () => {
             )
             RETURN count(*)
             }
-            RETURN this { .title } AS this"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -414,7 +419,8 @@ describe("Cypher Union", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -453,13 +459,14 @@ describe("Cypher Union", () => {
             	)
             	RETURN count(*)
             }
-            RETURN this { .title } AS this"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_title\\": \\"some movie\\",
-                \\"this_connect_search_Genre0_node_name\\": \\"some genre\\"
+                \\"this_connect_search_Genre0_node_name\\": \\"some genre\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -491,7 +498,7 @@ describe("Cypher Union", () => {
             WHERE this_delete_search_Genre0.name = $updateMovies.args.delete.search.Genre[0].where.node.name
             WITH this, collect(DISTINCT this_delete_search_Genre0) as this_delete_search_Genre0_to_delete
             FOREACH(x IN this_delete_search_Genre0_to_delete | DETACH DELETE x)
-            RETURN this { .title } AS this"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -513,7 +520,8 @@ describe("Cypher Union", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

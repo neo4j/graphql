@@ -139,8 +139,8 @@ describe("Cypher Duration", () => {
             SET this0.duration = $this0_duration
             RETURN this0
             }
-            RETURN
-            this0 { .duration } AS this0"
+            RETURN [
+            this0 { .duration }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -156,7 +156,8 @@ describe("Cypher Duration", () => {
                         \\"low\\": 0,
                         \\"high\\": 0
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -181,7 +182,7 @@ describe("Cypher Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.duration = $this_update_duration
-            RETURN this { .id, .duration } AS this"
+            RETURN collect(DISTINCT this { .id, .duration }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -197,7 +198,8 @@ describe("Cypher Duration", () => {
                         \\"low\\": 0,
                         \\"high\\": 0
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

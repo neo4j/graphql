@@ -17,11 +17,13 @@
  * limitations under the License.
  */
 
+import { EventEmitter } from "events";
 import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Driver, Integer } from "neo4j-driver";
 import { Node, Relationship } from "./classes";
 import { RelationshipQueryDirectionOption } from "./constants";
+import { SubscriptionsEvent } from "./subscriptions/subscriptions-event";
 
 export { Node } from "./classes";
 
@@ -44,9 +46,11 @@ export interface Context {
     relationships: Relationship[];
     schema: GraphQLSchema;
     auth?: AuthContext;
+    callbacks?: Neo4jGraphQLCallbacks;
     queryOptions?: CypherQueryOptions;
     plugins?: Neo4jGraphQLPlugins;
     jwt?: JwtPayload;
+    subscriptionsEnabled: boolean;
     [k: string]: any;
 }
 
@@ -109,6 +113,11 @@ export interface Unique {
     constraintName: string;
 }
 
+export interface Callback {
+    operations: CallbackOperations[];
+    name: string;
+}
+
 /**
  * Representation a ObjectTypeDefinitionNode field.
  */
@@ -163,6 +172,7 @@ export interface PrimitiveField extends BaseField {
     autogenerate?: boolean;
     defaultValue?: any;
     coalesceValue?: any;
+    callback?: Callback;
 }
 
 export type CustomScalarField = BaseField;
@@ -268,6 +278,8 @@ export interface DeleteInfo {
 
 export type TimeStampOperations = "CREATE" | "UPDATE";
 
+export type CallbackOperations = "CREATE" | "UPDATE";
+
 export enum CypherRuntime {
     INTERPRETED = "interpreted",
     SLOTTED = "slotted",
@@ -341,8 +353,15 @@ export interface Neo4jGraphQLAuthPlugin {
     decode<T>(token: string): Promise<T | undefined>;
 }
 
+export interface Neo4jGraphQLSubscriptionsPlugin {
+    events: EventEmitter;
+
+    publish(eventMeta: SubscriptionsEvent): Promise<void>;
+}
+
 export interface Neo4jGraphQLPlugins {
     auth?: Neo4jGraphQLAuthPlugin;
+    subscriptions?: Neo4jGraphQLSubscriptionsPlugin;
 }
 
 export interface JwtPayload {
@@ -355,3 +374,11 @@ export interface JwtPayload {
     iat?: number | undefined;
     jti?: string | undefined;
 }
+
+export type CallbackReturnValue = string | number | boolean | undefined | null;
+
+export type Neo4jGraphQLCallback = (
+    parent: Record<string, unknown>
+) => CallbackReturnValue | Promise<CallbackReturnValue>;
+
+export type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;

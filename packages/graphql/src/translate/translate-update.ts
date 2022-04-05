@@ -24,17 +24,23 @@ import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import translateTopLevelMatch from "./translate-top-level-match";
-import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
-import { upperFirst } from "../utils/upper-first";
+import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
+import { CallbackBucket } from "../classes/CallbackBucket";
 
-function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
+export default async function translateUpdate({
+    node,
+    context,
+}: {
+    node: Node;
+    context: Context;
+}): Promise<[string, any]> {
     const { resolveTree } = context;
     const updateInput = resolveTree.args.update;
     const connectInput = resolveTree.args.connect;
@@ -43,6 +49,13 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const deleteInput = resolveTree.args.delete;
     const connectOrCreateInput = resolveTree.args.connectOrCreate;
     const varName = "this";
+    const callbackBucket: CallbackBucket = new CallbackBucket(context);
+
+    const withVars = [varName];
+
+    if (context.subscriptionsEnabled) {
+        withVars.push(META_CYPHER_VARIABLE);
+    }
 
     let matchAndWhereStr = "";
     let updateStr = "";
@@ -70,11 +83,12 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     if (updateInput) {
         const updateAndParams = createUpdateAndParams({
             context,
+            callbackBucket,
             node,
             updateInput,
             varName,
             parentVar: varName,
-            withVars: [varName],
+            withVars,
             parameterPrefix: `${resolveTree.name}.args.update`,
             includeRelationshipValidation: true,
         });
@@ -114,7 +128,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     relationField,
                     value: entry[1],
                     varName: `${varName}_disconnect_${entry[0]}`,
-                    withVars: [varName],
+                    withVars,
                     parentNode: node,
                     parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}`,
                     labelOverride: "",
@@ -130,7 +144,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                         relationField,
                         value: relationField.union ? entry[1][refNode.name] : entry[1],
                         varName: `${varName}_disconnect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
-                        withVars: [varName],
+                        withVars,
                         parentNode: node,
                         parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}${
                             relationField.union ? `.${refNode.name}` : ""
@@ -170,12 +184,13 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             if (relationField.interface) {
                 const connectAndParams = createConnectAndParams({
                     context,
+                    callbackBucket,
                     parentVar: varName,
                     refNodes,
                     relationField,
                     value: entry[1],
                     varName: `${varName}_connect_${entry[0]}`,
-                    withVars: [varName],
+                    withVars,
                     parentNode: node,
                     labelOverride: "",
                     includeRelationshipValidation: !!assumeReconnecting,
@@ -186,12 +201,13 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 refNodes.forEach((refNode) => {
                     const connectAndParams = createConnectAndParams({
                         context,
+                        callbackBucket,
                         parentVar: varName,
                         refNodes: [refNode],
                         relationField,
                         value: relationField.union ? entry[1][refNode.name] : entry[1],
                         varName: `${varName}_connect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
-                        withVars: [varName],
+                        withVars,
                         parentNode: node,
                         labelOverride: relationField.union ? refNode.name : "",
                     });
@@ -254,10 +270,11 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
                     const createAndParams = createCreateAndParams({
                         context,
+                        callbackBucket,
                         node: refNode,
                         input: create.node,
                         varName: nodeName,
-                        withVars: [varName, nodeName],
+                        withVars: [...withVars, nodeName],
                         includeRelationshipValidation: false,
                     });
                     createStrs.push(createAndParams[0]);
@@ -274,6 +291,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                             varName: propertiesName,
                             relationship,
                             operation: "CREATE",
+                            callbackBucket,
                         });
                         createStrs.push(setA[0]);
                         cypherParams = { ...cypherParams, ...setA[1] };
@@ -290,7 +308,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             deleteInput,
             varName: `${varName}_delete`,
             parentVar: varName,
-            withVars: [varName],
+            withVars,
             parameterPrefix: `${resolveTree.name}.args.delete`,
         });
         [deleteStr] = deleteAndParams;
@@ -323,17 +341,17 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             }
 
             refNodes.forEach((refNode) => {
-                const connectAndParams = createConnectOrCreateAndParams({
+                const { cypher, params } = createConnectOrCreateAndParams({
                     input: input[refNode.name] || input, // Deals with different input from update -> connectOrCreate
                     varName: `${varName}_connectOrCreate_${key}${relationField.union ? `_${refNode.name}` : ""}`,
                     parentVar: varName,
                     relationField,
                     refNode,
                     context,
-                    withVars: [varName],
+                    withVars,
                 });
-                connectStrs.push(connectAndParams[0]);
-                cypherParams = { ...cypherParams, ...connectAndParams[1] };
+                connectStrs.push(cypher);
+                cypherParams = { ...cypherParams, ...params };
             });
         });
     }
@@ -363,6 +381,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     field: connectionField,
                     context,
                     nodeVariable: varName,
+                    withVars,
                 });
                 connectionStrs.push(connection[0]);
                 cypherParams = { ...cypherParams, ...connection[1] };
@@ -378,8 +397,8 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     resolveTree: interfaceResolveTree,
                     field: relationshipField,
                     context,
-                    node,
                     nodeVariable: varName,
+                    withVars,
                 });
                 interfaceStrs.push(interfaceProjection.cypher);
                 cypherParams = { ...cypherParams, ...interfaceProjection.params };
@@ -387,31 +406,61 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         }
     }
 
-    const returnStatement = nodeProjection
-        ? `RETURN ${varName} ${projStr} AS ${varName}`
-        : `RETURN 'Query cannot conclude with CALL'`;
+    const returnStatement = generateUpdateReturnStatement(varName, projStr, context.subscriptionsEnabled);
 
     const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";
 
-    const cypher = [
+    let cypher = [
+        ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
         matchAndWhereStr,
         updateStr,
         connectStrs.join("\n"),
         disconnectStrs.join("\n"),
         createStrs.join("\n"),
         deleteStr,
-        ...(connectionStrs.length || projAuth ? [`WITH ${varName}`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
+        ...(connectionStrs.length || projAuth ? [`WITH ${withVars.join(", ")}`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
         ...(projAuth ? [projAuth] : []),
-        ...(relationshipValidationStr ? [`WITH ${varName}`, relationshipValidationStr] : []),
+        ...(relationshipValidationStr ? [`WITH ${withVars.join(", ")}`, relationshipValidationStr] : []),
         ...connectionStrs,
         ...interfaceStrs,
+        ...(context.subscriptionsEnabled ? [`WITH ${withVars.join(", ")}`, `UNWIND ${META_CYPHER_VARIABLE} AS m`] : []),
         returnStatement,
-    ];
+    ]
+        .filter(Boolean)
+        .join("\n");
+
+    let resolvedCallbacks = {};
+
+    ({ cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({ cypher }));
 
     return [
-        cypher.filter(Boolean).join("\n"),
-        { ...cypherParams, ...(Object.keys(updateArgs).length ? { [resolveTree.name]: { args: updateArgs } } : {}) },
+        cypher,
+        {
+            ...cypherParams,
+            ...(Object.keys(updateArgs).length ? { [resolveTree.name]: { args: updateArgs } } : {}),
+            resolvedCallbacks,
+        },
     ];
 }
 
-export default translateUpdate;
+function generateUpdateReturnStatement(
+    varName: string | undefined,
+    projStr: string | undefined,
+    subscriptionsEnabled: boolean
+): string {
+    const statements: string[] = [];
+
+    if (varName && projStr) {
+        statements.push(`collect(DISTINCT ${varName} ${projStr}) AS data`);
+    }
+
+    if (subscriptionsEnabled) {
+        statements.push(`collect(DISTINCT m) as ${META_CYPHER_VARIABLE}`);
+    }
+
+    if (statements.length === 0) {
+        statements.push("'Query cannot conclude with CALL'");
+    }
+
+    return `RETURN ${statements.join(", ")}`;
+}

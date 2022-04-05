@@ -32,10 +32,9 @@ import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
-import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
-import { CypherStatement } from "../types";
-import { isString } from "../../utils/utils";
+import { asArray, isString, removeDuplicates } from "../../utils/utils";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";
+import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 
 function createConnectionAndParams({
     resolveTree,
@@ -43,17 +42,20 @@ function createConnectionAndParams({
     context,
     nodeVariable,
     parameterPrefix,
+    withVars,
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
     context: Context;
     nodeVariable: string;
     parameterPrefix?: string;
-}): CypherStatement {
+    withVars?: string[];
+}): [string, Record<string, any>] {
     let globalParams = {};
-    let nestedConnectionFieldParams;
+    let nestedConnectionFieldParams: any;
 
-    let subquery = ["CALL {", `WITH ${nodeVariable}`];
+    const withVarsAndNodeName = removeDuplicates([...asArray(withVars), nodeVariable]);
+    let subquery = ["CALL {", `WITH ${withVarsAndNodeName.join(", ")}`];
 
     const sortInput = (resolveTree.args.sort ?? []) as ConnectionSortArg[];
     // Fields of {edge, node} to sort on. A simple resolve tree will be added if not in selection set
@@ -181,6 +183,7 @@ function createConnectionAndParams({
                                 parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                                     resolveTree.alias
                                 }.edges.node`,
+                                withVars: withVarsAndNodeName,
                             });
                             nestedSubqueries.push(nestedConnection[0]);
 

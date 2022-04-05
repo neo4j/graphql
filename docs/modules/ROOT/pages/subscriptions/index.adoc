@@ -1,0 +1,18 @@
+[[subscriptions]]
+= Subscriptions (Beta)
+
+WARNING: Subscriptions are only available as a beta its API may change in the future. It is not recommended to use subscriptions in production environments.
+
+
+GraphQL subscriptions add real-time capabilities to your API. This allows you to listen for changes to the database.
+
+The following subscriptions are available when using `@neo4j/graphql`:
+
+* **xref::subscriptions/events/create.adoc[Create]** - Listen for newly created nodes.
+* **xref::subscriptions/events/update.adoc[Update]** - Listen for changes to existing nodes.
+* **xref::subscriptions/events/delete.adoc[Delete]** - Listen for deleted nodes.
+
+All events will be triggered individually, with one event per node created, updated or deleted, even in events caused by the same mutation. 
+
+NOTE: Only changes made through `@neo4j/graphql` will trigger events. Changes made directly to the database or using the xref::type-definitions/cypher.adoc[`@cypher` directive]
+will **not** trigger any event.

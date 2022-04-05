@@ -26,7 +26,7 @@ import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 
-describe("connectorcreate with @id", () => {
+describe("connect-or-create with @id", () => {
     let driver: Driver;
     let session: Session;
     let typeDefs: DocumentNode;

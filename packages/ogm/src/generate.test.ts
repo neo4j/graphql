@@ -241,7 +241,7 @@ describe("generate", () => {
                 where?: UserWhere;
 
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: UserWhere;
@@ -482,7 +482,7 @@ describe("generate", () => {
                 where?: UserWhere;
 
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: UserWhere;
@@ -722,7 +722,7 @@ describe("generate", () => {
                 where?: UserWhere;
 
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: UserWhere;
@@ -1308,7 +1308,7 @@ describe("generate", () => {
                 where?: MovieWhere;
                 delete?: MovieDeleteInput;
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: MovieWhere;
@@ -1358,7 +1358,7 @@ describe("generate", () => {
                 where?: PersonWhere;
 
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: PersonWhere;

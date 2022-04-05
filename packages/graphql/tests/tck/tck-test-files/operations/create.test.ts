@@ -68,13 +68,14 @@ describe("Cypher Create", () => {
             SET this0.id = $this0_id
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\"
+                \\"this0_id\\": \\"1\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -106,15 +107,16 @@ describe("Cypher Create", () => {
             SET this1.id = $this1_id
             RETURN this1
             }
-            RETURN
-            this0 { .id } AS this0,
-            this1 { .id } AS this1"
+            RETURN [
+            this0 { .id },
+            this1 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
-                \\"this1_id\\": \\"2\\"
+                \\"this1_id\\": \\"2\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -159,9 +161,9 @@ describe("Cypher Create", () => {
             MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
             RETURN this1
             }
-            RETURN
-            this0 { .id } AS this0,
-            this1 { .id } AS this1"
+            RETURN [
+            this0 { .id },
+            this1 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -169,7 +171,8 @@ describe("Cypher Create", () => {
                 \\"this0_id\\": \\"1\\",
                 \\"this0_actors0_node_name\\": \\"actor 1\\",
                 \\"this1_id\\": \\"2\\",
-                \\"this1_actors0_node_name\\": \\"actor 2\\"
+                \\"this1_actors0_node_name\\": \\"actor 2\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -232,9 +235,9 @@ describe("Cypher Create", () => {
             MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
             RETURN this1
             }
-            RETURN
-            this0 { .id } AS this0,
-            this1 { .id } AS this1"
+            RETURN [
+            this0 { .id },
+            this1 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -244,7 +247,8 @@ describe("Cypher Create", () => {
                 \\"this0_actors0_node_movies0_node_id\\": \\"10\\",
                 \\"this1_id\\": \\"2\\",
                 \\"this1_actors0_node_name\\": \\"actor 2\\",
-                \\"this1_actors0_node_movies0_node_id\\": \\"20\\"
+                \\"this1_actors0_node_movies0_node_id\\": \\"20\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -283,14 +287,15 @@ describe("Cypher Create", () => {
             }
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
-                \\"this0_actors_connect0_node_name\\": \\"Dan\\"
+                \\"this0_actors_connect0_node_name\\": \\"Dan\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -339,14 +344,14 @@ describe("Cypher Create", () => {
             }
             RETURN this0
             }
-            RETURN
+            RETURN [
             this0 { .name, movies: [ (this0)-[:ACTED_IN]->(this0_movies:Movie)   | this0_movies { actorsConnection: apoc.cypher.runFirstColumn(\\"CALL {
             WITH this0_movies
             MATCH (this0_movies)<-[this0_movies_acted_in_relationship:ACTED_IN]-(this0_movies_actor:Actor)
             WHERE this0_movies_actor.name = $projection_movies_actorsConnection.args.where.node.name
             WITH collect({ node: { name: this0_movies_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
-            } RETURN actorsConnection\\", { this0_movies: this0_movies, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }, false) } ] } AS this0"
+            } RETURN actorsConnection\\", { this0_movies: this0_movies, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }, false) } ] }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -362,6 +367,7 @@ describe("Cypher Create", () => {
                         }
                     }
                 },
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
                     \\"roles\\": []
