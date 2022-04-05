@@ -6300,9 +6300,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:7.0.0":
-  version: 7.0.0
-  resolution: "concurrently@npm:7.0.0"
+"concurrently@npm:7.1.0":
+  version: 7.1.0
+  resolution: "concurrently@npm:7.1.0"
   dependencies:
     chalk: ^4.1.0
     date-fns: ^2.16.1
@@ -6314,7 +6314,7 @@ __metadata:
     yargs: ^16.2.0
   bin:
     concurrently: dist/bin/concurrently.js
-  checksum: 1be78f24bf814f097adaf2e61a37563eb73f12272bbeda90e3e616a23525f793268e22a3c6aedf34e5bad44459f7c30ee053c617905416ba11ce2bee55f089a5
+  checksum: 723996afc73af7ea914a03726c75b63be6ce83f0825b0bc54de0568ba89490e217ca88523f251fe1e5c30ee2780572dce830b530ef35e435e64c1f94cfd4e4af
   languageName: node
   linkType: hard
 
@@ -13720,7 +13720,7 @@ __metadata:
     "@tsconfig/node12": 1.0.9
     "@typescript-eslint/eslint-plugin": 5.17.0
     "@typescript-eslint/parser": 5.17.0
-    concurrently: 7.0.0
+    concurrently: 7.1.0
     dotenv: 16.0.0
     eslint: 8.12.0
     eslint-config-airbnb-typescript: 16.2.0
