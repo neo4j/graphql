@@ -18,33 +18,8 @@
  */
 
 import { GraphQLEnumType } from "graphql";
-import { RelationshipQueryDirectionOption } from "../../constants";
+import { RelationshipQueryDirectionOption } from "../../../constants";
 
-export const CallbackOperationEnum = new GraphQLEnumType({
-    name: "CallbackOperation",
-    values: {
-        CREATE: {},
-        UPDATE: {},
-    },
-});
-
-export const ExcludeOperationEnum = new GraphQLEnumType({
-    name: "ExcludeOperation",
-    values: {
-        CREATE: {},
-        READ: {},
-        UPDATE: {},
-        DELETE: {},
-    },
-});
-
-export const RelationshipDirectionEnum = new GraphQLEnumType({
-    name: "RelationshipDirection",
-    values: {
-        IN: {},
-        OUT: {},
-    },
-});
 export const RelationshipQueryDirectionEnum = new GraphQLEnumType({
     name: "RelationshipQueryDirection",
     values: {
@@ -52,21 +27,5 @@ export const RelationshipQueryDirectionEnum = new GraphQLEnumType({
         [RelationshipQueryDirectionOption.DEFAULT_UNDIRECTED]: {},
         [RelationshipQueryDirectionOption.DIRECTED_ONLY]: {},
         [RelationshipQueryDirectionOption.UNDIRECTED_ONLY]: {},
-    },
-});
-
-export const SortDirection = new GraphQLEnumType({
-    name: "SortDirection",
-    values: {
-        ASC: {},
-        DESC: {},
-    },
-});
-
-export const TimestampOperationEnum = new GraphQLEnumType({
-    name: "TimestampOperation",
-    values: {
-        CREATE: {},
-        UPDATE: {},
     },
 });

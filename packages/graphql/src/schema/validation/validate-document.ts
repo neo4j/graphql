@@ -31,15 +31,15 @@ import {
     Kind,
 } from "graphql";
 import pluralize from "pluralize";
-import * as scalars from "../types/scalars";
-import * as enums from "./enums";
-import * as directives from "./directives";
-import { Point } from "../types/objects/Point";
-import { CartesianPoint } from "../types/objects/CartesianPoint";
-import { PointInput } from "../types/input-objects/PointInput";
-import { CartesianPointInput } from "../types/input-objects/CartesianPointInput";
-import { PointDistance } from "../types/input-objects/PointDistance";
-import { CartesianPointDistance } from "../types/input-objects/CartesianPointDistance";
+import * as scalars from "../../graphql/output/scalars";
+import * as enums from "../../graphql/output/enums";
+import * as directives from "../../graphql/input/directives";
+import { Point } from "../../graphql/output/objects/Point";
+import { CartesianPoint } from "../../graphql/output/objects/CartesianPoint";
+import { PointInput } from "../../graphql/output/input-objects/PointInput";
+import { CartesianPointInput } from "../../graphql/output/input-objects/CartesianPointInput";
+import { PointDistance } from "../../graphql/output/input-objects/PointDistance";
+import { CartesianPointDistance } from "../../graphql/output/input-objects/CartesianPointDistance";
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import { isRootType } from "../../utils/is-root-type";
 
