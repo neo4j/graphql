@@ -87,7 +87,7 @@ type AuthableField =
     | PointField
     | CypherField;
 
-type ConstrainableField = PrimitiveField | TemporalField | PointField;
+type ConstrainableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | PointField;
 
 export type RootTypeFieldNames = {
     create: string;
@@ -95,11 +95,27 @@ export type RootTypeFieldNames = {
     update: string;
     delete: string;
     aggregate: string;
+    subscribe: {
+        created: string;
+        updated: string;
+        deleted: string;
+    };
+};
+
+export type AggregateTypeNames = {
+    selection: string;
+    input: string;
 };
 
 export type MutationResponseTypeNames = {
     create: string;
     update: string;
+};
+
+export type SubscriptionEvents = {
+    create: string;
+    update: string;
+    delete: string;
 };
 
 class Node extends GraphElement {
@@ -117,6 +133,7 @@ class Node extends GraphElement {
     public auth?: Auth;
     public description?: string;
     public queryOptions?: QueryOptionsDirective;
+    public singular: string;
     public plural: string;
 
     constructor(input: NodeConstructor) {
@@ -134,19 +151,8 @@ class Node extends GraphElement {
         this.fulltextDirective = input.fulltextDirective;
         this.auth = input.auth;
         this.queryOptions = input.queryOptionsDirective;
+        this.singular = this.generateSingular();
         this.plural = this.generatePlural();
-    }
-
-    private generatePlural(): string {
-        const name = this.nodeDirective?.plural || this.name;
-
-        const re = /^(_+).+/;
-        const match = re.exec(name);
-        const leadingUnderscores = match?.[1] || "";
-
-        const plural = this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
-
-        return `${leadingUnderscores}${plural}`;
     }
 
     // Fields you can set in a create or update mutation
@@ -179,11 +185,21 @@ class Node extends GraphElement {
     }
 
     public get constrainableFields(): ConstrainableField[] {
-        return [...this.primitiveFields, ...this.temporalFields, ...this.pointFields];
+        return [
+            ...this.primitiveFields,
+            ...this.scalarFields,
+            ...this.enumFields,
+            ...this.temporalFields,
+            ...this.pointFields,
+        ];
     }
 
     public get uniqueFields(): ConstrainableField[] {
         return this.constrainableFields.filter((field) => field.unique);
+    }
+
+    private get pascalCaseSingular(): string {
+        return upperFirst(this.singular);
     }
 
     private get pascalCasePlural(): string {
@@ -199,6 +215,18 @@ class Node extends GraphElement {
             update: `update${pascalCasePlural}`,
             delete: `delete${pascalCasePlural}`,
             aggregate: `${this.plural}Aggregate`,
+            subscribe: {
+                created: `${this.singular}Created`,
+                updated: `${this.singular}Updated`,
+                deleted: `${this.singular}Deleted`,
+            },
+        };
+    }
+
+    public get aggregateTypeNames(): AggregateTypeNames {
+        return {
+            selection: `${this.name}AggregateSelection`,
+            input: `${this.name}AggregateSelectionInput`,
         };
     }
 
@@ -208,6 +236,26 @@ class Node extends GraphElement {
         return {
             create: `Create${pascalCasePlural}MutationResponse`,
             update: `Update${pascalCasePlural}MutationResponse`,
+        };
+    }
+
+    public get subscriptionEventTypeNames(): SubscriptionEvents {
+        const pascalCaseSingular = this.pascalCaseSingular;
+
+        return {
+            create: `${pascalCaseSingular}CreatedEvent`,
+            update: `${pascalCaseSingular}UpdatedEvent`,
+            delete: `${pascalCaseSingular}DeletedEvent`,
+        };
+    }
+
+    public get subscriptionEventPayloadFieldNames(): SubscriptionEvents {
+        const pascalCaseSingular = this.pascalCaseSingular;
+
+        return {
+            create: `created${pascalCaseSingular}`,
+            update: `updated${pascalCaseSingular}`,
+            delete: `deleted${pascalCaseSingular}`,
         };
     }
 
@@ -221,6 +269,25 @@ class Node extends GraphElement {
 
     public getMainLabel(): string {
         return this.nodeDirective?.label || this.name;
+    }
+
+    private generateSingular(): string {
+        const singular = camelcase(this.name);
+
+        return `${this.leadingUnderscores(this.name)}${singular}`;
+    }
+
+    private generatePlural(): string {
+        const name = this.nodeDirective?.plural || this.name;
+        const plural = this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
+
+        return `${this.leadingUnderscores(name)}${plural}`;
+    }
+
+    private leadingUnderscores(name: string): string {
+        const re = /^(_+).+/;
+        const match = re.exec(name);
+        return match?.[1] || "";
     }
 }
 

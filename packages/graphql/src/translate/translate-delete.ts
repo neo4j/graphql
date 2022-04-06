@@ -80,7 +80,7 @@ export default function translateDelete({ context, node }: { context: Context; n
         };
     }
 
-    const eventMeta = createEventMeta({ event: "delete", nodeVariable: varName });
+    const eventMeta = createEventMeta({ event: "delete", nodeVariable: varName, typename: node.name });
 
     const cypher = [
         ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),

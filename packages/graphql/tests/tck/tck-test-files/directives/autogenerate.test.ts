@@ -71,7 +71,8 @@ describe("Cypher autogenerate directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_name\\": \\"dan\\"
+                \\"this0_name\\": \\"dan\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -101,7 +102,8 @@ describe("Cypher autogenerate directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_name\\": \\"dan\\"
+                \\"this_update_name\\": \\"dan\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

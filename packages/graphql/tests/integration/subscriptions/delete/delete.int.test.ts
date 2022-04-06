@@ -62,7 +62,7 @@ describe("Subscriptions delete", () => {
             config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
     });
 
@@ -103,12 +103,14 @@ describe("Subscriptions delete", () => {
                 timestamp: expect.any(Number),
                 event: "delete",
                 properties: { old: { id: "1" }, new: undefined },
+                typename: typeMovie.name,
             },
             {
                 id: expect.any(Number),
                 timestamp: expect.any(Number),
                 event: "delete",
                 properties: { old: { id: "2" }, new: undefined },
+                typename: typeMovie.name,
             },
         ]);
     });
@@ -145,30 +147,35 @@ describe("Subscriptions delete", () => {
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "1" }, new: undefined },
+                    typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "3" }, new: undefined },
+                    typename: typeActor.name,
                 },
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "2" }, new: undefined },
+                    typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "5" }, new: undefined },
+                    typename: typeActor.name,
                 },
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "4" }, new: undefined },
+                    typename: typeActor.name,
                 },
             ])
         );
@@ -219,24 +226,28 @@ describe("Subscriptions delete", () => {
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "1" }, new: undefined },
+                    typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "3" }, new: undefined },
+                    typename: typeActor.name,
                 },
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "2" }, new: undefined },
+                    typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "delete",
                     properties: { old: { id: "4" }, new: undefined },
+                    typename: typeActor.name,
                 },
             ])
         );

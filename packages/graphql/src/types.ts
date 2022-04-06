@@ -46,6 +46,7 @@ export interface Context {
     relationships: Relationship[];
     schema: GraphQLSchema;
     auth?: AuthContext;
+    callbacks?: Neo4jGraphQLCallbacks;
     queryOptions?: CypherQueryOptions;
     plugins?: Neo4jGraphQLPlugins;
     jwt?: JwtPayload;
@@ -77,7 +78,6 @@ export type Auth = {
 export type FullTextIndex = {
     name: string;
     fields: string[];
-    defaultThreshold?: number;
 };
 
 export type FullText = {
@@ -112,6 +112,11 @@ export interface TypeMeta {
 
 export interface Unique {
     constraintName: string;
+}
+
+export interface Callback {
+    operations: CallbackOperations[];
+    name: string;
 }
 
 /**
@@ -168,6 +173,7 @@ export interface PrimitiveField extends BaseField {
     autogenerate?: boolean;
     defaultValue?: any;
     coalesceValue?: any;
+    callback?: Callback;
 }
 
 export type CustomScalarField = BaseField;
@@ -273,6 +279,8 @@ export interface DeleteInfo {
 
 export type TimeStampOperations = "CREATE" | "UPDATE";
 
+export type CallbackOperations = "CREATE" | "UPDATE";
+
 export enum CypherRuntime {
     INTERPRETED = "interpreted",
     SLOTTED = "slotted",
@@ -367,3 +375,11 @@ export interface JwtPayload {
     iat?: number | undefined;
     jti?: string | undefined;
 }
+
+export type CallbackReturnValue = string | number | boolean | undefined | null;
+
+export type Neo4jGraphQLCallback = (
+    parent: Record<string, unknown>
+) => CallbackReturnValue | Promise<CallbackReturnValue>;
+
+export type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;

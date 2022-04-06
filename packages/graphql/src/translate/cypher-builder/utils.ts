@@ -17,32 +17,27 @@
  * limitations under the License.
  */
 
-import { CypherStatement, CypherParams } from "../types";
-import { stringifyObject } from "../utils/stringify-object";
+import { Param } from "./references/Param";
+
+export function convertToCypherParams<T>(original: Record<string, T>): Record<string, Param<T>> {
+    return Object.entries(original).reduce((acc, [key, value]) => {
+        acc[key] = new Param(value);
+        return acc;
+    }, {});
+}
 
 /** Generates a string to be used as parameter key */
 export function generateParameterKey(prefix: string, key: string): string {
     return `${prefix}_${key}`;
 }
 
-/** Serializes an object and splits between the serialized statement and params */
-export function serializeParameters(keyprefix: string, parameters: CypherParams | undefined): CypherStatement {
-    if (!parameters) return ["", {}];
-
-    const cypherParameters: CypherParams = {};
-    const nodeParameters: Record<string, string> = {};
-
-    for (const [key, value] of Object.entries(parameters)) {
-        const paramKey = generateParameterKey(keyprefix, key);
-        cypherParameters[paramKey] = value;
-        nodeParameters[key] = `$${paramKey}`;
-    }
-
-    return [stringifyObject(nodeParameters), cypherParameters];
-}
-
 /** Adds spaces to the left of the string, returns empty string is variable is undefined or empty string */
 export function padLeft(str: string | undefined): string {
     if (!str) return "";
     return ` ${str}`;
+}
+
+export function escapeLabel(label: string): string {
+    const escapedLabel = label.replace(/`/g, "``");
+    return `\`${escapedLabel}\``;
 }
