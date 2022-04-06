@@ -69,7 +69,6 @@ You can use the `@fulltext` directive to add a https://neo4j.com/docs/cypher-man
 input FullTextInput {
   name: String!
   fields: [String]!
-  defaultThreshold: Int
 }
 
 """
@@ -113,17 +112,6 @@ Here we use the `fulltext` key, and the phrase is using https://lucene.apache.or
 ----
 query {
     products(fulltext: { ProductName: { phrase: "beer OR cerveza" } }) {
-        name
-    }
-}
-----
-
-You can also, optionally, specify the score for matching:
-
-[source, graphql, indent=0]
-----
-query {
-    products(fulltext: { ProductName: { phrase: "beer OR cerveza", score_EQUAL: 10 } }) {
         name
     }
 }

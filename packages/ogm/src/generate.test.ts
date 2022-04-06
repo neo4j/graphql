@@ -487,7 +487,6 @@ describe("generate", () => {
 
             export type UserUserNameFulltext = {
               phrase: Scalars[\\"String\\"];
-              score_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             export type UserWhere = {
