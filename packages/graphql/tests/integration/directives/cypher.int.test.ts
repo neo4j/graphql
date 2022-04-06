@@ -1079,10 +1079,10 @@ describe("cypher", () => {
                 await session.close();
             });
 
-            test.only("should return __typename", async () => {
+            test("should return __typename", async () => {
                 const source = `
                         query {
-                            users (where: { id: "${userId}"}) {
+                            users (where: { id: "${userId}" }) {
                                 updates {
                                     __typename
                                 }

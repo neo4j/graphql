@@ -161,7 +161,7 @@ describe("Cypher directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            RETURN this { randomNumber:  apoc.cypher.runFirstColumn(\\"RETURN rand()\\", {this: this, auth: $auth}, false) | this_randomNumber } as this"
+            RETURN this { randomNumber:  apoc.cypher.runFirstColumn(\\"RETURN rand()\\", {this: this, auth: $auth}, false) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -346,7 +346,7 @@ describe("Cypher directive", () => {
         `);
     });
 
-    test("Union directive - __typename only", async () => {
+    test("Union directive - querying only __typename", async () => {
         const query = gql`
             {
                 actors {

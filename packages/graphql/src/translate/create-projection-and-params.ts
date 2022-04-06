@@ -208,21 +208,15 @@ function createProjectionAndParams({
 
             if (referenceUnion) {
                 const fieldFieldsKeys = Object.keys(fieldFields);
-                const hasSeveralFieldFields = fieldFieldsKeys.length > 1;
-                const hasOneFieldField = fieldFieldsKeys.length === 1;
+                const hasMultipleFieldFields = fieldFieldsKeys.length > 1;
+                const hasSingleFieldField = fieldFieldsKeys.length === 1;
 
                 const headStrs: string[] = [];
-                // const referencedNodes =
-                //     referenceUnion?.types
-                //         ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
-                //         ?.filter((b) => b !== undefined)
-                //         ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? "")) || [];
-
                 let referencedNodes =
                     referenceUnion?.types
                         ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
                         ?.filter((b) => b !== undefined) || [];
-                if (hasSeveralFieldFields) {
+                if (hasMultipleFieldFields) {
                     referencedNodes = referencedNodes?.filter((n) => fieldFieldsKeys.includes(n?.name ?? "")) || [];
                 }
 
@@ -266,7 +260,7 @@ function createProjectionAndParams({
                     }
                 });
 
-                const isTakeFirstElement: boolean = !isArray || hasOneFieldField;
+                const isTakeFirstElement: boolean = !isArray || hasSingleFieldField;
                 projectionStr = `${isTakeFirstElement ? "head(" : ""} ${headStrs.join(" + ")} ${
                     isTakeFirstElement ? ")" : ""
                 }`;
@@ -314,12 +308,6 @@ function createProjectionAndParams({
             const apocParamsStr = `{this: ${chainStr || varName}${
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}`;
-            // console.log("cypherField", cypherField);
-            // console.log("apocParamsStr", apocParamsStr);
-            // console.log("projectionStr", projectionStr.toString());
-            // console.log("projectionStr length", projectionStr.length);
-            // // console.log("referenceUnion", referenceUnion);
-            // console.log("param", param);
 
             const isProjectionStrEmpty = projectionStr.trim().length === 0;
 

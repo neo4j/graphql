@@ -60,7 +60,6 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 
