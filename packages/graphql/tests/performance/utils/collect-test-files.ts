@@ -20,22 +20,6 @@
 import * as fs from "fs/promises";
 import * as path from "path";
 
-async function fromDir(startPath: string, filter: string): Promise<string[]> {
-    var files = await fs.readdir(startPath);
-    const filenames = await Promise.all(
-        files.map(async (file) => {
-            var filename = path.join(startPath, file);
-            var stat = await fs.lstat(filename);
-            if (stat.isDirectory()) {
-                return fromDir(filename, filter); //recurse
-            } else if (filename.indexOf(filter) >= 0) {
-                return [filename];
-            } else return [];
-        })
-    );
-    return filenames.flat();
-}
-
 export async function collectTests(
     rootPath: string
 ): Promise<Array<{ query: string; name: string; filename: string }>> {
@@ -66,4 +50,20 @@ export async function collectTests(
         return tests.filter((t) => t.name.match(onlyRegex));
     }
     return tests;
+}
+
+async function fromDir(startPath: string, filter: string): Promise<string[]> {
+    var files = await fs.readdir(startPath);
+    const filenames = await Promise.all(
+        files.map(async (file) => {
+            var filename = path.join(startPath, file);
+            var stat = await fs.lstat(filename);
+            if (stat.isDirectory()) {
+                return fromDir(filename, filter); //recurse
+            } else if (filename.indexOf(filter) >= 0) {
+                return [filename];
+            } else return [];
+        })
+    );
+    return filenames.flat();
 }

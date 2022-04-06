@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import * as fs from "fs/promises";
-import { Driver, ProfiledPlan } from "neo4j-driver";
+import { Driver } from "neo4j-driver";
 import neo4j from "./utils/neo4j";
-import { setDb, cleanDb } from "./utils/setup-database";
+import { setupDatabase, cleanDatabase } from "./utils/setup-database";
 import { Neo4jGraphQL } from "../../src";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
-import { createJwtRequest } from "../utils/create-jwt-request";
-import { translateQuery } from "../tck/utils/tck-test-utils";
-import assert from "assert";
-import { collectTests } from "./utils/collect-files";
+import { collectTests } from "./utils/collect-test-files";
+import { ResultsWriter } from "./utils/ResultsWriter";
+import { ResultsDisplay } from "./utils/ResultsDisplay";
+import { TestRunner } from "./utils/TestRunner";
+import path from "path";
 
 let driver: Driver;
 
@@ -72,42 +71,26 @@ async function beforeAll() {
 async function afterAll() {
     const session = driver.session();
     try {
-        await cleanDb(session);
+        await cleanDatabase(session);
     } finally {
-        session.close();
-        driver.close();
-    }
-}
-
-async function dbReset() {
-    const session = driver.session();
-    try {
-        await setDb(session);
-    } finally {
-        session.close();
-    }
-}
-
-async function getOldResults(path: string): Promise<Record<string, any> | undefined> {
-    try {
-        const oldResults = JSON.parse(await fs.readFile(path, "utf-8"));
-        return oldResults.reduce((acc, result) => {
-            acc[`${result.file}.${result.name}`] = result;
-            return acc;
-        }, {});
-    } catch {
-        return undefined;
+        await session.close();
+        await driver.close();
     }
 }
 
 async function main() {
     try {
         await beforeAll();
-        const resultsPath = __dirname + "/performance.json";
-        const oldResults = await getOldResults(resultsPath);
-        const result = await runTests(true, oldResults);
-        if (process.argv.includes("-u")) {
-            await fs.writeFile(resultsPath, JSON.stringify(result));
+        const resultsWriter = new ResultsWriter(path.join(__dirname, "/performance.json"));
+        const oldResults = await resultsWriter.readPreviousResults();
+        const results = await runTests();
+
+        const resultsDisplay = new ResultsDisplay();
+        resultsDisplay.display(results, oldResults);
+
+        const updateSnapshot = process.argv.includes("-u");
+        if (updateSnapshot) {
+            await resultsWriter.writeResult(results);
         }
     } finally {
         await afterAll();
@@ -116,130 +99,18 @@ async function main() {
 
 main();
 
-function moreThan(a: number, b: number, delta: number): boolean {
-    const upperBound = b + b * delta;
-    return a > upperBound;
-}
-
-function lessThan(a: number, b: number, delta: number): boolean {
-    const lowerBound = b - b * delta;
-    return a < lowerBound;
-}
-
-async function runTests(display: boolean, oldResults: Record<string, any> | undefined) {
+async function runTests() {
     const tests = await collectTests(__dirname);
 
-    const results: Array<any> = [];
-    for (const test of tests) {
-        const perfResult = await runPerformanceTest(gql(test.query));
-        results.push({ name: test.name, result: perfResult, file: test.filename });
-    }
-
-    const ResetTTYColor = "\x1b[0m";
-    const FgYellowTTYColor = "\x1b[33m";
-    const FgCyanTTYColor = "\x1b[36m";
-    const FgRedTTYColor = "\x1b[31m";
-    const FgGreenTTYColor = "\x1b[32m";
-
-    if (display) {
-        console.table(
-            results.reduce((acc, { name, result, file }) => {
-                const coloredFile = `${FgYellowTTYColor}${file}${ResetTTYColor}`;
-                let coloredName = name.replace(/_only$/i, `${FgCyanTTYColor}_only${ResetTTYColor}`);
-
-                const oldResult = oldResults ? oldResults[`${file}.${name}`] : undefined;
-
-                const result2 = { ...result, "time (ms)": result.time };
-                if (oldResult) {
-                    if (lessThan(result2.dbHits, oldResult.result.dbHits, 0.1)) {
-                        coloredName = `${FgGreenTTYColor}${coloredName}${ResetTTYColor}`;
-                    } else if (moreThan(result2.dbHits, oldResult.result.dbHits, 0.1)) {
-                        coloredName = `${FgRedTTYColor}${coloredName}${ResetTTYColor}`;
-                    }
-                }
-
-                delete result2.time;
-                acc[`${coloredFile}.${coloredName}`] = result2;
-                return acc;
-            }, {})
-        );
-    }
-
-    return results;
+    const runner = new TestRunner(driver, neoSchema);
+    return runner.runTests(tests);
 }
 
-async function runPerformanceTest(
-    query: DocumentNode,
-    expectedResultCount?: number
-): Promise<ProfileResult & { time: number }> {
+async function dbReset() {
     const session = driver.session();
     try {
-        const req = createJwtRequest("secret", {});
-        const cypherQuery = await translateQuery(neoSchema, query, {
-            req,
-        });
-        const profiledQuery = wrapQueryInProfile(cypherQuery.cypher);
-
-        const t1 = new Date().getTime();
-        const result = await session.run(profiledQuery, cypherQuery.params);
-        const t2 = new Date().getTime();
-
-        const profiledPlan = result.summary.profile as ProfiledPlan;
-        if (expectedResultCount) {
-            expect(result.records).toHaveLength(expectedResultCount); // Test database query result
-        }
-
-        // Check for the profile plan to have the correct settings
-        assert.ok(profiledPlan.arguments);
-        assert.strictEqual(profiledPlan.arguments.runtime, "INTERPRETED");
-        assert.strictEqual(profiledPlan.arguments.planner, "COST");
-        assert.strictEqual(profiledPlan.arguments["planner-impl"], "DP");
-        const aggregatedProfile = aggregateProfile(profiledPlan);
-        return { ...aggregatedProfile, time: t2 - t1 };
+        await setupDatabase(session);
     } finally {
-        session.close();
+        await session.close();
     }
-}
-
-function wrapQueryInProfile(query: string): string {
-    return `CYPHER
-    planner=dp
-    runtime=interpreted
-    PROFILE ${query}`;
-}
-
-type ProfileResult = {
-    maxRows: number;
-    dbHits: number;
-    cache: {
-        hits: number;
-        misses: number;
-    };
-};
-
-function aggregateProfile(plan: ProfiledPlan): ProfileResult {
-    const nodeResult: ProfileResult = {
-        maxRows: plan.rows,
-        dbHits: plan.dbHits,
-        cache: {
-            hits: plan.pageCacheHits,
-            misses: plan.pageCacheMisses,
-            // hitRatio: plan.pageCacheHitRatio,
-        },
-    };
-
-    const result = plan.children.reduce((agg, plan) => {
-        const childResult = aggregateProfile(plan);
-
-        return {
-            maxRows: Math.max(agg.maxRows, childResult.maxRows),
-            dbHits: agg.dbHits + childResult.dbHits,
-            cache: {
-                hits: agg.cache.hits + childResult.cache.hits,
-                misses: agg.cache.misses + childResult.cache.misses,
-            },
-        };
-    }, nodeResult);
-
-    return result;
 }
