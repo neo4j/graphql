@@ -20,6 +20,14 @@
 import { GraphQLEnumType } from "graphql";
 import { RelationshipQueryDirectionOption } from "../../constants";
 
+export const CallbackOperationEnum = new GraphQLEnumType({
+    name: "CallbackOperation",
+    values: {
+        CREATE: {},
+        UPDATE: {},
+    },
+});
+
 export const ExcludeOperationEnum = new GraphQLEnumType({
     name: "ExcludeOperation",
     values: {

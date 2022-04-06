@@ -116,7 +116,8 @@ describe("Relationship Properties Create Cypher", () => {
                 \\"this0_actors0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

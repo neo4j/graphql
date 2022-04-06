@@ -115,3 +115,61 @@ type User {
     lastModified: DateTime! @timestamp(operations: [CREATE, UPDATE])
 }
 ----
+
+[[type-definitions-autogeneration-callback]]
+== `@callback`
+
+The `@callback` directive is used to specify a function that will be invoked when updating or creating the properties on a node or relationship.
+
+For non-required values, callbacks may return `undefined` (meaning that nothing will be changed or added to the property) or `null` (meaning that the property will be removed).
+
+=== Definition
+
+[source, graphql, indent=0]
+----
+enum CallbackOperation {
+    CREATE
+    UPDATE
+}
+
+"""Instructs @neo4j/graphql to invoke the specified callback function when updating or creating the properties on a node or relationship."""
+directive @callback(
+    """Which events to invoke the callback on."""
+    operations: [CallbackOperation!]! = [CREATE, UPDATE]
+    """The name of the callback function."""
+    name: String!
+) on FIELD_DEFINITION
+----
+
+=== Usage
+
+Type Definitions: 
+
+[source, graphql, indent=0]
+----
+type Product {
+    name: String!
+    slug: @callback(operations: [CREATE, UPDATE], name: "slug")
+}
+----
+
+Schema Construction: 
+
+> Note that the callback is asynchronous!
+
+[source, javascript, indent=0]
+----
+const slugCallback = async (root) => {
+    return `${root.name}_slug`
+}
+
+new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    config: {
+        callbacks: {
+            slug: slugCallback
+        }
+    }
+})
+----

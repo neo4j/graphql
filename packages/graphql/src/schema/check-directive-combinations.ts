@@ -35,6 +35,7 @@ function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []) {
         timestamp: ["id", "unique"],
         unique: ["cypher", "id", "computed", "relationship", "timestamp"],
         writeonly: ["cypher", "computed"],
+        callback: ["id", "default"],
         // OBJECT
         node: [],
         // INTERFACE
