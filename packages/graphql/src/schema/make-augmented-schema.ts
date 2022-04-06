@@ -41,6 +41,7 @@ import {
     findResolver,
     updateResolver,
     numericalResolver,
+    rootConnectionResolver,
 } from "./resolvers";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import * as constants from "../constants";
@@ -708,6 +709,10 @@ function makeAugmentedSchema(
 
             composer.Query.addFields({
                 [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
+            });
+
+            composer.Query.addFields({
+                [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
             });
         }
 
