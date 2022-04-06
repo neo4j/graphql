@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#190", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -33,20 +32,20 @@ describe("#190", () => {
             type User {
                 client_id: String
                 uid: String
-                demographics: [UserDemographics] @relationship(type: "HAS_DEMOGRAPHIC", direction: OUT)
+                demographics: [UserDemographics!]! @relationship(type: "HAS_DEMOGRAPHIC", direction: OUT)
             }
 
             type UserDemographics {
                 client_id: String
                 type: String
                 value: String
-                users: [User] @relationship(type: "HAS_DEMOGRAPHIC", direction: IN)
+                users: [User!]! @relationship(type: "HAS_DEMOGRAPHIC", direction: IN)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 

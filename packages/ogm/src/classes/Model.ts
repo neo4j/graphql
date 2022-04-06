@@ -17,17 +17,8 @@
  * limitations under the License.
  */
 
-import { DocumentNode, graphql, parse, print, SelectionSetNode } from "graphql";
-import pluralize from "pluralize";
-import camelCase from "camelcase";
-import { Neo4jGraphQL, upperFirst } from "@neo4j/graphql";
+import { DocumentNode, graphql, GraphQLSchema, parse, print, SelectionSetNode } from "graphql";
 import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
-
-export interface ModelConstructor {
-    name: string;
-    selectionSet: string;
-    neoSchema: Neo4jGraphQL;
-}
 
 function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNode): string {
     if (typeof selectionSet === "string") {
@@ -37,27 +28,62 @@ function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNod
     return print(selectionSet);
 }
 
+type RootTypeFieldNames = {
+    create: string;
+    read: string;
+    update: string;
+    delete: string;
+    aggregate: string;
+};
+
 class Model {
     public name: string;
+    private _namePluralized?: string;
 
-    private namePluralized: string;
+    private _selectionSet?: string;
+    private schema?: GraphQLSchema;
 
-    private camelCaseName: string;
+    private _rootTypeFieldNames?: RootTypeFieldNames;
 
-    private neoSchema: Neo4jGraphQL;
-
-    protected selectionSet: string;
-
-    constructor(input: ModelConstructor) {
-        this.name = input.name;
-        this.namePluralized = pluralize(input.name);
-        this.camelCaseName = camelCase(this.namePluralized);
-        this.neoSchema = input.neoSchema;
-        this.selectionSet = input.selectionSet;
+    constructor(name: string) {
+        this.name = name;
     }
 
-    public setSelectionSet(selectionSet: string | DocumentNode) {
-        this.selectionSet = printSelectionSet(selectionSet);
+    public set selectionSet(selectionSet: string | DocumentNode) {
+        this._selectionSet = printSelectionSet(selectionSet);
+    }
+
+    private get namePluralized(): string {
+        if (!this._namePluralized) {
+            throw new Error("Must execute `OGM.init()` method before using Model instances");
+        }
+
+        return this._namePluralized;
+    }
+
+    private get rootTypeFieldNames(): RootTypeFieldNames {
+        if (!this._rootTypeFieldNames) {
+            throw new Error("Must execute `OGM.init()` method before using Model instances");
+        }
+
+        return this._rootTypeFieldNames;
+    }
+
+    init({
+        schema,
+        selectionSet,
+        namePluralized,
+        rootTypeFieldNames,
+    }: {
+        schema: GraphQLSchema;
+        selectionSet: string | DocumentNode;
+        namePluralized: string;
+        rootTypeFieldNames: RootTypeFieldNames;
+    }) {
+        this.selectionSet = selectionSet;
+        this.schema = schema;
+        this._namePluralized = namePluralized;
+        this._rootTypeFieldNames = rootTypeFieldNames;
     }
 
     async find<T = any[]>({
@@ -77,6 +103,10 @@ class Model {
         context?: any;
         rootValue?: any;
     } = {}): Promise<T> {
+        if (!this.schema) {
+            throw new Error("Must execute `OGM.init()` method before using Model instances");
+        }
+
         const argWorthy = Boolean(where || options || fulltext);
 
         const argDefinitions = [
@@ -95,63 +125,30 @@ class Model {
             `${argWorthy ? ")" : ""}`,
         ];
 
-        const selection = printSelectionSet(selectionSet || this.selectionSet);
+        const validSelectionSet = this.getSelectionSetOrDefault(selectionSet);
+        const selection = printSelectionSet(validSelectionSet);
 
         const query = `
             query ${argDefinitions.join(" ")}{
-                ${this.camelCaseName}${argsApply.join(" ")} ${selection}
+                ${this.rootTypeFieldNames.read}${argsApply.join(" ")} ${selection}
             }
         `;
 
         const variableValues = { where, options, ...args };
 
-        const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
+        const result = await graphql({
+            schema: this.schema,
+            source: query,
+            rootValue,
+            contextValue: context,
+            variableValues,
+        });
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
         }
 
-        return (result.data as any)[this.camelCaseName] as T;
-    }
-
-    async count({
-        where,
-        fulltext,
-    }: {
-        where?: GraphQLWhereArg;
-        fulltext?: any;
-    } = {}): Promise<number> {
-        const argWorthy = Boolean(where || fulltext);
-
-        const argDefinitions = [
-            `${argWorthy ? "(" : ""}`,
-            `${where ? `$where: ${this.name}Where` : ""}`,
-            `${fulltext ? `$fulltext: ${this.name}Fulltext` : ""}`,
-            `${argWorthy ? ")" : ""}`,
-        ];
-
-        const argsApply = [
-            `${argWorthy ? "(" : ""}`,
-            `${where ? `where: $where` : ""}`,
-            `${fulltext ? `fulltext: $fulltext` : ""}`,
-            `${argWorthy ? ")" : ""}`,
-        ];
-
-        const query = `
-            query ${argDefinitions.join(" ")}{
-                ${this.camelCaseName}Count${argsApply.join(" ")}
-            }
-        `;
-
-        const variableValues = { where };
-
-        const result = await graphql(this.neoSchema.schema, query, null, {}, variableValues);
-
-        if (result.errors?.length) {
-            throw new Error(result.errors[0].message);
-        }
-
-        return (result.data as any)[`${this.camelCaseName}Count`] as number;
+        return (result.data as any)[this.namePluralized] as T;
     }
 
     async create<T = any>({
@@ -167,16 +164,21 @@ class Model {
         context?: any;
         rootValue?: any;
     } = {}): Promise<T> {
-        const mutationName = `create${upperFirst(this.namePluralized)}`;
+        if (!this.schema) {
+            throw new Error("Must execute `OGM.init()` method before using Model instances");
+        }
+
+        const mutationName = this.rootTypeFieldNames.create;
 
         let selection = "";
         if (selectionSet) {
             selection = printSelectionSet(selectionSet);
         } else {
+            const validSelectionSet = this.getSelectionSetOrDefault(selectionSet);
             selection = `
                {
-                   ${this.camelCaseName}
-                   ${printSelectionSet(selectionSet || this.selectionSet)}
+                   ${this.namePluralized}
+                   ${printSelectionSet(validSelectionSet)}
                }
            `;
         }
@@ -189,7 +191,13 @@ class Model {
 
         const variableValues = { ...args, input };
 
-        const result = await graphql(this.neoSchema.schema, mutation, rootValue, context, variableValues);
+        const result = await graphql({
+            schema: this.schema,
+            source: mutation,
+            rootValue,
+            contextValue: context,
+            variableValues,
+        });
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
@@ -221,17 +229,22 @@ class Model {
         context?: any;
         rootValue?: any;
     } = {}): Promise<T> {
-        const mutationName = `update${upperFirst(this.namePluralized)}`;
+        if (!this.schema) {
+            throw new Error("Must execute `OGM.init()` method before using Model instances");
+        }
+
+        const mutationName = this.rootTypeFieldNames.update;
         const argWorthy = Boolean(where || update || connect || disconnect || create || connectOrCreate);
 
         let selection = "";
         if (selectionSet) {
             selection = printSelectionSet(selectionSet);
         } else {
+            const validSelectionSet = this.getSelectionSetOrDefault(selectionSet);
             selection = `
                {
-                   ${this.camelCaseName}
-                   ${printSelectionSet(selectionSet || this.selectionSet)}
+                   ${this.namePluralized}
+                   ${printSelectionSet(validSelectionSet)}
                }
            `;
         }
@@ -267,7 +280,13 @@ class Model {
 
         const variableValues = { ...args, where, update, connect, disconnect, create, connectOrCreate };
 
-        const result = await graphql(this.neoSchema.schema, mutation, rootValue, context, variableValues);
+        const result = await graphql({
+            schema: this.schema,
+            source: mutation,
+            rootValue,
+            contextValue: context,
+            variableValues,
+        });
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
@@ -287,7 +306,11 @@ class Model {
         context?: any;
         rootValue?: any;
     } = {}): Promise<DeleteInfo> {
-        const mutationName = `delete${upperFirst(this.namePluralized)}`;
+        if (!this.schema) {
+            throw new Error("Must execute `OGM.init()` method before using Model instances");
+        }
+
+        const mutationName = this.rootTypeFieldNames.delete;
         const argWorthy = where || deleteInput;
 
         const argDefinitions = [
@@ -315,7 +338,13 @@ class Model {
 
         const variableValues = { where, delete: deleteInput };
 
-        const result = await graphql(this.neoSchema.schema, mutation, rootValue, context, variableValues);
+        const result = await graphql({
+            schema: this.schema,
+            source: mutation,
+            rootValue,
+            contextValue: context,
+            variableValues,
+        });
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
@@ -333,11 +362,15 @@ class Model {
     }: {
         where?: GraphQLWhereArg;
         fulltext?: any;
-        aggregate: any;
+        aggregate: Record<string, unknown>;
         context?: any;
         rootValue?: any;
     }): Promise<T> {
-        const queryName = `${pluralize(camelCase(this.name))}Aggregate`;
+        if (!this.schema) {
+            throw new Error("Must execute `OGM.init()` method before using Model instances");
+        }
+
+        const queryName = this.rootTypeFieldNames.aggregate;
         const selections: string[] = [];
         const argWorthy = Boolean(where || fulltext);
 
@@ -363,7 +396,7 @@ class Model {
             }
 
             const thisSelections: string[] = [];
-            Object.entries(entry[1] as any).forEach((e) => {
+            Object.entries(entry[1] as Record<string, unknown>).forEach((e) => {
                 if (Boolean(e[1]) === false) {
                     return;
                 }
@@ -388,13 +421,29 @@ class Model {
 
         const variableValues = { where };
 
-        const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
+        const result = await graphql({
+            schema: this.schema,
+            source: query,
+            rootValue,
+            contextValue: context,
+            variableValues,
+        });
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
         }
 
         return (result.data as any)[queryName] as T;
+    }
+
+    private getSelectionSetOrDefault(
+        selectionSet: string | DocumentNode | SelectionSetNode | undefined
+    ): string | DocumentNode | SelectionSetNode {
+        const result = selectionSet || this._selectionSet;
+        if (!result) {
+            throw new Error("Non defined selectionSet in ogm model");
+        }
+        return result;
     }
 }
 

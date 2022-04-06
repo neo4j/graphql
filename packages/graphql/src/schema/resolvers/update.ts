@@ -24,12 +24,13 @@ import { translateUpdate } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
+import { publishEventsToPlugin } from "../subscriptions/publish-events-to-plugin";
 
 export default function updateResolver({ node, schemaComposer }: { node: Node; schemaComposer: SchemaComposer }) {
-    async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
+    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
-        context.resolveTree = getNeo4jResolveTree(info);
-        const [cypher, params] = translateUpdate({ context, node });
+        context.resolveTree = getNeo4jResolveTree(info, { args });
+        const [cypher, params] = await translateUpdate({ context, node });
         const executeResult = await execute({
             cypher,
             params,
@@ -37,8 +38,10 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
             context,
         });
 
+        publishEventsToPlugin(executeResult, context.plugins?.subscriptions);
+
         const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
-            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({ camelCase: true })
+            (selection) => selection.kind === "Field" && selection.name.value === node.plural
         ) as FieldNode;
 
         const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
@@ -48,7 +51,7 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
                 bookmark: executeResult.bookmark,
                 ...executeResult.statistics,
             },
-            ...(nodeProjection ? { [nodeKey]: executeResult.records.map((x) => x.this) } : {}),
+            ...(nodeProjection ? { [nodeKey]: executeResult.records[0]?.data || [] } : {}),
         };
     }
     const relationFields: Record<string, string> = node.relationFields.length
@@ -64,7 +67,7 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
         relationFields.connectOrCreate = `${node.name}ConnectOrCreateInput`;
     }
     return {
-        type: `Update${node.getPlural({ camelCase: false })}MutationResponse!`,
+        type: `${node.mutationResponseTypeNames.update}!`,
         resolve,
         args: {
             where: `${node.name}Where`,

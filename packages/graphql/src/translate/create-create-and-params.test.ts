@@ -19,9 +19,10 @@
 
 import createCreateAndParams from "./create-create-and-params";
 import { Neo4jGraphQL } from "../classes";
-import { Context } from "../types";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
+import { CallbackBucket } from "../classes/CallbackBucket";
 
 describe("createCreateAndParams", () => {
     test("should return the correct projection with 1 selection", () => {
@@ -72,12 +73,15 @@ describe("createCreateAndParams", () => {
         const neoSchema: Neo4jGraphQL = {
             nodes: [node],
         };
+        const context = new ContextBuilder({
+            neoSchema,
+        }).instance();
 
         const result = createCreateAndParams({
             input,
             node,
-            // @ts-ignore
-            context: { neoSchema } as Context,
+            callbackBucket: new CallbackBucket(context),
+            context,
             varName: "this0",
             withVars: ["this0"],
         });

@@ -50,15 +50,15 @@ describe("blog-custom", () => {
                     CREATE (u:User {id: "${userId}"})-[:HAS_BLOG]->(:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.blogs[0].isCreator).toEqual(true);
+                expect((response.data as any).blogs[0].isCreator).toEqual(true);
             } finally {
                 await session.close();
             }
@@ -96,15 +96,15 @@ describe("blog-custom", () => {
                     CREATE (:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.blogs[0].isCreator).toBeFalsy();
+                expect((response.data as any).blogs[0].isCreator).toBeFalsy();
             } finally {
                 await session.close();
             }
@@ -143,15 +143,15 @@ describe("blog-custom", () => {
                     CREATE (u:User {id: "${userId}"})-[:CAN_POST]->(:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.blogs[0].isAuthor).toEqual(true);
+                expect((response.data as any).blogs[0].isAuthor).toEqual(true);
             } finally {
                 await session.close();
             }
@@ -189,15 +189,15 @@ describe("blog-custom", () => {
                     CREATE (:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.blogs[0].isAuthor).toBeFalsy();
+                expect((response.data as any).blogs[0].isAuthor).toBeFalsy();
             } finally {
                 await session.close();
             }

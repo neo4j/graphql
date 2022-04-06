@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
@@ -47,7 +48,12 @@ describe("Relationship Properties Connect Cypher", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -99,8 +105,8 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN
-            this0 { .title, actorsConnection } AS this0"
+            RETURN [
+            this0 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -109,7 +115,8 @@ describe("Relationship Properties Connect Cypher", () => {
                 \\"this0_actors_connect0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -170,8 +177,8 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN
-            this0 { .title, actorsConnection } AS this0"
+            RETURN [
+            this0 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -181,7 +188,8 @@ describe("Relationship Properties Connect Cypher", () => {
                 \\"this0_actors_connect0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -232,7 +240,7 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } AS this"
+            RETURN collect(DISTINCT this { .title, actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -241,7 +249,8 @@ describe("Relationship Properties Connect Cypher", () => {
                 \\"this_connect_actors0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -296,7 +305,7 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } AS this"
+            RETURN collect(DISTINCT this { .title, actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -306,7 +315,8 @@ describe("Relationship Properties Connect Cypher", () => {
                 \\"this_connect_actors0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

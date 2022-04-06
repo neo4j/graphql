@@ -29,14 +29,18 @@ import {
     ObjectTypeDefinitionNode,
     ScalarTypeDefinitionNode,
     StringValueNode,
+    EnumValueNode,
     UnionTypeDefinitionNode,
+    ValueNode,
 } from "graphql";
-import { upperFirst } from "graphql-compose";
-import getFieldTypeMeta from "./get-field-type-meta";
-import getCypherMeta from "./get-cypher-meta";
-import getAliasMeta from "./get-alias-meta";
 import getAuth from "./get-auth";
+import getAliasMeta from "./get-alias-meta";
+import getCypherMeta from "./get-cypher-meta";
+import getFieldTypeMeta from "./get-field-type-meta";
+import getComputedMeta from "./get-computed-meta";
 import getRelationshipMeta from "./get-relationship-meta";
+import getUniqueMeta from "./parse/get-unique-meta";
+import { SCALAR_TYPES } from "../constants";
 import {
     RelationField,
     CypherField,
@@ -51,10 +55,13 @@ import {
     PointField,
     TimeStampOperations,
     ConnectionField,
+    ComputedField,
+    Neo4jGraphQLCallbacks,
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
-import getUniqueMeta from "./parse/get-unique-meta";
+import { upperFirst } from "../utils/upper-first";
+import getCallbackMeta from "./get-callback-meta";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -68,7 +75,7 @@ export interface ObjectFields {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    ignoredFields: BaseField[];
+    computedFields: ComputedField[];
 }
 
 function getObjFieldMeta({
@@ -78,6 +85,7 @@ function getObjFieldMeta({
     scalars,
     unions,
     enums,
+    callbacks,
 }: {
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
@@ -85,6 +93,7 @@ function getObjFieldMeta({
     unions: UnionTypeDefinitionNode[];
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
+    callbacks?: Neo4jGraphQLCallbacks;
 }) {
     const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
     const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
@@ -111,13 +120,15 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
-            const typeMeta = getFieldTypeMeta(field);
+            const computedMeta = getComputedMeta(field, interfaceField);
+            const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
             const defaultDirective = directives.find((x) => x.name.value === "default");
             const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
+            const callbackDirective = directives.find((x) => x.name.value === "callback");
 
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
@@ -140,12 +151,13 @@ function getObjFieldMeta({
                             "auth",
                             "readonly",
                             "writeonly",
-                            "ignore",
+                            "computed",
                             "default",
                             "coalesce",
                             "timestamp",
                             "alias",
                             "unique",
+                            "callback",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
@@ -182,6 +194,18 @@ function getObjFieldMeta({
 
                 if (aliasDirective) {
                     throw new Error("@alias directive cannot be used on relationship fields");
+                }
+
+                const msg = `List type relationship fields must be non-nullable and have non-nullable entries, please change type of ${obj.name.value}.${field.name.value} to [${baseField.typeMeta.name}!]!`;
+
+                if (typeMeta.originalType?.kind === "NonNullType") {
+                    if (typeMeta.originalType?.type.kind === "ListType") {
+                        if (typeMeta.originalType?.type.type.kind !== "NonNullType") {
+                            throw new Error(msg);
+                        }
+                    }
+                } else if (typeMeta.originalType?.kind === "ListType") {
+                    throw new Error(msg);
                 }
 
                 const relationField: RelationField = {
@@ -283,8 +307,12 @@ function getObjFieldMeta({
                 const cypherField: CypherField = {
                     ...baseField,
                     ...cypherMeta,
+                    isEnum: !!fieldEnum,
+                    isScalar: !!fieldScalar || SCALAR_TYPES.includes(typeMeta.name),
                 };
                 res.cypherFields.push(cypherField);
+            } else if (computedMeta) {
+                res.computedFields.push({ ...baseField, ...computedMeta });
             } else if (fieldScalar) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
@@ -294,18 +322,32 @@ function getObjFieldMeta({
                 };
                 res.scalarFields.push(scalarField);
             } else if (fieldEnum) {
-                if (defaultDirective) {
-                    throw new Error("@default directive can only be used on primitive type fields");
-                }
-
-                if (coalesceDirective) {
-                    throw new Error("@coalesce directive can only be used on primitive type fields");
-                }
-
                 const enumField: CustomEnumField = {
                     kind: "Enum",
                     ...baseField,
                 };
+
+                if (defaultDirective) {
+                    const defaultValue = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
+
+                    if (!defaultValue || !isEnumValue(defaultValue)) {
+                        throw new Error("@default value on enum fields must be an enum value");
+                    }
+
+                    enumField.defaultValue = defaultValue.value;
+                }
+
+                if (coalesceDirective) {
+                    const coalesceValue = coalesceDirective.arguments?.find((a) => a.name.value === "value")?.value;
+
+                    if (!coalesceValue || !isEnumValue(coalesceValue)) {
+                        throw new Error("@coalesce value on enum fields must be an enum value");
+                    }
+
+                    // TODO: avoid duplication with primitives
+                    enumField.coalesceValue = `"${coalesceValue.value}"`;
+                }
+
                 res.enumFields.push(enumField);
             } else if (fieldUnion) {
                 if (defaultDirective) {
@@ -345,11 +387,6 @@ function getObjFieldMeta({
                     ...baseField,
                 };
                 res.objectFields.push(objectField);
-            } else if (
-                field.directives?.some((d) => d.name.value === "ignore") ||
-                interfaceField?.directives?.some((d) => d.name.value === "ignore")
-            ) {
-                res.ignoredFields.push(baseField);
             } else {
                 // eslint-disable-next-line no-lonely-if
                 if (["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeMeta.name)) {
@@ -411,6 +448,11 @@ function getObjFieldMeta({
                         ...baseField,
                     };
 
+                    if (callbackDirective) {
+                        const callback = getCallbackMeta(callbackDirective, callbacks);
+                        primitiveField.callback = callback;
+                    }
+
                     if (idDirective) {
                         const autogenerate = idDirective.arguments?.find((a) => a.name.value === "autogenerate");
                         if (!autogenerate || (autogenerate.value as BooleanValueNode).value) {
@@ -457,7 +499,7 @@ function getObjFieldMeta({
                                 break;
                             default:
                                 throw new Error(
-                                    "@default directive can only be used on types: Int | Float | String | Boolean | ID | DateTime"
+                                    "@default directive can only be used on types: Int | Float | String | Boolean | ID | DateTime | Enum"
                                 );
                         }
                     }
@@ -516,9 +558,13 @@ function getObjFieldMeta({
             objectFields: [],
             temporalFields: [],
             pointFields: [],
-            ignoredFields: [],
+            computedFields: [],
         }
     ) as ObjectFields;
+}
+
+function isEnumValue(value: ValueNode): value is EnumValueNode {
+    return value.kind === Kind.ENUM;
 }
 
 export default getObjFieldMeta;

@@ -23,11 +23,12 @@ import { execute } from "../../utils";
 import { translateDelete } from "../../translate";
 import { Context } from "../../types";
 import { Node } from "../../classes";
+import { publishEventsToPlugin } from "../subscriptions/publish-events-to-plugin";
 
 export default function deleteResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
+    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
-        context.resolveTree = getNeo4jResolveTree(info);
+        context.resolveTree = getNeo4jResolveTree(info, { args });
         const [cypher, params] = translateDelete({ context, node });
         const executeResult = await execute({
             cypher,
@@ -35,6 +36,8 @@ export default function deleteResolver({ node }: { node: Node }) {
             defaultAccessMode: "WRITE",
             context,
         });
+
+        publishEventsToPlugin(executeResult, context.plugins?.subscriptions);
 
         return { bookmark: executeResult.bookmark, ...executeResult.statistics };
     }

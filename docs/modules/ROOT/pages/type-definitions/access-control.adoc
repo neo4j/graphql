@@ -74,19 +74,6 @@ type User @exclude(operations: [CREATE, READ, UPDATE, DELETE]) {
 }
 ----
 
-[[type-definitions-access-control-ignore]]
-== `@ignore`
-
-This field will essentially be completely ignored during the generation of Query and Mutation fields, and will require another way to resolve the field, such as through the use of a custom resolver.
-
-=== Definition
-
-[source, graphql, indent=0]
-----
-"""Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers."""
-directive @ignore on FIELD_DEFINITION
-----
-
 [[type-definitions-access-control-readonly]]
 == `@readonly`
 

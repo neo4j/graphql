@@ -27,7 +27,7 @@ describe("Read resolver", () => {
         }).instance();
 
         const result = findResolver({ node });
-        expect(result.type).toEqual(`[Movie!]!`);
+        expect(result.type).toBe(`[Movie!]!`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
             where: `MovieWhere`,

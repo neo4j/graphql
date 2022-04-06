@@ -48,7 +48,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         cypherParams = { ...cypherParams, ...allowAuth[1] };
     }
 
-    const selections = fieldsByTypeName[`${node.name}AggregateSelection`];
+    const selections = fieldsByTypeName[node.aggregateTypeNames.selection];
     const projections: string[] = [];
     const authStrs: string[] = [];
 
@@ -92,10 +92,9 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
         if (field) {
             const thisProjections: string[] = [];
-            const aggregateFields = selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelection`];
-            // const aggregateFields =
-            //     selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNullable`] ||
-            //     selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNonNullable`]; // TODO: #605 Breaking change, uncomment for 3.0
+            const aggregateFields =
+                selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNullable`] ||
+                selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNonNullable`];
 
             Object.entries(aggregateFields).forEach((entry) => {
                 // "min" | "max" | "average" | "sum" | "shortest" | "longest"

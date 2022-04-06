@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Interface Relationships", () => {
-    test("Interface Relationships - single", () => {
+    test("Interface Relationships - single", async () => {
         const typeDefs = gql`
             interface Production {
                 title: String!
@@ -49,7 +49,7 @@ describe("Interface Relationships", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -79,16 +79,16 @@ describe("Interface Relationships", () => {
               screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
-              screenTime_IN: [Int]
+              screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
               screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
+              screenTime_NOT_IN: [Int!]
             }
 
             type Actor {
-              actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -105,6 +105,7 @@ describe("Interface Relationships", () => {
 
             input ActorActedInConnectionSort {
               edge: ActedInSort
+              node: ProductionSort
             }
 
             input ActorActedInConnectionWhere {
@@ -156,7 +157,7 @@ describe("Interface Relationships", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input ActorConnectInput {
@@ -176,18 +177,27 @@ describe("Interface Relationships", () => {
               actedIn: [ActorActedInDisconnectFieldInput!]
             }
 
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [ActorSort]
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
               actedIn: [ActorActedInCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -200,18 +210,28 @@ describe("Interface Relationships", () => {
             input ActorWhere {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
-              actedInConnection: ActorActedInConnectionWhere
-              actedInConnection_NOT: ActorActedInConnectionWhere
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -241,11 +261,11 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
+            type IntAggregateSelectionNonNullable {
+              average: Float!
+              max: Int!
+              min: Int!
+              sum: Int!
             }
 
             type Movie implements Production {
@@ -255,8 +275,8 @@ describe("Interface Relationships", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelection!
-              title: StringAggregateSelection!
+              runtime: IntAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input MovieCreateInput {
@@ -264,14 +284,23 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               runtime: SortDirection
               title: SortDirection
@@ -288,21 +317,27 @@ describe("Interface Relationships", () => {
               runtime: Int
               runtime_GT: Int
               runtime_GTE: Int
-              runtime_IN: [Int]
+              runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
               runtime_NOT: Int
-              runtime_NOT_IN: [Int]
+              runtime_NOT_IN: [Int!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Mutation {
@@ -348,6 +383,22 @@ describe("Interface Relationships", () => {
               Series: SeriesWhere
             }
 
+            input ProductionOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ProductionSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+            \\"\\"\\"
+            input ProductionSort {
+              title: SortDirection
+            }
+
             input ProductionUpdateInput {
               _on: ProductionImplementationsUpdateInput
               title: String
@@ -358,11 +409,11 @@ describe("Interface Relationships", () => {
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -370,18 +421,13 @@ describe("Interface Relationships", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsCount(where: ActorWhere): Int!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesCount(where: SeriesWhere): Int!
-            }
-
-            input QueryOptions {
-              limit: Int
-              offset: Int
+              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
@@ -391,8 +437,14 @@ describe("Interface Relationships", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              episodes: IntAggregateSelection!
-              title: StringAggregateSelection!
+              episodes: IntAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
+            }
+
+            type SeriesConnection {
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             input SeriesCreateInput {
@@ -400,14 +452,23 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
+            type SeriesEdge {
+              cursor: String!
+              node: Series!
+            }
+
             input SeriesOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [SeriesSort]
+              \\"\\"\\"
+              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [SeriesSort!]
             }
 
-            \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+            \\"\\"\\"
             input SeriesSort {
               episodes: SortDirection
               title: SortDirection
@@ -424,19 +485,19 @@ describe("Interface Relationships", () => {
               episodes: Int
               episodes_GT: Int
               episodes_GTE: Int
-              episodes_IN: [Int]
+              episodes_IN: [Int!]
               episodes_LT: Int
               episodes_LTE: Int
               episodes_NOT: Int
-              episodes_NOT_IN: [Int]
+              episodes_NOT_IN: [Int!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -448,9 +509,9 @@ describe("Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
@@ -474,12 +535,11 @@ describe("Interface Relationships", () => {
             type UpdateSeriesMutationResponse {
               info: UpdateInfo!
               series: [Series!]!
-            }
-            "
+            }"
         `);
     });
 
-    test("Interface Relationships - multiple", () => {
+    test("Interface Relationships - multiple", async () => {
         const typeDefs = gql`
             type Episode {
                 runtime: Int!
@@ -514,7 +574,7 @@ describe("Interface Relationships", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -544,16 +604,16 @@ describe("Interface Relationships", () => {
               screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
-              screenTime_IN: [Int]
+              screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
               screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
+              screenTime_NOT_IN: [Int!]
             }
 
             type Actor {
-              actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-              actedInConnection(sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
 
@@ -571,6 +631,7 @@ describe("Interface Relationships", () => {
 
             input ActorActedInConnectionSort {
               edge: ActedInSort
+              node: ProductionSort
             }
 
             input ActorActedInConnectionWhere {
@@ -624,7 +685,7 @@ describe("Interface Relationships", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input ActorConnectInput {
@@ -648,18 +709,27 @@ describe("Interface Relationships", () => {
               actedIn: [ActorActedInDisconnectFieldInput!]
             }
 
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [ActorSort]
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
             }
 
             input ActorRelationInput {
               actedIn: [ActorActedInCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -672,18 +742,28 @@ describe("Interface Relationships", () => {
             input ActorWhere {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
-              actedInConnection: ActorActedInConnectionWhere
-              actedInConnection_NOT: ActorActedInConnectionWhere
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -720,14 +800,14 @@ describe("Interface Relationships", () => {
 
             type Episode {
               runtime: Int!
-              series(options: SeriesOptions, where: SeriesWhere): Series!
-              seriesAggregate(where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection
-              seriesConnection(after: String, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
+              series(directed: Boolean = true, options: SeriesOptions, where: SeriesWhere): Series!
+              seriesAggregate(directed: Boolean = true, where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection
+              seriesConnection(after: String, directed: Boolean = true, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
             }
 
             type EpisodeAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelection!
+              runtime: IntAggregateSelectionNonNullable!
             }
 
             input EpisodeConnectInput {
@@ -751,11 +831,18 @@ describe("Interface Relationships", () => {
               series: EpisodeSeriesDisconnectFieldInput
             }
 
+            type EpisodeEdge {
+              cursor: String!
+              node: Episode!
+            }
+
             input EpisodeOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [EpisodeSort]
+              \\"\\"\\"
+              Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [EpisodeSort!]
             }
 
             input EpisodeRelationInput {
@@ -875,8 +962,8 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodeSeriesSeriesNodeAggregateSelection {
-              episodeCount: IntAggregateSelection!
-              title: StringAggregateSelection!
+              episodeCount: IntAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input EpisodeSeriesUpdateConnectionInput {
@@ -892,7 +979,9 @@ describe("Interface Relationships", () => {
               where: EpisodeSeriesConnectionWhere
             }
 
-            \\"\\"\\"Fields to sort Episodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one EpisodeSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Episodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one EpisodeSort object.
+            \\"\\"\\"
             input EpisodeSort {
               runtime: SortDirection
             }
@@ -908,11 +997,11 @@ describe("Interface Relationships", () => {
               runtime: Int
               runtime_GT: Int
               runtime_GTE: Int
-              runtime_IN: [Int]
+              runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
               runtime_NOT: Int
-              runtime_NOT_IN: [Int]
+              runtime_NOT_IN: [Int!]
               series: SeriesWhere
               seriesAggregate: EpisodeSeriesAggregateInput
               seriesConnection: EpisodeSeriesConnectionWhere
@@ -920,17 +1009,23 @@ describe("Interface Relationships", () => {
               series_NOT: SeriesWhere
             }
 
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
+            type EpisodesConnection {
+              edges: [EpisodeEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type IntAggregateSelectionNonNullable {
+              average: Float!
+              max: Int!
+              min: Int!
+              sum: Int!
             }
 
             type Movie implements Production {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               runtime: Int!
               title: String!
             }
@@ -942,11 +1037,11 @@ describe("Interface Relationships", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
+              screenTime: IntAggregateSelectionNonNullable!
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -1018,8 +1113,8 @@ describe("Interface Relationships", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              runtime: IntAggregateSelection!
-              title: StringAggregateSelection!
+              runtime: IntAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectInput {
@@ -1040,18 +1135,27 @@ describe("Interface Relationships", () => {
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
               actors: [ProductionActorsCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               runtime: SortDirection
               title: SortDirection
@@ -1066,29 +1170,47 @@ describe("Interface Relationships", () => {
             input MovieWhere {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
-              actors: ActorWhere
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
-              actorsConnection: ProductionActorsConnectionWhere
-              actorsConnection_NOT: ProductionActorsConnectionWhere
-              actors_NOT: ActorWhere
+              actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
               runtime: Int
               runtime_GT: Int
               runtime_GTE: Int
-              runtime_IN: [Int]
+              runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
               runtime_NOT: Int
-              runtime_NOT_IN: [Int]
+              runtime_NOT_IN: [Int!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Mutation {
@@ -1115,8 +1237,8 @@ describe("Interface Relationships", () => {
             }
 
             interface Production {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               title: String!
             }
 
@@ -1302,6 +1424,22 @@ describe("Interface Relationships", () => {
               Series: SeriesWhere
             }
 
+            input ProductionOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ProductionSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+            \\"\\"\\"
+            input ProductionSort {
+              title: SortDirection
+            }
+
             input ProductionUpdateInput {
               _on: ProductionImplementationsUpdateInput
               actors: [ProductionActorsUpdateFieldInput!]
@@ -1310,19 +1448,31 @@ describe("Interface Relationships", () => {
 
             input ProductionWhere {
               _on: ProductionImplementationsWhere
-              actors: ActorWhere
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: ProductionActorsAggregateInput
-              actorsConnection: ProductionActorsConnectionWhere
-              actorsConnection_NOT: ProductionActorsConnectionWhere
-              actors_NOT: ActorWhere
+              actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere
+              \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -1330,31 +1480,26 @@ describe("Interface Relationships", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsCount(where: ActorWhere): Int!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               episodes(options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
               episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection!
-              episodesCount(where: EpisodeWhere): Int!
+              episodesConnection(after: String, first: Int, sort: [EpisodeSort], where: EpisodeWhere): EpisodesConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesCount(where: SeriesWhere): Int!
-            }
-
-            input QueryOptions {
-              limit: Int
-              offset: Int
+              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection
-              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodeCount: Int!
-              episodes(options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
-              episodesAggregate(where: EpisodeWhere): SeriesEpisodeEpisodesAggregationSelection
-              episodesConnection(after: String, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
+              episodes(directed: Boolean = true, options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
+              episodesAggregate(directed: Boolean = true, where: EpisodeWhere): SeriesEpisodeEpisodesAggregationSelection
+              episodesConnection(after: String, directed: Boolean = true, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
               title: String!
             }
 
@@ -1365,11 +1510,11 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
+              screenTime: IntAggregateSelectionNonNullable!
             }
 
             type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input SeriesActorsAggregateInput {
@@ -1441,8 +1586,8 @@ describe("Interface Relationships", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              episodeCount: IntAggregateSelection!
-              title: StringAggregateSelection!
+              episodeCount: IntAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
             }
 
             input SeriesConnectInput {
@@ -1452,6 +1597,12 @@ describe("Interface Relationships", () => {
 
             input SeriesConnectWhere {
               node: SeriesWhere!
+            }
+
+            type SeriesConnection {
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             input SeriesCreateInput {
@@ -1471,13 +1622,18 @@ describe("Interface Relationships", () => {
               episodes: [SeriesEpisodesDisconnectFieldInput!]
             }
 
+            type SeriesEdge {
+              cursor: String!
+              node: Series!
+            }
+
             type SeriesEpisodeEpisodesAggregationSelection {
               count: Int!
               node: SeriesEpisodeEpisodesNodeAggregateSelection
             }
 
             type SeriesEpisodeEpisodesNodeAggregateSelection {
-              runtime: IntAggregateSelection!
+              runtime: IntAggregateSelectionNonNullable!
             }
 
             input SeriesEpisodesAggregateInput {
@@ -1583,8 +1739,10 @@ describe("Interface Relationships", () => {
             input SeriesOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [SeriesSort]
+              \\"\\"\\"
+              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [SeriesSort!]
             }
 
             input SeriesRelationInput {
@@ -1592,7 +1750,9 @@ describe("Interface Relationships", () => {
               episodes: [SeriesEpisodesCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+            \\"\\"\\"
             input SeriesSort {
               episodeCount: SortDirection
               title: SortDirection
@@ -1608,32 +1768,56 @@ describe("Interface Relationships", () => {
             input SeriesWhere {
               AND: [SeriesWhere!]
               OR: [SeriesWhere!]
-              actors: ActorWhere
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: SeriesActorsAggregateInput
-              actorsConnection: ProductionActorsConnectionWhere
-              actorsConnection_NOT: ProductionActorsConnectionWhere
-              actors_NOT: ActorWhere
+              actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere
+              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
               episodeCount: Int
               episodeCount_GT: Int
               episodeCount_GTE: Int
-              episodeCount_IN: [Int]
+              episodeCount_IN: [Int!]
               episodeCount_LT: Int
               episodeCount_LTE: Int
               episodeCount_NOT: Int
-              episodeCount_NOT_IN: [Int]
-              episodes: EpisodeWhere
+              episodeCount_NOT_IN: [Int!]
+              episodes: EpisodeWhere @deprecated(reason: \\"Use \`episodes_SOME\` instead.\\")
               episodesAggregate: SeriesEpisodesAggregateInput
-              episodesConnection: SeriesEpisodesConnectionWhere
-              episodesConnection_NOT: SeriesEpisodesConnectionWhere
-              episodes_NOT: EpisodeWhere
+              episodesConnection: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Use \`episodesConnection_SOME\` instead.\\")
+              episodesConnection_ALL: SeriesEpisodesConnectionWhere
+              episodesConnection_NONE: SeriesEpisodesConnectionWhere
+              episodesConnection_NOT: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Use \`episodesConnection_NONE\` instead.\\")
+              episodesConnection_SINGLE: SeriesEpisodesConnectionWhere
+              episodesConnection_SOME: SeriesEpisodesConnectionWhere
+              \\"\\"\\"Return Series where all of the related Episodes match this filter\\"\\"\\"
+              episodes_ALL: EpisodeWhere
+              \\"\\"\\"Return Series where none of the related Episodes match this filter\\"\\"\\"
+              episodes_NONE: EpisodeWhere
+              episodes_NOT: EpisodeWhere @deprecated(reason: \\"Use \`episodes_NONE\` instead.\\")
+              \\"\\"\\"Return Series where one of the related Episodes match this filter\\"\\"\\"
+              episodes_SINGLE: EpisodeWhere
+              \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
+              episodes_SOME: EpisodeWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_IN: [String]
+              title_IN: [String!]
               title_NOT: String
               title_NOT_CONTAINS: String
               title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
+              title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
             }
@@ -1645,9 +1829,9 @@ describe("Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
@@ -1676,12 +1860,11 @@ describe("Interface Relationships", () => {
             type UpdateSeriesMutationResponse {
               info: UpdateInfo!
               series: [Series!]!
-            }
-            "
+            }"
         `);
     });
 
-    test("Interface Relationships - nested interface relationships", () => {
+    test("Interface Relationships - nested interface relationships", async () => {
         const typeDefs = gql`
             interface Interface1 {
                 field1: String!
@@ -1717,7 +1900,7 @@ describe("Interface Relationships", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -1764,8 +1947,8 @@ describe("Interface Relationships", () => {
 
             interface Interface1 {
               field1: String!
-              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Connection(after: String, directed: Boolean = true, first: Int, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             input Interface1ConnectInput {
@@ -1780,7 +1963,6 @@ describe("Interface Relationships", () => {
             input Interface1CreateInput {
               Type1Interface1: Type1Interface1CreateInput
               Type2Interface1: Type2Interface1CreateInput
-              interface2: Interface1Interface2FieldInput
             }
 
             input Interface1DeleteInput {
@@ -1828,6 +2010,10 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input Interface1Interface2ConnectionSort {
+              node: Interface2Sort
+            }
+
             input Interface1Interface2ConnectionWhere {
               AND: [Interface1Interface2ConnectionWhere!]
               OR: [Interface1Interface2ConnectionWhere!]
@@ -1870,6 +2056,22 @@ describe("Interface Relationships", () => {
               where: Interface1Interface2ConnectionWhere
             }
 
+            input Interface1Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Interface1Sort objects to sort Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Interface1Sort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface1Sort object.
+            \\"\\"\\"
+            input Interface1Sort {
+              field1: SortDirection
+            }
+
             input Interface1UpdateInput {
               _on: Interface1ImplementationsUpdateInput
               field1: String
@@ -1881,15 +2083,19 @@ describe("Interface Relationships", () => {
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
-              field1_IN: [String]
+              field1_IN: [String!]
               field1_NOT: String
               field1_NOT_CONTAINS: String
               field1_NOT_ENDS_WITH: String
-              field1_NOT_IN: [String]
+              field1_NOT_IN: [String!]
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
-              interface2Connection: Interface1Interface2ConnectionWhere
-              interface2Connection_NOT: Interface1Interface2ConnectionWhere
+              interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere
             }
 
             interface Interface2 {
@@ -1913,6 +2119,22 @@ describe("Interface Relationships", () => {
             input Interface2ImplementationsWhere {
               Type1Interface2: Type1Interface2Where
               Type2Interface2: Type2Interface2Where
+            }
+
+            input Interface2Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more Interface2Sort objects to sort Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Interface2Sort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface2Sort object.
+            \\"\\"\\"
+            input Interface2Sort {
+              field2: SortDirection
             }
 
             input Interface2UpdateInput {
@@ -1963,24 +2185,19 @@ describe("Interface Relationships", () => {
             type Query {
               type1Interface1s(options: Type1Interface1Options, where: Type1Interface1Where): [Type1Interface1!]!
               type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
-              type1Interface1sCount(where: Type1Interface1Where): Int!
+              type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort], where: Type1Interface1Where): Type1Interface1sConnection!
               type1Interface2s(options: Type1Interface2Options, where: Type1Interface2Where): [Type1Interface2!]!
               type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection!
-              type1Interface2sCount(where: Type1Interface2Where): Int!
+              type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort], where: Type1Interface2Where): Type1Interface2sConnection!
               type1s(options: Type1Options, where: Type1Where): [Type1!]!
               type1sAggregate(where: Type1Where): Type1AggregateSelection!
-              type1sCount(where: Type1Where): Int!
+              type1sConnection(after: String, first: Int, sort: [Type1Sort], where: Type1Where): Type1sConnection!
               type2Interface1s(options: Type2Interface1Options, where: Type2Interface1Where): [Type2Interface1!]!
               type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection!
-              type2Interface1sCount(where: Type2Interface1Where): Int!
+              type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort], where: Type2Interface1Where): Type2Interface1sConnection!
               type2Interface2s(options: Type2Interface2Options, where: Type2Interface2Where): [Type2Interface2!]!
               type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection!
-              type2Interface2sCount(where: Type2Interface2Where): Int!
-            }
-
-            input QueryOptions {
-              limit: Int
-              offset: Int
+              type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort], where: Type2Interface2Where): Type2Interface2sConnection!
             }
 
             enum SortDirection {
@@ -1990,20 +2207,20 @@ describe("Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
             }
 
             type Type1 {
               field1: String!
-              interface1(options: QueryOptions, where: Interface1Where): [Interface1!]!
-              interface1Connection(where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
+              interface1(directed: Boolean = true, options: Interface1Options, where: Interface1Where): [Interface1!]!
+              interface1Connection(after: String, directed: Boolean = true, first: Int, sort: [Type1Interface1ConnectionSort!], where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
             type Type1AggregateSelection {
               count: Int!
-              field1: StringAggregateSelection!
+              field1: StringAggregateSelectionNonNullable!
             }
 
             input Type1ConnectInput {
@@ -2023,15 +2240,20 @@ describe("Interface Relationships", () => {
               interface1: [Type1Interface1DisconnectFieldInput!]
             }
 
+            type Type1Edge {
+              cursor: String!
+              node: Type1!
+            }
+
             type Type1Interface1 implements Interface1 {
               field1: String!
-              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Connection(after: String, directed: Boolean = true, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             type Type1Interface1AggregateSelection {
               count: Int!
-              field1: StringAggregateSelection!
+              field1: StringAggregateSelectionNonNullable!
             }
 
             input Type1Interface1ConnectFieldInput {
@@ -2047,6 +2269,10 @@ describe("Interface Relationships", () => {
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input Type1Interface1ConnectionSort {
+              node: Interface1Sort
             }
 
             input Type1Interface1ConnectionWhere {
@@ -2081,6 +2307,11 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1DisconnectInput {
               interface2: [Type1Interface1Interface2DisconnectFieldInput!]
+            }
+
+            type Type1Interface1Edge {
+              cursor: String!
+              node: Type1Interface1!
             }
 
             input Type1Interface1FieldInput {
@@ -2120,8 +2351,10 @@ describe("Interface Relationships", () => {
             input Type1Interface1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type1Interface1Sort objects to sort Type1Interface1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [Type1Interface1Sort]
+              \\"\\"\\"
+              Specify one or more Type1Interface1Sort objects to sort Type1Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type1Interface1Sort!]
             }
 
             input Type1Interface1RelationInput {
@@ -2133,7 +2366,9 @@ describe("Interface Relationships", () => {
               node: Interface1!
             }
 
-            \\"\\"\\"Fields to sort Type1Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface1Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Type1Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface1Sort object.
+            \\"\\"\\"
             input Type1Interface1Sort {
               field1: SortDirection
             }
@@ -2162,15 +2397,25 @@ describe("Interface Relationships", () => {
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
-              field1_IN: [String]
+              field1_IN: [String!]
               field1_NOT: String
               field1_NOT_CONTAINS: String
               field1_NOT_ENDS_WITH: String
-              field1_NOT_IN: [String]
+              field1_NOT_IN: [String!]
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
-              interface2Connection: Interface1Interface2ConnectionWhere
-              interface2Connection_NOT: Interface1Interface2ConnectionWhere
+              interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+            }
+
+            type Type1Interface1sConnection {
+              edges: [Type1Interface1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Type1Interface2 implements Interface2 {
@@ -2179,21 +2424,30 @@ describe("Interface Relationships", () => {
 
             type Type1Interface2AggregateSelection {
               count: Int!
-              field2: StringAggregateSelection!
+              field2: StringAggregateSelectionNonNullable!
             }
 
             input Type1Interface2CreateInput {
               field2: String!
             }
 
+            type Type1Interface2Edge {
+              cursor: String!
+              node: Type1Interface2!
+            }
+
             input Type1Interface2Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type1Interface2Sort objects to sort Type1Interface2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [Type1Interface2Sort]
+              \\"\\"\\"
+              Specify one or more Type1Interface2Sort objects to sort Type1Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type1Interface2Sort!]
             }
 
-            \\"\\"\\"Fields to sort Type1Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface2Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Type1Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface2Sort object.
+            \\"\\"\\"
             input Type1Interface2Sort {
               field2: SortDirection
             }
@@ -2208,27 +2462,37 @@ describe("Interface Relationships", () => {
               field2: String
               field2_CONTAINS: String
               field2_ENDS_WITH: String
-              field2_IN: [String]
+              field2_IN: [String!]
               field2_NOT: String
               field2_NOT_CONTAINS: String
               field2_NOT_ENDS_WITH: String
-              field2_NOT_IN: [String]
+              field2_NOT_IN: [String!]
               field2_NOT_STARTS_WITH: String
               field2_STARTS_WITH: String
+            }
+
+            type Type1Interface2sConnection {
+              edges: [Type1Interface2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             input Type1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type1Sort objects to sort Type1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [Type1Sort]
+              \\"\\"\\"
+              Specify one or more Type1Sort objects to sort Type1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type1Sort!]
             }
 
             input Type1RelationInput {
               interface1: [Type1Interface1CreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Type1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Type1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Sort object.
+            \\"\\"\\"
             input Type1Sort {
               field1: SortDirection
             }
@@ -2244,26 +2508,36 @@ describe("Interface Relationships", () => {
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
-              field1_IN: [String]
+              field1_IN: [String!]
               field1_NOT: String
               field1_NOT_CONTAINS: String
               field1_NOT_ENDS_WITH: String
-              field1_NOT_IN: [String]
+              field1_NOT_IN: [String!]
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
-              interface1Connection: Type1Interface1ConnectionWhere
-              interface1Connection_NOT: Type1Interface1ConnectionWhere
+              interface1Connection: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_SOME\` instead.\\")
+              interface1Connection_ALL: Type1Interface1ConnectionWhere
+              interface1Connection_NONE: Type1Interface1ConnectionWhere
+              interface1Connection_NOT: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_NONE\` instead.\\")
+              interface1Connection_SINGLE: Type1Interface1ConnectionWhere
+              interface1Connection_SOME: Type1Interface1ConnectionWhere
+            }
+
+            type Type1sConnection {
+              edges: [Type1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Type2Interface1 implements Interface1 {
               field1: String!
-              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
-              interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Connection(after: String, directed: Boolean = true, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             type Type2Interface1AggregateSelection {
               count: Int!
-              field1: StringAggregateSelection!
+              field1: StringAggregateSelectionNonNullable!
             }
 
             input Type2Interface1ConnectInput {
@@ -2281,6 +2555,11 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1DisconnectInput {
               interface2: [Type2Interface1Interface2DisconnectFieldInput!]
+            }
+
+            type Type2Interface1Edge {
+              cursor: String!
+              node: Type2Interface1!
             }
 
             input Type2Interface1Interface2ConnectFieldInput {
@@ -2315,15 +2594,19 @@ describe("Interface Relationships", () => {
             input Type2Interface1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [Type2Interface1Sort]
+              \\"\\"\\"
+              Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type2Interface1Sort!]
             }
 
             input Type2Interface1RelationInput {
               interface2: [Type2Interface1Interface2CreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Type2Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface1Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Type2Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface1Sort object.
+            \\"\\"\\"
             input Type2Interface1Sort {
               field1: SortDirection
             }
@@ -2339,15 +2622,25 @@ describe("Interface Relationships", () => {
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
-              field1_IN: [String]
+              field1_IN: [String!]
               field1_NOT: String
               field1_NOT_CONTAINS: String
               field1_NOT_ENDS_WITH: String
-              field1_NOT_IN: [String]
+              field1_NOT_IN: [String!]
               field1_NOT_STARTS_WITH: String
               field1_STARTS_WITH: String
-              interface2Connection: Interface1Interface2ConnectionWhere
-              interface2Connection_NOT: Interface1Interface2ConnectionWhere
+              interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+            }
+
+            type Type2Interface1sConnection {
+              edges: [Type2Interface1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Type2Interface2 implements Interface2 {
@@ -2356,21 +2649,30 @@ describe("Interface Relationships", () => {
 
             type Type2Interface2AggregateSelection {
               count: Int!
-              field2: StringAggregateSelection!
+              field2: StringAggregateSelectionNonNullable!
             }
 
             input Type2Interface2CreateInput {
               field2: String!
             }
 
+            type Type2Interface2Edge {
+              cursor: String!
+              node: Type2Interface2!
+            }
+
             input Type2Interface2Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more Type2Interface2Sort objects to sort Type2Interface2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [Type2Interface2Sort]
+              \\"\\"\\"
+              Specify one or more Type2Interface2Sort objects to sort Type2Interface2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [Type2Interface2Sort!]
             }
 
-            \\"\\"\\"Fields to sort Type2Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface2Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Type2Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface2Sort object.
+            \\"\\"\\"
             input Type2Interface2Sort {
               field2: SortDirection
             }
@@ -2385,13 +2687,19 @@ describe("Interface Relationships", () => {
               field2: String
               field2_CONTAINS: String
               field2_ENDS_WITH: String
-              field2_IN: [String]
+              field2_IN: [String!]
               field2_NOT: String
               field2_NOT_CONTAINS: String
               field2_NOT_ENDS_WITH: String
-              field2_NOT_IN: [String]
+              field2_NOT_IN: [String!]
               field2_NOT_STARTS_WITH: String
               field2_STARTS_WITH: String
+            }
+
+            type Type2Interface2sConnection {
+              edges: [Type2Interface2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type UpdateInfo {
@@ -2425,8 +2733,7 @@ describe("Interface Relationships", () => {
             type UpdateType2Interface2sMutationResponse {
               info: UpdateInfo!
               type2Interface2s: [Type2Interface2!]!
-            }
-            "
+            }"
         `);
 
         // expect(() => {
@@ -2435,26 +2742,26 @@ describe("Interface Relationships", () => {
         // }).toThrowError("Nested interface relationship fields are not supported: Interface1.interface2");
     });
 
-    test("Interface Relationships - nested relationships", () => {
+    test("Interface Relationships - nested relationships", async () => {
         const typeDefs = gql`
             interface Content {
                 id: ID
                 content: String
-                creator: User @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             type Comment implements Content {
                 id: ID
                 content: String
-                creator: User
-                post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+                creator: User!
+                post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
             }
 
             type Post implements Content {
                 id: ID
                 content: String
-                creator: User
-                comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+                creator: User!
+                comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 
             type User {
@@ -2465,7 +2772,7 @@ describe("Interface Relationships", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -2475,19 +2782,19 @@ describe("Interface Relationships", () => {
 
             type Comment implements Content {
               content: String
-              creator(options: UserOptions, where: UserWhere): User
-              creatorAggregate(where: UserWhere): CommentUserCreatorAggregationSelection
-              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              creatorAggregate(directed: Boolean = true, where: UserWhere): CommentUserCreatorAggregationSelection
+              creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
-              post(options: PostOptions, where: PostWhere): Post
-              postAggregate(where: PostWhere): CommentPostPostAggregationSelection
-              postConnection(after: String, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
+              post(directed: Boolean = true, options: PostOptions, where: PostWhere): Post!
+              postAggregate(directed: Boolean = true, where: PostWhere): CommentPostPostAggregationSelection
+              postConnection(after: String, directed: Boolean = true, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
             }
 
             type CommentAggregateSelection {
-              content: StringAggregateSelection!
+              content: StringAggregateSelectionNullable!
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             input CommentConnectInput {
@@ -2553,11 +2860,18 @@ describe("Interface Relationships", () => {
               post: CommentPostDisconnectFieldInput
             }
 
+            type CommentEdge {
+              cursor: String!
+              node: Comment!
+            }
+
             input CommentOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more CommentSort objects to sort Comments by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [CommentSort]
+              \\"\\"\\"
+              Specify one or more CommentSort objects to sort Comments by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [CommentSort!]
             }
 
             input CommentPostAggregateInput {
@@ -2644,8 +2958,8 @@ describe("Interface Relationships", () => {
             }
 
             type CommentPostPostNodeAggregateSelection {
-              content: StringAggregateSelection!
-              id: IDAggregateSelection!
+              content: StringAggregateSelectionNullable!
+              id: IDAggregateSelectionNullable!
             }
 
             type CommentPostRelationship {
@@ -2671,7 +2985,9 @@ describe("Interface Relationships", () => {
               post: CommentPostCreateFieldInput
             }
 
-            \\"\\"\\"Fields to sort Comments by. The order in which sorts are applied is not guaranteed when specifying many fields in one CommentSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Comments by. The order in which sorts are applied is not guaranteed when specifying many fields in one CommentSort object.
+            \\"\\"\\"
             input CommentSort {
               content: SortDirection
               id: SortDirection
@@ -2690,8 +3006,8 @@ describe("Interface Relationships", () => {
             }
 
             type CommentUserCreatorNodeAggregateSelection {
-              id: IDAggregateSelection!
-              name: StringAggregateSelection!
+              id: IDAggregateSelectionNullable!
+              name: StringAggregateSelectionNullable!
             }
 
             input CommentWhere {
@@ -2729,10 +3045,16 @@ describe("Interface Relationships", () => {
               post_NOT: PostWhere
             }
 
+            type CommentsConnection {
+              edges: [CommentEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             interface Content {
               content: String
-              creator(options: UserOptions, where: UserWhere): User
-              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
             }
 
@@ -2881,6 +3203,23 @@ describe("Interface Relationships", () => {
               Post: PostWhere
             }
 
+            input ContentOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ContentSort objects to sort Contents by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ContentSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Contents by. The order in which sorts are applied is not guaranteed when specifying many fields in one ContentSort object.
+            \\"\\"\\"
+            input ContentSort {
+              content: SortDirection
+              id: SortDirection
+            }
+
             input ContentUpdateInput {
               _on: ContentImplementationsUpdateInput
               content: String
@@ -2944,7 +3283,7 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
+            type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
             }
@@ -2970,20 +3309,20 @@ describe("Interface Relationships", () => {
             }
 
             type Post implements Content {
-              comments(options: CommentOptions, where: CommentWhere): [Comment]
-              commentsAggregate(where: CommentWhere): PostCommentCommentsAggregationSelection
-              commentsConnection(after: String, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
+              comments(directed: Boolean = true, options: CommentOptions, where: CommentWhere): [Comment!]!
+              commentsAggregate(directed: Boolean = true, where: CommentWhere): PostCommentCommentsAggregationSelection
+              commentsConnection(after: String, directed: Boolean = true, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
               content: String
-              creator(options: UserOptions, where: UserWhere): User
-              creatorAggregate(where: UserWhere): PostUserCreatorAggregationSelection
-              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              creatorAggregate(directed: Boolean = true, where: UserWhere): PostUserCreatorAggregationSelection
+              creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
             }
 
             type PostAggregateSelection {
-              content: StringAggregateSelection!
+              content: StringAggregateSelectionNullable!
               count: Int!
-              id: IDAggregateSelection!
+              id: IDAggregateSelectionNullable!
             }
 
             type PostCommentCommentsAggregationSelection {
@@ -2992,8 +3331,8 @@ describe("Interface Relationships", () => {
             }
 
             type PostCommentCommentsNodeAggregateSelection {
-              content: StringAggregateSelection!
-              id: IDAggregateSelection!
+              content: StringAggregateSelectionNullable!
+              id: IDAggregateSelectionNullable!
             }
 
             input PostCommentsAggregateInput {
@@ -3155,11 +3494,18 @@ describe("Interface Relationships", () => {
               creator: ContentCreatorDisconnectFieldInput
             }
 
+            type PostEdge {
+              cursor: String!
+              node: Post!
+            }
+
             input PostOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [PostSort]
+              \\"\\"\\"
+              Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [PostSort!]
             }
 
             input PostRelationInput {
@@ -3167,7 +3513,9 @@ describe("Interface Relationships", () => {
               creator: ContentCreatorCreateFieldInput
             }
 
-            \\"\\"\\"Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.
+            \\"\\"\\"
             input PostSort {
               content: SortDirection
               id: SortDirection
@@ -3186,18 +3534,30 @@ describe("Interface Relationships", () => {
             }
 
             type PostUserCreatorNodeAggregateSelection {
-              id: IDAggregateSelection!
-              name: StringAggregateSelection!
+              id: IDAggregateSelectionNullable!
+              name: StringAggregateSelectionNullable!
             }
 
             input PostWhere {
               AND: [PostWhere!]
               OR: [PostWhere!]
-              comments: CommentWhere
+              comments: CommentWhere @deprecated(reason: \\"Use \`comments_SOME\` instead.\\")
               commentsAggregate: PostCommentsAggregateInput
-              commentsConnection: PostCommentsConnectionWhere
-              commentsConnection_NOT: PostCommentsConnectionWhere
-              comments_NOT: CommentWhere
+              commentsConnection: PostCommentsConnectionWhere @deprecated(reason: \\"Use \`commentsConnection_SOME\` instead.\\")
+              commentsConnection_ALL: PostCommentsConnectionWhere
+              commentsConnection_NONE: PostCommentsConnectionWhere
+              commentsConnection_NOT: PostCommentsConnectionWhere @deprecated(reason: \\"Use \`commentsConnection_NONE\` instead.\\")
+              commentsConnection_SINGLE: PostCommentsConnectionWhere
+              commentsConnection_SOME: PostCommentsConnectionWhere
+              \\"\\"\\"Return Posts where all of the related Comments match this filter\\"\\"\\"
+              comments_ALL: CommentWhere
+              \\"\\"\\"Return Posts where none of the related Comments match this filter\\"\\"\\"
+              comments_NONE: CommentWhere
+              comments_NOT: CommentWhere @deprecated(reason: \\"Use \`comments_NONE\` instead.\\")
+              \\"\\"\\"Return Posts where one of the related Comments match this filter\\"\\"\\"
+              comments_SINGLE: CommentWhere
+              \\"\\"\\"Return Posts where some of the related Comments match this filter\\"\\"\\"
+              comments_SOME: CommentWhere
               content: String
               content_CONTAINS: String
               content_ENDS_WITH: String
@@ -3225,21 +3585,22 @@ describe("Interface Relationships", () => {
               id_STARTS_WITH: ID
             }
 
+            type PostsConnection {
+              edges: [PostEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               comments(options: CommentOptions, where: CommentWhere): [Comment!]!
               commentsAggregate(where: CommentWhere): CommentAggregateSelection!
-              commentsCount(where: CommentWhere): Int!
+              commentsConnection(after: String, first: Int, sort: [CommentSort], where: CommentWhere): CommentsConnection!
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsCount(where: PostWhere): Int!
+              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersCount(where: UserWhere): Int!
-            }
-
-            input QueryOptions {
-              limit: Int
-              offset: Int
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
             enum SortDirection {
@@ -3249,7 +3610,7 @@ describe("Interface Relationships", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }
@@ -3278,16 +3639,16 @@ describe("Interface Relationships", () => {
             }
 
             type User {
-              content(options: QueryOptions, where: ContentWhere): [Content!]!
-              contentConnection(where: UserContentConnectionWhere): UserContentConnection!
+              content(directed: Boolean = true, options: ContentOptions, where: ContentWhere): [Content!]!
+              contentConnection(after: String, directed: Boolean = true, first: Int, sort: [UserContentConnectionSort!], where: UserContentConnectionWhere): UserContentConnection!
               id: ID
               name: String
             }
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
-              name: StringAggregateSelection!
+              id: IDAggregateSelectionNullable!
+              name: StringAggregateSelectionNullable!
             }
 
             input UserConnectInput {
@@ -3307,6 +3668,10 @@ describe("Interface Relationships", () => {
               edges: [UserContentRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input UserContentConnectionSort {
+              node: ContentSort
             }
 
             input UserContentConnectionWhere {
@@ -3367,18 +3732,27 @@ describe("Interface Relationships", () => {
               content: [UserContentDisconnectFieldInput!]
             }
 
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
+
             input UserOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [UserSort]
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
             }
 
             input UserRelationInput {
               content: [UserContentCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
             input UserSort {
               id: SortDirection
               name: SortDirection
@@ -3393,8 +3767,12 @@ describe("Interface Relationships", () => {
             input UserWhere {
               AND: [UserWhere!]
               OR: [UserWhere!]
-              contentConnection: UserContentConnectionWhere
-              contentConnection_NOT: UserContentConnectionWhere
+              contentConnection: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_SOME\` instead.\\")
+              contentConnection_ALL: UserContentConnectionWhere
+              contentConnection_NONE: UserContentConnectionWhere
+              contentConnection_NOT: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_NONE\` instead.\\")
+              contentConnection_SINGLE: UserContentConnectionWhere
+              contentConnection_SOME: UserContentConnectionWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -3416,7 +3794,12 @@ describe("Interface Relationships", () => {
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
-            "
+
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }"
         `);
     });
 });

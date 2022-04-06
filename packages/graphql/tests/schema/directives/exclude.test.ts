@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@exclude directive", () => {
-    test("can be used to skip generation of Query", () => {
+    test("can be used to skip generation of Query", async () => {
         const typeDefs = gql`
             type Actor @exclude(operations: [READ]) {
                 name: String
@@ -34,7 +34,7 @@ describe("@exclude directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -97,21 +97,30 @@ describe("@exclude directive", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
               title: String
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               title: SortDirection
             }
@@ -135,6 +144,12 @@ describe("@exclude directive", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
@@ -144,10 +159,18 @@ describe("@exclude directive", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -157,7 +180,7 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }
@@ -178,19 +201,18 @@ describe("@exclude directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
-    test("can be used to skip generation of Mutation", () => {
+    test("can be used to skip generation of Mutation", async () => {
         const typeDefs = gql`
             type Actor @exclude(operations: [CREATE]) {
                 name: String
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -204,17 +226,26 @@ describe("@exclude directive", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNullable!
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
             }
 
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [ActorSort]
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
             }
 
-            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -238,6 +269,12 @@ describe("@exclude directive", () => {
               name_STARTS_WITH: String
             }
 
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type DeleteInfo {
               bookmark: String
               nodesDeleted: Int!
@@ -249,10 +286,18 @@ describe("@exclude directive", () => {
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsCount(where: ActorWhere): Int!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
             }
 
             enum SortDirection {
@@ -262,7 +307,7 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }
@@ -278,12 +323,11 @@ describe("@exclude directive", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }
-            "
+            }"
         `);
     });
 
-    test("can be used with no arguments to skip generation of all Queries and Mutations and removes the type itself if not referenced elsewhere", () => {
+    test("can be used with no arguments to skip generation of all Queries and Mutations and removes the type itself if not referenced elsewhere", async () => {
         const typeDefs = gql`
             type Actor @exclude {
                 name: String
@@ -294,7 +338,7 @@ describe("@exclude directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -325,21 +369,30 @@ describe("@exclude directive", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
               title: String
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               title: SortDirection
             }
@@ -363,16 +416,30 @@ describe("@exclude directive", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -382,7 +449,7 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }
@@ -398,12 +465,11 @@ describe("@exclude directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
-    test("can be used with no arguments to skip generation of all Queries and Mutations but retains the type itself if referenced elsewhere", () => {
+    test("can be used with no arguments to skip generation of all Queries and Mutations but retains the type itself if referenced elsewhere", async () => {
         const typeDefs = gql`
             type Actor @exclude {
                 name: String
@@ -418,7 +484,7 @@ describe("@exclude directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -453,21 +519,30 @@ describe("@exclude directive", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
               title: String
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               title: SortDirection
             }
@@ -491,17 +566,31 @@ describe("@exclude directive", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               customActorQuery: Actor
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -511,7 +600,7 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }
@@ -527,12 +616,11 @@ describe("@exclude directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
-    test("can be used with no arguments to skip generation of all Queries and Mutations but retains the type itself if referenced in a `@relationship` directive", () => {
+    test("can be used with no arguments to skip generation of all Queries and Mutations but retains the type itself if referenced in a `@relationship` directive", async () => {
         const typeDefs = gql`
             type Actor @exclude {
                 name: String
@@ -540,11 +628,11 @@ describe("@exclude directive", () => {
 
             type Movie {
                 title: String
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -567,11 +655,15 @@ describe("@exclude directive", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [ActorSort]
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
             }
 
-            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -613,9 +705,9 @@ describe("@exclude directive", () => {
             }
 
             type Movie {
-              actors(options: ActorOptions, where: ActorWhere): [Actor]
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
-              actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String
             }
 
@@ -625,7 +717,7 @@ describe("@exclude directive", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -722,7 +814,7 @@ describe("@exclude directive", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -742,18 +834,27 @@ describe("@exclude directive", () => {
               actors: [MovieActorsDisconnectFieldInput!]
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
               actors: [MovieActorsCreateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               title: SortDirection
             }
@@ -766,11 +867,23 @@ describe("@exclude directive", () => {
             input MovieWhere {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
-              actors: ActorWhere
+              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
-              actorsConnection: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere
-              actors_NOT: ActorWhere
+              actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              actors_ALL: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              actors_NONE: ActorWhere
+              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              actors_SINGLE: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              actors_SOME: ActorWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -781,6 +894,12 @@ describe("@exclude directive", () => {
               title_NOT_IN: [String]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Mutation {
@@ -800,7 +919,7 @@ describe("@exclude directive", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -810,7 +929,7 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }
@@ -826,19 +945,18 @@ describe("@exclude directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
-    test("doesn't break if provided with an empty array", () => {
+    test("doesn't break if provided with an empty array", async () => {
         const typeDefs = gql`
             type Actor @exclude(operations: []) {
                 name: String
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -852,21 +970,30 @@ describe("@exclude directive", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregateSelection!
+              name: StringAggregateSelectionNullable!
             }
 
             input ActorCreateInput {
               name: String
             }
 
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
             input ActorOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [ActorSort]
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
             }
 
-            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -888,6 +1015,12 @@ describe("@exclude directive", () => {
               name_NOT_IN: [String]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -913,10 +1046,18 @@ describe("@exclude directive", () => {
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsCount(where: ActorWhere): Int!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
             }
 
             enum SortDirection {
@@ -926,7 +1067,7 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }
@@ -942,12 +1083,11 @@ describe("@exclude directive", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }
-            "
+            }"
         `);
     });
 
-    test("can be used with interfaces", () => {
+    test("can be used with interfaces", async () => {
         const typeDefs = gql`
             interface Production @exclude(operations: [CREATE]) {
                 title: String
@@ -962,7 +1102,7 @@ describe("@exclude directive", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -993,17 +1133,26 @@ describe("@exclude directive", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNullable!
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
             }
 
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               title: SortDirection
             }
@@ -1027,11 +1176,25 @@ describe("@exclude directive", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               deleteSeries(where: SeriesWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
             }
 
             interface Production {
@@ -1041,10 +1204,10 @@ describe("@exclude directive", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesCount(where: MovieWhere): Int!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesCount(where: SeriesWhere): Int!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
@@ -1053,21 +1216,36 @@ describe("@exclude directive", () => {
 
             type SeriesAggregateSelection {
               count: Int!
-              title: StringAggregateSelection!
+              title: StringAggregateSelectionNullable!
+            }
+
+            type SeriesConnection {
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             input SeriesCreateInput {
               title: String
             }
 
+            type SeriesEdge {
+              cursor: String!
+              node: Series!
+            }
+
             input SeriesOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [SeriesSort]
+              \\"\\"\\"
+              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [SeriesSort!]
             }
 
-            \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+            \\"\\"\\"
             input SeriesSort {
               title: SortDirection
             }
@@ -1094,7 +1272,7 @@ describe("@exclude directive", () => {
               DESC
             }
 
-            type StringAggregateSelection {
+            type StringAggregateSelectionNullable {
               longest: String
               shortest: String
             }
@@ -1110,8 +1288,7 @@ describe("@exclude directive", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 });

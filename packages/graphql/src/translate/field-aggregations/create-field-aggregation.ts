@@ -18,7 +18,6 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { upperFirst } from "graphql-compose";
 import { Node, Relationship } from "../../classes";
 import { Context, RelationField, GraphQLWhereArg } from "../../types";
 import {
@@ -33,10 +32,12 @@ import * as AggregationSubQueries from "./aggregation-sub-queries";
 import { createFieldAggregationAuth } from "./field-aggregations-auth";
 import { createMatchWherePattern } from "./aggregation-sub-queries";
 import mapToDbProperty from "../../utils/map-to-db-property";
-import createWhereAndParams from "../create-where-and-params";
+import createWhereAndParams from "../where/create-where-and-params";
 import { stringifyObject } from "../utils/stringify-object";
 import { serializeParamsForApocRun, wrapInApocRunFirstColumn } from "../utils/apoc-run";
 import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-aggregation-composer";
+import { upperFirst } from "../../utils/upper-first";
+import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 
 const subqueryNodeAlias = "n";
 const subqueryRelationAlias = "r";
@@ -95,9 +96,13 @@ export function createFieldAggregation({
         relationField: relationAggregationField,
         referenceNode,
         context,
+        directed: field.args.directed as boolean | undefined,
     });
     const matchWherePattern = createMatchWherePattern(targetPattern, authData, whereQuery);
-    const apocRunParams = { ...serializeParamsForApocRun(whereParams), ...serializeAuthParamsForApocRun(authData) };
+    const apocRunParams = {
+        ...serializeParamsForApocRun(whereParams as Record<string, any>),
+        ...serializeAuthParamsForApocRun(authData),
+    };
 
     return {
         query: stringifyObject({
@@ -154,14 +159,15 @@ function createTargetPattern({
     relationField,
     referenceNode,
     context,
+    directed,
 }: {
     nodeLabel: string;
     relationField: RelationField;
     referenceNode: Node;
     context: Context;
+    directed?: boolean;
 }): string {
-    const inStr = relationField.direction === "IN" ? "<-" : "-";
-    const outStr = relationField.direction === "OUT" ? "->" : "-";
+    const { inStr, outStr } = getRelationshipDirection(relationField, { directed });
     const nodeOutStr = `(${subqueryNodeAlias}${referenceNode.getLabelString(context)})`;
 
     return `(${nodeLabel})${inStr}[${subqueryRelationAlias}:${relationField.type}]${outStr}${nodeOutStr}`;

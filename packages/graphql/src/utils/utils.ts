@@ -55,3 +55,25 @@ export function haveSharedElement(arr1: Array<any>, arr2: Array<any>): boolean {
     }
     return false;
 }
+
+/** Removes duplicate elements of an array */
+export function removeDuplicates<T>(arr: T[]): T[] {
+    return Array.from(new Set(arr));
+}
+
+/** Awaitable version of setTimeout */
+export function delay(ms: number): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
+/** Omits fields from record */
+export function omitFields<T>(obj: Record<string, T>, fields: string[]): Record<string, T> {
+    return Object.entries(obj)
+        .filter((item) => !fields.includes(item[0]))
+        .reduce((acc, [key, value]) => {
+            acc[key] = value;
+            return acc;
+        }, {});
+}

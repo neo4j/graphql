@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
@@ -32,13 +33,13 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
         typeDefs = gql`
             type Post {
                 content: String
-                creator: User @relationship(type: "HAS_POST", direction: IN)
+                creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
             type User {
                 id: ID
                 name: String
-                content: [Content] @relationship(type: "PUBLISHED", direction: OUT)
+                content: [Content!]! @relationship(type: "PUBLISHED", direction: OUT)
             }
 
             union Content = Post
@@ -49,7 +50,12 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -92,7 +98,7 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
             MATCH (this)-[this_published_relationship:PUBLISHED]->(this_Post:Post)
             CALL apoc.util.validate(NOT(EXISTS((this_Post)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
-            WITH this_Post
+            WITH this, this_Post
             MATCH (this_Post)<-[this_Post_has_post_relationship:HAS_POST]-(this_Post_user:User)
             CALL apoc.util.validate(NOT(this_Post_user.id IS NOT NULL AND this_Post_user.id = $this_Post_user_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { name: this_Post_user.name } }) AS edges
@@ -101,8 +107,8 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
             WITH { node: { __resolveType: \\"Post\\", content: this_Post.content, creatorConnection: creatorConnection } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS contentConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
             RETURN this { contentConnection } as this"
         `);

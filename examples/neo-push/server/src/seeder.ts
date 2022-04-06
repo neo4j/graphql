@@ -1,4 +1,4 @@
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { ogm } from "./gql";
 import * as neo4j from "./neo4j";
 import createDebug from "./debugger";
@@ -17,6 +17,8 @@ async function main() {
     debug("Seeding Started");
 
     await neo4j.connect();
+
+    await ogm.init();
 
     await Promise.all([User, Blog, Post, Comment].map((m) => m.delete({})));
 

@@ -1,4 +1,6 @@
 const path = require("path");
+// eslint-disable-next-line import/no-extraneous-dependencies
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 module.exports = {
     globalSetup: path.join(__dirname, "jest.global-setup.js"),
@@ -16,6 +18,7 @@ module.exports = {
         "@neo4j/graphql/dist/types": "<rootDir>/packages/graphql/src/types",
         "@neo4j/introspector(.*)$": "<rootDir>/packages/introspector/src/$1",
         "@neo4j/graphql-ogm(.*)$": "<rootDir>/packages/ogm/src/$1",
+        "@neo4j/graphql-plugin-auth(.*)$": "<rootDir>/packages/graphql-plugin-auth/src/$1",
         "@neo4j/graphql(.*)$": "<rootDir>/packages/graphql/src/$1",
     },
 };

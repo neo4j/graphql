@@ -38,7 +38,7 @@ export class NodeBuilder extends Builder<Node, NodeConstructor> {
             objectFields: [],
             temporalFields: [],
             pointFields: [],
-            ignoredFields: [],
+            computedFields: [],
             ...newOptions,
         });
     }

@@ -13,13 +13,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
 
   unit-tests:
     needs:
@@ -30,22 +30,27 @@ jobs:
         package:
           - graphql
           - ogm
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run packages/${{ matrix.package }} unit tests
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/${{ matrix.package }}/coverage/
@@ -58,18 +63,26 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run TCK tests
         run: yarn --cwd packages/graphql run test:tck --coverage
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/graphql/coverage/
@@ -83,64 +96,77 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Run Schema tests
         run: yarn --cwd packages/graphql run test:schema --coverage
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/graphql/coverage/
           flags: graphql,schema
           fail_ci_if_error: true
 
-  nextjs-app-setup:
-    needs:
-      - cache-dependencies
+  # nextjs-app-setup:
+  #   needs:
+  #     - cache-dependencies
 
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
 
-    services:
-      neo4j:
-        image: neo4j:latest
-        env:
-          NEO4J_AUTH: neo4j/mypassword
-          NEO4JLABS_PLUGINS: '["apoc"]'
-        ports:
-          - 7687:7687
+  #   services:
+  #     neo4j:
+  #       image: neo4j:latest
+  #       env:
+  #         NEO4J_AUTH: neo4j/mypassword
+  #         NEO4JLABS_PLUGINS: '["apoc"]'
+  #       ports:
+  #         - 7687:7687
 
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable && yarn build
-      - name: Setup Nextjs app
-        run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
-      - name: Install dependencies
-        run: |
-          cd packages/neo4j-graphql-nextjs
-          chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
-      - name: Copy .env file
-        run: cp docs/modules/ROOT/examples/code-partials/nextjs/env.example packages/neo4j-graphql-nextjs/.env.local
-      - name: Create GraphQL endpoint
-        run: cp docs/modules/ROOT/examples/code-partials/nextjs/graphql.js packages/neo4j-graphql-nextjs/pages/api/graphql.js
-      - name: Start server
-        run: cd packages/neo4j-graphql-nextjs && yarn dev &
-      - name: Query the API and assert that there are no errors
-        run: |
-          sleep 10 &&
-          RES=$(curl 'http://localhost:3000/api/graphql' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: http://localhost:3000' --data-binary '{"query":"{\n  movies {\n    title\n  }\n}"}' --compressed --silent)
-          echo "$RES"
-          echo "$RES" | grep -qv "error"
+  #   strategy:
+  #     matrix:
+  #       graphql-version:
+  #         - "^15.0.0"
+  #         - "^16.0.0"
+
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: lts/*
+  #         cache: yarn
+  #     - name: Install dependencies
+  #       run: yarn --immutable
+  #     - name: Build and pack @neo4j/graphql
+  #       run: |
+  #         yarn build
+  #         yarn pack
+  #       working-directory: packages/graphql
+  #     - name: Setup Nextjs app
+  #       run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
+  #     - name: Install dependencies
+  #       run: |
+  #         chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
+  #         npm install ../graphql/package.tgz
+  #         npm install graphql@${{ matrix.graphql-version }}
+  #       working-directory: packages/neo4j-graphql-nextjs
+  #     - name: Copy .env file
+  #       run: cp docs/modules/ROOT/examples/code-partials/nextjs/env.example packages/neo4j-graphql-nextjs/.env.local
+  #     - name: Create GraphQL endpoint
+  #       run: cp docs/modules/ROOT/examples/code-partials/nextjs/graphql.js packages/neo4j-graphql-nextjs/pages/api/graphql.js
+  #     - name: Start server
+  #       run: cd packages/neo4j-graphql-nextjs && yarn dev &
+  #     - name: Query the API and assert that there are no errors
+  #       run: |
+  #         sleep 10 &&
+  #         RES=$(curl 'http://localhost:3000/api/graphql' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: http://localhost:3000' --data-binary '{"query":"{\n  movies {\n    title\n  }\n}"}' --compressed --silent)
+  #         echo "$RES"
+  #         echo "$RES" | grep -qv "error"
 
   package-tests:
     needs:
@@ -149,14 +175,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
-      - run: yarn build
+        run: yarn
+      - name: Build graphql
+        run: yarn build
+        working-directory: packages/graphql
       - name: Run @neo4j/graphql package tests
         run: yarn --cwd packages/graphql run test:package-tests
 
@@ -170,13 +198,14 @@ jobs:
           - graphql
           - ogm
         neo4j-version:
-          - 4.1.5
-          - 4.1
           - 4.2.9
           - 4.2
           - 4.3.2
           - 4.3
           - 4.4
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
@@ -192,13 +221,15 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --coverage
@@ -209,7 +240,7 @@ jobs:
           NEO_PASSWORD: testpassword
           NEO_URL: bolt://localhost:7687
       - name: Archive coverage report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: integration-coverage-${{ matrix.package }}
           path: packages/${{ matrix.package }}/coverage-${{ matrix.neo4j-version }}/
@@ -228,20 +259,20 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Install ts-node and typescript
         run: npm install -g ts-node typescript
       - name: Uppercase instance name
         run: |
           lowercase_instance=${{ matrix.aura-instance }}
-          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>${GITHUB_ENV}
-          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
+          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>"${GITHUB_ENV}"
+          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>"${GITHUB_ENV}"
       - name: Delete all data in instance
         run: ts-node tests/integration/teardown.ts
         working-directory: packages/graphql
@@ -267,18 +298,18 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Uppercase instance name
         run: |
           lowercase_instance=${{ matrix.aura-instance }}
-          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>${GITHUB_ENV}
-          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
+          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>"${GITHUB_ENV}"
+          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>"${GITHUB_ENV}"
       - name: Run @neo4j/graphql integration tests
         run: |
           yarn test:int -t '^(?!delete should delete a movie, a single nested actor and another movie they act in|update should delete a nested actor and one of their nested movies, within an update block)' --coverage
@@ -289,7 +320,7 @@ jobs:
           NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
           NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
       - name: Archive coverage report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: integration-coverage-${{ matrix.package }}
           path: packages/${{ matrix.package }}/coverage-aura-${{ matrix.aura-instance }}/
@@ -309,11 +340,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: integration-coverage-${{ matrix.package }}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: ${{ matrix.package }},integration
@@ -333,16 +364,16 @@ jobs:
       version: ${{ steps.get-version.outputs.version }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           # Fetch all history so yarn version works
           fetch-depth: 0
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Extract version from branch name
         id: get-version
         run: |
@@ -370,7 +401,7 @@ jobs:
     steps:
       - name: Send Slack notification of upcoming release
         id: slack-notification
-        uses: slackapi/slack-github-action@v1.14.0
+        uses: slackapi/slack-github-action@v1.18.0
         with:
           payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
         env:
@@ -389,21 +420,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: release/${{ needs.bump-version.outputs.version }}
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
-      - run: yarn build
+        run: yarn
+      - name: Build ${{ matrix.package }}
+        run: yarn build
+        working-directory: packages/${{ matrix.package }}
       - name: Pack ${{ matrix.package }}
         run: npm pack
         working-directory: packages/${{ matrix.package }}
       - name: Archive release tarball
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: release-tarballs
           path: packages/${{ matrix.package }}/neo4j-graphql-*.tgz
@@ -419,7 +452,7 @@ jobs:
       name: npm
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: release-tarballs
       - name: npm publish
@@ -433,11 +466,11 @@ jobs:
           fi
 
           npm config set @neo4j:registry https://registry.npmjs.org
-          npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+          npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
 
           for tarball in *.tgz
           do
-            npm publish $tarball --tag=$tag --access=public
+            npm publish "$tarball" --tag=$tag --access=public
           done
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -453,7 +486,7 @@ jobs:
       name: github
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: master
           fetch-depth: 0
@@ -470,6 +503,15 @@ jobs:
           git tag -a @neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }}"
       - name: git push
         run: git push --follow-tags
+      - uses: actions/checkout@v3
+        with:
+          ref: dev
+          fetch-depth: 0
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+      - name: git merge
+        run: git merge --no-ff origin/release/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+      - name: git push
+        run: git push
 
   delete-release-branch:
     needs:
@@ -482,7 +524,7 @@ jobs:
       name: github
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - name: Delete release branch
@@ -505,7 +547,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Extract product label from tag
         id: get-label
         run: |
@@ -545,7 +587,7 @@ jobs:
     steps:
       - name: Send Slack announcement of release
         id: slack-announcement
-        uses: slackapi/slack-github-action@v1.14.0
+        uses: slackapi/slack-github-action@v1.18.0
         with:
           payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
         env:

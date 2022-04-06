@@ -2,11 +2,10 @@
     "extends": "@tsconfig/node12/tsconfig.json",
     "compilerOptions": {
         "composite": true,
-        "declaration": true,
         "declarationMap": true,
         "sourceMap": true,
+        "resolveJsonModule": true,
         // TODO Refactor so that noImplicitAny is no longer needed
-        "noImplicitAny": false,
-        "resolveJsonModule": true
+        "noImplicitAny": false
     }
 }

@@ -43,10 +43,10 @@ describe("aggregations-where-edge-bigint", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {
@@ -81,7 +81,7 @@ describe("aggregations-where-edge-bigint", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -110,10 +110,10 @@ describe("aggregations-where-edge-bigint", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {
@@ -151,7 +151,7 @@ describe("aggregations-where-edge-bigint", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -180,10 +180,10 @@ describe("aggregations-where-edge-bigint", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {
@@ -218,7 +218,7 @@ describe("aggregations-where-edge-bigint", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -247,10 +247,10 @@ describe("aggregations-where-edge-bigint", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {
@@ -287,7 +287,7 @@ describe("aggregations-where-edge-bigint", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -316,10 +316,10 @@ describe("aggregations-where-edge-bigint", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
-              likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             interface Likes {
@@ -354,7 +354,7 @@ describe("aggregations-where-edge-bigint", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });

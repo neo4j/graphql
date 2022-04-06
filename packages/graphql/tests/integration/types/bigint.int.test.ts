@@ -66,7 +66,7 @@ describe("BigInt", () => {
 
             try {
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
@@ -127,14 +127,14 @@ describe("BigInt", () => {
                `);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect(gqlResult?.data?.files[0]).toEqual({
+                expect((gqlResult?.data as any)?.files[0]).toEqual({
                     name,
                     size: "9223372036854775807",
                 });
@@ -181,14 +181,14 @@ describe("BigInt", () => {
                `);
 
                 const gqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect(gqlResult?.data?.files[0]).toEqual({
+                expect((gqlResult?.data as any)?.files[0]).toEqual({
                     name,
                     size: "9223372036854775807",
                 });

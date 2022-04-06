@@ -72,7 +72,7 @@ describe("Default values", () => {
             `);
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -118,14 +118,14 @@ describe("Default values", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).field).toEqual(100);
+            expect((gqlResult.data as any).field).toBe(100);
         } finally {
             await session.close();
         }

@@ -18,12 +18,13 @@ const baseExtends = [
 ]; // Always spread at end of extends due to plugin:prettier/recommended
 
 const baseRules = {
-    "no-underscore-dangle": ["warn", { allow: ["_on", "__typename"] }], // TODO Refactor instances of _varName to remove dangling underscore, and delete this line (also fixes @typescript-eslint/naming-convention)
-    "no-param-reassign": "warn", // Dangerous to have this off (out-of-scope side effects are bad), but there are some valid reasons for violations (Array.reduce(), setting GraphQL context, etc.), so use comments to disable ESLint for these
+    "no-underscore-dangle": ["warn", { allow: ["_on", "__resolveType", "__typename"], allowAfterThis: true }], // TODO Refactor instances of _varName to remove dangling underscore, and delete this line (also fixes @typescript-eslint/naming-convention)
+    "no-param-reassign": ["warn", { props: false }], // Dangerous to have this off (out-of-scope side effects are bad), but there are some valid reasons for violations (Array.reduce(), setting GraphQL context, etc.), so use comments to disable ESLint for these
     "max-classes-per-file": "off", // Stylistic decision - we can judge whether there are too many classes in one file during code review
     "eslint-comments/no-unused-disable": "error", // Turn on optional rule to report eslint-disable comments having no effect
     "class-methods-use-this": "off",
     "prefer-destructuring": "off",
+    "arrow-body-style": "off",
 };
 
 const typeScriptParser = {
@@ -74,7 +75,7 @@ const baseTypeScriptRules = {
 
 module.exports = {
     root: true,
-    extends: ["airbnb/base", ...baseExtends],
+    extends: ["airbnb-base", ...baseExtends],
     env: {
         node: true,
     },

@@ -20,7 +20,7 @@
 import { DirectiveNode, valueFromASTUntyped } from "graphql";
 import { NodeDirective } from "../classes/NodeDirective";
 
-function parseNodeDirective(nodeDirective: DirectiveNode) {
+function parseNodeDirective(nodeDirective: DirectiveNode | undefined) {
     if (!nodeDirective || nodeDirective.name.value !== "node") {
         throw new Error("Undefined or incorrect directive passed into parseNodeDirective function");
     }
@@ -34,7 +34,7 @@ function parseNodeDirective(nodeDirective: DirectiveNode) {
 
 function getArgumentValue<T>(directive: DirectiveNode, name: string): T | undefined {
     const argument = directive.arguments?.find((a) => a.name.value === name);
-    return argument ? valueFromASTUntyped(argument.value) : undefined;
+    return argument ? (valueFromASTUntyped(argument.value) as T) : undefined;
 }
 
 export default parseNodeDirective;

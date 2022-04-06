@@ -18,15 +18,17 @@
  */
 
 import cypherResolver from "./cypher";
-import { BaseField } from "../../types";
+import { CypherField } from "../../types";
 
 describe("Cypher resolver", () => {
     test("should return the correct; type, args and resolve", () => {
         // @ts-ignore
-        const field: BaseField = {
+        const field: CypherField = {
             // @ts-ignore
             typeMeta: { name: "Test", pretty: "[Test]" },
             arguments: [],
+            isEnum: false,
+            isScalar: true,
         };
 
         const result = cypherResolver({ field, statement: "", type: "Query" });

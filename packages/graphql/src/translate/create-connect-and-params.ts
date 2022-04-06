@@ -19,10 +19,12 @@
 
 import { Node, Relationship } from "../classes";
 import { RelationField, Context } from "../types";
-import createWhereAndParams from "./create-where-and-params";
+import createWhereAndParams from "./where/create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
+import createRelationshipValidationString from "./create-relationship-validation-string";
+import { CallbackBucket } from "../classes/CallbackBucket";
 
 interface Res {
     connects: string[];
@@ -37,10 +39,12 @@ function createConnectAndParams({
     parentVar,
     refNodes,
     context,
+    callbackBucket,
     labelOverride,
     parentNode,
     fromCreate,
     insideDoWhen,
+    includeRelationshipValidation,
 }: {
     withVars: string[];
     value: any;
@@ -48,11 +52,13 @@ function createConnectAndParams({
     relationField: RelationField;
     parentVar: string;
     context: Context;
+    callbackBucket: CallbackBucket;
     refNodes: Node[];
     labelOverride?: string;
     parentNode: Node;
     fromCreate?: boolean;
     insideDoWhen?: boolean;
+    includeRelationshipValidation?: boolean;
 }): [string, any] {
     function createSubqueryContents(
         relatedNode: Node,
@@ -156,8 +162,11 @@ function createConnectAndParams({
             subquery.push(`\tWHERE ${whereStrs.join(" AND ")}`);
         }
 
-        const preAuth = [...(!fromCreate ? [parentNode] : []), relatedNode].reduce(
-            (result: Res, node, i) => {
+        const nodeMatrix: Array<{ node: Node; name: string }> = [{ node: relatedNode, name: nodeName }];
+        if (!fromCreate) nodeMatrix.push({ node: parentNode, name: parentVar });
+
+        const preAuth = nodeMatrix.reduce(
+            (result: Res, { node, name }, i) => {
                 if (!node.auth) {
                     return result;
                 }
@@ -167,7 +176,7 @@ function createConnectAndParams({
                     operations: "CONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${i}_allow` },
+                    allow: { parentNode: node, varName: name, chainStr: `${name}${node.name}${i}_allow` },
                 });
 
                 if (!str) {
@@ -203,14 +212,15 @@ function createConnectAndParams({
         subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (relationField.properties) {
-            const relationship = (context.neoSchema.relationships.find(
+            const relationship = context.relationships.find(
                 (x) => x.properties === relationField.properties
-            ) as unknown) as Relationship;
+            ) as unknown as Relationship;
             const setA = createSetRelationshipPropertiesAndParams({
                 properties: connect.edge ?? {},
                 varName: relationshipName,
                 relationship,
                 operation: "CREATE",
+                callbackBucket,
             });
             subquery.push(setA[0]);
             params = { ...params, ...setA[1] };
@@ -218,6 +228,30 @@ function createConnectAndParams({
 
         subquery.push(`\t\t)`); // close FOREACH
         subquery.push(`\t)`); // close FOREACH
+
+        if (includeRelationshipValidation) {
+            const relValidationStrs: string[] = [];
+            const matrixItems = [
+                [parentNode, parentVar],
+                [relatedNode, nodeName],
+            ] as [Node, string][];
+
+            matrixItems.forEach((mi) => {
+                const relValidationStr = createRelationshipValidationString({
+                    node: mi[0],
+                    context,
+                    varName: mi[1],
+                });
+                if (relValidationStr) {
+                    relValidationStrs.push(relValidationStr);
+                }
+            });
+
+            if (relValidationStrs.length) {
+                subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
+                subquery.push(relValidationStrs.join("\n"));
+            }
+        }
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
@@ -246,12 +280,10 @@ function createConnectAndParams({
 
                             if (relField.union) {
                                 Object.keys(v).forEach((modelName) => {
-                                    newRefNodes.push(context.neoSchema.nodes.find((x) => x.name === modelName) as Node);
+                                    newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
                                 });
                             } else {
-                                newRefNodes.push(
-                                    context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
-                                );
+                                newRefNodes.push(context.nodes.find((x) => x.name === relField.typeMeta.name) as Node);
                             }
 
                             newRefNodes.forEach((newRefNode) => {
@@ -262,9 +294,11 @@ function createConnectAndParams({
                                     relationField: relField,
                                     parentVar: nodeName,
                                     context,
+                                    callbackBucket,
                                     refNodes: [newRefNode],
                                     parentNode: relatedNode,
                                     labelOverride: relField.union ? newRefNode.name : "",
+                                    includeRelationshipValidation: true,
                                 });
                                 r.connects.push(recurse[0]);
                                 r.params = { ...r.params, ...recurse[1] };
@@ -293,13 +327,11 @@ function createConnectAndParams({
 
                                 if (relField.union) {
                                     Object.keys(v).forEach((modelName) => {
-                                        newRefNodes.push(
-                                            context.neoSchema.nodes.find((x) => x.name === modelName) as Node
-                                        );
+                                        newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
                                     });
                                 } else {
                                     newRefNodes.push(
-                                        context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
+                                        context.nodes.find((x) => x.name === relField.typeMeta.name) as Node
                                     );
                                 }
 
@@ -311,6 +343,7 @@ function createConnectAndParams({
                                         relationField: relField,
                                         parentVar: nodeName,
                                         context,
+                                        callbackBucket,
                                         refNodes: [newRefNode],
                                         parentNode: relatedNode,
                                         labelOverride: relField.union ? newRefNode.name : "",
@@ -375,7 +408,7 @@ function createConnectAndParams({
         return { subquery: subquery.join("\n"), params };
     }
 
-    function reducer(res: Res, connect: any, index): Res {
+    function reducer(res: Res, connect: any, index: number): Res {
         if (parentNode.auth && !fromCreate) {
             const whereAuth = createAuthAndParams({
                 operations: "CONNECT",

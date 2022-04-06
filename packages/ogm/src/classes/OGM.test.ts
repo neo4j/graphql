@@ -36,8 +36,10 @@ describe("OGM", () => {
         });
 
         describe("model", () => {
-            test("should throw cannot find model", () => {
+            test("should throw cannot find model", async () => {
                 const ogm = new OGM({ typeDefs: `type User {id:ID}` });
+
+                await ogm.init();
 
                 const model = "not-real";
 

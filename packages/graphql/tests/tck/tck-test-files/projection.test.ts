@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher Projection", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -33,9 +33,9 @@ describe("Cypher Projection", () => {
             type Product {
                 id: ID!
                 name: String
-                sizes: [Size] @relationship(type: "HAS_SIZE", direction: OUT)
-                colors: [Color] @relationship(type: "HAS_COLOR", direction: OUT)
-                photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+                sizes: [Size!]! @relationship(type: "HAS_SIZE", direction: OUT)
+                colors: [Color!]! @relationship(type: "HAS_COLOR", direction: OUT)
+                photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
             }
 
             type Size {
@@ -46,21 +46,26 @@ describe("Cypher Projection", () => {
             type Color {
                 id: ID!
                 name: String!
-                photos: [Photo] @relationship(type: "OF_COLOR", direction: IN)
+                photos: [Photo!]! @relationship(type: "OF_COLOR", direction: IN)
             }
 
             type Photo {
                 id: ID!
                 description: String!
                 url: String!
-                color: Color @relationship(type: "OF_COLOR", direction: OUT)
+                color: Color! @relationship(type: "OF_COLOR", direction: OUT)
                 location: Point
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
         });
     });
 
@@ -105,17 +110,17 @@ describe("Cypher Projection", () => {
             SET this1.id = $this1_id
             RETURN this1
             }
-            RETURN
+            RETURN [
             this0 { .id, photos: [ (this0)-[:HAS_PHOTO]->(this0_photos:Photo)  WHERE this0_photos.url = $projection_photos_url | this0_photos { .url, location: apoc.cypher.runFirstColumn('RETURN
             CASE this0_photos.location IS NOT NULL
             	WHEN true THEN { point: this0_photos.location }
             	ELSE NULL
-            END AS result',{ this0_photos: this0_photos },false) } ], colors: [ (this0)-[:HAS_COLOR]->(this0_colors:Color)  WHERE this0_colors.id = $projection_colors_id | this0_colors { .id } ], sizes: [ (this0)-[:HAS_SIZE]->(this0_sizes:Size)  WHERE this0_sizes.name = $projection_sizes_name | this0_sizes { .name } ] } AS this0,
+            END AS result',{ this0_photos: this0_photos },false) } ], colors: [ (this0)-[:HAS_COLOR]->(this0_colors:Color)  WHERE this0_colors.id = $projection_colors_id | this0_colors { .id } ], sizes: [ (this0)-[:HAS_SIZE]->(this0_sizes:Size)  WHERE this0_sizes.name = $projection_sizes_name | this0_sizes { .name } ] },
             this1 { .id, photos: [ (this1)-[:HAS_PHOTO]->(this1_photos:Photo)  WHERE this1_photos.url = $projection_photos_url | this1_photos { .url, location: apoc.cypher.runFirstColumn('RETURN
             CASE this1_photos.location IS NOT NULL
             	WHEN true THEN { point: this1_photos.location }
             	ELSE NULL
-            END AS result',{ this1_photos: this1_photos },false) } ], colors: [ (this1)-[:HAS_COLOR]->(this1_colors:Color)  WHERE this1_colors.id = $projection_colors_id | this1_colors { .id } ], sizes: [ (this1)-[:HAS_SIZE]->(this1_sizes:Size)  WHERE this1_sizes.name = $projection_sizes_name | this1_sizes { .name } ] } AS this1"
+            END AS result',{ this1_photos: this1_photos },false) } ], colors: [ (this1)-[:HAS_COLOR]->(this1_colors:Color)  WHERE this1_colors.id = $projection_colors_id | this1_colors { .id } ], sizes: [ (this1)-[:HAS_SIZE]->(this1_sizes:Size)  WHERE this1_sizes.name = $projection_sizes_name | this1_sizes { .name } ] }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -124,7 +129,8 @@ describe("Cypher Projection", () => {
                 \\"this1_id\\": \\"2\\",
                 \\"projection_photos_url\\": \\"url.com\\",
                 \\"projection_colors_id\\": \\"123\\",
-                \\"projection_sizes_name\\": \\"small\\"
+                \\"projection_sizes_name\\": \\"small\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
