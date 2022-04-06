@@ -144,6 +144,11 @@ describe("Comments", () => {
               isActive: Boolean
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -212,15 +217,30 @@ describe("Comments", () => {
               isActive_NOT: Boolean
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -284,6 +304,11 @@ describe("Comments", () => {
                   name: String
                 }
 
+                type ActorEdge {
+                  cursor: String!
+                  node: Actor!
+                }
+
                 input ActorOptions {
                   limit: Int
                   offset: Int
@@ -317,6 +342,12 @@ describe("Comments", () => {
                   name_NOT_IN: [String]
                   name_NOT_STARTS_WITH: String
                   name_STARTS_WITH: String
+                }
+
+                type ActorsConnection {
+                  edges: [ActorEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -477,6 +508,11 @@ describe("Comments", () => {
                   actors: [MovieActorsDisconnectFieldInput!]
                 }
 
+                type MovieEdge {
+                  cursor: String!
+                  node: Movie!
+                }
+
                 input MovieOptions {
                   limit: Int
                   offset: Int
@@ -534,6 +570,12 @@ describe("Comments", () => {
                   id_STARTS_WITH: ID
                 }
 
+                type MoviesConnection {
+                  edges: [MovieEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 type Mutation {
                   createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
                   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
@@ -554,8 +596,10 @@ describe("Comments", () => {
                 type Query {
                   actors(options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                  actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
                 enum SortDirection {
@@ -746,6 +790,11 @@ describe("Comments", () => {
                   actedIn: [ActorActedInDisconnectFieldInput!]
                 }
 
+                type ActorEdge {
+                  cursor: String!
+                  node: Actor!
+                }
+
                 input ActorOptions {
                   limit: Int
                   offset: Int
@@ -790,6 +839,12 @@ describe("Comments", () => {
                   name_NOT_IN: [String!]
                   name_NOT_STARTS_WITH: String
                   name_STARTS_WITH: String
+                }
+
+                type ActorsConnection {
+                  edges: [ActorEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -842,6 +897,11 @@ describe("Comments", () => {
                   title: String!
                 }
 
+                type MovieEdge {
+                  cursor: String!
+                  node: Movie!
+                }
+
                 input MovieOptions {
                   limit: Int
                   offset: Int
@@ -885,6 +945,12 @@ describe("Comments", () => {
                   title_NOT_IN: [String!]
                   title_NOT_STARTS_WITH: String
                   title_STARTS_WITH: String
+                }
+
+                type MoviesConnection {
+                  edges: [MovieEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }
 
                 type Mutation {
@@ -968,10 +1034,13 @@ describe("Comments", () => {
                 type Query {
                   actors(options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                  actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+                  seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
                 }
 
                 type Series implements Production {
@@ -985,9 +1054,20 @@ describe("Comments", () => {
                   title: StringAggregateSelectionNonNullable!
                 }
 
+                type SeriesConnection {
+                  edges: [SeriesEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input SeriesCreateInput {
                   episodes: Int!
                   title: String!
+                }
+
+                type SeriesEdge {
+                  cursor: String!
+                  node: Series!
                 }
 
                 input SeriesOptions {
@@ -1134,6 +1214,11 @@ describe("Comments", () => {
                   id: ID
                 }
 
+                type GenreEdge {
+                  cursor: String!
+                  node: Genre!
+                }
+
                 input GenreOptions {
                   limit: Int
                   offset: Int
@@ -1167,6 +1252,12 @@ describe("Comments", () => {
                   id_NOT_IN: [ID]
                   id_NOT_STARTS_WITH: ID
                   id_STARTS_WITH: ID
+                }
+
+                type GenresConnection {
+                  edges: [GenreEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }
 
                 type IDAggregateSelectionNullable {
@@ -1205,6 +1296,11 @@ describe("Comments", () => {
 
                 input MovieDisconnectInput {
                   search: MovieSearchDisconnectInput
+                }
+
+                type MovieEdge {
+                  cursor: String!
+                  node: Movie!
                 }
 
                 input MovieOptions {
@@ -1384,6 +1480,12 @@ describe("Comments", () => {
                   searchConnection_SOME: MovieSearchConnectionWhere
                 }
 
+                type MoviesConnection {
+                  edges: [MovieEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 type Mutation {
                   createGenres(input: [GenreCreateInput!]!): CreateGenresMutationResponse!
                   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
@@ -1404,8 +1506,10 @@ describe("Comments", () => {
                 type Query {
                   genres(options: GenreOptions, where: GenreWhere): [Genre!]!
                   genresAggregate(where: GenreWhere): GenreAggregateSelection!
+                  genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
                 input QueryOptions {
