@@ -487,7 +487,48 @@ subscription SubscribeToConfirmedUsers {
 ```
 
 ### Auth
-TODO
+A new operation `SUBSCRIBE` to deal with authorization on subscriptions, this operation will follow the same syntax and rules as any other operation, but with more
+limited scope, allowing only for top-level properties validation (same limitations as `where`).
+
+#### Authentication
+```graphql
+type Post @auth(rules: [
+    { operations: [SUBSCRIBE], isAuthenticated: true }
+]) {
+    title: String!
+}
+```
+
+If the user is not authenticated, the subscription request will fail.
+
+#### Allow
+Works as usual, but not supported throughout relationships:
+
+```graphql
+type User @auth(
+    rules: [
+        {
+            operations: [SUBSCRIBE],
+            allow: { id: "$jwt.sub" }
+        }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+```
+
+This requires `jwt` to be available in the context on subscription resolver. If a rule does not match, the subscription will not be sent.
+
+#### Bind
+Bind does not make sense on subscriptions, as it is intended for mutations. So bind is ignored for SUBSCRIBE operations
+
+#### Roles
+Roles should work as usual, the subscription request should error if the role does not match.
+
+#### Where
+Where filter in the auth directive should work under the same limitations and behaviour as the subscriptions filtering. With any subscription event not matching
+this where not being sent.
 
 ### Extra fields in subscription
 The following should be available along with the data payload:
