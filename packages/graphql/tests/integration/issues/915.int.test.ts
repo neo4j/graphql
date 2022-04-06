@@ -18,14 +18,13 @@
  */
 
 import { Driver, int, isInt } from "neo4j-driver";
-import debug from "debug";
 import { generate } from "randomstring";
 import { graphql, GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
 import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-
-debug.enable("@neo4j/graphql:*");
+import { delay } from "../../../src/utils/utils";
+import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
 
 // Adapted from BigInt
 const PositiveInt = new GraphQLScalarType({
@@ -56,7 +55,7 @@ const PositiveInt = new GraphQLScalarType({
         const value = int(inputValue);
 
         if (!value.greaterThan(0)) {
-            throw new GraphQLError("PositiveInt values must be positive");
+            throw new GraphQLError("PositiveInt values must be positive.");
         }
 
         return value;
@@ -66,17 +65,17 @@ const PositiveInt = new GraphQLScalarType({
             case Kind.INT: {
                 const value = int(ast.value);
                 if (!value.greaterThan(0)) {
-                    throw new GraphQLError("PositiveInt values must be positive");
+                    throw new GraphQLError("PositiveInt values must be positive.");
                 }
-                return int(ast.value);
+                return value;
             }
             default:
-                throw new GraphQLError("Value must be either a positive integer.");
+                throw new GraphQLError("Value must be an integer.");
         }
     },
 });
 
-describe("assertIndexesAndConstraints/unique/customScalar", () => {
+describe("https://github.com/neo4j/graphql/issues/915", () => {
     let driver: Driver;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
@@ -92,12 +91,7 @@ describe("assertIndexesAndConstraints/unique/customScalar", () => {
             await session.run(cypher);
         } catch (e) {
             if (e instanceof Error) {
-                if (
-                    e.message.includes(
-                        "This is an administration command and it should be executed against the system database"
-                    ) ||
-                    e.message.includes(`Neo4jError: Unsupported administration command: ${cypher}`)
-                ) {
+                if (isMultiDbUnsupportedError(e)) {
                     // No multi-db support, so we skip tests
                     MULTIDB_SUPPORT = false;
                 } else {
@@ -107,8 +101,8 @@ describe("assertIndexesAndConstraints/unique/customScalar", () => {
         } finally {
             await session.close();
         }
-        // eslint-disable-next-line no-promise-executor-return
-        await new Promise((x) => setTimeout(x, 5000));
+
+        await delay(5000);
     });
 
     afterAll(async () => {
@@ -131,14 +125,14 @@ describe("assertIndexesAndConstraints/unique/customScalar", () => {
             return;
         }
 
-        const OrderNo = 12;
-        const Name = generate({ readable: true });
+        const orderNo = 12;
+        const name = generate({ readable: true });
 
         const typeDefs = gql`
             scalar PositiveInt
             type Order {
-                OrderNo: PositiveInt! @unique
-                Name: String!
+                orderNo: PositiveInt! @unique
+                name: String!
             }
         `;
 
@@ -177,11 +171,11 @@ describe("assertIndexesAndConstraints/unique/customScalar", () => {
         }
 
         const mutation = `
-            mutation CreateOrders($OrderNo: PositiveInt!, $Name: String!) {
-                createOrders(input: [{ OrderNo: $OrderNo, Name: $Name }]) {
+            mutation CreateOrders($orderNo: PositiveInt!, $name: String!) {
+                createOrders(input: [{ orderNo: $orderNo, name: $name }]) {
                     orders {
-                        OrderNo
-                        Name
+                        orderNo
+                        name
                     }
                 }
             }
@@ -195,15 +189,14 @@ describe("assertIndexesAndConstraints/unique/customScalar", () => {
                 driverConfig: { database: databaseName },
             },
             variableValues: {
-                OrderNo,
-                Name,
+                orderNo,
+                name,
             },
         });
 
         expect(createResult.errors).toBeFalsy();
-
         expect(createResult.data).toEqual({
-            createOrders: { orders: [{ OrderNo, Name }] },
+            createOrders: { orders: [{ orderNo, name }] },
         });
 
         const errorResult = await graphql({
@@ -214,8 +207,8 @@ describe("assertIndexesAndConstraints/unique/customScalar", () => {
                 driverConfig: { database: databaseName },
             },
             variableValues: {
-                OrderNo,
-                Name,
+                orderNo,
+                name,
             },
         });
 
