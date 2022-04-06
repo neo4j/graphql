@@ -1104,7 +1104,6 @@ describe("cypher", () => {
                             updates: [
                                 {
                                     __typename: "Post",
-                                    name: "Postname",
                                 },
                             ],
                         },

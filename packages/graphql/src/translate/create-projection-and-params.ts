@@ -207,6 +207,10 @@ function createProjectionAndParams({
             }
 
             if (referenceUnion) {
+                const fieldFieldsKeys = Object.keys(fieldFields);
+                const hasSeveralFieldFields = fieldFieldsKeys.length > 1;
+                const hasOneFieldField = fieldFieldsKeys.length === 1;
+
                 const headStrs: string[] = [];
                 // const referencedNodes =
                 //     referenceUnion?.types
@@ -218,9 +222,8 @@ function createProjectionAndParams({
                     referenceUnion?.types
                         ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
                         ?.filter((b) => b !== undefined) || [];
-                if (Object.keys(fieldFields).length > 1) {
-                    referencedNodes =
-                        referencedNodes?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? "")) || [];
+                if (hasSeveralFieldFields) {
+                    referencedNodes = referencedNodes?.filter((n) => fieldFieldsKeys.includes(n?.name ?? "")) || [];
                 }
 
                 referencedNodes.forEach((refNode) => {
@@ -262,13 +265,11 @@ function createProjectionAndParams({
                         headStrs.push(innerHeadStr.join(" "));
                     }
                 });
-                // if (referencedNodes.length === 0) {
-                //     headStrs.push(`{ __resolveType: "Post" }`);
-                // }
 
-                projectionStr = `${!isArray || Object.keys(fieldFields).length === 1 ? "head(" : ""} ${headStrs.join(
-                    " + "
-                )} ${!isArray || Object.keys(fieldFields).length === 1 ? ")" : ""}`;
+                const isTakeFirstElement: boolean = !isArray || hasOneFieldField;
+                projectionStr = `${isTakeFirstElement ? "head(" : ""} ${headStrs.join(" + ")} ${
+                    isTakeFirstElement ? ")" : ""
+                }`;
             }
 
             const initApocParamsStrs = [
@@ -313,12 +314,12 @@ function createProjectionAndParams({
             const apocParamsStr = `{this: ${chainStr || varName}${
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}`;
-            console.log("cypherField", cypherField);
-            console.log("apocParamsStr", apocParamsStr);
-            console.log("projectionStr", projectionStr.toString());
-            console.log("projectionStr length", projectionStr.length);
-            // console.log("referenceUnion", referenceUnion);
-            console.log("param", param);
+            // console.log("cypherField", cypherField);
+            // console.log("apocParamsStr", apocParamsStr);
+            // console.log("projectionStr", projectionStr.toString());
+            // console.log("projectionStr length", projectionStr.length);
+            // // console.log("referenceUnion", referenceUnion);
+            // console.log("param", param);
 
             const isProjectionStrEmpty = projectionStr.trim().length === 0;
 
@@ -337,7 +338,6 @@ function createProjectionAndParams({
             }
 
             if (cypherField.typeMeta.array) {
-                console.log("res", alias, apocStr);
                 res.projection.push(`${alias}: [${apocStr}]`);
 
                 return res;
