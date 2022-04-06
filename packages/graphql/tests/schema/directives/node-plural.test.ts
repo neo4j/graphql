@@ -66,9 +66,18 @@ describe("Node Directive", () => {
                   updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
+                  techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
                 }
 
                 enum SortDirection {
@@ -97,6 +106,11 @@ describe("Node Directive", () => {
                 input TechCreateInput {
                   name: String
                   value: String
+                }
+
+                type TechEdge {
+                  cursor: String!
+                  node: Tech!
                 }
 
                 input TechOptions {
@@ -144,6 +158,12 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
+                }
+
+                type TechsConnection {
+                  edges: [TechEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }
 
                 type UpdateInfo {
@@ -203,9 +223,18 @@ describe("Node Directive", () => {
                   updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
+                  techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
                 }
 
                 enum SortDirection {
@@ -234,6 +263,11 @@ describe("Node Directive", () => {
                 input TechCreateInput {
                   name: String
                   value: String
+                }
+
+                type TechEdge {
+                  cursor: String!
+                  node: Tech!
                 }
 
                 input TechOptions {
@@ -281,6 +315,12 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
+                }
+
+                type TechsConnection {
+                  edges: [TechEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }
 
                 type UpdateInfo {
@@ -340,9 +380,18 @@ describe("Node Directive", () => {
                   updateTechnologies(update: TechUpdateInput, where: TechWhere): UpdateTechnologiesMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   technologies(options: TechOptions, where: TechWhere): [Tech!]!
                   technologiesAggregate(where: TechWhere): TechAggregateSelection!
+                  technologiesConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechnologiesConnection!
                 }
 
                 enum SortDirection {
@@ -371,6 +420,11 @@ describe("Node Directive", () => {
                 input TechCreateInput {
                   name: String
                   value: String
+                }
+
+                type TechEdge {
+                  cursor: String!
+                  node: Tech!
                 }
 
                 input TechOptions {
@@ -418,6 +472,12 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
+                }
+
+                type TechnologiesConnection {
+                  edges: [TechEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }
 
                 type UpdateInfo {
@@ -477,9 +537,18 @@ describe("Node Directive", () => {
                   updateTechs(update: TechsUpdateInput, where: TechsWhere): UpdateTechsMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   techs(options: TechsOptions, where: TechsWhere): [Techs!]!
                   techsAggregate(where: TechsWhere): TechsAggregateSelection!
+                  techsConnection(after: String, first: Int, sort: [TechsSort], where: TechsWhere): TechsConnection!
                 }
 
                 enum SortDirection {
@@ -503,8 +572,19 @@ describe("Node Directive", () => {
                   value: StringAggregateSelectionNullable!
                 }
 
+                type TechsConnection {
+                  edges: [TechsEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input TechsCreateInput {
                   value: String
+                }
+
+                type TechsEdge {
+                  cursor: String!
+                  node: Techs!
                 }
 
                 input TechsOptions {
@@ -599,9 +679,18 @@ describe("Node Directive", () => {
                   updateTechs(update: UserUpdateInput, where: UserWhere): UpdateTechsMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   techs(options: UserOptions, where: UserWhere): [User!]!
                   techsAggregate(where: UserWhere): UserAggregateSelection!
+                  techsConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): TechsConnection!
                 }
 
                 enum SortDirection {
@@ -614,6 +703,12 @@ describe("Node Directive", () => {
                 type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
+                }
+
+                type TechsConnection {
+                  edges: [UserEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }
 
                 type UpdateInfo {
@@ -640,6 +735,11 @@ describe("Node Directive", () => {
 
                 input UserCreateInput {
                   value: String
+                }
+
+                type UserEdge {
+                  cursor: String!
+                  node: User!
                 }
 
                 input UserOptions {
@@ -721,9 +821,18 @@ describe("Node Directive", () => {
                   updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   users(options: UserOptions, where: UserWhere): [User!]!
                   usersAggregate(where: UserWhere): UserAggregateSelection!
+                  usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
                 }
 
                 enum SortDirection {
@@ -764,6 +873,11 @@ describe("Node Directive", () => {
                   value: String
                 }
 
+                type UserEdge {
+                  cursor: String!
+                  node: User!
+                }
+
                 input UserOptions {
                   limit: Int
                   offset: Int
@@ -797,6 +911,12 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
+                }
+
+                type UsersConnection {
+                  edges: [UserEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }"
             `);
         });
@@ -843,9 +963,18 @@ describe("Node Directive", () => {
                   updateUsers(update: UsersUpdateInput, where: UsersWhere): UpdateUsersMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   users(options: UsersOptions, where: UsersWhere): [Users!]!
                   usersAggregate(where: UsersWhere): UsersAggregateSelection!
+                  usersConnection(after: String, first: Int, sort: [UsersSort], where: UsersWhere): UsersConnection!
                 }
 
                 enum SortDirection {
@@ -882,8 +1011,19 @@ describe("Node Directive", () => {
                   value: StringAggregateSelectionNullable!
                 }
 
+                type UsersConnection {
+                  edges: [UsersEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 input UsersCreateInput {
                   value: String
+                }
+
+                type UsersEdge {
+                  cursor: String!
+                  node: Users!
                 }
 
                 input UsersOptions {
