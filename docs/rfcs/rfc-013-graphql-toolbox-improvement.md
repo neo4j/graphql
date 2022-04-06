@@ -17,10 +17,10 @@ The main aim is for prototyping and rapid development for both experienced as we
 (ordered by priority)
 -   Central hosting of the GraphQL toolbox, including a workflow to publish the latest release.
 -   Add a link or button to [Canny](https://canny.io/) for feedback collection
--   Track basic metrics with [Segment](https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/), see more details below
 -   Schema builder editor: autocompletion for directives etc, leverage the `@neo4j/graphql` documentation for a better developer experience
 -   Make it more prominent that the GraphQL Toolbox uses `@neo4j/graphql` by adding links to the documentation
 -   Address the highest priority/impact bugs and pebbles listed in the Trello card
+-   Track basic metrics with [Segment](https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/), see more details below
 -   Highlight the keybindings, see below
 -   Investigate the requirements and effort for adding the GraphQL toolbox to NX
 
