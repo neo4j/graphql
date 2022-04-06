@@ -583,7 +583,7 @@ function makeAugmentedSchema(
         };
 
         composer.createObjectTC({
-            name: `${node.name}AggregateSelection`,
+            name: node.aggregateTypeNames.selection,
             fields: {
                 count: countField,
                 ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
@@ -617,7 +617,6 @@ function makeAugmentedSchema(
                         name: `${node.name}${upperFirst(index.name)}Fulltext`,
                         fields: {
                             phrase: "String!",
-                            score_EQUAL: "Int",
                         },
                     }),
                 }),

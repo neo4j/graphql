@@ -102,6 +102,11 @@ export type RootTypeFieldNames = {
     };
 };
 
+export type AggregateTypeNames = {
+    selection: string;
+    input: string;
+};
+
 export type MutationResponseTypeNames = {
     create: string;
     update: string;
@@ -215,6 +220,13 @@ class Node extends GraphElement {
                 updated: `${this.singular}Updated`,
                 deleted: `${this.singular}Deleted`,
             },
+        };
+    }
+
+    public get aggregateTypeNames(): AggregateTypeNames {
+        return {
+            selection: `${this.name}AggregateSelection`,
+            input: `${this.name}AggregateSelectionInput`,
         };
     }
 

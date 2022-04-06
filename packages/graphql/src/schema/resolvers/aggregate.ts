@@ -45,7 +45,7 @@ export default function aggregateResolver({ node }: { node: Node }) {
     }
 
     return {
-        type: `${node.name}AggregateSelection!`,
+        type: `${node.aggregateTypeNames.selection}!`,
         resolve,
         args: { where: `${node.name}Where`, ...(node.fulltextDirective ? { fulltext: `${node.name}Fulltext` } : {}) },
     };
