@@ -86,12 +86,10 @@ describe("@fulltext schema", () => {
 
             input MovieMovieDescriptionFulltext {
               phrase: String!
-              score_EQUAL: Int
             }
 
             input MovieMovieTitleFulltext {
               phrase: String!
-              score_EQUAL: Int
             }
 
             input MovieOptions {

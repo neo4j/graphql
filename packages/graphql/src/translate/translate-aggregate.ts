@@ -48,7 +48,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         cypherParams = { ...cypherParams, ...allowAuth[1] };
     }
 
-    const selections = fieldsByTypeName[`${node.name}AggregateSelection`];
+    const selections = fieldsByTypeName[node.aggregateTypeNames.selection];
     const projections: string[] = [];
     const authStrs: string[] = [];
 

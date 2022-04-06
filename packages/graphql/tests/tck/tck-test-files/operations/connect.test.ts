@@ -249,7 +249,8 @@ describe("Cypher Connect", () => {
                 \\"this0_photos_connect0_node_id\\": \\"321\\",
                 \\"this0_photos_connect0_node_color0_node_name\\": \\"Green\\",
                 \\"this0_photos_connect1_node_id\\": \\"33211\\",
-                \\"this0_photos_connect1_node_color0_node_name\\": \\"Red\\"
+                \\"this0_photos_connect1_node_color0_node_name\\": \\"Red\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

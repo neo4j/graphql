@@ -17,8 +17,10 @@
  * limitations under the License.
  */
 
+import { CallbackBucket } from "../classes/CallbackBucket";
 import { Relationship } from "../classes";
 import mapToDbProperty from "../utils/map-to-db-property";
+import { addCallbackAndSetParam } from "./utils/callback-utils";
 
 /*
     TODO - lets reuse this function for setting either node or rel properties.
@@ -30,12 +32,14 @@ function createSetRelationshipProperties({
     varName,
     relationship,
     operation,
+    callbackBucket,
     parameterPrefix,
 }: {
     properties: Record<string, unknown>;
     varName: string;
     relationship: Relationship;
     operation: "CREATE" | "UPDATE";
+    callbackBucket: CallbackBucket;
     parameterPrefix: string;
 }): string {
     const strs: string[] = [];
@@ -59,6 +63,10 @@ function createSetRelationshipProperties({
             );
         }
     });
+
+    relationship.primitiveFields.forEach((field) =>
+        addCallbackAndSetParam(field, varName, properties, callbackBucket, strs)
+    );
 
     Object.entries(properties).forEach(([key]) => {
         const paramName = `${parameterPrefix}.${key}`;
