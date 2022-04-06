@@ -21,27 +21,89 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { generate } from "randomstring";
 import pluralize from "pluralize";
-import { lowerFirst } from "../../src/utils/lower-first";
+import camelcase from "camelcase";
 import { upperFirst } from "../../src/utils/upper-first";
 
-export function generateUniqueType(baseName: string) {
-    const type = `${generate({
-        length: 8,
-        charset: "alphabetic",
-        readable: true,
-    })}${baseName}`;
+type UniqueTypeOperations = {
+    create: string;
+    update: string;
+    delete: string;
+    aggregate: string;
+    subscribe: {
+        created: string;
+        updated: string;
+        deleted: string;
+        payload: {
+            created: string;
+            updated: string;
+            deleted: string
+        }
+    };
+};
 
-    const plural = lowerFirst(pluralize(type));
-    const pascalCasePlural = upperFirst(plural);
+type UniqueTypeFieldNames = {
+    subscriptions: {
+        created: string;
+        updated: string;
+        deleted: string;
+    };
+};
 
-    return {
-        name: type,
-        plural,
-        operations: {
+export class UniqueType {
+    public readonly name: string;
+
+    constructor(baseName: string) {
+        this.name = `${generate({
+            length: 8,
+            charset: "alphabetic",
+            readable: true,
+        })}${baseName}`;
+    }
+
+    public get plural(): string {
+        return pluralize(camelcase(this.name));
+    }
+
+    public get operations(): UniqueTypeOperations {
+        const pascalCasePlural = upperFirst(this.plural);
+        const singular = camelcase(this.name);
+        const pascalCaseSingular=upperFirst(singular)
+
+        return {
             create: `create${pascalCasePlural}`,
             update: `update${pascalCasePlural}`,
             delete: `delete${pascalCasePlural}`,
-            aggregate: `${plural}Aggregate`,
-        },
-    };
+            aggregate: `${this.plural}Aggregate`,
+            subscribe: {
+                created: `${singular}Created`,
+                updated: `${singular}Updated`,
+                deleted: `${singular}Deleted`,
+                payload: {
+                    created: `created${pascalCaseSingular}`,
+                    updated: `updated${pascalCaseSingular}`,
+                    deleted: `deleted${pascalCaseSingular}`,
+                }
+            },
+        };
+    }
+
+    public get fieldNames(): UniqueTypeFieldNames {
+        const singular = upperFirst(camelcase(this.name));
+
+        return {
+            subscriptions: {
+                created: `created${singular}`,
+                updated: `updated${singular}`,
+                deleted: `deleted${singular}`,
+            },
+        };
+    }
+
+    public toString(): string {
+        return this.name;
+    }
+}
+
+export function generateUniqueType(baseName: string): UniqueType {
+    return new UniqueType(baseName);
 }

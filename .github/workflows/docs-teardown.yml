@@ -6,6 +6,8 @@ on:
       - dev
       - master
     paths:
+      - docs/antora.yml
+      - docs/package.json
       - "docs/modules/ROOT/**"
     types:
       - closed
@@ -15,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
       - name: Teardown documentation

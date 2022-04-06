@@ -21,7 +21,7 @@ import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 import { DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition, Directive } from "graphql-compose";
 import getFieldTypeMeta from "./get-field-type-meta";
 import parseValueNode from "./parse-value-node";
-import { BaseField, InputField, PrimitiveField } from "../types";
+import { BaseField, InputField, PrimitiveField, TemporalField } from "../types";
 import { numericalResolver, idResolver } from "./resolvers";
 
 export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
@@ -83,22 +83,31 @@ export function objectFieldsToComposeFields(fields: BaseField[]): {
     }, {});
 }
 
-export function objectFieldsToCreateInputFields(fields: BaseField[], optional = false): Record<string, InputField> {
-    return fields.reduce((res, f) => {
-        let fieldType = f.typeMeta.input.create.pretty;
-        if (optional) {
-            fieldType = f.typeMeta.input.create.type;
-        }
-        const defaultValue = (f as PrimitiveField)?.defaultValue;
+export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<string, InputField> {
+    return fields
+        .filter((f) => !(f as PrimitiveField)?.autogenerate && !(f as TemporalField)?.timestamps)
+        .reduce((res, f) => {
+            const fieldType = f.typeMeta.input.create.pretty;
+            const defaultValue = (f as PrimitiveField)?.defaultValue;
 
-        if (defaultValue !== undefined) {
-            res[f.fieldName] = {
-                type: fieldType,
-                defaultValue,
-            };
-        } else {
-            res[f.fieldName] = fieldType;
-        }
+            if (defaultValue !== undefined) {
+                res[f.fieldName] = {
+                    type: fieldType,
+                    defaultValue,
+                };
+            } else {
+                res[f.fieldName] = fieldType;
+            }
+
+            return res;
+        }, {} as Record<string, InputField>);
+}
+
+export function objectFieldsToSubscriptionsWhereInputFields(fields: BaseField[]): Record<string, InputField> {
+    return fields.reduce((res, f) => {
+        const fieldType = f.typeMeta.input.update.pretty;
+
+        res[f.fieldName] = fieldType;
 
         return res;
     }, {});

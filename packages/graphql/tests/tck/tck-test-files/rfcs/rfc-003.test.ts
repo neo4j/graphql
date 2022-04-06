@@ -74,7 +74,8 @@ describe("integration/rfs/003", () => {
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"this0_id\\": \\"movieId-1\\"
+                        \\"this0_id\\": \\"movieId-1\\",
+                        \\"resolvedCallbacks\\": {}
                     }"
                 `);
             });
@@ -128,7 +129,8 @@ describe("integration/rfs/003", () => {
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"this0_id\\": \\"movieId-1\\"
+                        \\"this0_id\\": \\"movieId-1\\",
+                        \\"resolvedCallbacks\\": {}
                     }"
                 `);
             });
@@ -202,7 +204,8 @@ describe("integration/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"this0_id\\": \\"movieId-2\\",
-                            \\"this0_director0_node_id\\": \\"directorId-2\\"
+                            \\"this0_director0_node_id\\": \\"directorId-2\\",
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -275,7 +278,8 @@ describe("integration/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"this0_id\\": \\"movieId-2\\",
-                            \\"this0_director0_node_id\\": \\"directorId-2\\"
+                            \\"this0_director0_node_id\\": \\"directorId-2\\",
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -330,7 +334,8 @@ describe("integration/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"this_id\\": \\"movieId-3\\",
-                            \\"this_update_id\\": \\"movieId-3\\"
+                            \\"this_update_id\\": \\"movieId-3\\",
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -383,7 +388,8 @@ describe("integration/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"this_id\\": \\"movieId-3\\",
-                            \\"this_update_id\\": \\"movieId-3\\"
+                            \\"this_update_id\\": \\"movieId-3\\",
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -445,7 +451,7 @@ describe("integration/rfs/003", () => {
                             }
                             RETURN count(*)
                             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_director0:this_director0, auth:$auth,this_update_director0_id:$this_update_director0_id})
-                            YIELD value as _
+                            YIELD value AS _
                             WITH this
                             CALL {
                             	WITH this
@@ -477,7 +483,8 @@ describe("integration/rfs/003", () => {
                                             }
                                         }
                                     }
-                                }
+                                },
+                                \\"resolvedCallbacks\\": {}
                             }"
                         `);
                     });
@@ -538,7 +545,7 @@ describe("integration/rfs/003", () => {
                             }
                             RETURN count(*)
                             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_director0:this_director0, auth:$auth,this_update_director0_id:$this_update_director0_id})
-                            YIELD value as _
+                            YIELD value AS _
                             WITH this
                             CALL {
                             	WITH this
@@ -570,7 +577,8 @@ describe("integration/rfs/003", () => {
                                             }
                                         }
                                     }
-                                }
+                                },
+                                \\"resolvedCallbacks\\": {}
                             }"
                         `);
                     });
@@ -643,7 +651,8 @@ describe("integration/rfs/003", () => {
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                             "{
                                 \\"this_id\\": \\"movieId-4\\",
-                                \\"this_director0_create0_node_id\\": \\"directorId-3\\"
+                                \\"this_director0_create0_node_id\\": \\"directorId-3\\",
+                                \\"resolvedCallbacks\\": {}
                             }"
                         `);
                     });
@@ -756,7 +765,8 @@ describe("integration/rfs/003", () => {
                                             }
                                         }
                                     }
-                                }
+                                },
+                                \\"resolvedCallbacks\\": {}
                             }"
                         `);
                     });
@@ -865,7 +875,8 @@ describe("integration/rfs/003", () => {
                                             }
                                         }
                                     }
-                                }
+                                },
+                                \\"resolvedCallbacks\\": {}
                             }"
                         `);
                     });
@@ -936,7 +947,8 @@ describe("integration/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"this0_id\\": \\"movieId-4\\",
-                            \\"this0_director_connect0_node_id\\": \\"directorId-4\\"
+                            \\"this0_director_connect0_node_id\\": \\"directorId-4\\",
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -1004,7 +1016,8 @@ describe("integration/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"this0_id\\": \\"movieId-4\\",
-                            \\"this0_director_connect0_node_id\\": \\"directorId-4\\"
+                            \\"this0_director_connect0_node_id\\": \\"directorId-4\\",
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -1111,7 +1124,8 @@ describe("integration/rfs/003", () => {
                             "{
                                 \\"this0_id\\": \\"movieId-4\\",
                                 \\"this0_director_connect0_node_id\\": \\"directorId-4\\",
-                                \\"this0_director_connect0_node_address0_node_street\\": \\"some-street\\"
+                                \\"this0_director_connect0_node_address0_node_street\\": \\"some-street\\",
+                                \\"resolvedCallbacks\\": {}
                             }"
                         `);
                     });
@@ -1189,7 +1203,8 @@ describe("integration/rfs/003", () => {
                                         }
                                     }
                                 }
-                            }
+                            },
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -1272,7 +1287,7 @@ describe("integration/rfs/003", () => {
                         	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
-                        RETURN this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) } AS this"
+                        RETURN collect(DISTINCT this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) }) AS data"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1291,7 +1306,8 @@ describe("integration/rfs/003", () => {
                                         }
                                     }
                                 }
-                            }
+                            },
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });
@@ -1372,7 +1388,7 @@ describe("integration/rfs/003", () => {
                         	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
-                        RETURN this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) } AS this"
+                        RETURN collect(DISTINCT this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) }) AS data"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1391,7 +1407,8 @@ describe("integration/rfs/003", () => {
                                         }
                                     }
                                 }
-                            }
+                            },
+                            \\"resolvedCallbacks\\": {}
                         }"
                     `);
                 });

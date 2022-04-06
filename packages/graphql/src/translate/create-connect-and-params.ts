@@ -24,6 +24,7 @@ import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createRelationshipValidationString from "./create-relationship-validation-string";
+import { CallbackBucket } from "../classes/CallbackBucket";
 
 interface Res {
     connects: string[];
@@ -38,6 +39,7 @@ function createConnectAndParams({
     parentVar,
     refNodes,
     context,
+    callbackBucket,
     labelOverride,
     parentNode,
     fromCreate,
@@ -50,6 +52,7 @@ function createConnectAndParams({
     relationField: RelationField;
     parentVar: string;
     context: Context;
+    callbackBucket: CallbackBucket;
     refNodes: Node[];
     labelOverride?: string;
     parentNode: Node;
@@ -159,8 +162,11 @@ function createConnectAndParams({
             subquery.push(`\tWHERE ${whereStrs.join(" AND ")}`);
         }
 
-        const preAuth = [...(!fromCreate ? [parentNode] : []), relatedNode].reduce(
-            (result: Res, node, i) => {
+        const nodeMatrix: Array<{ node: Node; name: string }> = [{ node: relatedNode, name: nodeName }];
+        if (!fromCreate) nodeMatrix.push({ node: parentNode, name: parentVar });
+
+        const preAuth = nodeMatrix.reduce(
+            (result: Res, { node, name }, i) => {
                 if (!node.auth) {
                     return result;
                 }
@@ -170,7 +176,7 @@ function createConnectAndParams({
                     operations: "CONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${i}_allow` },
+                    allow: { parentNode: node, varName: name, chainStr: `${name}${node.name}${i}_allow` },
                 });
 
                 if (!str) {
@@ -214,6 +220,7 @@ function createConnectAndParams({
                 varName: relationshipName,
                 relationship,
                 operation: "CREATE",
+                callbackBucket,
             });
             subquery.push(setA[0]);
             params = { ...params, ...setA[1] };
@@ -287,6 +294,7 @@ function createConnectAndParams({
                                     relationField: relField,
                                     parentVar: nodeName,
                                     context,
+                                    callbackBucket,
                                     refNodes: [newRefNode],
                                     parentNode: relatedNode,
                                     labelOverride: relField.union ? newRefNode.name : "",
@@ -335,6 +343,7 @@ function createConnectAndParams({
                                         relationField: relField,
                                         parentVar: nodeName,
                                         context,
+                                        callbackBucket,
                                         refNodes: [newRefNode],
                                         parentNode: relatedNode,
                                         labelOverride: relField.union ? newRefNode.name : "",

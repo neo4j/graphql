@@ -35,7 +35,7 @@ describe("apoc translation utils", () => {
             expect(result).toBe(
                 // no-useless-escape disabled due to how escaped strings work when comparing strings.
                 // eslint-disable-next-line no-useless-escape
-                `apoc.cypher.runFirstColumn(\"apoc.cypher.runFirstColumn(\\\"MATCH(n) RETURN n, \\\\\"Hello\\\\\"\\\", {  })\", {  })`
+                `apoc.cypher.runFirstColumn(\"apoc.cypher.runFirstColumn(\\\"MATCH(n) RETURN n, \\\\\\\"Hello\\\\\\\"\\\", {  })\", {  })`
             );
         });
     });

@@ -75,13 +75,14 @@ describe("Cypher TimeStamps On DateTime Fields", () => {
             SET this0.id = $this0_id
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"123\\"
+                \\"this0_id\\": \\"123\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -108,13 +109,14 @@ describe("Cypher TimeStamps On DateTime Fields", () => {
             SET this.interfaceTimestamp = datetime()
             SET this.id = $this_update_id
             SET this.name = $this_update_name
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_update_id\\": \\"123\\",
-                \\"this_update_name\\": \\"dan\\"
+                \\"this_update_name\\": \\"dan\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

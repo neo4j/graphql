@@ -1,5 +1,5 @@
 [[type-definitions-indexes-and-constraints]]
-= Indexes Constraints
+= Indexes and Constraints
 
 [[type-definitions-constraints-unique]]
 == Unique node property constraints

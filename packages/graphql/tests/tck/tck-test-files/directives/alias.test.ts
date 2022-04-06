@@ -182,8 +182,8 @@ describe("Cypher alias directive", () => {
             WITH collect({ character: this0_acted_in_relationship.characterPropInDb, screenTime: this0_acted_in_relationship.screenTime, node: { title: this0_movie.title, rating: this0_movie.ratingPropInDb } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
             }
-            RETURN
-            this0 { .name, city: this0.cityPropInDb, actedIn: [ (this0)-[:ACTED_IN]->(this0_actedIn:Movie)   | this0_actedIn { .title, rating: this0_actedIn.ratingPropInDb } ], actedInConnection } AS this0"
+            RETURN [
+            this0 { .name, city: this0.cityPropInDb, actedIn: [ (this0)-[:ACTED_IN]->(this0_actedIn:Movie)   | this0_actedIn { .title, rating: this0_actedIn.ratingPropInDb } ], actedInConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -196,7 +196,8 @@ describe("Cypher alias directive", () => {
                 \\"this0_actedIn0_relationship_screenTime\\": {
                     \\"low\\": 120,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

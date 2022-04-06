@@ -133,8 +133,9 @@ describe("Interface Relationships - Create connect", () => {
             MATCH (this0)-[:ACTED_IN]->(this0_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS actedIn
             }
-            RETURN
-            this0 { .name, actedIn: collect(actedIn) } AS this0"
+            WITH this0, collect(actedIn) AS actedIn
+            RETURN [
+            this0 { .name, actedIn: actedIn }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -144,7 +145,8 @@ describe("Interface Relationships - Create connect", () => {
                 \\"this0_actedIn_connect0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

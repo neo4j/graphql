@@ -222,12 +222,12 @@ describe("Cypher Points", () => {
             SET this0.points = [p in $this0_points | point(p)]
             RETURN this0
             }
-            RETURN
+            RETURN [
             this0 { points: apoc.cypher.runFirstColumn('RETURN
             CASE this0.points IS NOT NULL
             	WHEN true THEN [p in this0.points | { point:p, crs: p.crs }]
             	ELSE NULL
-            END AS result',{ this0: this0 },false) } AS this0"
+            END AS result',{ this0: this0 },false) }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -237,7 +237,8 @@ describe("Cypher Points", () => {
                         \\"longitude\\": 1,
                         \\"latitude\\": 2
                     }
-                ]
+                ],
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -266,11 +267,11 @@ describe("Cypher Points", () => {
             "MATCH (this:PointContainer)
             WHERE this.id = $this_id
             SET this.points = [p in $this_update_points | point(p)]
-            RETURN this { points: apoc.cypher.runFirstColumn('RETURN
+            RETURN collect(DISTINCT this { points: apoc.cypher.runFirstColumn('RETURN
             CASE this.points IS NOT NULL
             	WHEN true THEN [p in this.points | { point:p, crs: p.crs }]
             	ELSE NULL
-            END AS result',{ this: this },false) } AS this"
+            END AS result',{ this: this },false) }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -281,7 +282,8 @@ describe("Cypher Points", () => {
                         \\"longitude\\": 1,
                         \\"latitude\\": 2
                     }
-                ]
+                ],
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
