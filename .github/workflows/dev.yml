@@ -83,7 +83,7 @@ jobs:
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/${{ matrix.package }}/coverage/
@@ -107,7 +107,7 @@ jobs:
       - name: Run Schema tests
         run: yarn --cwd packages/graphql run test:schema --coverage
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/graphql/coverage/
@@ -194,7 +194,7 @@ jobs:
       - name: Run TCK tests
         run: yarn --cwd packages/graphql run test:tck --coverage
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/graphql/coverage/
@@ -418,7 +418,7 @@ jobs:
         with:
           name: integration-coverage-${{ matrix.package }}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: ${{ matrix.package }},integration

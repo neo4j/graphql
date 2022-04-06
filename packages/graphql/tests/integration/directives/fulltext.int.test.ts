@@ -27,7 +27,7 @@ import { generateUniqueType } from "../../utils/graphql-types";
 import { delay } from "../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
 
-describe("assertIndexesAndConstraints/fulltext", () => {
+describe("@fulltext directive", () => {
     let driver: Driver;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;

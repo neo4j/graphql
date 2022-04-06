@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql",
-    "version": "3.0.3",
+    "version": "3.0.4",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
@@ -44,7 +44,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@faker-js/faker": "6.1.1",
+        "@faker-js/faker": "6.1.2",
         "@neo4j/graphql-plugin-auth": "^1.0.0",
         "@types/deep-equal": "1.0.1",
         "@types/is-uuid": "1.0.0",
