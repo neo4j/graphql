@@ -8,26 +8,25 @@ Our users would like to use [GraphQL Subscriptions](https://graphql.org/blog/sub
 
 ### Must have
 
-- To subscribe to the following events:
+- Subscribe to the following events:
   - CREATE
   - UPDATE
   - DELETE
-- Ability to filter which nodes are subscribed to (i.e. `where` clause) - at least by unique property
-- Ability to horizontally scale - either now, or able to do so without breaking in the future
-- Wherever possible, events are ordered
-- Events are fired individually
-- We won't mutate our users' databases - no metadata
-- All events are sent (for example, if node created and then deleted, we get both events)
-- Database transactions must be successful - no optimisticness  
-- Garbage collection of old subscriptions
-- Auth (on read)
+- Ability to filter which nodes are subscribed to (i.e. `where` clause).
+- Ability to horizontally scale - either now, or able to do so without breaking in the future.
+- Wherever possible, events are ordered.
+- Events are fired individually.
+- We won't mutate our users' databases - no metadata.
+- All events are sent (for example, if node created and then deleted, we get both events).
+- Database transactions must be successful - no optimisticness.
+- Garbage collection of old subscriptions.
+- Some form of auth validation.
 
 ### Should have
 
 - To subscribe to the following events:
   - CONNECT
   - DISCONNECT
-- Ability to filter which nodes are subscribed to (i.e. `where` clause) - full filtering feature set
 - Relationship property updates
 
 ### Could have
@@ -43,6 +42,7 @@ Our users would like to use [GraphQL Subscriptions](https://graphql.org/blog/sub
 
 ## Proposed Solution
 
+### Type Definitions
 Considering the following definitions:
 
 ```graphql
@@ -85,13 +85,13 @@ type Subscription {
 ### Usage Examples & Cypher Queries
 
 ### Setup
-
+Subscriptions are an opt-in feature, to be activated when passing a subscriptions plugin to the Neo4jGraphQL schema
 ```typescript
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
     plugins: {
-        subscriptions: new SubscriptionsPlugin(), // e.g. SubscriptionsRedisPlguin()
+        subscriptions: new SubscriptionsPlugin(), // e.g. SubscriptionsRedisPlugin()
     },
 });
 ```
@@ -189,8 +189,8 @@ UNWIND meta AS m
 RETURN collect(DISTINCT m) AS meta
 ```
 
-#### Subscribe to connections and disconnections
-To provide support for relationship subscriptions, we need subscriptions focused on nodes connections and disconnections.
+#### Subscribe to relationships
+To provide support for relationship subscriptions, `connect` and `disconnect` events should be available.
 
 Assuming the following typedefs:
 ```graphql
@@ -204,8 +204,8 @@ type Movie {
 }
 ```
 
-##### Connections
-If a user wants to subscribe to new movies made by an actor:
+##### Connect
+If a user wants to subscribe to movies connected to an actor:
 
 ```graphql
 subscription {
@@ -239,7 +239,7 @@ RETURN [
 this0 { .name, actedIn: [ (this0)-[:ACTED_IN]->(this0_actedIn:Movie)   | this0_actedIn { .title } ] }] AS data, meta
 ```
 
-##### Disconnections
+##### Disconnect
 If a user wants to subscribe to movies disconnected from an actor:
 
 ```graphql
@@ -276,7 +276,7 @@ RETURN collect(DISTINCT m) AS meta
 
 ### Plugin Implementation
 
-Subscriptions will be made available via a plugin, for which we will initially provide a "local" implementation of,
+Subscriptions will be made available through a plugin, for which we will initially provide a "local" implementation of,
 which will not scale horizontally. Providing a plugin API means that later down the line, a plugin can be built which emits
 metadata regarding Mutation operations, to be consumed by other instances in a load balanced group.
 
@@ -532,8 +532,8 @@ this where not being sent.
 
 ### Extra fields in subscription
 The following should be available along with the data payload:
-- **Event**: The event that triggered this event (`CREATE`, `UPDATE`, `DELETE`)
-- **Timestamp**: The timestamp the event was generated, this may be needed to ensure order consistency on horizontal scaled subscriptions.
+- **event**: The event that triggered this event (`CREATE`, `UPDATE`, `DELETE`)
+- **timestamp**: The timestamp the event was generated, this may be needed to ensure order consistency on horizontal scaled subscriptions.
 - **previousState** (only for updates): State of the node before the modification.
 
 
