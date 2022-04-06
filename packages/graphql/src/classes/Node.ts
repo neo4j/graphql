@@ -87,7 +87,7 @@ type AuthableField =
     | PointField
     | CypherField;
 
-type ConstrainableField = PrimitiveField | TemporalField | PointField;
+type ConstrainableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | PointField;
 
 export type RootTypeFieldNames = {
     create: string;
@@ -180,7 +180,13 @@ class Node extends GraphElement {
     }
 
     public get constrainableFields(): ConstrainableField[] {
-        return [...this.primitiveFields, ...this.temporalFields, ...this.pointFields];
+        return [
+            ...this.primitiveFields,
+            ...this.scalarFields,
+            ...this.enumFields,
+            ...this.temporalFields,
+            ...this.pointFields,
+        ];
     }
 
     public get uniqueFields(): ConstrainableField[] {
