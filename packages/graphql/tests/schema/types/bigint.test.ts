@@ -84,6 +84,11 @@ describe("Bigint", () => {
               size: BigInt!
             }
 
+            type FileEdge {
+              cursor: String!
+              node: File!
+            }
+
             input FileOptions {
               limit: Int
               offset: Int
@@ -129,15 +134,30 @@ describe("Bigint", () => {
               size_NOT_IN: [BigInt!]
             }
 
+            type FilesConnection {
+              edges: [FileEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createFiles(input: [FileCreateInput!]!): CreateFilesMutationResponse!
               deleteFiles(where: FileWhere): DeleteInfo!
               updateFiles(update: FileUpdateInput, where: FileWhere): UpdateFilesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               files(options: FileOptions, where: FileWhere): [File!]!
               filesAggregate(where: FileWhere): FileAggregateSelection!
+              filesConnection(after: String, first: Int, sort: [FileSort], where: FileWhere): FilesConnection!
             }
 
             enum SortDirection {

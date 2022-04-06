@@ -113,9 +113,18 @@ describe("@default directive", () => {
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
             enum SortDirection {
@@ -176,6 +185,11 @@ describe("@default directive", () => {
               toBeOverridden: String! = \\"Overridden value\\"
               verified: Boolean! = false
               verifiedDate: DateTime! = \\"1970-01-01T00:00:00.000Z\\"
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
             }
 
             interface UserInterface {
@@ -292,6 +306,12 @@ describe("@default directive", () => {
               verifiedDate_NOT: DateTime
               verifiedDate_NOT_IN: [DateTime!]
               verified_NOT: Boolean
+            }
+
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

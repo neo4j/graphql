@@ -68,6 +68,11 @@ describe("609", () => {
               deprecatedField: String
             }
 
+            type DeprecatedEdge {
+              cursor: String!
+              node: Deprecated!
+            }
+
             input DeprecatedOptions {
               limit: Int
               offset: Int
@@ -103,15 +108,30 @@ describe("609", () => {
               deprecatedField_STARTS_WITH: String
             }
 
+            type DeprecatedsConnection {
+              edges: [DeprecatedEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createDeprecateds(input: [DeprecatedCreateInput!]!): CreateDeprecatedsMutationResponse!
               deleteDeprecateds(where: DeprecatedWhere): DeleteInfo!
               updateDeprecateds(update: DeprecatedUpdateInput, where: DeprecatedWhere): UpdateDeprecatedsMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               deprecateds(options: DeprecatedOptions, where: DeprecatedWhere): [Deprecated!]!
               deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
+              deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort], where: DeprecatedWhere): DeprecatedsConnection!
             }
 
             enum SortDirection {
