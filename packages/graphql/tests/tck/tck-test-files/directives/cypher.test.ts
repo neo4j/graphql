@@ -204,11 +204,8 @@ describe("Cypher directive", () => {
                     \\"high\\": 0
                 },
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);
@@ -242,11 +239,8 @@ describe("Cypher directive", () => {
                     \\"high\\": 0
                 },
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);
