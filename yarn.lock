@@ -3943,7 +3943,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server-express@npm:3.6.7, apollo-server-express@npm:^3.6.1, apollo-server-express@npm:^3.6.7":
+"apollo-server-express@npm:3.6.7, apollo-server-express@npm:^3.6.7":
   version: 3.6.7
   resolution: "apollo-server-express@npm:3.6.7"
   dependencies:
@@ -12355,7 +12355,7 @@ __metadata:
     "@types/jsonwebtoken": 8.5.1
     "@types/node": 14.14.14
     "@types/uuid": 8.3.0
-    apollo-server-express: ^3.6.1
+    apollo-server-express: ^3.6.7
     bcrypt: 5.0.1
     cross-env: 7.0.3
     debug: 4.3.1
