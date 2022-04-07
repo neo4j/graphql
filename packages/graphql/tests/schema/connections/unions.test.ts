@@ -87,6 +87,11 @@ describe("Unions", () => {
               publications: AuthorPublicationsDisconnectInput
             }
 
+            type AuthorEdge {
+              cursor: String!
+              node: Author!
+            }
+
             input AuthorOptions {
               limit: Int
               offset: Int
@@ -282,6 +287,12 @@ describe("Unions", () => {
               publicationsConnection_SOME: AuthorPublicationsConnectionWhere
             }
 
+            type AuthorsConnection {
+              edges: [AuthorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Book {
               author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorAggregate(directed: Boolean = true, where: AuthorWhere): BookAuthorAuthorAggregationSelection
@@ -462,6 +473,11 @@ describe("Unions", () => {
               author: [BookAuthorDisconnectFieldInput!]
             }
 
+            type BookEdge {
+              cursor: String!
+              node: Book!
+            }
+
             input BookOptions {
               limit: Int
               offset: Int
@@ -517,6 +533,12 @@ describe("Unions", () => {
               title_NOT_IN: [String!]
               title_NOT_STARTS_WITH: String
               title_STARTS_WITH: String
+            }
+
+            type BooksConnection {
+              edges: [BookEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type CreateAuthorsMutationResponse {
@@ -733,6 +755,11 @@ describe("Unions", () => {
               author: [JournalAuthorDisconnectFieldInput!]
             }
 
+            type JournalEdge {
+              cursor: String!
+              node: Journal!
+            }
+
             input JournalOptions {
               limit: Int
               offset: Int
@@ -790,6 +817,12 @@ describe("Unions", () => {
               subject_STARTS_WITH: String
             }
 
+            type JournalsConnection {
+              edges: [JournalEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createAuthors(input: [AuthorCreateInput!]!): CreateAuthorsMutationResponse!
               createBooks(input: [BookCreateInput!]!): CreateBooksMutationResponse!
@@ -820,10 +853,13 @@ describe("Unions", () => {
             type Query {
               authors(options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
+              authorsConnection(after: String, first: Int, sort: [AuthorSort], where: AuthorWhere): AuthorsConnection!
               books(options: BookOptions, where: BookWhere): [Book!]!
               booksAggregate(where: BookWhere): BookAggregateSelection!
+              booksConnection(after: String, first: Int, sort: [BookSort], where: BookWhere): BooksConnection!
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
               journalsAggregate(where: JournalWhere): JournalAggregateSelection!
+              journalsConnection(after: String, first: Int, sort: [JournalSort], where: JournalWhere): JournalsConnection!
             }
 
             input QueryOptions {

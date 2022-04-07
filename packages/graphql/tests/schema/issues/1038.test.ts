@@ -60,6 +60,11 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               code: String
             }
 
+            type AWSAccountEdge {
+              cursor: String!
+              node: AWSAccount!
+            }
+
             input AWSAccountOptions {
               limit: Int
               offset: Int
@@ -107,6 +112,12 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               code_STARTS_WITH: String
             }
 
+            type AwsAccountsConnection {
+              edges: [AWSAccountEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type CreateAwsAccountsMutationResponse {
               awsAccounts: [AWSAccount!]!
               info: CreateInfo!
@@ -137,6 +148,11 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             input DNSZoneCreateInput {
               awsId: String
               zoneType: String
+            }
+
+            type DNSZoneEdge {
+              cursor: String!
+              node: DNSZone!
             }
 
             input DNSZoneOptions {
@@ -192,6 +208,12 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               relationshipsDeleted: Int!
             }
 
+            type DnsZonesConnection {
+              edges: [DNSZoneEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createAwsAccounts(input: [AWSAccountCreateInput!]!): CreateAwsAccountsMutationResponse!
               createDnsZones(input: [DNSZoneCreateInput!]!): CreateDnsZonesMutationResponse!
@@ -201,11 +223,21 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               updateDnsZones(update: DNSZoneUpdateInput, where: DNSZoneWhere): UpdateDnsZonesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               awsAccounts(options: AWSAccountOptions, where: AWSAccountWhere): [AWSAccount!]!
               awsAccountsAggregate(where: AWSAccountWhere): AWSAccountAggregateSelection!
+              awsAccountsConnection(after: String, first: Int, sort: [AWSAccountSort], where: AWSAccountWhere): AwsAccountsConnection!
               dnsZones(options: DNSZoneOptions, where: DNSZoneWhere): [DNSZone!]!
               dnsZonesAggregate(where: DNSZoneWhere): DNSZoneAggregateSelection!
+              dnsZonesConnection(after: String, first: Int, sort: [DNSZoneSort], where: DNSZoneWhere): DnsZonesConnection!
             }
 
             enum SortDirection {

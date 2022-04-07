@@ -107,6 +107,11 @@ describe("Sort", () => {
               relatedTo: [Node1RelatedToDisconnectFieldInput!]
             }
 
+            type Node1Edge {
+              cursor: String!
+              node: Node1!
+            }
+
             type Node1Node2RelatedToAggregationSelection {
               count: Int!
             }
@@ -233,6 +238,12 @@ describe("Sort", () => {
               relatedTo_SOME: Node2Where
             }
 
+            type Node1sConnection {
+              edges: [Node1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Node2 {
               relatedTo(directed: Boolean = true, options: Node1Options, where: Node1Where): [Node1!]!
               relatedToAggregate(directed: Boolean = true, where: Node1Where): Node2Node1RelatedToAggregationSelection
@@ -261,6 +272,11 @@ describe("Sort", () => {
 
             input Node2DisconnectInput {
               relatedTo: [Node2RelatedToDisconnectFieldInput!]
+            }
+
+            type Node2Edge {
+              cursor: String!
+              node: Node2!
             }
 
             type Node2Node1RelatedToAggregationSelection {
@@ -402,6 +418,12 @@ describe("Sort", () => {
               relatedTo_SOME: Node1Where
             }
 
+            type Node2sConnection {
+              edges: [Node2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
             type PageInfo {
               endCursor: String
@@ -413,8 +435,10 @@ describe("Sort", () => {
             type Query {
               node1s(options: Node1Options, where: Node1Where): [Node1!]!
               node1sAggregate(where: Node1Where): Node1AggregateSelection!
+              node1sConnection(after: String, first: Int, sort: [Node1Sort], where: Node1Where): Node1sConnection!
               node2s(options: Node2Options, where: Node2Where): [Node2!]!
               node2sAggregate(where: Node2Where): Node2AggregateSelection!
+              node2sConnection(after: String, first: Int, where: Node2Where): Node2sConnection!
             }
 
             enum SortDirection {
