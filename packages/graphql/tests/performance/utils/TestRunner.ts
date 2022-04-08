@@ -39,6 +39,7 @@ export class TestRunner {
     public async runTests(tests: Array<Performance.TestInfo>): Promise<Array<Performance.TestDisplayData>> {
         const results: Array<any> = [];
         for (const test of tests) {
+            // eslint-disable-next-line no-await-in-loop -- We want to run tests sequentially
             const perfResult = await this.runPerformanceTest(gql(test.query));
             results.push({ name: test.name, result: perfResult, file: test.filename });
         }

@@ -61,11 +61,11 @@ async function filesFromDir(startPath: string, filter: string): Promise<string[]
 
             if (stat.isDirectory()) {
                 return filesFromDir(filename, filter); // Recurse directory
-            } else if (filename.indexOf(filter) >= 0) {
-                return [filename];
-            } else {
-                return [];
             }
+            if (filename.indexOf(filter) >= 0) {
+                return [filename];
+            }
+            return [];
         })
     );
     return filenames.flat();
