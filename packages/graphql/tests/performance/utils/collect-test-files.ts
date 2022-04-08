@@ -62,7 +62,9 @@ async function fromDir(startPath: string, filter: string): Promise<string[]> {
                 return fromDir(filename, filter); //recurse
             } else if (filename.indexOf(filter) >= 0) {
                 return [filename];
-            } else return [];
+            } else {
+              return [];
+            }
         })
     );
     return filenames.flat();

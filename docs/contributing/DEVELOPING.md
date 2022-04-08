@@ -135,7 +135,7 @@ npm run test-docker
 1. Go to `packages/graphql`
 2. Run `yarn performance`
 
-All `.graphql` files in `tests/performance` are part of the performance suite. To skip or run a test, append `_skip` or `only` to the query, e.g.:
+All `.graphql` files in `tests/performance` are part of the performance suite. To skip or run a test, append `_skip` or `_only` to the query, e.g.:
 
 ```graphql
 query SimpleUnionQuery_only {

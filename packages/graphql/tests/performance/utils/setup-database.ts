@@ -580,7 +580,7 @@ CREATE (user6)-[:LIKES]->(CloudAtlas)
 `;
 
 export async function cleanDatabase(session: Session) {
-    await session.run("MATCH(N) DETACH DELETE N");
+    await session.run("MATCH (N) DETACH DELETE N");
 }
 
 export async function setupDatabase(session: Session) {
