@@ -22,7 +22,7 @@ import assert from "assert";
 import { gql } from "apollo-server-express";
 import { Driver, ProfiledPlan } from "neo4j-driver";
 import { DocumentNode } from "graphql";
-import { Performance } from "../types";
+import * as Performance from "../types";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { translateQuery } from "../../tck/utils/tck-test-utils";
 import Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";

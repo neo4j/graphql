@@ -17,23 +17,21 @@
  * limitations under the License.
  */
 
-export module Performance {
-    export type ProfileResult = {
-        maxRows: number;
-        dbHits: number;
-        cache: {
-            hits: number;
-            misses: number;
-        };
+export type ProfileResult = {
+    maxRows: number;
+    dbHits: number;
+    cache: {
+        hits: number;
+        misses: number;
     };
+};
 
-    export type Result = ProfileResult & { time: number };
+export type Result = ProfileResult & { time: number };
 
-    export type TestDisplayData = {
-        name: string;
-        result: Result;
-        file: string;
-    };
+export type TestDisplayData = {
+    name: string;
+    result: Result;
+    file: string;
+};
 
-    export type TestInfo = { query: string; name: string; filename: string };
-}
+export type TestInfo = { query: string; name: string; filename: string };

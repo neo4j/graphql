@@ -18,15 +18,16 @@
  */
 
 import { Driver } from "neo4j-driver";
+import path from "path";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { gql } from "apollo-server";
 import neo4j from "./utils/neo4j";
 import { setupDatabase, cleanDatabase } from "./utils/setup-database";
 import { Neo4jGraphQL } from "../../src";
-import { gql } from "apollo-server";
 import { collectTests } from "./utils/collect-test-files";
 import { ResultsWriter } from "./utils/ResultsWriter";
 import { ResultsDisplay } from "./utils/ResultsDisplay";
 import { TestRunner } from "./utils/TestRunner";
-import path from "path";
 
 let driver: Driver;
 
