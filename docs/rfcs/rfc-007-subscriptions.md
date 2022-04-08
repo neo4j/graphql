@@ -21,6 +21,7 @@ Our users would like to use [GraphQL Subscriptions](https://graphql.org/blog/sub
 - Database transactions must be successful - no optimisticness.
 - Garbage collection of old subscriptions.
 - Some form of auth validation.
+- `@neo4j/graphql` should still run on browser
 
 ### Should have
 
@@ -39,6 +40,7 @@ Our users would like to use [GraphQL Subscriptions](https://graphql.org/blog/sub
 
 - Events from changes outside of GraphQL
 - Events triggered from custom Cypher
+- Support for subscriptions on browser
 
 ## Proposed Solution
 
@@ -575,15 +577,20 @@ While not a high priority, the protocol implemented by [graphql-transport-ws](ht
 #### Server-sent events
 An alterantive to websocket are [SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events), with [yoga server](https://www.graphql-yoga.com/docs/features/subscriptions) using them for the subscriptions implementation.
 
-## Technical Considerations
+## Security Considerations
+The addition of subscriptions creates a new entry top-level access for the database, increasing any security risks. The access to subscriptions should be handled by the `@auth` directive (described above).
 
-- Do we allow for filtering on properties of related nodes?
-- Do we allow for filtering on relationship properties?
-- Do we allow for projecting relationships in the selection set?
+Additionally, by the real-time nature of subscriptions, a few extra considerations need to be taken into account:
+- **Denial of service attacks**: Real time updates are susceptible to DOS attacks, as any query may trigger a large number of subscriptions.
+- **Wss**: We need to ensure that our documentation and library is compatible with WebSocket Secure (WSS).
+- Other transports risks: Any new transport (e.g. SSE) may pose new security risks that need to be addressed per case.
+
+> Due to these security considerations, any form of subscriptions must be opt-in for new and existing users.
 
 ## Risks
 
 - Maintaining order of events being fired
+    - For a single instance this can be guaranteed. On multiple-servers implementations, broker network may lead to unordered events in some cases. The addition of timestamps to the payload would be beneficial in these cases.
 - Ensure consistency of events data with data in the database
 - Make sure it works across popular PubSub Engine implementations (for example <https://www.apollographql.com/docs/apollo-server/data/subscriptions/#production-pubsub-libraries>)
 - Make sure it works with `@auth` directive - users shouldn't be able to listen to events for types they can't access
