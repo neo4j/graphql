@@ -95,8 +95,8 @@ export class TestRunner {
             },
         };
 
-        const result = plan.children.reduce((agg, plan) => {
-            const childResult = this.aggregateProfile(plan);
+        const result = plan.children.reduce((agg, childPlan) => {
+            const childResult = this.aggregateProfile(childPlan);
 
             return {
                 maxRows: Math.max(agg.maxRows, childResult.maxRows),

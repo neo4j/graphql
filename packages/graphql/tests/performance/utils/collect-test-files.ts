@@ -23,28 +23,28 @@ import * as path from "path";
 export async function collectTests(
     rootPath: string
 ): Promise<Array<{ query: string; name: string; filename: string }>> {
-    const files = await fromDir(rootPath, ".graphql");
+    const files = await filesFromDir(rootPath, ".graphql");
     let onlyFilter = false;
-    const onlyRegex = /\_only$/i;
-    const skipRegex = /\_skip$/i;
-    const result = await Promise.all(
+    const onlyRegex = /_only$/i;
+    const skipRegex = /_skip$/i;
+    const testFilesData = await Promise.all(
         files.map(async (filePath) => {
             const fileData = await fs.readFile(filePath, "utf-8");
-            const result = fileData.split(/^query\s/gm);
-            result.shift();
-            return result.map((query: string) => {
+            const rawQueries = fileData.split(/^query\s/gm);
+            rawQueries.shift();
+            return rawQueries.map((query: string) => {
                 const name = query.split(" {")[0].trim();
                 if (name.match(onlyRegex)) onlyFilter = true;
                 return {
                     query: `query ${query}`,
-                    name: name,
+                    name,
                     filename: path.basename(filePath).split(path.extname(filePath))[0],
                 };
             });
         })
     );
 
-    const tests = result.flat().filter((t) => !t.name.match(skipRegex));
+    const tests = testFilesData.flat().filter((t) => !t.name.match(skipRegex));
 
     if (onlyFilter) {
         return tests.filter((t) => t.name.match(onlyRegex));
@@ -52,18 +52,19 @@ export async function collectTests(
     return tests;
 }
 
-async function fromDir(startPath: string, filter: string): Promise<string[]> {
+async function filesFromDir(startPath: string, filter: string): Promise<string[]> {
     const files = await fs.readdir(startPath);
     const filenames = await Promise.all(
         files.map(async (file) => {
-            var filename = path.join(startPath, file);
-            var stat = await fs.lstat(filename);
+            const filename = path.join(startPath, file);
+            const stat = await fs.lstat(filename);
+
             if (stat.isDirectory()) {
-                return fromDir(filename, filter); //recurse
+                return filesFromDir(filename, filter); // Recurse directory
             } else if (filename.indexOf(filter) >= 0) {
                 return [filename];
             } else {
-              return [];
+                return [];
             }
         })
     );
