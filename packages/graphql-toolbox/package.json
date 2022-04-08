@@ -60,7 +60,7 @@
         "@types/crypto-js": "^4.1.1",
         "@types/markdown-it": "^12.2.3",
         "@types/prettier": "^2.4.4",
-        "@types/react": "17.0.43",
+        "@types/react": "18.0.0",
         "@types/react-dom": "17.0.14",
         "@types/uuid": "^8.3.4",
         "@types/webpack": "5.28.0",
