@@ -2148,7 +2148,7 @@ __metadata:
     "@types/crypto-js": ^4.1.1
     "@types/markdown-it": ^12.2.3
     "@types/prettier": ^2.4.4
-    "@types/react": 17.0.43
+    "@types/react": 17.0.44
     "@types/react-dom": 18.0.0
     "@types/uuid": ^8.3.4
     "@types/webpack": 5.28.0
@@ -3130,7 +3130,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:17.0.43, @types/react@npm:>=16.9.11":
+"@types/react@npm:*, @types/react@npm:>=16.9.11":
   version: 17.0.43
   resolution: "@types/react@npm:17.0.43"
   dependencies:
@@ -3148,6 +3148,17 @@ __metadata:
     "@types/prop-types": "*"
     csstype: ^3.0.2
   checksum: 0767d1c635613cb08de1ad6b8f73e3ee01ae0069733fa56382c72a8dbed741849e74f62a17756c7b76ccd2b57dd9891d5767c3134f35788720c6bb9c186a933b
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:17.0.44":
+  version: 17.0.44
+  resolution: "@types/react@npm:17.0.44"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: ebee02778ca08f954c316dc907802264e0121c87b8fa2e7e0156ab0ef2a1b0a09d968c016a3600ec4c9a17dc09b4274f292d9b15a1a5369bb7e4072def82808f
   languageName: node
   linkType: hard
 
