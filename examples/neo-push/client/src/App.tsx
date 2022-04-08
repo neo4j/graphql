@@ -10,6 +10,7 @@ export default function App() {
     return (
         <graphql.Provider>
             <auth.Provider>
+                {/* @ts-ignore - Needs further investigation */}
                 <HashRouter>
                     <NavBar />
                     <Switch>
