@@ -1,0 +1,31 @@
+name: "UI Build"
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    branches:
+      - dev
+    paths:
+      - "packages/graphql-toolbox/**"
+
+jobs:
+  build-ui:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+      - name: UI build
+        run: |
+          yarn
+          yarn build
+          echo ${{ github.event.number }} > ./dist/prnumber
+        working-directory: packages/graphql-toolbox
+      - name: Archive UI
+        uses: actions/upload-artifact@v3
+        with:
+          name: graphqlui
+          path: packages/graphql-toolbox/dist

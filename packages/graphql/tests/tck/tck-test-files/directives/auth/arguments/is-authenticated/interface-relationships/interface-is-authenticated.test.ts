@@ -120,6 +120,7 @@ describe("Cypher Auth isAuthenticated", () => {
             "{
                 \\"this0_id\\": \\"1\\",
                 \\"this0_content\\": \\"content\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -165,6 +166,7 @@ describe("Cypher Auth isAuthenticated", () => {
             "{
                 \\"this_id\\": \\"1\\",
                 \\"this_update_id\\": \\"id-1\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -228,6 +230,7 @@ describe("Cypher Auth isAuthenticated", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -296,6 +299,7 @@ describe("Cypher Auth isAuthenticated", () => {
                         }
                     }
                 },
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [

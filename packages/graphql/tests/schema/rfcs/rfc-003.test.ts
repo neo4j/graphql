@@ -21,7 +21,7 @@ import { gql } from "apollo-server";
 import { GraphQLSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("schema/rfs/003", () => {
+describe("schema/rfc/003", () => {
     const msg = `List type relationship fields must be non-nullable and have non-nullable entries, please change type of Source.targets to [Target!]!`;
 
     describe("ObjectType", () => {

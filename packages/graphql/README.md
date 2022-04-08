@@ -59,17 +59,22 @@ const typeDefs = `
     }
 `;
 
-
 const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "letmein"));
 
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-const server = new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ req }) => ({ req }),
-});
+async function main() {
+    const schema = await neoSchema.getSchema();
 
-server.listen(4000).then(() => console.log("Online"));
+    const server = new ApolloServer({
+        schema,
+        context: ({ req }) => ({ req }),
+    });
+
+    await server.listen(4000);
+
+    console.log("Online");
+}
 ```
 
 ## Example Queries

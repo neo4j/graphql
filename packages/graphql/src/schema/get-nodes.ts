@@ -21,7 +21,7 @@ import { DirectiveNode, NamedTypeNode } from "graphql";
 import { Exclude, Node } from "../classes";
 import { NodeDirective } from "../classes/NodeDirective";
 import { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
-import { Auth, FullText } from "../types";
+import { Auth, FullText, Neo4jGraphQLCallbacks } from "../types";
 import getObjFieldMeta from "./get-obj-field-meta";
 import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
 import parseFulltextDirective from "./parse/parse-fulltext-directive";
@@ -38,7 +38,7 @@ type Nodes = {
     interfaceRelationshipNames: Set<string>;
 };
 
-function getNodes(definitionNodes: DefinitionNodes): Nodes {
+function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4jGraphQLCallbacks }): Nodes {
     let pointInTypeDefs = false;
     let cartesianPointInTypeDefs = false;
 
@@ -117,6 +117,7 @@ function getNodes(definitionNodes: DefinitionNodes): Nodes {
             objects: definitionNodes.objectTypes,
             scalars: definitionNodes.scalarTypes,
             unions: definitionNodes.unionTypes,
+            callbacks: options.callbacks,
         });
 
         // Ensure that all required fields are returning either a scalar type or an enum

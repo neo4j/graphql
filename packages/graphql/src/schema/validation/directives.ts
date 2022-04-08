@@ -29,6 +29,7 @@ import {
 } from "graphql";
 import { RelationshipQueryDirectionOption } from "../../constants";
 import {
+    CallbackOperationEnum,
     ExcludeOperationEnum,
     RelationshipDirectionEnum,
     RelationshipQueryDirectionEnum,
@@ -43,6 +44,24 @@ export const aliasDirective = new GraphQLDirective({
     args: {
         property: {
             description: "The name of the Neo4j property",
+            type: new GraphQLNonNull(GraphQLString),
+        },
+    },
+});
+
+export const callbackDirective = new GraphQLDirective({
+    name: "callback",
+    description:
+        "Instructs @neo4j/graphql to invoke the specified callback function when updating or creating the properties on a node or relationship.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        operations: {
+            description: "Which events to invoke the callback on.",
+            defaultValue: CallbackOperationEnum.getValues().map((v) => v.value),
+            type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(CallbackOperationEnum))),
+        },
+        name: {
+            description: "The name of the callback function.",
             type: new GraphQLNonNull(GraphQLString),
         },
     },
@@ -132,9 +151,6 @@ export const fulltextDirective = new GraphQLDirective({
                             },
                             fields: {
                                 type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
-                            },
-                            defaultThreshold: {
-                                type: GraphQLInt,
                             },
                         },
                     })

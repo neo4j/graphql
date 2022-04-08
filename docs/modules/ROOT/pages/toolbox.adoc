@@ -1,0 +1,29 @@
+[[Toolbox]]
+
+= Toolbox
+
+Experiment with your Neo4j GraphQL API on Neo4j Desktop. 
+
+> This is for development purposes only!
+
+== Example
+
+image::toolbox-editor-view.png[title="Editor view"]
+
+== Usage
+
+1. Connect to the database with your credentials
+2. Define (or Introspect) Typedefs
+3. Build Neo4j GraphQL schema
+4. Experiment and play
+
+
+== Installation
+This application is distributed via NPM. The NPM package contains a static bundle that you could serve over HTTP or use the Neo4j Graph app instructions.
+
+Follow https://neo4j.com/developer/graph-apps/#_installation_from_package_managers_npm[this guide] to install the Neo4j GraphQL Toolbox from NPM in Neo4j Desktop.
+
+== Requirements
+
+1. https://neo4j.com/docs/desktop-manual/current/[Neo4j Desktop]
+2. Make sure the database fulfills the requirements stated xref::introduction.adoc#introduction-requirements[here], including the necessary plugins. You must not have `Node.js` installed to use this Toolbox.

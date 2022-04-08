@@ -77,7 +77,8 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"1\\",
-                \\"this_update_id\\": \\"2\\"
+                \\"this_update_id\\": \\"2\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -144,7 +145,8 @@ describe("Cypher Update", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -249,7 +251,8 @@ describe("Cypher Update", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -291,7 +294,8 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"1\\",
-                \\"this_connect_actors0_node_name\\": \\"Daniel\\"
+                \\"this_connect_actors0_node_name\\": \\"Daniel\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -351,7 +355,8 @@ describe("Cypher Update", () => {
             "{
                 \\"this_id\\": \\"1\\",
                 \\"this_connect_actors0_node_name\\": \\"Daniel\\",
-                \\"this_connect_actors1_node_name\\": \\"Darrell\\"
+                \\"this_connect_actors1_node_name\\": \\"Darrell\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -405,7 +410,8 @@ describe("Cypher Update", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -481,7 +487,8 @@ describe("Cypher Update", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -524,7 +531,8 @@ describe("Cypher Update", () => {
             "{
                 \\"this_name\\": \\"Dan\\",
                 \\"this_movies0_create0_node_id\\": \\"dan_movie_id\\",
-                \\"this_movies0_create0_node_title\\": \\"The Story of Beer\\"
+                \\"this_movies0_create0_node_title\\": \\"The Story of Beer\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -566,7 +574,8 @@ describe("Cypher Update", () => {
             "{
                 \\"this_name\\": \\"Dan\\",
                 \\"this_create_movies0_node_id\\": \\"dan_movie_id\\",
-                \\"this_create_movies0_node_title\\": \\"The Story of Beer\\"
+                \\"this_create_movies0_node_title\\": \\"The Story of Beer\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -619,7 +628,8 @@ describe("Cypher Update", () => {
                 \\"this_create_movies0_node_id\\": \\"dan_movie_id\\",
                 \\"this_create_movies0_node_title\\": \\"The Story of Beer\\",
                 \\"this_create_movies1_node_id\\": \\"dan_movie2_id\\",
-                \\"this_create_movies1_node_title\\": \\"Forrest Gump\\"
+                \\"this_create_movies1_node_title\\": \\"Forrest Gump\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -677,7 +687,8 @@ describe("Cypher Update", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -764,7 +775,8 @@ describe("Cypher Update", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -820,7 +832,8 @@ describe("Cypher Update", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -899,7 +912,8 @@ describe("Cypher Update", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
