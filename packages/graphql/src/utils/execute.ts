@@ -79,31 +79,29 @@ const getExecutor = (input: {
     defaultAccessMode: SessionMode;
     context: Context;
 }): { driver?: Driver; session?: Session; transaction: Transaction } => {
-    if (!input.context.executionContext) {
+    const executionContext = input.context.executionContext;
+    
+    if (!executionContext) {
         const driver = input.context.driver;
         const session = driver.session(getSessionParams(input));
         const transaction = session.beginTransaction(getTransactionConfig());
         return { driver, session, transaction };
     }
 
-    const executionContextType = Object.getPrototypeOf(input.context.executionContext).constructor.name;
 
-    if (executionContextType === "Driver") {
-        const driver = input.context.executionContext as Driver;
-        const session = driver.session(getSessionParams(input));
+    if (executionContext instanceof Driver) {
+        const session = executionContext.session(getSessionParams(input));
         const transaction = session.beginTransaction(getTransactionConfig());
         return { driver, session, transaction };
     }
 
-    if (executionContextType === "Session") {
-        const session = input.context.executionContext as Session;
-        const transaction = session.beginTransaction(getTransactionConfig());
+    if (executionContext instanceof Session) {
+        const transaction = executionContext.beginTransaction(getTransactionConfig());
         return { session, transaction };
     }
 
-    if (executionContextType === "Transaction") {
-        const transaction = input.context.executionContext as Transaction;
-        return { transaction };
+    if (executionContext instanceof Transaction) {
+        return { transaction: executionContext };
     }
 
     throw Error("Not reached");
@@ -183,7 +181,8 @@ async function execute(input: {
 
         throw error;
     } finally {
-        if (executor.driver && executor.session) {
+        const sessionCreatedByExecute = executor.driver && executor.session;
+        if (sessionCreatedByExecute) {
             await executor.session.close();
         }
     }
