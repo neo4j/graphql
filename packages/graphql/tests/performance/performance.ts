@@ -86,7 +86,7 @@ async function main() {
         const results = await runTests();
 
         const resultsDisplay = new ResultsDisplay();
-        resultsDisplay.display(results, oldResults);
+        await resultsDisplay.display(results, oldResults);
 
         const updateSnapshot = process.argv.includes("-u");
         if (updateSnapshot) {
@@ -97,6 +97,7 @@ async function main() {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 main();
 
 async function runTests() {

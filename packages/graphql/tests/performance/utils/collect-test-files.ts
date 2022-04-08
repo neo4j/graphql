@@ -53,7 +53,7 @@ export async function collectTests(
 }
 
 async function fromDir(startPath: string, filter: string): Promise<string[]> {
-    var files = await fs.readdir(startPath);
+    const files = await fs.readdir(startPath);
     const filenames = await Promise.all(
         files.map(async (file) => {
             var filename = path.join(startPath, file);

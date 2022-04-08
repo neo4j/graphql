@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-export namespace Performance {
+export module Performance {
     export type ProfileResult = {
         maxRows: number;
         dbHits: number;

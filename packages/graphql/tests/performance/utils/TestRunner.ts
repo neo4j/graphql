@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
+import assert from "assert";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { gql } from "apollo-server-express";
+import { Driver, ProfiledPlan } from "neo4j-driver";
 import { DocumentNode } from "graphql";
 import { Performance } from "../types";
-
-import { Driver, ProfiledPlan } from "neo4j-driver";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { translateQuery } from "../../tck/utils/tck-test-utils";
-import assert from "assert";
 import Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
 
 export class TestRunner {

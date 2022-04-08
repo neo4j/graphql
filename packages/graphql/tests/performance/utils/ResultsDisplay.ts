@@ -30,10 +30,11 @@ enum TTYColors {
 const TTYReset = "\x1b[0m";
 
 export class ResultsDisplay {
-    public async display(
+    public display(
         results: Array<Performance.TestDisplayData>,
         oldResults: Record<string, Performance.TestDisplayData> | undefined
     ): Promise<void> {
+        // eslint-disable-next-line no-console
         console.table(
             results.reduce((acc, { name, result, file }) => {
                 const coloredFile = this.colorText(file, TTYColors.yellow);
@@ -59,6 +60,7 @@ export class ResultsDisplay {
                 return acc;
             }, {})
         );
+        return Promise.resolve();
     }
 
     private colorText(text: string, color: TTYColors): string {
