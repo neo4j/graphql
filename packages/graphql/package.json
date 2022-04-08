@@ -60,7 +60,7 @@
         "dedent": "0.7.0",
         "graphql-middleware": "6.1.22",
         "graphql-tag": "2.12.6",
-        "graphql-ws": "5.6.4",
+        "graphql-ws": "5.7.0",
         "is-uuid": "1.0.2",
         "jest": "27.5.1",
         "koa": "2.13.4",
