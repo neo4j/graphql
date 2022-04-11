@@ -77,6 +77,7 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
+              usersConnection: UsersConnection;
             };
 
             export type QueryUsersArgs = {
@@ -86,6 +87,13 @@ describe("generate", () => {
 
             export type QueryUsersAggregateArgs = {
               where?: InputMaybe<UserWhere>;
+            };
+
+            export type QueryUsersConnectionArgs = {
+              first?: InputMaybe<Scalars[\\"Int\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"]>;
+              where?: InputMaybe<UserWhere>;
+              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
             };
 
             export type Mutation = {
@@ -135,6 +143,15 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
+            /** Pagination information (Relay) */
+            export type PageInfo = {
+              __typename?: \\"PageInfo\\";
+              hasNextPage: Scalars[\\"Boolean\\"];
+              hasPreviousPage: Scalars[\\"Boolean\\"];
+              startCursor?: Maybe<Scalars[\\"String\\"]>;
+              endCursor?: Maybe<Scalars[\\"String\\"]>;
+            };
+
             export type StringAggregateSelectionNullable = {
               __typename?: \\"StringAggregateSelectionNullable\\";
               shortest?: Maybe<Scalars[\\"String\\"]>;
@@ -165,6 +182,19 @@ describe("generate", () => {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               name: StringAggregateSelectionNullable;
+            };
+
+            export type UserEdge = {
+              __typename?: \\"UserEdge\\";
+              cursor: Scalars[\\"String\\"];
+              node: User;
+            };
+
+            export type UsersConnection = {
+              __typename?: \\"UsersConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<UserEdge>;
             };
 
             export type UserCreateInput = {
@@ -308,6 +338,7 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
+              usersConnection: UsersConnection;
             };
 
             export type QueryUsersArgs = {
@@ -318,6 +349,14 @@ describe("generate", () => {
 
             export type QueryUsersAggregateArgs = {
               where?: InputMaybe<UserWhere>;
+              fulltext?: InputMaybe<UserFulltext>;
+            };
+
+            export type QueryUsersConnectionArgs = {
+              first?: InputMaybe<Scalars[\\"Int\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"]>;
+              where?: InputMaybe<UserWhere>;
+              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
               fulltext?: InputMaybe<UserFulltext>;
             };
 
@@ -368,6 +407,15 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
+            /** Pagination information (Relay) */
+            export type PageInfo = {
+              __typename?: \\"PageInfo\\";
+              hasNextPage: Scalars[\\"Boolean\\"];
+              hasPreviousPage: Scalars[\\"Boolean\\"];
+              startCursor?: Maybe<Scalars[\\"String\\"]>;
+              endCursor?: Maybe<Scalars[\\"String\\"]>;
+            };
+
             export type StringAggregateSelectionNullable = {
               __typename?: \\"StringAggregateSelectionNullable\\";
               shortest?: Maybe<Scalars[\\"String\\"]>;
@@ -400,6 +448,19 @@ describe("generate", () => {
               name: StringAggregateSelectionNullable;
             };
 
+            export type UserEdge = {
+              __typename?: \\"UserEdge\\";
+              cursor: Scalars[\\"String\\"];
+              node: User;
+            };
+
+            export type UsersConnection = {
+              __typename?: \\"UsersConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<UserEdge>;
+            };
+
             export type UserCreateInput = {
               name?: InputMaybe<Scalars[\\"String\\"]>;
             };
@@ -426,7 +487,6 @@ describe("generate", () => {
 
             export type UserUserNameFulltext = {
               phrase: Scalars[\\"String\\"];
-              score_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             export type UserWhere = {
@@ -559,6 +619,7 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
+              usersConnection: UsersConnection;
             };
 
             export type QueryUsersArgs = {
@@ -568,6 +629,13 @@ describe("generate", () => {
 
             export type QueryUsersAggregateArgs = {
               where?: InputMaybe<UserWhere>;
+            };
+
+            export type QueryUsersConnectionArgs = {
+              first?: InputMaybe<Scalars[\\"Int\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"]>;
+              where?: InputMaybe<UserWhere>;
+              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
             };
 
             export type Mutation = {
@@ -617,6 +685,15 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
+            /** Pagination information (Relay) */
+            export type PageInfo = {
+              __typename?: \\"PageInfo\\";
+              hasNextPage: Scalars[\\"Boolean\\"];
+              hasPreviousPage: Scalars[\\"Boolean\\"];
+              startCursor?: Maybe<Scalars[\\"String\\"]>;
+              endCursor?: Maybe<Scalars[\\"String\\"]>;
+            };
+
             export type StringAggregateSelectionNullable = {
               __typename?: \\"StringAggregateSelectionNullable\\";
               shortest?: Maybe<Scalars[\\"String\\"]>;
@@ -647,6 +724,19 @@ describe("generate", () => {
               __typename?: \\"UserAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               name: StringAggregateSelectionNullable;
+            };
+
+            export type UserEdge = {
+              __typename?: \\"UserEdge\\";
+              cursor: Scalars[\\"String\\"];
+              node: User;
+            };
+
+            export type UsersConnection = {
+              __typename?: \\"UsersConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<UserEdge>;
             };
 
             export type UserCreateInput = {
@@ -796,8 +886,10 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               movies: Array<Movie>;
               moviesAggregate: MovieAggregateSelection;
+              moviesConnection: MoviesConnection;
               people: Array<Person>;
               peopleAggregate: PersonAggregateSelection;
+              peopleConnection: PeopleConnection;
             };
 
             export type QueryMoviesArgs = {
@@ -809,6 +901,13 @@ describe("generate", () => {
               where?: InputMaybe<MovieWhere>;
             };
 
+            export type QueryMoviesConnectionArgs = {
+              first?: InputMaybe<Scalars[\\"Int\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"]>;
+              where?: InputMaybe<MovieWhere>;
+              sort?: InputMaybe<Array<InputMaybe<MovieSort>>>;
+            };
+
             export type QueryPeopleArgs = {
               where?: InputMaybe<PersonWhere>;
               options?: InputMaybe<PersonOptions>;
@@ -816,6 +915,13 @@ describe("generate", () => {
 
             export type QueryPeopleAggregateArgs = {
               where?: InputMaybe<PersonWhere>;
+            };
+
+            export type QueryPeopleConnectionArgs = {
+              first?: InputMaybe<Scalars[\\"Int\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"]>;
+              where?: InputMaybe<PersonWhere>;
+              sort?: InputMaybe<Array<InputMaybe<PersonSort>>>;
             };
 
             export type Mutation = {
@@ -951,6 +1057,12 @@ describe("generate", () => {
               title: StringAggregateSelectionNonNullable;
             };
 
+            export type MovieEdge = {
+              __typename?: \\"MovieEdge\\";
+              cursor: Scalars[\\"String\\"];
+              node: Movie;
+            };
+
             export type MoviePersonActorsAggregationSelection = {
               __typename?: \\"MoviePersonActorsAggregationSelection\\";
               count: Scalars[\\"Int\\"];
@@ -968,6 +1080,13 @@ describe("generate", () => {
               name: StringAggregateSelectionNonNullable;
             };
 
+            export type MoviesConnection = {
+              __typename?: \\"MoviesConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<MovieEdge>;
+            };
+
             /** Pagination information (Relay) */
             export type PageInfo = {
               __typename?: \\"PageInfo\\";
@@ -975,6 +1094,13 @@ describe("generate", () => {
               hasPreviousPage: Scalars[\\"Boolean\\"];
               startCursor?: Maybe<Scalars[\\"String\\"]>;
               endCursor?: Maybe<Scalars[\\"String\\"]>;
+            };
+
+            export type PeopleConnection = {
+              __typename?: \\"PeopleConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<PersonEdge>;
             };
 
             export type Person = {
@@ -986,6 +1112,12 @@ describe("generate", () => {
               __typename?: \\"PersonAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               name: StringAggregateSelectionNonNullable;
+            };
+
+            export type PersonEdge = {
+              __typename?: \\"PersonEdge\\";
+              cursor: Scalars[\\"String\\"];
+              node: Person;
             };
 
             export type StringAggregateSelectionNonNullable = {

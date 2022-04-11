@@ -116,6 +116,11 @@ describe("Interfaces", () => {
               movies: [MovieNodeMoviesDisconnectFieldInput!]
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             type MovieMovieMoviesAggregationSelection {
               count: Int!
               node: MovieMovieMoviesNodeAggregateSelection
@@ -265,6 +270,12 @@ describe("Interfaces", () => {
               movies_SOME: MovieWhere
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
@@ -282,6 +293,7 @@ describe("Interfaces", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
