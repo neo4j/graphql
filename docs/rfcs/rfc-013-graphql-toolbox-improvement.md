@@ -1,5 +1,7 @@
 # GraphQL Toolbox Next
 
+For reference: The first [RFC concerning the GraphQL UI PoC](https://github.com/neo4j/graphql/blob/dev/docs/rfcs/rfc-009-graphql-ui-poc.md).
+
 ## Problem
 
 The GraphQL Toolbox needs to be further improved for a better initial developer experience of Neo4j GraphQL. Central hosting, tracking and adding Canny for feedback collection are additional pieces that should lift the GraphQL Toolbox to a more complete product.
