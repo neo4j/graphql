@@ -2070,7 +2070,6 @@ __metadata:
     "@types/crypto-js": ^4.1.1
     "@types/markdown-it": ^12.2.3
     "@types/prettier": 2.6.0
-    "@types/react": 18.0.1
     "@types/react-dom": 18.0.0
     "@types/uuid": ^8.3.4
     "@types/webpack": 5.28.0
@@ -3045,7 +3044,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:18.0.1, @types/react@npm:>=16.14.8":
+"@types/react@npm:>=16.14.8":
   version: 18.0.1
   resolution: "@types/react@npm:18.0.1"
   dependencies:
@@ -12491,7 +12490,6 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": 6.1.1
     "@fortawesome/react-fontawesome": 0.1.18
     "@tsconfig/create-react-app": ^1.0.2
-    "@types/react": 18.0.1
     "@types/react-dom": 18.0.0
     "@types/react-router-dom": 5.3.3
     "@types/showdown": 1.9.4
