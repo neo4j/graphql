@@ -60,5 +60,6 @@ export function Editor(props: { markdown: string; onChange: (markdown: string) =
 }
 
 export function Render(props: { markdown: string }) {
+    // @ts-ignore
     return <ReactMarkdown source={props.markdown} renderers={{ code: Code }} />;
 }
