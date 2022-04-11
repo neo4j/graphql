@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
-import { NavigateFunction, Route } from "react-router-dom";
+import { NavigateFunction, useLocation, Route } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { auth } from "../contexts";
-import { useLocation } from "react-router-dom";
 import constants from "../constants";
 import "../main.css";
 
