@@ -3,6 +3,7 @@
     "baseUrl": "./",
     "sourceRoot": "./",
     "compilerOptions": {
+        "skipLibCheck": true,
         "outDir": "./dist",
         "rootDir": "./src"
     },
