@@ -2161,7 +2161,7 @@ __metadata:
     crypto-js: ^4.1.1
     css-loader: ^6.7.1
     file-loader: ^6.2.0
-    fork-ts-checker-webpack-plugin: 7.2.3
+    fork-ts-checker-webpack-plugin: 7.2.4
     graphiql-explorer: ^0.9.0
     graphql: ^16.0.0
     graphql-request: ^4.2.0
@@ -9040,9 +9040,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fork-ts-checker-webpack-plugin@npm:7.2.3":
-  version: 7.2.3
-  resolution: "fork-ts-checker-webpack-plugin@npm:7.2.3"
+"fork-ts-checker-webpack-plugin@npm:7.2.4":
+  version: 7.2.4
+  resolution: "fork-ts-checker-webpack-plugin@npm:7.2.4"
   dependencies:
     "@babel/code-frame": ^7.16.7
     chalk: ^4.1.2
@@ -9062,7 +9062,7 @@ __metadata:
   peerDependenciesMeta:
     vue-template-compiler:
       optional: true
-  checksum: aaf00d911a4561f4f7c72ef79723dd87bd970fbee9e2f7d245af04c5d647ccd432550024dc94dcbd0ceb448b849e9236dcc51145e65dbd62a79fa65036a88c11
+  checksum: a45997570ae893ef616951bb5d26b770abe1f75a2c76b99ec0af8e949d72e4d9de6e8bfcc2393c6e4468a9c518412245ced6a9408647551d8258d44925bde6c1
   languageName: node
   linkType: hard
 
