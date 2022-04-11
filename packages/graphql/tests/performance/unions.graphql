@@ -1,0 +1,13 @@
+query SimpleUnionQuery {
+    users {
+        name
+        liked {
+            ... on Person {
+                name
+            }
+            ... on Movie {
+                title
+            }
+        }
+    }
+}

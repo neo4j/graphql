@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DocumentNode, graphql } from "graphql";
+import { DocumentNode, graphql, GraphQLArgs } from "graphql";
 import { IncomingMessage } from "http";
 import createAuthParam from "../../../src/translate/create-auth-param";
 import { Neo4jGraphQL } from "../../../src";
@@ -73,22 +73,28 @@ export function formatParams(params: Record<string, any>): string {
 export async function translateQuery(
     neoSchema: Neo4jGraphQL,
     query: DocumentNode,
-    options: {
+    options?: {
         req?: IncomingMessage;
         variableValues?: Record<string, any>;
     }
 ): Promise<{ cypher: string; params: Record<string, any> }> {
     const driverBuilder = new DriverBuilder();
 
-    const { errors } = await graphql({
+    const contextValue: Record<string, any> = { driver: driverBuilder.instance() };
+    if (options?.req) {
+        contextValue.req = options.req;
+    }
+
+    const graphqlArgs: GraphQLArgs = {
         schema: await neoSchema.getSchema(),
         source: getQuerySource(query),
-        contextValue: {
-            req: options.req,
-            driver: driverBuilder.instance(),
-        },
-        variableValues: options.variableValues,
-    });
+        contextValue,
+    };
+    if (options?.variableValues) {
+        graphqlArgs.variableValues = options.variableValues;
+    }
+
+    const { errors } = await graphql(graphqlArgs);
 
     if (errors?.length) {
         const errorString = errors.map((x) => `${x.message}\n${x.stack}`).join("\n");
@@ -108,7 +114,7 @@ export async function translateQuery(
     }
 
     return {
-        cypher: driverBuilder.runMock.calls[0][0],
-        params: driverBuilder.runMock.calls[0][1],
+        cypher: driverBuilder.runFunction.calls[0][0],
+        params: driverBuilder.runFunction.calls[0][1],
     };
 }

@@ -1,0 +1,30 @@
+query Connection {
+    movies {
+        actorsConnection {
+            edges {
+                node {
+                    name
+                }
+            }
+        }
+    }
+}
+
+query NestedConnection {
+    movies {
+        actorsConnection {
+            edges {
+                node {
+                    name
+                    moviesConnection {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
