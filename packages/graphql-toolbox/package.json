@@ -59,7 +59,7 @@
         "@types/codemirror": "^5.60.5",
         "@types/crypto-js": "^4.1.1",
         "@types/markdown-it": "^12.2.3",
-        "@types/prettier": "^2.4.4",
+        "@types/prettier": "2.6.0",
         "@types/react": "17.0.43",
         "@types/react-dom": "18.0.0",
         "@types/uuid": "^8.3.4",
