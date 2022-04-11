@@ -16,28 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { Col, ColsWrapper, Row, RowsWrapper } from "react-grid-resizable";
 
 export interface Props {
-    queryEditor: any | null;
-    resultView: any;
-    parameterEditor: any;
+    queryEditor: React.ReactNode | null;
+    resultView: React.ReactNode;
+    parameterEditor: React.ReactNode;
 }
 
 export const Frame = ({ queryEditor, parameterEditor, resultView }: Props) => {
     return (
         <div className="h-full flex flex-row" style={{ maxHeight: "90vh" }}>
+            {/* @ts-ignore - We need to replace the "react-grid-resizable" dependency */}
             <Row className={"flex-1"}>
                 <ColsWrapper>
+                    {/* @ts-ignore - We need to replace the "react-grid-resizable" dependency */}
                     <Col left={false}>
                         <RowsWrapper>
+                            {/* @ts-ignore - We need to replace the "react-grid-resizable" dependency */}
                             <Row>{queryEditor}</Row>
+                            {/* @ts-ignore - We need to replace the "react-grid-resizable" dependency */}
                             <Row>{parameterEditor}</Row>
                         </RowsWrapper>
                     </Col>
+                    {/* @ts-ignore - We need to replace the "react-grid-resizable" dependency */}
                     <Col>
                         <RowsWrapper>
+                            {/* @ts-ignore - We need to replace the "react-grid-resizable" dependency */}
                             <Row>{resultView}</Row>
                         </RowsWrapper>
                     </Col>
