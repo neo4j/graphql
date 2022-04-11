@@ -55,11 +55,12 @@ async function main() {
         if (!generatedTypeDefsMatch.test(printed)) {
             throw new Error(`${generatedTypeDefsMatch} was not found in generated typeDefs`);
         }
-
+        // eslint-disable-next-line no-console
         console.log("Passed");
 
         server.stop();
     } catch (error) {
+        // eslint-disable-next-line no-console
         console.error(error);
         process.exit(1);
     }

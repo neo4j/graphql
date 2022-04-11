@@ -34,7 +34,7 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
                 };
             },
             ...newOptions,
-        } as any);
+        } as Driver);
 
         this.runFunction = this.addFakeSession();
     }
@@ -69,7 +69,7 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
                     lastBookmark() {},
                 };
             },
-        } as any);
+        } as Driver);
         return runMock;
     }
 
