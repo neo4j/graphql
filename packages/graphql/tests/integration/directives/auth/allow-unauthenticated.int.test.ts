@@ -67,7 +67,6 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
@@ -124,7 +123,6 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
@@ -183,7 +181,6 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
@@ -244,7 +241,6 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
@@ -301,7 +297,6 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
@@ -359,7 +354,6 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
@@ -417,7 +411,6 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const secret = "secret";
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 plugins: {

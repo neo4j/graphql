@@ -100,6 +100,7 @@ function translateRead({
     }
 
     if (projection[2]?.interfaceFields?.length) {
+        const prevRelationshipFields: string[] = [];
         projection[2].interfaceFields.forEach((interfaceResolveTree) => {
             const relationshipField = node.relationFields.find(
                 (x) => x.fieldName === interfaceResolveTree.name
@@ -109,7 +110,9 @@ function translateRead({
                 field: relationshipField,
                 context,
                 nodeVariable: varName,
+                withVars: prevRelationshipFields,
             });
+            prevRelationshipFields.push(relationshipField.dbPropertyName || relationshipField.fieldName);
             interfaceStrs.push(interfaceProjection.cypher);
             cypherParams = { ...cypherParams, ...interfaceProjection.params };
         });
