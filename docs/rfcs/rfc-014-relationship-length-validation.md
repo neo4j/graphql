@@ -1,4 +1,4 @@
-# Relationship Length count
+# Relationship Length Validation
 
 ## Problem
 
@@ -36,3 +36,12 @@ type Deck {
     cards: [Card!]! @relationship(type: "HAS_CARD", direction: OUT, count: { min: 52, max: 52 })
 }
 ```
+
+## Generated Cypher
+
+The existing [Relationship Cardinality](https://github.com/neo4j/graphql/blob/dev/docs/rfcs/rfc-003-relationship-cardinality.md) check append's a sub query after each operation. 
+You can inject the `min` and `mix` check inside this subquery. 
+
+## Appetite
+
+3 weeks
