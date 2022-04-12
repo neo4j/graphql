@@ -201,7 +201,9 @@ function translateRead({
         returnStrs.push(`RETURN ${varName} ${projStr} as ${varName}`);
     }
 
-    if (node.cypherFields.length && hasLimit && !cypherSort) {
+    const projectCypherFieldsAfterLimit = node.cypherFields.length && hasLimit && !cypherSort;
+
+    if (projectCypherFieldsAfterLimit) {
         cypher = [
             "CALL {",
             matchAndWhereStr,
