@@ -101,10 +101,14 @@ const selectionSet = `
     }
 `;
 
-const movies = await Movie.find({ selectionSet });
+ogm.init().then(() => {
+    Movie.find({ selectionSet }).then((movies) => {
+        // work with movies
+    })
+});
 ----
 
-Note that  the argument `selectionSet` is passed every invocation of the `Movie.find()` function.
+Note that the argument `selectionSet` is passed every invocation of the `Movie.find()` function.
 
 ==  Selection set as a static
 
@@ -147,9 +151,13 @@ const selectionSet = `
     }
 `;
 
-Movie.setSelectionSet(selectionSet)
+Movie.selectionSet = selectionSet;
 
-const movies = await Movie.find();
+ogm.init().then(() => {
+    Movie.find().then((movies) => {
+        // work with movies
+    })
+});
 ----
 
 Note that despite not passing this selection set into `Movie.find()`, the requested fields will be returned on each request.

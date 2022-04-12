@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Unions", () => {
-    test("Unions", () => {
+    test("Unions", async () => {
         const typeDefs = gql`
             union Search = Movie | Genre
 
@@ -38,7 +38,7 @@ describe("Unions", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -85,14 +85,23 @@ describe("Unions", () => {
               id: ID
             }
 
+            type GenreEdge {
+              cursor: String!
+              node: Genre!
+            }
+
             input GenreOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [GenreSort]
+              \\"\\"\\"
+              Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [GenreSort!]
             }
 
-            \\"\\"\\"Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
+            \\"\\"\\"
             input GenreSort {
               id: SortDirection
             }
@@ -116,6 +125,12 @@ describe("Unions", () => {
               id_STARTS_WITH: ID
             }
 
+            type GenresConnection {
+              edges: [GenreEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
@@ -123,8 +138,8 @@ describe("Unions", () => {
 
             type Movie {
               id: ID
-              search(options: QueryOptions, where: SearchWhere): [Search!]!
-              searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
+              search(directed: Boolean = true, options: QueryOptions, where: SearchWhere): [Search!]!
+              searchConnection(after: String, directed: Boolean = true, first: Int, where: MovieSearchConnectionWhere): MovieSearchConnection!
               searchNoDirective: Search
             }
 
@@ -154,11 +169,18 @@ describe("Unions", () => {
               search: MovieSearchDisconnectInput
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
             input MovieRelationInput {
@@ -176,23 +198,9 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
-            input MovieSearchConnectionGenreWhere {
-              AND: [MovieSearchConnectionGenreWhere]
-              OR: [MovieSearchConnectionGenreWhere]
-              node: GenreWhere
-              node_NOT: GenreWhere
-            }
-
-            input MovieSearchConnectionMovieWhere {
-              AND: [MovieSearchConnectionMovieWhere]
-              OR: [MovieSearchConnectionMovieWhere]
-              node: MovieWhere
-              node_NOT: MovieWhere
-            }
-
             input MovieSearchConnectionWhere {
-              Genre: MovieSearchConnectionGenreWhere
-              Movie: MovieSearchConnectionMovieWhere
+              Genre: MovieSearchGenreConnectionWhere
+              Movie: MovieSearchMovieConnectionWhere
             }
 
             input MovieSearchCreateFieldInput {
@@ -310,7 +318,9 @@ describe("Unions", () => {
               Movie: [MovieSearchMovieUpdateFieldInput!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               id: SortDirection
             }
@@ -333,8 +343,18 @@ describe("Unions", () => {
               id_NOT_IN: [ID]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
-              searchConnection: MovieSearchConnectionWhere
-              searchConnection_NOT: MovieSearchConnectionWhere
+              searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
+              searchConnection_ALL: MovieSearchConnectionWhere
+              searchConnection_NONE: MovieSearchConnectionWhere
+              searchConnection_NOT: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
+              searchConnection_SINGLE: MovieSearchConnectionWhere
+              searchConnection_SOME: MovieSearchConnectionWhere
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Mutation {
@@ -357,8 +377,10 @@ describe("Unions", () => {
             type Query {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
+              genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             input QueryOptions {
@@ -396,8 +418,7 @@ describe("Unions", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 });

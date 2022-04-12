@@ -85,12 +85,12 @@ describe("Nested Field Level Aggregations", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        const movies = gqlResult.data?.actors[0].movies;
+        const movies = (gqlResult.data as any)?.actors[0].movies;
         expect(movies).toHaveLength(2);
         expect(movies).toContainEqual({
             title: "Terminator",

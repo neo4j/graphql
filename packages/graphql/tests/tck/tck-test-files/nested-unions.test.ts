@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
@@ -24,7 +25,6 @@ import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Nested Unions", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -57,7 +57,12 @@ describe("Nested Unions", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
         });
     });
 
@@ -124,14 +129,15 @@ describe("Nested Unions", () => {
             }
             	RETURN count(*)
             }
-            RETURN this { .title, actors:  [this_actors IN [(this)<-[:ACTED_IN]-(this_actors) WHERE (\\"LeadActor\\" IN labels(this_actors)) OR (\\"Extra\\" IN labels(this_actors)) | head( [ this_actors IN [this_actors] WHERE (\\"LeadActor\\" IN labels(this_actors)) | this_actors { __resolveType: \\"LeadActor\\",  .name, actedIn:  [this_actors_actedIn IN [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) OR (\\"Series\\" IN labels(this_actors_actedIn)) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Movie\\" }  ] + [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Series\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Series\\",  .name } ] ) ] WHERE this_actors_actedIn IS NOT NULL]  } ] + [ this_actors IN [this_actors] WHERE (\\"Extra\\" IN labels(this_actors)) | this_actors { __resolveType: \\"Extra\\" }  ] ) ] WHERE this_actors IS NOT NULL]  } AS this"
+            RETURN collect(DISTINCT this { .title, actors:  [this_actors IN [(this)<-[:ACTED_IN]-(this_actors) WHERE (\\"LeadActor\\" IN labels(this_actors)) OR (\\"Extra\\" IN labels(this_actors)) | head( [ this_actors IN [this_actors] WHERE (\\"LeadActor\\" IN labels(this_actors)) | this_actors { __resolveType: \\"LeadActor\\",  .name, actedIn:  [this_actors_actedIn IN [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) OR (\\"Series\\" IN labels(this_actors_actedIn)) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Movie\\" }  ] + [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Series\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Series\\",  .name } ] ) ] WHERE this_actors_actedIn IS NOT NULL]  } ] + [ this_actors IN [this_actors] WHERE (\\"Extra\\" IN labels(this_actors)) | this_actors { __resolveType: \\"Extra\\" }  ] ) ] WHERE this_actors IS NOT NULL]  }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_title\\": \\"Movie\\",
                 \\"this_connect_actors_LeadActor0_node_name\\": \\"Actor\\",
-                \\"this_connect_actors_LeadActor0_node_actedIn_Series0_node_name\\": \\"Series\\"
+                \\"this_connect_actors_LeadActor0_node_actedIn_Series0_node_name\\": \\"Series\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -195,7 +201,7 @@ describe("Nested Unions", () => {
             }
             RETURN count(*)
             }
-            RETURN this { .title, actors:  [this_actors IN [(this)<-[:ACTED_IN]-(this_actors) WHERE (\\"LeadActor\\" IN labels(this_actors)) OR (\\"Extra\\" IN labels(this_actors)) | head( [ this_actors IN [this_actors] WHERE (\\"LeadActor\\" IN labels(this_actors)) | this_actors { __resolveType: \\"LeadActor\\",  .name, actedIn:  [this_actors_actedIn IN [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) OR (\\"Series\\" IN labels(this_actors_actedIn)) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Movie\\" }  ] + [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Series\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Series\\",  .name } ] ) ] WHERE this_actors_actedIn IS NOT NULL]  } ] + [ this_actors IN [this_actors] WHERE (\\"Extra\\" IN labels(this_actors)) | this_actors { __resolveType: \\"Extra\\" }  ] ) ] WHERE this_actors IS NOT NULL]  } AS this"
+            RETURN collect(DISTINCT this { .title, actors:  [this_actors IN [(this)<-[:ACTED_IN]-(this_actors) WHERE (\\"LeadActor\\" IN labels(this_actors)) OR (\\"Extra\\" IN labels(this_actors)) | head( [ this_actors IN [this_actors] WHERE (\\"LeadActor\\" IN labels(this_actors)) | this_actors { __resolveType: \\"LeadActor\\",  .name, actedIn:  [this_actors_actedIn IN [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) OR (\\"Series\\" IN labels(this_actors_actedIn)) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Movie\\" }  ] + [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Series\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Series\\",  .name } ] ) ] WHERE this_actors_actedIn IS NOT NULL]  } ] + [ this_actors IN [this_actors] WHERE (\\"Extra\\" IN labels(this_actors)) | this_actors { __resolveType: \\"Extra\\" }  ] ) ] WHERE this_actors IS NOT NULL]  }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -230,7 +236,8 @@ describe("Nested Unions", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

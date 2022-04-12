@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Update connect", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -59,7 +58,7 @@ describe("Interface Relationships - Update connect", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -107,7 +106,7 @@ describe("Interface Relationships - Update connect", () => {
             	)
             	RETURN count(*)
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -116,7 +115,8 @@ describe("Interface Relationships - Update connect", () => {
                 \\"this_connect_actedIn0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -197,7 +197,7 @@ describe("Interface Relationships - Update connect", () => {
             }
             	RETURN count(*)
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -211,7 +211,8 @@ describe("Interface Relationships - Update connect", () => {
                 \\"this_connect_actedIn0_node_actors0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -283,7 +284,7 @@ describe("Interface Relationships - Update connect", () => {
             	)
             	RETURN count(*)
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -297,7 +298,8 @@ describe("Interface Relationships - Update connect", () => {
                 \\"this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -388,7 +390,7 @@ describe("Interface Relationships - Update connect", () => {
             }
             	RETURN count(*)
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -407,7 +409,8 @@ describe("Interface Relationships - Update connect", () => {
                 \\"this_connect_actedIn0_node_actors0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

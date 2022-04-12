@@ -1,0 +1,57 @@
+[[update]]
+= Update Subscriptions
+
+WARNING: Subscriptions are only available as a beta its API may change in the future. It is not recommended to use subscriptions in production environments.
+
+Subscription to `Update` events allows listening to node modifications. A new event will be triggered for each mutation that modifies the node top-level properties.
+
+== `UPDATE` event
+
+A subscription to a type can be made with the top-level subscription `\[type\]Updated`. The subscription will contain the following fields:
+
+* `event`: The event triggering this subscription, in this case it will always be `"UPDATE"`.
+* `updated\[type\]`: The properties of the updated node, after modification. Only top-level properties, without relationships, are available.
+* `previousState`: The old properties of the node, right before the update event. Only top-level properties are available.
+
+NOTE: Update events will only be triggered if the properties have changed. An update that leaves the same properties will be ignored.
+
+=== Example
+Considering the following type definitions:
+```graphql
+type Movie {
+    title: String
+    genre: String
+}
+```
+
+A subscription to any `Movie` updated would look like:
+```graphql
+subscription MovieUpdated {
+    movieUpdated {
+        event
+        previousState {
+            title
+        }
+        updatedMovie {
+            title
+        }
+    }
+}
+```
+
+== Using `where`
+Basic filtering of update events can be done with the `where` parameter. This lets you filter on top-level properties of the updated nodes.
+The filtering will be done against the properties right **before** the update (i.e. the properties returned by `previousState`).
+
+=== Example
+Assuming the same type definitions as before, we can filter our movies by their genre:
+
+```graphql
+movieUpdate(where: { genre: "Drama" }) {
+    updatedMovie {
+        title
+    }
+}
+```
+
+This way, we will only receive events triggered by `"Drama"` movies being changed into a different genre.

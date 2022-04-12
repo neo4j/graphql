@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("200", () => {
-    test("Preserve schema array non null", () => {
+    test("Preserve schema array non null", async () => {
         const typeDefs = gql`
             type Category {
                 categoryId: ID! @id
@@ -33,12 +33,18 @@ describe("200", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
               mutation: Mutation
+            }
+
+            type CategoriesConnection {
+              edges: [CategoryEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Category {
@@ -61,14 +67,23 @@ describe("200", () => {
               name: String!
             }
 
+            type CategoryEdge {
+              cursor: String!
+              node: Category!
+            }
+
             input CategoryOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more CategorySort objects to sort Categories by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [CategorySort]
+              \\"\\"\\"
+              Specify one or more CategorySort objects to sort Categories by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [CategorySort!]
             }
 
-            \\"\\"\\"Fields to sort Categories by. The order in which sorts are applied is not guaranteed when specifying many fields in one CategorySort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Categories by. The order in which sorts are applied is not guaranteed when specifying many fields in one CategorySort object.
+            \\"\\"\\"
             input CategorySort {
               categoryId: SortDirection
               description: SortDirection
@@ -87,21 +102,21 @@ describe("200", () => {
               categoryId: ID
               categoryId_CONTAINS: ID
               categoryId_ENDS_WITH: ID
-              categoryId_IN: [ID]
+              categoryId_IN: [ID!]
               categoryId_NOT: ID
               categoryId_NOT_CONTAINS: ID
               categoryId_NOT_ENDS_WITH: ID
-              categoryId_NOT_IN: [ID]
+              categoryId_NOT_IN: [ID!]
               categoryId_NOT_STARTS_WITH: ID
               categoryId_STARTS_WITH: ID
               description: String
               description_CONTAINS: String
               description_ENDS_WITH: String
-              description_IN: [String]
+              description_IN: [String!]
               description_NOT: String
               description_NOT_CONTAINS: String
               description_NOT_ENDS_WITH: String
-              description_NOT_IN: [String]
+              description_NOT_IN: [String!]
               description_NOT_STARTS_WITH: String
               description_STARTS_WITH: String
               exampleImageLocations: [String!]
@@ -111,11 +126,11 @@ describe("200", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
             }
@@ -148,9 +163,18 @@ describe("200", () => {
               updateCategories(update: CategoryUpdateInput, where: CategoryWhere): UpdateCategoriesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               categories(options: CategoryOptions, where: CategoryWhere): [Category!]!
               categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
+              categoriesConnection(after: String, first: Int, sort: [CategorySort], where: CategoryWhere): CategoriesConnection!
             }
 
             enum SortDirection {
@@ -176,8 +200,7 @@ describe("200", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }
-            "
+            }"
         `);
     });
 });

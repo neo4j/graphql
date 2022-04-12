@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { isMultiDbUnsupportedError } from "../utils/is-multi-db-unsupported-error";
 
 describe("multi-database", () => {
     let driver: Driver;
@@ -51,12 +52,7 @@ describe("multi-database", () => {
             await waitSession.close();
         } catch (e) {
             if (e instanceof Error) {
-                if (
-                    e.message.includes(
-                        "This is an administration command and it should be executed against the system database"
-                    ) ||
-                    e.message.includes("Unsupported administration command")
-                ) {
+                if (isMultiDbUnsupportedError(e)) {
                     // No multi-db support, so we skip tests
                     MULTIDB_SUPPORT = false;
                 } else {
@@ -80,8 +76,7 @@ describe("multi-database", () => {
     test("should fail for non-existing database specified via context", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -102,7 +97,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
             contextValue: { driver, driverConfig: { database: "non-existing-db" } },
@@ -112,8 +107,7 @@ describe("multi-database", () => {
     test("should specify the database via context", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -134,7 +128,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
             contextValue: { driver, driverConfig: { database: dbName } },
@@ -145,8 +139,7 @@ describe("multi-database", () => {
     test("should fail for non-existing database specified via neo4j construction", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -171,7 +164,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
             contextValue: {}, // This is needed, otherwise the context in resolvers will be undefined
@@ -185,8 +178,7 @@ describe("multi-database", () => {
     test("should specify the database via neo4j construction", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -211,7 +203,7 @@ describe("multi-database", () => {
         `;
 
         const result = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
             contextValue: {}, // This is needed, otherwise the context in resolvers will be undefined

@@ -79,7 +79,7 @@ returned from the directive function:
 
 [source, typescript, indent=0]
 ----
-const schema = upperDirectiveTransformer(neoSchema.schema);
+const schema = upperDirectiveTransformer(await neoSchema.getSchema());
 ----
 
 This `schema` object is an instance of a `GraphQLSchema` which can be used in

@@ -45,6 +45,8 @@ describe("OGM", () => {
 
         const ogm = new OGM({ typeDefs, driver, config: { driverConfig: { database: "another-random-db" } } });
 
+        await ogm.init();
+
         await expect(ogm.model("Movie").find()).rejects.toThrow();
 
         await session.close();
@@ -60,6 +62,8 @@ describe("OGM", () => {
         `;
 
         const ogm = new OGM({ typeDefs, driver });
+
+        await ogm.init();
 
         const id = generate({
             charset: "alphabetic",
@@ -95,6 +99,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -126,6 +132,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const id = generate({
                 charset: "alphabetic",
@@ -175,6 +183,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -208,6 +218,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const id = generate({
                 charset: "alphabetic",
@@ -244,6 +256,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const id1 = generate({
                 charset: "alphabetic",
@@ -296,6 +310,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const product = {
                 id: generate({
                     charset: "alphabetic",
@@ -338,13 +354,6 @@ describe("OGM", () => {
                     id: generate({
                         charset: "alphabetic",
                     }),
-                    description: "Outdoor photo",
-                    url: "outdoor.png",
-                },
-                {
-                    id: generate({
-                        charset: "alphabetic",
-                    }),
                     description: "Green photo",
                     url: "g.png",
                 },
@@ -357,9 +366,9 @@ describe("OGM", () => {
                 },
             ];
 
-            const Product = ogm.model("Product");
+            const Product = ogm.model("Product") as Model;
 
-            const { products } = await Product?.create({
+            const { products } = await Product.create({
                 input: [
                     {
                         ...product,
@@ -367,16 +376,15 @@ describe("OGM", () => {
                         colors: { create: colors.map((x) => ({ node: x })) },
                         photos: {
                             create: [
-                                { node: photos[0] },
                                 {
                                     node: {
-                                        ...photos[1],
+                                        ...photos[0],
                                         color: { connect: { where: { node: { id: colors[0].id } } } },
                                     },
                                 },
                                 {
                                     node: {
-                                        ...photos[2],
+                                        ...photos[1],
                                         color: { connect: { where: { node: { id: colors[1].id } } } },
                                     },
                                 },
@@ -442,6 +450,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -486,6 +496,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const id1 = generate({
                 charset: "alphabetic",
@@ -547,6 +559,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const movieId = generate({
                 charset: "alphabetic",
             });
@@ -607,6 +621,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const movieId = generate({
                 charset: "alphabetic",
             });
@@ -664,6 +680,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const movieId = generate({
                 charset: "alphabetic",
@@ -723,6 +741,8 @@ describe("OGM", () => {
 
             const ogm = new OGM({ typeDefs, driver });
 
+            await ogm.init();
+
             const id = generate({
                 charset: "alphabetic",
             });
@@ -757,6 +777,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const movieId = generate({
                 charset: "alphabetic",
@@ -796,7 +818,9 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
-            const User = ogm.model("User") as unknown as Model;
+            const User = (ogm.model("User") as unknown) as Model;
+
+            await ogm.init();
 
             const id = generate({
                 charset: "alphabetic",
@@ -830,6 +854,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const testId = generate({
                 charset: "alphabetic",
@@ -872,6 +898,8 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
+
+            await ogm.init();
 
             const testId = generate({
                 charset: "alphabetic",

@@ -17,49 +17,22 @@
  * limitations under the License.
  */
 
-import { mergeTypeDefs } from "@graphql-tools/merge";
-import { TypeSource } from "@graphql-tools/utils";
+import { IResolvers, TypeSource } from "@graphql-tools/utils";
 import {
     DefinitionNode,
-    DirectiveDefinitionNode,
-    DirectiveNode,
     DocumentNode,
-    EnumTypeDefinitionNode,
-    GraphQLInt,
-    GraphQLNonNull,
-    GraphQLString,
-    InputObjectTypeDefinitionNode,
+    GraphQLScalarType,
     InterfaceTypeDefinitionNode,
-    NamedTypeNode,
+    Kind,
     NameNode,
     ObjectTypeDefinitionNode,
     parse,
     print,
-    ScalarTypeDefinitionNode,
-    UnionTypeDefinitionNode,
 } from "graphql";
-import {
-    InputTypeComposer,
-    InputTypeComposerFieldConfigAsObjectDefinition,
-    ObjectTypeComposer,
-    SchemaComposer,
-} from "graphql-compose";
-import { Exclude, Node } from "../classes";
-import { NodeDirective } from "../classes/NodeDirective";
-import Relationship from "../classes/Relationship";
-import * as constants from "../constants";
-import { Auth, BaseField, FullText, PrimitiveField } from "../types";
-import { isString } from "../utils/utils";
-import createConnectionFields from "./create-connection-fields";
-import createRelationshipFields from "./create-relationship-fields";
-import getAuth from "./get-auth";
-import getCustomResolvers from "./get-custom-resolvers";
-import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
-import getWhereFields from "./get-where-fields";
-import parseExcludeDirective from "./parse-exclude-directive";
-import parseNodeDirective from "./parse-node-directive";
-import parseFulltextDirective from "./parse/parse-fulltext-directive";
-import * as point from "./point";
+import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import pluralize from "pluralize";
+import { validateDocument } from "./validation";
+import { BaseField, Neo4jGraphQLCallbacks } from "../types";
 import {
     aggregateResolver,
     createResolver,
@@ -68,19 +41,64 @@ import {
     findResolver,
     updateResolver,
     numericalResolver,
+    rootConnectionResolver,
 } from "./resolvers";
-import * as Scalars from "./scalars";
-import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
-import { validateDocument } from "./validation";
-import getUniqueFields from "./get-unique-fields";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import * as constants from "../constants";
+import * as Scalars from "./types/scalars";
+import { Node } from "../classes";
+import Relationship from "../classes/Relationship";
+import createConnectionFields from "./create-connection-fields";
+import createRelationshipFields from "./create-relationship-fields";
+import getCustomResolvers from "./get-custom-resolvers";
+import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
+import getSortableFields from "./get-sortable-fields";
+import {
+    graphqlDirectivesToCompose,
+    objectFieldsToComposeFields,
+    objectFieldsToCreateInputFields,
+    objectFieldsToUpdateInputFields,
+} from "./to-compose";
+import getUniqueFields from "./get-unique-fields";
+import getWhereFields from "./get-where-fields";
 import { upperFirst } from "../utils/upper-first";
+import { ensureNonEmptyInput } from "./ensureNonEmptyInput";
+import { getDocument } from "./get-document";
+import { getDefinitionNodes } from "./get-definition-nodes";
+import { isRootType } from "../utils/is-root-type";
+
+// GraphQL type imports
+import { CreateInfo } from "./types/objects/CreateInfo";
+import { DeleteInfo } from "./types/objects/DeleteInfo";
+import { UpdateInfo } from "./types/objects/UpdateInfo";
+import { PageInfo } from "./types/objects/PageInfo";
+import { SortDirection } from "./types/enums/SortDirection";
+import { QueryOptions } from "./types/input-objects/QueryOptions";
+import { Point } from "./types/objects/Point";
+import { CartesianPoint } from "./types/objects/CartesianPoint";
+import { PointInput } from "./types/input-objects/PointInput";
+import { CartesianPointInput } from "./types/input-objects/CartesianPointInput";
+import { PointDistance } from "./types/input-objects/PointDistance";
+import { CartesianPointDistance } from "./types/input-objects/CartesianPointDistance";
+import getNodes from "./get-nodes";
+import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
+import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
-    { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
-): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers } {
-    const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
+    {
+        enableRegex,
+        skipValidateTypeDefs,
+        generateSubscriptions,
+        callbacks,
+    }: {
+        enableRegex?: boolean;
+        skipValidateTypeDefs?: boolean;
+        generateSubscriptions?: boolean;
+        callbacks?: Neo4jGraphQLCallbacks;
+    } = {}
+): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers: IResolvers } {
+    const document = getDocument(typeDefs);
 
     if (!skipValidateTypeDefs) {
         validateDocument(document);
@@ -88,112 +106,31 @@ function makeAugmentedSchema(
 
     const composer = new SchemaComposer();
 
-    // graphql-compose will break if the Point and CartesianPoint types are created but not used,
-    // because it will purge the unused types but leave behind orphaned field resolvers
-    //
-    // These are flags to check whether the types are used and then create them if they are
-    let pointInTypeDefs = false;
-    let cartesianPointInTypeDefs = false;
-
     let relationships: Relationship[] = [];
 
-    composer.createObjectTC({
-        name: "CreateInfo",
-        fields: {
-            bookmark: GraphQLString,
-            nodesCreated: new GraphQLNonNull(GraphQLInt),
-            relationshipsCreated: new GraphQLNonNull(GraphQLInt),
-        },
-    });
-
-    composer.createObjectTC({
-        name: "DeleteInfo",
-        fields: {
-            bookmark: GraphQLString,
-            nodesDeleted: new GraphQLNonNull(GraphQLInt),
-            relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
-        },
-    });
-
-    composer.createObjectTC({
-        name: "UpdateInfo",
-        fields: {
-            bookmark: GraphQLString,
-            nodesCreated: new GraphQLNonNull(GraphQLInt),
-            nodesDeleted: new GraphQLNonNull(GraphQLInt),
-            relationshipsCreated: new GraphQLNonNull(GraphQLInt),
-            relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
-        },
-    });
+    composer.createObjectTC(CreateInfo);
+    composer.createObjectTC(DeleteInfo);
+    composer.createObjectTC(UpdateInfo);
+    composer.createObjectTC(PageInfo);
+    composer.createInputTC(QueryOptions);
+    const sortDirection = composer.createEnumTC(SortDirection);
 
     const aggregationTypesMapper = new AggregationTypesMapper(composer);
 
-    composer.createInputTC({
-        name: "QueryOptions",
-        fields: {
-            offset: "Int",
-            limit: "Int",
-        },
-    });
-
-    const sortDirection = composer.createEnumTC({
-        name: "SortDirection",
-        values: {
-            ASC: {
-                value: "ASC",
-                description: "Sort by field values in ascending order.",
-            },
-            DESC: {
-                value: "DESC",
-                description: "Sort by field values in descending order.",
-            },
-        },
-    });
-
-    composer.createObjectTC({
-        name: "PageInfo",
-        description: "Pagination information (Relay)",
-        fields: {
-            hasNextPage: "Boolean!",
-            hasPreviousPage: "Boolean!",
-            startCursor: "String",
-            endCursor: "String",
-        },
-    });
-
     const customResolvers = getCustomResolvers(document);
 
-    const scalars = document.definitions.filter((x) => x.kind === "ScalarTypeDefinition") as ScalarTypeDefinitionNode[];
+    const definitionNodes = getDefinitionNodes(document);
 
-    const objectNodes = document.definitions.filter(
-        (x) => x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)
-    ) as ObjectTypeDefinitionNode[];
+    const { scalarTypes, objectTypes, enumTypes, inputObjectTypes, directives, unionTypes } = definitionNodes;
 
-    const enums = document.definitions.filter((x) => x.kind === "EnumTypeDefinition") as EnumTypeDefinitionNode[];
-
-    const inputs = document.definitions.filter(
-        (x) => x.kind === "InputObjectTypeDefinition"
-    ) as InputObjectTypeDefinitionNode[];
-
-    let interfaces = document.definitions.filter(
-        (x) => x.kind === "InterfaceTypeDefinition"
-    ) as InterfaceTypeDefinitionNode[];
-
-    const directives = document.definitions.filter(
-        (x) => x.kind === "DirectiveDefinition"
-    ) as DirectiveDefinitionNode[];
-
-    const unions = document.definitions.filter((x) => x.kind === "UnionTypeDefinition") as UnionTypeDefinitionNode[];
-
-    const relationshipPropertyInterfaceNames = new Set<string>();
-    const interfaceRelationshipNames = new Set<string>();
+    let { interfaceTypes } = definitionNodes;
 
     const extraDefinitions = [
-        ...enums,
-        ...scalars,
+        ...enumTypes,
+        ...scalarTypes,
         ...directives,
-        ...inputs,
-        ...unions,
+        ...inputObjectTypes,
+        ...unionTypes,
         ...([
             customResolvers.customQuery,
             customResolvers.customMutation,
@@ -201,136 +138,25 @@ function makeAugmentedSchema(
         ] as ObjectTypeDefinitionNode[]),
     ].filter(Boolean) as DefinitionNode[];
 
-    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
+    Object.values(Scalars).forEach((scalar: GraphQLScalarType) => composer.addTypeDefs(`scalar ${scalar.name}`));
 
     if (extraDefinitions.length) {
-        composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
+        composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const nodes = objectNodes.map((definition) => {
-        const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude", "node", "fulltext"].includes(x.name.value)
-        );
-        const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
-        const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
-        const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
-        const fulltextDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "fulltext");
-        const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
+    const getNodesResult = getNodes(definitionNodes, { callbacks });
 
-        const { interfaceAuthDirectives, interfaceExcludeDirectives } = nodeInterfaces.reduce<{
-            interfaceAuthDirectives: DirectiveNode[];
-            interfaceExcludeDirectives: DirectiveNode[];
-        }>(
-            (res, interfaceName) => {
-                const iface = interfaces.find((i) => i.name.value === interfaceName.name.value);
+    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
 
-                if (iface) {
-                    const interfaceAuthDirective = (iface.directives || []).find((x) => x.name.value === "auth");
-                    const interfaceExcludeDirective = (iface.directives || []).find((x) => x.name.value === "exclude");
+    // graphql-compose will break if the Point and CartesianPoint types are created but not used,
+    // because it will purge the unused types but leave behind orphaned field resolvers
+    //
+    // These are flags to check whether the types are used and then create them if they are
+    let { pointInTypeDefs, cartesianPointInTypeDefs } = getNodesResult;
 
-                    if (interfaceAuthDirective) {
-                        res.interfaceAuthDirectives.push(interfaceAuthDirective);
-                    }
-
-                    if (interfaceExcludeDirective) {
-                        res.interfaceExcludeDirectives.push(interfaceExcludeDirective);
-                    }
-                }
-
-                return res;
-            },
-            { interfaceAuthDirectives: [], interfaceExcludeDirectives: [] }
-        );
-
-        if (interfaceAuthDirectives.length > 1) {
-            throw new Error(
-                `Multiple interfaces of ${definition.name.value} have @auth directive - cannot determine directive to use`
-            );
-        }
-
-        if (interfaceExcludeDirectives.length > 1) {
-            throw new Error(
-                `Multiple interfaces of ${definition.name.value} have @exclude directive - cannot determine directive to use`
-            );
-        }
-
-        let auth: Auth;
-        if (authDirective || interfaceAuthDirectives.length) {
-            auth = getAuth(authDirective || interfaceAuthDirectives[0]);
-        }
-
-        let exclude: Exclude;
-        if (excludeDirective || interfaceExcludeDirectives.length) {
-            exclude = parseExcludeDirective(excludeDirective || interfaceExcludeDirectives[0]);
-        }
-
-        let nodeDirective: NodeDirective;
-        if (nodeDirectiveDefinition) {
-            nodeDirective = parseNodeDirective(nodeDirectiveDefinition);
-        }
-
-        const nodeFields = getObjFieldMeta({
-            obj: definition,
-            enums,
-            interfaces,
-            scalars,
-            unions,
-            objects: objectNodes,
-        });
-
-        let fulltextDirective: FullText;
-        if (fulltextDirectiveDefinition) {
-            fulltextDirective = parseFulltextDirective({
-                directive: fulltextDirectiveDefinition,
-                nodeFields,
-                definition,
-            });
-        }
-
-        nodeFields.relationFields.forEach((relationship) => {
-            if (relationship.properties) {
-                const propertiesInterface = interfaces.find((i) => i.name.value === relationship.properties);
-                if (!propertiesInterface) {
-                    throw new Error(
-                        `Cannot find interface specified in ${definition.name.value}.${relationship.fieldName}`
-                    );
-                }
-                relationshipPropertyInterfaceNames.add(relationship.properties);
-            }
-            if (relationship.interface) {
-                interfaceRelationshipNames.add(relationship.typeMeta.name);
-            }
-        });
-
-        if (!pointInTypeDefs) {
-            pointInTypeDefs = nodeFields.pointFields.some((field) => field.typeMeta.name === "Point");
-        }
-        if (!cartesianPointInTypeDefs) {
-            cartesianPointInTypeDefs = nodeFields.pointFields.some((field) => field.typeMeta.name === "CartesianPoint");
-        }
-
-        const node = new Node({
-            name: definition.name.value,
-            interfaces: nodeInterfaces,
-            otherDirectives,
-            ...nodeFields,
-            // @ts-ignore we can be sure it's defined
-            auth,
-            // @ts-ignore we can be sure it's defined
-            exclude,
-            // @ts-ignore we can be sure it's defined
-            nodeDirective,
-            // @ts-ignore we can be sure it's defined
-            fulltextDirective,
-            description: definition.description?.value,
-        });
-
-        return node;
-    });
-
-    const relationshipProperties = interfaces.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
-    const interfaceRelationships = interfaces.filter((i) => interfaceRelationshipNames.has(i.name.value));
-    interfaces = interfaces.filter(
+    const relationshipProperties = interfaceTypes.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
+    const interfaceRelationships = interfaceTypes.filter((i) => interfaceRelationshipNames.has(i.name.value));
+    interfaceTypes = interfaceTypes.filter(
         (i) => !(relationshipPropertyInterfaceNames.has(i.name.value) || interfaceRelationshipNames.has(i.name.value))
     );
 
@@ -359,12 +185,13 @@ function makeAugmentedSchema(
         });
 
         const relFields = getObjFieldMeta({
-            enums,
-            interfaces,
-            objects: objectNodes,
-            scalars,
-            unions,
+            enums: enumTypes,
+            interfaces: interfaceTypes,
+            objects: objectTypes,
+            scalars: scalarTypes,
+            unions: unionTypes,
             obj: relationship,
+            callbacks,
         });
 
         if (!pointInTypeDefs) {
@@ -394,19 +221,15 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${relationship.name.value}UpdateInput`,
-            fields: [
-                ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.readonly),
+            fields: objectFieldsToUpdateInputFields([
+                ...relFields.primitiveFields.filter(
+                    (field) => !field.autogenerate && !field.readonly && !field.callback
+                ),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields.filter((field) => !field.timestamps),
                 ...relFields.pointFields,
-            ].reduce(
-                (res, f) => ({
-                    ...res,
-                    [f.fieldName]: f.typeMeta.input.update.pretty,
-                }),
-                {}
-            ),
+            ]),
         });
 
         const relationshipWhereFields = getWhereFields({
@@ -428,57 +251,29 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${relationship.name.value}CreateInput`,
-            // TODO - This reduce duplicated when creating node CreateInput - put into shared function?
-            fields: [
-                ...relFields.primitiveFields.filter((field) => !field.autogenerate),
+            fields: objectFieldsToCreateInputFields([
+                ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.callback),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
-                ...relFields.temporalFields.filter((field) => !field.timestamps),
+                ...relFields.temporalFields,
                 ...relFields.pointFields,
-            ].reduce((res, f) => {
-                if ((f as PrimitiveField)?.defaultValue !== undefined) {
-                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
-                        type: f.typeMeta.input.create.pretty,
-                        defaultValue: (f as PrimitiveField)?.defaultValue,
-                    };
-                    res[f.fieldName] = field;
-                } else {
-                    res[f.fieldName] = f.typeMeta.input.create.pretty;
-                }
-
-                return res;
-            }, {}),
+            ]),
         });
     });
 
-    function ensureNonEmptyInput(nameOrInput: string | InputTypeComposer<any>) {
-        const input = isString(nameOrInput) ? composer.getITC(nameOrInput) : nameOrInput;
-
-        if (input.getFieldNames().length === 0) {
-            const faqURL = `https://neo4j.com/docs/graphql-manual/current/troubleshooting/faqs/`;
-            input.addFields({
-                _emptyInput: {
-                    type: "Boolean",
-                    description:
-                        `Appears because this input type would be empty otherwise because this type is ` +
-                        `composed of just generated and/or relationship properties. See ${faqURL}`,
-                },
-            });
-        }
-    }
-
     interfaceRelationships.forEach((interfaceRelationship) => {
-        const implementations = objectNodes.filter((n) =>
+        const implementations = objectTypes.filter((n) =>
             n.interfaces?.some((i) => i.name.value === interfaceRelationship.name.value)
         );
 
         const interfaceFields = getObjFieldMeta({
-            enums,
-            interfaces: [...interfaces, ...interfaceRelationships],
-            objects: objectNodes,
-            scalars,
-            unions,
+            enums: enumTypes,
+            interfaces: [...interfaceTypes, ...interfaceRelationships],
+            objects: objectTypes,
+            scalars: scalarTypes,
+            unions: unionTypes,
             obj: interfaceRelationship,
+            callbacks,
         });
 
         if (!pointInTypeDefs) {
@@ -497,6 +292,41 @@ function makeAugmentedSchema(
             name: interfaceRelationship.name.value,
             fields: objectComposeFields,
         });
+
+        const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Options`, (tc) => {
+            tc.addFields({
+                limit: "Int",
+                offset: "Int",
+            });
+        });
+
+        const interfaceSortableFields = getSortableFields(interfaceFields).reduce(
+            (res, f) => ({
+                ...res,
+                [f.fieldName]: sortDirection.getTypeName(),
+            }),
+            {}
+        );
+
+        if (Object.keys(interfaceSortableFields).length) {
+            const interfaceSortInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Sort`, (tc) => {
+                tc.addFields(interfaceSortableFields);
+                tc.setDescription(
+                    `Fields to sort ${pluralize(
+                        interfaceRelationship.name.value
+                    )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${interfaceRelationship.name.value}Sort`} object.`
+                );
+            });
+
+            interfaceOptionsInput.addFields({
+                sort: {
+                    description: `Specify one or more ${`${interfaceRelationship.name.value}Sort`} objects to sort ${pluralize(
+                        interfaceRelationship.name.value
+                    )} by. The sorts will be applied in the order in which they are arranged in the array.`,
+                    type: interfaceSortInput.List,
+                },
+            });
+        }
 
         const interfaceWhereFields = getWhereFields({
             typeName: interfaceRelationship.name.value,
@@ -533,22 +363,13 @@ function makeAugmentedSchema(
 
         composer.getOrCreateITC(`${interfaceRelationship.name.value}UpdateInput`, (tc) => {
             tc.addFields({
-                ...[
+                ...objectFieldsToUpdateInputFields([
                     ...interfaceFields.primitiveFields,
                     ...interfaceFields.scalarFields,
                     ...interfaceFields.enumFields,
                     ...interfaceFields.temporalFields.filter((field) => !field.timestamps),
                     ...interfaceFields.pointFields,
-                ].reduce(
-                    (res, f) =>
-                        f.readonly || (f as PrimitiveField)?.autogenerate
-                            ? res
-                            : {
-                                  ...res,
-                                  [f.fieldName]: f.typeMeta.input.update.pretty,
-                              },
-                    {}
-                ),
+                ]),
                 _on: implementationsUpdateInput,
             });
         });
@@ -645,34 +466,34 @@ function makeAugmentedSchema(
             interfaceDisconnectInput.setField("_on", implementationsDisconnectInput);
         }
 
-        ensureNonEmptyInput(`${interfaceRelationship.name.value}CreateInput`);
-        ensureNonEmptyInput(`${interfaceRelationship.name.value}UpdateInput`);
+        ensureNonEmptyInput(composer, `${interfaceRelationship.name.value}CreateInput`);
+        ensureNonEmptyInput(composer, `${interfaceRelationship.name.value}UpdateInput`);
         [
             implementationsConnectInput,
             implementationsDeleteInput,
             implementationsDisconnectInput,
             implementationsUpdateInput,
             implementationsWhereInput,
-        ].forEach((c) => ensureNonEmptyInput(c));
+        ].forEach((c) => ensureNonEmptyInput(composer, c));
     });
 
     if (pointInTypeDefs) {
         // Every field (apart from CRS) in Point needs a custom resolver
         // to deconstruct the point objects we fetch from the database
-        composer.createObjectTC(point.point);
-        composer.createInputTC(point.pointInput);
-        composer.createInputTC(point.pointDistance);
+        composer.createObjectTC(Point);
+        composer.createInputTC(PointInput);
+        composer.createInputTC(PointDistance);
     }
 
     if (cartesianPointInTypeDefs) {
         // Every field (apart from CRS) in CartesianPoint needs a custom resolver
         // to deconstruct the point objects we fetch from the database
-        composer.createObjectTC(point.cartesianPoint);
-        composer.createInputTC(point.cartesianPointInput);
-        composer.createInputTC(point.cartesianPointDistance);
+        composer.createObjectTC(CartesianPoint);
+        composer.createInputTC(CartesianPointInput);
+        composer.createInputTC(CartesianPointDistance);
     }
 
-    unions.forEach((union) => {
+    unionTypes.forEach((union) => {
         if (union.types && union.types.length) {
             const fields = union.types.reduce((f, type) => {
                 return { ...f, [type.name.value]: `${type.name.value}Where` };
@@ -696,7 +517,7 @@ function makeAugmentedSchema(
             ...node.unionFields,
             ...node.temporalFields,
             ...node.pointFields,
-            ...node.ignoredFields,
+            ...node.computedFields,
         ]);
 
         const composeNode = composer.createObjectTC({
@@ -707,7 +528,7 @@ function makeAugmentedSchema(
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
-        const sortFields = node.sortableFields.reduce(
+        const sortFields = getSortableFields(node).reduce(
             (res, f) => ({
                 ...res,
                 [f.fieldName]: sortDirection.getTypeName(),
@@ -731,7 +552,7 @@ function makeAugmentedSchema(
                         description: `Specify one or more ${`${node.name}Sort`} objects to sort ${upperFirst(
                             node.plural
                         )} by. The sorts will be applied in the order in which they are arranged in the array.`,
-                        type: sortInput.List,
+                        type: sortInput.NonNull.List,
                     },
                     limit: "Int",
                     offset: "Int",
@@ -763,7 +584,7 @@ function makeAugmentedSchema(
         };
 
         composer.createObjectTC({
-            name: `${node.name}AggregateSelection`,
+            name: node.aggregateTypeNames.selection,
             fields: {
                 count: countField,
                 ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
@@ -797,7 +618,6 @@ function makeAugmentedSchema(
                         name: `${node.name}${upperFirst(index.name)}Fulltext`,
                         fields: {
                             phrase: "String!",
-                            score_EQUAL: "Int",
                         },
                     }),
                 }),
@@ -819,61 +639,43 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${node.name}CreateInput`,
-            // TODO - This reduce duplicated when creating relationship CreateInput - put into shared function?
-            fields: [
-                ...node.primitiveFields,
+            fields: objectFieldsToCreateInputFields([
+                ...node.primitiveFields.filter((field) => !field.callback),
                 ...node.scalarFields,
                 ...node.enumFields,
-                ...node.temporalFields.filter((field) => !field.timestamps),
+                ...node.temporalFields,
                 ...node.pointFields,
-            ].reduce((res, f) => {
-                if ((f as PrimitiveField)?.autogenerate) {
-                    return res;
-                }
-
-                if ((f as PrimitiveField)?.defaultValue !== undefined) {
-                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
-                        type: f.typeMeta.input.create.pretty,
-                        defaultValue: (f as PrimitiveField)?.defaultValue,
-                    };
-                    res[f.fieldName] = field;
-                } else {
-                    res[f.fieldName] = f.typeMeta.input.create.pretty;
-                }
-
-                return res;
-            }, {}),
+            ]),
         });
 
         composer.createInputTC({
             name: `${node.name}UpdateInput`,
-            fields: [
-                ...node.primitiveFields,
+            fields: objectFieldsToUpdateInputFields([
+                ...node.primitiveFields.filter((field) => !field.callback),
                 ...node.scalarFields,
                 ...node.enumFields,
                 ...node.temporalFields.filter((field) => !field.timestamps),
                 ...node.pointFields,
-            ].reduce(
-                (res, f) =>
-                    f.readonly || (f as PrimitiveField)?.autogenerate
-                        ? res
-                        : {
-                              ...res,
-                              [f.fieldName]: f.typeMeta.input.update.pretty,
-                          },
-                {}
-            ),
+            ]),
         });
 
-        ["Create", "Update"].map((operation) =>
-            composer.createObjectTC({
-                name: `${operation}${upperFirst(node.plural)}MutationResponse`,
-                fields: {
-                    info: `${operation}Info!`,
-                    [node.plural]: `[${node.name}!]!`,
-                },
-            })
-        );
+        const mutationResponseTypeNames = node.mutationResponseTypeNames;
+
+        composer.createObjectTC({
+            name: mutationResponseTypeNames.create,
+            fields: {
+                info: `CreateInfo!`,
+                [node.plural]: `[${node.name}!]!`,
+            },
+        });
+
+        composer.createObjectTC({
+            name: mutationResponseTypeNames.update,
+            fields: {
+                info: `UpdateInfo!`,
+                [node.plural]: `[${node.name}!]!`,
+            },
+        });
 
         createRelationshipFields({
             relationshipFields: node.relationFields,
@@ -895,40 +697,50 @@ function makeAugmentedSchema(
             }),
         ];
 
-        ensureNonEmptyInput(`${node.name}UpdateInput`);
-        ensureNonEmptyInput(`${node.name}CreateInput`);
+        ensureNonEmptyInput(composer, `${node.name}UpdateInput`);
+        ensureNonEmptyInput(composer, `${node.name}CreateInput`);
+
+        const rootTypeFieldNames = node.rootTypeFieldNames;
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [node.plural]: findResolver({ node }),
+                [rootTypeFieldNames.read]: findResolver({ node }),
             });
 
             composer.Query.addFields({
-                [`${node.plural}Aggregate`]: aggregateResolver({ node }),
+                [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
+            });
+
+            composer.Query.addFields({
+                [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
             });
         }
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${upperFirst(node.plural)}`]: createResolver({ node }),
+                [rootTypeFieldNames.create]: createResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${upperFirst(node.plural)}`]: deleteResolver({ node }),
+                [rootTypeFieldNames.delete]: deleteResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${upperFirst(node.plural)}`]: updateResolver({
+                [rootTypeFieldNames.update]: updateResolver({
                     node,
                     schemaComposer: composer,
                 }),
             });
         }
     });
+
+    if (generateSubscriptions) {
+        generateSubscriptionTypes({ schemaComposer: composer, nodes });
+    }
 
     ["Mutation", "Query"].forEach((type) => {
         const objectComposer = composer[type] as ObjectTypeComposer;
@@ -937,11 +749,12 @@ function makeAugmentedSchema(
         if (cypherType) {
             const objectFields = getObjFieldMeta({
                 obj: cypherType,
-                scalars,
-                enums,
-                interfaces,
-                unions,
-                objects: objectNodes,
+                scalars: scalarTypes,
+                enums: enumTypes,
+                interfaces: interfaceTypes,
+                unions: unionTypes,
+                objects: objectTypes,
+                callbacks,
             });
 
             const objectComposeFields = objectFieldsToComposeFields([
@@ -971,8 +784,16 @@ function makeAugmentedSchema(
         }
     });
 
-    interfaces.forEach((inter) => {
-        const objectFields = getObjFieldMeta({ obj: inter, scalars, enums, interfaces, unions, objects: objectNodes });
+    interfaceTypes.forEach((inter) => {
+        const objectFields = getObjFieldMeta({
+            obj: inter,
+            scalars: scalarTypes,
+            enums: enumTypes,
+            interfaces: interfaceTypes,
+            unions: unionTypes,
+            objects: objectTypes,
+            callbacks,
+        });
 
         const baseFields: BaseField[][] = Object.values(objectFields);
         const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
@@ -994,38 +815,51 @@ function makeAugmentedSchema(
     const generatedTypeDefs = composer.toSDL();
     let parsedDoc = parse(generatedTypeDefs);
 
-    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & {name: NameNode} {
-      return "name" in x
+    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
+        return "name" in x;
+    }
+
+    const emptyObjectsInterfaces = (
+        parsedDoc.definitions.filter(
+            (x) => (x.kind === "ObjectTypeDefinition" && !isRootType(x)) || x.kind === "InterfaceTypeDefinition"
+        ) as (InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode)[]
+    ).filter((x) => !x.fields?.length);
+
+    if (emptyObjectsInterfaces.length) {
+        throw new Error(
+            `Objects and Interfaces must have one or more fields: ${emptyObjectsInterfaces
+                .map((x) => x.name.value)
+                .join(", ")}`
+        );
     }
 
     const documentNames = parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value);
 
+    const resolveMethods = getResolveAndSubscriptionMethods(composer);
     const generatedResolvers = {
-        ...Object.entries(composer.getResolveMethods()).reduce((res, [key, value]) => {
+        ...Object.entries(resolveMethods).reduce((res, [key, value]) => {
             if (!documentNames.includes(key)) {
                 return res;
             }
 
             return { ...res, [key]: value };
         }, {}),
-        ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
-            if (generatedTypeDefs.includes(`scalar ${name}\n`)) {
-                res[name] = scalar;
+        ...Object.values(Scalars).reduce((res, scalar: GraphQLScalarType) => {
+            if (generatedTypeDefs.includes(`scalar ${scalar.name}\n`)) {
+                res[scalar.name] = scalar;
             }
             return res;
         }, {}),
     };
 
-    unions.forEach((union) => {
+    unionTypes.forEach((union) => {
         if (!generatedResolvers[union.name.value]) {
-            // eslint-disable-next-line no-underscore-dangle
             generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
         }
     });
 
     interfaceRelationships.forEach((i) => {
         if (!generatedResolvers[i.name.value]) {
-            // eslint-disable-next-line no-underscore-dangle
             generatedResolvers[i.name.value] = { __resolveType: (root) => root.__resolveType };
         }
     });

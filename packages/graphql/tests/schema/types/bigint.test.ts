@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Bigint", () => {
-    test("BigInt", () => {
+    test("BigInt", async () => {
         const typeDefs = gql`
             type File {
                 name: String!
@@ -31,7 +31,7 @@ describe("Bigint", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -39,7 +39,9 @@ describe("Bigint", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
+            \\"\\"\\"
+            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
+            \\"\\"\\"
             scalar BigInt
 
             type BigIntAggregateSelectionNonNullable {
@@ -82,14 +84,23 @@ describe("Bigint", () => {
               size: BigInt!
             }
 
+            type FileEdge {
+              cursor: String!
+              node: File!
+            }
+
             input FileOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [FileSort]
+              \\"\\"\\"
+              Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [FileSort!]
             }
 
-            \\"\\"\\"Fields to sort Files by. The order in which sorts are applied is not guaranteed when specifying many fields in one FileSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Files by. The order in which sorts are applied is not guaranteed when specifying many fields in one FileSort object.
+            \\"\\"\\"
             input FileSort {
               name: SortDirection
               size: SortDirection
@@ -106,21 +117,27 @@ describe("Bigint", () => {
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_IN: [String]
+              name_IN: [String!]
               name_NOT: String
               name_NOT_CONTAINS: String
               name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
+              name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
               size: BigInt
               size_GT: BigInt
               size_GTE: BigInt
-              size_IN: [BigInt]
+              size_IN: [BigInt!]
               size_LT: BigInt
               size_LTE: BigInt
               size_NOT: BigInt
-              size_NOT_IN: [BigInt]
+              size_NOT_IN: [BigInt!]
+            }
+
+            type FilesConnection {
+              edges: [FileEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Mutation {
@@ -129,9 +146,18 @@ describe("Bigint", () => {
               updateFiles(update: FileUpdateInput, where: FileWhere): UpdateFilesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               files(options: FileOptions, where: FileWhere): [File!]!
               filesAggregate(where: FileWhere): FileAggregateSelection!
+              filesConnection(after: String, first: Int, sort: [FileSort], where: FileWhere): FilesConnection!
             }
 
             enum SortDirection {
@@ -157,8 +183,7 @@ describe("Bigint", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }
-            "
+            }"
         `);
     });
 });

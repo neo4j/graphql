@@ -22,7 +22,7 @@ import { validateSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("https://github.com/neo4j/graphql/issues/556", () => {
-    test("should compile type defs with no errors", () => {
+    test("should compile type defs with no errors", async () => {
         const typeDefs = gql`
             type Journalist {
                 articles: [Article!]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle")
@@ -71,21 +71,26 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        expect(neoSchema.schema).toBeDefined();
 
-        const errors = validateSchema(neoSchema.schema);
+        const schema = await neoSchema.getSchema();
+
+        expect(schema).toBeDefined();
+
+        const errors = validateSchema(schema);
         expect(errors).toEqual([]);
     });
-    test("should compile empty type def with error", () => {
+    test("should compile empty type def with error", async () => {
         const typeDefs = `
             type Journalist {
             }
 
         `;
 
-        expect(() => new Neo4jGraphQL({ typeDefs })).toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow();
     });
-    test("should compile empty input with error", () => {
+    test("should compile empty input with error", async () => {
         const typeDefs = `
             input JournalistInput {
             }
@@ -95,9 +100,11 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
 
         `;
 
-        expect(() => new Neo4jGraphQL({ typeDefs })).toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow();
     });
-    test("should compile empty interface with error", () => {
+    test("should compile empty interface with error", async () => {
         const typeDefs = `
             interface Person {
             }
@@ -108,6 +115,8 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
 
         `;
 
-        expect(() => new Neo4jGraphQL({ typeDefs })).toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow();
     });
 });

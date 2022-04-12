@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
@@ -44,7 +45,12 @@ describe("Node directive with additionalLabels", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -135,9 +141,9 @@ describe("Node directive with additionalLabels", () => {
             MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
             RETURN this1
             }
-            RETURN
-            this0 { .id } AS this0,
-            this1 { .id } AS this1"
+            RETURN [
+            this0 { .id },
+            this1 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -145,7 +151,8 @@ describe("Node directive with additionalLabels", () => {
                 \\"this0_id\\": \\"1\\",
                 \\"this0_actors0_node_name\\": \\"actor 1\\",
                 \\"this1_id\\": \\"2\\",
-                \\"this1_actors0_node_name\\": \\"actor 2\\"
+                \\"this1_actors0_node_name\\": \\"actor 2\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -197,13 +204,14 @@ describe("Node directive with additionalLabels", () => {
             "MATCH (this:\`Film\`:\`Multimedia\`)
             WHERE this.id = $this_id
             SET this.id = $this_update_id
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"1\\",
-                \\"this_update_id\\": \\"2\\"
+                \\"this_update_id\\": \\"2\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

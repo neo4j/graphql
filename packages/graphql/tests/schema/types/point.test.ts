@@ -23,14 +23,14 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Point", () => {
-    test("Point", () => {
+    test("Point", async () => {
         const typeDefs = gql`
             type Movie {
                 filmedAt: Point!
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -67,14 +67,23 @@ describe("Point", () => {
               filmedAt: PointInput!
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MovieSort]
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
             }
 
-            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
             input MovieSort {
               filmedAt: SortDirection
             }
@@ -90,17 +99,31 @@ describe("Point", () => {
               filmedAt_DISTANCE: PointDistance
               filmedAt_GT: PointDistance
               filmedAt_GTE: PointDistance
-              filmedAt_IN: [PointInput]
+              filmedAt_IN: [PointInput!]
               filmedAt_LT: PointDistance
               filmedAt_LTE: PointDistance
               filmedAt_NOT: PointInput
-              filmedAt_NOT_IN: [PointInput]
+              filmedAt_NOT_IN: [PointInput!]
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
             }
 
             type Point {
@@ -126,6 +149,7 @@ describe("Point", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -146,19 +170,18 @@ describe("Point", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
-    test("CartesianPoint", () => {
+    test("CartesianPoint", async () => {
         const typeDefs = gql`
             type Machine {
                 partLocation: CartesianPoint!
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -214,14 +237,23 @@ describe("Point", () => {
               partLocation: CartesianPointInput!
             }
 
+            type MachineEdge {
+              cursor: String!
+              node: Machine!
+            }
+
             input MachineOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more MachineSort objects to sort Machines by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [MachineSort]
+              \\"\\"\\"
+              Specify one or more MachineSort objects to sort Machines by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MachineSort!]
             }
 
-            \\"\\"\\"Fields to sort Machines by. The order in which sorts are applied is not guaranteed when specifying many fields in one MachineSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Machines by. The order in which sorts are applied is not guaranteed when specifying many fields in one MachineSort object.
+            \\"\\"\\"
             input MachineSort {
               partLocation: SortDirection
             }
@@ -237,11 +269,17 @@ describe("Point", () => {
               partLocation_DISTANCE: CartesianPointDistance
               partLocation_GT: CartesianPointDistance
               partLocation_GTE: CartesianPointDistance
-              partLocation_IN: [CartesianPointInput]
+              partLocation_IN: [CartesianPointInput!]
               partLocation_LT: CartesianPointDistance
               partLocation_LTE: CartesianPointDistance
               partLocation_NOT: CartesianPointInput
-              partLocation_NOT_IN: [CartesianPointInput]
+              partLocation_NOT_IN: [CartesianPointInput!]
+            }
+
+            type MachinesConnection {
+              edges: [MachineEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type Mutation {
@@ -250,9 +288,18 @@ describe("Point", () => {
               updateMachines(update: MachineUpdateInput, where: MachineWhere): UpdateMachinesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
+              machinesConnection(after: String, first: Int, sort: [MachineSort], where: MachineWhere): MachinesConnection!
             }
 
             enum SortDirection {
@@ -273,19 +320,18 @@ describe("Point", () => {
             type UpdateMachinesMutationResponse {
               info: UpdateInfo!
               machines: [Machine!]!
-            }
-            "
+            }"
         `);
     });
 
-    test("Points", () => {
+    test("Points", async () => {
         const typeDefs = gql`
             type Movie {
                 filmedAt: [Point!]!
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -322,6 +368,11 @@ describe("Point", () => {
               filmedAt: [PointInput!]!
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -340,10 +391,24 @@ describe("Point", () => {
               filmedAt_NOT_INCLUDES: PointInput
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
             }
 
             type Point {
@@ -363,6 +428,7 @@ describe("Point", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
             type UpdateInfo {
@@ -376,19 +442,18 @@ describe("Point", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-            "
+            }"
         `);
     });
 
-    test("CartesianPoints", () => {
+    test("CartesianPoints", async () => {
         const typeDefs = gql`
             type Machine {
                 partLocations: [CartesianPoint!]!
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -439,6 +504,11 @@ describe("Point", () => {
               partLocations: [CartesianPointInput!]!
             }
 
+            type MachineEdge {
+              cursor: String!
+              node: Machine!
+            }
+
             input MachineOptions {
               limit: Int
               offset: Int
@@ -457,15 +527,30 @@ describe("Point", () => {
               partLocations_NOT_INCLUDES: CartesianPointInput
             }
 
+            type MachinesConnection {
+              edges: [MachineEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
               deleteMachines(where: MachineWhere): DeleteInfo!
               updateMachines(update: MachineUpdateInput, where: MachineWhere): UpdateMachinesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
+              machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
             }
 
             type UpdateInfo {
@@ -479,8 +564,7 @@ describe("Point", () => {
             type UpdateMachinesMutationResponse {
               info: UpdateInfo!
               machines: [Machine!]!
-            }
-            "
+            }"
         `);
     });
 });

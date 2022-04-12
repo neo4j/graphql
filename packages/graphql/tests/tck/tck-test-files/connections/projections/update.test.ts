@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
@@ -47,7 +48,12 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -85,12 +91,13 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } AS this"
+            RETURN collect(DISTINCT this { .title, actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"this_title\\": \\"Forrest Gump\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

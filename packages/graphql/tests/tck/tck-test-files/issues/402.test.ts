@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#402", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -42,13 +41,13 @@ describe("#402", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
     test("Should ignore the empty array and not include any where", async () => {
         const query = gql`
-            query($area: [ID]) {
+            query ($area: [ID!]) {
                 events(where: { area: { id_IN: $area } }) {
                     id
                     area {

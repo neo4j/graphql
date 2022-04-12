@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Update create", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -56,7 +55,7 @@ describe("Interface Relationships - Update create", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -106,7 +105,8 @@ describe("Interface Relationships - Update create", () => {
             MATCH (this)-[:ACTED_IN]->(this_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
-            RETURN this { .name, actedIn: collect(actedIn) } AS this"
+            WITH this, collect(actedIn) AS actedIn
+            RETURN collect(DISTINCT this { .name, actedIn: actedIn }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -119,7 +119,8 @@ describe("Interface Relationships - Update create", () => {
                 \\"this_create_actedIn_Movie0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

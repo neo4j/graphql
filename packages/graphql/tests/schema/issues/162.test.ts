@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("162", () => {
-    test("2 instances of DeleteInput type created", () => {
+    test("2 instances of DeleteInput type created", async () => {
         const typeDefs = gql`
             type Tiger {
                 x: Int
@@ -40,7 +40,7 @@ describe("162", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -110,10 +110,13 @@ describe("162", () => {
             type Query {
               tigerJawLevel2Part1s(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
               tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection!
+              tigerJawLevel2Part1sConnection(after: String, first: Int, sort: [TigerJawLevel2Part1Sort], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1sConnection!
               tigerJawLevel2s(options: TigerJawLevel2Options, where: TigerJawLevel2Where): [TigerJawLevel2!]!
               tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection!
+              tigerJawLevel2sConnection(after: String, first: Int, sort: [TigerJawLevel2Sort], where: TigerJawLevel2Where): TigerJawLevel2sConnection!
               tigers(options: TigerOptions, where: TigerWhere): [Tiger!]!
               tigersAggregate(where: TigerWhere): TigerAggregateSelection!
+              tigersConnection(after: String, first: Int, sort: [TigerSort], where: TigerWhere): TigersConnection!
             }
 
             enum SortDirection {
@@ -140,11 +143,16 @@ describe("162", () => {
               x: Int
             }
 
+            type TigerEdge {
+              cursor: String!
+              node: Tiger!
+            }
+
             type TigerJawLevel2 {
               id: ID
-              part1(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1!
-              part1Aggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
-              part1Connection(after: String, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
+              part1(directed: Boolean = true, options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1!
+              part1Aggregate(directed: Boolean = true, where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
+              part1Connection(after: String, directed: Boolean = true, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
             }
 
             type TigerJawLevel2AggregateSelection {
@@ -169,18 +177,25 @@ describe("162", () => {
               part1: TigerJawLevel2Part1DisconnectFieldInput
             }
 
+            type TigerJawLevel2Edge {
+              cursor: String!
+              node: TigerJawLevel2!
+            }
+
             input TigerJawLevel2Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more TigerJawLevel2Sort objects to sort TigerJawLevel2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [TigerJawLevel2Sort]
+              \\"\\"\\"
+              Specify one or more TigerJawLevel2Sort objects to sort TigerJawLevel2s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [TigerJawLevel2Sort!]
             }
 
             type TigerJawLevel2Part1 {
               id: ID
-              tiger(options: TigerOptions, where: TigerWhere): Tiger!
-              tigerAggregate(where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection
-              tigerConnection(after: String, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
+              tiger(directed: Boolean = true, options: TigerOptions, where: TigerWhere): Tiger!
+              tigerAggregate(directed: Boolean = true, where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection
+              tigerConnection(after: String, directed: Boolean = true, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
             }
 
             input TigerJawLevel2Part1AggregateInput {
@@ -256,6 +271,11 @@ describe("162", () => {
               tiger: TigerJawLevel2Part1TigerDisconnectFieldInput
             }
 
+            type TigerJawLevel2Part1Edge {
+              cursor: String!
+              node: TigerJawLevel2Part1!
+            }
+
             input TigerJawLevel2Part1FieldInput {
               connect: TigerJawLevel2Part1ConnectFieldInput
               create: TigerJawLevel2Part1CreateFieldInput
@@ -270,8 +290,10 @@ describe("162", () => {
             input TigerJawLevel2Part1Options {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more TigerJawLevel2Part1Sort objects to sort TigerJawLevel2Part1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [TigerJawLevel2Part1Sort]
+              \\"\\"\\"
+              Specify one or more TigerJawLevel2Part1Sort objects to sort TigerJawLevel2Part1s by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [TigerJawLevel2Part1Sort!]
             }
 
             input TigerJawLevel2Part1RelationInput {
@@ -283,7 +305,9 @@ describe("162", () => {
               node: TigerJawLevel2Part1!
             }
 
-            \\"\\"\\"Fields to sort TigerJawLevel2Part1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Part1Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort TigerJawLevel2Part1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Part1Sort object.
+            \\"\\"\\"
             input TigerJawLevel2Part1Sort {
               id: SortDirection
             }
@@ -432,11 +456,19 @@ describe("162", () => {
               tiger_NOT: TigerWhere
             }
 
+            type TigerJawLevel2Part1sConnection {
+              edges: [TigerJawLevel2Part1Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input TigerJawLevel2RelationInput {
               part1: TigerJawLevel2Part1CreateFieldInput
             }
 
-            \\"\\"\\"Fields to sort TigerJawLevel2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Sort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort TigerJawLevel2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Sort object.
+            \\"\\"\\"
             input TigerJawLevel2Sort {
               id: SortDirection
             }
@@ -475,14 +507,24 @@ describe("162", () => {
               part1_NOT: TigerJawLevel2Part1Where
             }
 
+            type TigerJawLevel2sConnection {
+              edges: [TigerJawLevel2Edge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input TigerOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more TigerSort objects to sort Tigers by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [TigerSort]
+              \\"\\"\\"
+              Specify one or more TigerSort objects to sort Tigers by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [TigerSort!]
             }
 
-            \\"\\"\\"Fields to sort Tigers by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Tigers by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerSort object.
+            \\"\\"\\"
             input TigerSort {
               x: SortDirection
             }
@@ -502,6 +544,12 @@ describe("162", () => {
               x_LTE: Int
               x_NOT: Int
               x_NOT_IN: [Int]
+            }
+
+            type TigersConnection {
+              edges: [TigerEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type UpdateInfo {
@@ -525,8 +573,7 @@ describe("162", () => {
             type UpdateTigersMutationResponse {
               info: UpdateInfo!
               tigers: [Tiger!]!
-            }
-            "
+            }"
         `);
     });
 });

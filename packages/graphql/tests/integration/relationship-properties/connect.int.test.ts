@@ -100,13 +100,13 @@ describe("Relationship properties - connect", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { movieTitle, actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.createMovies.movies).toEqual([
+            expect((gqlResult.data as any)?.createMovies.movies).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: { edges: [{ screenTime, node: { name: actorName } }] },
@@ -192,13 +192,13 @@ describe("Relationship properties - connect", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { movieTitle, actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.createActors.actors).toEqual([
+            expect((gqlResult.data as any)?.createActors.actors).toEqual([
                 {
                     name: actorName,
                 },
@@ -280,13 +280,13 @@ describe("Relationship properties - connect", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { movieTitle, actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.updateMovies.movies).toEqual([
+            expect((gqlResult.data as any)?.updateMovies.movies).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: { edges: [{ screenTime, node: { name: actorName } }] },
@@ -365,13 +365,13 @@ describe("Relationship properties - connect", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { movieTitle, actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.updateActors.actors).toEqual([
+            expect((gqlResult.data as any)?.updateActors.actors).toEqual([
                 {
                     name: actorName,
                 },

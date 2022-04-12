@@ -110,7 +110,7 @@ describe("Connection Resolvers", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -214,7 +214,7 @@ describe("Connection Resolvers", () => {
             await neoSchema.checkNeo4jCompat();
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -232,7 +232,7 @@ describe("Connection Resolvers", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.createMovies?.movies).toEqual([
+            expect((result?.data as any)?.createMovies?.movies).toEqual([
                 {
                     id: movieId,
                     title: movieTitle,
@@ -280,17 +280,17 @@ describe("Connection Resolvers", () => {
             `;
 
             const result2 = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: secondQuery,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
                     movieId,
-                    endCursor: result?.data?.createMovies.movies[0].actorsConnection.pageInfo.endCursor,
+                    endCursor: (result?.data as any)?.createMovies.movies[0].actorsConnection.pageInfo.endCursor,
                 },
             });
             expect(result2.errors).toBeFalsy();
 
-            expect(result2?.data?.movies[0]).toEqual({
+            expect((result2?.data as any)?.movies[0]).toEqual({
                 id: movieId,
                 title: movieTitle,
                 actorsConnection: {
@@ -310,18 +310,18 @@ describe("Connection Resolvers", () => {
             });
 
             const result3 = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: secondQuery,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
                     movieId,
-                    endCursor: result2?.data?.movies[0].actorsConnection.pageInfo.endCursor,
+                    endCursor: (result2?.data as any)?.movies[0].actorsConnection.pageInfo.endCursor,
                 },
             });
 
             expect(result3.errors).toBeFalsy();
 
-            expect(result3?.data?.movies[0]).toEqual({
+            expect((result3?.data as any)?.movies[0]).toEqual({
                 id: movieId,
                 title: movieTitle,
                 actorsConnection: {
@@ -389,7 +389,7 @@ describe("Connection Resolvers", () => {
             await session.run("CREATE (:Movie { id: $movieId })", { movieId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { movieId },

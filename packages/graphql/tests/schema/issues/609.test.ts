@@ -23,14 +23,14 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("609", () => {
-    test("@deprecated directive should remain in output", () => {
+    test("@deprecated directive should remain in output", async () => {
         const typeDefs = gql`
             type Deprecated {
                 deprecatedField: String @deprecated
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -68,14 +68,23 @@ describe("609", () => {
               deprecatedField: String
             }
 
+            type DeprecatedEdge {
+              cursor: String!
+              node: Deprecated!
+            }
+
             input DeprecatedOptions {
               limit: Int
               offset: Int
-              \\"\\"\\"Specify one or more DeprecatedSort objects to sort Deprecateds by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-              sort: [DeprecatedSort]
+              \\"\\"\\"
+              Specify one or more DeprecatedSort objects to sort Deprecateds by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [DeprecatedSort!]
             }
 
-            \\"\\"\\"Fields to sort Deprecateds by. The order in which sorts are applied is not guaranteed when specifying many fields in one DeprecatedSort object.\\"\\"\\"
+            \\"\\"\\"
+            Fields to sort Deprecateds by. The order in which sorts are applied is not guaranteed when specifying many fields in one DeprecatedSort object.
+            \\"\\"\\"
             input DeprecatedSort {
               deprecatedField: SortDirection
             }
@@ -99,15 +108,30 @@ describe("609", () => {
               deprecatedField_STARTS_WITH: String
             }
 
+            type DeprecatedsConnection {
+              edges: [DeprecatedEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createDeprecateds(input: [DeprecatedCreateInput!]!): CreateDeprecatedsMutationResponse!
               deleteDeprecateds(where: DeprecatedWhere): DeleteInfo!
               updateDeprecateds(update: DeprecatedUpdateInput, where: DeprecatedWhere): UpdateDeprecatedsMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               deprecateds(options: DeprecatedOptions, where: DeprecatedWhere): [Deprecated!]!
               deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
+              deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort], where: DeprecatedWhere): DeprecatedsConnection!
             }
 
             enum SortDirection {
@@ -133,8 +157,7 @@ describe("609", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
-            }
-            "
+            }"
         `);
     });
 });

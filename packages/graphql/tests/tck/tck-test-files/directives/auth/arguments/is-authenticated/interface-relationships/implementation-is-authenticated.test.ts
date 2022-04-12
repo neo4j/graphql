@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../../src";
@@ -62,7 +63,12 @@ describe("Cypher Auth isAuthenticated", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -91,14 +97,15 @@ describe("Cypher Auth isAuthenticated", () => {
             CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
                 \\"this0_content\\": \\"content\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -138,14 +145,15 @@ describe("Cypher Auth isAuthenticated", () => {
             SET this0.content = $this0_content
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
-                \\"this0_content\\": \\"content\\"
+                \\"this0_content\\": \\"content\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -172,13 +180,14 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH this
             CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"1\\",
                 \\"this_update_id\\": \\"id-1\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -215,13 +224,14 @@ describe("Cypher Auth isAuthenticated", () => {
             "MATCH (this:Comment)
             WHERE this.id = $this_id
             SET this.id = $this_update_id
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"1\\",
-                \\"this_update_id\\": \\"id-1\\"
+                \\"this_update_id\\": \\"id-1\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -266,11 +276,12 @@ describe("Cypher Auth isAuthenticated", () => {
             	)
             	RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -323,7 +334,7 @@ describe("Cypher Auth isAuthenticated", () => {
             )
             RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -337,6 +348,7 @@ describe("Cypher Auth isAuthenticated", () => {
                         }
                     }
                 },
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [

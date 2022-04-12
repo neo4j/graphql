@@ -1,11 +1,10 @@
 [[queries]]
 = Queries
 
-Each node defined in type definitions will have three Query fields generated for it:
+Each node defined in type definitions will have two Query fields generated for it:
 
 1. One for querying data
-2. One for counting data
-3. One for aggregating data
+2. One for aggregating data
 
 The examples in this chapter will use the following type definitions:
 
@@ -22,6 +21,7 @@ type User {
     id: ID! @id
     name: String!
     posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "PostedAt")
+    friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
 }
 
 interface PostedAt {
@@ -35,11 +35,9 @@ For which the following Query fields will be generated:
 ----
 type Query {
     posts(where: PostWhere, options: PostOptions): [Post!]!
-    postsCount(where: PostWhere): Int!
     postsAggregate(where: PostWhere): PostAggregationSelection!
 
     users(where: UserWhere, options: UserOptions): [User!]!
-    usersCount(where: UserWhere): Int!
     usersAggregate(where: UserWhere): UserAggregationSelection!
 }
 ----
@@ -82,6 +80,50 @@ query {
 }
 ----
 
+=== Undirected Queries
+
+All xref:type-definitions/relationships.adoc[relationships] are created with a _direction_ from one **node** to another.
+By default, all queries follow the direction defined in the relationship, however, in some cases we may need to query for
+all related nodes, regardless of the direction of the relationship. This can be achieved with the argument `directed: false`.
+
+For example, the following query:
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        name
+        friends: friends(directed: false) {
+            name
+        }
+    }
+}
+----
+
+Will return all user friends, regardless on the direction of the relationship `"FRIENDS_WITH"`.
+
+Undirected relationships can also be used in the same fashion with connections:
+
+[source, graphql, indent=0]
+----
+query Query {
+  users {
+    friendsConnection(directed: false) {
+      edges {
+        node {
+          name
+        }
+      }
+    }
+  }
+}
+----
+
+Note that _undirected relationships_ are only supported in queries.
+
+The xref:type-definitions/relationships.adoc#_querydirection[type definitions] for a relationship may define
+a different behaviour, so the `directed` option may not be available in some cases.
+
 [[queries-aggregate]]
 == Aggregate
 
@@ -116,7 +158,7 @@ The rest will only expose:
 2. `max`
 
 
-Aggregation queries accepts a `where` argument for xref::filtering.adoc[Filtering] data.
+Aggregation queries accepts a `where` argument for xref::filtering.adoc[filtering] data.
 
 === Counting Using aggregation
 
@@ -174,7 +216,7 @@ query {
 Related nodes can also be aggregated within a query by accessing the aggregation fields in the node.
 In these fields, you can **count**, aggregate the **nodes** or **edges** fields.
 
-The same selections and types as before are available in relation aggregations.
+The same selections and types as before are available in relationship aggregations.
 
 === Counting all posts per users
 
@@ -209,8 +251,8 @@ query {
 }
 ----
 
-=== Aggregate relations
-Relation properties can be aggregated as well by using the `edge` field.
+=== Aggregate relationships
+Relationship properties can be aggregated as well by using the `edge` field.
 
 [source, graphql, indent=0]
 ----
@@ -223,6 +265,23 @@ query {
                 max
               }
             }
+        }
+    }
+}
+----
+
+=== Undirected aggregation queries
+
+When performing an aggregation on related nodes, the query against the relationship
+can be defined as an xref::queries.adoc#_undirected_queries[undirected] using the argument `directed: false`:
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        id
+        postsAggregate(directed: false) {
+            count
         }
     }
 }

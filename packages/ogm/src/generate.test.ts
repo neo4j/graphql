@@ -51,13 +51,16 @@ describe("generate", () => {
         expect(generated).toMatchInlineSnapshot(`
             "import { SelectionSetNode, DocumentNode } from \\"graphql\\";
             export type Maybe<T> = T | null;
+            export type InputMaybe<T> = Maybe<T>;
             export type Exact<T extends { [key: string]: unknown }> = {
               [K in keyof T]: T[K];
             };
-            export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]?: Maybe<T[SubKey]> };
-            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]: Maybe<T[SubKey]> };
+            export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]?: Maybe<T[SubKey]>;
+            };
+            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]: Maybe<T[SubKey]>;
+            };
             /** All built-in and custom scalars, mapped to their actual values */
             export type Scalars = {
               ID: string;
@@ -74,15 +77,23 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
+              usersConnection: UsersConnection;
             };
 
             export type QueryUsersArgs = {
-              where?: Maybe<UserWhere>;
-              options?: Maybe<UserOptions>;
+              where?: InputMaybe<UserWhere>;
+              options?: InputMaybe<UserOptions>;
             };
 
             export type QueryUsersAggregateArgs = {
-              where?: Maybe<UserWhere>;
+              where?: InputMaybe<UserWhere>;
+            };
+
+            export type QueryUsersConnectionArgs = {
+              first?: InputMaybe<Scalars[\\"Int\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"]>;
+              where?: InputMaybe<UserWhere>;
+              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
             };
 
             export type Mutation = {
@@ -97,12 +108,12 @@ describe("generate", () => {
             };
 
             export type MutationDeleteUsersArgs = {
-              where?: Maybe<UserWhere>;
+              where?: InputMaybe<UserWhere>;
             };
 
             export type MutationUpdateUsersArgs = {
-              where?: Maybe<UserWhere>;
-              update?: Maybe<UserUpdateInput>;
+              where?: InputMaybe<UserWhere>;
+              update?: InputMaybe<UserUpdateInput>;
             };
 
             export enum SortDirection {
@@ -130,6 +141,15 @@ describe("generate", () => {
               bookmark?: Maybe<Scalars[\\"String\\"]>;
               nodesDeleted: Scalars[\\"Int\\"];
               relationshipsDeleted: Scalars[\\"Int\\"];
+            };
+
+            /** Pagination information (Relay) */
+            export type PageInfo = {
+              __typename?: \\"PageInfo\\";
+              hasNextPage: Scalars[\\"Boolean\\"];
+              hasPreviousPage: Scalars[\\"Boolean\\"];
+              startCursor?: Maybe<Scalars[\\"String\\"]>;
+              endCursor?: Maybe<Scalars[\\"String\\"]>;
             };
 
             export type StringAggregateSelectionNullable = {
@@ -164,46 +184,59 @@ describe("generate", () => {
               name: StringAggregateSelectionNullable;
             };
 
+            export type UserEdge = {
+              __typename?: \\"UserEdge\\";
+              cursor: Scalars[\\"String\\"];
+              node: User;
+            };
+
+            export type UsersConnection = {
+              __typename?: \\"UsersConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<UserEdge>;
+            };
+
             export type UserCreateInput = {
-              name?: Maybe<Scalars[\\"String\\"]>;
+              name?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export type UserOptions = {
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: Maybe<Array<Maybe<UserSort>>>;
-              limit?: Maybe<Scalars[\\"Int\\"]>;
-              offset?: Maybe<Scalars[\\"Int\\"]>;
+              sort?: InputMaybe<Array<UserSort>>;
+              limit?: InputMaybe<Scalars[\\"Int\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
             export type UserSort = {
-              name?: Maybe<SortDirection>;
+              name?: InputMaybe<SortDirection>;
             };
 
             export type UserUpdateInput = {
-              name?: Maybe<Scalars[\\"String\\"]>;
+              name?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export type UserWhere = {
-              OR?: Maybe<Array<UserWhere>>;
-              AND?: Maybe<Array<UserWhere>>;
-              name?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT?: Maybe<Scalars[\\"String\\"]>;
-              name_IN?: Maybe<Array<Maybe<Scalars[\\"String\\"]>>>;
-              name_NOT_IN?: Maybe<Array<Maybe<Scalars[\\"String\\"]>>>;
-              name_CONTAINS?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT_CONTAINS?: Maybe<Scalars[\\"String\\"]>;
-              name_STARTS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT_STARTS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              name_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
+              OR?: InputMaybe<Array<UserWhere>>;
+              AND?: InputMaybe<Array<UserWhere>>;
+              name?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
+              name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export interface StringAggregateInputNullable {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface UserAggregateInput {
+            export interface UserAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInputNullable;
             }
@@ -238,12 +271,12 @@ describe("generate", () => {
                 where?: UserWhere;
 
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: UserWhere;
 
-                aggregate: UserAggregateInput;
+                aggregate: UserAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
@@ -279,13 +312,16 @@ describe("generate", () => {
         expect(generated).toMatchInlineSnapshot(`
             "import { SelectionSetNode, DocumentNode } from \\"graphql\\";
             export type Maybe<T> = T | null;
+            export type InputMaybe<T> = Maybe<T>;
             export type Exact<T extends { [key: string]: unknown }> = {
               [K in keyof T]: T[K];
             };
-            export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]?: Maybe<T[SubKey]> };
-            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]: Maybe<T[SubKey]> };
+            export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]?: Maybe<T[SubKey]>;
+            };
+            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]: Maybe<T[SubKey]>;
+            };
             /** All built-in and custom scalars, mapped to their actual values */
             export type Scalars = {
               ID: string;
@@ -302,17 +338,26 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
+              usersConnection: UsersConnection;
             };
 
             export type QueryUsersArgs = {
-              where?: Maybe<UserWhere>;
-              options?: Maybe<UserOptions>;
-              fulltext?: Maybe<UserFulltext>;
+              where?: InputMaybe<UserWhere>;
+              options?: InputMaybe<UserOptions>;
+              fulltext?: InputMaybe<UserFulltext>;
             };
 
             export type QueryUsersAggregateArgs = {
-              where?: Maybe<UserWhere>;
-              fulltext?: Maybe<UserFulltext>;
+              where?: InputMaybe<UserWhere>;
+              fulltext?: InputMaybe<UserFulltext>;
+            };
+
+            export type QueryUsersConnectionArgs = {
+              first?: InputMaybe<Scalars[\\"Int\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"]>;
+              where?: InputMaybe<UserWhere>;
+              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              fulltext?: InputMaybe<UserFulltext>;
             };
 
             export type Mutation = {
@@ -327,12 +372,12 @@ describe("generate", () => {
             };
 
             export type MutationDeleteUsersArgs = {
-              where?: Maybe<UserWhere>;
+              where?: InputMaybe<UserWhere>;
             };
 
             export type MutationUpdateUsersArgs = {
-              where?: Maybe<UserWhere>;
-              update?: Maybe<UserUpdateInput>;
+              where?: InputMaybe<UserWhere>;
+              update?: InputMaybe<UserUpdateInput>;
             };
 
             export enum SortDirection {
@@ -360,6 +405,15 @@ describe("generate", () => {
               bookmark?: Maybe<Scalars[\\"String\\"]>;
               nodesDeleted: Scalars[\\"Int\\"];
               relationshipsDeleted: Scalars[\\"Int\\"];
+            };
+
+            /** Pagination information (Relay) */
+            export type PageInfo = {
+              __typename?: \\"PageInfo\\";
+              hasNextPage: Scalars[\\"Boolean\\"];
+              hasPreviousPage: Scalars[\\"Boolean\\"];
+              startCursor?: Maybe<Scalars[\\"String\\"]>;
+              endCursor?: Maybe<Scalars[\\"String\\"]>;
             };
 
             export type StringAggregateSelectionNullable = {
@@ -394,55 +448,67 @@ describe("generate", () => {
               name: StringAggregateSelectionNullable;
             };
 
+            export type UserEdge = {
+              __typename?: \\"UserEdge\\";
+              cursor: Scalars[\\"String\\"];
+              node: User;
+            };
+
+            export type UsersConnection = {
+              __typename?: \\"UsersConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<UserEdge>;
+            };
+
             export type UserCreateInput = {
-              name?: Maybe<Scalars[\\"String\\"]>;
+              name?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export type UserFulltext = {
-              UserName?: Maybe<UserUserNameFulltext>;
+              UserName?: InputMaybe<UserUserNameFulltext>;
             };
 
             export type UserOptions = {
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: Maybe<Array<Maybe<UserSort>>>;
-              limit?: Maybe<Scalars[\\"Int\\"]>;
-              offset?: Maybe<Scalars[\\"Int\\"]>;
+              sort?: InputMaybe<Array<UserSort>>;
+              limit?: InputMaybe<Scalars[\\"Int\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
             export type UserSort = {
-              name?: Maybe<SortDirection>;
+              name?: InputMaybe<SortDirection>;
             };
 
             export type UserUpdateInput = {
-              name?: Maybe<Scalars[\\"String\\"]>;
+              name?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export type UserUserNameFulltext = {
               phrase: Scalars[\\"String\\"];
-              score_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
             };
 
             export type UserWhere = {
-              OR?: Maybe<Array<UserWhere>>;
-              AND?: Maybe<Array<UserWhere>>;
-              name?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT?: Maybe<Scalars[\\"String\\"]>;
-              name_IN?: Maybe<Array<Maybe<Scalars[\\"String\\"]>>>;
-              name_NOT_IN?: Maybe<Array<Maybe<Scalars[\\"String\\"]>>>;
-              name_CONTAINS?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT_CONTAINS?: Maybe<Scalars[\\"String\\"]>;
-              name_STARTS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT_STARTS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              name_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
+              OR?: InputMaybe<Array<UserWhere>>;
+              AND?: InputMaybe<Array<UserWhere>>;
+              name?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
+              name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export interface StringAggregateInputNullable {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface UserAggregateInput {
+            export interface UserAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInputNullable;
             }
@@ -477,12 +543,12 @@ describe("generate", () => {
                 where?: UserWhere;
 
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: UserWhere;
                 fulltext?: UserFulltext;
-                aggregate: UserAggregateInput;
+                aggregate: UserAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
@@ -527,13 +593,16 @@ describe("generate", () => {
         expect(fileContent).toMatchInlineSnapshot(`
             "import { SelectionSetNode, DocumentNode } from \\"graphql\\";
             export type Maybe<T> = T | null;
+            export type InputMaybe<T> = Maybe<T>;
             export type Exact<T extends { [key: string]: unknown }> = {
               [K in keyof T]: T[K];
             };
-            export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]?: Maybe<T[SubKey]> };
-            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]: Maybe<T[SubKey]> };
+            export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]?: Maybe<T[SubKey]>;
+            };
+            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]: Maybe<T[SubKey]>;
+            };
             /** All built-in and custom scalars, mapped to their actual values */
             export type Scalars = {
               ID: string;
@@ -550,15 +619,23 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
+              usersConnection: UsersConnection;
             };
 
             export type QueryUsersArgs = {
-              where?: Maybe<UserWhere>;
-              options?: Maybe<UserOptions>;
+              where?: InputMaybe<UserWhere>;
+              options?: InputMaybe<UserOptions>;
             };
 
             export type QueryUsersAggregateArgs = {
-              where?: Maybe<UserWhere>;
+              where?: InputMaybe<UserWhere>;
+            };
+
+            export type QueryUsersConnectionArgs = {
+              first?: InputMaybe<Scalars[\\"Int\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"]>;
+              where?: InputMaybe<UserWhere>;
+              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
             };
 
             export type Mutation = {
@@ -573,12 +650,12 @@ describe("generate", () => {
             };
 
             export type MutationDeleteUsersArgs = {
-              where?: Maybe<UserWhere>;
+              where?: InputMaybe<UserWhere>;
             };
 
             export type MutationUpdateUsersArgs = {
-              where?: Maybe<UserWhere>;
-              update?: Maybe<UserUpdateInput>;
+              where?: InputMaybe<UserWhere>;
+              update?: InputMaybe<UserUpdateInput>;
             };
 
             export enum SortDirection {
@@ -606,6 +683,15 @@ describe("generate", () => {
               bookmark?: Maybe<Scalars[\\"String\\"]>;
               nodesDeleted: Scalars[\\"Int\\"];
               relationshipsDeleted: Scalars[\\"Int\\"];
+            };
+
+            /** Pagination information (Relay) */
+            export type PageInfo = {
+              __typename?: \\"PageInfo\\";
+              hasNextPage: Scalars[\\"Boolean\\"];
+              hasPreviousPage: Scalars[\\"Boolean\\"];
+              startCursor?: Maybe<Scalars[\\"String\\"]>;
+              endCursor?: Maybe<Scalars[\\"String\\"]>;
             };
 
             export type StringAggregateSelectionNullable = {
@@ -640,46 +726,59 @@ describe("generate", () => {
               name: StringAggregateSelectionNullable;
             };
 
+            export type UserEdge = {
+              __typename?: \\"UserEdge\\";
+              cursor: Scalars[\\"String\\"];
+              node: User;
+            };
+
+            export type UsersConnection = {
+              __typename?: \\"UsersConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<UserEdge>;
+            };
+
             export type UserCreateInput = {
-              name?: Maybe<Scalars[\\"String\\"]>;
+              name?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export type UserOptions = {
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: Maybe<Array<Maybe<UserSort>>>;
-              limit?: Maybe<Scalars[\\"Int\\"]>;
-              offset?: Maybe<Scalars[\\"Int\\"]>;
+              sort?: InputMaybe<Array<UserSort>>;
+              limit?: InputMaybe<Scalars[\\"Int\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
             export type UserSort = {
-              name?: Maybe<SortDirection>;
+              name?: InputMaybe<SortDirection>;
             };
 
             export type UserUpdateInput = {
-              name?: Maybe<Scalars[\\"String\\"]>;
+              name?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export type UserWhere = {
-              OR?: Maybe<Array<UserWhere>>;
-              AND?: Maybe<Array<UserWhere>>;
-              name?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT?: Maybe<Scalars[\\"String\\"]>;
-              name_IN?: Maybe<Array<Maybe<Scalars[\\"String\\"]>>>;
-              name_NOT_IN?: Maybe<Array<Maybe<Scalars[\\"String\\"]>>>;
-              name_CONTAINS?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT_CONTAINS?: Maybe<Scalars[\\"String\\"]>;
-              name_STARTS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT_STARTS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              name_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
+              OR?: InputMaybe<Array<UserWhere>>;
+              AND?: InputMaybe<Array<UserWhere>>;
+              name?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
+              name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export interface StringAggregateInputNullable {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface UserAggregateInput {
+            export interface UserAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInputNullable;
             }
@@ -714,12 +813,12 @@ describe("generate", () => {
                 where?: UserWhere;
 
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: UserWhere;
 
-                aggregate: UserAggregateInput;
+                aggregate: UserAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<UserAggregateSelection>;
@@ -760,13 +859,16 @@ describe("generate", () => {
         expect(generated).toMatchInlineSnapshot(`
             "import { SelectionSetNode, DocumentNode } from \\"graphql\\";
             export type Maybe<T> = T | null;
+            export type InputMaybe<T> = Maybe<T>;
             export type Exact<T extends { [key: string]: unknown }> = {
               [K in keyof T]: T[K];
             };
-            export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]?: Maybe<T[SubKey]> };
-            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-              { [SubKey in K]: Maybe<T[SubKey]> };
+            export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]?: Maybe<T[SubKey]>;
+            };
+            export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+              [SubKey in K]: Maybe<T[SubKey]>;
+            };
             /** All built-in and custom scalars, mapped to their actual values */
             export type Scalars = {
               ID: string;
@@ -784,26 +886,42 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               movies: Array<Movie>;
               moviesAggregate: MovieAggregateSelection;
+              moviesConnection: MoviesConnection;
               people: Array<Person>;
               peopleAggregate: PersonAggregateSelection;
+              peopleConnection: PeopleConnection;
             };
 
             export type QueryMoviesArgs = {
-              where?: Maybe<MovieWhere>;
-              options?: Maybe<MovieOptions>;
+              where?: InputMaybe<MovieWhere>;
+              options?: InputMaybe<MovieOptions>;
             };
 
             export type QueryMoviesAggregateArgs = {
-              where?: Maybe<MovieWhere>;
+              where?: InputMaybe<MovieWhere>;
+            };
+
+            export type QueryMoviesConnectionArgs = {
+              first?: InputMaybe<Scalars[\\"Int\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"]>;
+              where?: InputMaybe<MovieWhere>;
+              sort?: InputMaybe<Array<InputMaybe<MovieSort>>>;
             };
 
             export type QueryPeopleArgs = {
-              where?: Maybe<PersonWhere>;
-              options?: Maybe<PersonOptions>;
+              where?: InputMaybe<PersonWhere>;
+              options?: InputMaybe<PersonOptions>;
             };
 
             export type QueryPeopleAggregateArgs = {
-              where?: Maybe<PersonWhere>;
+              where?: InputMaybe<PersonWhere>;
+            };
+
+            export type QueryPeopleConnectionArgs = {
+              first?: InputMaybe<Scalars[\\"Int\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"]>;
+              where?: InputMaybe<PersonWhere>;
+              sort?: InputMaybe<Array<InputMaybe<PersonSort>>>;
             };
 
             export type Mutation = {
@@ -821,17 +939,17 @@ describe("generate", () => {
             };
 
             export type MutationDeleteMoviesArgs = {
-              where?: Maybe<MovieWhere>;
-              delete?: Maybe<MovieDeleteInput>;
+              where?: InputMaybe<MovieWhere>;
+              delete?: InputMaybe<MovieDeleteInput>;
             };
 
             export type MutationUpdateMoviesArgs = {
-              where?: Maybe<MovieWhere>;
-              update?: Maybe<MovieUpdateInput>;
-              connect?: Maybe<MovieConnectInput>;
-              disconnect?: Maybe<MovieDisconnectInput>;
-              create?: Maybe<MovieRelationInput>;
-              delete?: Maybe<MovieDeleteInput>;
+              where?: InputMaybe<MovieWhere>;
+              update?: InputMaybe<MovieUpdateInput>;
+              connect?: InputMaybe<MovieConnectInput>;
+              disconnect?: InputMaybe<MovieDisconnectInput>;
+              create?: InputMaybe<MovieRelationInput>;
+              delete?: InputMaybe<MovieDeleteInput>;
             };
 
             export type MutationCreatePeopleArgs = {
@@ -839,12 +957,12 @@ describe("generate", () => {
             };
 
             export type MutationDeletePeopleArgs = {
-              where?: Maybe<PersonWhere>;
+              where?: InputMaybe<PersonWhere>;
             };
 
             export type MutationUpdatePeopleArgs = {
-              where?: Maybe<PersonWhere>;
-              update?: Maybe<PersonUpdateInput>;
+              where?: InputMaybe<PersonWhere>;
+              update?: InputMaybe<PersonUpdateInput>;
             };
 
             export enum SortDirection {
@@ -901,19 +1019,22 @@ describe("generate", () => {
             };
 
             export type MovieActorsArgs = {
-              where?: Maybe<PersonWhere>;
-              options?: Maybe<PersonOptions>;
+              where?: InputMaybe<PersonWhere>;
+              options?: InputMaybe<PersonOptions>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
             };
 
             export type MovieActorsAggregateArgs = {
-              where?: Maybe<PersonWhere>;
+              where?: InputMaybe<PersonWhere>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
             };
 
             export type MovieActorsConnectionArgs = {
-              where?: Maybe<MovieActorsConnectionWhere>;
-              sort?: Maybe<Array<MovieActorsConnectionSort>>;
-              first?: Maybe<Scalars[\\"Int\\"]>;
-              after?: Maybe<Scalars[\\"String\\"]>;
+              where?: InputMaybe<MovieActorsConnectionWhere>;
+              first?: InputMaybe<Scalars[\\"Int\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"]>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
+              sort?: InputMaybe<Array<MovieActorsConnectionSort>>;
             };
 
             export type MovieActorsConnection = {
@@ -936,6 +1057,12 @@ describe("generate", () => {
               title: StringAggregateSelectionNonNullable;
             };
 
+            export type MovieEdge = {
+              __typename?: \\"MovieEdge\\";
+              cursor: Scalars[\\"String\\"];
+              node: Movie;
+            };
+
             export type MoviePersonActorsAggregationSelection = {
               __typename?: \\"MoviePersonActorsAggregationSelection\\";
               count: Scalars[\\"Int\\"];
@@ -953,6 +1080,13 @@ describe("generate", () => {
               name: StringAggregateSelectionNonNullable;
             };
 
+            export type MoviesConnection = {
+              __typename?: \\"MoviesConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<MovieEdge>;
+            };
+
             /** Pagination information (Relay) */
             export type PageInfo = {
               __typename?: \\"PageInfo\\";
@@ -960,6 +1094,13 @@ describe("generate", () => {
               hasPreviousPage: Scalars[\\"Boolean\\"];
               startCursor?: Maybe<Scalars[\\"String\\"]>;
               endCursor?: Maybe<Scalars[\\"String\\"]>;
+            };
+
+            export type PeopleConnection = {
+              __typename?: \\"PeopleConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<PersonEdge>;
             };
 
             export type Person = {
@@ -971,6 +1112,12 @@ describe("generate", () => {
               __typename?: \\"PersonAggregateSelection\\";
               count: Scalars[\\"Int\\"];
               name: StringAggregateSelectionNonNullable;
+            };
+
+            export type PersonEdge = {
+              __typename?: \\"PersonEdge\\";
+              cursor: Scalars[\\"String\\"];
+              node: Person;
             };
 
             export type StringAggregateSelectionNonNullable = {
@@ -1005,55 +1152,55 @@ describe("generate", () => {
             };
 
             export type ActedInSort = {
-              screenTime?: Maybe<SortDirection>;
+              screenTime?: InputMaybe<SortDirection>;
             };
 
             export type ActedInUpdateInput = {
-              screenTime?: Maybe<Scalars[\\"Int\\"]>;
+              screenTime?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             export type ActedInWhere = {
-              OR?: Maybe<Array<ActedInWhere>>;
-              AND?: Maybe<Array<ActedInWhere>>;
-              screenTime?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_NOT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_IN?: Maybe<Array<Maybe<Scalars[\\"Int\\"]>>>;
-              screenTime_NOT_IN?: Maybe<Array<Maybe<Scalars[\\"Int\\"]>>>;
-              screenTime_LT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_LTE?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_GT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_GTE?: Maybe<Scalars[\\"Int\\"]>;
+              OR?: InputMaybe<Array<ActedInWhere>>;
+              AND?: InputMaybe<Array<ActedInWhere>>;
+              screenTime?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_NOT?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_IN?: InputMaybe<Array<Scalars[\\"Int\\"]>>;
+              screenTime_NOT_IN?: InputMaybe<Array<Scalars[\\"Int\\"]>>;
+              screenTime_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             export type MovieActorsAggregateInput = {
-              count?: Maybe<Scalars[\\"Int\\"]>;
-              count_LT?: Maybe<Scalars[\\"Int\\"]>;
-              count_LTE?: Maybe<Scalars[\\"Int\\"]>;
-              count_GT?: Maybe<Scalars[\\"Int\\"]>;
-              count_GTE?: Maybe<Scalars[\\"Int\\"]>;
-              AND?: Maybe<Array<MovieActorsAggregateInput>>;
-              OR?: Maybe<Array<MovieActorsAggregateInput>>;
-              node?: Maybe<MovieActorsNodeAggregationWhereInput>;
-              edge?: Maybe<MovieActorsEdgeAggregationWhereInput>;
+              count?: InputMaybe<Scalars[\\"Int\\"]>;
+              count_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              count_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              count_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              count_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              AND?: InputMaybe<Array<MovieActorsAggregateInput>>;
+              OR?: InputMaybe<Array<MovieActorsAggregateInput>>;
+              node?: InputMaybe<MovieActorsNodeAggregationWhereInput>;
+              edge?: InputMaybe<MovieActorsEdgeAggregationWhereInput>;
             };
 
             export type MovieActorsConnectFieldInput = {
-              where?: Maybe<PersonConnectWhere>;
+              where?: InputMaybe<PersonConnectWhere>;
               edge: ActedInCreateInput;
             };
 
             export type MovieActorsConnectionSort = {
-              edge?: Maybe<ActedInSort>;
-              node?: Maybe<PersonSort>;
+              edge?: InputMaybe<ActedInSort>;
+              node?: InputMaybe<PersonSort>;
             };
 
             export type MovieActorsConnectionWhere = {
-              AND?: Maybe<Array<MovieActorsConnectionWhere>>;
-              OR?: Maybe<Array<MovieActorsConnectionWhere>>;
-              edge?: Maybe<ActedInWhere>;
-              edge_NOT?: Maybe<ActedInWhere>;
-              node?: Maybe<PersonWhere>;
-              node_NOT?: Maybe<PersonWhere>;
+              AND?: InputMaybe<Array<MovieActorsConnectionWhere>>;
+              OR?: InputMaybe<Array<MovieActorsConnectionWhere>>;
+              edge?: InputMaybe<ActedInWhere>;
+              edge_NOT?: InputMaybe<ActedInWhere>;
+              node?: InputMaybe<PersonWhere>;
+              node_NOT?: InputMaybe<PersonWhere>;
             };
 
             export type MovieActorsCreateFieldInput = {
@@ -1062,143 +1209,155 @@ describe("generate", () => {
             };
 
             export type MovieActorsDeleteFieldInput = {
-              where?: Maybe<MovieActorsConnectionWhere>;
+              where?: InputMaybe<MovieActorsConnectionWhere>;
             };
 
             export type MovieActorsDisconnectFieldInput = {
-              where?: Maybe<MovieActorsConnectionWhere>;
+              where?: InputMaybe<MovieActorsConnectionWhere>;
             };
 
             export type MovieActorsEdgeAggregationWhereInput = {
-              AND?: Maybe<Array<MovieActorsEdgeAggregationWhereInput>>;
-              OR?: Maybe<Array<MovieActorsEdgeAggregationWhereInput>>;
-              screenTime_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_AVERAGE_EQUAL?: Maybe<Scalars[\\"Float\\"]>;
-              screenTime_MIN_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_MAX_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_SUM_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_GT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_AVERAGE_GT?: Maybe<Scalars[\\"Float\\"]>;
-              screenTime_MIN_GT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_MAX_GT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_SUM_GT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_GTE?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_AVERAGE_GTE?: Maybe<Scalars[\\"Float\\"]>;
-              screenTime_MIN_GTE?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_MAX_GTE?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_SUM_GTE?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_LT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_AVERAGE_LT?: Maybe<Scalars[\\"Float\\"]>;
-              screenTime_MIN_LT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_MAX_LT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_SUM_LT?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_LTE?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_AVERAGE_LTE?: Maybe<Scalars[\\"Float\\"]>;
-              screenTime_MIN_LTE?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_MAX_LTE?: Maybe<Scalars[\\"Int\\"]>;
-              screenTime_SUM_LTE?: Maybe<Scalars[\\"Int\\"]>;
+              AND?: InputMaybe<Array<MovieActorsEdgeAggregationWhereInput>>;
+              OR?: InputMaybe<Array<MovieActorsEdgeAggregationWhereInput>>;
+              screenTime_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
+              screenTime_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"]>;
+              screenTime_MIN_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_MAX_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              screenTime_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"]>;
+              screenTime_MIN_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_MAX_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              screenTime_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             export type MovieActorsFieldInput = {
-              create?: Maybe<Array<MovieActorsCreateFieldInput>>;
-              connect?: Maybe<Array<MovieActorsConnectFieldInput>>;
+              create?: InputMaybe<Array<MovieActorsCreateFieldInput>>;
+              connect?: InputMaybe<Array<MovieActorsConnectFieldInput>>;
             };
 
             export type MovieActorsNodeAggregationWhereInput = {
-              AND?: Maybe<Array<MovieActorsNodeAggregationWhereInput>>;
-              OR?: Maybe<Array<MovieActorsNodeAggregationWhereInput>>;
-              name_EQUAL?: Maybe<Scalars[\\"String\\"]>;
-              name_AVERAGE_EQUAL?: Maybe<Scalars[\\"Float\\"]>;
-              name_LONGEST_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
-              name_SHORTEST_EQUAL?: Maybe<Scalars[\\"Int\\"]>;
-              name_GT?: Maybe<Scalars[\\"Int\\"]>;
-              name_AVERAGE_GT?: Maybe<Scalars[\\"Float\\"]>;
-              name_LONGEST_GT?: Maybe<Scalars[\\"Int\\"]>;
-              name_SHORTEST_GT?: Maybe<Scalars[\\"Int\\"]>;
-              name_GTE?: Maybe<Scalars[\\"Int\\"]>;
-              name_AVERAGE_GTE?: Maybe<Scalars[\\"Float\\"]>;
-              name_LONGEST_GTE?: Maybe<Scalars[\\"Int\\"]>;
-              name_SHORTEST_GTE?: Maybe<Scalars[\\"Int\\"]>;
-              name_LT?: Maybe<Scalars[\\"Int\\"]>;
-              name_AVERAGE_LT?: Maybe<Scalars[\\"Float\\"]>;
-              name_LONGEST_LT?: Maybe<Scalars[\\"Int\\"]>;
-              name_SHORTEST_LT?: Maybe<Scalars[\\"Int\\"]>;
-              name_LTE?: Maybe<Scalars[\\"Int\\"]>;
-              name_AVERAGE_LTE?: Maybe<Scalars[\\"Float\\"]>;
-              name_LONGEST_LTE?: Maybe<Scalars[\\"Int\\"]>;
-              name_SHORTEST_LTE?: Maybe<Scalars[\\"Int\\"]>;
+              AND?: InputMaybe<Array<MovieActorsNodeAggregationWhereInput>>;
+              OR?: InputMaybe<Array<MovieActorsNodeAggregationWhereInput>>;
+              name_EQUAL?: InputMaybe<Scalars[\\"String\\"]>;
+              name_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             export type MovieActorsUpdateConnectionInput = {
-              node?: Maybe<PersonUpdateInput>;
-              edge?: Maybe<ActedInUpdateInput>;
+              node?: InputMaybe<PersonUpdateInput>;
+              edge?: InputMaybe<ActedInUpdateInput>;
             };
 
             export type MovieActorsUpdateFieldInput = {
-              where?: Maybe<MovieActorsConnectionWhere>;
-              update?: Maybe<MovieActorsUpdateConnectionInput>;
-              connect?: Maybe<Array<MovieActorsConnectFieldInput>>;
-              disconnect?: Maybe<Array<MovieActorsDisconnectFieldInput>>;
-              create?: Maybe<Array<MovieActorsCreateFieldInput>>;
-              delete?: Maybe<Array<MovieActorsDeleteFieldInput>>;
+              where?: InputMaybe<MovieActorsConnectionWhere>;
+              update?: InputMaybe<MovieActorsUpdateConnectionInput>;
+              connect?: InputMaybe<Array<MovieActorsConnectFieldInput>>;
+              disconnect?: InputMaybe<Array<MovieActorsDisconnectFieldInput>>;
+              create?: InputMaybe<Array<MovieActorsCreateFieldInput>>;
+              delete?: InputMaybe<Array<MovieActorsDeleteFieldInput>>;
             };
 
             export type MovieConnectInput = {
-              actors?: Maybe<Array<MovieActorsConnectFieldInput>>;
+              actors?: InputMaybe<Array<MovieActorsConnectFieldInput>>;
             };
 
             export type MovieCreateInput = {
               title: Scalars[\\"String\\"];
-              actors?: Maybe<MovieActorsFieldInput>;
+              actors?: InputMaybe<MovieActorsFieldInput>;
             };
 
             export type MovieDeleteInput = {
-              actors?: Maybe<Array<MovieActorsDeleteFieldInput>>;
+              actors?: InputMaybe<Array<MovieActorsDeleteFieldInput>>;
             };
 
             export type MovieDisconnectInput = {
-              actors?: Maybe<Array<MovieActorsDisconnectFieldInput>>;
+              actors?: InputMaybe<Array<MovieActorsDisconnectFieldInput>>;
             };
 
             export type MovieOptions = {
               /** Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: Maybe<Array<Maybe<MovieSort>>>;
-              limit?: Maybe<Scalars[\\"Int\\"]>;
-              offset?: Maybe<Scalars[\\"Int\\"]>;
+              sort?: InputMaybe<Array<MovieSort>>;
+              limit?: InputMaybe<Scalars[\\"Int\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             export type MovieRelationInput = {
-              actors?: Maybe<Array<MovieActorsCreateFieldInput>>;
+              actors?: InputMaybe<Array<MovieActorsCreateFieldInput>>;
             };
 
             /** Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object. */
             export type MovieSort = {
-              title?: Maybe<SortDirection>;
+              title?: InputMaybe<SortDirection>;
             };
 
             export type MovieUpdateInput = {
-              title?: Maybe<Scalars[\\"String\\"]>;
-              actors?: Maybe<Array<MovieActorsUpdateFieldInput>>;
+              title?: InputMaybe<Scalars[\\"String\\"]>;
+              actors?: InputMaybe<Array<MovieActorsUpdateFieldInput>>;
             };
 
             export type MovieWhere = {
-              OR?: Maybe<Array<MovieWhere>>;
-              AND?: Maybe<Array<MovieWhere>>;
-              title?: Maybe<Scalars[\\"String\\"]>;
-              title_NOT?: Maybe<Scalars[\\"String\\"]>;
-              title_IN?: Maybe<Array<Maybe<Scalars[\\"String\\"]>>>;
-              title_NOT_IN?: Maybe<Array<Maybe<Scalars[\\"String\\"]>>>;
-              title_CONTAINS?: Maybe<Scalars[\\"String\\"]>;
-              title_NOT_CONTAINS?: Maybe<Scalars[\\"String\\"]>;
-              title_STARTS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              title_NOT_STARTS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              title_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              title_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              actors?: Maybe<PersonWhere>;
-              actors_NOT?: Maybe<PersonWhere>;
-              actorsAggregate?: Maybe<MovieActorsAggregateInput>;
-              actorsConnection?: Maybe<MovieActorsConnectionWhere>;
-              actorsConnection_NOT?: Maybe<MovieActorsConnectionWhere>;
+              OR?: InputMaybe<Array<MovieWhere>>;
+              AND?: InputMaybe<Array<MovieWhere>>;
+              title?: InputMaybe<Scalars[\\"String\\"]>;
+              title_NOT?: InputMaybe<Scalars[\\"String\\"]>;
+              title_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
+              title_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
+              title_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              title_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              title_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              title_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              title_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              title_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              actors?: InputMaybe<PersonWhere>;
+              actors_NOT?: InputMaybe<PersonWhere>;
+              actorsAggregate?: InputMaybe<MovieActorsAggregateInput>;
+              /** Return Movies where all of the related People match this filter */
+              actors_ALL?: InputMaybe<PersonWhere>;
+              /** Return Movies where none of the related People match this filter */
+              actors_NONE?: InputMaybe<PersonWhere>;
+              /** Return Movies where one of the related People match this filter */
+              actors_SINGLE?: InputMaybe<PersonWhere>;
+              /** Return Movies where some of the related People match this filter */
+              actors_SOME?: InputMaybe<PersonWhere>;
+              actorsConnection?: InputMaybe<MovieActorsConnectionWhere>;
+              actorsConnection_NOT?: InputMaybe<MovieActorsConnectionWhere>;
+              actorsConnection_ALL?: InputMaybe<MovieActorsConnectionWhere>;
+              actorsConnection_NONE?: InputMaybe<MovieActorsConnectionWhere>;
+              actorsConnection_SINGLE?: InputMaybe<MovieActorsConnectionWhere>;
+              actorsConnection_SOME?: InputMaybe<MovieActorsConnectionWhere>;
             };
 
             export type PersonConnectWhere = {
@@ -1211,40 +1370,40 @@ describe("generate", () => {
 
             export type PersonOptions = {
               /** Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: Maybe<Array<Maybe<PersonSort>>>;
-              limit?: Maybe<Scalars[\\"Int\\"]>;
-              offset?: Maybe<Scalars[\\"Int\\"]>;
+              sort?: InputMaybe<Array<PersonSort>>;
+              limit?: InputMaybe<Scalars[\\"Int\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             /** Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object. */
             export type PersonSort = {
-              name?: Maybe<SortDirection>;
+              name?: InputMaybe<SortDirection>;
             };
 
             export type PersonUpdateInput = {
-              name?: Maybe<Scalars[\\"String\\"]>;
+              name?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export type PersonWhere = {
-              OR?: Maybe<Array<PersonWhere>>;
-              AND?: Maybe<Array<PersonWhere>>;
-              name?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT?: Maybe<Scalars[\\"String\\"]>;
-              name_IN?: Maybe<Array<Maybe<Scalars[\\"String\\"]>>>;
-              name_NOT_IN?: Maybe<Array<Maybe<Scalars[\\"String\\"]>>>;
-              name_CONTAINS?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT_CONTAINS?: Maybe<Scalars[\\"String\\"]>;
-              name_STARTS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT_STARTS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              name_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
-              name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
+              OR?: InputMaybe<Array<PersonWhere>>;
+              AND?: InputMaybe<Array<PersonWhere>>;
+              name?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
+              name_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
+              name_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
+              name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export interface StringAggregateInputNonNullable {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface MovieAggregateInput {
+            export interface MovieAggregateSelectionInput {
               count?: boolean;
               title?: StringAggregateInputNonNullable;
             }
@@ -1282,12 +1441,12 @@ describe("generate", () => {
                 where?: MovieWhere;
                 delete?: MovieDeleteInput;
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: MovieWhere;
 
-                aggregate: MovieAggregateInput;
+                aggregate: MovieAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<MovieAggregateSelection>;
@@ -1297,7 +1456,7 @@ describe("generate", () => {
               shortest?: boolean;
               longest?: boolean;
             }
-            export interface PersonAggregateInput {
+            export interface PersonAggregateSelectionInput {
               count?: boolean;
               name?: StringAggregateInputNonNullable;
             }
@@ -1332,12 +1491,12 @@ describe("generate", () => {
                 where?: PersonWhere;
 
                 context?: any;
-                rootValue: any;
+                rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
                 where?: PersonWhere;
 
-                aggregate: PersonAggregateInput;
+                aggregate: PersonAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<PersonAggregateSelection>;

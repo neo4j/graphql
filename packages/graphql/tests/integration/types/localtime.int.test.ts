@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
 import neo4jDriver, { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { parseLocalTime } from "../../../src/schema/scalars/LocalTime";
+import { parseLocalTime } from "../../../src/schema/types/scalars/LocalTime";
 
 describe("LocalTime", () => {
     let driver: Driver;
@@ -47,9 +47,8 @@ describe("LocalTime", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const time = faker.date.past().toISOString().split("T")[1].split("Z")[0];
@@ -76,7 +75,7 @@ describe("LocalTime", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; time: string } = graphqlResult.data?.createMovies.movies[0];
+                const graphqlMovie: { id: string; time: string } = (graphqlResult.data as any)?.createMovies.movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toBe(id);
                 expect(parseLocalTime(graphqlMovie.time)).toStrictEqual(parsedTime);
@@ -109,12 +108,11 @@ describe("LocalTime", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
-            const times = [...new Array(faker.random.number({ min: 2, max: 4 }))].map(
+            const times = [...new Array(faker.datatype.number({ min: 2, max: 4 }))].map(
                 () => faker.date.past().toISOString().split("T")[1].split("Z")[0]
             );
             const parsedTimes = times.map((time) => parseLocalTime(time));
@@ -140,7 +138,8 @@ describe("LocalTime", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; times: string[] } = graphqlResult.data?.createMovies.movies[0];
+                const graphqlMovie: { id: string; times: string[] } = (graphqlResult.data as any)?.createMovies
+                    .movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toBe(id);
                 expect(graphqlMovie.times).toHaveLength(times.length);
@@ -190,9 +189,8 @@ describe("LocalTime", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const time = faker.date.past().toISOString().split("T")[1].split("Z")[0];
@@ -227,7 +225,7 @@ describe("LocalTime", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; time: string } = graphqlResult.data?.updateMovies.movies[0];
+                const graphqlMovie: { id: string; time: string } = (graphqlResult.data as any)?.updateMovies.movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toEqual(id);
                 expect(parseLocalTime(graphqlMovie.time)).toStrictEqual(parsedTime);
@@ -262,9 +260,8 @@ describe("LocalTime", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const date = faker.date.future();
@@ -299,7 +296,7 @@ describe("LocalTime", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; time: string } = graphqlResult.data?.movies[0];
+                const graphqlMovie: { id: string; time: string } = (graphqlResult.data as any)?.movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toEqual(id);
                 expect(parseLocalTime(graphqlMovie.time)).toStrictEqual(parsedTime);
@@ -319,7 +316,8 @@ describe("LocalTime", () => {
                         }
                     `;
 
-                    const { schema } = new Neo4jGraphQL({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
                     const future = "13:00:00";
@@ -391,7 +389,7 @@ describe("LocalTime", () => {
 
                         expect(graphqlResult.errors).toBeUndefined();
 
-                        const graphqlMovies: { id: string; time: string }[] = graphqlResult.data?.movies;
+                        const graphqlMovies: { id: string; time: string }[] = (graphqlResult.data as any)?.movies;
                         expect(graphqlMovies).toBeDefined();
 
                         /* eslint-disable jest/no-conditional-expect */
@@ -445,7 +443,8 @@ describe("LocalTime", () => {
                         }
                     `;
 
-                    const { schema } = new Neo4jGraphQL({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
                     const future = "13:00:00";
@@ -520,7 +519,7 @@ describe("LocalTime", () => {
 
                         expect(graphqlResult.errors).toBeUndefined();
 
-                        const graphqlMovies: { id: string; time: string }[] = graphqlResult.data?.movies;
+                        const graphqlMovies: { id: string; time: string }[] = (graphqlResult.data as any)?.movies;
                         expect(graphqlMovies).toBeDefined();
                         expect(graphqlMovies).toHaveLength(3);
 

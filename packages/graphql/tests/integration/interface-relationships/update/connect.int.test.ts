@@ -19,7 +19,7 @@
 
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "../../neo4j";
@@ -86,14 +86,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation ConnectMovie($name: String, $title: String, $screenTime: Int!) {
@@ -125,7 +125,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { name: actorName, title: movieTitle, screenTime: movieScreenTime },
@@ -133,7 +133,7 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect((gqlResult.data as any)?.updateActors.actors[0].actedIn).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {
                     actors: [
@@ -173,14 +173,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation ConnectMovie($name1: String, $name2: String, $title: String, $screenTime: Int!) {
@@ -224,7 +224,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -237,9 +237,10 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect((gqlResult.data as any)?.updateActors.actors[0].actedIn).toHaveLength(2);
             expect(
-                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.title === movieTitle).actors
+                (gqlResult.data as any)?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.title === movieTitle)
+                    .actors
             ).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {
@@ -282,14 +283,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation ConnectMovie($name1: String, $name2: String, $title: String, $screenTime: Int!) {
@@ -339,7 +340,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -352,9 +353,11 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(3);
+            expect((gqlResult.data as any)?.updateActors.actors[0].actedIn).toHaveLength(3);
             expect(
-                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.__typename === "Movie").actors
+                (gqlResult.data as any)?.updateActors.actors[0].actedIn.find(
+                    (actedIn) => actedIn.__typename === "Movie"
+                ).actors
             ).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {
@@ -404,14 +407,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
+        const movieRuntime = faker.datatype.number();
+        const movieScreenTime = faker.datatype.number();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.random.number();
+        const seriesScreenTime = faker.datatype.number();
 
         const query = `
             mutation ConnectMovie($name1: String, $name2: String, $title: String, $screenTime: Int!) {
@@ -457,7 +460,7 @@ describe("interface relationships", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
@@ -470,9 +473,11 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect((gqlResult.data as any)?.updateActors.actors[0].actedIn).toHaveLength(2);
             expect(
-                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.__typename === "Movie").actors
+                (gqlResult.data as any)?.updateActors.actors[0].actedIn.find(
+                    (actedIn) => actedIn.__typename === "Movie"
+                ).actors
             ).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {

@@ -18,55 +18,93 @@
  */
 
 import Debug from "debug";
-import { GraphQLResolveInfo, print } from "graphql";
+import { GraphQLResolveInfo, GraphQLSchema, print } from "graphql";
 import { Driver } from "neo4j-driver";
-import { getJWT } from "../../auth/get-jwt";
-import { Neo4jGraphQL, Neo4jGraphQLConfig } from "../../classes";
+import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import { Context } from "../../types";
+import { Context, Neo4jGraphQLPlugins, JwtPayload } from "../../types";
+import { getToken } from "../../utils/get-token";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
-export const wrapResolver = ({
-    driver,
-    config,
-    neoSchema,
-}: {
+type WrapResolverArguments = {
     driver?: Driver;
     config: Neo4jGraphQLConfig;
-    neoSchema: Neo4jGraphQL;
-}) => (next) => async (root, args, context: Context, info: GraphQLResolveInfo) => {
-    const { driverConfig } = config;
+    nodes: Node[];
+    relationships: Relationship[];
+    schema: GraphQLSchema;
+    plugins?: Neo4jGraphQLPlugins;
+};
 
-    if (debug.enabled) {
-        const query = print(info.operation);
+export const wrapResolver =
+    ({ driver, config, nodes, relationships, schema, plugins }: WrapResolverArguments) =>
+    (next) =>
+    async (root, args, context: Context, info: GraphQLResolveInfo) => {
+        const { driverConfig } = config;
 
-        debug("%s", `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(info.variableValues, null, 2)}`);
-    }
+        if (debug.enabled) {
+            const query = print(info.operation);
 
-    if (!context?.driver) {
-        if (!driver) {
-            throw new Error(
-                "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
+            debug(
+                "%s",
+                `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(info.variableValues, null, 2)}`
             );
         }
-        context.driver = driver;
-    }
 
-    if (!context?.driverConfig) {
-        context.driverConfig = driverConfig;
-    }
+        if (!context?.driver) {
+            if (!driver) {
+                throw new Error(
+                    "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
+                );
+            }
+            context.driver = driver;
+        }
 
-    context.neoSchema = neoSchema;
+        if (!context?.driverConfig) {
+            context.driverConfig = driverConfig;
+        }
 
-    if (!context.jwt) {
-        context.jwt = await getJWT(context);
-    }
+        context.nodes = nodes;
+        context.relationships = relationships;
+        context.schema = schema;
+        context.plugins = plugins;
+        context.subscriptionsEnabled = Boolean(context.plugins?.subscriptions);
+        context.callbacks = config.callbacks;
 
-    context.auth = createAuthParam({ context });
+        if (!context.jwt) {
+            if (context.plugins?.auth) {
+                const token = getToken(context);
 
-    context.queryOptions = config.queryOptions;
+                if (token) {
+                    const jwt = await context.plugins.auth.decode<JwtPayload>(token);
 
-    return next(root, args, context, info);
-};
+                    if (typeof jwt === "string") {
+                        throw new Neo4jGraphQLAuthenticationError("JWT payload cannot be a string");
+                    }
+
+                    context.jwt = jwt;
+                }
+            }
+        }
+
+        context.auth = createAuthParam({ context });
+
+        context.queryOptions = config.queryOptions;
+
+        return next(root, args, context, info);
+    };
+
+export const wrapSubscription =
+    (resolverArgs: WrapResolverArguments) =>
+    (next) =>
+    (root, args, context: Record<string, any>, info: GraphQLResolveInfo) => {
+        // TODO: context auth
+        let subscriptionContext = {};
+        if (resolverArgs.plugins?.subscriptions) {
+            subscriptionContext = {
+                plugin: resolverArgs.plugins.subscriptions,
+            };
+        }
+        return next(root, args, { ...context, ...subscriptionContext }, info);
+    };

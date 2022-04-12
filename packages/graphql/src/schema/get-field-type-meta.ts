@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { ListTypeNode, TypeNode } from "graphql";
+import { Kind, ListTypeNode, TypeNode } from "graphql";
 import { TypeMeta } from "../types";
 
 function getName(type: TypeNode): string {
-    return type.kind === "NamedType" ? type.name.value : getName(type.type);
+    return type.kind === Kind.NAMED_TYPE ? type.name.value : getName(type.type);
 }
 
 function getPrettyName(type: TypeNode): string {
@@ -29,13 +29,13 @@ function getPrettyName(type: TypeNode): string {
 
     // eslint-disable-next-line default-case
     switch (type.kind) {
-        case "NamedType":
+        case Kind.NAMED_TYPE:
             result = type.name.value;
             break;
-        case "NonNullType":
+        case Kind.NON_NULL_TYPE:
             result = `${getPrettyName(type.type)}!`;
             break;
-        case "ListType":
+        case Kind.LIST_TYPE:
             result = `[${getPrettyName(type.type)}]`;
             break;
     }
@@ -47,14 +47,14 @@ function getFieldTypeMeta(typeNode: TypeNode): TypeMeta {
     const name = getName(typeNode);
     const pretty = getPrettyName(typeNode);
     const array = /\[.+\]/g.test(pretty);
-    const required = typeNode.kind === "NonNullType";
+    const required = typeNode.kind === Kind.NON_NULL_TYPE;
 
     // Things to do with the T inside the Array [T]
     let arrayTypePretty = "";
     let arrayTypeRequired = false;
     if (array) {
         const listNode = typeNode as ListTypeNode;
-        const isMatrix = listNode.type.kind === "ListType" && listNode.type.type.kind === "ListType";
+        const isMatrix = listNode.type.kind === Kind.LIST_TYPE && listNode.type.type.kind === Kind.LIST_TYPE;
 
         if (isMatrix) {
             throw new Error("Matrix arrays not supported");

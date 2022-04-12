@@ -60,7 +60,7 @@ describe("@id directive", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -105,7 +105,7 @@ describe("@id directive", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -164,7 +164,7 @@ describe("@id directive", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
@@ -231,7 +231,7 @@ describe("@id directive", () => {
 
         try {
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver },
                 variableValues: { title, name },

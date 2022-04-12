@@ -42,7 +42,7 @@ describe("aggregations-where-node-float", () => {
                 testString: String!
                 someFloat: Float!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -79,7 +79,7 @@ describe("aggregations-where-node-float", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -109,7 +109,7 @@ describe("aggregations-where-node-float", () => {
                 testString: String!
                 someFloat: Float!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -147,7 +147,7 @@ describe("aggregations-where-node-float", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -177,7 +177,7 @@ describe("aggregations-where-node-float", () => {
                 testString: String!
                 someFloat: Float!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -214,7 +214,7 @@ describe("aggregations-where-node-float", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -244,7 +244,7 @@ describe("aggregations-where-node-float", () => {
                 testString: String!
                 someFloat: Float!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -282,7 +282,7 @@ describe("aggregations-where-node-float", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -312,7 +312,7 @@ describe("aggregations-where-node-float", () => {
                 testString: String!
                 someFloat: Float!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN)
@@ -349,7 +349,7 @@ describe("aggregations-where-node-float", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });

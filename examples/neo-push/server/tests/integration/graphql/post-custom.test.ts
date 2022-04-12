@@ -56,15 +56,15 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.posts[0].canEdit).toEqual(true);
+                expect((response.data as any).posts[0].canEdit).toEqual(true);
             } finally {
                 await session.close();
             }
@@ -107,15 +107,15 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.posts[0].canEdit).toEqual(true);
+                expect((response.data as any).posts[0].canEdit).toEqual(true);
             } finally {
                 await session.close();
             }
@@ -157,15 +157,15 @@ describe("post-custom", () => {
                            (:Post {id: "${postId}"})<-[:HAS_POST]-(:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.posts[0].canEdit).toEqual(true);
+                expect((response.data as any).posts[0].canEdit).toEqual(true);
             } finally {
                 await session.close();
             }
@@ -212,15 +212,15 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.posts[0].canEdit).toEqual(false);
+                expect((response.data as any).posts[0].canEdit).toEqual(false);
             } finally {
                 await session.close();
             }
@@ -265,15 +265,15 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.posts[0].canDelete).toEqual(true);
+                expect((response.data as any).posts[0].canDelete).toEqual(true);
             } finally {
                 await session.close();
             }
@@ -316,15 +316,15 @@ describe("post-custom", () => {
                     <-[:HAS_POST]-(:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.posts[0].canDelete).toEqual(true);
+                expect((response.data as any).posts[0].canDelete).toEqual(true);
             } finally {
                 await session.close();
             }
@@ -371,15 +371,15 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = server(driver, { req });
+                const apolloServer = await server(driver, { req });
 
-                const response = await apolloServer.mutate({
-                    mutation,
+                const response = await apolloServer.executeOperation({
+                    query: mutation,
                 });
 
                 expect(response.errors).toBeUndefined();
 
-                expect(response.data.posts[0].canDelete).toEqual(false);
+                expect((response.data as any).posts[0].canDelete).toEqual(false);
             } finally {
                 await session.close();
             }

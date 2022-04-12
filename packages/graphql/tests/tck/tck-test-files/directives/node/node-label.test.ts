@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
@@ -44,7 +45,12 @@ describe("Label in Node directive", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -152,13 +158,14 @@ describe("Label in Node directive", () => {
             SET this0.id = $this0_id
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\"
+                \\"this0_id\\": \\"1\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -203,9 +210,9 @@ describe("Label in Node directive", () => {
             MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
             RETURN this1
             }
-            RETURN
-            this0 { .id } AS this0,
-            this1 { .id } AS this1"
+            RETURN [
+            this0 { .id },
+            this1 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -213,7 +220,8 @@ describe("Label in Node directive", () => {
                 \\"this0_id\\": \\"1\\",
                 \\"this0_actors0_node_name\\": \\"actor 1\\",
                 \\"this1_id\\": \\"2\\",
-                \\"this1_actors0_node_name\\": \\"actor 2\\"
+                \\"this1_actors0_node_name\\": \\"actor 2\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -238,13 +246,14 @@ describe("Label in Node directive", () => {
             "MATCH (this:\`Film\`)
             WHERE this.id = $this_id
             SET this.id = $this_update_id
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"1\\",
-                \\"this_update_id\\": \\"2\\"
+                \\"this_update_id\\": \\"2\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -280,8 +289,8 @@ describe("Label in Node directive", () => {
             SET this_actors0.name = $this_update_actors0_name
             RETURN count(*)
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-            YIELD value as _
-            RETURN this { .id } AS this"
+            YIELD value AS _
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -314,7 +323,8 @@ describe("Label in Node directive", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -350,13 +360,14 @@ describe("Label in Node directive", () => {
             	)
             	RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"1\\",
-                \\"this_connect_actors0_node_name\\": \\"Daniel\\"
+                \\"this_connect_actors0_node_name\\": \\"Daniel\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -390,7 +401,7 @@ describe("Label in Node directive", () => {
             )
             RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -410,7 +421,8 @@ describe("Label in Node directive", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

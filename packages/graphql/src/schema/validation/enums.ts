@@ -18,6 +18,15 @@
  */
 
 import { GraphQLEnumType } from "graphql";
+import { RelationshipQueryDirectionOption } from "../../constants";
+
+export const CallbackOperationEnum = new GraphQLEnumType({
+    name: "CallbackOperation",
+    values: {
+        CREATE: {},
+        UPDATE: {},
+    },
+});
 
 export const ExcludeOperationEnum = new GraphQLEnumType({
     name: "ExcludeOperation",
@@ -34,6 +43,15 @@ export const RelationshipDirectionEnum = new GraphQLEnumType({
     values: {
         IN: {},
         OUT: {},
+    },
+});
+export const RelationshipQueryDirectionEnum = new GraphQLEnumType({
+    name: "RelationshipQueryDirection",
+    values: {
+        [RelationshipQueryDirectionOption.DEFAULT_DIRECTED]: {},
+        [RelationshipQueryDirectionOption.DEFAULT_UNDIRECTED]: {},
+        [RelationshipQueryDirectionOption.DIRECTED_ONLY]: {},
+        [RelationshipQueryDirectionOption.UNDIRECTED_ONLY]: {},
     },
 });
 

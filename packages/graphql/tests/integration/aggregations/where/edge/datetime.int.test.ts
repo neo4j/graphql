@@ -41,7 +41,7 @@ describe("aggregations-where-edge-datetime", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
@@ -81,7 +81,7 @@ describe("aggregations-where-edge-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -110,7 +110,7 @@ describe("aggregations-where-edge-datetime", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
@@ -152,7 +152,7 @@ describe("aggregations-where-edge-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -181,7 +181,7 @@ describe("aggregations-where-edge-datetime", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
@@ -221,7 +221,7 @@ describe("aggregations-where-edge-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -250,7 +250,7 @@ describe("aggregations-where-edge-datetime", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
@@ -292,7 +292,7 @@ describe("aggregations-where-edge-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -321,7 +321,7 @@ describe("aggregations-where-edge-datetime", () => {
             type User {
                 testString: String!
             }
-          
+
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
@@ -361,7 +361,7 @@ describe("aggregations-where-edge-datetime", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
