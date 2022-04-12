@@ -78,7 +78,11 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
                 records: [
                     {
                         toObject() {
-                            return {};
+                            return {
+                                this: {
+                                    totalCount: 0,
+                                },
+                            };
                         },
                     },
                 ],
