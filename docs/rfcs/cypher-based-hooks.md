@@ -107,6 +107,10 @@ RETURN u { .name, .email } AS u
 
 Finally, I would like to point out that our `@auth` directive cannot cover all complexities related to auth and that Cypher Hooks would enable users to enforce sophisticated auth patterns before or after a Cypher operation.
 
+## Risks
+
+- We'll face similar issues as we did with relationship cardinality - if a node is disconnected as a side effect, we just wouldn't know to execute the hook
+
 ## Out of scope
 
 1. Filtering on `post`
