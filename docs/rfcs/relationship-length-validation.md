@@ -1,4 +1,4 @@
-# Relationship Length Validation
+# Relationship Length count
 
 ## Problem
 
@@ -6,15 +6,10 @@ With the [RFC on relationship cardinality](https://github.com/neo4j/graphql/blob
 
 ## Proposed Solution
 
-Expose new `validation` parameter to the `@relationship` directive, where the following can be specified:
+Expose new `count` parameter to the `@relationship` directive, where the following can be specified:
 
 1. `min`
 2. `max`
-3. `*_GT`
-4. `*_GTE`
-5. `*_LT`
-6. `*_LTE`
-7. `EQUAL`
 
 For example:
 
@@ -22,7 +17,7 @@ For example:
 
 ```gql
 type Movie {
-    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, validation: { min_GTE: 1 })
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, count: { min: 1 })
 }
 ```
 
@@ -30,7 +25,7 @@ type Movie {
 
 ```gql
 type Plane {
-    pilots: [Pilot!]! @relationship(type: "FLYS", direction: OUT, validation: { EQUAL: 2 })
+    pilots: [Pilot!]! @relationship(type: "FLYS", direction: OUT, count: { min: 2, max: 2 })
 }
 ```
 
@@ -38,6 +33,6 @@ type Plane {
 
 ```gql
 type Deck {
-    cards: [Card!]! @relationship(type: "HAS_CARD", direction: OUT, validation: { EQUAL: 52 })
+    cards: [Card!]! @relationship(type: "HAS_CARD", direction: OUT, count: { min: 52, max: 52 })
 }
 ```
