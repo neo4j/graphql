@@ -586,13 +586,14 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this
             CALL apoc.util.validate(NOT(((ANY(r IN [\\"user\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR (ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.name = $this_update_name
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
                 \\"this_update_name\\": \\"Bob\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -631,7 +632,7 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this
             CALL apoc.util.validate(NOT(((ANY(r IN [\\"user\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR (ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.name = $this_update_name
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -639,6 +640,7 @@ describe("Cypher Auth Where with Roles", () => {
                 \\"this_name\\": \\"bob\\",
                 \\"this_auth_where0_id\\": \\"id-01\\",
                 \\"this_update_name\\": \\"Bob\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -696,8 +698,8 @@ describe("Cypher Auth Where with Roles", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id})
-            YIELD value as _
-            RETURN this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE (((ANY(r IN [\\"user\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_where0_creator_id))) OR (ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)))) AND apoc.util.validatePredicate(NOT(((ANY(r IN [\\"user\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR (ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_posts { .id } ] } AS this"
+            YIELD value AS _
+            RETURN collect(DISTINCT this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE (((ANY(r IN [\\"user\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_where0_creator_id))) OR (ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)))) AND apoc.util.validatePredicate(NOT(((ANY(r IN [\\"user\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR (ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_posts { .id } ] }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -732,7 +734,8 @@ describe("Cypher Auth Where with Roles", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -869,8 +872,8 @@ describe("Cypher Auth Where with Roles", () => {
             }
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -879,6 +882,7 @@ describe("Cypher Auth Where with Roles", () => {
                 \\"this0_name\\": \\"Bob\\",
                 \\"this0_password\\": \\"password\\",
                 \\"this0_posts_connect0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -942,8 +946,8 @@ describe("Cypher Auth Where with Roles", () => {
             }
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -953,6 +957,7 @@ describe("Cypher Auth Where with Roles", () => {
                 \\"this0_password\\": \\"password\\",
                 \\"this0_posts_connect0_node_id\\": \\"post-id\\",
                 \\"this0_posts_connect0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -1006,13 +1011,14 @@ describe("Cypher Auth Where with Roles", () => {
             	)
             	RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
                 \\"this_posts0_connect0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -1066,7 +1072,7 @@ describe("Cypher Auth Where with Roles", () => {
             	)
             	RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1074,6 +1080,7 @@ describe("Cypher Auth Where with Roles", () => {
                 \\"this_auth_where0_id\\": \\"id-01\\",
                 \\"this_posts0_connect0_node_id\\": \\"new-id\\",
                 \\"this_posts0_connect0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -1125,13 +1132,14 @@ describe("Cypher Auth Where with Roles", () => {
             	)
             	RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
                 \\"this_connect_posts0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -1183,7 +1191,7 @@ describe("Cypher Auth Where with Roles", () => {
             	)
             	RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1191,6 +1199,7 @@ describe("Cypher Auth Where with Roles", () => {
                 \\"this_auth_where0_id\\": \\"id-01\\",
                 \\"this_connect_posts0_node_id\\": \\"some-id\\",
                 \\"this_connect_posts0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -1242,13 +1251,14 @@ describe("Cypher Auth Where with Roles", () => {
             )
             RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
                 \\"this_posts0_disconnect0_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -1300,7 +1310,7 @@ describe("Cypher Auth Where with Roles", () => {
             )
             RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1326,6 +1336,7 @@ describe("Cypher Auth Where with Roles", () => {
                         }
                     }
                 },
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -1375,7 +1386,7 @@ describe("Cypher Auth Where with Roles", () => {
             )
             RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1393,6 +1404,7 @@ describe("Cypher Auth Where with Roles", () => {
                         }
                     }
                 },
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -1442,7 +1454,7 @@ describe("Cypher Auth Where with Roles", () => {
             )
             RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1464,6 +1476,7 @@ describe("Cypher Auth Where with Roles", () => {
                         }
                     }
                 },
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [

@@ -108,7 +108,8 @@ describe("@auth allow on specific interface implementation", () => {
             CALL apoc.util.validate(NOT(EXISTS((this_Post)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { __resolveType: \\"Post\\", id: this_Post.id, content: this_Post.content } AS content
             }
-            RETURN this { .id, content: collect(content) } as this"
+            WITH this, collect(content) AS content
+            RETURN this { .id, content: content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -155,7 +156,8 @@ describe("@auth allow on specific interface implementation", () => {
             WHERE this_Post.id = $this_content.args.where.id
             RETURN { __resolveType: \\"Post\\", comments: [ (this_Post)-[:HAS_COMMENT]->(this_Post_comments:Comment)  WHERE this_Post_comments.id = $this_Post_comments_id | this_Post_comments { .content } ] } AS content
             }
-            RETURN this { .id, content: collect(content) } as this"
+            WITH this, collect(content) AS content
+            RETURN this { .id, content: content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -219,7 +221,7 @@ describe("@auth allow on specific interface implementation", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             UNION
             WITH this
@@ -238,7 +240,7 @@ describe("@auth allow on specific interface implementation", () => {
             }
             RETURN count(*)
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id,this_content0_auth_allow0_creator_id:$this_content0_auth_allow0_creator_id})
-            YIELD value as _
+            YIELD value AS _
             RETURN count(*)
             }
             WITH this
@@ -252,7 +254,8 @@ describe("@auth allow on specific interface implementation", () => {
             CALL apoc.util.validate(NOT(EXISTS((this_Post)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
             }
-            RETURN this { .id, content: collect(content) } AS this"
+            WITH this, collect(content) AS content
+            RETURN collect(DISTINCT this { .id, content: content }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -287,7 +290,8 @@ describe("@auth allow on specific interface implementation", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -386,7 +390,7 @@ describe("@auth allow on specific interface implementation", () => {
             )
             RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -407,7 +411,8 @@ describe("@auth allow on specific interface implementation", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -471,7 +476,7 @@ describe("@auth allow on specific interface implementation", () => {
             }
             RETURN count(*)
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -510,7 +515,8 @@ describe("@auth allow on specific interface implementation", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -532,41 +538,42 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-WHERE this.id = $this_id
-WITH this
-CALL {
-	WITH this
-	OPTIONAL MATCH (this_connect_content0_node:Comment)
-	WHERE this_connect_content0_node.id = $this_connect_content0_node_id
-	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
-			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-		)
-	)
-	RETURN count(*)
-UNION
-	WITH this
-	OPTIONAL MATCH (this_connect_content0_node:Post)
-	WHERE this_connect_content0_node.id = $this_connect_content0_node_id
-	WITH this, this_connect_content0_node
-	CALL apoc.util.validate(NOT(EXISTS((this_connect_content0_node)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_content0_nodePost0_allow_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
-			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-		)
-	)
-	RETURN count(*)
-}
-RETURN this { .id } AS this"
-`);
+            "MATCH (this:User)
+            WHERE this.id = $this_id
+            WITH this
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this_connect_content0_node:Comment)
+            	WHERE this_connect_content0_node.id = $this_connect_content0_node_id
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
+            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		)
+            	)
+            	RETURN count(*)
+            UNION
+            	WITH this
+            	OPTIONAL MATCH (this_connect_content0_node:Post)
+            	WHERE this_connect_content0_node.id = $this_connect_content0_node_id
+            	WITH this, this_connect_content0_node
+            	CALL apoc.util.validate(NOT(EXISTS((this_connect_content0_node)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_content0_nodePost0_allow_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
+            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		)
+            	)
+            	RETURN count(*)
+            }
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"user-id\\",
                 \\"this_connect_content0_node_id\\": \\"post-id\\",
-                \\"this_connect_content0_nodePost0_allow_auth_allow0_creator_id\\": \\"user-id\\"
+                \\"this_connect_content0_nodePost0_allow_auth_allow0_creator_id\\": \\"user-id\\",
+                \\"resolvedCallbacks\\": {}
             }"
-            `);
+        `);
     });
 });

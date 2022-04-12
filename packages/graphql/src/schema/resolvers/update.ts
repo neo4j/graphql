@@ -24,19 +24,21 @@ import { translateUpdate } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
-import { upperFirst } from "../../utils/upper-first";
+import { publishEventsToPlugin } from "../subscriptions/publish-events-to-plugin";
 
 export default function updateResolver({ node, schemaComposer }: { node: Node; schemaComposer: SchemaComposer }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { args });
-        const [cypher, params] = translateUpdate({ context, node });
+        const [cypher, params] = await translateUpdate({ context, node });
         const executeResult = await execute({
             cypher,
             params,
             defaultAccessMode: "WRITE",
             context,
         });
+
+        publishEventsToPlugin(executeResult, context.plugins?.subscriptions);
 
         const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
             (selection) => selection.kind === "Field" && selection.name.value === node.plural
@@ -49,7 +51,7 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
                 bookmark: executeResult.bookmark,
                 ...executeResult.statistics,
             },
-            ...(nodeProjection ? { [nodeKey]: executeResult.records.map((x) => x.this) } : {}),
+            ...(nodeProjection ? { [nodeKey]: executeResult.records[0]?.data || [] } : {}),
         };
     }
     const relationFields: Record<string, string> = node.relationFields.length

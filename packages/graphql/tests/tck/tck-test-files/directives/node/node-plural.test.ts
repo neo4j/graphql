@@ -113,13 +113,14 @@ describe("Plural in Node directive", () => {
             SET this0.name = $this0_name
             RETURN this0
             }
-            RETURN
-            this0 { .name } AS this0"
+            RETURN [
+            this0 { .name }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_name\\": \\"Highlander\\"
+                \\"this0_name\\": \\"Highlander\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -143,12 +144,13 @@ describe("Plural in Node directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Tech\`)
             SET this.name = $this_update_name
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_name\\": \\"Matrix\\"
+                \\"this_update_name\\": \\"Matrix\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -18,34 +18,34 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { Node } from "../classes";
+import { asArray, removeDuplicates } from "../utils/utils";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { ConnectionField, Context, InterfaceWhereArg, RelationField } from "../types";
 import filterInterfaceNodes from "../utils/filter-interface-nodes";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
-import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
+import { getRelationshipDirection } from "../utils/get-relationship-direction";
 import createElementWhereAndParams from "./where/create-element-where-and-params";
 
 function createInterfaceProjectionAndParams({
     resolveTree,
     field,
     context,
-    node,
     nodeVariable,
     parameterPrefix,
+    withVars,
 }: {
     resolveTree: ResolveTree;
     field: RelationField;
     context: Context;
-    node: Node;
     nodeVariable: string;
     parameterPrefix?: string;
+    withVars?: string[];
 }): { cypher: string; params: Record<string, any> } {
     let globalParams = {};
     let params: { args?: any } = {};
-
+    const fullWithVars = removeDuplicates([...asArray(withVars), nodeVariable]);
     const relTypeStr = `[:${field.type}]`;
 
     const { inStr, outStr } = getRelationshipDirection(field, resolveTree.args);
@@ -61,7 +61,7 @@ function createInterfaceProjectionAndParams({
     const subqueries = referenceNodes.map((refNode) => {
         const param = `${nodeVariable}_${refNode.name}`;
         const subquery = [
-            `WITH ${nodeVariable}`,
+            `WITH ${fullWithVars.join(", ")}`,
             `MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}(${param}:${refNode.name})`,
         ];
 
@@ -184,6 +184,7 @@ function createInterfaceProjectionAndParams({
         }
 
         if (recurse[2]?.interfaceFields?.length) {
+            const prevRelationshipFields: string[] = [];
             recurse[2].interfaceFields.forEach((interfaceResolveTree) => {
                 const relationshipField = refNode.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
@@ -192,9 +193,10 @@ function createInterfaceProjectionAndParams({
                     resolveTree: interfaceResolveTree,
                     field: relationshipField,
                     context,
-                    node: refNode,
                     nodeVariable: param,
+                    withVars: prevRelationshipFields,
                 });
+                prevRelationshipFields.push(relationshipField.dbPropertyName || relationshipField.fieldName);
                 subquery.push(interfaceProjection.cypher);
                 params = { ...params, ...interfaceProjection.params };
             });
@@ -208,7 +210,12 @@ function createInterfaceProjectionAndParams({
 
         return subquery.join("\n");
     });
-    const interfaceProjection = [`WITH ${nodeVariable}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
+    const interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
+
+    if (field.typeMeta.array) {
+        interfaceProjection.push(`WITH ${fullWithVars.join(", ")}, collect(${field.fieldName}) AS ${field.fieldName}`);
+    }
+
     if (Object.keys(whereArgs).length) {
         params.args = { where: whereArgs };
     }

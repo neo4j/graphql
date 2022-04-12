@@ -130,6 +130,11 @@ describe("Relationship-properties", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
             type ActorMovieMoviesAggregationSelection {
               count: Int!
               edge: ActorMovieMoviesEdgeAggregateSelection
@@ -334,6 +339,12 @@ describe("Relationship-properties", () => {
               name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -550,6 +561,11 @@ describe("Relationship-properties", () => {
               actors: [MovieActorsDisconnectFieldInput!]
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -607,6 +623,12 @@ describe("Relationship-properties", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
@@ -627,8 +649,10 @@ describe("Relationship-properties", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -772,6 +796,11 @@ describe("Relationship-properties", () => {
 
             input ActorDisconnectInput {
               movies: [ActorMoviesDisconnectFieldInput!]
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
             }
 
             type ActorMovieMoviesAggregationSelection {
@@ -996,6 +1025,12 @@ describe("Relationship-properties", () => {
               name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -1240,6 +1275,11 @@ describe("Relationship-properties", () => {
               actors: [MovieActorsDisconnectFieldInput!]
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -1297,6 +1337,12 @@ describe("Relationship-properties", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
@@ -1317,8 +1363,10 @@ describe("Relationship-properties", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -1443,6 +1491,11 @@ describe("Relationship-properties", () => {
 
             input ActorDisconnectInput {
               movies: [ActorMoviesDisconnectFieldInput!]
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
             }
 
             type ActorMovieMoviesAggregationSelection {
@@ -1637,6 +1690,12 @@ describe("Relationship-properties", () => {
               name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -1844,6 +1903,11 @@ describe("Relationship-properties", () => {
               actors: [MovieActorsDisconnectFieldInput!]
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -1901,6 +1965,12 @@ describe("Relationship-properties", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
@@ -1921,8 +1991,10 @@ describe("Relationship-properties", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {

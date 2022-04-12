@@ -19,6 +19,7 @@
 
 import createUpdateAndParams from "./create-update-and-params";
 import { Neo4jGraphQL } from "../classes";
+import { CallbackBucket } from "../classes/CallbackBucket";
 import { Context } from "../types";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
@@ -72,6 +73,7 @@ describe("createUpdateAndParams", () => {
             parentVar: "this",
             withVars: ["this"],
             parameterPrefix: "this",
+            callbackBucket: new CallbackBucket(context),
         });
 
         expect(trimmer(result[0])).toEqual(

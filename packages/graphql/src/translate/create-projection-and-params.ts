@@ -32,7 +32,7 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
-import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
+import { getRelationshipDirection } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 
@@ -207,12 +207,18 @@ function createProjectionAndParams({
             }
 
             if (referenceUnion) {
+                const fieldFieldsKeys = Object.keys(fieldFields);
+                const hasMultipleFieldFields = fieldFieldsKeys.length > 1;
+                const hasSingleFieldField = fieldFieldsKeys.length === 1;
+
                 const headStrs: string[] = [];
-                const referencedNodes =
+                let referencedNodes =
                     referenceUnion?.types
                         ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
-                        ?.filter((b) => b !== undefined)
-                        ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? "")) || [];
+                        ?.filter((b) => b !== undefined) || [];
+                if (hasMultipleFieldFields) {
+                    referencedNodes = referencedNodes?.filter((n) => fieldFieldsKeys.includes(n?.name ?? "")) || [];
+                }
 
                 referencedNodes.forEach((refNode) => {
                     if (refNode) {
@@ -254,7 +260,10 @@ function createProjectionAndParams({
                     }
                 });
 
-                projectionStr = `${!isArray ? "head(" : ""} ${headStrs.join(" + ")} ${!isArray ? ")" : ""}`;
+                const isTakeFirstElement: boolean = !isArray || hasSingleFieldField;
+                projectionStr = `${isTakeFirstElement ? "head(" : ""} ${headStrs.join(" + ")} ${
+                    isTakeFirstElement ? ")" : ""
+                }`;
             }
 
             const initApocParamsStrs = [
@@ -299,12 +308,15 @@ function createProjectionAndParams({
             const apocParamsStr = `{this: ${chainStr || varName}${
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}`;
+
+            const isProjectionStrEmpty = projectionStr.trim().length === 0;
+
             const apocStr = `${
                 !cypherField.isScalar && !cypherField.isEnum ? `${param} IN` : ""
             } apoc.cypher.runFirstColumn("${cypherField.statement}", ${apocParamsStr}, ${expectMultipleValues})${
                 apocWhere ? ` ${apocWhere}` : ""
             }${unionWhere ? ` ${unionWhere} ` : ""}${
-                projectionStr ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""
+                !isProjectionStrEmpty ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""
             }`;
 
             if (cypherField.isScalar || cypherField.isEnum) {
@@ -357,7 +369,7 @@ function createProjectionAndParams({
                         const sorts = optionsInput.sort.reduce(sortReducer, []);
 
                         res.projection.push(
-                            `${field.alias}: apoc.coll.sortMulti(collect(${field.alias}), [${sorts.join(
+                            `${field.alias}: apoc.coll.sortMulti(${field.alias}, [${sorts.join(
                                 ", "
                             )}])${offsetLimitStr}`
                         );
@@ -365,11 +377,7 @@ function createProjectionAndParams({
                     }
                 }
 
-                res.projection.push(
-                    `${field.alias}: ${!isArray ? "head(" : ""}collect(${field.alias})${offsetLimitStr}${
-                        !isArray ? ")" : ""
-                    }`
-                );
+                res.projection.push(`${field.alias}: ${field.alias}${offsetLimitStr}`);
 
                 return res;
             }

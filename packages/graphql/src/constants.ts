@@ -33,9 +33,11 @@ export const REQUIRED_APOC_FUNCTIONS = [
     "apoc.map.values",
 ];
 export const REQUIRED_APOC_PROCEDURES = ["apoc.util.validate", "apoc.do.when", "apoc.cypher.doIt"];
+export const DEBUG_ALL = `${DEBUG_PREFIX}:*`;
 export const DEBUG_AUTH = `${DEBUG_PREFIX}:auth`;
 export const DEBUG_GRAPHQL = `${DEBUG_PREFIX}:graphql`;
 export const DEBUG_EXECUTE = `${DEBUG_PREFIX}:execute`;
+export const DEBUG_GENERATE = `${DEBUG_PREFIX}:generate`;
 export const RELATIONSHIP_REQUIREMENT_PREFIX = "@neo4j/graphql/RELATIONSHIP-REQUIRED";
 
 export const RESERVED_TYPE_NAMES = [
@@ -101,3 +103,6 @@ export enum RelationshipQueryDirectionOption {
     DIRECTED_ONLY = "DIRECTED_ONLY",
     UNDIRECTED_ONLY = "UNDIRECTED_ONLY",
 }
+
+export const META_CYPHER_VARIABLE = "meta";
+export const META_OLD_PROPS_CYPHER_VARIABLE = "oldProps";

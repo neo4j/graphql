@@ -91,29 +91,27 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
             "MATCH (this:\`BibliographicReference\`:\`Resource\`)
             WHERE this.uri = $this_iri
             SET this.prefLabel = $this_update_prefLabel
-            WITH this
+            	WITH this
             CALL {
             	WITH this
-            	MERGE (this_isInPublication0_connectOrCreate0:\`Concept\`:\`Resource\` { uri: $this_isInPublication0_connectOrCreate0_node_uri })
-            ON CREATE
-            SET
-            this_isInPublication0_connectOrCreate0.uri = $this_isInPublication0_connectOrCreate0_on_create_uri,
-            this_isInPublication0_connectOrCreate0.prefLabel = $this_isInPublication0_connectOrCreate0_on_create_prefLabel
-            MERGE (this)-[this_relationship_this_isInPublication0_connectOrCreate0:isInPublication]->(this_isInPublication0_connectOrCreate0)
+            	MERGE (this_isInPublication0_connectOrCreate_this1:\`Concept\`:\`Resource\` { uri: $this_isInPublication0_connectOrCreate_param0 })
+            ON CREATE SET
+                    this_isInPublication0_connectOrCreate_this1.uri = $this_isInPublication0_connectOrCreate_param1,
+            this_isInPublication0_connectOrCreate_this1.prefLabel = $this_isInPublication0_connectOrCreate_param2
+            MERGE (this)-[this_isInPublication0_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication0_connectOrCreate_this1)
             	RETURN COUNT(*)
             }
-            WITH this
+            	WITH this
             CALL {
             	WITH this
-            	MERGE (this_isInPublication1_connectOrCreate0:\`Concept\`:\`Resource\` { uri: $this_isInPublication1_connectOrCreate0_node_uri })
-            ON CREATE
-            SET
-            this_isInPublication1_connectOrCreate0.uri = $this_isInPublication1_connectOrCreate0_on_create_uri,
-            this_isInPublication1_connectOrCreate0.prefLabel = $this_isInPublication1_connectOrCreate0_on_create_prefLabel
-            MERGE (this)-[this_relationship_this_isInPublication1_connectOrCreate0:isInPublication]->(this_isInPublication1_connectOrCreate0)
+            	MERGE (this_isInPublication1_connectOrCreate_this1:\`Concept\`:\`Resource\` { uri: $this_isInPublication1_connectOrCreate_param0 })
+            ON CREATE SET
+                    this_isInPublication1_connectOrCreate_this1.uri = $this_isInPublication1_connectOrCreate_param1,
+            this_isInPublication1_connectOrCreate_this1.prefLabel = $this_isInPublication1_connectOrCreate_param2
+            MERGE (this)-[this_isInPublication1_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication1_connectOrCreate_this1)
             	RETURN COUNT(*)
             }
-            RETURN this { iri: this.uri, .prefLabel, isInPublication: [ (this)-[:isInPublication]->(this_isInPublication:\`Concept\`:\`Resource\`)  WHERE this_isInPublication.uri IN $this_isInPublication_iri_IN | this_isInPublication { iri: this_isInPublication.uri, .prefLabel } ] } AS this"
+            RETURN collect(DISTINCT this { iri: this.uri, .prefLabel, isInPublication: [ (this)-[:isInPublication]->(this_isInPublication:\`Concept\`:\`Resource\`)  WHERE this_isInPublication.uri IN $this_isInPublication_iri_IN | this_isInPublication { iri: this_isInPublication.uri, .prefLabel } ] }) AS data"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -121,20 +119,21 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                 \\"this_update_prefLabel\\": [
                     \\"Updated Label:My BRS with Resource\\"
                 ],
-                \\"this_isInPublication0_connectOrCreate0_node_uri\\": \\"new-g\\",
-                \\"this_isInPublication0_connectOrCreate0_on_create_uri\\": \\"new-g\\",
-                \\"this_isInPublication0_connectOrCreate0_on_create_prefLabel\\": [
+                \\"this_isInPublication0_connectOrCreate_param0\\": \\"new-g\\",
+                \\"this_isInPublication0_connectOrCreate_param1\\": \\"new-g\\",
+                \\"this_isInPublication0_connectOrCreate_param2\\": [
                     \\"pub\\"
                 ],
-                \\"this_isInPublication1_connectOrCreate0_node_uri\\": \\"new-f\\",
-                \\"this_isInPublication1_connectOrCreate0_on_create_uri\\": \\"new-f\\",
-                \\"this_isInPublication1_connectOrCreate0_on_create_prefLabel\\": [
+                \\"this_isInPublication1_connectOrCreate_param0\\": \\"new-f\\",
+                \\"this_isInPublication1_connectOrCreate_param1\\": \\"new-f\\",
+                \\"this_isInPublication1_connectOrCreate_param2\\": [
                     \\"pub\\"
                 ],
                 \\"this_isInPublication_iri_IN\\": [
                     \\"new-f\\",
                     \\"new-e\\"
-                ]
+                ],
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

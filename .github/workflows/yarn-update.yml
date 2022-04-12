@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
       - name: yarn install
@@ -34,7 +34,7 @@ jobs:
           echo ::set-output name=title::"[Test] Update yarn $(date +%Y-%m-%d)"
           echo ::set-output name=branch::"yarn-update-$(date +%Y-%m-%d)"
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
           commit-message: ${{ steps.vars.outputs.title }}

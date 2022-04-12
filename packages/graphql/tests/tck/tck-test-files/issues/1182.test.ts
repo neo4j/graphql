@@ -83,34 +83,33 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             CREATE (this0:Movie)
             SET this0.id = randomUUID()
             SET this0.title = $this0_title
-            WITH this0
+            	WITH this0
             CALL {
             	WITH this0
-            	MERGE (this0_actors_connectOrCreate0:Actor { id: $this0_actors_connectOrCreate0_node_id })
-            ON CREATE
-            SET
-            this0_actors_connectOrCreate0.name = $this0_actors_connectOrCreate0_on_create_name,
-            this0_actors_connectOrCreate0.homeAddress = $this0_actors_connectOrCreate0_on_create_homeAddress,
-            this0_actors_connectOrCreate0.dob = $this0_actors_connectOrCreate0_on_create_dob
-            MERGE (this0)<-[this0_relationship_this0_actors_connectOrCreate0:ACTED_IN]-(this0_actors_connectOrCreate0)
+            	MERGE (this0_actors_connectOrCreate_this1:\`Actor\` { id: $this0_actors_connectOrCreate_param0 })
+            ON CREATE SET
+                    this0_actors_connectOrCreate_this1.name = $this0_actors_connectOrCreate_param1,
+            this0_actors_connectOrCreate_this1.homeAddress = $this0_actors_connectOrCreate_param2,
+            this0_actors_connectOrCreate_this1.dob = $this0_actors_connectOrCreate_param3
+            MERGE (this0)-[this0_actors_connectOrCreate_this0:\`ACTED_IN\`]->(this0_actors_connectOrCreate_this1)
             	RETURN COUNT(*)
             }
             RETURN this0
             }
-            RETURN
-            this0 { .title } AS this0"
+            RETURN [
+            this0 { .title }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_title\\": \\"Forrest Gump\\",
-                \\"this0_actors_connectOrCreate0_node_id\\": \\"1\\",
-                \\"this0_actors_connectOrCreate0_on_create_name\\": \\"Tom Hanks\\",
-                \\"this0_actors_connectOrCreate0_on_create_homeAddress\\": {
+                \\"this0_actors_connectOrCreate_param0\\": \\"1\\",
+                \\"this0_actors_connectOrCreate_param1\\": \\"Tom Hanks\\",
+                \\"this0_actors_connectOrCreate_param2\\": {
                     \\"longitude\\": 1,
                     \\"latitude\\": 2
                 },
-                \\"this0_actors_connectOrCreate0_on_create_dob\\": {
+                \\"this0_actors_connectOrCreate_param3\\": {
                     \\"year\\": 1970,
                     \\"month\\": 1,
                     \\"day\\": 1,
@@ -119,7 +118,8 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

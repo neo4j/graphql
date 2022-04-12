@@ -18,14 +18,18 @@
  */
 
 import { Node, Relationship } from "../classes";
+import { CallbackBucket } from "../classes/CallbackBucket";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
-import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
+import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
+import { createEventMeta } from "./subscriptions/create-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import { addCallbackAndSetParam } from "./utils/callback-utils";
 
 interface Res {
     creates: string[];
@@ -42,17 +46,21 @@ function createCreateAndParams({
     varName,
     node,
     context,
+    callbackBucket,
     withVars,
     insideDoWhen,
     includeRelationshipValidation,
+    topLevelNodeVariable,
 }: {
     input: any;
     varName: string;
     node: Node;
     context: Context;
+    callbackBucket: CallbackBucket;
     withVars: string[];
     insideDoWhen?: boolean;
     includeRelationshipValidation?: boolean;
+    topLevelNodeVariable?: string;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;
@@ -87,7 +95,9 @@ function createCreateAndParams({
                             return;
                         }
 
-                        res.creates.push(`\nWITH ${withVars.join(", ")}`);
+                        if (!context.subscriptionsEnabled) {
+                            res.creates.push(`\nWITH ${withVars.join(", ")}`);
+                        }
 
                         const baseName = `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
                         const nodeName = `${baseName}_node`;
@@ -96,10 +106,12 @@ function createCreateAndParams({
                         const recurse = createCreateAndParams({
                             input: relationField.interface ? create.node[refNode.name] : create.node,
                             context,
+                            callbackBucket,
                             node: refNode,
                             varName: nodeName,
                             withVars: [...withVars, nodeName],
                             includeRelationshipValidation: false,
+                            topLevelNodeVariable,
                         });
                         res.creates.push(recurse[0]);
                         res.params = { ...res.params, ...recurse[1] };
@@ -119,6 +131,7 @@ function createCreateAndParams({
                                 varName: propertiesName,
                                 relationship,
                                 operation: "CREATE",
+                                callbackBucket,
                             });
                             res.creates.push(setA[0]);
                             res.params = { ...res.params, ...setA[1] };
@@ -144,6 +157,7 @@ function createCreateAndParams({
                         parentVar: varName,
                         relationField,
                         context,
+                        callbackBucket,
                         refNodes: [refNode],
                         labelOverride: unionTypeName,
                         parentNode: node,
@@ -154,7 +168,7 @@ function createCreateAndParams({
                 }
 
                 if (v.connectOrCreate) {
-                    const [connectOrCreateQuery, connectOrCreateParams] = createConnectOrCreateAndParams({
+                    const { cypher, params } = createConnectOrCreateAndParams({
                         input: v.connectOrCreate,
                         varName: `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}_connectOrCreate`,
                         parentVar: varName,
@@ -163,8 +177,8 @@ function createCreateAndParams({
                         context,
                         withVars,
                     });
-                    res.creates.push(connectOrCreateQuery);
-                    res.params = { ...res.params, ...connectOrCreateParams };
+                    res.creates.push(cypher);
+                    res.params = { ...res.params, ...params };
                 }
             });
 
@@ -176,6 +190,7 @@ function createCreateAndParams({
                     parentVar: varName,
                     relationField,
                     context,
+                    callbackBucket,
                     refNodes,
                     labelOverride: "",
                     parentNode: node,
@@ -235,6 +250,8 @@ function createCreateAndParams({
         initial.push(`SET ${varName}.${field.dbPropertyName} = ${field.typeMeta.name.toLowerCase()}()`);
     });
 
+    node.primitiveFields.forEach((field) => addCallbackAndSetParam(field, varName, input, callbackBucket, initial));
+
     const autogeneratedIdFields = node.primitiveFields.filter((x) => x.autogenerate);
     autogeneratedIdFields.forEach((f) => {
         initial.push(`SET ${varName}.${f.dbPropertyName} = randomUUID()`);
@@ -245,6 +262,12 @@ function createCreateAndParams({
         creates: initial,
         params: {},
     });
+
+    if (context.subscriptionsEnabled) {
+        const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName, typename: node.name });
+        const withStrs = [eventWithMetaStr];
+        creates.push(`WITH ${withStrs.join(", ")}, ${filterMetaVariable(withVars).join(", ")}`);
+    }
 
     const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
 
@@ -262,6 +285,7 @@ function createCreateAndParams({
             params = { ...params, ...bindAndParams[1] };
         }
     }
+
     if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
         creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);

@@ -75,14 +75,15 @@ describe("Cypher Auth Projection", () => {
             SET this.id = $this_update_id
             WITH this
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_id_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_update_id\\": \\"new-id\\",
                 \\"this_update_id_auth_allow0_id\\": \\"super_admin\\",
-                \\"this_id_auth_allow0_id\\": \\"super_admin\\"
+                \\"this_id_auth_allow0_id\\": \\"super_admin\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -116,16 +117,17 @@ describe("Cypher Auth Projection", () => {
             }
             CALL apoc.util.validate(NOT(this0.id IS NOT NULL AND this0.id = $projection_id_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(NOT(this1.id IS NOT NULL AND this1.id = $projection_id_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN
-            this0 { .id } AS this0,
-            this1 { .id } AS this1"
+            RETURN [
+            this0 { .id },
+            this1 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"id-1\\",
                 \\"this1_id\\": \\"id-2\\",
-                \\"projection_id_auth_allow0_id\\": \\"super_admin\\"
+                \\"projection_id_auth_allow0_id\\": \\"super_admin\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

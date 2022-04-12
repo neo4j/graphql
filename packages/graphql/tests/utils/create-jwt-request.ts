@@ -19,6 +19,7 @@
 
 import { Socket } from "net";
 import { IncomingMessage } from "http";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import jsonwebtoken from "jsonwebtoken";
 
 /** Creates a JWT valid request with the given secret and the extraData in the JWT token */
