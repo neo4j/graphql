@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
@@ -37,7 +38,12 @@ describe("Plural in Node directive", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -58,26 +64,6 @@ describe("Plural in Node directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Tech\`)
             RETURN this { .name } as this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-    });
-
-    test("Count Tech with plural techs", async () => {
-        const query = gql`
-            {
-                techsCount
-            }
-        `;
-
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Tech\`)
-            RETURN count(this)"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

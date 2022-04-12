@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("326", () => {
     let driver: Driver;
@@ -60,7 +61,14 @@ describe("326", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         const query = `
             {
@@ -81,13 +89,13 @@ describe("326", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -117,7 +125,14 @@ describe("326", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         const query = `
             mutation {
@@ -138,13 +153,13 @@ describe("326", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }

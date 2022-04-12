@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import pluralize from "pluralize";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
@@ -40,17 +39,17 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
         const user = generateUniqueType("User");
 
         const typeDefs = gql`
-        type ${user.name} {
-            name: String!
-            friends: [${user.name}!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
-        }
+            type ${user.name} {
+                name: String!
+                friends: [${user.name}!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
+            }
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const query = `
             mutation {
-                create${pluralize(user.name)}(input: { name: "Ford" }) {
+                ${user.operations.create}(input: { name: "Ford", friends: { create: { node: { name: "Jane" } } } }) {
                     info {
                         nodesCreated
                     }
@@ -59,16 +58,16 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
         `;
 
         const gqlResult = await graphql({
-            schema: neoSchema.schema,
+            schema: await neoSchema.getSchema(),
             source: query,
             contextValue: { driver },
         });
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
-            [`create${pluralize(user.name)}`]: {
+            [user.operations.create]: {
                 info: {
-                    nodesCreated: 1,
+                    nodesCreated: 2,
                 },
             },
         });

@@ -23,8 +23,10 @@ import { IncomingMessage } from "http";
 import jsonwebtoken from "jsonwebtoken";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { generate } from "randomstring";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import camelcase from "camelcase";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import pluralize from "pluralize";
-import camelCase from "camelcase";
 
 /** Creates a JWT valid request with the given secret and the extraData in the JWT token */
 
@@ -43,20 +45,16 @@ export function createJwtRequest(secret: string, extraData: Record<string, any> 
     return req;
 }
 
-export function generateUniqueType(baseName: string): TestType {
+export function generateUniqueType(baseName: string) {
     const type = `${generate({
+        length: 8,
         charset: "alphabetic",
         readable: true,
     })}${baseName}`;
 
-    const plural = pluralize(camelCase(type));
+    const plural = pluralize(camelcase(type));
     return {
         name: type,
         plural,
     };
 }
-
-export type TestType = {
-    name: string;
-    plural: string;
-};

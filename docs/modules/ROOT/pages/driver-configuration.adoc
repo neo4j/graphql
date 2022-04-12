@@ -28,9 +28,11 @@ const driver = neo4j.driver(
 
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-const server = new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ req }) => ({ req }),
+neoSchema.getSchema().then((schema) => {
+    const server = new ApolloServer({
+        schema,
+        context: ({ req }) => ({ req }),
+    });
 });
 ----
 
@@ -54,9 +56,11 @@ const driver = neo4j.driver(
 
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-const server = new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ req }) => ({ req, driver }),
+neoSchema.getSchema().then((schema) => {
+    const server = new ApolloServer({
+        schema,
+        context: ({ req }) => ({ req, driver }),
+    });
 });
 ----
 
@@ -154,9 +158,11 @@ const driver = neo4j.driver(
 
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-const server = new ApolloServer({
-  schema,
-  context: { driverConfig: { database: "my-database" } }
+neoSchema.getSchema().then((schema) => {
+    const server = new ApolloServer({
+        schema,
+        context: { driverConfig: { database: "my-database" } },
+    });
 });
 ----
 
@@ -188,8 +194,10 @@ const neoSchema = new Neo4jGraphQL({
     },
 });
 
-const server = new ApolloServer({
-  schema,
+neoSchema.getSchema().then((schema) => {
+    const server = new ApolloServer({
+        schema,
+    });
 });
 ----
 
@@ -236,8 +244,10 @@ const driver = neo4j.driver(
 
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-const server = new ApolloServer({
-  schema,
-  context: (req) => ({ driverConfig: { bookmarks: [req.headers["x-neo4j-bookmark"]] } })
+neoSchema.getSchema().then((schema) => {
+    const server = new ApolloServer({
+        schema,
+        context: ({ req }) => ({ driverConfig: { bookmarks: [req.headers["x-neo4j-bookmark"]] } }),
+    });
 });
 ----

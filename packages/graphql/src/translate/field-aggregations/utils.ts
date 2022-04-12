@@ -34,28 +34,25 @@ export enum AggregationType {
 
 export function getFieldType(field: ResolveTree): AggregationType | undefined {
     for (const candidateField of Object.values(AggregationType)) {
-        if (field.fieldsByTypeName[`${candidateField}`])
-            // if (
-            //     field.fieldsByTypeName[`${candidateField}NonNullable`] ||
-            //     field.fieldsByTypeName[`${candidateField}Nullable`]
-            // ) // TODO: #605 Breaking change, uncomment for 3.0
+        if (
+            field.fieldsByTypeName[`${candidateField}NonNullable`] ||
+            field.fieldsByTypeName[`${candidateField}Nullable`]
+        )
             return candidateField;
     }
     return undefined;
 }
 
 export function getReferenceNode(context: Context, relationField: RelationField): Node | undefined {
-    return context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name);
+    return context.nodes.find((x) => x.name === relationField.typeMeta.name);
 }
 
 export function getReferenceRelation(context: Context, connectionField: ConnectionField): Relationship | undefined {
-    return context.neoSchema.relationships.find((x) => x.name === connectionField.relationshipTypeName);
+    return context.relationships.find((x) => x.name === connectionField.relationshipTypeName);
 }
 
 export function getFieldByName(name: string, fields: Record<string, ResolveTree>): ResolveTree | undefined {
-    return Object.values(fields).find((tree) => {
-        return tree.name === name;
-    });
+    return Object.values(fields).find((tree) => tree.name === name);
 }
 
 export function serializeAuthParamsForApocRun(auth: AggregationAuth): Record<string, string> {

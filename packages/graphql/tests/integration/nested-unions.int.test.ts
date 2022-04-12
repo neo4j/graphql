@@ -112,14 +112,14 @@ describe("Nested unions", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.updateMovies.movies[0].title).toEqual(movieTitle);
-            expect(gqlResult.data?.updateMovies.movies[0].actors[0].name).toEqual(actorName);
-            expect(gqlResult.data?.updateMovies.movies[0].actors[0].actedIn).toContainEqual({
+            expect((gqlResult.data as any)?.updateMovies.movies[0].title).toEqual(movieTitle);
+            expect((gqlResult.data as any)?.updateMovies.movies[0].actors[0].name).toEqual(actorName);
+            expect((gqlResult.data as any)?.updateMovies.movies[0].actors[0].actedIn).toContainEqual({
                 name: seriesName,
             });
         } finally {
@@ -176,12 +176,12 @@ describe("Nested unions", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.updateMovies.movies).toEqual([
+            expect((gqlResult.data as any)?.updateMovies.movies).toEqual([
                 {
                     title: movieTitle,
                     actors: [],
@@ -261,12 +261,12 @@ describe("Nested unions", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.updateMovies.movies).toEqual([
+            expect((gqlResult.data as any)?.updateMovies.movies).toEqual([
                 {
                     title: movieTitle,
                     actors: [],
@@ -362,14 +362,14 @@ describe("Nested unions", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.updateMovies.movies[0].title).toEqual(movieTitle);
-            expect(gqlResult.data?.updateMovies.movies[0].actors[0].name).toEqual(actorName);
-            expect(gqlResult.data?.updateMovies.movies[0].actors[0].actedIn).toContainEqual({
+            expect((gqlResult.data as any)?.updateMovies.movies[0].title).toEqual(movieTitle);
+            expect((gqlResult.data as any)?.updateMovies.movies[0].actors[0].name).toEqual(actorName);
+            expect((gqlResult.data as any)?.updateMovies.movies[0].actors[0].actedIn).toContainEqual({
                 name: seriesName,
             });
 
@@ -461,30 +461,14 @@ describe("Nested unions", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
             expect(gqlResult.errors).toBeFalsy();
-            // expect(gqlResult.data?.createMovies.movies).toEqual([
-            //     {
-            //         title: movieTitle,
-            //         actors: [
-            //             {
-            //                 name: actorName,
-            //                 actedIn: [
-            //                     {},
-            //                     {
-            //                         name: seriesName,
-            //                     },
-            //                 ],
-            //             },
-            //         ],
-            //     },
-            // ]);
-            expect(gqlResult.data?.createMovies.movies[0].title).toEqual(movieTitle);
-            expect(gqlResult.data?.createMovies.movies[0].actors[0].name).toEqual(actorName);
-            expect(gqlResult.data?.createMovies.movies[0].actors[0].actedIn).toContainEqual({
+            expect((gqlResult.data as any)?.createMovies.movies[0].title).toEqual(movieTitle);
+            expect((gqlResult.data as any)?.createMovies.movies[0].actors[0].name).toEqual(actorName);
+            expect((gqlResult.data as any)?.createMovies.movies[0].actors[0].actedIn).toContainEqual({
                 name: seriesName,
             });
 

@@ -16,7 +16,7 @@ describe("signIn", () => {
     });
 
     test("should throw user not found", async () => {
-        const apolloServer = server(driver);
+        const apolloServer = await server(driver);
 
         const mutation = `
             mutation signIn($email: String! $password: String!){
@@ -32,8 +32,8 @@ describe("signIn", () => {
             charset: "alphabetic",
         });
 
-        const response = await apolloServer.mutate({
-            mutation,
+        const response = await apolloServer.executeOperation({
+            query: mutation,
             variables: {
                 email,
                 password,
@@ -44,7 +44,7 @@ describe("signIn", () => {
     });
 
     test("should throw Unauthorized on invalid password", async () => {
-        const apolloServer = server(driver);
+        const apolloServer = await server(driver);
         const session = driver.session();
 
         const mutation = `
@@ -73,8 +73,8 @@ describe("signIn", () => {
                 { id, email, password: await hashPassword(password) }
             );
 
-            const response = await apolloServer.mutate({
-                mutation,
+            const response = await apolloServer.executeOperation({
+                query: mutation,
                 variables: {
                     email,
                     password: "invalid",
@@ -88,7 +88,7 @@ describe("signIn", () => {
     });
 
     test("should sign user in and return JWT", async () => {
-        const apolloServer = server(driver);
+        const apolloServer = await server(driver);
         const session = driver.session();
 
         const mutation = `
@@ -118,8 +118,8 @@ describe("signIn", () => {
                 { id, email, password: await hashPassword(password) }
             );
 
-            const response = await apolloServer.mutate({
-                mutation,
+            const response = await apolloServer.executeOperation({
+                query: mutation,
                 variables: {
                     email,
                     password,
@@ -130,7 +130,7 @@ describe("signIn", () => {
                 throw new Error(response.errors[0].message);
             }
 
-            const JWT = response.data.signIn;
+            const JWT = (response.data as any).signIn;
 
             const decoded = await decodeJWT(JWT);
 

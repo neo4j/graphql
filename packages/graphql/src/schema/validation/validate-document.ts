@@ -28,6 +28,7 @@ import {
     FieldDefinitionNode,
     TypeNode,
     specifiedDirectives,
+    Kind,
 } from "graphql";
 import pluralize from "pluralize";
 import * as scalars from "../scalars";
@@ -64,11 +65,11 @@ function filterDocument(document: DocumentNode): DocumentNode {
         .map((definition) => (definition as ObjectTypeDefinitionNode).name.value);
 
     const getArgumentType = (type: TypeNode) => {
-        if (type.kind === "ListType") {
+        if (type.kind === Kind.LIST_TYPE) {
             return getArgumentType(type.type);
         }
 
-        if (type.kind === "NonNullType") {
+        if (type.kind === Kind.NON_NULL_TYPE) {
             return getArgumentType(type.type);
         }
 

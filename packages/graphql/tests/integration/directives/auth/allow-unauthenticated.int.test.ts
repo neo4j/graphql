@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Socket } from "net";
 import { graphql } from "graphql";
 import { Driver } from "neo4j-driver";
 import { IncomingMessage } from "http";
 import { generate } from "randomstring";
-
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
@@ -69,7 +69,14 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: true})
@@ -80,7 +87,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -88,7 +95,7 @@ describe("auth/allow-unauthenticated", () => {
             expect(gqlResult.errors).toBeUndefined();
 
             // Check if returned data is what we really want
-            expect(gqlResult.data?.posts?.[0]?.id).toBe(postId);
+            expect((gqlResult.data as any)?.posts?.[0]?.id).toBe(postId);
         });
 
         test("should throw a Forbidden error", async () => {
@@ -119,7 +126,14 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
@@ -130,12 +144,12 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
             // Check that a Forbidden error have been throwed
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             expect(gqlResult.errors as any[]).toHaveLength(1);
 
             // Check if returned data is what we really want
@@ -171,7 +185,14 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
@@ -183,12 +204,12 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
             // Check that a Forbidden error have been throwed
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             expect(gqlResult.errors as any[]).toHaveLength(1);
 
             // Check if returned data is what we really want
@@ -225,7 +246,14 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: true})
@@ -236,7 +264,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -244,7 +272,7 @@ describe("auth/allow-unauthenticated", () => {
             expect(gqlResult.errors).toBeUndefined();
 
             // Check if returned data is what we really want
-            expect(gqlResult.data?.posts?.[0]?.id).toBe(postId);
+            expect((gqlResult.data as any)?.posts?.[0]?.id).toBe(postId);
         });
 
         test("should return an empty array without errors", async () => {
@@ -275,7 +303,14 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
@@ -286,7 +321,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -326,7 +361,14 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
@@ -338,7 +380,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const gqlResult = await graphql({
                 contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
@@ -376,19 +418,26 @@ describe("auth/allow-unauthenticated", () => {
             `;
 
             const secret = "secret";
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
 
             const gqlResult = await graphql({
                 contextValue: { driver, req },
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
             });
 
             // Check that a Forbidden error have been throwed
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             expect(gqlResult.errors as any[]).toHaveLength(1);
 
             // Check if returned data is what we really want

@@ -44,9 +44,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({
                 charset: "alphabetic",
@@ -108,7 +107,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const title = generate({
                 charset: "alphabetic",
@@ -154,8 +154,8 @@ describe("timestamp/time", () => {
                     { title, name }
                 );
 
-                const neo4jRelationship: { createdAt: any; screenTime: Integer } = neo4jResult.records[0].toObject()
-                    .relationship;
+                const neo4jRelationship: { createdAt: any; screenTime: Integer } =
+                    neo4jResult.records[0].toObject().relationship;
 
                 expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
                 expect(isTime(neo4jRelationship.createdAt)).toBe(true);
@@ -176,9 +176,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({
                 charset: "alphabetic",
@@ -241,7 +240,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const title = generate({
                 charset: "alphabetic",
@@ -293,8 +293,8 @@ describe("timestamp/time", () => {
                     { title, name }
                 );
 
-                const neo4jRelationship: { updatedAt: any; screenTime: Integer } = neo4jResult.records[0].toObject()
-                    .relationship;
+                const neo4jRelationship: { updatedAt: any; screenTime: Integer } =
+                    neo4jResult.records[0].toObject().relationship;
 
                 expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
                 expect(isTime(neo4jRelationship.updatedAt)).toBe(true);
@@ -315,9 +315,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({
                 charset: "alphabetic",
@@ -375,7 +374,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const title = generate({
                 charset: "alphabetic",
@@ -421,8 +421,8 @@ describe("timestamp/time", () => {
                     { title, name }
                 );
 
-                const neo4jRelationship: { createdAt: any; screenTime: Integer } = neo4jResult.records[0].toObject()
-                    .relationship;
+                const neo4jRelationship: { createdAt: any; screenTime: Integer } =
+                    neo4jResult.records[0].toObject().relationship;
 
                 expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
                 expect(isTime(neo4jRelationship.createdAt)).toBe(true);
@@ -450,7 +450,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const title = generate({
                 charset: "alphabetic",
@@ -502,8 +503,8 @@ describe("timestamp/time", () => {
                     { title, name }
                 );
 
-                const neo4jRelationship: { updatedAt: any; screenTime: Integer } = neo4jResult.records[0].toObject()
-                    .relationship;
+                const neo4jRelationship: { updatedAt: any; screenTime: Integer } =
+                    neo4jResult.records[0].toObject().relationship;
 
                 expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
                 expect(isTime(neo4jRelationship.updatedAt)).toBe(true);
@@ -522,9 +523,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({
                 charset: "alphabetic",
@@ -580,9 +580,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({
                 charset: "alphabetic",
@@ -670,7 +669,7 @@ describe("timestamp/time", () => {
 
             try {
                 const graphqlResult = await graphql({
-                    schema: neoSchema.schema,
+                    schema: await neoSchema.getSchema(),
                     source: create,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title, name, screenTime },
@@ -686,8 +685,8 @@ describe("timestamp/time", () => {
                     { title, name }
                 );
 
-                const neo4jRelationship: { createdAt: any; screenTime: Integer } = neo4jResult.records[0].toObject()
-                    .relationship;
+                const neo4jRelationship: { createdAt: any; screenTime: Integer } =
+                    neo4jResult.records[0].toObject().relationship;
 
                 expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
                 expect(isTime(neo4jRelationship.createdAt)).toBe(true);
@@ -715,7 +714,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const title = generate({
                 charset: "alphabetic",
@@ -767,8 +767,8 @@ describe("timestamp/time", () => {
                     { title, name }
                 );
 
-                const neo4jRelationship: { updatedAt: any; screenTime: Integer } = neo4jResult.records[0].toObject()
-                    .relationship;
+                const neo4jRelationship: { updatedAt: any; screenTime: Integer } =
+                    neo4jResult.records[0].toObject().relationship;
 
                 expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
                 expect(isTime(neo4jRelationship.updatedAt)).toBe(true);
@@ -787,9 +787,8 @@ describe("timestamp/time", () => {
                     }
                 `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({
                 charset: "alphabetic",

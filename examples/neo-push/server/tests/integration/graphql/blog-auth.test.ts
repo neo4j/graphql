@@ -42,10 +42,10 @@ describe("blog-auth", () => {
         req.headers.authorization = `Bearer ${token}`;
 
         try {
-            const apolloServer = server(driver, { req });
+            const apolloServer = await server(driver, { req });
 
-            const response = await apolloServer.mutate({
-                mutation,
+            const response = await apolloServer.executeOperation({
+                query: mutation,
             });
 
             expect((response?.errors as any[])[0].message).toEqual("Forbidden");
@@ -85,10 +85,10 @@ describe("blog-auth", () => {
                 CREATE (:Blog {id: "${blogId}"})
             `);
 
-            const apolloServer = server(driver, { req });
+            const apolloServer = await server(driver, { req });
 
-            const response = await apolloServer.mutate({
-                mutation,
+            const response = await apolloServer.executeOperation({
+                query: mutation,
             });
 
             expect((response?.errors as any[])[0].message).toEqual("Forbidden");

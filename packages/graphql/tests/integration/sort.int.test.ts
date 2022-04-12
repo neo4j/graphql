@@ -17,362 +17,1114 @@
  * limitations under the License.
  */
 
-import { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
+import { Driver } from "neo4j-driver";
+import { graphql, GraphQLSchema } from "graphql";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
+const testLabel = generate({ charset: "alphabetic" });
+
 describe("sort", () => {
     let driver: Driver;
+    let schema: GraphQLSchema;
+
+    const typeDefs = gql`
+        interface Production {
+            id: ID!
+            title: String!
+        }
+        type Movie implements Production {
+            id: ID!
+            title: String!
+            runtime: Int!
+            actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            numberOfActors: Int! @cypher(statement: "MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor)")
+        }
+
+        type Series implements Production {
+            id: ID!
+            title: String!
+            episodes: Int!
+        }
+        type Actor {
+            id: ID!
+            name: String!
+            movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            totalScreenTime: Int!
+                @cypher(
+                    statement: """
+                    MATCH (this)-[r:ACTED_IN]->(:Movie)
+                    RETURN sum(r.screenTime)
+                    """
+                )
+        }
+        interface ActedIn @relationshipProperties {
+            screenTime: Int!
+        }
+    `;
+
+    const movies = [
+        {
+            id: generate({ charset: "alphabetic" }),
+            title: "A",
+            runtime: 400,
+        },
+        {
+            id: generate({ charset: "alphabetic" }),
+            title: "B",
+            runtime: 300,
+        },
+    ];
+
+    const series = [
+        {
+            id: generate({ charset: "alphabetic" }),
+            title: "C",
+            episodes: 200,
+        },
+        {
+            id: generate({ charset: "alphabetic" }),
+            title: "D",
+            episodes: 100,
+        },
+    ];
+
+    const actors = [
+        {
+            id: generate({ charset: "alphabetic" }),
+            name: `A${generate({ charset: "alphbetic" })}`,
+            screenTime: {
+                [movies[0].id]: 2,
+                [movies[1].id]: 1,
+                [series[0].id]: 6,
+                [series[1].id]: 4,
+            },
+        },
+        {
+            id: generate({ charset: "alphabetic" }),
+            name: `B${generate({ charset: "alphbetic" })}`,
+            screenTime: {
+                [movies[1].id]: 1,
+            },
+        },
+    ];
 
     beforeAll(async () => {
         driver = await neo4j();
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        schema = await neoSchema.getSchema();
+
+        await session.run(
+            `
+                    CREATE (m1:Movie:${testLabel}) SET m1 = $movies[0]
+                    CREATE (m2:Movie:${testLabel}) SET m2 = $movies[1]
+                    CREATE (s1:Series:${testLabel}) SET s1 = $series[0]
+                    CREATE (s2:Series:${testLabel}) SET s2 = $series[1]
+
+                    CREATE (a1:Actor:${testLabel}) SET a1.id = $actors[0].id, a1.name = $actors[0].name
+                    CREATE (a2:Actor:${testLabel}) SET a2.id = $actors[1].id, a2.name = $actors[1].name
+                    
+                    MERGE (a1)-[:ACTED_IN {screenTime: $actors[0].screenTime[m1.id]}]->(m1)
+                    MERGE (a1)-[:ACTED_IN {screenTime: $actors[0].screenTime[m2.id]}]->(m2)<-[:ACTED_IN {screenTime: $actors[1].screenTime[m2.id]}]-(a2)
+                    MERGE (s1)<-[:ACTED_IN {screenTime: $actors[0].screenTime[s1.id]}]-(a1)-[:ACTED_IN {screenTime: $actors[0].screenTime[s2.id]}]->(s2)
+                `,
+            { movies, series, actors }
+        );
     });
 
     afterAll(async () => {
+        const session = driver.session();
+        await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
+        await session.close();
         await driver.close();
     });
 
-    describe("primitive fields", () => {
-        test("should sort a list of nodes", async () => {
-            await Promise.all(
-                ["ASC", "DESC"].map(async (type) => {
-                    const session = driver.session();
+    describe("on top level", () => {
+        describe("primitive fields", () => {
+            const gqlResultByTypeFromSource = (source: string) => (direction: "ASC" | "DESC") =>
+                graphql({
+                    schema,
+                    source,
+                    contextValue: { driver },
+                    variableValues: { movieIds: movies.map(({ id }) => id), direction },
+                });
 
-                    const typeDefs = `
-                        type Movie {
-                            id: ID
-                            number: Int
-                        }
-                    `;
+            describe("with field in selection set", () => {
+                const queryWithTitle = `
+                            query ($movieIds: [ID!]!, $direction: SortDirection!) {
+                                movies(
+                                    where: { id_IN: $movieIds },
+                                    options: { sort: [{ title: $direction }] }
+                                ) {
+                                    id
+                                    title
+                                }
+                            }
+                        `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithTitle);
 
-                    const movieIds = [
-                        generate({
-                            charset: "alphabetic",
-                        }),
-                        generate({
-                            charset: "alphabetic",
-                        }),
-                        generate({
-                            charset: "alphabetic",
-                        }),
-                    ].map((x) => `"${x}"`);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
 
-                    const query = `
-                        query {
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const { movies: gqlMovies } = gqlResult.data as any;
+
+                    expect(gqlMovies[0].id).toBe(movies[0].id);
+                    expect(gqlMovies[1].id).toBe(movies[1].id);
+                });
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const { movies: gqlMovies } = gqlResult.data as any;
+
+                    expect(gqlMovies[0].id).toBe(movies[1].id);
+                    expect(gqlMovies[1].id).toBe(movies[0].id);
+                });
+            });
+
+            describe("with field aliased in selection set", () => {
+                const queryWithTitle = `
+                            query ($movieIds: [ID!]!, $direction: SortDirection!) {
+                                movies(
+                                    where: { id_IN: $movieIds },
+                                    options: { sort: [{ title: $direction }] }
+                                ) {
+                                    id
+                                    aliased: title
+                                }
+                            }
+                        `;
+
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithTitle);
+
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const { movies: gqlMovies } = gqlResult.data as any;
+
+                    expect(gqlMovies[0].id).toBe(movies[0].id);
+                    expect(gqlMovies[1].id).toBe(movies[1].id);
+                });
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const { movies: gqlMovies } = gqlResult.data as any;
+
+                    expect(gqlMovies[0].id).toBe(movies[1].id);
+                    expect(gqlMovies[1].id).toBe(movies[0].id);
+                });
+            });
+
+            describe("with field not in selection set", () => {
+                const queryWithoutTitle = `
+                        query ($movieIds: [ID!]!, $direction: SortDirection!) {
                             movies(
-                                where: { id_IN: [${movieIds.join(",")}] },
-                                options: { sort: [{ number: ${type} }] }
+                                where: { id_IN: $movieIds },
+                                options: { sort: [{ title: $direction }] }
                             ) {
-                               number
+                                id
                             }
                         }
                     `;
 
-                    try {
-                        await session.run(`
-                            CREATE (:Movie {id: ${movieIds[0]}, number: 1})
-                            CREATE (:Movie {id: ${movieIds[1]}, number: 2})
-                            CREATE (:Movie {id: ${movieIds[2]}, number: 3})
-                        `);
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithoutTitle);
 
-                        const gqlResult = await graphql({
-                            schema: neoSchema.schema,
-                            source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                        });
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
 
-                        expect(gqlResult.errors).toBeUndefined();
+                    expect(gqlResult.errors).toBeUndefined();
 
-                        const { movies } = gqlResult.data as any;
+                    const { movies: gqlMovies } = gqlResult.data as any;
 
-                        /* eslint-disable jest/no-conditional-expect */
-                        if (type === "ASC") {
-                            expect(movies[0].number).toEqual(1);
-                            expect(movies[1].number).toEqual(2);
-                            expect(movies[2].number).toEqual(3);
-                        }
+                    expect(gqlMovies[0].id).toBe(movies[0].id);
+                    expect(gqlMovies[1].id).toBe(movies[1].id);
+                });
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
 
-                        if (type === "DESC") {
-                            expect(movies[0].number).toEqual(3);
-                            expect(movies[1].number).toEqual(2);
-                            expect(movies[2].number).toEqual(1);
-                        }
-                        /* eslint-enable jest/no-conditional-expect */
-                    } finally {
-                        await session.close();
-                    }
-                })
-            );
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const { movies: gqlMovies } = gqlResult.data as any;
+
+                    expect(gqlMovies[0].id).toBe(movies[1].id);
+                    expect(gqlMovies[1].id).toBe(movies[0].id);
+                });
+            });
         });
 
-        test("should sort nested relationships", async () => {
-            await Promise.all(
-                ["ASC", "DESC"].map(async (type) => {
-                    const session = driver.session();
+        describe("cypher fields", () => {
+            const gqlResultByTypeFromSource = (source: string) => (direction: "ASC" | "DESC") =>
+                graphql({
+                    schema,
+                    source,
+                    contextValue: { driver },
+                    variableValues: { movieIds: movies.map(({ id }) => id), direction },
+                });
 
-                    const typeDefs = `
-                        type Movie {
-                            id: ID
-                            genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
-                        }
+            describe("with field in selection set", () => {
+                const queryWithNumberOfActors = `
+                            query ($movieIds: [ID!]!, $direction: SortDirection!) {
+                                movies(
+                                    where: { id_IN: $movieIds },
+                                    options: { sort: [{ numberOfActors: $direction }] }
+                                ) {
+                                    id
+                                    numberOfActors
+                                }
+                            }
+                        `;
 
-                        type Genre {
-                            id: ID
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithNumberOfActors);
+
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies: Array<{ id: string; numberOfActors: number }> = (gqlResult.data as any)?.movies;
+
+                    expect(gqlMovies[0].id).toBe(movies[0].id);
+                    expect(gqlMovies[0].numberOfActors).toBe(1);
+                    expect(gqlMovies[1].id).toBe(movies[1].id);
+                    expect(gqlMovies[1].numberOfActors).toBe(2);
+                });
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies: Array<{ id: string; numberOfActors: number }> = (gqlResult.data as any)?.movies;
+
+                    expect(gqlMovies[0].id).toBe(movies[1].id);
+                    expect(gqlMovies[0].numberOfActors).toBe(2);
+                    expect(gqlMovies[1].id).toBe(movies[0].id);
+                    expect(gqlMovies[1].numberOfActors).toBe(1);
+                });
+            });
+
+            describe("with field aliased in selection set", () => {
+                const queryWithNumberOfActors = `
+                            query ($movieIds: [ID!]!, $direction: SortDirection!) {
+                                movies(
+                                    where: { id_IN: $movieIds },
+                                    options: { sort: [{ numberOfActors: $direction }] }
+                                ) {
+                                    id
+                                    aliased: numberOfActors
+                                }
+                            }
+                        `;
+
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithNumberOfActors);
+
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies: Array<{ id: string; aliased: number }> = (gqlResult.data as any)?.movies;
+
+                    expect(gqlMovies[0].id).toBe(movies[0].id);
+                    expect(gqlMovies[0].aliased).toBe(1);
+                    expect(gqlMovies[1].id).toBe(movies[1].id);
+                    expect(gqlMovies[1].aliased).toBe(2);
+                });
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies: Array<{ id: string; aliased: number }> = (gqlResult.data as any)?.movies;
+
+                    expect(gqlMovies[0].id).toBe(movies[1].id);
+                    expect(gqlMovies[0].aliased).toBe(2);
+                    expect(gqlMovies[1].id).toBe(movies[0].id);
+                    expect(gqlMovies[1].aliased).toBe(1);
+                });
+            });
+
+            describe("with field not in selection set", () => {
+                const queryWithoutNumberOfActors = `
+                        query ($movieIds: [ID!]!, $direction: SortDirection!) {
+                            movies(
+                                where: { id_IN: $movieIds },
+                                options: { sort: [{ numberOfActors: $direction }] }
+                            ) {
+                                id
+                            }
                         }
                     `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithoutNumberOfActors);
 
-                    const movieId = generate({
-                        charset: "alphabetic",
-                    });
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
 
-                    const query = `
-                        query {
-                            movies(where: { id: "${movieId}" }) {
-                                genres(options: { sort: [{ id: ${type} }] }) {
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const { movies: gqlMovies } = gqlResult.data as any;
+
+                    // Movie 1 has 1 actor
+                    expect(gqlMovies[0].id).toBe(movies[0].id);
+                    // Movie 2 has 2 actors
+                    expect(gqlMovies[1].id).toBe(movies[1].id);
+                });
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const { movies: gqlMovies } = gqlResult.data as any;
+
+                    // Movie 2 has 2 actors
+                    expect(gqlMovies[0].id).toBe(movies[1].id);
+                    // Movie 1 has 1 actor
+                    expect(gqlMovies[1].id).toBe(movies[0].id);
+                });
+            });
+        });
+    });
+
+    describe("on relationship", () => {
+        const gqlResultByTypeFromSource = (source: string) => (direction: "ASC" | "DESC") =>
+            graphql({
+                schema,
+                source,
+                contextValue: { driver },
+                variableValues: { movieId: movies[1].id, actorIds: actors.map(({ id }) => id), direction },
+            });
+
+        describe("primitive fields", () => {
+            describe("with field in selection set", () => {
+                const queryWithName = `
+                                query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
+                                    movies(where: { id: $movieId }) {
+                                        id
+                                        actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
+                                            id
+                                            name
+                                        }
+                                    }
+                                }
+                            `;
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithName);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovie: { id: string; actors: Array<{ id: string; name: string }> } = (
+                        gqlResult.data as any
+                    )?.movies[0];
+                    expect(gqlMovie).toBeDefined();
+
+                    expect(gqlMovie.id).toBe(movies[1].id);
+                    expect(gqlMovie.actors[0].id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[1].id).toBe(actors[1].id);
+                });
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovie: { id: string; actors: Array<{ id: string; name: string }> } = (
+                        gqlResult.data as any
+                    )?.movies[0];
+                    expect(gqlMovie).toBeDefined();
+
+                    expect(gqlMovie.id).toBe(movies[1].id);
+                    expect(gqlMovie.actors[0].id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[1].id).toBe(actors[0].id);
+                });
+            });
+
+            describe("with field aliased in selection set", () => {
+                const queryWithName = `
+                                query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
+                                    movies(where: { id: $movieId }) {
+                                        id
+                                        actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
+                                            id
+                                            aliased: name
+                                        }
+                                    }
+                                }
+                            `;
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithName);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovie: { id: string; actors: Array<{ id: string; name: string }> } = (
+                        gqlResult.data as any
+                    )?.movies[0];
+                    expect(gqlMovie).toBeDefined();
+
+                    expect(gqlMovie.id).toBe(movies[1].id);
+                    expect(gqlMovie.actors[0].id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[1].id).toBe(actors[1].id);
+                });
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovie: { id: string; actors: Array<{ id: string; name: string }> } = (
+                        gqlResult.data as any
+                    )?.movies[0];
+                    expect(gqlMovie).toBeDefined();
+
+                    expect(gqlMovie.id).toBe(movies[1].id);
+                    expect(gqlMovie.actors[0].id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[1].id).toBe(actors[0].id);
+                });
+            });
+
+            describe("with field not in selection set", () => {
+                const queryWithoutName = `
+                                query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
+                                    movies(where: { id: $movieId }) {
+                                        id
+                                        actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
+                                            id
+                                        }
+                                    }
+                                }
+                            `;
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithoutName);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovie: { id: string; actors: Array<{ id: string }> } = (gqlResult.data as any)?.movies[0];
+                    expect(gqlMovie).toBeDefined();
+
+                    expect(gqlMovie.id).toBe(movies[1].id);
+                    expect(gqlMovie.actors[0].id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[1].id).toBe(actors[1].id);
+                });
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovie: { id: string; actors: Array<{ id: string }> } = (gqlResult.data as any)?.movies[0];
+                    expect(gqlMovie).toBeDefined();
+
+                    expect(gqlMovie.id).toBe(movies[1].id);
+                    expect(gqlMovie.actors[0].id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[1].id).toBe(actors[0].id);
+                });
+            });
+        });
+
+        describe("cypher fields", () => {
+            // Actor 1 has 3 totalScreenTime
+            // Actor 2 has 1 totalScreenTime
+            describe("with field in selection set", () => {
+                const queryWithTotalScreenTime = `
+                    query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
+                        movies(where: { id: $movieId }) {
+                            id
+                            actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                                id
+                                totalScreenTime
+                            }
+                        }
+                    }
+                `;
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithTotalScreenTime);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovie: { id: string; actors: Array<{ id: string; totalScreenTime: string }> } = (
+                        gqlResult.data as any
+                    )?.movies[0];
+                    expect(gqlMovie).toBeDefined();
+
+                    expect(gqlMovie.id).toBe(movies[1].id);
+                    expect(gqlMovie.actors[0].id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[0].totalScreenTime).toBe(1);
+                    expect(gqlMovie.actors[1].id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[1].totalScreenTime).toBe(3);
+                });
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovie: { id: string; actors: Array<{ id: string; totalScreenTime: string }> } = (
+                        gqlResult.data as any
+                    )?.movies[0];
+                    expect(gqlMovie).toBeDefined();
+
+                    expect(gqlMovie.id).toBe(movies[1].id);
+                    expect(gqlMovie.actors[0].id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[0].totalScreenTime).toBe(3);
+                    expect(gqlMovie.actors[1].id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[1].totalScreenTime).toBe(1);
+                });
+            });
+
+            describe("with field aliased in selection set", () => {
+                const queryWithTotalScreenTime = `
+                    query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
+                        movies(where: { id: $movieId }) {
+                            id
+                            actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                                id
+                                aliased: totalScreenTime
+                            }
+                        }
+                    }
+                `;
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithTotalScreenTime);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovie: { id: string; actors: Array<{ id: string; aliased: string }> } = (
+                        gqlResult.data as any
+                    )?.movies[0];
+                    expect(gqlMovie).toBeDefined();
+
+                    expect(gqlMovie.id).toBe(movies[1].id);
+                    expect(gqlMovie.actors[0].id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[0].aliased).toBe(1);
+                    expect(gqlMovie.actors[1].id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[1].aliased).toBe(3);
+                });
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovie: { id: string; actors: Array<{ id: string; aliased: string }> } = (
+                        gqlResult.data as any
+                    )?.movies[0];
+                    expect(gqlMovie).toBeDefined();
+
+                    expect(gqlMovie.id).toBe(movies[1].id);
+                    expect(gqlMovie.actors[0].id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[0].aliased).toBe(3);
+                    expect(gqlMovie.actors[1].id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[1].aliased).toBe(1);
+                });
+            });
+
+            describe("with field not in selection set", () => {
+                const queryWithoutTotalScreenTime = `
+                    query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
+                        movies(where: { id: $movieId }) {
+                            id
+                            actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                                id
+                            }
+                        }
+                    }
+                `;
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithoutTotalScreenTime);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovie: { id: string; actors: Array<{ id: string }> } = (gqlResult.data as any)?.movies[0];
+                    expect(gqlMovie).toBeDefined();
+
+                    expect(gqlMovie.id).toBe(movies[1].id);
+                    // Actor 2 has 1 totalScreenTime
+                    expect(gqlMovie.actors[0].id).toBe(actors[1].id);
+                    // Actor 1 has 3 totalScreenTime
+                    expect(gqlMovie.actors[1].id).toBe(actors[0].id);
+                });
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovie: { id: string; actors: Array<{ id: string }> } = (gqlResult.data as any)?.movies[0];
+                    expect(gqlMovie).toBeDefined();
+
+                    expect(gqlMovie.id).toBe(movies[1].id);
+                    // Actor 1 has 3 totalScreenTime
+                    expect(gqlMovie.actors[0].id).toBe(actors[0].id);
+                    // Actor 2 has 1 totalScreenTime
+                    expect(gqlMovie.actors[1].id).toBe(actors[1].id);
+                });
+            });
+        });
+    });
+
+    describe("on interface relationship", () => {
+        describe("primitive fields", () => {
+            const gqlResultByTypeFromSource = (source: string) => (direction: "ASC" | "DESC") =>
+                graphql({
+                    schema,
+                    source,
+                    contextValue: { driver },
+                    variableValues: { actorId: actors[0].id, direction },
+                });
+            describe("with field in selection set", () => {
+                const queryWithSortField = `
+                        query ($actorId: ID!, $direction: SortDirection!) {
+                            actors(where: { id: $actorId }) {
+                                id
+                                actedIn(options: { sort: [{ title: $direction }] }) {
                                     id
+                                    title
+                                }
+                            }
+                        }
+                    `;
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithSortField);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    expect(gqlActor.id).toEqual(actors[0].id);
+
+                    const { actedIn: production } = gqlActor;
+                    expect(production).toHaveLength(4);
+                    expect(production[0].id).toBe(movies[0].id);
+                    expect(production[1].id).toBe(movies[1].id);
+                    expect(production[2].id).toBe(series[0].id);
+                    expect(production[3].id).toBe(series[1].id);
+                });
+
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    expect(gqlActor.id).toEqual(actors[0].id);
+
+                    const { actedIn: production } = gqlActor;
+                    expect(gqlActor.actedIn).toHaveLength(4);
+                    expect(production[0].id).toBe(series[1].id);
+                    expect(production[1].id).toBe(series[0].id);
+                    expect(production[2].id).toBe(movies[1].id);
+                    expect(production[3].id).toBe(movies[0].id);
+                });
+            });
+
+            describe("with field aliased in selection set", () => {
+                const queryWithAliasedSortField = `
+                    query ($actorId: ID!, $direction: SortDirection!) {
+                        actors(where: { id: $actorId }) {
+                            id
+                            actedIn(options: { sort: [{ title: $direction }] }) {
+                                id
+                                aliased: title
+                            }
+                        }
+                    }
+                `;
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithAliasedSortField);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    expect(gqlActor.id).toEqual(actors[0].id);
+
+                    const { actedIn: production } = gqlActor;
+                    expect(production).toHaveLength(4);
+                    expect(production[0].id).toBe(movies[0].id);
+                    expect(production[1].id).toBe(movies[1].id);
+                    expect(production[2].id).toBe(series[0].id);
+                    expect(production[3].id).toBe(series[1].id);
+                });
+
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    expect(gqlActor.id).toEqual(actors[0].id);
+
+                    const { actedIn: production } = gqlActor;
+                    expect(gqlActor.actedIn).toHaveLength(4);
+                    expect(production[0].id).toBe(series[1].id);
+                    expect(production[1].id).toBe(series[0].id);
+                    expect(production[2].id).toBe(movies[1].id);
+                    expect(production[3].id).toBe(movies[0].id);
+                });
+            });
+
+            describe("with field not in selection set", () => {
+                const queryWithOutSortField = `
+                    query ($actorId: ID!, $direction: SortDirection!) {
+                        actors(where: { id: $actorId }) {
+                            id
+                            actedIn(options: { sort: [{ title: $direction }] }) {
+                                id
+                            }
+                        }
+                    }
+                `;
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithOutSortField);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    expect(gqlActor.id).toEqual(actors[0].id);
+
+                    const { actedIn: production } = gqlActor;
+                    expect(production).toHaveLength(4);
+                    expect(production[0].id).toBe(movies[0].id);
+                    expect(production[1].id).toBe(movies[1].id);
+                    expect(production[2].id).toBe(series[0].id);
+                    expect(production[3].id).toBe(series[1].id);
+                });
+
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    expect(gqlActor.id).toEqual(actors[0].id);
+
+                    const { actedIn: production } = gqlActor;
+                    expect(gqlActor.actedIn).toHaveLength(4);
+                    expect(production[0].id).toBe(series[1].id);
+                    expect(production[1].id).toBe(series[0].id);
+                    expect(production[2].id).toBe(movies[1].id);
+                    expect(production[3].id).toBe(movies[0].id);
+                });
+            });
+        });
+    });
+
+    describe("on interface connection", () => {
+        const gqlResultByTypeFromSource = (source: string) => (direction: "ASC" | "DESC") =>
+            graphql({
+                schema,
+                source,
+                contextValue: { driver },
+                variableValues: { actorId: actors[0].id, direction },
+            });
+        describe("node", () => {
+            describe("field in selection set", () => {
+                const queryWithSortField = `
+                        query ($actorId: ID!, $direction: SortDirection!) {
+                            actors(where: { id: $actorId }) {
+                                id
+                                actedInConnection(sort: [{ node: { title: $direction } }]) {
+                                    edges {
+                                        node {
+                                            id
+                                            title
+                                        }
+                                    }
                                 }
                             }
                         }
                     `;
 
-                    try {
-                        await session.run(`
-                            CREATE (m:Movie {id: "${movieId}"})
-                            CREATE (g1:Genre {id: "1"})
-                            CREATE (g2:Genre {id: "2"})
-                            MERGE (m)-[:HAS_GENRE]->(g1)
-                            MERGE (m)-[:HAS_GENRE]->(g2)
-                        `);
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithSortField);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
 
-                        const gqlResult = await graphql({
-                            schema: neoSchema.schema,
-                            source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                        });
+                    expect(gqlResult.errors).toBeUndefined();
 
-                        expect(gqlResult.errors).toBeUndefined();
+                    const [gqlActor] = gqlResult.data?.actors as any[];
 
-                        const { genres } = (gqlResult.data as any).movies[0];
+                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.actedInConnection.edges).toHaveLength(4);
+                    expect(gqlActor.actedInConnection.edges[0].node.id).toBe(movies[0].id);
+                    expect(gqlActor.actedInConnection.edges[1].node.id).toBe(movies[1].id);
+                    expect(gqlActor.actedInConnection.edges[2].node.id).toBe(series[0].id);
+                    expect(gqlActor.actedInConnection.edges[3].node.id).toBe(series[1].id);
+                });
 
-                        /* eslint-disable jest/no-conditional-expect */
-                        if (type === "ASC") {
-                            expect(genres[0].id).toEqual("1");
-                            expect(genres[1].id).toEqual("2");
-                        }
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
 
-                        if (type === "DESC") {
-                            expect(genres[0].id).toEqual("2");
-                            expect(genres[1].id).toEqual("1");
-                        }
-                        /* eslint-enable jest/no-conditional-expect */
-                    } finally {
-                        await session.close();
-                    }
-                })
-            );
-        });
-    });
+                    expect(gqlResult.errors).toBeUndefined();
 
-    describe("cypher fields", () => {
-        let session: Session;
+                    const [gqlActor] = gqlResult.data?.actors as any[];
 
-        const typeDefs = gql`
-            type Movie {
-                title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            }
-            type Actor {
-                name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-                totalScreenTime: Int!
-                    @cypher(
-                        statement: """
-                        MATCH (this)-[r:ACTED_IN]->(:Movie)
-                        RETURN sum(r.screenTime)
-                        """
-                    )
-            }
-            interface ActedIn {
-                screenTime: Int!
-            }
-        `;
-
-        const { schema } = new Neo4jGraphQL({ typeDefs });
-
-        const title1 = generate({
-            charset: "alphabetic",
-        });
-        const title2 = generate({
-            charset: "alphabetic",
-        });
-        const name1 = generate({
-            charset: "alphabetic",
-        });
-        const name2 = generate({
-            charset: "alphabetic",
-        });
-
-        beforeAll(async () => {
-            session = driver.session();
-            await session.run(
-                `
-                        CREATE (m1:Movie {title: $title1})
-                        CREATE (m2:Movie {title: $title2})
-                        CREATE (a1:Actor {name: $name1})
-                        CREATE (a2:Actor {name: $name2})
-                        MERGE (a1)-[:ACTED_IN {screenTime: 1}]->(m1)<-[:ACTED_IN {screenTime: 1}]-(a2)
-                        MERGE (a1)-[:ACTED_IN {screenTime: 1}]->(m2)
-                    `,
-                {
-                    title1,
-                    title2,
-                    name1,
-                    name2,
-                }
-            );
-        });
-
-        afterAll(async () => {
-            await session.close();
-        });
-
-        test("should sort DESC on top level", async () => {
-            const query = gql`
-                query($actorNames: [String!]!, $direction: SortDirection!) {
-                    actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
-                        name
-                        totalScreenTime
-                    }
-                }
-            `;
-
-            const graphqlResult = await graphql({
-                schema,
-                source: query.loc!.source,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                variableValues: { actorNames: [name1, name2], direction: "DESC" },
+                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.actedInConnection.edges).toHaveLength(4);
+                    expect(gqlActor.actedInConnection.edges[0].node.id).toBe(series[1].id);
+                    expect(gqlActor.actedInConnection.edges[1].node.id).toBe(series[0].id);
+                    expect(gqlActor.actedInConnection.edges[2].node.id).toBe(movies[1].id);
+                    expect(gqlActor.actedInConnection.edges[3].node.id).toBe(movies[0].id);
+                });
             });
 
-            expect(graphqlResult.errors).toBeUndefined();
-
-            const graphqlActors = graphqlResult.data?.actors;
-
-            expect(graphqlActors).toHaveLength(2);
-
-            expect(graphqlActors[0].name).toEqual(name1);
-            expect(graphqlActors[0].totalScreenTime).toEqual(2);
-            expect(graphqlActors[1].name).toEqual(name2);
-            expect(graphqlActors[1].totalScreenTime).toEqual(1);
-        });
-
-        test("should sort ASC on top level", async () => {
-            const query = gql`
-                query($actorNames: [String!]!, $direction: SortDirection!) {
-                    actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
-                        name
-                        totalScreenTime
-                    }
-                }
-            `;
-
-            const graphqlResult = await graphql({
-                schema,
-                source: query.loc!.source,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                variableValues: { actorNames: [name1, name2], direction: "ASC" },
-            });
-
-            expect(graphqlResult.errors).toBeUndefined();
-
-            const graphqlActors = graphqlResult.data?.actors;
-
-            expect(graphqlActors).toHaveLength(2);
-
-            expect(graphqlActors[0].name).toEqual(name2);
-            expect(graphqlActors[0].totalScreenTime).toEqual(1);
-            expect(graphqlActors[1].name).toEqual(name1);
-            expect(graphqlActors[1].totalScreenTime).toEqual(2);
-        });
-
-        test("should sort ASC on nested level", async () => {
-            const query = gql`
-                query($title: String!, $actorNames: [String!]!, $direction: SortDirection!) {
-                    movies(where: { title: $title }) {
-                        title
-                        actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
-                            name
-                            totalScreenTime
+            describe("field aliased in selection set", () => {
+                const queryWithAliasedSortField = `
+                        query ($actorId: ID!, $direction: SortDirection!) {
+                            actors(where: { id: $actorId }) {
+                                id
+                                actedInConnection(sort: [{ node: { title: $direction } }]) {
+                                    edges {
+                                        node {
+                                            id
+                                            aliased: title
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
-            `;
+                    `;
 
-            const graphqlResult = await graphql({
-                schema,
-                source: query.loc!.source,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                variableValues: { title: title1, actorNames: [name1, name2], direction: "ASC" },
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithAliasedSortField);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+
+                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.actedInConnection.edges).toHaveLength(4);
+                    expect(gqlActor.actedInConnection.edges[0].node.id).toBe(movies[0].id);
+                    expect(gqlActor.actedInConnection.edges[1].node.id).toBe(movies[1].id);
+                    expect(gqlActor.actedInConnection.edges[2].node.id).toBe(series[0].id);
+                    expect(gqlActor.actedInConnection.edges[3].node.id).toBe(series[1].id);
+                });
+
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+
+                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.actedInConnection.edges).toHaveLength(4);
+                    expect(gqlActor.actedInConnection.edges[0].node.id).toBe(series[1].id);
+                    expect(gqlActor.actedInConnection.edges[1].node.id).toBe(series[0].id);
+                    expect(gqlActor.actedInConnection.edges[2].node.id).toBe(movies[1].id);
+                    expect(gqlActor.actedInConnection.edges[3].node.id).toBe(movies[0].id);
+                });
             });
 
-            expect(graphqlResult.errors).toBeUndefined();
-
-            const graphqlMovies = graphqlResult.data?.movies;
-
-            expect(graphqlMovies).toHaveLength(1);
-            expect(graphqlMovies[0].title).toBe(title1);
-
-            const graphqlActors = graphqlResult.data?.movies[0].actors;
-
-            expect(graphqlActors).toHaveLength(2);
-
-            expect(graphqlActors[0].name).toEqual(name2);
-            expect(graphqlActors[0].totalScreenTime).toEqual(1);
-            expect(graphqlActors[1].name).toEqual(name1);
-            expect(graphqlActors[1].totalScreenTime).toEqual(2);
-        });
-
-        test("should sort DESC on nested level", async () => {
-            const query = gql`
-                query($title: String!, $actorNames: [String!]!, $direction: SortDirection!) {
-                    movies(where: { title: $title }) {
-                        title
-                        actors(where: { name_IN: $actorNames }, options: { sort: [{ totalScreenTime: $direction }] }) {
-                            name
-                            totalScreenTime
+            describe("field not in selection set", () => {
+                const queryWithoutSortField = `
+                        query ($actorId: ID!, $direction: SortDirection!) {
+                            actors(where: { id: $actorId }) {
+                                id
+                                actedInConnection(sort: [{ node: { title: $direction } }]) {
+                                    edges {
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
-            `;
+                    `;
 
-            const graphqlResult = await graphql({
-                schema,
-                source: query.loc!.source,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                variableValues: { title: title1, actorNames: [name1, name2], direction: "DESC" },
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithoutSortField);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+
+                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.actedInConnection.edges).toHaveLength(4);
+                    expect(gqlActor.actedInConnection.edges[0].node.id).toBe(movies[0].id);
+                    expect(gqlActor.actedInConnection.edges[1].node.id).toBe(movies[1].id);
+                    expect(gqlActor.actedInConnection.edges[2].node.id).toBe(series[0].id);
+                    expect(gqlActor.actedInConnection.edges[3].node.id).toBe(series[1].id);
+                });
+
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+
+                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.actedInConnection.edges).toHaveLength(4);
+                    expect(gqlActor.actedInConnection.edges[0].node.id).toBe(series[1].id);
+                    expect(gqlActor.actedInConnection.edges[1].node.id).toBe(series[0].id);
+                    expect(gqlActor.actedInConnection.edges[2].node.id).toBe(movies[1].id);
+                    expect(gqlActor.actedInConnection.edges[3].node.id).toBe(movies[0].id);
+                });
+            });
+        });
+        describe("edge", () => {
+            describe("field in selection set", () => {
+                const queryWithSortField = `
+                        query ($actorId: ID!, $direction: SortDirection!) {
+                            actors(where: { id: $actorId }) {
+                                id
+                                actedInConnection(sort: [{ edge: { screenTime: $direction } }]) {
+                                    edges {
+                                        screenTime
+                                        node {
+                                            id
+                                            title
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    `;
+
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithSortField);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+
+                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.actedInConnection.edges).toHaveLength(4);
+                    expect(gqlActor.actedInConnection.edges[0].node.id).toBe(movies[1].id);
+                    expect(gqlActor.actedInConnection.edges[1].node.id).toBe(movies[0].id);
+                    expect(gqlActor.actedInConnection.edges[2].node.id).toBe(series[1].id);
+                    expect(gqlActor.actedInConnection.edges[3].node.id).toBe(series[0].id);
+                });
+
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+
+                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.actedInConnection.edges).toHaveLength(4);
+                    expect(gqlActor.actedInConnection.edges[0].node.id).toBe(series[0].id);
+                    expect(gqlActor.actedInConnection.edges[1].node.id).toBe(series[1].id);
+                    expect(gqlActor.actedInConnection.edges[2].node.id).toBe(movies[0].id);
+                    expect(gqlActor.actedInConnection.edges[3].node.id).toBe(movies[1].id);
+                });
             });
 
-            expect(graphqlResult.errors).toBeUndefined();
+            describe("field aliased in selection set", () => {
+                const queryWithAliasedSortField = `
+                        query ($actorId: ID!, $direction: SortDirection!) {
+                            actors(where: { id: $actorId }) {
+                                id
+                                actedInConnection(sort: [{ edge: { screenTime: $direction } }]) {
+                                    edges {
+                                        aliased: screenTime
+                                        node {
+                                            id
+                                            title
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    `;
 
-            const graphqlMovies = graphqlResult.data?.movies;
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithAliasedSortField);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
 
-            expect(graphqlMovies).toHaveLength(1);
-            expect(graphqlMovies[0].title).toBe(title1);
+                    expect(gqlResult.errors).toBeUndefined();
 
-            const graphqlActors = graphqlResult.data?.movies[0].actors;
+                    const [gqlActor] = gqlResult.data?.actors as any[];
 
-            expect(graphqlActors).toHaveLength(2);
+                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.actedInConnection.edges).toHaveLength(4);
+                    expect(gqlActor.actedInConnection.edges[0].node.id).toBe(movies[1].id);
+                    expect(gqlActor.actedInConnection.edges[1].node.id).toBe(movies[0].id);
+                    expect(gqlActor.actedInConnection.edges[2].node.id).toBe(series[1].id);
+                    expect(gqlActor.actedInConnection.edges[3].node.id).toBe(series[0].id);
+                });
 
-            expect(graphqlActors[0].name).toEqual(name1);
-            expect(graphqlActors[0].totalScreenTime).toEqual(2);
-            expect(graphqlActors[1].name).toEqual(name2);
-            expect(graphqlActors[1].totalScreenTime).toEqual(1);
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+
+                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.actedInConnection.edges).toHaveLength(4);
+                    expect(gqlActor.actedInConnection.edges[0].node.id).toBe(series[0].id);
+                    expect(gqlActor.actedInConnection.edges[1].node.id).toBe(series[1].id);
+                    expect(gqlActor.actedInConnection.edges[2].node.id).toBe(movies[0].id);
+                    expect(gqlActor.actedInConnection.edges[3].node.id).toBe(movies[1].id);
+                });
+            });
+
+            describe("field not in selection set", () => {
+                const queryWithoutSortField = `
+                        query ($actorId: ID!, $direction: SortDirection!) {
+                            actors(where: { id: $actorId }) {
+                                id
+                                actedInConnection(sort: [{ edge: { screenTime: $direction } }]) {
+                                    edges {
+                                        node {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    `;
+
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithoutSortField);
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+
+                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.actedInConnection.edges).toHaveLength(4);
+                    expect(gqlActor.actedInConnection.edges[0].node.id).toBe(movies[1].id);
+                    expect(gqlActor.actedInConnection.edges[1].node.id).toBe(movies[0].id);
+                    expect(gqlActor.actedInConnection.edges[2].node.id).toBe(series[1].id);
+                    expect(gqlActor.actedInConnection.edges[3].node.id).toBe(series[0].id);
+                });
+
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [gqlActor] = gqlResult.data?.actors as any[];
+
+                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.actedInConnection.edges).toHaveLength(4);
+                    expect(gqlActor.actedInConnection.edges[0].node.id).toBe(series[0].id);
+                    expect(gqlActor.actedInConnection.edges[1].node.id).toBe(series[1].id);
+                    expect(gqlActor.actedInConnection.edges[2].node.id).toBe(movies[0].id);
+                    expect(gqlActor.actedInConnection.edges[3].node.id).toBe(movies[1].id);
+                });
+            });
         });
     });
 });

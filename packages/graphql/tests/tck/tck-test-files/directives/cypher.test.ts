@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher directive", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -109,7 +108,7 @@ describe("Cypher directive", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -139,11 +138,8 @@ describe("Cypher directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);
@@ -171,11 +167,8 @@ describe("Cypher directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);
@@ -212,11 +205,8 @@ describe("Cypher directive", () => {
             "{
                 \\"this_topActor_movies_title\\": \\"some title\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);
@@ -262,11 +252,8 @@ describe("Cypher directive", () => {
                 \\"this_topActor_movies_topActor_movies_title\\": \\"another title\\",
                 \\"this_topActor_movies_title\\": \\"some title\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);
@@ -303,11 +290,8 @@ describe("Cypher directive", () => {
             "{
                 \\"this_topActor_movies_title\\": \\"some title\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);
@@ -355,11 +339,8 @@ describe("Cypher directive", () => {
             "{
                 \\"this_movieOrTVShow_title\\": \\"some title\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);

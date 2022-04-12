@@ -49,16 +49,17 @@ const typeDefs = `
     }
 `;
 
-const driver = neo4j.driver(
-    "bolt://localhost:7687",
-    neo4j.auth.basic("admin", "password")
-);
+const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("admin", "password"));
 
 const ogm = new OGM({ typeDefs, driver });
 
-const Movie = ogm.model("Movie");
+async function main() {
+    await ogm.init();
 
-const [theMatrix] = await Movie.find({ where: { name: "The Matrix" } });
+    const Movie = ogm.model("Movie");
+
+    const [theMatrix] = await Movie.find({ where: { name: "The Matrix" } });
+}
 ```
 
 ## Licence

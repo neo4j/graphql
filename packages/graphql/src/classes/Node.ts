@@ -18,28 +18,30 @@
  */
 
 import { DirectiveNode, NamedTypeNode } from "graphql";
-import camelCase from "camelcase";
+import camelcase from "camelcase";
 import pluralize from "pluralize";
 import type {
-    RelationField,
+    Auth,
     ConnectionField,
-    CypherField,
-    PrimitiveField,
+    Context,
     CustomEnumField,
     CustomScalarField,
-    UnionField,
+    CypherField,
+    FullText,
+    ComputedField,
     InterfaceField,
     ObjectField,
-    TemporalField,
     PointField,
-    Auth,
-    BaseField,
-    Context,
-    FullText,
+    PrimitiveField,
+    RelationField,
+    TemporalField,
+    UnionField,
 } from "../types";
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
+import { QueryOptionsDirective } from "./QueryOptionsDirective";
+import { upperFirst } from "../utils/upper-first";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -56,12 +58,13 @@ export interface NodeConstructor extends GraphElementConstructor {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    ignoredFields: BaseField[];
+    computedFields: ComputedField[];
     auth?: Auth;
     fulltextDirective?: FullText;
     exclude?: Exclude;
     nodeDirective?: NodeDirective;
     description?: string;
+    queryOptionsDirective?: QueryOptionsDirective;
 }
 
 type MutableField =
@@ -84,9 +87,25 @@ type AuthableField =
     | PointField
     | CypherField;
 
-type SortableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | PointField | CypherField;
-
 type ConstrainableField = PrimitiveField | TemporalField | PointField;
+
+export type RootTypeFieldNames = {
+    create: string;
+    read: string;
+    update: string;
+    delete: string;
+    aggregate: string;
+};
+
+export type AggregateTypeNames = {
+    selection: string;
+    input: string;
+};
+
+export type MutationResponseTypeNames = {
+    create: string;
+    update: string;
+};
 
 class Node extends GraphElement {
     public relationFields: RelationField[];
@@ -102,6 +121,8 @@ class Node extends GraphElement {
     public fulltextDirective?: FullText;
     public auth?: Auth;
     public description?: string;
+    public queryOptions?: QueryOptionsDirective;
+    public plural: string;
 
     constructor(input: NodeConstructor) {
         super(input);
@@ -117,6 +138,20 @@ class Node extends GraphElement {
         this.nodeDirective = input.nodeDirective;
         this.fulltextDirective = input.fulltextDirective;
         this.auth = input.auth;
+        this.queryOptions = input.queryOptionsDirective;
+        this.plural = this.generatePlural();
+    }
+
+    private generatePlural(): string {
+        const name = this.nodeDirective?.plural || this.name;
+
+        const re = /^(_+).+/;
+        const match = re.exec(name);
+        const leadingUnderscores = match?.[1] || "";
+
+        const plural = this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
+
+        return `${leadingUnderscores}${plural}`;
     }
 
     // Fields you can set in a create or update mutation
@@ -148,39 +183,44 @@ class Node extends GraphElement {
         ];
     }
 
-    /** Fields you can sort on */
-    public get sortableFields(): SortableField[] {
-        return [
-            ...this.primitiveFields,
-            ...this.scalarFields,
-            ...this.enumFields,
-            ...this.temporalFields,
-            ...this.pointFields,
-            ...this.cypherFields.filter((field) =>
-                [
-                    "Boolean",
-                    "ID",
-                    "Int",
-                    "BigInt",
-                    "Float",
-                    "String",
-                    "DateTime",
-                    "LocalDateTime",
-                    "Time",
-                    "LocalTime",
-                    "Date",
-                    "Duration",
-                ].includes(field.typeMeta.name)
-            ),
-        ].filter((field) => !field.typeMeta.array);
-    }
-
     public get constrainableFields(): ConstrainableField[] {
         return [...this.primitiveFields, ...this.temporalFields, ...this.pointFields];
     }
 
     public get uniqueFields(): ConstrainableField[] {
         return this.constrainableFields.filter((field) => field.unique);
+    }
+
+    private get pascalCasePlural(): string {
+        return upperFirst(this.plural);
+    }
+
+    public get rootTypeFieldNames(): RootTypeFieldNames {
+        const pascalCasePlural = this.pascalCasePlural;
+
+        return {
+            create: `create${pascalCasePlural}`,
+            read: this.plural,
+            update: `update${pascalCasePlural}`,
+            delete: `delete${pascalCasePlural}`,
+            aggregate: `${this.plural}Aggregate`,
+        };
+    }
+
+    public get aggregateTypeNames(): AggregateTypeNames {
+        return {
+            selection: `${this.name}AggregateSelection`,
+            input: `${this.name}AggregateSelectionInput`,
+        };
+    }
+
+    public get mutationResponseTypeNames(): MutationResponseTypeNames {
+        const pascalCasePlural = this.pascalCasePlural;
+
+        return {
+            create: `Create${pascalCasePlural}MutationResponse`,
+            update: `Update${pascalCasePlural}MutationResponse`,
+        };
     }
 
     public getLabelString(context: Context): string {
@@ -193,14 +233,6 @@ class Node extends GraphElement {
 
     public getMainLabel(): string {
         return this.nodeDirective?.label || this.name;
-    }
-
-    public getPlural(options: { camelCase: boolean }): string {
-        // camelCase is optional in this case to maintain backward compatibility
-        if (this.nodeDirective?.plural) {
-            return options.camelCase ? camelCase(this.nodeDirective.plural) : this.nodeDirective.plural;
-        }
-        return pluralize(options.camelCase ? camelCase(this.name) : this.name);
     }
 }
 

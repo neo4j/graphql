@@ -63,7 +63,7 @@ describe("cypherParams", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source,
                 contextValue: { driver, cypherParams: { id } },
             });
@@ -83,7 +83,7 @@ describe("cypherParams", () => {
             type CypherParams {
                 id: ID
             }
-            
+
             type Movie {
               id: ID
               cypherParams: CypherParams @cypher(statement: "RETURN $cypherParams")
@@ -121,7 +121,7 @@ describe("cypherParams", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source,
                 variableValues: {
                     id: movieId,
@@ -171,7 +171,7 @@ describe("cypherParams", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source,
                 contextValue: { driver, cypherParams: { id } },
             });

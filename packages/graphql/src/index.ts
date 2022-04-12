@@ -17,9 +17,6 @@
  * limitations under the License.
  */
 
-import { upperFirst } from "graphql-compose";
-
-export { upperFirst };
 export {
     DriverConfig,
     GraphQLOptionsArg,
@@ -33,7 +30,9 @@ export {
     CypherPlanner,
     CypherReplanning,
     CypherRuntime,
+    Neo4jGraphQLAuthPlugin,
     CypherUpdateStrategy,
+    Node,
 } from "./types";
 export {
     Neo4jGraphQL,

@@ -18,5 +18,6 @@
     ],
     "tag_resolver": {
         "method": "sort"
-    }
+    },
+    "base_branches": ["dev"]
 }

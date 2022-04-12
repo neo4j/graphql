@@ -20,7 +20,7 @@
 import { DirectiveNode, valueFromASTUntyped, ArgumentNode } from "graphql";
 import { Exclude } from "../classes";
 
-function parseExcludeDirective(excludeDirective: DirectiveNode) {
+function parseExcludeDirective(excludeDirective: DirectiveNode | undefined | null) {
     if (!excludeDirective || excludeDirective.name.value !== "exclude") {
         throw new Error("Undefined or incorrect directive passed into parseExcludeDirective function");
     }
@@ -33,7 +33,7 @@ function parseExcludeDirective(excludeDirective: DirectiveNode) {
 
     const operations = excludeDirective.arguments?.find((a) => a.name.value === "operations") as ArgumentNode;
 
-    const argumentValue = valueFromASTUntyped(operations.value);
+    const argumentValue = valueFromASTUntyped(operations.value) as string[];
 
     const result = argumentValue.map((val: string) => val.toLowerCase());
 

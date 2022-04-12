@@ -79,8 +79,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
     test("Can introspect and generate single label with single property", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -100,13 +99,14 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Can introspect and generate single label with multiple properties of different types", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -132,13 +132,14 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Can introspect and generate multiple labels with multiple properties of different types", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -166,13 +167,14 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Can introspect and generate additional labels", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -200,13 +202,14 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Can introspect and generate label with unsupported characters in labels", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -233,14 +236,15 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
 
     test("Can introspect and generate label that starts with a number", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -257,14 +261,14 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             }"
         `);
 
-        // TODO: Uncomment when there's support in Neo4j GraphQL
-        // expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Should not include properties with ambiguous types", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -272,7 +276,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
             tx.run(
-                `CREATE (:FullNode {amb: $props.str, str: $props.str}) 
+                `CREATE (:FullNode {amb: $props.str, str: $props.str})
                 CREATE (:FullNode {amb: $props.int, str: $props.str})
                 CREATE (:OnlyAmb {amb: $props.str})
                 CREATE (:OnlyAmb {amb: $props.int})
@@ -291,13 +295,14 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Should not include types with no fields or no labels", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -316,13 +321,14 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Should include types with no prop fields but relationship fields", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -344,13 +350,14 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Can generate a readonly typeDefs and combine directives", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -377,6 +384,9 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             	singleProp: BigInt!
             }"
         `);
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
 });

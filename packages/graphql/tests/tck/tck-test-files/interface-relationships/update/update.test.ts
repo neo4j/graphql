@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Update update", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -59,7 +58,7 @@ describe("Interface Relationships - Update update", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -114,11 +113,8 @@ describe("Interface Relationships - Update update", () => {
             "{
                 \\"this_update_actedIn0_title\\": \\"New Title\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 },
                 \\"updateActors\\": {
                     \\"args\\": {
@@ -210,11 +206,8 @@ describe("Interface Relationships - Update update", () => {
             "{
                 \\"this_update_actedIn0_actors0_name\\": \\"New Actor Name\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 },
                 \\"updateActors\\": {
                     \\"args\\": {
@@ -308,11 +301,8 @@ describe("Interface Relationships - Update update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 },
                 \\"this_update_actedIn0_on_Movie_actors0_name\\": \\"New Actor Name\\",
                 \\"updateActors\\": {
@@ -421,11 +411,8 @@ describe("Interface Relationships - Update update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 },
                 \\"this_update_actedIn0_on_Movie_actors0_name\\": \\"Different Actor Name\\",
                 \\"this_update_actedIn0_actors0_name\\": \\"New Actor Name\\",

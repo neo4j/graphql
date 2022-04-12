@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../src";
@@ -43,7 +44,7 @@ describe("Cypher Auth isAuthenticated", () => {
                 id: ID
                 name: String
                 password: String
-                posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
             extend type User
@@ -66,7 +67,12 @@ describe("Cypher Auth isAuthenticated", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 

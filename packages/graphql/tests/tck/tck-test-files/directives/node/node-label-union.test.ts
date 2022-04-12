@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
@@ -38,13 +39,18 @@ describe("Node directive with unions", () => {
 
             type Movie @node(label: "Film") {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 

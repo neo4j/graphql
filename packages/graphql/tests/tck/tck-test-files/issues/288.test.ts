@@ -24,7 +24,6 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#288", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -33,24 +32,24 @@ describe("#288", () => {
             type USER {
                 USERID: String
                 COMPANYID: String
-                COMPANY: [COMPANY] @relationship(type: "IS_PART_OF", direction: OUT)
+                COMPANY: [COMPANY!]! @relationship(type: "IS_PART_OF", direction: OUT)
             }
 
             type COMPANY {
-                USERS: [USER] @relationship(type: "IS_PART_OF", direction: IN)
+                USERS: [USER!]! @relationship(type: "IS_PART_OF", direction: IN)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
     test("Can create a USER and COMPANYID is populated", async () => {
         const query = gql`
             mutation {
-                createUSERS(input: { USERID: "userid", COMPANYID: "companyid" }) {
+                createUsers(input: { USERID: "userid", COMPANYID: "companyid" }) {
                     users {
                         USERID
                         COMPANYID
@@ -86,7 +85,7 @@ describe("#288", () => {
     test("Can update a USER and COMPANYID is populated", async () => {
         const query = gql`
             mutation {
-                updateUSERS(where: { USERID: "userid" }, update: { COMPANYID: "companyid2" }) {
+                updateUsers(where: { USERID: "userid" }, update: { COMPANYID: "companyid2" }) {
                     users {
                         USERID
                         COMPANYID

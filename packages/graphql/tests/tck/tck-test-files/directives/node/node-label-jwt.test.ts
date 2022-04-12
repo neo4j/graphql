@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
@@ -33,19 +34,24 @@ describe("Label in Node directive", () => {
             type Actor @node(additionalLabels: ["$jwt.personlabel"]) {
                 name: String
                 age: Int
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie @node(label: "$jwt.movielabel") {
                 id: ID
                 title: String
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 

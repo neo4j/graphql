@@ -33,7 +33,7 @@ describe("getFieldTypeMeta", () => {
         // @ts-ignore
         const field = node.fields[0];
 
-        expect(() => getFieldTypeMeta(field)).toThrow("Matrix arrays not supported");
+        expect(() => getFieldTypeMeta(field.type)).toThrow("Matrix arrays not supported");
     });
 
     test("should return NonNullType ListType type name", () => {
@@ -48,7 +48,7 @@ describe("getFieldTypeMeta", () => {
         // @ts-ignore
         const field = node.fields[0];
 
-        const res = getFieldTypeMeta(field);
+        const res = getFieldTypeMeta(field.type);
 
         expect(res).toMatchObject({
             name: "ABC",
@@ -70,7 +70,7 @@ describe("getFieldTypeMeta", () => {
         // @ts-ignore
         const field = node.fields[0];
 
-        const res = getFieldTypeMeta(field);
+        const res = getFieldTypeMeta(field.type);
 
         expect(res).toMatchObject({
             name: "ABC",
@@ -92,7 +92,7 @@ describe("getFieldTypeMeta", () => {
         // @ts-ignore
         const field = node.fields[0];
 
-        const res = getFieldTypeMeta(field);
+        const res = getFieldTypeMeta(field.type);
 
         expect(res).toMatchObject({
             name: "String",
@@ -114,7 +114,7 @@ describe("getFieldTypeMeta", () => {
         // @ts-ignore
         const field = node.fields[0];
 
-        const res = getFieldTypeMeta(field);
+        const res = getFieldTypeMeta(field.type);
 
         expect(res).toMatchObject({
             name: "ABC",
@@ -136,7 +136,7 @@ describe("getFieldTypeMeta", () => {
         // @ts-ignore
         const field = node.fields[0];
 
-        const res = getFieldTypeMeta(field);
+        const res = getFieldTypeMeta(field.type);
 
         expect(res).toMatchObject({
             name: "ABC",

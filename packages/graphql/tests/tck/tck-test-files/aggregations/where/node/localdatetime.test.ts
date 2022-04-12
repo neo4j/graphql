@@ -24,7 +24,6 @@ import { formatCypher, translateQuery, formatParams } from "../../../../utils/tc
 import { createJwtRequest } from "../../../../../utils/create-jwt-request";
 
 describe("Cypher Aggregations where node with LocalDateTime", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -37,13 +36,13 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
 
             type Post {
                 content: String!
-                likes: [User] @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 

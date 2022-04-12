@@ -17,8 +17,8 @@ This tool has full support for generating type definitions, including:
 
 == Limitations
 
-If an element property has mixed types through out your graph, that property will be excluded from the 
-generated type definitions. The reason for this is that your GraphQL server will throw an error if it 
+If an element property has mixed types through out your graph, that property will be excluded from the
+generated type definitions. The reason for this is that your GraphQL server will throw an error if it
 finds data that doesn't match the specified type.
 
 If any properties are skipped, there will be output in the xref::troubleshooting/index.adoc[Debug Logging].
@@ -84,9 +84,10 @@ async function main() {
     const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
     const server = new ApolloServer({
-        schema: neoSchema.schema,
+        schema: await neoSchema.getSchema(),
         context: ({ req }) => ({ req }),
     });
 }
-main()
+
+main();
 ----

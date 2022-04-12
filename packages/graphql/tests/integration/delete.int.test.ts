@@ -68,7 +68,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -125,7 +125,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id: "NOT FOUND" },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -155,12 +155,12 @@ describe("delete", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -197,7 +197,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id, name },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -237,12 +237,12 @@ describe("delete", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 id: ID
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -289,7 +289,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id1, name, id2 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
@@ -339,12 +339,12 @@ describe("delete", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 title: String
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -380,7 +380,7 @@ describe("delete", () => {
             );
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { name },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },

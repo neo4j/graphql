@@ -21,10 +21,11 @@ import { RelationField, Context } from "../../types";
 import { buildMergeStatement } from "../cypher-builder/build-merge-statement";
 import { CypherStatement } from "../types";
 import { Node } from "../../classes";
-import { joinStatements } from "../utils/join-statements";
 import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { asArray } from "../../utils/utils";
+import { wrapInCall } from "../utils/wrap-in-call";
+import { joinStatements } from "../cypher-builder/join-statements";
 
 type CreateOrConnectInput = {
     where?: {
@@ -43,6 +44,7 @@ export function createConnectOrCreateAndParams({
     relationField,
     refNode,
     context,
+    withVars,
 }: {
     input: CreateOrConnectInput[] | CreateOrConnectInput;
     varName: string;
@@ -50,22 +52,21 @@ export function createConnectOrCreateAndParams({
     relationField: RelationField;
     refNode: Node;
     context: Context;
+    withVars: string[];
 }): CypherStatement {
-    const statements = asArray(input).map(
-        (inputItem, index): CypherStatement => {
-            const subqueryBaseName = `${varName}${index}`;
-            return createConnectOrCreatePartialStatement({
-                input: inputItem,
-                baseName: subqueryBaseName,
-                parentVar,
-                relationField,
-                refNode,
-                context,
-            });
-        }
-    );
-
-    return joinStatements(statements);
+    const statements = asArray(input).map((inputItem, index): CypherStatement => {
+        const subqueryBaseName = `${varName}${index}`;
+        return createConnectOrCreatePartialStatement({
+            input: inputItem,
+            baseName: subqueryBaseName,
+            parentVar,
+            relationField,
+            refNode,
+            context,
+        });
+    });
+    const [statement, params] = joinStatements(statements);
+    return [wrapInCall(statement, withVars), params];
 }
 
 function createConnectOrCreatePartialStatement({
@@ -121,7 +122,7 @@ function mergeRelatedNode({
     const whereNodeParameters = input.where?.node;
     const onCreateNode = input.onCreate?.node;
     return buildMergeStatement({
-        leftNode: {
+        sourceNode: {
             node: refNode,
             varName: baseName,
             parameters: whereNodeParameters,
@@ -146,13 +147,13 @@ function mergeRelation({
 }): CypherStatement {
     const onCreateEdge = input.onCreate?.edge;
     return buildMergeStatement({
-        leftNode: {
+        sourceNode: {
             varName: parentVar,
         },
-        rightNode: {
+        targetNode: {
             varName: baseName,
         },
-        relation: {
+        relationship: {
             relationField,
             onCreate: onCreateEdge,
         },

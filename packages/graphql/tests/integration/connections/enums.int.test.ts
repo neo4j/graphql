@@ -45,12 +45,12 @@ describe("Enum Relationship Properties", () => {
         const typeDefs = `
             type Actor {
                 name: String!
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type Movie {
                 title: String!
-                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             enum RoleType {
@@ -110,7 +110,7 @@ describe("Enum Relationship Properties", () => {
 
         try {
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: create,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { title, name },
