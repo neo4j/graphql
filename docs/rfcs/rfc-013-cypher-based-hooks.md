@@ -110,6 +110,9 @@ Finally, I would like to point out that our `@auth` directive cannot cover all c
 ## Risks
 
 - We'll face similar issues as we did with relationship cardinality - if a node is disconnected as a side effect, we just wouldn't know to execute the hook
+- Security Consideration
+    - Escaping the Cypher
+    - Dynamic Cypher
 
 ## Out of scope
 
@@ -118,3 +121,14 @@ Finally, I would like to point out that our `@auth` directive cannot cover all c
 ## Notes
 
 Actually, creating a Hook system for top-level operations like updating a user property is quite straightforward, the complexity starts to arise when you talk about the nested operations such as connect and disconnect - surely subscribers would want to know if a relationship was upserted too? The great thing about using Cypher hooks is that users don't need to navigate their way through the resolve info to find if a connection has happened because we can append the custom logic just after the connection statement.
+
+## Appetite
+
+3 weeks
+
+## Considerations
+
+1. `this` variable injected into the scope
+2. `target` variable injected into the scope on CONNECT and DISCONNECT
+3. Does the OPERATIONS array need to be different depenant on `pre` and `post`
+4. Combine this will Javascript callback hooks, using the same directive ? 
