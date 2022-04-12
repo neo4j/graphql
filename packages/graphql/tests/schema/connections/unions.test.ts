@@ -869,8 +869,8 @@ describe("Unions", () => {
               booksConnection(after: String, first: Int, sort: [BookSort], where: BookWhere): BooksConnection!
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
               journalsAggregate(where: JournalWhere): JournalAggregateSelection!
-              publications(options: PublicationTopLevelOptions, where: PublicationTopLevelWhere): [Publication!]!
               journalsConnection(after: String, first: Int, sort: [JournalSort], where: JournalWhere): JournalsConnection!
+              publications(options: PublicationTopLevelOptions, where: PublicationTopLevelWhere): [Publication!]!
             }
 
             input QueryOptions {

@@ -83,6 +83,11 @@ describe("schema/rfc/top-level-unions", () => {
               title: String!
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -118,6 +123,12 @@ describe("schema/rfc/top-level-unions", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
@@ -125,6 +136,14 @@ describe("schema/rfc/top-level-unions", () => {
               deleteSeries(where: SeriesWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
             }
 
             union Production = Movie | Series
@@ -142,9 +161,11 @@ describe("schema/rfc/top-level-unions", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               productions(options: ProductionTopLevelOptions, where: ProductionTopLevelWhere): [Production!]!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
             type Series {
@@ -156,8 +177,19 @@ describe("schema/rfc/top-level-unions", () => {
               title: StringAggregateSelectionNonNullable!
             }
 
+            type SeriesConnection {
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             input SeriesCreateInput {
               title: String!
+            }
+
+            type SeriesEdge {
+              cursor: String!
+              node: Series!
             }
 
             input SeriesOptions {

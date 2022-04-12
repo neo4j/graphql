@@ -1509,8 +1509,8 @@ describe("Comments", () => {
                   genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  searches(options: SearchTopLevelOptions, where: SearchTopLevelWhere): [Search!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  searches(options: SearchTopLevelOptions, where: SearchTopLevelWhere): [Search!]!
                 }
 
                 input QueryOptions {
