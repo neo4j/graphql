@@ -111,6 +111,11 @@ describe("Enums", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
             type ActorMovieMoviesAggregationSelection {
               count: Int!
               node: ActorMovieMoviesNodeAggregateSelection
@@ -279,6 +284,12 @@ describe("Enums", () => {
               name_STARTS_WITH: String
             }
 
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -445,6 +456,11 @@ describe("Enums", () => {
               actors: [MovieActorsDisconnectFieldInput!]
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -502,6 +518,12 @@ describe("Enums", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
@@ -522,8 +544,10 @@ describe("Enums", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum RoleType {

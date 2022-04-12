@@ -389,6 +389,7 @@ export default async function translateUpdate({
         }
 
         if (projection[2]?.interfaceFields?.length) {
+            const prevRelationshipFields: string[] = [];
             projection[2].interfaceFields.forEach((interfaceResolveTree) => {
                 const relationshipField = node.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
@@ -398,8 +399,9 @@ export default async function translateUpdate({
                     field: relationshipField,
                     context,
                     nodeVariable: varName,
-                    withVars,
+                    withVars: [...withVars, ...prevRelationshipFields],
                 });
+                prevRelationshipFields.push(relationshipField.dbPropertyName || relationshipField.fieldName);
                 interfaceStrs.push(interfaceProjection.cypher);
                 cypherParams = { ...cypherParams, ...interfaceProjection.params };
             });

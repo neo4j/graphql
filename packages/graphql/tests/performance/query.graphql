@@ -1,0 +1,92 @@
+query SimpleQuery {
+    movies {
+        title
+        actors {
+            name
+        }
+    }
+}
+
+query SimpleQueryWithNestedWhere {
+    movies(where: { actors_SOME: { name: "Keanu Reeves" } }) {
+        title
+        actors {
+            name
+        }
+    }
+}
+
+query DeeplyNested {
+    movies {
+        actors {
+            name
+            movies {
+                title
+                actors {
+                    name
+                    movies {
+                        title
+                        actors {
+                            name
+                        }
+                        directors {
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+query OrFilterOnRelationships {
+    movies(
+        where: {
+            OR: [
+                { actors_SOME: { born: 1997 } }
+                { actors_SOME: { born: 1998 } }
+                { actors_SOME: { born: 1999 } }
+                { actors_SOME: { born: 1956 } }
+                { actors_SOME: { born: 1975 } }
+                { actors_SOME: { born: 1976 } }
+            ]
+        }
+    ) {
+        title
+        actors {
+            name
+            born
+        }
+    }
+}
+
+query OrFilterOnRelationshipsAndNested {
+    movies(
+        where: {
+            OR: [
+                { actors_SOME: { born: 1997 } }
+                { actors_SOME: { born: 1998 } }
+                { actors_SOME: { born: 1956 } }
+                { directors: { movies: { title: "Matrix" } } }
+                { directors: { movies: { title: "foo" } } }
+                { directors: { movies: { title: "bar" } } }
+            ]
+        }
+    ) {
+        title
+        actors {
+            name
+            born
+        }
+    }
+}
+
+query QueryWithNestedIn {
+    movies(where: { actors_SOME: { born_IN: [1997, 1998, 1999, 1956, 1975, 1976] } }) {
+        title
+        actors {
+            name
+            born
+        }
+    }
+}

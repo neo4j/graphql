@@ -25,7 +25,7 @@ const typeDefs = require("./type-definitions");
 
 const neo4jGraphQL = new Neo4jGraphQL({ typeDefs });
 
-const schema = neo4jGraphQL.schema;
+const schema = await neo4jGraphQL.getSchema();
 ----
 
 Additionally, the `Neo4jGraphQL` constructor allows you to pass in a driver instance instead of passing one in the context of each request.

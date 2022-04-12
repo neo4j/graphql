@@ -59,7 +59,7 @@ function translateTopLevelMatch({
                 CALL db.index.fulltext.queryNodes(
                     "${indexName}",
                     $${paramPhraseName}
-                ) YIELD node as this, score as score
+                ) YIELD node as this
             `)
         );
 
@@ -67,25 +67,8 @@ function translateTopLevelMatch({
             node.getLabels(context).forEach((label) => {
                 whereStrs.push(`"${label}" IN labels(${varName})`);
             });
-        }
-
-        if (node.fulltextDirective) {
-            const index = node.fulltextDirective.indexes.find((i) => i.name === indexName);
-            let thresholdParamName = baseParamName;
-            let threshold: number | undefined;
-
-            if (indexInput.score_EQUAL) {
-                thresholdParamName = `${thresholdParamName}_score_EQUAL`;
-                threshold = indexInput.score_EQUAL;
-            } else if (index?.defaultThreshold) {
-                thresholdParamName = `${thresholdParamName}_defaultThreshold`;
-                threshold = index.defaultThreshold;
-            }
-
-            if (threshold !== undefined) {
-                cypherParams[thresholdParamName] = threshold;
-                whereStrs.push(`score = ${thresholdParamName}`);
-            }
+        } else {
+            whereStrs.push(`"${node.getMainLabel()}" IN labels(${varName})`);
         }
     }
 
