@@ -32,7 +32,7 @@ import {
     LOCAL_STATE_TYPE_LAST_PARAMS,
     LOCAL_STATE_TYPE_LAST_QUERY,
 } from "../../constants";
-import { Frame } from "./Frame";
+import { Grid } from "./grid/Grid";
 import { DocExplorer } from "./docexplorer/index";
 import { formatCode, ParserOptions } from "./utils";
 import { Extension } from "../Filename";
@@ -119,7 +119,7 @@ export const Editor = (props: Props) => {
                         </div>
                         <div className="flex-1 flex justify-end"></div>
                     </div>
-                    <Frame
+                    <Grid
                         queryEditor={
                             props.schema ? (
                                 <GraphQLQueryEditor
