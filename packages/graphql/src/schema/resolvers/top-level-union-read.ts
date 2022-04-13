@@ -39,9 +39,10 @@ export default function topLevelUnionReadResolver({ union }: { union: Union }) {
             context,
         });
 
-        const result = Object.entries(executeResult.records[0]).flatMap(([, members]) => members);
+        const record = executeResult.records[0];
+        const result = record && Object.entries(record).flatMap(([, members]) => members);
 
-        return result;
+        return result || [];
     }
 
     return {
@@ -49,7 +50,6 @@ export default function topLevelUnionReadResolver({ union }: { union: Union }) {
         resolve,
         args: {
             where: `${union.whereTypeMeta.name}`,
-            options: `${union.optionsTypeMeta.name}`,
         },
     };
 }

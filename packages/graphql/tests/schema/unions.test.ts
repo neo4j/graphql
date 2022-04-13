@@ -381,7 +381,7 @@ describe("Unions", () => {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              searches(options: SearchTopLevelOptions, where: SearchTopLevelWhere): [Search!]!
+              searches(where: SearchTopLevelWhere): [Search!]!
             }
 
             input QueryOptions {
@@ -390,11 +390,6 @@ describe("Unions", () => {
             }
 
             union Search = Genre | Movie
-
-            input SearchTopLevelOptions {
-              Genre: GenreOptions
-              Movie: MovieOptions
-            }
 
             input SearchTopLevelWhere {
               Genre: GenreWhere

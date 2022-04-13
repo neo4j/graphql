@@ -75,17 +75,7 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
         function mockFunc(...params) {
             calls.push(params);
             return {
-                records: [
-                    {
-                        toObject() {
-                            return {
-                                this: {
-                                    totalCount: 0,
-                                },
-                            };
-                        },
-                    },
-                ],
+                records: [],
                 summary: {
                     counters: {
                         updates() {

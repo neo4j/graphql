@@ -34,7 +34,6 @@ function translateToplevelUnionRead({ union, context }: { union: Union; context:
 
         const toNode = context.nodes.find((n) => n.name === entry[0]) as Node;
         const whereInput = context.resolveTree.args?.where?.[toNode.name] as Record<string, unknown>;
-        const optionsInput = context.resolveTree.args?.options?.[toNode.name] as Record<string, unknown>;
         const varName = `this_${toNode.name}${i}`;
 
         const translatedMember = translateRead({
@@ -43,7 +42,6 @@ function translateToplevelUnionRead({ union, context }: { union: Union; context:
             overrideVarName: varName,
             resolveType: true,
             whereInput,
-            optionsInput,
         });
 
         cypherParams = { ...cypherParams, ...translatedMember[1] };

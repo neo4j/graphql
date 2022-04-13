@@ -59,18 +59,6 @@ export class Union extends AbstractGraphElement {
         };
     }
 
-    public get optionsTypeMeta() {
-        return {
-            name: `${this.name}TopLevelOptions`,
-            fields: this.members.reduce((res, member) => {
-                return {
-                    ...res,
-                    [member.name]: `${member.name}Options`,
-                };
-            }, {}),
-        };
-    }
-
     private generatePlural(): string {
         const name = this.name;
 

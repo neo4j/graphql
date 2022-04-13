@@ -748,7 +748,6 @@ function makeAugmentedSchema(
         });
 
         composer.createInputTC(union.whereTypeMeta);
-        composer.createInputTC(union.optionsTypeMeta);
     });
 
     if (generateSubscriptions) {

@@ -49,7 +49,7 @@ export function connectionFieldResolver({
     const firstField = info.fieldNodes[0];
     const { selectionSet } = firstField;
 
-    let value = source[connectionField.fieldName];
+    let value = source[connectionField.fieldName] || {};
     if (firstField.alias) {
         value = source[firstField.alias.value];
     }
