@@ -21,25 +21,19 @@ import { META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../../cons
 
 export type SubscriptionsEventType = "create" | "update" | "delete";
 
-export function createEventMeta({
-    event,
-    nodeVariable,
-}: {
+type EventMetaParameters = {
     event: SubscriptionsEventType;
     nodeVariable: string;
-}): string {
-    return `${META_CYPHER_VARIABLE} + ${createEventMetaObject({ event, nodeVariable })} AS ${META_CYPHER_VARIABLE}`;
+    typename: string;
+};
+
+export function createEventMeta(params: EventMetaParameters): string {
+    return `${META_CYPHER_VARIABLE} + ${createEventMetaObject(params)} AS ${META_CYPHER_VARIABLE}`;
 }
 
-export function createEventMetaObject({
-    event,
-    nodeVariable,
-}: {
-    event: SubscriptionsEventType;
-    nodeVariable: string;
-}): string {
+export function createEventMetaObject({ event, nodeVariable, typename }: EventMetaParameters): string {
     const properties = createEventMetaProperties({ event, nodeVariable });
-    return `{ event: "${event}", id: id(${nodeVariable}), ${properties}, timestamp: timestamp() }`;
+    return `{ event: "${event}", id: id(${nodeVariable}), ${properties}, timestamp: timestamp(), typename: "${typename}" }`;
 }
 
 function createEventMetaProperties({

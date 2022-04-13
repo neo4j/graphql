@@ -76,7 +76,7 @@ describe("interface relationships", () => {
             typeDefs,
             plugins: {
                 subscriptions: subscriptionsPlugin,
-            } as any,
+            },
         });
     });
 
@@ -237,6 +237,7 @@ describe("interface relationships", () => {
                     },
                     old: undefined,
                 },
+                typename: "Actor",
                 timestamp: expect.any(Number),
             },
             {
@@ -249,6 +250,7 @@ describe("interface relationships", () => {
                     },
                     old: undefined,
                 },
+                typename: "Movie",
                 timestamp: expect.any(Number),
             },
             {
@@ -260,6 +262,7 @@ describe("interface relationships", () => {
                     },
                     old: undefined,
                 },
+                typename: "Episode",
                 timestamp: expect.any(Number),
             },
             {
@@ -271,6 +274,7 @@ describe("interface relationships", () => {
                     },
                     old: undefined,
                 },
+                typename: "Series",
                 timestamp: expect.any(Number),
             },
             {
@@ -282,6 +286,7 @@ describe("interface relationships", () => {
                     },
                     old: undefined,
                 },
+                typename: "Actor",
                 timestamp: expect.any(Number),
             },
         ]);

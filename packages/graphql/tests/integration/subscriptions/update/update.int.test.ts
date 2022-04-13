@@ -63,7 +63,7 @@ describe("Subscriptions update", () => {
             config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
     });
 
@@ -105,6 +105,7 @@ describe("Subscriptions update", () => {
                 timestamp: expect.any(Number),
                 event: "update",
                 properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "The Matrix" } },
+                typename: typeMovie.name,
             },
         ]);
     });
@@ -141,6 +142,7 @@ describe("Subscriptions update", () => {
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "The Matrix" } },
+                    typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
@@ -150,6 +152,7 @@ describe("Subscriptions update", () => {
                         old: { id: "2", name: "The Many Adventures of Winnie the Pooh" },
                         new: { id: "2", name: "The Matrix" },
                     },
+                    typename: typeMovie.name,
                 },
             ])
         );
@@ -214,6 +217,7 @@ describe("Subscriptions update", () => {
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "The Matrix" } },
+                    typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
@@ -223,6 +227,7 @@ describe("Subscriptions update", () => {
                         old: { id: "2", name: "The Many Adventures of Winnie the Pooh" },
                         new: { id: "2", name: "The Matrix" },
                     },
+                    typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
@@ -232,6 +237,7 @@ describe("Subscriptions update", () => {
                         old: { name: "arthur" },
                         new: { name: "ford" },
                     },
+                    typename: typeActor.name,
                 },
             ])
         );
@@ -302,18 +308,21 @@ describe("Subscriptions update", () => {
                     id: expect.any(Number),
                     properties: { new: { id: "1", name: "The Matrix" }, old: { id: "1", name: "Terminator" } },
                     timestamp: expect.any(Number),
+                    typename: typeMovie.name,
                 },
                 {
                     event: "update",
                     id: expect.any(Number),
                     properties: { new: { name: "ford" }, old: { name: "arthur" } },
                     timestamp: expect.any(Number),
+                    typename: typeActor.name,
                 },
                 {
                     event: "update",
                     id: expect.any(Number),
                     properties: { new: { id: "3", name: "new movie title" }, old: { id: "3", name: "Terminator 2" } },
                     timestamp: expect.any(Number),
+                    typename: typeMovie.name,
                 },
                 {
                     event: "update",
@@ -323,6 +332,7 @@ describe("Subscriptions update", () => {
                         old: { id: "4", name: "The Many Adventures of Winnie the Pooh 2" },
                     },
                     timestamp: expect.any(Number),
+                    typename: typeMovie.name,
                 },
                 {
                     event: "update",
@@ -332,6 +342,7 @@ describe("Subscriptions update", () => {
                         old: { id: "2", name: "The Many Adventures of Winnie the Pooh" },
                     },
                     timestamp: expect.any(Number),
+                    typename: typeMovie.name,
                 },
             ])
         );
@@ -387,6 +398,7 @@ describe("Subscriptions update", () => {
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "Terminator 2" } },
+                    typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
@@ -396,6 +408,7 @@ describe("Subscriptions update", () => {
                         old: undefined,
                         new: { name: "Arnold" },
                     },
+                    typename: typeActor.name,
                 },
             ])
         );
@@ -454,6 +467,7 @@ describe("Subscriptions update", () => {
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "Terminator 2" } },
+                    typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
@@ -463,6 +477,7 @@ describe("Subscriptions update", () => {
                         old: { name: "Arnold" },
                         new: undefined,
                     },
+                    typename: typeActor.name,
                 },
             ])
         );
@@ -526,6 +541,7 @@ describe("Subscriptions update", () => {
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "Terminator 2" } },
+                    typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
@@ -535,6 +551,7 @@ describe("Subscriptions update", () => {
                         old: { name: "Arnold" },
                         new: undefined,
                     },
+                    typename: typeActor.name,
                 },
                 {
                     id: expect.any(Number),
@@ -544,6 +561,7 @@ describe("Subscriptions update", () => {
                         old: undefined,
                         new: { name: "New Arnold" },
                     },
+                    typename: typeActor.name,
                 },
             ])
         );
@@ -625,6 +643,7 @@ describe("Subscriptions update", () => {
                     timestamp: expect.any(Number),
                     event: "update",
                     properties: { old: { id: "1", name: "Terminator" }, new: { id: "1", name: "Terminator 2" } },
+                    typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
@@ -634,6 +653,7 @@ describe("Subscriptions update", () => {
                         old: { name: "Arnold" },
                         new: undefined,
                     },
+                    typename: typeActor.name,
                 },
                 {
                     id: expect.any(Number),
@@ -643,6 +663,7 @@ describe("Subscriptions update", () => {
                         old: { name: "Predator" },
                         new: undefined,
                     },
+                    typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
@@ -652,6 +673,7 @@ describe("Subscriptions update", () => {
                         old: undefined,
                         new: { name: "New Arnold" },
                     },
+                    typename: typeActor.name,
                 },
                 {
                     id: expect.any(Number),
@@ -661,6 +683,7 @@ describe("Subscriptions update", () => {
                         old: undefined,
                         new: { id: "2", name: "Terminator 3" },
                     },
+                    typename: typeMovie.name,
                 },
             ])
         );

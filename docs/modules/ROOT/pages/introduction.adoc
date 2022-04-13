@@ -28,6 +28,8 @@ The Neo4j GraphQL Library presents a large feature set for interacting with a Ne
 - Multiple xref::pagination/index.adoc[Pagination] options
 - Comprehensive authentication and authorisation options (xref::auth/index.adoc[Auth]), and additional xref::type-definitions/access-control.adoc[Access Control] options
 - An xref::ogm/index.adoc[OGM] (Object Graph Mapper) for programmatic interaction with your GraphQL API
+- A xref::toolbox.adoc[Toolbox] (UI) to experiment with your Neo4j GraphQL API on Neo4j Desktop. 
+
 
 == Interaction
 

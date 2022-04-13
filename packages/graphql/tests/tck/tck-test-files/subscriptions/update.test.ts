@@ -74,7 +74,7 @@ describe("Subscriptions metadata on update", () => {
             WHERE this.id = $this_id
             WITH this { .* } AS oldProps, this, meta
             SET this.id = $this_update_id
-            WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp() } AS meta
+            WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH this, meta
             UNWIND meta AS m
             RETURN collect(DISTINCT this { .id }) AS data, collect(DISTINCT m) as meta"
@@ -83,7 +83,8 @@ describe("Subscriptions metadata on update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"1\\",
-                \\"this_update_id\\": \\"2\\"
+                \\"this_update_id\\": \\"2\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

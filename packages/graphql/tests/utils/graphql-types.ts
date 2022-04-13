@@ -29,6 +29,25 @@ type UniqueTypeOperations = {
     update: string;
     delete: string;
     aggregate: string;
+    connection: string;
+    subscribe: {
+        created: string;
+        updated: string;
+        deleted: string;
+        payload: {
+            created: string;
+            updated: string;
+            deleted: string
+        }
+    };
+};
+
+type UniqueTypeFieldNames = {
+    subscriptions: {
+        created: string;
+        updated: string;
+        deleted: string;
+    };
 };
 
 export class UniqueType {
@@ -48,12 +67,37 @@ export class UniqueType {
 
     public get operations(): UniqueTypeOperations {
         const pascalCasePlural = upperFirst(this.plural);
+        const singular = camelcase(this.name);
+        const pascalCaseSingular=upperFirst(singular)
 
         return {
             create: `create${pascalCasePlural}`,
             update: `update${pascalCasePlural}`,
             delete: `delete${pascalCasePlural}`,
             aggregate: `${this.plural}Aggregate`,
+            connection: `${this.plural}Connection`,
+            subscribe: {
+                created: `${singular}Created`,
+                updated: `${singular}Updated`,
+                deleted: `${singular}Deleted`,
+                payload: {
+                    created: `created${pascalCaseSingular}`,
+                    updated: `updated${pascalCaseSingular}`,
+                    deleted: `deleted${pascalCaseSingular}`,
+                }
+            },
+        };
+    }
+
+    public get fieldNames(): UniqueTypeFieldNames {
+        const singular = upperFirst(camelcase(this.name));
+
+        return {
+            subscriptions: {
+                created: `created${singular}`,
+                updated: `updated${singular}`,
+                deleted: `deleted${singular}`,
+            },
         };
     }
 

@@ -23,7 +23,8 @@ import { addResolversToSchema, IExecutableSchemaDefinition, makeExecutableSchema
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import { forEachField, IResolvers } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
-import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins } from "../types";
+import Debug from "debug";
+import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins, Neo4jGraphQLCallbacks } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
@@ -31,9 +32,10 @@ import checkNeo4jCompat from "./utils/verify-database";
 import assertIndexesAndConstraints, {
     AssertIndexesAndConstraintsOptions,
 } from "./utils/asserts-indexes-and-constraints";
-import { wrapResolver } from "../schema/resolvers/wrapper";
+import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers";
 import { asArray } from "../utils/utils";
+import { DEBUG_ALL } from "../constants";
 
 export interface Neo4jGraphQLJWT {
     jwksEndpoint?: string;
@@ -45,14 +47,16 @@ export interface Neo4jGraphQLJWT {
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
     enableRegex?: boolean;
+    enableDebug?: boolean;
     skipValidateTypeDefs?: boolean;
     queryOptions?: CypherQueryOptions;
+    callbacks?: Neo4jGraphQLCallbacks;
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
-    plugins?: Omit<Neo4jGraphQLPlugins, "subscriptions">;
+    plugins?: Neo4jGraphQLPlugins;
 }
 
 class Neo4jGraphQL {
@@ -73,6 +77,8 @@ class Neo4jGraphQL {
         this.config = config;
         this.plugins = plugins;
         this.schemaDefinition = schemaDefinition;
+
+        this.checkEnableDebug();
     }
 
     public get nodes(): Node[] {
@@ -140,6 +146,16 @@ class Neo4jGraphQL {
         return schema;
     }
 
+    private checkEnableDebug = (): void => {
+        if (this.config.enableDebug === true || this.config.enableDebug === false) {
+            if (this.config.enableDebug) {
+                Debug.enable(DEBUG_ALL);
+            } else {
+                Debug.disable();
+            }
+        }
+    };
+
     private wrapResolvers(resolvers: IResolvers, { schema }: { schema: GraphQLSchema }) {
         const wrapResolverArgs = {
             driver: this.driver,
@@ -153,17 +169,16 @@ class Neo4jGraphQL {
         const resolversComposition = {
             "Query.*": [wrapResolver(wrapResolverArgs)],
             "Mutation.*": [wrapResolver(wrapResolverArgs)],
+            "Subscription.*": [wrapSubscription(wrapResolverArgs)],
         };
 
         // Merge generated and custom resolvers
         const mergedResolvers = mergeResolvers([resolvers, ...asArray(this.schemaDefinition.resolvers)]);
-
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
     private addWrappedResolversToSchema(resolverlessSchema: GraphQLSchema, resolvers: IResolvers): GraphQLSchema {
         const schema = addResolversToSchema(resolverlessSchema, resolvers);
-
         return this.addDefaultFieldResolvers(schema);
     }
 
@@ -173,6 +188,7 @@ class Neo4jGraphQL {
                 enableRegex: this.config?.enableRegex,
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
+                callbacks: this.config.callbacks,
             });
 
             this._nodes = nodes;

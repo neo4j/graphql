@@ -5,22 +5,22 @@ on:
     branches:
       - dev
     paths:
-      - "packages/graphql-ui/**"
+      - "packages/graphql-toolbox/**"
     types:
       - closed
 
 jobs:
-  teardown-graphql-ui:
+  teardown-graphql-toolbox:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
-      - name: Teardown graphql-ui
+      - name: Teardown graphql-toolbox
         run: |
           npm install -g surge
-          surge teardown neo4j-graphql-ui-stage-${{ github.event.pull_request.number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+          surge teardown neo4j-graphql-toolbox-stage-${{ github.event.pull_request.number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
       - name: Comment on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:

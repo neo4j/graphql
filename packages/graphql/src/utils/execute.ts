@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { SessionMode, QueryResult, Neo4jError, Session, Driver, Transaction } from "neo4j-driver";
+import { SessionMode, QueryResult, Neo4jError, Session, Transaction } from "neo4j-driver";
 import Debug from "debug";
 import {
     Neo4jGraphQLForbiddenError,
@@ -73,40 +73,32 @@ const getTransactionConfig = () => {
             type: "user-transpiled",
         },
     };
-}
+};
 
-const getExecutor = (input: {
-    defaultAccessMode: SessionMode;
-    context: Context;
-}): { driver?: Driver; session?: Session; transaction: Transaction } => {
-    if (!input.context.executionContext) {
+const getExecutor = (input: { defaultAccessMode: SessionMode; context: Context }) => {
+    const executionContext = input.context.executionContext;
+
+    if (!executionContext) {
         const driver = input.context.driver;
         const session = driver.session(getSessionParams(input));
         const transaction = session.beginTransaction(getTransactionConfig());
-        return { driver, session, transaction };
+        return { session, transaction, openedTransaction: true, openedSession: true };
     }
 
-    const executionContextType = Object.getPrototypeOf(input.context.executionContext).constructor.name;
-
-    if (executionContextType === "Driver") {
-        const driver = input.context.executionContext as Driver;
-        const session = driver.session(getSessionParams(input));
-        const transaction = session.beginTransaction(getTransactionConfig());
-        return { driver, session, transaction };
+    if (executionContext instanceof Transaction) {
+        return { transaction: executionContext };
     }
 
-    if (executionContextType === "Session") {
-        const session = input.context.executionContext as Session;
-        const transaction = session.beginTransaction(getTransactionConfig());
-        return { session, transaction };
+    if (executionContext instanceof Session) {
+        const session = executionContext;
+        const transaction = executionContext.beginTransaction(getTransactionConfig());
+        return { session, transaction, openedTransaction: true };
     }
 
-    if (executionContextType === "Transaction") {
-        const transaction = input.context.executionContext as Transaction;
-        return { transaction };
-    }
-
-    throw Error("Not reached");
+    // By elimination executionContext must be a Driver
+    const session = executionContext.session(getSessionParams(input));
+    const transaction = session.beginTransaction(getTransactionConfig());
+    return { session, transaction, openedTransaction: true, openedSession: true };
 };
 
 async function execute(input: {
@@ -142,7 +134,7 @@ async function execute(input: {
             throw new Error("Unable to execute query against Neo4j database");
         }
 
-        if (executor.session) {
+        if (executor.openedTransaction) {
             await executor.transaction.commit();
         }
 
@@ -183,7 +175,7 @@ async function execute(input: {
 
         throw error;
     } finally {
-        if (executor.driver && executor.session) {
+        if (executor.openedSession) {
             await executor.session.close();
         }
     }

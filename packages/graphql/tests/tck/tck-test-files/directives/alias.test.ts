@@ -196,7 +196,8 @@ describe("Cypher alias directive", () => {
                 \\"this0_actedIn0_relationship_screenTime\\": {
                     \\"low\\": 120,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

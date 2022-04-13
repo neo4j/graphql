@@ -13,6 +13,12 @@ The `@auth` directive is used to define complex fine-grained and role-based acce
 
 Reference: xref::auth/auth-directive.adoc[`@auth` directive]
 
+== `@callback`
+
+The `@callback` directive is used to specify a function that will be invoked when updating or creating the properties on a node or relationship.
+
+Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-callback[`@callback`]
+
 == `@coalesce`
 
 The `@coalesce` directive exposes a mechanism for querying against non-existent, `null` values on a node.
