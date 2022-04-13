@@ -22,7 +22,7 @@ import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
-describe("integration/rfs/top-level-unions", () => {
+describe("tck/rfc/top-level-unions", () => {
     test("should query simple top level unions", async () => {
         const typeDefs = gql`
             type Movie {
