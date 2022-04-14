@@ -72,7 +72,7 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
                     lastBookmark() {},
                 };
             },
-        } as Driver);
+        } as any);
         return runMock;
     }
 
