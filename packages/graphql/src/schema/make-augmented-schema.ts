@@ -532,7 +532,7 @@ function makeAugmentedSchema(
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
-        if (node.isGlobalNode()) {
+        if (node.isGlobalNode) {
             composeNode.setField("id", {
                 type: new GraphQLNonNull(GraphQLID),
                 resolve: (src) => {
@@ -624,7 +624,7 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${node.name}Where`,
-            fields: node.isGlobalNode() ? { id: "ID", ...queryFields } : queryFields,
+            fields: node.isGlobalNode ? { id: "ID", ...queryFields } : queryFields,
         });
 
         if (node.fulltextDirective) {

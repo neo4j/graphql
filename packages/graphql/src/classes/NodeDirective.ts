@@ -33,19 +33,11 @@ export class NodeDirective {
     public readonly label: string | undefined;
     public readonly additionalLabels: string[];
     public readonly plural: string | undefined;
-    public readonly global: boolean;
-    private _idField: string | undefined;
 
     constructor(input: NodeDirectiveConstructor) {
         this.label = input.label;
         this.additionalLabels = input.additionalLabels || [];
         this.plural = input.plural;
-        this.global = Boolean(input.global);
-        this._idField = input.globalIdField;
-    }
-
-    public getIdField(): string | undefined {
-        return this._idField;
     }
 
     public getLabelsString(typeName: string, context: Context): string {

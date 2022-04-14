@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, FieldDefinitionNode, ObjectTypeDefinitionNode, valueFromASTUntyped } from "graphql";
+import { DirectiveNode, ObjectTypeDefinitionNode, valueFromASTUntyped } from "graphql";
 import { NodeDirective } from "../classes/NodeDirective";
 
 function parseNodeDirective(nodeDirective: DirectiveNode | undefined, definition: ObjectTypeDefinitionNode) {
@@ -25,11 +25,7 @@ function parseNodeDirective(nodeDirective: DirectiveNode | undefined, definition
         throw new Error("Undefined or incorrect directive passed into parseNodeDirective function");
     }
 
-    const global = getArgumentValue<boolean>(nodeDirective, "global");
-
     return new NodeDirective({
-        global,
-        globalIdField: global ? getGlobalIdField(definition) : undefined,
         label: getArgumentValue<string>(nodeDirective, "label"),
         additionalLabels: getArgumentValue<string[]>(nodeDirective, "additionalLabels"),
         plural: getArgumentValue<string>(nodeDirective, "plural"),
@@ -39,45 +35,6 @@ function parseNodeDirective(nodeDirective: DirectiveNode | undefined, definition
 function getArgumentValue<T>(directive: DirectiveNode, name: string): T | undefined {
     const argument = directive.arguments?.find((a) => a.name.value === name);
     return argument ? (valueFromASTUntyped(argument.value) as T) : undefined;
-}
-
-function alphabeticallySortFields(fields: FieldDefinitionNode[]): FieldDefinitionNode[] {
-    return fields.sort((a, b) => (a.name.value > b.name.value ? 1 : -1));
-}
-
-function getGlobalIdField(definition: ObjectTypeDefinitionNode): string | undefined {
-    const fields = alphabeticallySortFields([...(definition.fields ?? [])]);
-
-    if (fields.find((x) => x.name.value === "id")) {
-        throw new Error(
-            `Type ${definition.name.value} already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
-        );
-    }
-
-    const candidates = fields.filter(
-        (x) =>
-            x.type.kind === "NonNullType" &&
-            x.type.type.kind === "NamedType" &&
-            (x.type.type.name.value === "ID" || x.type.type.name.value === "String")
-    );
-
-    const idDirectiveField = candidates.find((x) => x.directives?.find((dir) => dir.name.value === "id"));
-    const uniqueDirectiveField = candidates.find((x) => x.directives?.find((dir) => dir.name.value === "unique"));
-
-    let fieldName: string | undefined;
-
-    if (idDirectiveField) {
-        fieldName = idDirectiveField.name.value;
-    } else if (uniqueDirectiveField) {
-        fieldName = uniqueDirectiveField.name.value;
-    }
-
-    if (!fieldName) {
-        throw new Error(
-            "The `global` flag on the `@node` directive requires at least one field with the `@id` or `@unique` directive"
-        );
-    }
-    return fieldName;
 }
 
 export default parseNodeDirective;

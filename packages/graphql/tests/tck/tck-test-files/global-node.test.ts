@@ -26,13 +26,13 @@ import { formatCypher, translateQuery } from "../utils/tck-test-utils";
 describe("Global nodes", () => {
     test("it should fetch the correct node and fields", async () => {
         const typeDefs = gql`
-            type Actor @node(global: true) {
-                name: String! @unique
+            type Actor {
+                name: ID! @id(global: true)
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie @node(global: true) {
-                title: String! @unique
+            type Movie {
+                title: ID! @id(global: true)
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
@@ -62,20 +62,20 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $this_title
             RETURN this { .title } as this"
         `);
     });
     test("it should project the correct node and fields when id is the idField", async () => {
         const typeDefs = gql`
-            type Actor @node(global: true) {
-                dbId: ID! @id @alias(property: "id")
+            type Actor {
+                dbId: ID! @id(global: true) @alias(property: "id")
                 name: String!
                 movies: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
-            type Movie @node(global: true) {
-                title: String! @unique
+            type Movie {
+                title: ID! @id(global: true)
                 actors: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
@@ -102,9 +102,9 @@ describe("Global nodes", () => {
             variableValues: { id: toGlobalId({ typeName: "Actor", field: "dbId", id: "123455" }) },
         });
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.id = $this_dbId
-            RETURN this { .name, dbId: this.id } as this"
+            RETURN this { .name, .id } as this"
         `);
     });
 });

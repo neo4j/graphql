@@ -174,6 +174,7 @@ export interface PrimitiveField extends BaseField {
     defaultValue?: any;
     coalesceValue?: any;
     callback?: Callback;
+    isGlobalIdField?: boolean;
 }
 
 export type CustomScalarField = BaseField;

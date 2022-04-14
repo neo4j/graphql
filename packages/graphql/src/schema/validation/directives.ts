@@ -178,6 +178,11 @@ export const idDirective = new GraphQLDirective({
             defaultValue: true,
             type: new GraphQLNonNull(GraphQLBoolean),
         },
+        global: {
+            description: "Opt-in to implementing the Node interface with a globally unique id",
+            type: new GraphQLNonNull(GraphQLBoolean),
+            defaultValue: false,
+        },
     },
 });
 
@@ -197,11 +202,6 @@ export const nodeDirective = new GraphQLDirective({
         plural: {
             description: "Allows for the specification of the plural of the type name.",
             type: GraphQLString,
-        },
-        global: {
-            description: "Opt-in to implementing the Node interface with a globally unique id",
-            type: new GraphQLNonNull(GraphQLBoolean),
-            defaultValue: false,
         },
     },
 });

@@ -105,7 +105,7 @@ function createWhereAndParams({
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
 
-        if (node.isGlobalNode() && key === "id") {
+        if (node.isGlobalNode && key === "id") {
             const { field, id } = node.fromGlobalId(value as string);
             param = param.replace(key, field);
 

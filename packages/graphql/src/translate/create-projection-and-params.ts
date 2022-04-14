@@ -600,7 +600,7 @@ function createProjectionAndParams({
     // If we have a query for a globalNode and it includes the "id" field
     // we modify the projection to include the appropriate db fields
 
-    if (node.isGlobalNode() && existingProjection.id) {
+    if (node.isGlobalNode && existingProjection.id) {
         existingProjection = addGlobalIdField(existingProjection, node.getGlobalIdField());
     }
 

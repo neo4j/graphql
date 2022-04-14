@@ -25,8 +25,8 @@ import { Neo4jGraphQL } from "../../src";
 describe("Node Interface Types", () => {
     test("nodes should implement the Node Interface and generate a top-level node query", async () => {
         const typeDefs = gql`
-            type Movie @node(global: true) {
-                title: String! @unique
+            type Movie {
+                title: String! @id(autogenerate: false, global: true)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });

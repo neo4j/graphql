@@ -66,6 +66,8 @@ export interface NodeConstructor extends GraphElementConstructor {
     nodeDirective?: NodeDirective;
     description?: string;
     queryOptionsDirective?: QueryOptionsDirective;
+    isGlobalNode?: boolean;
+    globalIdField?: string;
 }
 
 type MutableField =
@@ -131,6 +133,8 @@ class Node extends GraphElement {
     public queryOptions?: QueryOptionsDirective;
     public singular: string;
     public plural: string;
+    public isGlobalNode: boolean | undefined;
+    private _idField: string | undefined;
 
     constructor(input: NodeConstructor) {
         super(input);
@@ -147,6 +151,8 @@ class Node extends GraphElement {
         this.fulltextDirective = input.fulltextDirective;
         this.auth = input.auth;
         this.queryOptions = input.queryOptionsDirective;
+        this.isGlobalNode = input.isGlobalNode;
+        this._idField = input.globalIdField;
         this.singular = this.generateSingular();
         this.plural = this.generatePlural();
     }
@@ -254,23 +260,13 @@ class Node extends GraphElement {
         return this.nodeDirective?.label || this.name;
     }
 
-    public isGlobalNode(): boolean {
-        return Boolean(this.nodeDirective?.global);
-    }
-
     public getGlobalIdField(): string {
-        if (!this.nodeDirective || !this.isGlobalNode()) {
+        if (!this.isGlobalNode || !this._idField) {
             throw new Error(
-                "The 'global' property needs to be set to true on the @node directive before accessing the unique node id field"
+                "The 'global' property needs to be set to true on an @id directive before accessing the unique node id field"
             );
         }
-        const idField = this.nodeDirective.getIdField();
-        if (!idField) {
-            throw new Error(
-                "The `global` flag on the `@node` directive requries at least one field with the `@id` or `@unique` directive"
-            );
-        }
-        return idField;
+        return this._idField;
     }
 
     public toGlobalId(id: string): string {

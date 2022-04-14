@@ -24,30 +24,9 @@ describe("Global node resolver", () => {
     test("should return the correct type, args and resolve", () => {
         const node = new NodeBuilder({
             name: "Movie",
-            primitiveFields: [
-                {
-                    fieldName: "title",
-                    typeMeta: {
-                        name: "String",
-                        array: false,
-                        required: false,
-                        pretty: "String",
-                        input: {
-                            where: {
-                                type: "String",
-                                pretty: "String",
-                            },
-                            create: { type: "String", pretty: "String" },
-                            update: { type: "String", pretty: "String" },
-                        },
-                    },
-                    otherDirectives: [],
-                    arguments: [],
-                },
-            ],
-        })
-            .withNodeDirective({ global: true, globalIdField: "title" })
-            .instance();
+            primitiveFields: [],
+            isGlobalNode: true,
+        }).instance();
 
         const result = globalNodeResolver({ nodes: [node] });
         expect(result.type).toBe("Node");

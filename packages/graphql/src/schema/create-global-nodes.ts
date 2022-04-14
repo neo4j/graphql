@@ -25,7 +25,7 @@ import globalNodeResolver from "./resolvers/global-node";
 
 // returns true if globalNodeFields added or false if not
 export function addGlobalNodeFields(nodes: Node[], composer: SchemaComposer): boolean {
-    const globalNodes = nodes.filter((n) => n.isGlobalNode());
+    const globalNodes = nodes.filter((n) => n.isGlobalNode);
 
     if (globalNodes.length === 0) return false;
 

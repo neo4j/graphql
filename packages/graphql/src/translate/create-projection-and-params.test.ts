@@ -119,14 +119,12 @@ describe("createProjectionAndParams", () => {
                     },
                     otherDirectives: [],
                     arguments: [],
+                    isGlobalIdField: true,
                 },
             ],
-        })
-            .withNodeDirective({
-                global: true,
-                globalIdField: "title",
-            })
-            .instance();
+            isGlobalNode: true,
+            globalIdField: "title",
+        }).instance();
 
         const context = new ContextBuilder({
             neoSchema: { nodes: [node] },

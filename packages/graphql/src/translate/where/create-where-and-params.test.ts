@@ -49,30 +49,10 @@ describe("createWhereAndParams", () => {
 
         const node = new NodeBuilder({
             name: "Movie",
-            primitiveFields: [
-                {
-                    fieldName: "title",
-                    typeMeta: {
-                        name: "String",
-                        array: false,
-                        required: true,
-                        pretty: "String",
-                        input: {
-                            where: {
-                                type: "String",
-                                pretty: "String",
-                            },
-                            create: { type: "String", pretty: "String" },
-                            update: { type: "String", pretty: "string " },
-                        },
-                    },
-                    otherDirectives: [],
-                    arguments: [],
-                },
-            ],
-        })
-            .withNodeDirective({ global: true, globalIdField: "title" })
-            .instance();
+            primitiveFields: [],
+            isGlobalNode: true,
+            globalIdField: "title",
+        }).instance();
 
         const whereInput = {
             id: node.toGlobalId("some title"),
