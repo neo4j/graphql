@@ -90,7 +90,7 @@ type AuthableField =
     | PointField
     | CypherField;
 
-type ConstrainableField = PrimitiveField | TemporalField | PointField;
+type ConstrainableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | PointField;
 
 export type RootTypeFieldNames = {
     create: string;
@@ -103,6 +103,11 @@ export type RootTypeFieldNames = {
         updated: string;
         deleted: string;
     };
+};
+
+export type AggregateTypeNames = {
+    selection: string;
+    input: string;
 };
 
 export type MutationResponseTypeNames = {
@@ -187,7 +192,13 @@ class Node extends GraphElement {
     }
 
     public get constrainableFields(): ConstrainableField[] {
-        return [...this.primitiveFields, ...this.temporalFields, ...this.pointFields];
+        return [
+            ...this.primitiveFields,
+            ...this.scalarFields,
+            ...this.enumFields,
+            ...this.temporalFields,
+            ...this.pointFields,
+        ];
     }
 
     public get uniqueFields(): ConstrainableField[] {
@@ -216,6 +227,13 @@ class Node extends GraphElement {
                 updated: `${this.singular}Updated`,
                 deleted: `${this.singular}Deleted`,
             },
+        };
+    }
+
+    public get aggregateTypeNames(): AggregateTypeNames {
+        return {
+            selection: `${this.name}AggregateSelection`,
+            input: `${this.name}AggregateSelectionInput`,
         };
     }
 

@@ -69,6 +69,11 @@ describe("Node Interface Types", () => {
               title: String!
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -105,6 +110,12 @@ describe("Node Interface Types", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
@@ -117,9 +128,18 @@ describe("Node Interface Types", () => {
               id: ID!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               \\"\\"\\"Fetches an object given its ID\\"\\"\\"
               node(
                 \\"\\"\\"The ID of an object\\"\\"\\"

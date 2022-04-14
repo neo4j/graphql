@@ -33,9 +33,9 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@neo4j/graphql": "^3.0.3",
+        "@neo4j/graphql": "^3.1.0",
         "@types/jest": "27.4.1",
-        "@types/node": "16.11.26",
+        "@types/node": "16.11.27",
         "@types/pluralize": "0.0.29",
         "jest": "27.5.1",
         "ts-jest": "27.1.4",

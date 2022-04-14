@@ -42,14 +42,34 @@ export interface IGenerateOptions {
     ogm: OGM;
 }
 
-function createLines({ input, searchFor }: { input: string; searchFor: string }): string[] {
-    const [, start] = input.split(searchFor);
-    const [ohItIsThis] = start.split(`}`);
-    const lines = ohItIsThis.split("\n").filter(Boolean);
-
-    return lines;
-}
-
+/*  This function will generate TypeScript aggregate input types
+/   Because aggregating is all selectionSet based...
+/   We make some typescript types, where the corresponding object that will be reflected into a selectionSet
+/   ---Before---
+    ogm.Model.aggregate({
+        selectionSet: `
+            title {
+                min
+                max
+            }
+            imdbRating {
+                avg
+            }
+        `
+    })
+    ---After---
+    ogm.Model.aggregate({
+        aggregate: {
+            title: {
+                min: true
+                max: true
+            },
+            imdbRating: {
+                avg: true
+            }
+        }
+    })
+*/
 function createAggregationInput({
     basedOnSearch,
     typeName,
@@ -63,10 +83,12 @@ function createAggregationInput({
 }) {
     const interfaceStrs = [`export interface ${typeName} {`];
 
-    const lines = createLines({ input, searchFor: basedOnSearch });
+    const [, start] = input.split(basedOnSearch);
+    const [body] = start.split(`}`);
+    const lines = body.split("\n").filter(Boolean);
 
     lines.forEach((line) => {
-        const [fieldName, type] = line.split(":").map((x) => x.trim().replace(";", ""));
+        const [fieldName, type] = line.split(": ").map((x) => x.trim().replace(";", ""));
 
         if (fieldName === "__typename?") {
             return;
@@ -102,8 +124,11 @@ function createAggregationInput({
 function hasConnectOrCreate(node: any, ogm: OGM): boolean {
     for (const relation of node.relationFields) {
         const refNode = getReferenceNode(ogm, relation);
-        if (refNode && refNode.uniqueFields.length > 0) return true;
+        if (refNode && refNode.uniqueFields.length > 0) {
+            return true;
+        }
     }
+
     return false;
 }
 
@@ -119,6 +144,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
         ],
         filename: options.outFile || "some-random-file-name-thats-not-used",
         documents: [],
+        schemaAst: options.ogm.schema,
         schema: graphql.parse(graphql.printSchema(options.ogm.schema)),
         pluginMap: {
             typescript: typescriptPlugin,
@@ -139,8 +165,8 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
         modeMap[node.name] = modelName;
 
         const aggregationInput = createAggregationInput({
-            basedOnSearch: `export type ${node.name}AggregateSelection = {`,
-            typeName: `${node.name}AggregateSelectionInput`,
+            basedOnSearch: `__typename?: '${node.aggregateTypeNames.selection}';`,
+            typeName: node.aggregateTypeNames.input,
             aggregateSelections,
             input: output,
         });

@@ -73,9 +73,18 @@ describe("@private directive", () => {
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
             enum SortDirection {
@@ -109,6 +118,11 @@ describe("@private directive", () => {
 
             input UserCreateInput {
               id: ID
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
             }
 
             interface UserInterface {
@@ -148,6 +162,12 @@ describe("@private directive", () => {
               id_NOT_IN: [ID]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
+            }
+
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
