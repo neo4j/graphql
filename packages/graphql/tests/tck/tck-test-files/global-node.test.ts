@@ -104,7 +104,7 @@ describe("Global nodes", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
             WHERE this.id = $this_dbId
-            RETURN this { .name, .id } as this"
+            RETURN this { .name, dbId: this.id } as this"
         `);
     });
 });

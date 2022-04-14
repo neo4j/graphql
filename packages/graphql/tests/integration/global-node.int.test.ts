@@ -79,7 +79,7 @@ describe("Global node resolution", () => {
 
             const createdMovie = mutationResult.data[typeFilm.operations.create][typeFilm.plural][0];
 
-            const expectedId = toGlobalId({ typeName: typeFilm.name, field: "id", id: createdMovie.dbId });
+            const expectedId = toGlobalId({ typeName: typeFilm.name, field: "dbId", id: createdMovie.dbId });
 
             expect(createdMovie.id).toEqual(expectedId);
         } finally {
@@ -319,7 +319,7 @@ describe("Global node resolution", () => {
         });
 
         try {
-            const mutation = `CREATE (this:${typeUser.name} { dbId: randomUUID(), name: "Johnny Appleseed" })-[:CREATED]->(film:${typeFilm.name} { title: randomUUID() }) RETURN this { .dbId, film: film }`;
+            const mutation = `CREATE (this:${typeUser.name} { id: randomUUID(), name: "Johnny Appleseed" })-[:CREATED]->(film:${typeFilm.name} { title: randomUUID() }) RETURN this { id: this.dbId, film: film }`;
             const { records } = await session.run(mutation);
 
             const record = records[0].toObject();
@@ -336,6 +336,120 @@ describe("Global node resolution", () => {
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+        } finally {
+            await session.close();
+        }
+    });
+    test("should permit access when using a correct allow auth param", async () => {
+        const session = driver.session();
+        const typeDefs = `
+
+          type ${typeUser.name} {
+            dbId: ID! @id(global: true) @alias(property: "id")
+            name: String!
+          }
+
+          extend type ${typeUser.name} @auth(rules: [{ allow: { dbId: "$jwt.sub" } }])
+      `;
+
+        const query = `
+        query ($id: ID!) {
+          node(id: $id) {
+            id
+            ...on ${typeUser.name} {
+              dbId
+            }
+          }
+        }
+    `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
+        });
+        try {
+            const mutation = `CREATE (this:${typeUser.name} { id: randomUUID(), name: "Johnny Appleseed" }) RETURN this`;
+            const { records } = await session.run(mutation);
+
+            const record = records[0].toObject();
+
+            const userId = record.this.properties.id;
+            const relayId = toGlobalId({ typeName: typeUser.name, field: "dbId", id: userId });
+
+            const req = createJwtRequest(secret, { sub: userId });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: { driver, req },
+                variableValues: { id: relayId },
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data?.node).toEqual({ id: relayId, dbId: userId });
+        } finally {
+            await session.close();
+        }
+    });
+    test("should permit access when using a correct allow auth param in an OR statement", async () => {
+        const session = driver.session();
+        const typeDefs = `
+
+        type ${typeUser.name} {
+          dbId: ID! @id(global: true) @alias(property: "id")
+          name: String!
+        }
+
+        extend type ${typeUser.name} @auth(rules: [
+          { allow: { OR: [{ roles: ["admin"] }, { dbId: "$jwt.sub" } ] } } 
+        ])
+    `;
+
+        const query = `
+      query ($id: ID!) {
+        node(id: $id) {
+          id
+          ...on ${typeUser.name} {
+            dbId
+          }
+        }
+      }
+  `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
+        });
+        try {
+            const mutation = `CREATE (this:${typeUser.name} { id: randomUUID(), name: "Johnny Appleseed" }) RETURN this`;
+            const { records } = await session.run(mutation);
+
+            const record = records[0].toObject();
+
+            const userId = record.this.properties.id;
+            const relayId = toGlobalId({ typeName: typeUser.name, field: "dbId", id: userId });
+
+            const req = createJwtRequest(secret, { sub: userId });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: { driver, req },
+                variableValues: { id: relayId },
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data?.node).toEqual({ id: relayId, dbId: userId });
         } finally {
             await session.close();
         }
