@@ -25,8 +25,6 @@ export interface NodeDirectiveConstructor {
     label?: string;
     additionalLabels?: string[];
     plural?: string;
-    global?: boolean;
-    globalIdField?: string | undefined;
 }
 
 export class NodeDirective {
