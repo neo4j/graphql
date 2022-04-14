@@ -129,6 +129,34 @@ yarn test:tck
 npm run test-docker
 ```
 
+### Performance
+
+`packages/graphql` has a performance benchmark built in. To run it:
+1. Go to `packages/graphql`
+2. Run `yarn performance`
+
+All `.graphql` files in `tests/performance` are part of the performance suite. To skip or run a test, append `_skip` or `_only` to the query, e.g.:
+
+```graphql
+query SimpleUnionQuery_only {
+    users {
+        name
+        liked {
+            ... on Person {
+                name
+            }
+            ... on Movie {
+                title
+            }
+        }
+    }
+}
+```
+
+To update the file `performance.json`, with the results of the performance test, run `yarn performance -u`
+
+
+
 ## Linting/formatting
 
 We use ESLint for linting and Prettier for code formatting. Contributions must

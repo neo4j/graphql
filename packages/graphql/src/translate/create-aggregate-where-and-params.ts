@@ -69,7 +69,7 @@ function aggregate({
         if (["AND", "OR"].includes(key)) {
             const innerClauses: string[] = [];
 
-            ((value as unknown) as any[]).forEach((v: any, i) => {
+            (value as unknown as any[]).forEach((v: any, i) => {
                 const recurse = aggregate({
                     chainStr: `${chainStr}_${key}_${i}`,
                     inputValue: v,
@@ -218,7 +218,7 @@ function createPredicate({
         if (["AND", "OR"].includes(key)) {
             const innerClauses: string[] = [];
 
-            ((value as unknown) as any[]).forEach((v: any, i) => {
+            (value as unknown as any[]).forEach((v: any, i) => {
                 const recurse = createPredicate({
                     node,
                     chainStr: `${chainStr}_${key}_${i}`,
