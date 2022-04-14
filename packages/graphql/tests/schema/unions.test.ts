@@ -85,6 +85,11 @@ describe("Unions", () => {
               id: ID
             }
 
+            type GenreEdge {
+              cursor: String!
+              node: Genre!
+            }
+
             input GenreOptions {
               limit: Int
               offset: Int
@@ -118,6 +123,12 @@ describe("Unions", () => {
               id_NOT_IN: [ID]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
+            }
+
+            type GenresConnection {
+              edges: [GenreEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type IDAggregateSelectionNullable {
@@ -156,6 +167,11 @@ describe("Unions", () => {
 
             input MovieDisconnectInput {
               search: MovieSearchDisconnectInput
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
             }
 
             input MovieOptions {
@@ -335,6 +351,12 @@ describe("Unions", () => {
               searchConnection_SOME: MovieSearchConnectionWhere
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createGenres(input: [GenreCreateInput!]!): CreateGenresMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
@@ -355,8 +377,10 @@ describe("Unions", () => {
             type Query {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
+              genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             input QueryOptions {

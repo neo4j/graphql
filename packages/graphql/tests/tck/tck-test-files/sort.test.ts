@@ -219,12 +219,15 @@ describe("Cypher sort tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CALL {
+            MATCH (this:Movie)
             WHERE this.title = $this_title
-            RETURN this { .id, .title } as this
+            RETURN this
             ORDER BY this.id DESC, this.title ASC
             SKIP $this_offset
-            LIMIT $this_limit"
+            LIMIT $this_limit
+            }
+            RETURN this { .id, .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

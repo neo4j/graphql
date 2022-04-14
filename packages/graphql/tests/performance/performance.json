@@ -1,0 +1,158 @@
+[
+    {
+        "name": "TopLevelAggregate",
+        "result": {
+            "maxRows": 133,
+            "dbHits": 400,
+            "cache": {
+                "hits": 5,
+                "misses": 0
+            },
+            "time": 10
+        },
+        "file": "aggregations"
+    },
+    {
+        "name": "NestedAggregation",
+        "result": {
+            "maxRows": 133,
+            "dbHits": 400,
+            "cache": {
+                "hits": 427,
+                "misses": 0
+            },
+            "time": 11
+        },
+        "file": "aggregations"
+    },
+    {
+        "name": "AggregationWithWhere",
+        "result": {
+            "maxRows": 133,
+            "dbHits": 287,
+            "cache": {
+                "hits": 395,
+                "misses": 0
+            },
+            "time": 8
+        },
+        "file": "aggregations"
+    },
+    {
+        "name": "Connection",
+        "result": {
+            "maxRows": 172,
+            "dbHits": 593,
+            "cache": {
+                "hits": 161,
+                "misses": 0
+            },
+            "time": 8
+        },
+        "file": "connections"
+    },
+    {
+        "name": "NestedConnection",
+        "result": {
+            "maxRows": 512,
+            "dbHits": 2301,
+            "cache": {
+                "hits": 658,
+                "misses": 0
+            },
+            "time": 9
+        },
+        "file": "connections"
+    },
+    {
+        "name": "SimpleQuery",
+        "result": {
+            "maxRows": 172,
+            "dbHits": 631,
+            "cache": {
+                "hits": 165,
+                "misses": 0
+            },
+            "time": 6
+        },
+        "file": "query"
+    },
+    {
+        "name": "SimpleQueryWithNestedWhere",
+        "result": {
+            "maxRows": 172,
+            "dbHits": 793,
+            "cache": {
+                "hits": 283,
+                "misses": 0
+            },
+            "time": 7
+        },
+        "file": "query"
+    },
+    {
+        "name": "DeeplyNested",
+        "result": {
+            "maxRows": 40588,
+            "dbHits": 203784,
+            "cache": {
+                "hits": 74165,
+                "misses": 0
+            },
+            "time": 307
+        },
+        "file": "query"
+    },
+    {
+        "name": "OrFilterOnRelationships",
+        "result": {
+            "maxRows": 172,
+            "dbHits": 109480,
+            "cache": {
+                "hits": 33944,
+                "misses": 0
+            },
+            "time": 368
+        },
+        "file": "query"
+    },
+    {
+        "name": "OrFilterOnRelationshipsAndNested",
+        "result": {
+            "maxRows": 172,
+            "dbHits": 76880,
+            "cache": {
+                "hits": 37304,
+                "misses": 0
+            },
+            "time": 284
+        },
+        "file": "query"
+    },
+    {
+        "name": "QueryWithNestedIn",
+        "result": {
+            "maxRows": 172,
+            "dbHits": 955,
+            "cache": {
+                "hits": 305,
+                "misses": 0
+            },
+            "time": 8
+        },
+        "file": "query"
+    },
+    {
+        "name": "SimpleUnionQuery",
+        "result": {
+            "maxRows": 35,
+            "dbHits": 214,
+            "cache": {
+                "hits": 31,
+                "misses": 0
+            },
+            "time": 6
+        },
+        "file": "unions"
+    }
+]

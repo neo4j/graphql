@@ -43,6 +43,7 @@ import {
     findResolver,
     updateResolver,
     numericalResolver,
+    rootConnectionResolver,
 } from "./resolvers";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import * as constants from "../constants";
@@ -601,7 +602,7 @@ function makeAugmentedSchema(
         };
 
         composer.createObjectTC({
-            name: `${node.name}AggregateSelection`,
+            name: node.aggregateTypeNames.selection,
             fields: {
                 count: countField,
                 ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
@@ -635,7 +636,6 @@ function makeAugmentedSchema(
                         name: `${node.name}${upperFirst(index.name)}Fulltext`,
                         fields: {
                             phrase: "String!",
-                            score_EQUAL: "Int",
                         },
                     }),
                 }),
@@ -727,6 +727,10 @@ function makeAugmentedSchema(
 
             composer.Query.addFields({
                 [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
+            });
+
+            composer.Query.addFields({
+                [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
             });
         }
 

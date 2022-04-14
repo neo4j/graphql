@@ -208,12 +208,18 @@ function createProjectionAndParams({
             }
 
             if (referenceUnion) {
+                const fieldFieldsKeys = Object.keys(fieldFields);
+                const hasMultipleFieldFields = fieldFieldsKeys.length > 1;
+                const hasSingleFieldField = fieldFieldsKeys.length === 1;
+
                 const headStrs: string[] = [];
-                const referencedNodes =
+                let referencedNodes =
                     referenceUnion?.types
                         ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
-                        ?.filter((b) => b !== undefined)
-                        ?.filter((n) => Object.keys(fieldFields).includes(n?.name ?? "")) || [];
+                        ?.filter((b) => b !== undefined) || [];
+                if (hasMultipleFieldFields) {
+                    referencedNodes = referencedNodes?.filter((n) => fieldFieldsKeys.includes(n?.name ?? "")) || [];
+                }
 
                 referencedNodes.forEach((refNode) => {
                     if (refNode) {
@@ -255,7 +261,10 @@ function createProjectionAndParams({
                     }
                 });
 
-                projectionStr = `${!isArray ? "head(" : ""} ${headStrs.join(" + ")} ${!isArray ? ")" : ""}`;
+                const isTakeFirstElement: boolean = !isArray || hasSingleFieldField;
+                projectionStr = `${isTakeFirstElement ? "head(" : ""} ${headStrs.join(" + ")} ${
+                    isTakeFirstElement ? ")" : ""
+                }`;
             }
 
             const initApocParamsStrs = [
@@ -300,12 +309,15 @@ function createProjectionAndParams({
             const apocParamsStr = `{this: ${chainStr || varName}${
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}`;
+
+            const isProjectionStrEmpty = projectionStr.trim().length === 0;
+
             const apocStr = `${
                 !cypherField.isScalar && !cypherField.isEnum ? `${param} IN` : ""
             } apoc.cypher.runFirstColumn("${cypherField.statement}", ${apocParamsStr}, ${expectMultipleValues})${
                 apocWhere ? ` ${apocWhere}` : ""
             }${unionWhere ? ` ${unionWhere} ` : ""}${
-                projectionStr ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""
+                !isProjectionStrEmpty ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""
             }`;
 
             if (cypherField.isScalar || cypherField.isEnum) {

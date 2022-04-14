@@ -155,6 +155,7 @@ export default async function translateCreate({
         }
 
         if (projection[2]?.interfaceFields?.length) {
+            const prevRelationshipFields: string[] = [];
             projection[2].interfaceFields.forEach((interfaceResolveTree) => {
                 const relationshipField = node.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
@@ -164,8 +165,9 @@ export default async function translateCreate({
                     field: relationshipField,
                     context,
                     nodeVariable: "REPLACE_ME",
-                    withVars,
+                    withVars: [...withVars, ...prevRelationshipFields],
                 });
+                prevRelationshipFields.push(relationshipField.dbPropertyName || relationshipField.fieldName);
                 interfaceStrs.push(interfaceProjection.cypher);
                 if (!interfaceParams) interfaceParams = {};
                 interfaceParams = { ...interfaceParams, ...interfaceProjection.params };
