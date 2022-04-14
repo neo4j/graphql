@@ -228,9 +228,7 @@ function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4j
             fulltextDirective,
             queryOptionsDirective,
             description: definition.description?.value,
-
-            // use the alias if present
-            globalIdField: globalIdField?.dbPropertyName ?? globalIdField?.fieldName,
+            globalIdField: globalIdField?.fieldName,
             isGlobalNode: Boolean(globalIdField),
         });
 
