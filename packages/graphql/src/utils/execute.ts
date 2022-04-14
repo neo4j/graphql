@@ -7,7 +7,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ *ß
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -17,7 +17,10 @@
  * limitations under the License.
  */
 
-import { SessionMode, QueryResult, Neo4jError, Session, Transaction } from "neo4j-driver";
+import { SessionMode, QueryResult, Neo4jError } from "neo4j-driver";
+// neo4j-driver-core will always be present as a dependency of neo4j-driver peer dependency
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { Session, Transaction } from "neo4j-driver-core";
 import Debug from "debug";
 import {
     Neo4jGraphQLForbiddenError,
