@@ -25,7 +25,7 @@ import { asArray, omitFields } from "../utils/utils";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { convertToCypherParams } from "./cypher-builder/utils";
 
-export type CreateOrConnectInput = {
+type CreateOrConnectInput = {
     where?: {
         node: Record<string, any>;
     };
