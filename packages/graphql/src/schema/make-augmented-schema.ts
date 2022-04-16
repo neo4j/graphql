@@ -539,7 +539,7 @@ function makeAugmentedSchema(
                 resolve: (src) => {
                     const field = node.getGlobalIdField();
                     const value = src[field] as string | number;
-                    return typeof value === "string" ? node.toGlobalId(value.toString()) : undefined;
+                    return node.toGlobalId(value.toString());
                 },
             });
 

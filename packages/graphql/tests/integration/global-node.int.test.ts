@@ -20,6 +20,7 @@
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import gql from "graphql-tag";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { toGlobalId } from "../../src/utils/global-ids";
@@ -180,6 +181,168 @@ describe("Global node resolution", () => {
         } finally {
             await session.close();
         }
+    });
+    test("return the correct id when the underlying field is an aliased id db property", async () => {
+        const typeDefs = gql`
+        type ${typeFilm.name} {
+          dbId: ID! @id(autogenerate: false, global: true) @alias(property: "id")
+          title: String!
+          createdBy: ${typeUser.name}! @relationship(type: "CREATED_BY", direction: OUT) 
+        }
+
+        type ${typeUser.name} {
+          dbId: ID! @id(autogenerate: false, global: true) @alias(property: "id")
+          name: String!
+          createdFilms: [${typeFilm.name}!]! @relationship(type: "CREATED_BY", direction: IN)
+        }
+      `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const mutation = `
+        mutation($input : [${typeUser.name}CreateInput!]!) {
+          ${typeUser.operations.create} (input: $input) {
+            ${typeUser.plural} {
+              id
+              dbId
+              createdFilmsConnection {
+                totalCount
+                edges {
+                  cursor
+                  node {
+                    id
+                    dbId
+                    title
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            variableValues: {
+                input: [
+                    {
+                        dbId: 1234567,
+                        name: "Johnny Appleseed",
+                        createdFilms: {
+                            create: [{ node: { dbId: 223454, title: "The Matrix 2: Timelord Boogaloo" } }],
+                        },
+                    },
+                ],
+            },
+            contextValue: { driver },
+            source: mutation,
+        });
+
+        expect(result.errors).toBeUndefined();
+
+        const user = (result.data as any)[typeUser.operations.create][typeUser.plural][0];
+
+        expect(user.dbId).toBe("1234567");
+        expect(user.id).toBe(toGlobalId({ typeName: typeUser.name, field: "dbId", id: 1234567 }));
+
+        expect(user.createdFilmsConnection).toEqual({
+            totalCount: 1,
+            edges: [
+                {
+                    cursor: expect.any(String),
+                    node: {
+                        dbId: "223454",
+                        id: toGlobalId({
+                            typeName: typeFilm.name,
+                            field: "dbId",
+                            id: "223454",
+                        }),
+                        title: "The Matrix 2: Timelord Boogaloo",
+                    },
+                },
+            ],
+        });
+    });
+    test("return the correct id when the underlying field is of type Int", async () => {
+        const typeDefs = gql`
+        type ${typeFilm.name} {
+          dbId: Int! @id(autogenerate: false, global: true) @alias(property: "id")
+          title: String!
+          createdBy: ${typeUser.name}! @relationship(type: "CREATED_BY", direction: OUT) 
+        }
+
+        type ${typeUser.name} {
+          dbId: Int! @id(autogenerate: false, global: true) @alias(property: "id")
+          name: String!
+          createdFilms: [${typeFilm.name}!]! @relationship(type: "CREATED_BY", direction: IN)
+        }
+      `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const mutation = `
+        mutation($input : [${typeUser.name}CreateInput!]!) {
+          ${typeUser.operations.create} (input: $input) {
+            ${typeUser.plural} {
+              id
+              dbId
+              createdFilmsConnection {
+                totalCount
+                edges {
+                  cursor
+                  node {
+                    id
+                    dbId
+                    title
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            variableValues: {
+                input: [
+                    {
+                        dbId: 1234567,
+                        name: "Johnny Appleseed",
+                        createdFilms: {
+                            create: [{ node: { dbId: 223454, title: "The Matrix 2: Timelord Boogaloo" } }],
+                        },
+                    },
+                ],
+            },
+            contextValue: { driver },
+            source: mutation,
+        });
+
+        expect(result.errors).toBeUndefined();
+
+        const user = (result.data as any)[typeUser.operations.create][typeUser.plural][0];
+
+        expect(user.dbId).toBe(1234567);
+        expect(user.id).toBe(toGlobalId({ typeName: typeUser.name, field: "dbId", id: 1234567 }));
+
+        expect(user.createdFilmsConnection).toEqual({
+            totalCount: 1,
+            edges: [
+                {
+                    cursor: expect.any(String),
+                    node: {
+                        dbId: 223454,
+                        id: toGlobalId({
+                            typeName: typeFilm.name,
+                            field: "dbId",
+                            id: 223454,
+                        }),
+                        title: "The Matrix 2: Timelord Boogaloo",
+                    },
+                },
+            ],
+        });
     });
     test("sends and returns the correct selectionSet for the node", async () => {
         const typeDefs = `
