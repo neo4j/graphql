@@ -32,6 +32,12 @@ describe("Root Connection Query tests", () => {
             type Movie {
                 id: ID
                 title: String
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            type Actor {
+                name: String
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -61,16 +67,141 @@ describe("Root Connection Query tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-          "MATCH (this:Movie)
-          WHERE this.title = $this_title
-          WITH COLLECT({ node: this { .title } }) as edges
-          RETURN { edges: edges, totalCount: size(edges) } as this"
-      `);
+            "CALL {
+            MATCH (this:Movie)
+            WHERE this.title = $this_title
+            WITH COLLECT(this) as edges
+            WITH edges, size(edges) as totalCount
+            UNWIND edges as this
+            RETURN this, totalCount
+            }
+            WITH COLLECT({ node: this { .title } }) as edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-        "{
-            \\"this_title\\": \\"River Runs Through It, A\\"
-        }"
-      `);
+                    "{
+                        \\"this_title\\": \\"River Runs Through It, A\\"
+                    }"
+              `);
+    });
+    test("should apply limit and sort before return", async () => {
+        const query = gql`
+            {
+                moviesConnection(first: 20, sort: [{ title: ASC }]) {
+                    edges {
+                        node {
+                            title
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, { req });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            MATCH (this:Movie)
+            WITH COLLECT(this) as edges
+            WITH edges, size(edges) as totalCount
+            UNWIND edges as this
+            RETURN this, totalCount
+            ORDER BY this.title ASC
+            LIMIT $this_limit
+            }
+            WITH COLLECT({ node: this { .title } }) as edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } as this"
+        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_limit\\": {
+                    \\"low\\": 20,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+    test("should apply limit, sort, and filter correctly when all three are used", async () => {
+        const query = gql`
+            {
+                moviesConnection(first: 20, where: { title_CONTAINS: "Matrix" }, sort: [{ title: ASC }]) {
+                    edges {
+                        node {
+                            title
+                        }
+                    }
+                }
+            }
+        `;
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, { req });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            MATCH (this:Movie)
+            WHERE this.title CONTAINS $this_title_CONTAINS
+            WITH COLLECT(this) as edges
+            WITH edges, size(edges) as totalCount
+            UNWIND edges as this
+            RETURN this, totalCount
+            ORDER BY this.title ASC
+            LIMIT $this_limit
+            }
+            WITH COLLECT({ node: this { .title } }) as edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } as this"
+        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+               "{
+                   \\"this_title_CONTAINS\\": \\"Matrix\\",
+                   \\"this_limit\\": {
+                       \\"low\\": 20,
+                       \\"high\\": 0
+                   }
+               }"
+           `);
+    });
+    test("should correctly place any connection strings", async () => {
+        const query = gql`
+            {
+                moviesConnection(first: 20, sort: [{ title: ASC }]) {
+                    edges {
+                        node {
+                            title
+                            actorsConnection {
+                                totalCount
+                                edges {
+                                    node {
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, { req });
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            MATCH (this:Movie)
+            WITH COLLECT(this) as edges
+            WITH edges, size(edges) as totalCount
+            UNWIND edges as this
+            RETURN this, totalCount
+            ORDER BY this.title ASC
+            LIMIT $this_limit
+            }
+            CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+            WITH collect({ node: { name: this_actor.name } }) AS edges
+            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            }
+            WITH COLLECT({ node: this { .title, actorsConnection } }) as edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } as this"
+        `);
     });
 });
