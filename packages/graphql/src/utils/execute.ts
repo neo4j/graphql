@@ -81,13 +81,6 @@ const getTransactionConfig = () => {
 const getExecutor = (input: { defaultAccessMode: SessionMode; context: Context }) => {
     const executionContext = input.context.executionContext;
 
-    if (!executionContext) {
-        const driver = input.context.driver;
-        const session = driver.session(getSessionParams(input));
-        const transaction = session.beginTransaction(getTransactionConfig());
-        return { session, transaction, openedTransaction: true, openedSession: true };
-    }
-
     if (executionContext instanceof Transaction) {
         return { transaction: executionContext };
     }

@@ -18,35 +18,24 @@
  */
 
 import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
+import { DocumentNode, graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/464", () => {
     let driver: Driver;
 
-    const typeAuthor = generateUniqueType("Author");
-    const typeBook = generateUniqueType("Book");
+    let typeAuthor: UniqueType;
+    let typeBook: UniqueType;
 
-    const typeDefs = gql`
-        type ${typeAuthor.name} {
-            id: ID!
-            name: String!
-        }
+    let typeDefs: DocumentNode;
 
-        type ${typeBook.name} {
-            id: ID!
-            name: String!
-            author: ${typeAuthor.name}! @relationship(type: "WROTE", direction: IN)
-        }
-    `;
+    let neoSchema: Neo4jGraphQL;
 
-    const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-    const bookId = generate({
+    let bookId = generate({
         charset: "alphabetic",
     });
 
@@ -64,50 +53,159 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
         charset: "alphabetic",
     });
 
-    const createMutation = `
-        mutation CreateBooks($name: String!, $id: ID!, $authorName: String!, $authorId: ID!){
-            ${typeBook.operations.create} (
-                input: [
-                    {
-                        id: $id
-                        name: $name
-                        author: {
-                            create: {
-                                node: {
-                                    id: $authorId
-                                    name: $authorName
-                                }
-                            }
-                        }
-                    }
-                ]
-            ) {
-                info {
-                    bookmark
-                }
-                ${typeBook.plural} {
-                    id
-                    name
-                }
-            }
-        }
-    `;
+    let createMutation: string;
 
-    const queryBooks = `
-        query {
-            ${typeBook.plural} {
-                id
-                name
-            }
-        }
-    `;
+    let queryBooks: string;
 
     beforeAll(async () => {
         driver = await neo4j();
     });
 
+    beforeEach(() => {
+        typeAuthor = generateUniqueType("Author");
+        typeBook = generateUniqueType("Book");
+
+        typeDefs = gql`
+            type ${typeAuthor.name} {
+                id: ID!
+                name: String!
+            }
+
+            type ${typeBook.name} {
+                id: ID!
+                name: String!
+                author: ${typeAuthor.name}! @relationship(type: "WROTE", direction: IN)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        createMutation = `
+            mutation CreateBooks($name: String!, $id: ID!, $authorName: String!, $authorId: ID!){
+                ${typeBook.operations.create} (
+                    input: [
+                        {
+                            id: $id
+                            name: $name
+                            author: {
+                                create: {
+                                    node: {
+                                        id: $authorId
+                                        name: $authorName
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                ) {
+                    info {
+                        bookmark
+                    }
+                    ${typeBook.plural} {
+                        id
+                        name
+                    }
+                }
+            }
+        `;
+
+        queryBooks = `
+            query {
+                ${typeBook.plural} {
+                    id
+                    name
+                }
+            }
+        `;
+    });
+
     afterAll(async () => {
         await driver.close();
+    });
+
+    test("should run the mutation when passing a driver into the execution context", async () => {
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: createMutation,
+            contextValue: { executionContext: driver },
+            variableValues: {
+                id: bookId,
+                name: bookName,
+                authorId,
+                authorName,
+            },
+        });
+
+        if (result.errors) {
+            console.log(JSON.stringify(result.errors, null, 2));
+        }
+
+        expect(result.errors).toBeFalsy();
+
+        expect(result.data).toEqual({
+            [typeBook.operations.create]: {
+                info: { bookmark: expect.any(String) },
+                [typeBook.plural]: [
+                    {
+                        id: bookId,
+                        name: bookName,
+                    },
+                ],
+            },
+        });
+
+        const books = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: queryBooks,
+            contextValue: { executionContext: driver },
+        });
+
+        expect(books.data?.[typeBook.plural]).toEqual([{ id: bookId, name: bookName }]);
+    });
+
+    test("should run the mutation and commit the result, but not close the session", async () => {
+        const session = driver.session();
+        try {
+            const result = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: createMutation,
+                contextValue: { driver, executionContext: session },
+                variableValues: {
+                    id: bookId,
+                    name: bookName,
+                    authorId,
+                    authorName,
+                },
+            });
+
+            if (result.errors) {
+                console.log(JSON.stringify(result.errors, null, 2));
+            }
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result.data).toEqual({
+                [typeBook.operations.create]: {
+                    info: { bookmark: expect.any(String) },
+                    [typeBook.plural]: [
+                        {
+                            id: bookId,
+                            name: bookName,
+                        },
+                    ],
+                },
+            });
+
+            const books = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: queryBooks,
+                contextValue: { driver, executionContext: session },
+            });
+
+            expect(books.data?.[typeBook.plural]).toEqual([{ id: bookId, name: bookName }]);
+        } finally {
+            await session.close();
+        }
     });
 
     test("should run the mutation but not commit until it is done explicitly", async () => {
@@ -167,6 +265,4 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
             await session.close();
         }
     });
-
-    // @TODO: more tests
 });

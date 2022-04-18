@@ -39,7 +39,7 @@ export interface AuthContext {
 }
 
 export interface Context {
-    driver: Driver;
+    driver?: Driver;
     driverConfig?: DriverConfig;
     resolveTree: ResolveTree;
     nodes: Node[];
@@ -51,7 +51,7 @@ export interface Context {
     plugins?: Neo4jGraphQLPlugins;
     jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
-    executionContext?: Driver | Session | Transaction;
+    executionContext: Driver | Session | Transaction;
     [k: string]: any;
 }
 
