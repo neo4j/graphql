@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
 
     let neoSchema: Neo4jGraphQL;
 
-    let bookId = generate({
+    const bookId = generate({
         charset: "alphabetic",
     });
 
