@@ -23,14 +23,15 @@ interface Props {
     queryEditor: any | null;
     resultView: any;
     parameterEditor: any;
+    isSlim: boolean;
 }
 
-export const Grid = ({ queryEditor, parameterEditor, resultView }: Props) => {
+export const Grid = ({ queryEditor, parameterEditor, resultView, isSlim }: Props) => {
     const [values, setValues] = useState(initialState);
 
     const handleResize = () => {
         // @ts-ignore
-        const { clientHeight, clientWidth } = window.document.getElementById("frameGridId");
+        const { clientHeight, clientWidth } = window.document.getElementById("theGridId");
         setValues({
             maxWidth: clientWidth * 0.6,
             maxHeight: clientHeight * 0.7,
@@ -54,7 +55,8 @@ export const Grid = ({ queryEditor, parameterEditor, resultView }: Props) => {
     }, []);
 
     return (
-        <div className="the-grid" id="frameGridId" style={{ height: "70vh", width: "70vw" }}>
+        // TODO: figure out the with problem!
+        <div className={`the-grid ${isSlim ? "the-grid-slim" : ""}`} id="theGridId">
             <section className="left-top">
                 <ResizableBox
                     className="left-top-inner"

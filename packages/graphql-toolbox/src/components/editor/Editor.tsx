@@ -107,7 +107,11 @@ export const Editor = (props: Props) => {
                     />
                 </div>
             </div>
-            <div className="flex-1 flex justify-start w-full p-6">
+            <div
+                className={`h-content-container flex justify-start p-6 ${
+                    settings.isShowDocsDrawer || settings.isShowSettingsDrawer ? "w-editor-container" : "w-full"
+                }`}
+            >
                 <div className="flex flex-col w-full">
                     <div className="flex items-center w-full pb-4">
                         <div className="justify-start">
@@ -117,9 +121,9 @@ export const Editor = (props: Props) => {
                                 isEditorDisabled={!!props.schema || loading}
                             />
                         </div>
-                        <div className="flex-1 flex justify-end"></div>
                     </div>
                     <Grid
+                        isSlim={settings.isShowDocsDrawer || settings.isShowSettingsDrawer}
                         queryEditor={
                             props.schema ? (
                                 <GraphQLQueryEditor
