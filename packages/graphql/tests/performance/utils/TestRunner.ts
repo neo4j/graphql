@@ -79,6 +79,7 @@ export class TestRunner {
     }
 
     private wrapQueryInProfile(query: string): string {
+        // planner and runtime options are needed to ensure consistent results on our query plan
         return `CYPHER
         planner=dp
         runtime=interpreted
