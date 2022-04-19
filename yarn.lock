@@ -2068,13 +2068,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:^0.1.4":
-  version: 0.1.4
-  resolution: "@neo4j-ndl/base@npm:0.1.4"
-  checksum: 0db9e497af8b7a2e6195dc100c4412bbedf283753054235dec4257b43777af2a44670dca2f7da03822a89c8956eec3eb021c62ca6e3b4ee6873449cdd4182a5f
-  languageName: node
-  linkType: hard
-
 "@neo4j-ndl/base@npm:^0.2.0":
   version: 0.2.0
   resolution: "@neo4j-ndl/base@npm:0.2.0"
@@ -2082,16 +2075,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:^0.1.2":
-  version: 0.1.4
-  resolution: "@neo4j-ndl/react@npm:0.1.4"
+"@neo4j-ndl/react@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@neo4j-ndl/react@npm:0.2.0"
   dependencies:
     "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.1.4
+    "@neo4j-ndl/base": ^0.2.0
     classnames: ^2.3.1
+    react-dropzone: ^12.0.4
   peerDependencies:
     react: 17.x
-  checksum: cec5815cd1fec09589f27e18dfc07bde166daeaf1a8038578813885df5cd52aa0802b777315c537da21f8839f49e64ac6909c237ef5f117314eba29eec3769df
+  checksum: 949194ec1ef81d4b52e1038c3f09f0456a9a4be07f8a9f613610b7e436f648c96dd8bdf314c9d5490ea73a451fabeae8f3bdb47ff53468691e325615adba4512
   languageName: node
   linkType: hard
 
@@ -2147,7 +2141,7 @@ __metadata:
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@neo4j-ndl/base": ^0.2.0
-    "@neo4j-ndl/react": ^0.1.2
+    "@neo4j-ndl/react": ^0.2.0
     "@neo4j/graphql": ^3.1.0
     "@neo4j/introspector": ^1.0.1
     "@tsconfig/create-react-app": ^1.0.2
@@ -4757,6 +4751,13 @@ __metadata:
   version: 1.0.0
   resolution: "atomic-sleep@npm:1.0.0"
   checksum: b95275afb2f80732f22f43a60178430c468906a415a7ff18bcd0feeebc8eec3930b51250aeda91a476062a90e07132b43a1794e8d8ffcf9b650e8139be75fa36
+  languageName: node
+  linkType: hard
+
+"attr-accept@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "attr-accept@npm:2.2.2"
+  checksum: 496f7249354ab53e522510c1dc8f67a1887382187adde4dc205507d2f014836a247073b05e9d9ea51e2e9c7f71b0d2aa21730af80efa9af2d68303e5f0565c4d
   languageName: node
   linkType: hard
 
@@ -8502,6 +8503,15 @@ __metadata:
   peerDependencies:
     webpack: ^4.0.0 || ^5.0.0
   checksum: faf43eecf233f4897b0150aaa874eeeac214e4f9de49738a9e0ef734a30b5260059e85b7edadf852b98e415f875bd5f12587768a93fd52aaf2e479ecf95fab20
+  languageName: node
+  linkType: hard
+
+"file-selector@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "file-selector@npm:0.4.0"
+  dependencies:
+    tslib: ^2.0.3
+  checksum: 1c9986e94bd033442cb4299d10d73d98fbc0b5f1af5b47d7a27b39f1e6bbd8d677f66c2628167da387166c652ad3c2429875042b453ba62f14945d903adf88d5
   languageName: node
   linkType: hard
 
@@ -15300,6 +15310,19 @@ __metadata:
   peerDependencies:
     react: ^18.0.0
   checksum: dd0ba9f2f31dd728076c892a95b2f5a8dfe79136431b0289afb46eec39d0ca6b6f0f40a60fd8aa6ef702c98ce7c26100d3d4dbc35c7c9e87429cd04f84cb58bd
+  languageName: node
+  linkType: hard
+
+"react-dropzone@npm:^12.0.4":
+  version: 12.0.5
+  resolution: "react-dropzone@npm:12.0.5"
+  dependencies:
+    attr-accept: ^2.2.2
+    file-selector: ^0.4.0
+    prop-types: ^15.8.1
+  peerDependencies:
+    react: ">= 16.8"
+  checksum: fa26bee807c214b8d3798dd9675ed88093a6bb6f45e8b466ed2d91f1b4715155db504153e9960a1a2c01cbad9d7a18f78247988709c47e5aa24edb883c5e6379
   languageName: node
   linkType: hard
 
