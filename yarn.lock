@@ -2068,10 +2068,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:^0.1.2, @neo4j-ndl/base@npm:^0.1.4":
+"@neo4j-ndl/base@npm:^0.1.4":
   version: 0.1.4
   resolution: "@neo4j-ndl/base@npm:0.1.4"
   checksum: 0db9e497af8b7a2e6195dc100c4412bbedf283753054235dec4257b43777af2a44670dca2f7da03822a89c8956eec3eb021c62ca6e3b4ee6873449cdd4182a5f
+  languageName: node
+  linkType: hard
+
+"@neo4j-ndl/base@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@neo4j-ndl/base@npm:0.2.0"
+  checksum: f7fef1a0c200151f1eff17b799d23eff4b331c026459625a7a6f5e930ef7b6cdbdffcb48aba9cad05a31caecda9a014490219e9b39549c45c7a1f3ed35a2b7b8
   languageName: node
   linkType: hard
 
@@ -2139,7 +2146,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@neo4j-ndl/base": ^0.1.2
+    "@neo4j-ndl/base": ^0.2.0
     "@neo4j-ndl/react": ^0.1.2
     "@neo4j/graphql": ^3.1.0
     "@neo4j/introspector": ^1.0.1
