@@ -316,7 +316,7 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                         </div>
                     )}
                     <div style={{ width: "100%", height: "100%" }}>
-                        <FileName extension={Extension.GQL} name={"typeDefs"}></FileName>
+                        <FileName extension={Extension.GRAPHQL} name={"schema"}></FileName>
                         <textarea
                             id={SCHEMA_EDITOR_INPUT}
                             /* @ts-ignore - Not Sure about this one*/

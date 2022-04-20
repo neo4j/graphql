@@ -38,14 +38,14 @@ export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVis
         const { clientHeight, clientWidth } = window.document.getElementById("theGridId");
         setValues({
             maxWidth: clientWidth * 0.6,
-            maxHeight: clientHeight * 0.7,
+            maxHeight: clientHeight * 0.8,
             leftTop: {
                 width: clientWidth * 0.4,
                 height: clientHeight * 0.5,
             },
             leftBottom: {
                 width: clientWidth * 0.4,
-                height: clientHeight * 0.3,
+                height: clientHeight * 0.2,
             },
             right: {
                 width: clientWidth * 0.4,
