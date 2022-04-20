@@ -61,8 +61,8 @@ module.exports = {
             patterns: ["public"],
         }),
         new HtmlWebpackPlugin({
-            template: "./src/index.html",
-            favicon: "./public/favicon.svg",
+            template: path.join(__dirname, "src", "index.html"),
+            favicon: path.join(__dirname, "public", "favicon.svg"),
             ...(process.env.NODE_ENV === "test" ? { inject: "body" } : {}),
         }),
         new ForkTsCheckerWebpackPlugin({

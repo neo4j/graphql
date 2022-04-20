@@ -1016,5 +1016,100 @@ describe("cypher", () => {
                 );
             });
         });
+
+        describe("Union type", () => {
+            let schema: GraphQLSchema;
+            const secret = "secret";
+
+            const testLabel = generate({ charset: "alphabetic" });
+            const userId = generate({ charset: "alphabetic" });
+
+            const typeDefs = `
+                union PostMovieUser = Post | Movie | User
+
+                type Post {
+                    name: String
+                }
+
+                type Movie {
+                    name: String
+                }
+
+                type User {
+                    id: ID @id
+                    updates: [PostMovieUser!]!
+                        @cypher(
+                            statement: """
+                            MATCH (this:User)-[:WROTE]->(wrote:Post)
+                            RETURN wrote
+                            LIMIT 5
+                            """
+                        )
+                }
+            `;
+
+            beforeAll(async () => {
+                const session = driver.session();
+
+                const neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    plugins: {
+                        auth: new Neo4jGraphQLAuthJWTPlugin({
+                            secret,
+                        }),
+                    },
+                });
+                schema = await neoSchema.getSchema();
+
+                await session.run(
+                    `
+                        CREATE (p:Post:${testLabel} {name: "Postname"})
+                        CREATE (m:Movie:${testLabel} {name: "Moviename"})
+                        CREATE (u:User:${testLabel} {id: "${userId}"})
+                        CREATE (u)-[:WROTE]->(p)
+                        CREATE (u)-[:WATCHED]->(m)
+                    `
+                );
+                await session.close();
+            });
+
+            afterAll(async () => {
+                const session = driver.session();
+                await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
+                await session.close();
+            });
+
+            test("should return __typename", async () => {
+                const source = `
+                        query {
+                            users (where: { id: "${userId}" }) {
+                                updates {
+                                    __typename
+                                }
+                            }
+                        }
+                `;
+
+                const req = createJwtRequest(secret, {});
+                const gqlResult = await graphql({
+                    schema,
+                    source,
+                    contextValue: { driver, req },
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+                expect(gqlResult?.data as any).toEqual({
+                    users: [
+                        {
+                            updates: [
+                                {
+                                    __typename: "Post",
+                                },
+                            ],
+                        },
+                    ],
+                });
+            });
+        });
     });
 });
