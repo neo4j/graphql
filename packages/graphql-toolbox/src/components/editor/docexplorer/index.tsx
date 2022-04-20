@@ -31,6 +31,7 @@ const initialNav: NavStackItem = {
 type DocExplorerProps = {
     schema?: GraphQLSchema | null;
     schemaErrors?: readonly GraphQLError[];
+    children?: React.ReactNode;
 };
 
 type DocExplorerState = {
