@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 import { ResizableBox } from "react-resizable";
+// @ts-ignore - SVG Import
+import unionHorizontal from "./union_horizontal.svg";
+// @ts-ignore - SVG Import
+import unionVertical from "./union_vertical.svg";
 import "./grid.css";
 
 const initialState = {
@@ -23,10 +27,10 @@ interface Props {
     queryEditor: any | null;
     resultView: any;
     parameterEditor: any;
-    isSlim: boolean;
+    isRightPanelVisible: boolean;
 }
 
-export const Grid = ({ queryEditor, parameterEditor, resultView, isSlim }: Props) => {
+export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVisible }: Props) => {
     const [values, setValues] = useState(initialState);
 
     const handleResize = () => {
@@ -52,11 +56,12 @@ export const Grid = ({ queryEditor, parameterEditor, resultView, isSlim }: Props
 
     useEffect(() => {
         handleResize();
-    }, []);
+    }, [isRightPanelVisible]);
+
+    window.addEventListener("resize", handleResize);
 
     return (
-        // TODO: figure out the with problem!
-        <div className={`the-grid ${isSlim ? "the-grid-slim" : ""}`} id="theGridId">
+        <div className="the-grid" id="theGridId" style={{ width: isRightPanelVisible ? "100%" : "unset" }}>
             <section className="left-top">
                 <ResizableBox
                     className="left-top-inner"
@@ -65,6 +70,12 @@ export const Grid = ({ queryEditor, parameterEditor, resultView, isSlim }: Props
                     axis="y"
                     resizeHandles={["s"]}
                     maxConstraints={[Infinity, values.maxHeight]}
+                    handle={
+                        <div
+                            className="react-resizable-handle react-resizable-handle-s"
+                            style={{ backgroundImage: `url(${unionHorizontal})` }}
+                        />
+                    }
                 >
                     {queryEditor}
                 </ResizableBox>
@@ -88,6 +99,12 @@ export const Grid = ({ queryEditor, parameterEditor, resultView, isSlim }: Props
                     axis="x"
                     resizeHandles={["w"]}
                     maxConstraints={[values.maxWidth, Infinity]}
+                    handle={
+                        <div
+                            className="react-resizable-handle react-resizable-handle-w"
+                            style={{ backgroundImage: `url(${unionVertical})` }}
+                        />
+                    }
                 >
                     {resultView}
                 </ResizableBox>

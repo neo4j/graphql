@@ -17,7 +17,6 @@
     background-repeat: no-repeat;
     background-origin: content-box;
     box-sizing: border-box;
-    background-image: url(./union_vertical.svg);
     background-position: center;
 }
  
@@ -30,10 +29,14 @@
     background-repeat: no-repeat;
     background-origin: content-box;
     box-sizing: border-box;
-    background-image: url(./union_horizontal.svg);
     background-position: center;
 }
 
+.react-resizable-handle-se {
+    bottom: 0;
+    right: 0;
+    height: 0;
+}
 
 .the-grid {
     position: relative;

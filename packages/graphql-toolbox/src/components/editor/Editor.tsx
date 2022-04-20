@@ -123,7 +123,7 @@ export const Editor = (props: Props) => {
                         </div>
                     </div>
                     <Grid
-                        isSlim={settings.isShowDocsDrawer || settings.isShowSettingsDrawer}
+                        isRightPanelVisible={settings.isShowDocsDrawer || settings.isShowSettingsDrawer}
                         queryEditor={
                             props.schema ? (
                                 <GraphQLQueryEditor
