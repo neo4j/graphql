@@ -54,6 +54,7 @@ export const Editor = (props: Props) => {
     const [variableValues, setVariableValues] = useState("");
     const [output, setOutput] = useState("");
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
+    const isShowRightPanel = settings.isShowDocsDrawer || settings.isShowSettingsDrawer;
 
     const formatTheCode = (): void => {
         if (!refForQueryEditorMirror.current) return;
@@ -109,7 +110,7 @@ export const Editor = (props: Props) => {
             </div>
             <div
                 className={`h-content-container flex justify-start p-6 ${
-                    settings.isShowDocsDrawer || settings.isShowSettingsDrawer ? "w-editor-container" : "w-full"
+                    isShowRightPanel ? "w-editor-container" : "w-full"
                 }`}
             >
                 <div className="flex flex-col w-full">
@@ -123,7 +124,7 @@ export const Editor = (props: Props) => {
                         </div>
                     </div>
                     <Grid
-                        isRightPanelVisible={settings.isShowDocsDrawer || settings.isShowSettingsDrawer}
+                        isRightPanelVisible={isShowRightPanel}
                         queryEditor={
                             props.schema ? (
                                 <GraphQLQueryEditor
@@ -195,7 +196,7 @@ export const Editor = (props: Props) => {
                     />
                 </div>
             </div>
-            {settings.isShowDocsDrawer || settings.isShowSettingsDrawer ? (
+            {isShowRightPanel ? (
                 <div className="h-content-container flex justify-start w-96 bg-white">
                     {settings.isShowDocsDrawer ? (
                         <div className="p-6">

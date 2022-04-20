@@ -49,10 +49,6 @@
     height: 90%;
 }
 
-.the-grid-slim {
-    width: calc(100% - 24rem);
-}
-
 .right {
     grid-column: 2;
     grid-row: 1 / span 2;

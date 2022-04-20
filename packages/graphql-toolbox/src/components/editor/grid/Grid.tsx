@@ -24,9 +24,9 @@ const initialState = {
 };
 
 interface Props {
-    queryEditor: any | null;
-    resultView: any;
-    parameterEditor: any;
+    queryEditor: React.ReactNode | null;
+    resultView: React.ReactNode;
+    parameterEditor: React.ReactNode;
     isRightPanelVisible: boolean;
 }
 
