@@ -34,7 +34,7 @@ import {
 } from "../../constants";
 import { Grid } from "./grid/Grid";
 import { DocExplorer } from "./docexplorer/index";
-import { formatCode, ParserOptions } from "./utils";
+import { formatCode, isJsonString, ParserOptions } from "./utils";
 import { Extension } from "../Filename";
 import { ViewSelectorComponent } from "../ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
@@ -72,7 +72,7 @@ export const Editor = (props: Props) => {
                     schema: props.schema,
                     source: override || query || "",
                     contextValue: {},
-                    ...(variableValues ? { variableValues: JSON.parse(variableValues) } : {}),
+                    ...(isJsonString(variableValues) ? { variableValues: JSON.parse(variableValues) } : {}),
                 });
 
                 result = JSON.stringify(response);
