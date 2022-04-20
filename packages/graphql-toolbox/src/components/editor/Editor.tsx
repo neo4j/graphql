@@ -34,7 +34,7 @@ import {
 } from "../../constants";
 import { Grid } from "./grid/Grid";
 import { DocExplorer } from "./docexplorer/index";
-import { formatCode, isJsonString, ParserOptions } from "./utils";
+import { formatCode, safeParse, ParserOptions } from "./utils";
 import { Extension } from "../Filename";
 import { ViewSelectorComponent } from "../ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
@@ -54,7 +54,7 @@ export const Editor = (props: Props) => {
     const [variableValues, setVariableValues] = useState("");
     const [output, setOutput] = useState("");
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
-    const isShowRightPanel = settings.isShowDocsDrawer || settings.isShowSettingsDrawer;
+    const showRightPanel = settings.isShowDocsDrawer || settings.isShowSettingsDrawer;
 
     const formatTheCode = (): void => {
         if (!refForQueryEditorMirror.current) return;
@@ -72,7 +72,7 @@ export const Editor = (props: Props) => {
                     schema: props.schema,
                     source: override || query || "",
                     contextValue: {},
-                    ...(isJsonString(variableValues) ? { variableValues: JSON.parse(variableValues) } : {}),
+                    variableValues: safeParse(variableValues, {}),
                 });
 
                 result = JSON.stringify(response);
@@ -110,7 +110,7 @@ export const Editor = (props: Props) => {
             </div>
             <div
                 className={`h-content-container flex justify-start p-6 ${
-                    isShowRightPanel ? "w-editor-container" : "w-full"
+                    showRightPanel ? "w-editor-container" : "w-full"
                 }`}
             >
                 <div className="flex flex-col w-full">
@@ -124,7 +124,7 @@ export const Editor = (props: Props) => {
                         </div>
                     </div>
                     <Grid
-                        isRightPanelVisible={isShowRightPanel}
+                        isRightPanelVisible={showRightPanel}
                         queryEditor={
                             props.schema ? (
                                 <GraphQLQueryEditor
@@ -196,7 +196,7 @@ export const Editor = (props: Props) => {
                     />
                 </div>
             </div>
-            {isShowRightPanel ? (
+            {showRightPanel ? (
                 <div className="h-content-container flex justify-start w-96 bg-white">
                     {settings.isShowDocsDrawer ? (
                         <div className="p-6">

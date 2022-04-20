@@ -70,13 +70,11 @@ export const handleEditorDisableState = (mirror: EditorFromTextArea | null, load
     }
 };
 
-export const isJsonString = (str: string | null | undefined): boolean => {
-    if (!str) return false;
-
+export const safeParse = (str: string | null | undefined, fallback: Record<string, any>): Record<string, any> => {
+    if (!str) return fallback;
     try {
-        JSON.parse(str);
+        return JSON.parse(str);
     } catch (e) {
-        return false;
+        return fallback;
     }
-    return true;
 };
