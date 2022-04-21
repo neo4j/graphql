@@ -28,9 +28,9 @@
         ]
     },
     "scripts": {
-        "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
-        "start": "cross-env NODE_ENV=development webpack serve",
-        "test-build": "cross-env NODE_ENV=test webpack --config webpack.config.js",
+        "build": "cross-env NODE_ENV=production npx webpack --config webpack.config.js",
+        "start": "cross-env NODE_ENV=development npx webpack serve",
+        "test-build": "cross-env NODE_ENV=test npx webpack --config webpack.config.js",
         "test": "cross-env NODE_ENV=test yarn test-build && jest"
     },
     "author": "Neo4j",
