@@ -175,12 +175,14 @@ function createElementWhereAndParams({
 
                     const resultArr = [
                         `RETURN ${existsStr}`,
-                        `AND ${getListPredicate(
-                            operator
-                        )}(${collectedMap} IN [(${safeNodeVariable})${inStr}[${relationshipVariable}:${
-                            connectionField.relationship.type
-                        }]${outStr}(${relatedNodeVariable}${labels}) | { node: ${relatedNodeVariable}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+                        `AND INNER_WHERE `,
+                        // `AND ${getListPredicate(
+                        //     operator
+                        // )}(${collectedMap} IN [(${safeNodeVariable})${inStr}[${relationshipVariable}:${
+                        //     connectionField.relationship.type
+                        // }]${outStr}(${relatedNodeVariable}${labels}) | { node: ${relatedNodeVariable}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
                     ];
+                    console.log("resultArr", resultArr);
 
                     const connectionWhere = createConnectionWhereAndParams({
                         whereInput: entry[1],
@@ -194,6 +196,7 @@ function createElementWhereAndParams({
 
                     resultArr.push(connectionWhere[0]);
                     resultArr.push(")"); // close NONE/ANY
+                    console.log("connectionWhere[0]", connectionWhere[0]);
 
                     const apocRunFirstColumn = wrapInApocRunFirstColumn(resultArr.join("\n"), {
                         [safeNodeVariable]: varName,
