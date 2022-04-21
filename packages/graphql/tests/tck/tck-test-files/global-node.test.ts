@@ -21,7 +21,7 @@ import { gql } from "apollo-server";
 import { toGlobalId } from "../../../src/utils/global-ids";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
-import { formatCypher, translateQuery } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Global nodes", () => {
     test("it should fetch the correct node and fields", async () => {
@@ -106,5 +106,52 @@ describe("Global nodes", () => {
             WHERE this.id = $this_dbId
             RETURN this { .name, dbId: this.id } as this"
         `);
+    });
+    test("it should project the correct selectionSet when id is used as a where argument", async () => {
+        const typeDefs = gql`
+            type Actor {
+                dbId: ID! @id(global: true) @alias(property: "id")
+                name: String!
+                movies: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+            type Movie {
+                title: ID! @id(global: true)
+                actors: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: {},
+        });
+
+        const query = gql`
+            query ($where: ActorWhere!) {
+                actors(where: $where) {
+                    name
+                }
+            }
+        `;
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+            variableValues: {
+                where: {
+                    id: toGlobalId({ typeName: "Actor", field: "dbId", id: "12345" }),
+                },
+            },
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            WHERE this.id = $this_dbId
+            RETURN this { .name } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                    "{
+                        \\"this_dbId\\": \\"12345\\"
+                    }"
+                `);
     });
 });

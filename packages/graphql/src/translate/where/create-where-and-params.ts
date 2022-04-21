@@ -109,7 +109,9 @@ function createWhereAndParams({
             const { field, id } = node.fromGlobalId(value as string);
             param = param.replace(key, field);
 
-            res.clauses.push(`${varName}.${field} = $${param}`);
+            // get the dbField from the returned property fieldName
+            const dbField = mapToDbProperty(node, field);
+            res.clauses.push(`${varName}.${dbField} = $${param}`);
             res.params = { ...res.params, [param]: id };
             return res;
         }
