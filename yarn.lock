@@ -1933,7 +1933,7 @@ __metadata:
     "@types/crypto-js": ^4.1.1
     "@types/markdown-it": ^12.2.3
     "@types/prettier": 2.6.0
-    "@types/react-dom": 18.0.1
+    "@types/react-dom": 18.0.2
     "@types/uuid": ^8.3.4
     "@types/webpack": 5.28.0
     autoprefixer: ^10.4.4
@@ -2858,12 +2858,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.0.1":
-  version: 18.0.1
-  resolution: "@types/react-dom@npm:18.0.1"
+"@types/react-dom@npm:18.0.2":
+  version: 18.0.2
+  resolution: "@types/react-dom@npm:18.0.2"
   dependencies:
     "@types/react": "*"
-  checksum: 6c183e2e50240b77ed767cd968fe061ef4f2b47f84da5ec9e412a767d68c9a004d1f6ccca4295a5aa2c3ee723377e59006a2031f3767c00d8ac9e240a51bb142
+  checksum: 2b0b138d8634ccfd8a86b17cb5414b122ee0cb6f650377d772f6008761a27e4c2531c08e3cab71aaa19b6893af6a508c664aa314db3ebcff5b8179173c9c9307
   languageName: node
   linkType: hard
 
