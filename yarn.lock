@@ -1960,7 +1960,7 @@ __metadata:
     postcss-loader: ^6.2.1
     prettier: ^2.6.1
     process: 0.11.10
-    puppeteer: 13.5.2
+    puppeteer: 13.6.0
     randomstring: 1.2.2
     react: 18.0.0
     react-dom: 18.0.0
@@ -6771,10 +6771,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"devtools-protocol@npm:0.0.969999":
-  version: 0.0.969999
-  resolution: "devtools-protocol@npm:0.0.969999"
-  checksum: c67e2a40864edfbdc892eb6db2b6edf82a277af5bcc070741a6b39ffe052955a3c1fb99a0bb029631b326d290861a79deea423634d5a441b9faeab2884208396
+"devtools-protocol@npm:0.0.981744":
+  version: 0.0.981744
+  resolution: "devtools-protocol@npm:0.0.981744"
+  checksum: 609901bff551f5fbe98e272bdda7269de527e28fab138de371ffd7e9a06fa68ca2eec2e961bd1cd6fd98223ccee562c55b7ce3235d4e37cc8d85d6681bc45593
   languageName: node
   linkType: hard
 
@@ -14534,13 +14534,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer@npm:13.5.2":
-  version: 13.5.2
-  resolution: "puppeteer@npm:13.5.2"
+"puppeteer@npm:13.6.0":
+  version: 13.6.0
+  resolution: "puppeteer@npm:13.6.0"
   dependencies:
     cross-fetch: 3.1.5
     debug: 4.3.4
-    devtools-protocol: 0.0.969999
+    devtools-protocol: 0.0.981744
     extract-zip: 2.0.1
     https-proxy-agent: 5.0.0
     pkg-dir: 4.2.0
@@ -14550,7 +14550,7 @@ __metadata:
     tar-fs: 2.1.1
     unbzip2-stream: 1.4.3
     ws: 8.5.0
-  checksum: 5f03c8a606067ae114ea646d9773b76b3e2c8f0654ef4453c5f813686a218481d934708fefc607822b75673c6e82b812755892f57d02e42a0dadeaabe3c56138
+  checksum: 5d9338189627aea2a0c9d273dd73b4cbaa4112b71e5d56792f74df7832f9661986520a10e92b9f56891eb31c03c74615423cb6c35e0619a02d847a7f91065220
   languageName: node
   linkType: hard
 
