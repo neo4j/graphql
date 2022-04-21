@@ -203,5 +203,14 @@ describe("Root Connection Query tests", () => {
             WITH COLLECT({ node: this { .title, actorsConnection } }) as edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } as this"
         `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+        "{
+            \\"this_limit\\": {
+                \\"low\\": 20,
+                \\"high\\": 0
+            }
+        }"
+    `);
     });
 });
