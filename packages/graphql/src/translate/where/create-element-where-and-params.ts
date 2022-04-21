@@ -36,12 +36,14 @@ function createElementWhereAndParams({
     varName,
     context,
     parameterPrefix,
+    listPredicates,
 }: {
     whereInput: GraphQLWhereArg;
     element: GraphElement;
     varName: string;
     context: Context;
     parameterPrefix: string;
+    listPredicates?: [string];
 }): [string, any] {
     if (!Object.keys(whereInput).length) {
         return ["", {}];
@@ -175,14 +177,13 @@ function createElementWhereAndParams({
 
                     const resultArr = [
                         `RETURN ${existsStr}`,
-                        `AND INNER_WHERE `,
-                        // `AND ${getListPredicate(
-                        //     operator
-                        // )}(${collectedMap} IN [(${safeNodeVariable})${inStr}[${relationshipVariable}:${
-                        //     connectionField.relationship.type
-                        // }]${outStr}(${relatedNodeVariable}${labels}) | { node: ${relatedNodeVariable}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+                        `AND ${getListPredicate(
+                            operator
+                        )}(${collectedMap} IN [(${safeNodeVariable})${inStr}[${relationshipVariable}:${
+                            connectionField.relationship.type
+                        }]${outStr}(${relatedNodeVariable}${labels}) | { node: ${relatedNodeVariable}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
                     ];
-                    console.log("resultArr", resultArr);
+                    const s = getListPredicate(operator);
 
                     const connectionWhere = createConnectionWhereAndParams({
                         whereInput: entry[1],
@@ -196,12 +197,20 @@ function createElementWhereAndParams({
 
                     resultArr.push(connectionWhere[0]);
                     resultArr.push(")"); // close NONE/ANY
-                    console.log("connectionWhere[0]", connectionWhere[0]);
 
-                    const apocRunFirstColumn = wrapInApocRunFirstColumn(resultArr.join("\n"), {
-                        [safeNodeVariable]: varName,
-                        [rootParam]: `$${rootParam}`,
-                    });
+                    console.log("listPredicates", listPredicates);
+                    const expectMultipleValues = !listPredicates?.includes("SINGLE");
+                    // we need the operator of the root "architectureConnection_SINGLE", here it is only checking for the operator of "nameDetailsConnection"
+
+                    // if _SINGLE: expectMultipleValues should be false
+                    const apocRunFirstColumn = wrapInApocRunFirstColumn(
+                        resultArr.join("\n"),
+                        {
+                            [safeNodeVariable]: varName,
+                            [rootParam]: `$${rootParam}`,
+                        },
+                        expectMultipleValues
+                    );
 
                     res.clauses.push(apocRunFirstColumn);
 

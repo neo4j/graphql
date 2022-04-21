@@ -82,20 +82,20 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 $connectionWhere: RelationPropsWhere = { current: true }
             ) {
                 series(where: $where) {
-                id
-                architectureConnection(where: { edge: $connectionWhere }) {
-                    edges {
-                    node {
-                        nameDetailsConnection(where: { edge: $connectionWhere }) {
+                    id
+                    architectureConnection(where: { edge: $connectionWhere }) {
                         edges {
                             node {
-                            fullName
+                                nameDetailsConnection(where: { edge: $connectionWhere }) {
+                                    edges {
+                                        node {
+                                            fullName
+                                        }
+                                    }
+                                }
                             }
                         }
-                        }
                     }
-                    }
-                }
                 }
             }
         `;
