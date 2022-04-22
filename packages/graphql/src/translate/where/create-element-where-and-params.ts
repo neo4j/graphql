@@ -43,7 +43,7 @@ function createElementWhereAndParams({
     varName: string;
     context: Context;
     parameterPrefix: string;
-    listPredicates?: [string];
+    listPredicates?: string[];
 }): [string, any] {
     if (!Object.keys(whereInput).length) {
         return ["", {}];
@@ -175,15 +175,12 @@ function createElementWhereAndParams({
                         return;
                     }
 
+                    const currentListPredicate = getListPredicate(operator);
+
                     const resultArr = [
                         `RETURN ${existsStr}`,
-                        `AND ${getListPredicate(
-                            operator
-                        )}(${collectedMap} IN [(${safeNodeVariable})${inStr}[${relationshipVariable}:${
-                            connectionField.relationship.type
-                        }]${outStr}(${relatedNodeVariable}${labels}) | { node: ${relatedNodeVariable}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+                        `AND ${currentListPredicate}(${collectedMap} IN [(${safeNodeVariable})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${relatedNodeVariable}${labels}) | { node: ${relatedNodeVariable}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
                     ];
-                    const s = getListPredicate(operator);
 
                     const connectionWhere = createConnectionWhereAndParams({
                         whereInput: entry[1],
@@ -193,6 +190,7 @@ function createElementWhereAndParams({
                         relationship,
                         relationshipVariable: `${collectedMap}.relationship`,
                         parameterPrefix: `${parameterPrefix}.${fieldName}`,
+                        listPredicates: [currentListPredicate, ...(listPredicates || [])],
                     });
 
                     resultArr.push(connectionWhere[0]);

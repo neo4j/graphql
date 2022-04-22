@@ -38,7 +38,7 @@ function createConnectionWhereAndParams({
     relationship: Relationship;
     relationshipVariable: string;
     parameterPrefix: string;
-    listPredicates?: [string];
+    listPredicates?: string[];
 }): [string, any] {
     const reduced = Object.entries(whereInput).reduce<{ whereStrs: string[]; params: any }>(
         (res, [k, v]) => {

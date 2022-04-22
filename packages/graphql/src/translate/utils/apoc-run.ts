@@ -9,8 +9,9 @@ export function wrapInApocRunFirstColumn(
 ): string {
     const serializedParams = stringifyObject(params);
     const escapedQuery = escapeQuery(query);
+    const hasExpectMultipleValues = expectMultipleValues === true || expectMultipleValues === false;
     return `apoc.cypher.runFirstColumn("${escapedQuery}", ${serializedParams}${
-        expectMultipleValues ? `, ${expectMultipleValues}` : ""
+        hasExpectMultipleValues ? `, ${expectMultipleValues}` : ""
     })`;
 }
 

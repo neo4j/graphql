@@ -18,86 +18,95 @@
  */
 
 import { graphql, GraphQLSchema } from "graphql";
-import { gql } from "apollo-server";
 import { Driver } from "neo4j-driver";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/1221", () => {
     let schema: GraphQLSchema;
     let driver: Driver;
+    const testMain = generateUniqueType("Main");
+    const testSeries = generateUniqueType("Series");
+    const testNameDetails = generateUniqueType("NameDetails");
+    const testMasterData = generateUniqueType("MasterData");
 
     beforeAll(async () => {
         driver = await neo4j();
+    });
 
-        const typeDefs = gql`
-            type Series {
-                id: ID! @id(autogenerate: false)
-                current: Boolean!
-                architecture: [MasterData!]!
-                    @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
-            }
+    afterEach(async () => {
+        const session = driver.session();
 
-            type NameDetails @exclude(operations: [CREATE, UPDATE, DELETE, READ]) {
-                fullName: String!
-            }
+        try {
+            await session.run(`MATCH (o:${testMain}) DETACH DELETE o`);
+            await session.run(`MATCH (s:${testSeries}) DETACH DELETE s`);
+            await session.run(`MATCH (n:${testNameDetails}) DETACH DELETE n`);
+            await session.run(`MATCH (m:${testMasterData}) DETACH DELETE m`);
+        } finally {
+            await session.close();
+        }
+    });
 
-            interface RelationProps {
-                current: Boolean!
-            }
+    afterAll(async () => {
+        await driver.close();
+    });
 
-            type MasterData {
-                id: ID! @id(autogenerate: false)
-                current: Boolean!
-                nameDetails: NameDetails @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
-            }
-        `;
+    test("should apply where filter for deep relations, two relations", async () => {
+        const typeDefs = `
+                type ${testSeries} {
+                    id: ID! @id(autogenerate: false)
+                    current: Boolean!
+                    architecture: [${testMasterData}!]!
+                        @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
+                }
+    
+                type ${testNameDetails} @exclude(operations: [CREATE, UPDATE, DELETE, READ]) {
+                    fullName: String!
+                }
+    
+                interface RelationProps {
+                    current: Boolean!
+                }
+    
+                type ${testMasterData} {
+                    id: ID! @id(autogenerate: false)
+                    current: Boolean!
+                    nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
+                }
+            `;
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
         });
         schema = await neoGraphql.getSchema();
-    });
 
-    afterAll(async () => {
-        // const session = driver.session();
-
-        // await session.run(`
-        //        MATCH (n:LABEEEELLL) DETACH DELETE n
-        //  `);
-
-        await driver.close();
-    });
-
-    test("should apply where filter for deep relations", async () => {
-        // const session = driver.session();
-
-        // await session.run(`
-        //         CREATE (:${testSource.name} { id: "${sourceId}" })
-        //  `);
-
-        await session.run(
-            `
-                CREATE (:NameDetails { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:MasterData { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:Series { current: true, id: "321" })
-                CREATE (:NameDetails { fullName: "MHB" })<-[:HAS_NAME { current: true }]-(:MasterData { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:Series { current: true, id: "621" })
-        
-                `
-        );
+        const session = driver.session();
+        try {
+            await session.run(`
+                CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
+                CREATE (:${testNameDetails} { fullName: "MHBB" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
+                CREATE (:${testNameDetails} { fullName: "EVA1.5" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "823" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "921" })
+            `);
+        } finally {
+            await session.close();
+        }
 
         const query = `
-            query getSeriesFilteredByArchitectureNameDetails(
-                $where: SeriesWhere = { current: true }
-                $connectionWhere: RelationPropsWhere = { current: true }
-            ) {
-                series(where: $where) {
-                    id
-                    architectureConnection(where: { edge: $connectionWhere }) {
-                        edges {
-                            node {
-                                nameDetailsConnection(where: { edge: $connectionWhere }) {
-                                    edges {
-                                        node {
-                                            fullName
+                query (
+                    $where: ${testSeries}Where = { current: true }
+                    $connectionWhere: RelationPropsWhere = { current: true }
+                ) {
+                    ${testSeries.plural}(where: $where) {
+                        id
+                        architectureConnection(where: { edge: $connectionWhere }) {
+                            edges {
+                                node {
+                                    nameDetailsConnection(where: { edge: $connectionWhere }) {
+                                        edges {
+                                            node {
+                                                fullName
+                                            }
                                         }
                                     }
                                 }
@@ -105,8 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                         }
                     }
                 }
-            }
-        `;
+            `;
 
         const variableValues = {
             where: {
@@ -137,6 +145,174 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(res.errors).toBeUndefined();
 
-        expect(res.data).toEqual({ series: [] });
+        expect(res.data).toEqual({
+            [testSeries.plural]: [
+                {
+                    architectureConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    nameDetailsConnection: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    fullName: "MHA",
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                    id: "321",
+                },
+            ],
+        });
+    });
+
+    test("should apply where filter for deep relations, three relations", async () => {
+        const typeDefs = `
+                type ${testMain} {
+                    id: ID! @id(autogenerate: false)
+                    current: Boolean!
+                    main: [${testSeries}!]!
+                        @relationship(type: "MAIN", properties: "RelationProps", direction: OUT)
+                }
+
+                type ${testSeries} {
+                    id: ID! @id(autogenerate: false)
+                    current: Boolean!
+                    architecture: [${testMasterData}!]!
+                        @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
+                }
+    
+                type ${testNameDetails} @exclude(operations: [CREATE, UPDATE, DELETE, READ]) {
+                    fullName: String!
+                }
+    
+                interface RelationProps {
+                    current: Boolean!
+                }
+    
+                type ${testMasterData} {
+                    id: ID! @id(autogenerate: false)
+                    current: Boolean!
+                    nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
+                }
+        `;
+
+        const neoGraphql = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+        });
+        schema = await neoGraphql.getSchema();
+
+        const session = driver.session();
+        try {
+            await session.run(`
+                CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1321" })
+                CREATE (:${testNameDetails} { fullName: "MHBB" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1621" })
+                CREATE (:${testNameDetails} { fullName: "EVA1.5" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "823" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "921" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1921" })
+            `);
+        } finally {
+            await session.close();
+        }
+
+        const query = `
+                query (
+                    $where: ${testMain}Where = { current: true }
+                    $connectionWhere: RelationPropsWhere = { current: true }
+                ) {
+                    ${testMain.plural}(where: $where) {
+                        id
+                        mainConnection(where: { edge: $connectionWhere }) {
+                            edges {
+                                node {
+                                    architectureConnection(where: { edge: $connectionWhere }) {
+                                        edges {
+                                            node {
+                                                nameDetailsConnection(where: { edge: $connectionWhere }) {
+                                                    edges {
+                                                        node {
+                                                            fullName
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+        `;
+
+        const variableValues = {
+            where: {
+                current: true,
+                mainConnection_SINGLE: {
+                    node: {
+                        architectureConnection: {
+                            node: {
+                                nameDetailsConnection: {
+                                    node: {
+                                        fullName: "MHA",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            connectionWhere: {
+                current: true,
+            },
+        };
+
+        const res = await graphql({
+            schema,
+            source: query,
+            variableValues,
+            contextValue: {
+                driver,
+            },
+        });
+
+        expect(res.errors).toBeUndefined();
+
+        expect(res.data).toEqual({
+            [testMain.plural]: [
+                {
+                    mainConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    architectureConnection: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    nameDetailsConnection: {
+                                                        edges: [
+                                                            {
+                                                                node: {
+                                                                    fullName: "MHA",
+                                                                },
+                                                            },
+                                                        ],
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                    id: "1321",
+                },
+            ],
+        });
     });
 });

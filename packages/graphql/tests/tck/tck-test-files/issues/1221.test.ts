@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
-    beforeAll(() => {
+    test("should apply where filter for deep relations, two relations", async () => {
         typeDefs = gql`
             type Series {
                 id: ID! @id(autogenerate: false)
@@ -53,11 +53,9 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-    });
 
-    test("DateTime and Point values get set as expected", async () => {
         const query = gql`
-            query getSeriesFilteredByArchitectureNameDetails {
+            query {
                 series(
                     where: {
                         current: true
@@ -91,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             WHERE this.current = $this_current AND EXISTS((this)-[:ARCHITECTURE]->(:MasterData)) AND SINGLE(this_architectureConnection_SINGLE_MasterData_map IN [(this)-[this_architectureConnection_SINGLE_MasterData_SeriesArchitectureRelationship:ARCHITECTURE]->(this_architectureConnection_SINGLE_MasterData:MasterData)  | { node: this_architectureConnection_SINGLE_MasterData, relationship: this_architectureConnection_SINGLE_MasterData_SeriesArchitectureRelationship } ] WHERE apoc.cypher.runFirstColumn(\\"RETURN EXISTS((this_architectureConnection_SINGLE_MasterData_map_node)-[:HAS_NAME]->(:NameDetails))
             AND ANY(this_architectureConnection_SINGLE_MasterData_map_node_NameDetails_map IN [(this_architectureConnection_SINGLE_MasterData_map_node)-[this_architectureConnection_SINGLE_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship:HAS_NAME]->(this_architectureConnection_SINGLE_MasterData_map_node_NameDetails:NameDetails) | { node: this_architectureConnection_SINGLE_MasterData_map_node_NameDetails, relationship: this_architectureConnection_SINGLE_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship } ] WHERE
             this_architectureConnection_SINGLE_MasterData_map_node_NameDetails_map.node.fullName = $this_series.where.architectureConnection_SINGLE.node.nameDetailsConnection.node.fullName
-            )\\", { this_architectureConnection_SINGLE_MasterData_map_node: this_architectureConnection_SINGLE_MasterData_map.node, this_series: $this_series }))
+            )\\", { this_architectureConnection_SINGLE_MasterData_map_node: this_architectureConnection_SINGLE_MasterData_map.node, this_series: $this_series }, false))
             CALL {
             WITH this
             MATCH (this)-[this_architecture_relationship:ARCHITECTURE]->(this_masterdata:MasterData)
@@ -140,6 +138,172 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                                     \\"where\\": {
                                         \\"edge\\": {
                                             \\"current\\": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }"
+        `);
+    });
+
+    test("should apply where filter for deep relations, three relations", async () => {
+        typeDefs = gql`
+            type Main {
+                id: ID! @id(autogenerate: false)
+                current: Boolean!
+                main: [Series!]! @relationship(type: "MAIN", properties: "RelationProps", direction: OUT)
+            }
+
+            type Series {
+                id: ID! @id(autogenerate: false)
+                current: Boolean!
+                architecture: [MasterData!]!
+                    @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
+            }
+
+            type NameDetails @exclude(operations: [CREATE, UPDATE, DELETE, READ]) {
+                fullName: String!
+            }
+
+            interface RelationProps {
+                current: Boolean!
+            }
+
+            type MasterData {
+                id: ID! @id(autogenerate: false)
+                current: Boolean!
+                nameDetails: NameDetails @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const query = gql`
+            query {
+                mains(
+                    where: {
+                        current: true
+                        mainConnection_SINGLE: {
+                            node: {
+                                architectureConnection: {
+                                    node: { nameDetailsConnection: { node: { fullName: "MHA" } } }
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    id
+                    mainConnection(where: { edge: { current: true } }) {
+                        edges {
+                            node {
+                                architectureConnection(where: { edge: { current: true } }) {
+                                    edges {
+                                        node {
+                                            nameDetailsConnection(where: { edge: { current: true } }) {
+                                                edges {
+                                                    node {
+                                                        fullName
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Main)
+            WHERE this.current = $this_current AND EXISTS((this)-[:MAIN]->(:Series)) AND SINGLE(this_mainConnection_SINGLE_Series_map IN [(this)-[this_mainConnection_SINGLE_Series_MainMainRelationship:MAIN]->(this_mainConnection_SINGLE_Series:Series)  | { node: this_mainConnection_SINGLE_Series, relationship: this_mainConnection_SINGLE_Series_MainMainRelationship } ] WHERE apoc.cypher.runFirstColumn(\\"RETURN EXISTS((this_mainConnection_SINGLE_Series_map_node)-[:ARCHITECTURE]->(:MasterData))
+            AND ANY(this_mainConnection_SINGLE_Series_map_node_MasterData_map IN [(this_mainConnection_SINGLE_Series_map_node)-[this_mainConnection_SINGLE_Series_map_node_MasterData_SeriesArchitectureRelationship:ARCHITECTURE]->(this_mainConnection_SINGLE_Series_map_node_MasterData:MasterData) | { node: this_mainConnection_SINGLE_Series_map_node_MasterData, relationship: this_mainConnection_SINGLE_Series_map_node_MasterData_SeriesArchitectureRelationship } ] WHERE
+            apoc.cypher.runFirstColumn(\\\\\\"RETURN EXISTS((this_mainConnection_SINGLE_Series_map_node_MasterData_map_node)-[:HAS_NAME]->(:NameDetails))
+            AND ANY(this_mainConnection_SINGLE_Series_map_node_MasterData_map_node_NameDetails_map IN [(this_mainConnection_SINGLE_Series_map_node_MasterData_map_node)-[this_mainConnection_SINGLE_Series_map_node_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship:HAS_NAME]->(this_mainConnection_SINGLE_Series_map_node_MasterData_map_node_NameDetails:NameDetails) | { node: this_mainConnection_SINGLE_Series_map_node_MasterData_map_node_NameDetails, relationship: this_mainConnection_SINGLE_Series_map_node_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship } ] WHERE
+            this_mainConnection_SINGLE_Series_map_node_MasterData_map_node_NameDetails_map.node.fullName = $this_mains.where.mainConnection_SINGLE.node.architectureConnection.node.nameDetailsConnection.node.fullName
+            )\\\\\\", { this_mainConnection_SINGLE_Series_map_node_MasterData_map_node: this_mainConnection_SINGLE_Series_map_node_MasterData_map.node, this_mains: $this_mains }, false)
+            )\\", { this_mainConnection_SINGLE_Series_map_node: this_mainConnection_SINGLE_Series_map.node, this_mains: $this_mains }, false))
+            CALL {
+            WITH this
+            MATCH (this)-[this_main_relationship:MAIN]->(this_series:Series)
+            WHERE this_main_relationship.current = $this_mainConnection.args.where.edge.current
+            CALL {
+            WITH this_series
+            MATCH (this_series)-[this_series_architecture_relationship:ARCHITECTURE]->(this_series_masterdata:MasterData)
+            WHERE this_series_architecture_relationship.current = $this_mainConnection.edges.node.architectureConnection.args.where.edge.current
+            CALL {
+            WITH this_series_masterdata
+            MATCH (this_series_masterdata)-[this_series_masterdata_has_name_relationship:HAS_NAME]->(this_series_masterdata_namedetails:NameDetails)
+            WHERE this_series_masterdata_has_name_relationship.current = $this_mainConnection.edges.node.architectureConnection.edges.node.nameDetailsConnection.args.where.edge.current
+            WITH collect({ node: { fullName: this_series_masterdata_namedetails.fullName } }) AS edges
+            RETURN { edges: edges, totalCount: size(edges) } AS nameDetailsConnection
+            }
+            WITH collect({ node: { nameDetailsConnection: nameDetailsConnection } }) AS edges
+            RETURN { edges: edges, totalCount: size(edges) } AS architectureConnection
+            }
+            WITH collect({ node: { architectureConnection: architectureConnection } }) AS edges
+            RETURN { edges: edges, totalCount: size(edges) } AS mainConnection
+            }
+            RETURN this { .id, mainConnection } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_current\\": true,
+                \\"this_mains\\": {
+                    \\"where\\": {
+                        \\"mainConnection_SINGLE\\": {
+                            \\"node\\": {
+                                \\"architectureConnection\\": {
+                                    \\"node\\": {
+                                        \\"nameDetailsConnection\\": {
+                                            \\"node\\": {
+                                                \\"fullName\\": \\"MHA\\"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                \\"this_mainConnection\\": {
+                    \\"args\\": {
+                        \\"where\\": {
+                            \\"edge\\": {
+                                \\"current\\": true
+                            }
+                        }
+                    },
+                    \\"edges\\": {
+                        \\"node\\": {
+                            \\"architectureConnection\\": {
+                                \\"args\\": {
+                                    \\"where\\": {
+                                        \\"edge\\": {
+                                            \\"current\\": true
+                                        }
+                                    }
+                                },
+                                \\"edges\\": {
+                                    \\"node\\": {
+                                        \\"nameDetailsConnection\\": {
+                                            \\"args\\": {
+                                                \\"where\\": {
+                                                    \\"edge\\": {
+                                                        \\"current\\": true
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
