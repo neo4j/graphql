@@ -134,7 +134,7 @@ export const Editor = (props: Props) => {
                                     mirrorRef={refForQueryEditorMirror}
                                     onChangeQuery={(query) => {
                                         setQuery(query);
-                                        localStorage.setItem(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
+                                        // localStorage.setItem(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
                                     }}
                                     executeQuery={onSubmit}
                                     buttons={
@@ -178,7 +178,7 @@ export const Editor = (props: Props) => {
                                 initialValue={variableValues}
                                 onChange={(params) => {
                                     setVariableValues(params);
-                                    localStorage.setItem(LOCAL_STATE_TYPE_LAST_PARAMS, JSON.stringify(params));
+                                    // localStorage.setItem(LOCAL_STATE_TYPE_LAST_PARAMS, JSON.stringify(params));
                                 }}
                             />
                         }
