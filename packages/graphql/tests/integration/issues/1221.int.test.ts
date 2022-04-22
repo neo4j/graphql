@@ -76,6 +76,14 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         //         CREATE (:${testSource.name} { id: "${sourceId}" })
         //  `);
 
+        await session.run(
+            `
+                CREATE (:NameDetails { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:MasterData { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:Series { current: true, id: "321" })
+                CREATE (:NameDetails { fullName: "MHB" })<-[:HAS_NAME { current: true }]-(:MasterData { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:Series { current: true, id: "621" })
+        
+                `
+        );
+
         const query = `
             query getSeriesFilteredByArchitectureNameDetails(
                 $where: SeriesWhere = { current: true }

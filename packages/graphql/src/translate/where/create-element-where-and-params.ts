@@ -198,11 +198,8 @@ function createElementWhereAndParams({
                     resultArr.push(connectionWhere[0]);
                     resultArr.push(")"); // close NONE/ANY
 
-                    console.log("listPredicates", listPredicates);
-                    const expectMultipleValues = !listPredicates?.includes("SINGLE");
-                    // we need the operator of the root "architectureConnection_SINGLE", here it is only checking for the operator of "nameDetailsConnection"
+                    const expectMultipleValues = listPredicates?.length ? !listPredicates.includes("SINGLE") : null;
 
-                    // if _SINGLE: expectMultipleValues should be false
                     const apocRunFirstColumn = wrapInApocRunFirstColumn(
                         resultArr.join("\n"),
                         {
