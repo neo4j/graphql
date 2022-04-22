@@ -149,7 +149,7 @@ Type Definitions:
 ----
 type Product {
     name: String!
-    slug: @callback(operations: [CREATE, UPDATE], name: "slug")
+    slug: String! @callback(operations: [CREATE, UPDATE], name: "slug")
 }
 ----
 
