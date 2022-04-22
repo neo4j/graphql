@@ -17,11 +17,8 @@
  * limitations under the License.
  */
 
-import { CypherContext } from "../CypherContext";
-import { escapeLabel, padLeft } from "../utils";
 import { Node } from "./Node";
 import { Param } from "./Param";
-import { serializeParameters } from "./utils";
 import { CypherVariable } from "./References";
 
 export type RelationshipInput = {
@@ -37,9 +34,9 @@ export class Relationship implements CypherVariable {
     public readonly source: Node;
     public readonly target: Node;
 
-    private type?: string;
-    private parameters: Record<string, Param<any>>;
-    private directed: boolean;
+    public readonly type?: string;
+    public readonly parameters: Record<string, Param<any>>;
+    public readonly directed: boolean;
 
     constructor(input: RelationshipInput) {
         this.type = input.type || undefined;
@@ -49,31 +46,7 @@ export class Relationship implements CypherVariable {
         this.directed = input.directed === undefined ? true : input.directed;
     }
 
-    public getCypher(context: CypherContext) {
-        const referenceId = context.getVariableId(this);
-        let parametersStr = "";
-        if (this.hasParameters()) {
-            const parameters = serializeParameters(this.parameters, context);
-            parametersStr = padLeft(parameters);
-        }
-
-        const sourceStr = `(${this.source.getReference(context)})`;
-        const targetStr = `(${this.target.getReference(context)})`;
-        const arrowStr = this.getRelationshipArrow();
-        const relationshipStr = `${referenceId || ""}${this.getTypeString()}${parametersStr}`;
-
-        return `${sourceStr}-[${relationshipStr}]${arrowStr}${targetStr}`;
-    }
-
-    private hasParameters(): boolean {
+    public hasParameters(): boolean {
         return Object.keys(this.parameters).length > 0;
-    }
-
-    private getRelationshipArrow(): "-" | "->" {
-        return this.directed ? "->" : "-";
-    }
-
-    private getTypeString(): string {
-        return this.type ? `:${escapeLabel(this.type)}` : "";
     }
 }

@@ -19,6 +19,7 @@
 
 import { CypherASTNode } from "../CypherASTNode";
 import { CypherContext } from "../CypherContext";
+import { MatchPattern } from "../MatchPattern";
 import { Node } from "../references/Node";
 import { Param } from "../references/Param";
 import { Query } from "./Query";
@@ -26,12 +27,15 @@ import { Query } from "./Query";
 type Params = Record<string, Param<any>>;
 
 export class Create extends Query {
+    private matchPattern: MatchPattern;
+
     constructor(private node: Node, private params: Params, parent?: Query) {
         super(parent);
+        this.matchPattern = new MatchPattern(node);
     }
 
     public cypher(context: CypherContext, childrenCypher: string): string {
-        const nodeCypher = this.node.getCypher(context);
+        const nodeCypher = this.matchPattern.getCypher(context);
         return `CREATE ${nodeCypher}\n${this.composeSet(context)}\n${childrenCypher}`;
     }
 

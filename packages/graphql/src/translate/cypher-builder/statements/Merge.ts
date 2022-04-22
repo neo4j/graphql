@@ -18,6 +18,7 @@
  */
 
 import { CypherContext } from "../CypherContext";
+import { MatchPattern } from "../MatchPattern";
 import { Node } from "../references/Node";
 import { Param } from "../references/Param";
 import { Relationship } from "../references/Relationship";
@@ -33,15 +34,17 @@ type OnCreateRelationshipParameters = {
 
 export class Merge<T extends Node | Relationship> extends Query {
     private element: T;
+    private matchPattern: MatchPattern;
     private onCreateParameters: OnCreateRelationshipParameters = { source: {}, target: {}, relationship: {} };
 
     constructor(element: T, parent?: Query) {
         super(parent);
         this.element = element;
+        this.matchPattern = new MatchPattern(element);
     }
 
     public cypher(context: CypherContext, childrenCypher: string): string {
-        const mergeStr = `MERGE ${this.element.getCypher(context)}`;
+        const mergeStr = `MERGE ${this.matchPattern.getCypher(context)}`;
         const onCreateSetStatement = this.onCreateSetStatement(context);
         const separator = onCreateSetStatement ? "\n" : "";
 

@@ -2,7 +2,7 @@
 
 This is an internal utility to build Cypher queries, part of `@neo4j/graphql`. This is only intended for internal usage and it is **not** feature complete.
 
-> Note that this is still under heavy development.
+> Note that this is still under development.
 
 ## Basic Example
 
