@@ -20,6 +20,32 @@
 import * as CypherBuilder from "./CypherBuilder";
 
 describe("CypherBuilder", () => {
+    describe("Match", () => {
+        test("Match Node", () => {
+            const idParam = new CypherBuilder.Param("my-id");
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+                parameters: { test: new CypherBuilder.Param("test-value") },
+            });
+
+            const createQuery = new CypherBuilder.Match(movieNode).where(movieNode, { id: idParam }).return(movieNode);
+
+            const queryResult = createQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MATCH (this0:\`Movie\` { test: $param0 })
+                WHERE this0.id = $param1
+                RETURN this0"
+            `);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "test-value",
+                  "param1": "my-id",
+                }
+            `);
+        });
+    });
+
     describe("Create", () => {
         test("Create Node", () => {
             const idParam = new CypherBuilder.Param("my-id");

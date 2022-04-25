@@ -23,10 +23,12 @@ import { Node, Relationship } from "./CypherBuilder";
 import { serializeParameters } from "./references/utils";
 import { escapeLabel, padLeft } from "./utils";
 
-export class MatchPattern extends CypherASTNode {
-    private matchElement: Node | Relationship;
+export type MatchableElement = Node | Relationship;
 
-    constructor(input: Node | Relationship) {
+export class MatchPattern extends CypherASTNode {
+    private matchElement: MatchableElement;
+
+    constructor(input: MatchableElement) {
         super();
         this.matchElement = input;
     }
