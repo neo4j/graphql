@@ -68,7 +68,7 @@ describe("MatchPattern", () => {
             const node1 = new CypherBuilder.Node({ labels: ["Actor"] });
             const node2 = new CypherBuilder.Node({ labels: ["Movie"] });
             const relationship = new CypherBuilder.Relationship({ source: node1, target: node2, type: "ACTED_IN" });
-            const pattern = new MatchPattern(relationship, { labels: false });
+            const pattern = new MatchPattern(relationship, { labels: false, relationshipTypes: false });
 
             expect(pattern.getCypher(context)).toBe(`(this1)-[this0]->(this2)`);
         });
@@ -97,7 +97,7 @@ describe("MatchPattern", () => {
             });
 
             expect(pattern.getCypher(context)).toBe(
-                `(this1 { name: $param0 })-[this0 { value: $param1 }]->(this2 { name: $param2 })`
+                `(this1 { name: $param0 })-[this0:\`ACTED_IN\` { value: $param1 }]->(this2 { name: $param2 })`
             );
         });
     });

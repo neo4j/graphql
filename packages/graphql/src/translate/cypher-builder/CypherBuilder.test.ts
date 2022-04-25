@@ -99,6 +99,30 @@ describe("CypherBuilder", () => {
             `);
         });
 
+        test("Merge node with parameters", () => {
+            const node = new CypherBuilder.Node({
+                labels: ["MyLabel"],
+            });
+
+            const query = new CypherBuilder.Merge(node, { test: new CypherBuilder.Param("test") }).onCreate({
+                age: new CypherBuilder.Param(23),
+            });
+
+            const queryResult = query.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MERGE (this0:\`MyLabel\` { test: $param0 })
+                ON CREATE SET
+                        this0.age = $param1
+                "
+            `);
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "test",
+                  "param1": 23,
+                }
+            `);
+        });
+
         test("Merge relationship", () => {
             const node1 = new CypherBuilder.Node({
                 labels: ["MyLabel"],

@@ -27,6 +27,7 @@ export type MatchableElement = Node | Relationship;
 
 type MatchPatternOptions = {
     labels?: boolean;
+    relationshipTypes?: boolean;
 };
 
 type ParamsRecord = Record<string, Param<any>>;
@@ -48,7 +49,7 @@ export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
         super();
         this.matchElement = input;
         this.parameters = {};
-        this.options = { ...{ labels: true }, ...options };
+        this.options = { ...{ labels: true, relationshipTypes: true }, ...options };
     }
 
     public withParams(parameters: MatchParams<T>): MatchPattern<T> {
@@ -79,16 +80,13 @@ export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
 
         let labelsStr = {
             source: "",
-            relationship: "",
+            relationship: this.options.relationshipTypes ? relationship.getTypeString() : "",
             target: "",
         };
 
         if (this.options.labels) {
-            labelsStr = {
-                source: relationship.source.getLabelsString(),
-                relationship: relationship.getTypeString(),
-                target: relationship.target.getLabelsString(),
-            };
+            labelsStr.source = relationship.source.getLabelsString();
+            labelsStr.target = relationship.target.getLabelsString();
         }
 
         const sourceStr = `(${context.getVariableId(relationship.source)}${labelsStr.source}${parameterStrs.source})`;
