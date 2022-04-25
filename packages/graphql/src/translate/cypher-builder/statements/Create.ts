@@ -29,7 +29,7 @@ type Params = Record<string, Param<any>>;
 export class Create extends Query {
     private matchPattern: MatchPattern;
 
-    constructor(private node: Node, private params: Params, parent?: Query) {
+    constructor(private node: Node, private params: Params = {}, parent?: Query) {
         super(parent);
         this.matchPattern = new MatchPattern(node);
     }

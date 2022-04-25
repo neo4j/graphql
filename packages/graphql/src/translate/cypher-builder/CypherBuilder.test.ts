@@ -47,6 +47,27 @@ describe("CypherBuilder", () => {
     });
 
     describe("Merge", () => {
+        test("Merge node", () => {
+            const node = new CypherBuilder.Node({
+                labels: ["MyLabel"],
+            });
+
+            const query = new CypherBuilder.Merge(node).onCreate({ age: new CypherBuilder.Param(23) });
+
+            const queryResult = query.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MERGE (this0:\`MyLabel\`)
+                ON CREATE SET
+                        this0.age = $param0
+                "
+            `);
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": 23,
+                }
+            `);
+        });
+
         test("Merge relationship", () => {
             const node1 = new CypherBuilder.Node({
                 labels: ["MyLabel"],
@@ -107,6 +128,30 @@ describe("CypherBuilder", () => {
                   "param0": "my-id",
                 }
             `);
+        });
+
+        test("Nested Call", () => {
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
+            const createQuery = new CypherBuilder.Create(movieNode).return(movieNode);
+
+            const call1 = new CypherBuilder.Call(createQuery);
+            const call2 = new CypherBuilder.Call(call1);
+
+            const queryResult = call2.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "CALL {
+                	CALL {
+                	CREATE (this0:\`Movie\`)
+
+                RETURN this0
+                	RETURN COUNT(*)
+                }
+                	RETURN COUNT(*)
+                }"
+            `);
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
         });
     });
 });

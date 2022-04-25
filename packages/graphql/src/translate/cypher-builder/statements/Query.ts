@@ -21,6 +21,7 @@ import { CypherASTNode } from "../CypherASTNode";
 import { CypherContextInterface } from "../CypherContext";
 import { CypherResult } from "../types";
 
+/** Represents a statement to be defined by the user, adding build method to the cypher ast */
 export class Query extends CypherASTNode {
     public cypher(_context: CypherContextInterface, childrenCypher: string): string {
         return childrenCypher;
