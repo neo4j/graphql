@@ -23,6 +23,7 @@ import { stringifyObject } from "../utils/stringify-object";
 import { Node } from "./references/Node";
 import { Relationship } from "./references/Relationship";
 import { Param } from "./references/Param";
+import { padLeft } from "./utils";
 
 export type MatchableElement = Node | Relationship;
 
