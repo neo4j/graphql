@@ -19,9 +19,10 @@
 
 import { CypherASTNode } from "./CypherASTNode";
 import { CypherContext } from "./CypherContext";
-import { Node, Param, Relationship } from "./CypherBuilder";
-import { padLeft } from "./utils";
 import { stringifyObject } from "../utils/stringify-object";
+import { Node } from "./references/Node";
+import { Relationship } from "./references/Relationship";
+import { Param } from "./references/Param";
 
 export type MatchableElement = Node | Relationship;
 
@@ -78,7 +79,7 @@ export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
             target: this.serializeParameters(parameterOptions.target || {}, context),
         };
 
-        let labelsStr = {
+        const labelsStr = {
             source: "",
             relationship: this.options.relationshipTypes ? relationship.getTypeString() : "",
             target: "",
