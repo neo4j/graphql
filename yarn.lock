@@ -2020,7 +2020,7 @@ __metadata:
     graphql-parse-resolve-info: ^4.12.0
     graphql-relay: ^0.10.0
     graphql-tag: 2.12.6
-    graphql-ws: 5.7.0
+    graphql-ws: 5.8.1
     is-uuid: 1.0.2
     jest: 27.5.1
     koa: 2.13.4
@@ -8886,12 +8886,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-ws@npm:5.7.0":
-  version: 5.7.0
-  resolution: "graphql-ws@npm:5.7.0"
+"graphql-ws@npm:5.8.1":
+  version: 5.8.1
+  resolution: "graphql-ws@npm:5.8.1"
   peerDependencies:
     graphql: ">=0.11 <=16"
-  checksum: 39f795abc48a79177e54f5ef47331424987ba7194361dcfe983fd17c10ef853102b41283b996ab763c4293ea4c1215ba1da36d571c2487f4ff54d2b67a1dc176
+  checksum: 0e8d08a1155204655510f8dc902f295ae5494cf01390c87226cef8d9b460fac5101ec96802ccf056d479d7e57a2a6b575fc4769b2123ae330396ac1d44912a8a
   languageName: node
   linkType: hard
 
