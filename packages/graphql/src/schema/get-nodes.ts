@@ -190,7 +190,7 @@ function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4j
 
         if (globalIdFields.length > 1) {
             throw new Error(
-                "Only one field may be decorated with an '@id' directive where the global argument is set to true"
+                "Only one field may be decorated with an '@id' directive with the global argument set to `true`"
             );
         }
 
