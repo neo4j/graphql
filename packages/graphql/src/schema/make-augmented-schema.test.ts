@@ -438,7 +438,7 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
             expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-                "Only one field may be decorated with an '@id' directive where the global argument is set to true"
+                "Only one field may be decorated with an '@id' directive with the global argument set to `true`"
             );
         });
         test("should throw if an @id directive has the global argument set to true, but the unique argument set to false", () => {
