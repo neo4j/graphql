@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { Param } from "./references/Param";
+
 export type CypherResult = {
     cypher: string;
     params: Record<string, string>;

@@ -17,15 +17,14 @@
  * limitations under the License.
  */
 
+import { escapeLabel } from "../utils";
 import { Node } from "./Node";
-import { Param } from "./Param";
 import { CypherVariable } from "./References";
 
 export type RelationshipInput = {
     source: Node;
     target: Node;
     type?: string;
-    parameters?: Record<string, Param<any>>;
     directed?: boolean;
 };
 
@@ -35,18 +34,16 @@ export class Relationship implements CypherVariable {
     public readonly target: Node;
 
     public readonly type?: string;
-    public readonly parameters: Record<string, Param<any>>;
     public readonly directed: boolean;
 
     constructor(input: RelationshipInput) {
         this.type = input.type || undefined;
-        this.parameters = input.parameters || {};
         this.source = input.source;
         this.target = input.target;
         this.directed = input.directed === undefined ? true : input.directed;
     }
 
-    public hasParameters(): boolean {
-        return Object.keys(this.parameters).length > 0;
+    public getTypeString(): string {
+        return this.type ? `:${escapeLabel(this.type)}` : "";
     }
 }

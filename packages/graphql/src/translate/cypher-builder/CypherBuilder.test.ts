@@ -25,12 +25,13 @@ describe("CypherBuilder", () => {
             const idParam = new CypherBuilder.Param("my-id");
             const movieNode = new CypherBuilder.Node({
                 labels: ["Movie"],
-                parameters: { test: new CypherBuilder.Param("test-value") },
             });
 
-            const createQuery = new CypherBuilder.Match(movieNode).where(movieNode, { id: idParam }).return(movieNode);
+            const matchQuery = new CypherBuilder.Match(movieNode, { test: new CypherBuilder.Param("test-value") })
+                .where(movieNode, { id: idParam })
+                .return(movieNode);
 
-            const queryResult = createQuery.build();
+            const queryResult = matchQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MATCH (this0:\`Movie\` { test: $param0 })
                 WHERE this0.id = $param1
@@ -51,10 +52,14 @@ describe("CypherBuilder", () => {
             const idParam = new CypherBuilder.Param("my-id");
             const movieNode = new CypherBuilder.Node({
                 labels: ["Movie"],
-                parameters: { test: new CypherBuilder.Param("test-value"), id: idParam },
             });
 
-            const createQuery = new CypherBuilder.Create(movieNode, { id: idParam }).return(movieNode);
+            const createQuery = new CypherBuilder.Create(movieNode, {
+                test: new CypherBuilder.Param("test-value"),
+                id: idParam,
+            })
+                .set({ id: idParam })
+                .return(movieNode);
 
             const queryResult = createQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`
@@ -138,7 +143,7 @@ describe("CypherBuilder", () => {
                 labels: ["Movie"],
             });
 
-            const createQuery = new CypherBuilder.Create(movieNode, { id: idParam }).return(movieNode);
+            const createQuery = new CypherBuilder.Create(movieNode).set({ id: idParam }).return(movieNode);
 
             const queryResult = new CypherBuilder.Call(createQuery).build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`

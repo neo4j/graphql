@@ -18,7 +18,7 @@
  */
 
 import { CypherContext } from "../CypherContext";
-import { MatchableElement, MatchPattern } from "../MatchPattern";
+import { MatchableElement, MatchParams, MatchPattern } from "../MatchPattern";
 import { Param } from "../references/Param";
 import { Query } from "./Query";
 import { ReturnStatement, ReturnStatementArgs } from "./Return";
@@ -27,18 +27,17 @@ type Params = Record<string, Param<any>>;
 
 type Where = Map<MatchableElement, Params>;
 
-export class Match extends Query {
-    private matchPattern: MatchPattern;
+export class Match<T extends MatchableElement> extends Query {
+    private matchPattern: MatchPattern<T>;
     private whereParams: Where;
 
-    constructor(variable: MatchableElement, parent?: Query) {
+    constructor(variable: T, parameters: MatchParams<T> = {}, parent?: Query) {
         super(parent);
-        this.matchPattern = new MatchPattern(variable);
+        this.matchPattern = new MatchPattern(variable).withParams(parameters);
         this.whereParams = new Map<MatchableElement, Params>();
     }
 
-    // TODO: public where(params: Params): Match {
-    public where(variable: MatchableElement, params: Params): Match {
+    public where(variable: MatchableElement, params: Params): this {
         const oldParams = this.whereParams.get(variable) || {};
 
         this.whereParams.set(variable, { ...oldParams, ...params });
@@ -50,13 +49,13 @@ export class Match extends Query {
         return `MATCH ${nodeCypher}\n${this.composeWhere(context)}\n${childrenCypher}`;
     }
 
-    public return(...args: ReturnStatementArgs) {
+    public return(...args: ReturnStatementArgs): this {
         const returnStatement = new ReturnStatement(this, args);
         this.addStatement(returnStatement);
         return this;
     }
 
-    public and(variable: MatchableElement, params: Params): Match {
+    public and(variable: MatchableElement, params: Params): this {
         return this.where(variable, params);
     }
 

@@ -18,26 +18,18 @@
  */
 
 import { escapeLabel } from "../utils";
-import { Param } from "./Param";
 import { CypherVariable } from "./References";
 
 type NodeInput = {
     labels?: Array<string>;
-    parameters?: Record<string, Param<any>>;
 };
 
 export class Node implements CypherVariable {
     public readonly prefix = "this";
     public readonly labels: Array<string>;
-    public readonly parameters: Record<string, Param<any>>;
 
     constructor(input: NodeInput) {
         this.labels = input.labels || [];
-        this.parameters = input.parameters || {};
-    }
-
-    public hasParameters(): boolean {
-        return Object.keys(this.parameters).length > 0;
     }
 
     public getLabelsString(): string {

@@ -27,11 +27,18 @@ import { ReturnStatement, ReturnStatementArgs } from "./Return";
 type Params = Record<string, Param<any>>;
 
 export class Create extends Query {
-    private matchPattern: MatchPattern;
+    private matchPattern: MatchPattern<Node>;
+    private setParams: Params;
 
-    constructor(private node: Node, private params: Params = {}, parent?: Query) {
+    constructor(private node: Node, params: Params = {}, parent?: Query) {
         super(parent);
-        this.matchPattern = new MatchPattern(node);
+        this.matchPattern = new MatchPattern(node).withParams(params);
+        this.setParams = {};
+    }
+
+    public set(params: Params): this {
+        this.setParams = params;
+        return this;
     }
 
     public cypher(context: CypherContext, childrenCypher: string): string {
@@ -47,10 +54,10 @@ export class Create extends Query {
 
     private composeSet(context: CypherContext): string {
         const nodeAlias = context.getVariableId(this.node);
-        const params = Object.entries(this.params).map(([key, value]) => {
+        const setParams = Object.entries(this.setParams).map(([key, value]) => {
             return `${nodeAlias}.${key} = ${value instanceof Param ? value.getCypher(context) : value}`;
         });
-        if (params.length === 0) return "";
-        return `SET ${params.join(",\n")}`;
+        if (setParams.length === 0) return "";
+        return `SET ${setParams.join(",\n")}`;
     }
 }

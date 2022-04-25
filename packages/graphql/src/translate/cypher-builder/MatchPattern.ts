@@ -19,18 +19,41 @@
 
 import { CypherASTNode } from "./CypherASTNode";
 import { CypherContext } from "./CypherContext";
-import { Node, Relationship } from "./CypherBuilder";
-import { serializeParameters } from "./references/utils";
-import { escapeLabel, padLeft } from "./utils";
+import { Node, Param, Relationship } from "./CypherBuilder";
+import { padLeft } from "./utils";
+import { stringifyObject } from "../utils/stringify-object";
 
 export type MatchableElement = Node | Relationship;
 
-export class MatchPattern extends CypherASTNode {
-    private matchElement: MatchableElement;
+type MatchPatternOptions = {
+    labels?: boolean;
+};
 
-    constructor(input: MatchableElement) {
+type ParamsRecord = Record<string, Param<any>>;
+
+type MatchRelationshipParams = {
+    source?: ParamsRecord;
+    relationship?: ParamsRecord;
+    target?: ParamsRecord;
+};
+
+export type MatchParams<T extends MatchableElement> = T extends Node ? ParamsRecord : MatchRelationshipParams;
+
+export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
+    private matchElement: T;
+    private parameters: MatchParams<T>;
+    private options: MatchPatternOptions;
+
+    constructor(input: T, options?: MatchPatternOptions) {
         super();
         this.matchElement = input;
+        this.parameters = {};
+        this.options = { ...{ labels: true }, ...options };
+    }
+
+    public withParams(parameters: MatchParams<T>): MatchPattern<T> {
+        this.parameters = parameters;
+        return this;
     }
 
     protected cypher(context: CypherContext, childrenCypher: string): string {
@@ -46,16 +69,33 @@ export class MatchPattern extends CypherASTNode {
 
     private getRelationshipCypher(context: CypherContext, relationship: Relationship): string {
         const referenceId = context.getVariableId(relationship);
-        let parametersStr = "";
-        if (relationship.hasParameters()) {
-            const parameters = serializeParameters(relationship.parameters, context);
-            parametersStr = padLeft(parameters);
+
+        const parameterOptions = this.parameters as MatchParams<Relationship>;
+        const parameterStrs = {
+            source: this.serializeParameters(parameterOptions.source || {}, context),
+            relationship: this.serializeParameters(parameterOptions.relationship || {}, context),
+            target: this.serializeParameters(parameterOptions.target || {}, context),
+        };
+
+        let labelsStr = {
+            source: "",
+            relationship: "",
+            target: "",
+        };
+
+        if (this.options.labels) {
+            labelsStr = {
+                source: relationship.source.getLabelsString(),
+                relationship: relationship.getTypeString(),
+                target: relationship.target.getLabelsString(),
+            };
         }
 
-        const sourceStr = `(${context.getVariableId(relationship.source)})`;
-        const targetStr = `(${context.getVariableId(relationship.target)})`;
+        const sourceStr = `(${context.getVariableId(relationship.source)}${labelsStr.source}${parameterStrs.source})`;
+        const targetStr = `(${context.getVariableId(relationship.target)}${labelsStr.target}${parameterStrs.target})`;
         const arrowStr = this.getRelationshipArrow(relationship);
-        const relationshipStr = `${referenceId || ""}${this.getTypeString(relationship)}${parametersStr}`;
+
+        const relationshipStr = `${referenceId || ""}${labelsStr.relationship}${parameterStrs.relationship}`;
 
         return `${sourceStr}-[${relationshipStr}]${arrowStr}${targetStr}`;
     }
@@ -64,17 +104,21 @@ export class MatchPattern extends CypherASTNode {
         return relationship.directed ? "->" : "-";
     }
 
-    private getTypeString(relationship: Relationship): string {
-        return relationship.type ? `:${escapeLabel(relationship.type)}` : "";
-    }
-
     private getNodeCypher(context: CypherContext, node: Node): string {
         const referenceId = context.getVariableId(node);
-        let parametersStr = "";
-        if (node.hasParameters()) {
-            const parameters = serializeParameters(node.parameters, context);
-            parametersStr = padLeft(parameters);
-        }
-        return `(${referenceId}${node.getLabelsString()}${parametersStr})`;
+        const parametersStr = this.serializeParameters(this.parameters as MatchParams<Node>, context);
+        const nodeLabelString = this.options.labels ? node.getLabelsString() : "";
+
+        return `(${referenceId}${nodeLabelString}${parametersStr})`;
+    }
+
+    private serializeParameters(parameters: MatchParams<Node>, context: CypherContext): string {
+        if (Object.keys(this.parameters).length === 0) return "";
+        const paramValues = Object.entries(parameters).reduce((acc, [key, param]) => {
+            acc[key] = param.getCypher(context);
+            return acc;
+        }, {} as Record<string, string>);
+
+        return padLeft(stringifyObject(paramValues));
     }
 }
