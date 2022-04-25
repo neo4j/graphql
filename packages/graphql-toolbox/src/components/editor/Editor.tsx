@@ -32,9 +32,9 @@ import {
     LOCAL_STATE_TYPE_LAST_PARAMS,
     LOCAL_STATE_TYPE_LAST_QUERY,
 } from "../../constants";
-import { Frame } from "./Frame";
+import { Grid } from "./grid/Grid";
 import { DocExplorer } from "./docexplorer/index";
-import { formatCode, ParserOptions } from "./utils";
+import { formatCode, safeParse, ParserOptions } from "./utils";
 import { Extension } from "../Filename";
 import { ViewSelectorComponent } from "../ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
@@ -54,6 +54,7 @@ export const Editor = (props: Props) => {
     const [variableValues, setVariableValues] = useState("");
     const [output, setOutput] = useState("");
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
+    const showRightPanel = settings.isShowDocsDrawer || settings.isShowSettingsDrawer;
 
     const formatTheCode = (): void => {
         if (!refForQueryEditorMirror.current) return;
@@ -71,7 +72,7 @@ export const Editor = (props: Props) => {
                     schema: props.schema,
                     source: override || query || "",
                     contextValue: {},
-                    ...(variableValues ? { variableValues: JSON.parse(variableValues) } : {}),
+                    variableValues: safeParse(variableValues, {}),
                 });
 
                 result = JSON.stringify(response);
@@ -107,7 +108,11 @@ export const Editor = (props: Props) => {
                     />
                 </div>
             </div>
-            <div className="flex-1 flex justify-start w-full p-6">
+            <div
+                className={`h-content-container flex justify-start p-6 ${
+                    showRightPanel ? "w-editor-container" : "w-full"
+                }`}
+            >
                 <div className="flex flex-col w-full">
                     <div className="flex items-center w-full pb-4">
                         <div className="justify-start">
@@ -117,9 +122,9 @@ export const Editor = (props: Props) => {
                                 isEditorDisabled={!!props.schema || loading}
                             />
                         </div>
-                        <div className="flex-1 flex justify-end"></div>
                     </div>
-                    <Frame
+                    <Grid
+                        isRightPanelVisible={showRightPanel}
                         queryEditor={
                             props.schema ? (
                                 <GraphQLQueryEditor
@@ -191,7 +196,7 @@ export const Editor = (props: Props) => {
                     />
                 </div>
             </div>
-            {settings.isShowDocsDrawer || settings.isShowSettingsDrawer ? (
+            {showRightPanel ? (
                 <div className="h-content-container flex justify-start w-96 bg-white">
                     {settings.isShowDocsDrawer ? (
                         <div className="p-6">
