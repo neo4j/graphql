@@ -85,6 +85,9 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         try {
             await session.run(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
+                CREATE (m:${testMasterData} { current: true, id: "323" })
+                CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m)<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "421" })
+                CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m)
                 CREATE (:${testNameDetails} { fullName: "MHBB" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
                 CREATE (:${testNameDetails} { fullName: "EVA1.5" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "823" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "921" })
             `);
@@ -212,6 +215,9 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         try {
             await session.run(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1321" })
+                CREATE (s:${testSeries} { current: true, id: "421" })
+                CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(s)<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1321" })
+                CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "1123" })<-[:ARCHITECTURE { current: true }]-(s)
                 CREATE (:${testNameDetails} { fullName: "MHBB" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1621" })
                 CREATE (:${testNameDetails} { fullName: "EVA1.5" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "823" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "921" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1921" })
             `);

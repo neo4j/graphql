@@ -24,13 +24,12 @@ import { escapeQuery } from "./escape-query";
 export function wrapInApocRunFirstColumn(
     query: string,
     params: Record<string, string> = {},
-    expectMultipleValues?: boolean | null
+    expectMultipleValues?: boolean
 ): string {
     const serializedParams = stringifyObject(params);
     const escapedQuery = escapeQuery(query);
-    const hasExpectMultipleValues = expectMultipleValues === true || expectMultipleValues === false;
     return `apoc.cypher.runFirstColumn("${escapedQuery}", ${serializedParams}${
-        hasExpectMultipleValues ? `, ${expectMultipleValues}` : ""
+        expectMultipleValues === false ? ", false" : ""
     })`;
 }
 

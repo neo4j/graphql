@@ -175,7 +175,9 @@ function createElementWhereAndParams({
                         return;
                     }
 
-                    const currentListPredicate = getListPredicate(operator);
+                    const hasSingleValueAsPredicate = listPredicates?.length ? listPredicates.includes("SINGLE") : null;
+
+                    const currentListPredicate = hasSingleValueAsPredicate ? "SINGLE" : getListPredicate(operator);
 
                     const resultArr = [
                         `RETURN ${existsStr}`,
@@ -196,7 +198,7 @@ function createElementWhereAndParams({
                     resultArr.push(connectionWhere[0]);
                     resultArr.push(")"); // close NONE/ANY
 
-                    const expectMultipleValues = listPredicates?.length ? !listPredicates.includes("SINGLE") : null;
+                    const expectMultipleValues = listPredicates?.length ? !listPredicates.includes("SINGLE") : true;
 
                     const apocRunFirstColumn = wrapInApocRunFirstColumn(
                         resultArr.join("\n"),
