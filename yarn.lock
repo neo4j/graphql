@@ -1903,9 +1903,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql-plugin-auth@^1.0.0, @neo4j/graphql-plugin-auth@workspace:packages/graphql-plugin-auth":
+"@neo4j/graphql-plugin-auth@^1.0.0, @neo4j/graphql-plugin-auth@workspace:packages/plugins/auth/graphql-plugin-auth":
   version: 0.0.0-use.local
-  resolution: "@neo4j/graphql-plugin-auth@workspace:packages/graphql-plugin-auth"
+  resolution: "@neo4j/graphql-plugin-auth@workspace:packages/plugins/auth/graphql-plugin-auth"
   dependencies:
     "@types/debug": 4.1.7
     "@types/jest": 27.4.1

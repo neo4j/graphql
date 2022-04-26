@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - graphql-plugin-auth
+          - plugins/auth/graphql-plugin-auth
 
     runs-on: ubuntu-latest
 
