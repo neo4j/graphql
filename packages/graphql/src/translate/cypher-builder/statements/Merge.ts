@@ -37,7 +37,8 @@ export class Merge<T extends MatchableElement> extends Query {
     private matchPattern: MatchPattern<T>;
     private onCreateParameters: OnCreateRelationshipParameters = { source: {}, target: {}, relationship: {} };
 
-    constructor(element: T, params: MatchParams<T> = {}, parent?: Query) {
+    // parameters cast required due to neo-push
+    constructor(element: T, params: MatchParams<T> = {} as MatchParams<T>, parent?: Query) {
         super(parent);
         this.element = element;
 
