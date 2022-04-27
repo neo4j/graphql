@@ -45,7 +45,7 @@
         "graphiql-explorer": "^0.9.0",
         "graphql": "16.3.0",
         "graphql-request": "^4.2.0",
-        "markdown-it": "^12.3.2",
+        "markdown-it": "^13.0.0",
         "neo4j-driver": "^4.4.5",
         "prettier": "^2.6.1",
         "process": "0.11.10",
