@@ -23,7 +23,7 @@
         "css-loader": "6.7.1",
         "dotenv-webpack": "7.1.0",
         "file-loader": "6.2.0",
-        "graphql": "16.3.0",
+        "graphql": "16.4.0",
         "react": "18.0.0",
         "react-bootstrap": "2.2.3",
         "react-dom": "18.0.0",
