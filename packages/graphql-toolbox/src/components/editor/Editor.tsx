@@ -22,6 +22,7 @@ import { graphql, GraphQLSchema } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
 import { Button, HeroIcon } from "@neo4j-ndl/react";
 import { EditorFromTextArea } from "codemirror";
+import debounce from "lodash.debounce";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
 import {
@@ -42,6 +43,7 @@ import { Theme, ThemeContext } from "../../contexts/theme";
 import { AppSettings } from "../AppSettings";
 import { ProTooltip } from "../ProTooltip";
 
+const DEBOUNCE_TIMEOUT = 500;
 export interface Props {
     schema?: GraphQLSchema;
 }
@@ -49,12 +51,21 @@ export interface Props {
 export const Editor = (props: Props) => {
     const settings = useContext(SettingsContext);
     const theme = useContext(ThemeContext);
+    const [initialLoad, setInitialLoad] = useState(false);
     const [loading, setLoading] = useState(false);
     const [query, setQuery] = useState("");
     const [variableValues, setVariableValues] = useState("");
+    const [initVariableValues, setInitVariableValues] = useState("");
     const [output, setOutput] = useState("");
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
     const showRightPanel = settings.isShowDocsDrawer || settings.isShowSettingsDrawer;
+
+    const debouncedSave = useCallback(
+        debounce((key, value) => {
+            localStorage.setItem(key, value);
+        }, DEBOUNCE_TIMEOUT),
+        []
+    );
 
     const formatTheCode = (): void => {
         if (!refForQueryEditorMirror.current) return;
@@ -91,21 +102,25 @@ export const Editor = (props: Props) => {
     useEffect(() => {
         const initQuery = JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_QUERY) as string) || DEFAULT_QUERY;
         const initParams = JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_PARAMS) as string) || "";
+        setInitialLoad(true);
         setQuery(initQuery);
         setVariableValues(initParams);
+        setInitVariableValues(initParams);
     }, []);
 
     return (
         <div className="w-full flex">
             <div className="h-content-container flex justify-start w-96 bg-white graphiql-container">
                 <div className="p-6">
-                    <GraphiQLExplorer
-                        schema={props.schema}
-                        query={query}
-                        onEdit={setQuery}
-                        onRunOperation={onSubmit}
-                        explorerIsOpen={true}
-                    />
+                    {props.schema && initialLoad ? (
+                        <GraphiQLExplorer
+                            schema={props.schema}
+                            query={query}
+                            onEdit={setQuery}
+                            onRunOperation={onSubmit}
+                            explorerIsOpen={true}
+                        />
+                    ) : null}
                 </div>
             </div>
             <div
@@ -134,7 +149,7 @@ export const Editor = (props: Props) => {
                                     mirrorRef={refForQueryEditorMirror}
                                     onChangeQuery={(query) => {
                                         setQuery(query);
-                                        localStorage.setItem(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
+                                        debouncedSave(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
                                     }}
                                     executeQuery={onSubmit}
                                     buttons={
@@ -175,10 +190,10 @@ export const Editor = (props: Props) => {
                                 loading={loading}
                                 fileExtension={Extension.JSON}
                                 readonly={false}
-                                initialValue={variableValues}
+                                initialValue={initVariableValues}
                                 onChange={(params) => {
                                     setVariableValues(params);
-                                    localStorage.setItem(LOCAL_STATE_TYPE_LAST_PARAMS, JSON.stringify(params));
+                                    debouncedSave(LOCAL_STATE_TYPE_LAST_PARAMS, JSON.stringify(params));
                                 }}
                             />
                         }
