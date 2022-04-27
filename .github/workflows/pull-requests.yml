@@ -131,10 +131,10 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - graphql
-          - ogm
-          - introspector
-          - plugins/auth/graphql-plugin-auth
+          - { path: graphql, artifact: graphql }
+          - { path: ogm, artifact: ogm }
+          - { path: introspector, artifact: introspector }
+          - { path: plugins/auth/graphql-plugin-auth, artifact: plugins-auth-graphql-plugin-auth }
         graphql-version:
           - "^15.0.0"
           - "^16.0.0"
@@ -151,14 +151,14 @@ jobs:
         run: yarn --immutable
       - name: Overwrite GraphQL version
         run: yarn up --exact graphql@${{ matrix.graphql-version }}
-      - name: Run packages/${{ matrix.package }} unit tests
+      - name: Run packages/${{ matrix.package.path }} unit tests
         run: yarn run test:unit --coverage
-        working-directory: packages/${{ matrix.package }}
+        working-directory: packages/${{ matrix.package.path }}
       - name: Archive coverage report
         uses: actions/upload-artifact@v3
         with:
-          name: unit-coverage-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/coverage/
+          name: unit-coverage-${{ matrix.package.artifact }}
+          path: packages/${{ matrix.package.path }}/coverage/
 
   schema-tests:
     needs:
