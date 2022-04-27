@@ -1884,7 +1884,7 @@ __metadata:
     "@neo4j/graphql": ^3.1.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 27.4.1
-    "@types/node": 16.11.29
+    "@types/node": 16.11.31
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 27.5.1
@@ -1910,7 +1910,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 27.4.1
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.29
+    "@types/node": 16.11.31
     debug: ^4.3.3
     jest: 27.5.1
     jsonwebtoken: ^8.5.1
@@ -1964,14 +1964,14 @@ __metadata:
     process: 0.11.10
     puppeteer: 13.6.0
     randomstring: 1.2.2
-    react: 18.0.0
-    react-dom: 18.0.0
+    react: 18.1.0
+    react-dom: 18.1.0
     react-resizable: ^3.0.4
     style-loader: 3.3.1
     tailwindcss: 3.0.24
     terser-webpack-plugin: 5.3.1
     ts-jest: 27.1.4
-    ts-loader: 9.2.8
+    ts-loader: 9.2.9
     ts-node: 10.7.0
     tsconfig-paths-webpack-plugin: 3.5.2
     typescript: 4.6.3
@@ -1998,7 +1998,7 @@ __metadata:
     "@types/is-uuid": 1.0.0
     "@types/jest": 27.4.1
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.29
+    "@types/node": 16.11.31
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
     "@types/supertest": 2.0.12
@@ -2029,7 +2029,7 @@ __metadata:
     randomstring: 1.2.2
     rimraf: 3.0.2
     semver: ^7.3.5
-    supertest: 6.2.2
+    supertest: 6.2.3
     ts-jest: 27.1.4
     ts-node: 10.7.0
     typescript: 4.6.3
@@ -2046,7 +2046,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.1.0
     "@types/jest": 27.4.1
-    "@types/node": 16.11.29
+    "@types/node": 16.11.31
     "@types/pluralize": 0.0.29
     camelcase: ^6.2.0
     debug: ^4.3.2
@@ -2798,10 +2798,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.11.29":
-  version: 16.11.29
-  resolution: "@types/node@npm:16.11.29"
-  checksum: efb3a716a638baa7bf8f281d8f91102a7df452804f4cfbdd3a0f36d581cddc56446eac6b1ed041e27841f316de5d858080f98516ccf306fda9d6f8c3c68c2e17
+"@types/node@npm:16.11.31":
+  version: 16.11.31
+  resolution: "@types/node@npm:16.11.31"
+  checksum: 0bad289e12c7066cd2ea7a204d051a0bb09a32a29da39850812ea14c075f9e2b4aeaab23aa23447ef9e3aa6a30173bf3d3524e37bbeeb56fb8ffa4bbd783c5db
   languageName: node
   linkType: hard
 
@@ -11041,9 +11041,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:12.4.0":
-  version: 12.4.0
-  resolution: "lint-staged@npm:12.4.0"
+"lint-staged@npm:12.4.1":
+  version: 12.4.1
+  resolution: "lint-staged@npm:12.4.1"
   dependencies:
     cli-truncate: ^3.1.0
     colorette: ^2.0.16
@@ -11061,7 +11061,7 @@ __metadata:
     yaml: ^1.10.2
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: e25b273a73b79f224ff1ccb22432c34a9050fe8318b9cf7e08c748e2efc80e1f48ed4f2aa61cd16a701bb7fd6323ecf0d94a497c97732db04f2b5382d6b70131
+  checksum: b57183b537064cda6caef6679918bf271903145f7c28d09567e918b8b13094048b579f8df808ea590dbd7ea2ec332327c5e372cf3d77e85b7b0254f6541ce4c3
   languageName: node
   linkType: hard
 
@@ -12346,7 +12346,7 @@ __metadata:
     graphql: 16.3.0
     husky: 7.0.4
     jest: 27.5.1
-    lint-staged: 12.4.0
+    lint-staged: 12.4.1
     neo4j-driver: 4.4.5
     npm-run-all: 4.1.5
     prettier: 2.6.2
@@ -14272,7 +14272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:6.10.3, qs@npm:^6.10.1, qs@npm:^6.5.2":
+"qs@npm:6.10.3, qs@npm:^6.10.3, qs@npm:^6.5.2":
   version: 6.10.3
   resolution: "qs@npm:6.10.3"
   dependencies:
@@ -14479,6 +14479,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dom@npm:18.1.0":
+  version: 18.1.0
+  resolution: "react-dom@npm:18.1.0"
+  dependencies:
+    loose-envify: ^1.1.0
+    scheduler: ^0.22.0
+  peerDependencies:
+    react: ^18.1.0
+  checksum: bb0d48eeb0b297c79c2a03978baa29f5b3ff7ba3d070b21e34c9af1a6e7fdf0ca8b8d73e41f9214d91ad40eeb6d1f3559f884cbbc338713374a51320637c23df
+  languageName: node
+  linkType: hard
+
 "react-draggable@npm:^4.0.3":
   version: 4.4.4
   resolution: "react-draggable@npm:4.4.4"
@@ -14626,6 +14638,15 @@ __metadata:
   dependencies:
     loose-envify: ^1.1.0
   checksum: 293020b96536b3c7113ee57ca5c990a3f25649d1751b1c7a3aabd16dff0691fe9f1eed1206616d0906d05933536052037340a0c8d0941ff870b0eb469a2f975b
+  languageName: node
+  linkType: hard
+
+"react@npm:18.1.0":
+  version: 18.1.0
+  resolution: "react@npm:18.1.0"
+  dependencies:
+    loose-envify: ^1.1.0
+  checksum: 5bb296b561b43ef2220395da4faac86c14a087c8c80e1a7598a5740f01ee605c11eaf249985c1e2000971c4cd32ccb46d40f00479bbd9fb6b1c7cf857393b7d4
   languageName: node
   linkType: hard
 
@@ -15189,6 +15210,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"scheduler@npm:^0.22.0":
+  version: 0.22.0
+  resolution: "scheduler@npm:0.22.0"
+  dependencies:
+    loose-envify: ^1.1.0
+  checksum: a8ef5cab769c020cd6382ad9ecc3f72dbde56a50a36639b3a42ad9c11f7724f03700bcad373044059b8067d4a6365154dc7c0ca8027ef20ff4900cf58a0fc2c5
+  languageName: node
+  linkType: hard
+
 "schema-utils@npm:^3.0.0, schema-utils@npm:^3.1.0, schema-utils@npm:^3.1.1":
   version: 3.1.1
   resolution: "schema-utils@npm:3.1.1"
@@ -15262,7 +15292,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.3.7, semver@npm:7.x, semver@npm:^7.0.0, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5":
+"semver@npm:7.3.7, semver@npm:7.x, semver@npm:^7.0.0, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7":
   version: 7.3.7
   resolution: "semver@npm:7.3.7"
   dependencies:
@@ -16176,32 +16206,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"superagent@npm:^7.1.0":
-  version: 7.1.1
-  resolution: "superagent@npm:7.1.1"
+"superagent@npm:^7.1.3":
+  version: 7.1.3
+  resolution: "superagent@npm:7.1.3"
   dependencies:
     component-emitter: ^1.3.0
     cookiejar: ^2.1.3
-    debug: ^4.3.3
+    debug: ^4.3.4
     fast-safe-stringify: ^2.1.1
     form-data: ^4.0.0
     formidable: ^2.0.1
     methods: ^1.1.2
     mime: ^2.5.0
-    qs: ^6.10.1
+    qs: ^6.10.3
     readable-stream: ^3.6.0
-    semver: ^7.3.5
-  checksum: 8710b84cf538f0b3e467b2e9be5ac41a169fe49656769301e01128fc5532900f5e447b9fb740cad2171a36b13b6939cd0f495e7ab4e805043b5cb13fe3051766
+    semver: ^7.3.7
+  checksum: 436045d555d35c282de7bcba85102b1421470bdc80781c9a0b7ab7c639675b4eca026a71301974935f3de0d33782a0392274e24f3915335b81a78a04b48eeee5
   languageName: node
   linkType: hard
 
-"supertest@npm:6.2.2":
-  version: 6.2.2
-  resolution: "supertest@npm:6.2.2"
+"supertest@npm:6.2.3":
+  version: 6.2.3
+  resolution: "supertest@npm:6.2.3"
   dependencies:
     methods: ^1.1.2
-    superagent: ^7.1.0
-  checksum: 3c1956d57e32db1dfc17b4e4eb3eb3c80a29f9ed1b5209e0425b796df0eda7fce8a5c6485a6e666c6d3019c44e238c0494d6851c18e11a2c8bec01ff32dc06e3
+    superagent: ^7.1.3
+  checksum: c1bed86c31723a4bc461153a58176fd80d675deb7d23ab7bd170213040673b35c38e3cbeab9a4eb8a325cf736176c08c6f6522e42f0293314f183e192a6681fa
   languageName: node
   linkType: hard
 
@@ -16782,6 +16812,21 @@ __metadata:
     typescript: "*"
     webpack: ^5.0.0
   checksum: 3afd9a4cc1d46738ac3f2decc7dfa655e0183d4d2d48c7a113ea9f3ac313304f54be59252cde2ef04757c791e28cfcfc63323d3dd1f2f949485242c1ea4835e5
+  languageName: node
+  linkType: hard
+
+"ts-loader@npm:9.2.9":
+  version: 9.2.9
+  resolution: "ts-loader@npm:9.2.9"
+  dependencies:
+    chalk: ^4.1.0
+    enhanced-resolve: ^5.0.0
+    micromatch: ^4.0.0
+    semver: ^7.3.4
+  peerDependencies:
+    typescript: "*"
+    webpack: ^5.0.0
+  checksum: de817d4b7073bb029ca3e0742b5ef9432fdebb9f80707249b2121c09bb6ae6332ec755ab8e572f475ebfe5525a380a78b4e78a32b4d1c207a8fb1a2a0a490bac
   languageName: node
   linkType: hard
 
