@@ -252,8 +252,8 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="flex-1 flex justify-start w-full p-6" style={{ height: "90vh" }}>
-                <div className="flex flex-col w-full">
+            <div className="flex-1 flex justify-start w-full p-6" style={{ height: "87vh" }}>
+                <div className="flex flex-col w-full h-full">
                     <div className="flex items-center w-full pb-4">
                         <div className="justify-start">
                             <ProTooltip
@@ -316,7 +316,7 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                         </div>
                     )}
                     <div style={{ width: "100%", height: "100%" }}>
-                        <FileName extension={Extension.GQL} name={"typeDefs"}></FileName>
+                        <FileName extension={Extension.GRAPHQL} name={"schema"}></FileName>
                         <textarea
                             id={SCHEMA_EDITOR_INPUT}
                             /* @ts-ignore - Not Sure about this one*/

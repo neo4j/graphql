@@ -12,7 +12,7 @@ import {
     InputGroup,
     FormControl,
 } from "react-bootstrap";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, NavigateFunction } from "react-router-dom";
 import constants from "../constants";
 import { Link } from "react-router-dom";
 import { graphql, auth } from "../contexts";
@@ -43,8 +43,7 @@ export interface BlogInterface {
     authors?: Author[];
 }
 
-function CreatePost({ close, blog }: { close: () => void; blog: BlogInterface }) {
-    const history = useHistory();
+function CreatePost({ close, blog, navigate }: { close: () => void; blog: BlogInterface; navigate: NavigateFunction }) {
     const { mutate } = useContext(graphql.Context);
     const { getId } = useContext(auth.Context);
     const [title, setTitle] = useState("");
@@ -69,8 +68,8 @@ function CreatePost({ close, blog }: { close: () => void; blog: BlogInterface })
                     variables: { title, content, user: getId(), blog: blog.id },
                 });
 
-                history.push(constants.POST_PAGE + "/" + response.createPosts.posts[0].id);
-            } catch (e) {
+                navigate(constants.POST_PAGE + "/" + response.createPosts.posts[0].id);
+            } catch (e: any) {
                 setError(e.message);
             }
 
@@ -158,7 +157,7 @@ function BlogPosts({ blog }: { blog: BlogInterface }) {
 
             setHasMore(Boolean(response.hasNextPosts.length));
             setPosts((p) => [...p, ...response.blogPosts]);
-        } catch (e) {}
+        } catch (e: any) {}
 
         setLoading(false);
     }, [offset, posts]);
@@ -214,8 +213,7 @@ function PostItem(props: { post: any }) {
     );
 }
 
-function DeleteBlog(props: { blog: BlogInterface; close: () => void }) {
-    const history = useHistory();
+function DeleteBlog(props: { blog: BlogInterface; close: () => void; navigate: NavigateFunction }) {
     const { mutate } = useContext(graphql.Context);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -229,8 +227,8 @@ function DeleteBlog(props: { blog: BlogInterface; close: () => void }) {
                 variables: { id: props.blog.id },
             });
 
-            history.push(constants.DASHBOARD_PAGE);
-        } catch (e) {
+            props.navigate(constants.DASHBOARD_PAGE);
+        } catch (e: any) {
             setError(e.message);
         }
 
@@ -312,7 +310,7 @@ function AdminModal(props: {
             }));
 
             setAuthorEmail("");
-        } catch (e) {
+        } catch (e: any) {
             setError(e.message);
         }
 
@@ -334,7 +332,7 @@ function AdminModal(props: {
             }));
 
             setAuthorEmail("");
-        } catch (e) {
+        } catch (e: any) {
             setError(e.message);
         }
 
@@ -413,9 +411,8 @@ function AdminModal(props: {
     );
 }
 
-function Blog() {
+function Blog(navigate: NavigateFunction) {
     const { id } = useParams<{ id: string }>();
-    const history = useHistory();
     const [blog, setBlog] = useState<{
         id?: string;
         name?: string;
@@ -447,11 +444,11 @@ function Blog() {
 
                 const foundBlog = response.blogs[0];
                 if (!foundBlog) {
-                    history.push(constants.DASHBOARD_PAGE);
+                    navigate(constants.DASHBOARD_PAGE);
                 }
 
                 setBlog(foundBlog);
-            } catch (e) {
+            } catch (e: any) {
                 setError(e.message);
             }
 
@@ -470,7 +467,7 @@ function Blog() {
 
             setBlog((b) => ({ ...b, name: editedName }));
             setIsEditing(false);
-        } catch (e) {
+        } catch (e: any) {
             setError(e.message);
         }
 
@@ -504,7 +501,7 @@ function Blog() {
                 show={creatingPost}
                 onHide={() => setCreatingPost((x) => !x)}
             >
-                <CreatePost close={() => setCreatingPost(false)} blog={blog}></CreatePost>
+                <CreatePost close={() => setCreatingPost(false)} blog={blog} navigate={navigate}></CreatePost>
             </Modal>
             <Modal
                 aria-labelledby="contained-modal-title-vcenter"
@@ -513,7 +510,7 @@ function Blog() {
                 show={isDeleting}
                 onHide={() => setIsDeleting((x) => !x)}
             >
-                <DeleteBlog close={() => setIsDeleting(false)} blog={blog}></DeleteBlog>
+                <DeleteBlog close={() => setIsDeleting(false)} blog={blog} navigate={navigate}></DeleteBlog>
             </Modal>
             <Modal
                 aria-labelledby="contained-modal-title-vcenter"
@@ -528,8 +525,10 @@ function Blog() {
                 <Card className="mt-3 p-3">
                     {isEditing ? (
                         <InputGroup className="mb-3">
+                            {/* @ts-ignore */}
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="name">Name</InputGroup.Text>
+                                {/* @ts-ignore */}
                             </InputGroup.Prepend>
                             <FormControl
                                 size="lg"
