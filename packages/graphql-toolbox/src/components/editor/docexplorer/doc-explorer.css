@@ -318,3 +318,16 @@
     top: 50%;
     transform: translate(0, -50%);
 }
+
+.graphiql-explorer-where span,
+.graphiql-explorer-options span,
+.graphiql-explorer-first span,
+.graphiql-explorer-after span,
+.graphiql-explorer-directed span,
+.graphiql-explorer-edge span,
+.graphiql-explorer-node span,
+.graphiql-explorer-input span,
+.graphiql-explorer-sort span {
+    display: inline-flex;
+    align-items: center;
+}
