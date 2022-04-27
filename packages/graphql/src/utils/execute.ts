@@ -17,10 +17,7 @@
  * limitations under the License.
  */
 
-import { SessionMode, QueryResult, Neo4jError } from "neo4j-driver";
-// neo4j-driver-core will always be present as a dependency of neo4j-driver peer dependency
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { Session, Transaction } from "neo4j-driver-core";
+import { SessionMode, QueryResult, Neo4jError, Session, Transaction } from "neo4j-driver";
 import Debug from "debug";
 import {
     Neo4jGraphQLForbiddenError,
@@ -87,23 +84,44 @@ function getTransactionConfig(): TransactionConfig {
     };
 }
 
-function getExecutor(input: { defaultAccessMode: SessionMode; context: Context }) {
+interface DriverLike {
+    session(config);
+}
+
+function isDriverLike(executionContext: any): executionContext is DriverLike {
+    return typeof executionContext.session === "function";
+}
+
+interface SessionLike {
+    beginTransaction(config);
+}
+
+function isSessionLike(executionContext: any): executionContext is SessionLike {
+    return typeof executionContext.beginTransaction === "function";
+}
+
+type Executor = {
+    transaction: Transaction;
+    session?: Session;
+    openedTransaction: boolean;
+    openedSession: boolean;
+};
+
+function getExecutor(input: { defaultAccessMode: SessionMode; context: Context }): Executor {
     const executionContext = input.context.executionContext;
 
-    if (executionContext instanceof Transaction) {
-        return { transaction: executionContext };
+    if (isDriverLike(executionContext)) {
+        const session = executionContext.session(getSessionParams(input));
+        const transaction = session.beginTransaction(getTransactionConfig());
+        return { session, transaction, openedTransaction: true, openedSession: true };
     }
 
-    if (executionContext instanceof Session) {
-        const session = executionContext;
+    if (isSessionLike(executionContext)) {
         const transaction = executionContext.beginTransaction(getTransactionConfig());
-        return { session, transaction, openedTransaction: true };
+        return { session: executionContext, transaction, openedTransaction: true, openedSession: false };
     }
 
-    // By elimination executionContext must be a Driver
-    const session = executionContext.session(getSessionParams(input));
-    const transaction = session.beginTransaction(getTransactionConfig());
-    return { session, transaction, openedTransaction: true, openedSession: true };
+    return { transaction: executionContext, openedTransaction: false, openedSession: false };
 }
 
 async function execute(input: {
@@ -180,7 +198,7 @@ async function execute(input: {
 
         throw error;
     } finally {
-        if (executor.openedSession) {
+        if (executor.openedSession && executor.session) {
             await executor.session.close();
         }
     }
