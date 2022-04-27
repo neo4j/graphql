@@ -11,7 +11,7 @@
         "packages/*",
         "examples/migration",
         "examples/neo-push/*",
-        "packages/plugins/auth/*"
+        "packages/plugins/*"
     ],
     "scripts": {
         "build": "tsc --build tsconfig.production.json",
