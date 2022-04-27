@@ -47,7 +47,7 @@ export interface ExecuteResult {
     records: Record<PropertyKey, any>[];
 }
 
-const getSessionParams = (input: { defaultAccessMode: SessionMode; context: Context }) => {
+function getSessionParams(input: { defaultAccessMode: SessionMode; context: Context }) {
     const sessionParams: {
         defaultAccessMode?: SessionMode;
         bookmarks?: string | string[];
@@ -66,19 +66,28 @@ const getSessionParams = (input: { defaultAccessMode: SessionMode; context: Cont
     }
 
     return sessionParams;
+}
+
+type TransactionConfig = {
+    metadata: {
+        app: string;
+        // Possible values from https://neo4j.com/docs/operations-manual/current/monitoring/logging/#attach-metadata-tx (will only be user-transpiled for @neo4j/graphql)
+        type: "system" | "user-direct" | "user-action" | "user-transpiled";
+    };
 };
 
-const getTransactionConfig = () => {
+function getTransactionConfig(): TransactionConfig {
     const app = `${environment.NPM_PACKAGE_NAME}@${environment.NPM_PACKAGE_VERSION}`;
+
     return {
         metadata: {
             app,
             type: "user-transpiled",
         },
     };
-};
+}
 
-const getExecutor = (input: { defaultAccessMode: SessionMode; context: Context }) => {
+function getExecutor(input: { defaultAccessMode: SessionMode; context: Context }) {
     const executionContext = input.context.executionContext;
 
     if (executionContext instanceof Transaction) {
@@ -95,7 +104,7 @@ const getExecutor = (input: { defaultAccessMode: SessionMode; context: Context }
     const session = executionContext.session(getSessionParams(input));
     const transaction = session.beginTransaction(getTransactionConfig());
     return { session, transaction, openedTransaction: true, openedSession: true };
-};
+}
 
 async function execute(input: {
     cypher: string;
