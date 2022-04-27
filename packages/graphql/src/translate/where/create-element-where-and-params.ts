@@ -175,9 +175,11 @@ function createElementWhereAndParams({
                         return;
                     }
 
-                    const hasSingleValueAsPredicate = listPredicates?.length ? listPredicates.includes("SINGLE") : null;
+                    const hasPreviousSinglePredicate = listPredicates?.length
+                        ? listPredicates.includes("SINGLE")
+                        : null;
 
-                    const currentListPredicate = hasSingleValueAsPredicate ? "SINGLE" : getListPredicate(operator);
+                    const currentListPredicate = hasPreviousSinglePredicate ? "SINGLE" : getListPredicate(operator);
 
                     const resultArr = [
                         `RETURN ${existsStr}`,

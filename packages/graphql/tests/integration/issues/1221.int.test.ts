@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         await driver.close();
     });
 
-    test("should apply where filter for deep relations, two relations", async () => {
+    test("should apply SINGLE predicate for deep relations, two relations", async () => {
         const typeDefs = `
                 type ${testSeries} {
                     id: ID! @id(autogenerate: false)
@@ -174,7 +174,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         });
     });
 
-    test("should apply where filter for deep relations, three relations", async () => {
+    test("should apply SINGLE predicate for deep relations, three relations", async () => {
         const typeDefs = `
                 type ${testMain} {
                     id: ID! @id(autogenerate: false)
