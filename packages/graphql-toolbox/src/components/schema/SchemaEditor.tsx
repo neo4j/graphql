@@ -20,7 +20,15 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
-import { GraphQLSchema } from "graphql";
+import {
+    graphql,
+    GraphQLFloat,
+    GraphQLInt,
+    GraphQLNonNull,
+    GraphQLObjectType,
+    GraphQLSchema,
+    GraphQLString,
+} from "graphql";
 import { Button, Checkbox, HeroIcon } from "@neo4j-ndl/react";
 import * as neo4j from "neo4j-driver";
 import { EditorFromTextArea } from "codemirror";
@@ -177,24 +185,66 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
             return;
         }
 
+        const testSchema = new GraphQLSchema({
+            query: new GraphQLObjectType({
+                name: "Query",
+                fields: {
+                    user: {
+                        type: GraphQLString,
+                        resolve: () => {
+                            return "hello";
+                        },
+                    },
+                },
+            }),
+            types: [
+                new GraphQLObjectType({
+                    name: "Point",
+                    fields: {
+                        longitude: {
+                            type: new GraphQLNonNull(GraphQLFloat),
+                            resolve: (source) => source.point.x,
+                        },
+                        latitude: {
+                            type: new GraphQLNonNull(GraphQLFloat),
+                            resolve: (source) => source.point.y,
+                        },
+                        height: {
+                            type: GraphQLFloat,
+                            resolve: (source) => source.point.z,
+                        },
+                        crs: {
+                            type: new GraphQLNonNull(GraphQLString),
+                        },
+                        srid: {
+                            type: new GraphQLNonNull(GraphQLInt),
+                            resolve: (source) => source.point.srid,
+                        },
+                    },
+                }),
+            ],
+        });
+
         const element = ref.current as HTMLTextAreaElement;
 
         const showHint = () => {
-            // mirror.showHint({
-            //     completeSingle: true,
-            //     container: element.parentElement,
-            // });
+            console.log("dfhgdfkjghjkdf");
+            mirror.showHint({
+                schema: testSchema,
+                completeSingle: true,
+                container: element.parentElement,
+            });
 
-            const options = {
-                hint: function () {
-                    return {
-                        list: ["test", "@id"],
-                        from: mirror.getDoc().getCursor(),
-                        to: mirror.getDoc().getCursor(),
-                    };
-                },
-            };
-            mirror.showHint(options);
+            // const options = {
+            //     hint: function () {
+            //         return {
+            //             list: ["test", "@id"],
+            //             from: mirror.getDoc().getCursor(),
+            //             to: mirror.getDoc().getCursor(),
+            //         };
+            //     },
+            // };
+            // mirror.showHint(options);
         };
 
         const mirror = CodeMirror.fromTextArea(element, {
@@ -211,10 +261,22 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                 // @ts-ignore - Added By GraphQL Plugin
                 minFoldSize: 4,
             },
+            lint: {
+                // @ts-ignore
+                schema: testSchema,
+                validationRules: null,
+            },
             hintOptions: {
+                schema: testSchema,
                 closeOnUnfocus: false,
                 completeSingle: false,
                 container: element.parentElement,
+            },
+            info: {
+                schema: testSchema,
+            },
+            jump: {
+                schema: testSchema,
             },
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
             extraKeys: {
