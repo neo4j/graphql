@@ -1903,9 +1903,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql-plugin-auth@^1.0.0, @neo4j/graphql-plugin-auth@workspace:packages/graphql-plugin-auth":
+"@neo4j/graphql-plugin-auth@^1.0.0, @neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth":
   version: 0.0.0-use.local
-  resolution: "@neo4j/graphql-plugin-auth@workspace:packages/graphql-plugin-auth"
+  resolution: "@neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth"
   dependencies:
     "@types/debug": 4.1.7
     "@types/jest": 27.4.1
@@ -1948,7 +1948,7 @@ __metadata:
     file-loader: 6.2.0
     fork-ts-checker-webpack-plugin: 7.2.7
     graphiql-explorer: ^0.9.0
-    graphql: 16.3.0
+    graphql: 16.4.0
     graphql-request: ^4.2.0
     html-inline-script-webpack-plugin: 3.0.0
     html-webpack-inline-source-plugin: 0.0.10
@@ -8562,14 +8562,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:16.3.0":
-  version: 16.3.0
-  resolution: "graphql@npm:16.3.0"
-  checksum: ba540641e9cd2a8de5b989ff1433b015f232fa73aaef478d6709c1339cd43113347917acb965a5799c004667687852fc8ff0cfaa935eb26374c91c1fd7fdaeb1
-  languageName: node
-  linkType: hard
-
-"graphql@npm:^16.2.0":
+"graphql@npm:16.4.0":
   version: 16.4.0
   resolution: "graphql@npm:16.4.0"
   checksum: 8cac2c466891b6c6ace2fa3807f93815dea53cbec372998c139e796a321a6882c2324cc605e5f9aa45356890239aa9e731a04d8c59ec524db82bd18fb48aafee
@@ -11885,7 +11878,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.1.0
     apollo-server: ^3.6.1
-    graphql: ^16.2.0
+    graphql: 16.4.0
     neo4j-driver: 4.4.5
   languageName: unknown
   linkType: soft
@@ -12242,7 +12235,7 @@ __metadata:
     css-loader: 6.7.1
     dotenv-webpack: 7.1.0
     file-loader: 6.2.0
-    graphql: 16.3.0
+    graphql: 16.4.0
     html-webpack-plugin: ^5.5.0
     react: 18.0.0
     react-bootstrap: 2.2.3
@@ -12282,7 +12275,7 @@ __metadata:
     debug: 4.3.1
     dotenv: ^10.0.0
     express: 4.17.1
-    graphql: 16.3.0
+    graphql: 16.4.0
     jest: 27.5.1
     jsonwebtoken: 8.5.1
     neo4j-driver: 4.4.5
@@ -12343,7 +12336,7 @@ __metadata:
     eslint-plugin-jest: 26.1.5
     eslint-plugin-jsx-a11y: 6.5.1
     eslint-plugin-react: 7.29.4
-    graphql: 16.3.0
+    graphql: 16.4.0
     husky: 7.0.4
     jest: 27.5.1
     lint-staged: 12.4.1
