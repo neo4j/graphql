@@ -10,7 +10,8 @@
         "docs",
         "packages/*",
         "examples/migration",
-        "examples/neo-push/*"
+        "examples/neo-push/*",
+        "packages/plugins/*"
     ],
     "scripts": {
         "build": "tsc --build tsconfig.production.json",
