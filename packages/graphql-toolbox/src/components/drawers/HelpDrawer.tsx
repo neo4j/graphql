@@ -18,6 +18,7 @@
  */
 
 import { GraphQLSchema } from "graphql";
+import { HeroIcon } from "@neo4j-ndl/react";
 import React, { useContext, useState } from "react";
 // @ts-ignore - SVG import
 import ArrowLeft from "../../assets/arrow-left.svg";
@@ -30,7 +31,25 @@ interface Props {
 }
 
 const Resources = (): JSX.Element => {
-    return <div className="pt-6">resources</div>;
+    return (
+        <div className="pt-6">
+            <span className="h6">Resources</span>
+            <ul className="pt-4">
+                <li className="pb-4 cursor-pointer">
+                    <a
+                        className="flex justify-start items-center"
+                        href="https://neo4j.com/docs/graphql-manual/current/"
+                        target="_blank"
+                    >
+                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="DocumentTextIcon" />
+                        <p className="p-0 m-0">
+                            <span className="code">@neo4j/graphql</span> library - Documentation
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    );
 };
 
 const DocExplorerWrap = ({ schema, onClickClose, onClickBack }): JSX.Element => {
