@@ -3,7 +3,10 @@ const globalConf = require("../../../jest.config.base");
 module.exports = {
     ...globalConf,
     displayName: "@neo4j/graphql-plugin-subscriptions-rabbitmq",
-    roots: ["<rootDir>/packages/plugins/graphql-subscriptions-rabbitmq/src"],
+    roots: [
+        "<rootDir>/packages/plugins/graphql-subscriptions-rabbitmq/src",
+        // "<rootDir>/packages/plugins/graphql-subscriptions-rabbitmq/tests",
+    ],
     coverageDirectory: "<rootDir>/packages/plugins/graphql-subscriptions-rabbitmq/coverage/",
     globals: {
         "ts-jest": {

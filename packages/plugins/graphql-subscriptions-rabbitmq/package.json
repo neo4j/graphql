@@ -26,7 +26,8 @@
         "build": "tsc --build tsconfig.production.json",
         "test": "jest",
         "test:unit": "jest src/**/*.test.ts",
-        "test:unit:watch": "jest src --watch"
+        "test:unit:watch": "jest src --watch",
+        "test:e2e": "jest tests/**/*.e2e.test.ts --roots packages/plugins/graphql-subscriptions-rabbitmq/tests"
     },
     "author": "Neo4j Inc.",
     "devDependencies": {

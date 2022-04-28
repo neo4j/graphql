@@ -17,18 +17,11 @@
  * limitations under the License.
  */
 
-import { EventEmitter } from "events";
-import { Neo4jGraphQLSubscriptionsRabbitMQ } from ".";
+import { Neo4jGraphQLSubscriptionsRabbitMQ } from "../src";
 
-describe("index", () => {
-    test("Neo4jGraphQLSubscriptionsRabbitMQ", () => {
-        expect(Neo4jGraphQLSubscriptionsRabbitMQ).toBeDefined();
-    });
-
-    test("Neo4jGraphQLSubscriptionsRabbitMQ plugin interface", () => {
-        const plugin = new Neo4jGraphQLSubscriptionsRabbitMQ("test-path");
-
-        expect(plugin.events).toBeInstanceOf(EventEmitter);
-        expect(typeof plugin.publish).toBe("function");
+describe("Subscriptions RabbitMQ E2E", () => {
+    test("Connect to RabbitMQ", async () => {
+        const plugin = new Neo4jGraphQLSubscriptionsRabbitMQ("amqp://localhost");
+        await plugin.connect();
     });
 });
