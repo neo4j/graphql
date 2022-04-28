@@ -21,7 +21,7 @@ import * as CypherBuilder from "./CypherBuilder";
 
 describe("CypherBuilder", () => {
     describe("Match", () => {
-        test("Match Node", () => {
+        test("Match node", () => {
             const idParam = new CypherBuilder.Param("my-id");
             const nameParam = new CypherBuilder.Param("my-name");
             const ageParam = new CypherBuilder.Param(5);
@@ -49,6 +49,35 @@ describe("CypherBuilder", () => {
                   "param1": "my-id",
                   "param2": "my-name",
                   "param3": 5,
+                }
+            `);
+        });
+
+        test("Match node with alias", () => {
+            const idParam = new CypherBuilder.Param("my-id");
+            const nameParam = new CypherBuilder.Param("my-name");
+
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
+
+            const matchQuery = new CypherBuilder.Match(movieNode, { test: new CypherBuilder.Param("test-value") })
+                .where(movieNode, { id: idParam, name: nameParam })
+                .return(movieNode, ["name"], "myAlias");
+
+            const queryResult = matchQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MATCH (this0:\`Movie\` { test: $param0 })
+                WHERE this0.id = $param1
+                AND this0.name = $param2
+                RETURN this0 {.name} AS myAlias"
+            `);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "test-value",
+                  "param1": "my-id",
+                  "param2": "my-name",
                 }
             `);
         });

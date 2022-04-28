@@ -19,9 +19,10 @@
 
 import { CypherContext } from "../CypherContext";
 import { MatchableElement, MatchParams, MatchPattern } from "../MatchPattern";
+import { Node } from "../references/Node";
 import { Param } from "../references/Param";
 import { Query } from "./Query";
-import { ReturnStatement, ReturnStatementArgs } from "./Return";
+import { ReturnStatement } from "./Return";
 
 type Params = Record<string, Param<any>>;
 
@@ -50,8 +51,8 @@ export class Match<T extends MatchableElement> extends Query {
         return `MATCH ${nodeCypher}\n${this.composeWhere(context)}\n${childrenCypher}`;
     }
 
-    public return(...args: ReturnStatementArgs): this {
-        const returnStatement = new ReturnStatement(this, args);
+    public return(node: Node, fields?: string[], alias?: string): this {
+        const returnStatement = new ReturnStatement(this, [node, fields, alias]);
         this.addStatement(returnStatement);
         return this;
     }
