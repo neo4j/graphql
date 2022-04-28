@@ -194,6 +194,7 @@ function createElementWhereAndParams({
                         relationship,
                         relationshipVariable: `${collectedMap}.relationship`,
                         parameterPrefix: `${parameterPrefix}.${fieldName}`,
+                        // listPredicates stores all list predicates (SINGLE, ANY, NONE,..) while (recursively) translating the where clauses
                         listPredicates: [currentListPredicate, ...(listPredicates || [])],
                     });
 
