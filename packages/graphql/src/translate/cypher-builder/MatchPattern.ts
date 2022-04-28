@@ -51,7 +51,7 @@ export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
         super();
         this.matchElement = input;
         this.parameters = {} as MatchParams<T>; // Cast required due to neo-push
-        this.options = { ...{ labels: true, relationshipTypes: true }, ...options };
+        this.options = { labels: true, relationshipTypes: true, ...options };
     }
 
     public withParams(parameters: MatchParams<T>): MatchPattern<T> {
