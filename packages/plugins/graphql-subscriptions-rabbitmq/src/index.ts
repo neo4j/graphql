@@ -16,17 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { EventEmitter } from "events";
-import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "../../src/types";
+import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "@neo4j/graphql";
+import { AmqpApi } from "./amqp-api";
 
-export class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
-    public events = new EventEmitter();
+export class Neo4jGraphQLSubscriptionsRabbitMQ implements Neo4jGraphQLSubscriptionsPlugin {
+    public events: EventEmitter;
+    private amqpApi: AmqpApi<SubscriptionsEvent>;
 
-    public eventList: SubscriptionsEvent[] = [];
+    constructor(path: string) {
+        this.events = new EventEmitter();
+        this.amqpApi = new AmqpApi({ path });
+    }
 
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async publish(eventMeta: SubscriptionsEvent): Promise<void> {
-        this.eventList.push(eventMeta);
-        this.events.emit(eventMeta.event, eventMeta);
+    connect(): Promise<void> {
+        return this.amqpApi.connect((message) => {
+            this.events.emit(message.event, message);
+        });
+    }
+
+    publish(eventMeta: SubscriptionsEvent): Promise<void> {
+        return this.amqpApi.publish(eventMeta);
     }
 }

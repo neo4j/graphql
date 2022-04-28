@@ -17,18 +17,10 @@
  * limitations under the License.
  */
 
-import { SubscriptionsEvent } from "../../../types";
-import { compareProperties } from "./utils/compare-properties";
+import { Neo4jGraphQLSubscriptionsRabbitMQ } from ".";
 
-export function updateDiffFilter(event: SubscriptionsEvent): boolean {
-    if (event.event !== "update") {
-        return true;
-    }
-
-    const sameLength = Object.keys(event.properties.old).length === Object.keys(event.properties.new).length;
-    if (!sameLength) return true;
-    const sameProperties = compareProperties(event.properties.old, event.properties.new);
-    if (!sameProperties) return true;
-
-    return false;
-}
+describe("index", () => {
+    test("Neo4jGraphQLSubscriptionsRabbitMQ", () => {
+        expect(Neo4jGraphQLSubscriptionsRabbitMQ).toBeDefined();
+    });
+});

@@ -17,18 +17,4 @@
  * limitations under the License.
  */
 
-import { SubscriptionsEvent } from "../../../types";
-import { compareProperties } from "./utils/compare-properties";
-
-export function updateDiffFilter(event: SubscriptionsEvent): boolean {
-    if (event.event !== "update") {
-        return true;
-    }
-
-    const sameLength = Object.keys(event.properties.old).length === Object.keys(event.properties.new).length;
-    if (!sameLength) return true;
-    const sameProperties = compareProperties(event.properties.old, event.properties.new);
-    if (!sameProperties) return true;
-
-    return false;
-}
+export const DEBUG_PREFIX = "@neo4j/graphql-plugin-subscriptions-rabbitmq";

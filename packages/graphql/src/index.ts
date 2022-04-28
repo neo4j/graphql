@@ -33,6 +33,9 @@ export {
     Neo4jGraphQLAuthPlugin,
     CypherUpdateStrategy,
     Node,
+    Neo4jGraphQLSubscriptionsPlugin,
+    EventMeta,
+    SubscriptionsEvent,
 } from "./types";
 export {
     Neo4jGraphQL,
