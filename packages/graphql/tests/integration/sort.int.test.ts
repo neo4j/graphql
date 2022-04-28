@@ -23,7 +23,7 @@ import { generate } from "randomstring";
 import { gql } from "apollo-server";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { generateUniqueType } from "../../tests/utils/graphql-types";
+import { generateUniqueType } from "../utils/graphql-types";
 
 const testLabel = generate({ charset: "alphabetic" });
 
