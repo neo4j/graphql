@@ -177,7 +177,27 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
             return;
         }
 
-        const mirror = CodeMirror.fromTextArea(ref.current as HTMLTextAreaElement, {
+        const element = ref.current as HTMLTextAreaElement;
+
+        const showHint = () => {
+            // mirror.showHint({
+            //     completeSingle: true,
+            //     container: element.parentElement,
+            // });
+
+            const options = {
+                hint: function () {
+                    return {
+                        list: ["test", "@id"],
+                        from: mirror.getDoc().getCursor(),
+                        to: mirror.getDoc().getCursor(),
+                    };
+                },
+            };
+            mirror.showHint(options);
+        };
+
+        const mirror = CodeMirror.fromTextArea(element, {
             lineNumbers: true,
             tabSize: 2,
             mode: "graphql",
@@ -191,8 +211,18 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                 // @ts-ignore - Added By GraphQL Plugin
                 minFoldSize: 4,
             },
+            hintOptions: {
+                closeOnUnfocus: false,
+                completeSingle: false,
+                container: element.parentElement,
+            },
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
             extraKeys: {
+                "Cmd-Space": showHint,
+                "Ctrl-Space": showHint,
+                "Alt-Space": showHint,
+                "Shift-Space": showHint,
+                "Shift-Alt-Space": showHint,
                 "Ctrl-L": () => {
                     if (!mirror) return;
                     formatCode(mirror, ParserOptions.GRAPH_QL);
