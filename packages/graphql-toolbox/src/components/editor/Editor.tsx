@@ -34,14 +34,14 @@ import {
     LOCAL_STATE_TYPE_LAST_QUERY,
 } from "../../constants";
 import { Grid } from "./grid/Grid";
-import { DocExplorer } from "./docexplorer/index";
 import { formatCode, safeParse, ParserOptions } from "./utils";
 import { Extension } from "../Filename";
 import { ViewSelectorComponent } from "../ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
 import { Theme, ThemeContext } from "../../contexts/theme";
-import { AppSettings } from "../AppSettings";
+import { AppSettings } from "../drawers/AppSettings";
 import { ProTooltip } from "../ProTooltip";
+import { HelpDrawer } from "../drawers/HelpDrawer";
 
 const DEBOUNCE_TIMEOUT = 500;
 export interface Props {
@@ -58,7 +58,7 @@ export const Editor = (props: Props) => {
     const [initVariableValues, setInitVariableValues] = useState("");
     const [output, setOutput] = useState("");
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
-    const showRightPanel = settings.isShowDocsDrawer || settings.isShowSettingsDrawer;
+    const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     const debouncedSave = useCallback(
         debounce((key, value) => {
@@ -213,18 +213,8 @@ export const Editor = (props: Props) => {
             </div>
             {showRightPanel ? (
                 <div className="h-content-container flex justify-start w-96 bg-white">
-                    {settings.isShowDocsDrawer ? (
-                        <div className="p-6">
-                            <DocExplorer schema={props.schema}>
-                                <button
-                                    className="docExplorerCloseIcon"
-                                    onClick={() => settings.setIsShowDocsDrawer(false)}
-                                    aria-label="Close Documentation Explorer"
-                                >
-                                    {"\u2715"}
-                                </button>
-                            </DocExplorer>
-                        </div>
+                    {settings.isShowHelpDrawer ? (
+                        <HelpDrawer onClickClose={() => settings.setIsShowHelpDrawer(false)} schema={props.schema} />
                     ) : null}
                     {settings.isShowSettingsDrawer ? (
                         <AppSettings onClickClose={() => settings.setIsShowSettingsDrawer(false)} />

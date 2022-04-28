@@ -21,9 +21,9 @@ import React, { Dispatch, useState, SetStateAction } from "react";
 
 export interface State {
     isShowSettingsDrawer: boolean;
-    isShowDocsDrawer: boolean;
+    isShowHelpDrawer: boolean;
     setIsShowSettingsDrawer: (v: boolean) => void;
-    setIsShowDocsDrawer: (v: boolean) => void;
+    setIsShowHelpDrawer: (v: boolean) => void;
 }
 
 export const SettingsContext = React.createContext(null as unknown as State);
@@ -34,19 +34,19 @@ export function SettingsProvider(props: React.PropsWithChildren<any>) {
 
     [value, setValue] = useState<State>({
         isShowSettingsDrawer: false,
-        isShowDocsDrawer: false,
+        isShowHelpDrawer: false,
         setIsShowSettingsDrawer: (isShowSettingsDrawer: boolean) => {
             setValue((v) => ({
                 ...v,
                 isShowSettingsDrawer,
-                ...(isShowSettingsDrawer ? { isShowDocsDrawer: false } : { isShowDocsDrawer: v.isShowDocsDrawer }),
+                ...(isShowSettingsDrawer ? { isShowHelpDrawer: false } : { isShowHelpDrawer: v.isShowHelpDrawer }),
             }));
         },
-        setIsShowDocsDrawer: (isShowDocsDrawer: boolean) => {
+        setIsShowHelpDrawer: (isShowHelpDrawer: boolean) => {
             setValue((v) => ({
                 ...v,
-                isShowDocsDrawer,
-                ...(isShowDocsDrawer
+                isShowHelpDrawer,
+                ...(isShowHelpDrawer
                     ? { isShowSettingsDrawer: false }
                     : { isShowSettingsDrawer: v.isShowSettingsDrawer }),
             }));

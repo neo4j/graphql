@@ -53,9 +53,9 @@ import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
 import { ThemeContext, Theme } from "../../contexts/theme";
 import { ViewSelectorComponent } from "../ViewSelectorComponent";
-import { AppSettings } from "../AppSettings";
+import { AppSettings } from "../drawers/AppSettings";
 import { ProTooltip } from "../ProTooltip";
-
+import { HelpDrawer } from "../drawers/HelpDrawer";
 export interface Props {
     hasSchema: boolean;
     onChange: (s: GraphQLSchema) => void;
@@ -65,7 +65,7 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
     const auth = useContext(AuthContext);
     const theme = useContext(ThemeContext);
     const settings = useContext(SettingsContext);
-    const ref = useRef<HTMLTextAreaElement>();
+    const ref = useRef<HTMLTextAreaElement | null>(null);
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -79,6 +79,7 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
     const [isEnableDebugChecked, setIsEnableDebugChecked] = useState<string | null>(
         localStorage.getItem(LOCAL_STATE_ENABLE_REGEX)
     );
+    const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     const onChangeDebugCheckbox = (): void => {
         const next = isDebugChecked === "true" ? "false" : "true";
@@ -228,9 +229,7 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
         const element = ref.current as HTMLTextAreaElement;
 
         const showHint = () => {
-            console.log("dfhgdfkjghjkdf");
             mirror.showHint({
-                schema: testSchema,
                 completeSingle: true,
                 container: element.parentElement,
             });
@@ -247,7 +246,7 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
             // mirror.showHint(options);
         };
 
-        const mirror = CodeMirror.fromTextArea(element, {
+        const mirror = CodeMirror.fromTextArea(ref.current, {
             lineNumbers: true,
             tabSize: 2,
             mode: "graphql",
@@ -419,9 +418,14 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                     </div>
                 </div>
             </div>
-            {settings.isShowSettingsDrawer ? (
+            {showRightPanel ? (
                 <div className="h-content-container flex justify-start w-96 bg-white">
-                    <AppSettings onClickClose={() => settings.setIsShowSettingsDrawer(false)} />
+                    {settings.isShowHelpDrawer ? (
+                        <HelpDrawer onClickClose={() => settings.setIsShowHelpDrawer(false)} />
+                    ) : null}
+                    {settings.isShowSettingsDrawer ? (
+                        <AppSettings onClickClose={() => settings.setIsShowSettingsDrawer(false)} />
+                    ) : null}
                 </div>
             ) : null}
         </div>

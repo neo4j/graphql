@@ -43,7 +43,7 @@ export const Main = () => {
 
     return (
         <div className="flex w-full h-full flex-col">
-            <TopBar hasSchema={!!schema} />
+            <TopBar />
             <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
                 {screen.view === Screen.TYPEDEFS ? (
                     <SchemaEditor

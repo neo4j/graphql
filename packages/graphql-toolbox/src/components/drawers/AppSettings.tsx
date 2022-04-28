@@ -19,7 +19,7 @@
 
 import { useContext } from "react";
 import { Radio } from "@neo4j-ndl/react";
-import { Theme, ThemeContext } from "../contexts/theme";
+import { Theme, ThemeContext } from "../../contexts/theme";
 
 interface Props {
     onClickClose: () => void;
