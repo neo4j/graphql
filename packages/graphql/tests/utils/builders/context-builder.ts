@@ -36,6 +36,7 @@ export class ContextBuilder extends Builder<Context, Context> {
             relationships: [],
             schema: new GraphQLSchema({}),
             subscriptionsEnabled: false,
+            executionContext: {} as neo4j.Driver,
             ...newOptions,
         });
     }
