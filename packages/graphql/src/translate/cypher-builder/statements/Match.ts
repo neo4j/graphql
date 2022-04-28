@@ -73,6 +73,6 @@ export class Match<T extends MatchableElement> extends Query {
         const whereParams = whereStatements.flat();
 
         if (whereParams.length === 0) return "";
-        return `WHERE ${whereParams.join("\nAND")}`;
+        return `WHERE ${whereParams.join("\nAND ")}`;
     }
 }
