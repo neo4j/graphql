@@ -47,6 +47,46 @@ const Resources = (): JSX.Element => {
                         </p>
                     </a>
                 </li>
+                <li className="pb-4 cursor-pointer">
+                    <a
+                        className="flex justify-start items-center"
+                        href="https://neo4j.com/graphacademy/training-graphql-apis/enrollment/"
+                        target="_blank"
+                    >
+                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="AcademicCapIcon" />
+                        <p className="p-0 m-0">Neo4j Graph Academy</p>
+                    </a>
+                </li>
+                <li className="pb-4 cursor-pointer">
+                    <a
+                        className="flex justify-start items-center"
+                        href="https://discord.com/channels/787399249741479977/818578492723036210"
+                        target="_blank"
+                    >
+                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="ChatIcon" />
+                        <p className="p-0 m-0">Community</p>
+                    </a>
+                </li>
+                <li className="pb-4 cursor-pointer">
+                    <a
+                        className="flex justify-start items-center"
+                        href="https://github.com/neo4j/graphql"
+                        target="_blank"
+                    >
+                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="DocumentTextIcon" />
+                        <p className="p-0 m-0">Github - Repository</p>
+                    </a>
+                </li>
+                <li className="pb-4 cursor-pointer">
+                    <a
+                        className="flex justify-start items-center"
+                        href="https://github.com/neo4j/graphql/issues"
+                        target="_blank"
+                    >
+                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="DocumentTextIcon" />
+                        <p className="p-0 m-0">Github - Issue tracker</p>
+                    </a>
+                </li>
             </ul>
         </div>
     );
