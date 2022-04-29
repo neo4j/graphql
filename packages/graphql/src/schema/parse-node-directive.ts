@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, ObjectTypeDefinitionNode, valueFromASTUntyped } from "graphql";
+import { DirectiveNode, valueFromASTUntyped } from "graphql";
 import { NodeDirective } from "../classes/NodeDirective";
 
-function parseNodeDirective(nodeDirective: DirectiveNode | undefined, definition: ObjectTypeDefinitionNode) {
+function parseNodeDirective(nodeDirective: DirectiveNode | undefined) {
     if (!nodeDirective || nodeDirective.name.value !== "node") {
         throw new Error("Undefined or incorrect directive passed into parseNodeDirective function");
     }

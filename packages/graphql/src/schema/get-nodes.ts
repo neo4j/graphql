@@ -107,7 +107,7 @@ function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4j
 
         let nodeDirective: NodeDirective;
         if (nodeDirectiveDefinition) {
-            nodeDirective = parseNodeDirective(nodeDirectiveDefinition, definition);
+            nodeDirective = parseNodeDirective(nodeDirectiveDefinition);
         }
 
         const nodeFields = getObjFieldMeta({

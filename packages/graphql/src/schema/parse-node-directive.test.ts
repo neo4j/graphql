@@ -31,7 +31,7 @@ describe("parseNodeDirective", () => {
 
         const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-        expect(() => parseNodeDirective(directive, definition)).toThrow(
+        expect(() => parseNodeDirective(directive)).toThrow(
             "Undefined or incorrect directive passed into parseNodeDirective function"
         );
     });
@@ -46,7 +46,7 @@ describe("parseNodeDirective", () => {
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
         const expected = new NodeDirective({ label: "MyLabel" });
 
-        expect(parseNodeDirective(directive, definition)).toMatchObject(expected);
+        expect(parseNodeDirective(directive)).toMatchObject(expected);
     });
 
     test("should return a node directive with additional labels", () => {
@@ -60,7 +60,7 @@ describe("parseNodeDirective", () => {
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
         const expected = new NodeDirective({ additionalLabels: ["Label", "AnotherLabel"] });
 
-        expect(parseNodeDirective(directive, definition)).toMatchObject(expected);
+        expect(parseNodeDirective(directive)).toMatchObject(expected);
     });
 
     test("should return a node directive with a label and additional labels", () => {
@@ -74,7 +74,7 @@ describe("parseNodeDirective", () => {
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
         const expected = new NodeDirective({ label: "MyLabel", additionalLabels: ["Label", "AnotherLabel"] });
 
-        expect(parseNodeDirective(directive, definition)).toMatchObject(expected);
+        expect(parseNodeDirective(directive)).toMatchObject(expected);
     });
 
     test("should return a node directive with custom plural", () => {
@@ -88,6 +88,6 @@ describe("parseNodeDirective", () => {
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
         const expected = new NodeDirective({ plural: "testTypes" });
 
-        expect(parseNodeDirective(directive, definition)).toMatchObject(expected);
+        expect(parseNodeDirective(directive)).toMatchObject(expected);
     });
 });
