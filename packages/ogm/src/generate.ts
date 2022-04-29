@@ -153,7 +153,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
 
     const output = await codegen(config);
 
-    const content: string[] = [`import { SelectionSetNode, DocumentNode } from "graphql";`, output];
+    const content: string[] = [`import type { SelectionSetNode, DocumentNode } from "graphql";`, output];
 
     const aggregateSelections: any = {};
     const modeMap: Record<string, string> = {};

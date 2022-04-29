@@ -49,7 +49,7 @@ describe("generate", () => {
         })) as string;
 
         expect(generated).toMatchInlineSnapshot(`
-            "import { SelectionSetNode, DocumentNode } from \\"graphql\\";
+            "import type { SelectionSetNode, DocumentNode } from \\"graphql\\";
             export type Maybe<T> = T | null;
             export type InputMaybe<T> = Maybe<T>;
             export type Exact<T extends { [key: string]: unknown }> = {
@@ -310,7 +310,7 @@ describe("generate", () => {
         })) as string;
 
         expect(generated).toMatchInlineSnapshot(`
-            "import { SelectionSetNode, DocumentNode } from \\"graphql\\";
+            "import type { SelectionSetNode, DocumentNode } from \\"graphql\\";
             export type Maybe<T> = T | null;
             export type InputMaybe<T> = Maybe<T>;
             export type Exact<T extends { [key: string]: unknown }> = {
@@ -591,7 +591,7 @@ describe("generate", () => {
         const fileContent = await fs.promises.readFile(outFile, "utf-8");
 
         expect(fileContent).toMatchInlineSnapshot(`
-            "import { SelectionSetNode, DocumentNode } from \\"graphql\\";
+            "import type { SelectionSetNode, DocumentNode } from \\"graphql\\";
             export type Maybe<T> = T | null;
             export type InputMaybe<T> = Maybe<T>;
             export type Exact<T extends { [key: string]: unknown }> = {
@@ -857,7 +857,7 @@ describe("generate", () => {
         })) as string;
 
         expect(generated).toMatchInlineSnapshot(`
-            "import { SelectionSetNode, DocumentNode } from \\"graphql\\";
+            "import type { SelectionSetNode, DocumentNode } from \\"graphql\\";
             export type Maybe<T> = T | null;
             export type InputMaybe<T> = Maybe<T>;
             export type Exact<T extends { [key: string]: unknown }> = {
