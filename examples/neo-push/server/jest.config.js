@@ -7,7 +7,7 @@ module.exports = {
     coverageDirectory: "<rootDir>/examples/neo-push/server/coverage/",
     globals: {
         "ts-jest": {
-            tsconfig: "<rootDir>/examples/neo-push/server/tsconfig.json",
+            tsconfig: "<rootDir>/examples/neo-push/server/src/tsconfig.json",
         },
     },
 };
