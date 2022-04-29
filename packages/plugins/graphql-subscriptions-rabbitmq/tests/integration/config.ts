@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLSubscriptionsRabbitMQ } from "../src";
-
-describe("Subscriptions RabbitMQ E2E", () => {
-    test("Connect to RabbitMQ", async () => {
-        const plugin = new Neo4jGraphQLSubscriptionsRabbitMQ("amqp://localhost");
-        await plugin.connect();
-    });
-});
+export default {
+    rabbitmq: {
+        hostname: "localhost",
+        user: "guest",
+        password: "guest",
+        exchange: "neo4j-graphql",
+    },
+};

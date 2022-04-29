@@ -19,21 +19,32 @@
 
 import { EventEmitter } from "events";
 import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "@neo4j/graphql";
-import { AmqpApi } from "./amqp-api";
+import { AmqpApi, AmqpConnection, ConnectionOptions } from "./amqp-api";
+export { ConnectionOptions } from "./amqp-api";
+
+const DEFAULT_EXCHANGE = "neo4j-graphql";
+
+export type Neo4jGraphQLSubscriptionsRabbitMQContructorOptions = { exchange?: string };
 
 export class Neo4jGraphQLSubscriptionsRabbitMQ implements Neo4jGraphQLSubscriptionsPlugin {
     public events: EventEmitter;
     private amqpApi: AmqpApi<SubscriptionsEvent>;
 
-    constructor(path: string) {
+    constructor(options: Neo4jGraphQLSubscriptionsRabbitMQContructorOptions = {}) {
         this.events = new EventEmitter();
-        this.amqpApi = new AmqpApi({ path });
+        this.amqpApi = new AmqpApi({ exchange: DEFAULT_EXCHANGE, ...options });
     }
 
-    connect(): Promise<void> {
-        return this.amqpApi.connect((message) => {
+    connect(connectionOptions: ConnectionOptions): Promise<AmqpConnection> {
+        return this.amqpApi.connect(connectionOptions, (message) => {
             this.events.emit(message.event, message);
         });
+    }
+
+    /* Closes the channel created and unbinds the event emitter*/
+    close(): Promise<void> {
+        this.events.removeAllListeners();
+        return this.amqpApi.close();
     }
 
     publish(eventMeta: SubscriptionsEvent): Promise<void> {

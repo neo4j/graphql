@@ -26,7 +26,7 @@ describe("index", () => {
     });
 
     test("Neo4jGraphQLSubscriptionsRabbitMQ plugin interface", () => {
-        const plugin = new Neo4jGraphQLSubscriptionsRabbitMQ("test-path");
+        const plugin = new Neo4jGraphQLSubscriptionsRabbitMQ();
 
         expect(plugin.events).toBeInstanceOf(EventEmitter);
         expect(typeof plugin.publish).toBe("function");

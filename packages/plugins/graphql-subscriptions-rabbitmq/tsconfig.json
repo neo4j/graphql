@@ -8,6 +8,6 @@
             "@neo4j/graphql": ["../../graphql/src"]
         }
     },
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "tests/**/*"],
     "references": [{ "path": "../../graphql/tsconfig.json" }]
 }
