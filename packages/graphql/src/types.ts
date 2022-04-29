@@ -20,7 +20,7 @@
 import { EventEmitter } from "events";
 import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { Driver, Integer } from "neo4j-driver";
+import { Driver, Integer, Session, Transaction } from "neo4j-driver";
 import { Node, Relationship } from "./classes";
 import { RelationshipQueryDirectionOption } from "./constants";
 import { SubscriptionsEvent } from "./subscriptions/subscriptions-event";
@@ -39,7 +39,7 @@ export interface AuthContext {
 }
 
 export interface Context {
-    driver: Driver;
+    driver?: Driver;
     driverConfig?: DriverConfig;
     resolveTree: ResolveTree;
     nodes: Node[];
@@ -51,6 +51,7 @@ export interface Context {
     plugins?: Neo4jGraphQLPlugins;
     jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
+    executionContext: Driver | Session | Transaction;
     [k: string]: any;
 }
 
