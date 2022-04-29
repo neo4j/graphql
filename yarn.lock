@@ -1885,7 +1885,7 @@ __metadata:
     "@neo4j/graphql": ^3.1.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 27.4.1
-    "@types/node": 16.11.31
+    "@types/node": 16.11.32
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 27.5.1
@@ -1911,7 +1911,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 27.4.1
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.31
+    "@types/node": 16.11.32
     debug: ^4.3.3
     jest: 27.5.1
     jsonwebtoken: ^8.5.1
@@ -1999,7 +1999,7 @@ __metadata:
     "@types/is-uuid": 1.0.0
     "@types/jest": 27.4.1
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.31
+    "@types/node": 16.11.32
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
     "@types/supertest": 2.0.12
@@ -2047,7 +2047,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.1.0
     "@types/jest": 27.4.1
-    "@types/node": 16.11.31
+    "@types/node": 16.11.32
     "@types/pluralize": 0.0.29
     camelcase: ^6.2.0
     debug: ^4.3.2
@@ -2799,10 +2799,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.11.31":
-  version: 16.11.31
-  resolution: "@types/node@npm:16.11.31"
-  checksum: 0bad289e12c7066cd2ea7a204d051a0bb09a32a29da39850812ea14c075f9e2b4aeaab23aa23447ef9e3aa6a30173bf3d3524e37bbeeb56fb8ffa4bbd783c5db
+"@types/node@npm:16.11.32":
+  version: 16.11.32
+  resolution: "@types/node@npm:16.11.32"
+  checksum: 21f1bcd4f47a443f8a78a58b6ca3488dd9418c71b1185ba067d02222047fb194a3bfba244c32259bcb0cae4d55870b43a908b1f2832ec4aa4f31158f809625fe
   languageName: node
   linkType: hard
 
