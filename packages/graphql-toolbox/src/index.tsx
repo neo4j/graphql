@@ -20,4 +20,9 @@
 import ReactDOM from "react-dom";
 import { App } from "./App";
 
-ReactDOM.render(<App />, document.querySelector("#root"));
+const container = document.getElementById("root");
+
+// @ts-ignore - types are currently missing in @types/react-dom
+const root = ReactDOM.createRoot(container);
+
+root.render(<App />);

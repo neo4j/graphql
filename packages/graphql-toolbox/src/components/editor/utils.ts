@@ -69,3 +69,12 @@ export const handleEditorDisableState = (mirror: EditorFromTextArea | null, load
         wrapperElement?.classList.remove("code-mirror-disabled-state");
     }
 };
+
+export const safeParse = (str: string | null | undefined, fallback: Record<string, any>): Record<string, any> => {
+    if (!str) return fallback;
+    try {
+        return JSON.parse(str);
+    } catch (e) {
+        return fallback;
+    }
+};

@@ -46,6 +46,7 @@ describe("Create -> ConnectOrCreate", () => {
         }
 
         type ${typeActor.name} {
+            id: Int! @unique
             name: String
             ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
         }
@@ -76,6 +77,7 @@ describe("Create -> ConnectOrCreate", () => {
               ${typeActor.operations.create}(
                 input: [
                   {
+                    id: 22,
                     name: "Tom Hanks"
                     ${typeMovie.plural}: {
                       connectOrCreate: {
@@ -130,6 +132,7 @@ describe("Create -> ConnectOrCreate", () => {
               ${typeActor.operations.create}(
                 input: [
                   {
+                    id: 234,
                     name: "${testActorName}"
                     ${typeMovie.plural}: {
                       connectOrCreate: {
@@ -202,6 +205,7 @@ describe("Create -> ConnectOrCreate", () => {
               ${typeActor.operations.create}(
                 input: [
                   {
+                    id: 239,
                     name: "${actorName}"
                     ${typeMovie.plural}: {
                       connectOrCreate: {
@@ -247,5 +251,50 @@ describe("Create -> ConnectOrCreate", () => {
 
         expect(actedInRelation.records).toHaveLength(1);
         expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(105);
+    });
+    test("ConnectOrCreate creates a new node with the correct relationship direction", async () => {
+        const query = gql`
+          mutation {
+            ${typeMovie.operations.create}(
+              input: [{
+                id: 339,
+                title: "The Matrix",
+                ${typeActor.plural}: {
+                  connectOrCreate: {
+                    where: { node: { id: 305 } }
+                    onCreate: { node: { id: 305, name: "Keanu" }, edge: { screentime: 105 } }
+                  }
+                }
+              }]
+            ) {
+              ${typeMovie.plural} {
+                id
+                title
+              }
+            }
+          }
+      `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: getQuerySource(query),
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult as any).data[typeMovie.operations.create][`${typeMovie.plural}`]).toEqual([
+            {
+                id: 339,
+                title: "The Matrix",
+            },
+        ]);
+
+        const actorsRelation = await session.run(`
+        MATCH (:${typeMovie.name} { id: 339 })<-[r:ACTED_IN]-(:${typeActor.name} { name: "Keanu" }) 
+        RETURN r.screentime as screentime
+      `);
+
+        expect(actorsRelation.records).toHaveLength(1);
+        expect((actorsRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(105);
     });
 });

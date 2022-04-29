@@ -22,6 +22,7 @@ import { graphql, GraphQLSchema } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
 import { Button, HeroIcon } from "@neo4j-ndl/react";
 import { EditorFromTextArea } from "codemirror";
+import debounce from "lodash.debounce";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
 import {
@@ -32,9 +33,9 @@ import {
     LOCAL_STATE_TYPE_LAST_PARAMS,
     LOCAL_STATE_TYPE_LAST_QUERY,
 } from "../../constants";
-import { Frame } from "./Frame";
+import { Grid } from "./grid/Grid";
 import { DocExplorer } from "./docexplorer/index";
-import { formatCode, ParserOptions } from "./utils";
+import { formatCode, safeParse, ParserOptions } from "./utils";
 import { Extension } from "../Filename";
 import { ViewSelectorComponent } from "../ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
@@ -42,6 +43,7 @@ import { Theme, ThemeContext } from "../../contexts/theme";
 import { AppSettings } from "../AppSettings";
 import { ProTooltip } from "../ProTooltip";
 
+const DEBOUNCE_TIMEOUT = 500;
 export interface Props {
     schema?: GraphQLSchema;
 }
@@ -49,11 +51,21 @@ export interface Props {
 export const Editor = (props: Props) => {
     const settings = useContext(SettingsContext);
     const theme = useContext(ThemeContext);
+    const [initialLoad, setInitialLoad] = useState(false);
     const [loading, setLoading] = useState(false);
     const [query, setQuery] = useState("");
     const [variableValues, setVariableValues] = useState("");
+    const [initVariableValues, setInitVariableValues] = useState("");
     const [output, setOutput] = useState("");
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
+    const showRightPanel = settings.isShowDocsDrawer || settings.isShowSettingsDrawer;
+
+    const debouncedSave = useCallback(
+        debounce((key, value) => {
+            localStorage.setItem(key, value);
+        }, DEBOUNCE_TIMEOUT),
+        []
+    );
 
     const formatTheCode = (): void => {
         if (!refForQueryEditorMirror.current) return;
@@ -71,7 +83,7 @@ export const Editor = (props: Props) => {
                     schema: props.schema,
                     source: override || query || "",
                     contextValue: {},
-                    ...(variableValues ? { variableValues: JSON.parse(variableValues) } : {}),
+                    variableValues: safeParse(variableValues, {}),
                 });
 
                 result = JSON.stringify(response);
@@ -90,24 +102,32 @@ export const Editor = (props: Props) => {
     useEffect(() => {
         const initQuery = JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_QUERY) as string) || DEFAULT_QUERY;
         const initParams = JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_PARAMS) as string) || "";
+        setInitialLoad(true);
         setQuery(initQuery);
         setVariableValues(initParams);
+        setInitVariableValues(initParams);
     }, []);
 
     return (
         <div className="w-full flex">
             <div className="h-content-container flex justify-start w-96 bg-white graphiql-container">
                 <div className="p-6">
-                    <GraphiQLExplorer
-                        schema={props.schema}
-                        query={query}
-                        onEdit={setQuery}
-                        onRunOperation={onSubmit}
-                        explorerIsOpen={true}
-                    />
+                    {props.schema && initialLoad ? (
+                        <GraphiQLExplorer
+                            schema={props.schema}
+                            query={query}
+                            onEdit={setQuery}
+                            onRunOperation={onSubmit}
+                            explorerIsOpen={true}
+                        />
+                    ) : null}
                 </div>
             </div>
-            <div className="flex-1 flex justify-start w-full p-6">
+            <div
+                className={`h-content-container flex justify-start p-6 ${
+                    showRightPanel ? "w-editor-container" : "w-full"
+                }`}
+            >
                 <div className="flex flex-col w-full">
                     <div className="flex items-center w-full pb-4">
                         <div className="justify-start">
@@ -117,9 +137,9 @@ export const Editor = (props: Props) => {
                                 isEditorDisabled={!!props.schema || loading}
                             />
                         </div>
-                        <div className="flex-1 flex justify-end"></div>
                     </div>
-                    <Frame
+                    <Grid
+                        isRightPanelVisible={showRightPanel}
                         queryEditor={
                             props.schema ? (
                                 <GraphQLQueryEditor
@@ -129,7 +149,7 @@ export const Editor = (props: Props) => {
                                     mirrorRef={refForQueryEditorMirror}
                                     onChangeQuery={(query) => {
                                         setQuery(query);
-                                        localStorage.setItem(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
+                                        debouncedSave(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
                                     }}
                                     executeQuery={onSubmit}
                                     buttons={
@@ -170,10 +190,10 @@ export const Editor = (props: Props) => {
                                 loading={loading}
                                 fileExtension={Extension.JSON}
                                 readonly={false}
-                                initialValue={variableValues}
+                                initialValue={initVariableValues}
                                 onChange={(params) => {
                                     setVariableValues(params);
-                                    localStorage.setItem(LOCAL_STATE_TYPE_LAST_PARAMS, JSON.stringify(params));
+                                    debouncedSave(LOCAL_STATE_TYPE_LAST_PARAMS, JSON.stringify(params));
                                 }}
                             />
                         }
@@ -191,7 +211,7 @@ export const Editor = (props: Props) => {
                     />
                 </div>
             </div>
-            {settings.isShowDocsDrawer || settings.isShowSettingsDrawer ? (
+            {showRightPanel ? (
                 <div className="h-content-container flex justify-start w-96 bg-white">
                     {settings.isShowDocsDrawer ? (
                         <div className="p-6">

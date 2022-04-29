@@ -22,6 +22,8 @@ The main aim is for prototyping and rapid development for both experienced as we
 -   Schema builder editor: autocompletion for directives etc, leverage the `@neo4j/graphql` documentation for a better developer experience
 -   Make it more prominent that the GraphQL Toolbox uses `@neo4j/graphql` by adding links to the documentation
 -   Address the highest priority/impact bugs and pebbles listed in the Trello feedback card
+
+Stretch goals:
 -   Track basic metrics with [Segment](https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/), see more details below
 -   Highlight the keybindings, see below
 -   Investigate the requirements and effort for adding the GraphQL Toolbox to NX
