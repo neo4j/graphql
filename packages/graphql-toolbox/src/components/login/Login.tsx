@@ -61,10 +61,10 @@ export const Login = () => {
 
     return (
         <div className="grid place-items-center h-screen n-bg-neutral-90">
-            <div className="flex flex-col align-center justify-center bg-white shadow-md rounded p-8">
-                <div className="mb-3">
+            <div className="w-login flex flex-col align-center justify-center bg-white shadow-md rounded p-8">
+                <div className="mb-6 text-center">
                     <img src={Icon} alt="d.s" className="h-12 w-12 mx-auto" />
-                    <h2 className="text-3xl mx-auto">Neo4j GraphQL Toolbox</h2>
+                    <h2 className="mt-1 text-3xl">Neo4j GraphQL Toolbox</h2>
                 </div>
                 <form onSubmit={onSubmit}>
                     <div className="mb-4">
@@ -92,7 +92,7 @@ export const Login = () => {
                     <div className="mb-8">
                         <FormInput
                             id={LOGIN_URL_INPUT}
-                            label="Bolt URL"
+                            label="Connection URI"
                             name="url"
                             placeholder={DEFAULT_BOLT_URL}
                             defaultValue={DEFAULT_BOLT_URL}
