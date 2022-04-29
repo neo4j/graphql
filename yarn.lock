@@ -1897,7 +1897,7 @@ __metadata:
     randomstring: 1.2.2
     semver: 7.3.7
     ts-jest: 27.1.4
-    typescript: 4.6.3
+    typescript: 4.6.4
   peerDependencies:
     graphql: ^16.0.0
     neo4j-driver: ^4.1.0
@@ -1917,7 +1917,7 @@ __metadata:
     jsonwebtoken: ^8.5.1
     jwks-rsa: ^2.0.5
     ts-jest: 27.1.4
-    typescript: 4.6.3
+    typescript: 4.6.4
   languageName: unknown
   linkType: soft
 
@@ -1975,7 +1975,7 @@ __metadata:
     ts-loader: 9.2.9
     ts-node: 10.7.0
     tsconfig-paths-webpack-plugin: 3.5.2
-    typescript: 4.6.3
+    typescript: 4.6.4
     url-loader: 4.1.1
     uuid: ^8.3.2
     webpack: 5.72.0
@@ -2033,7 +2033,7 @@ __metadata:
     supertest: 6.2.3
     ts-jest: 27.1.4
     ts-node: 10.7.0
-    typescript: 4.6.3
+    typescript: 4.6.4
     ws: 8.5.0
   peerDependencies:
     graphql: ^16.0.0
@@ -2054,7 +2054,7 @@ __metadata:
     jest: 27.5.1
     pluralize: ^8.0.0
     ts-jest: 27.1.4
-    typescript: 4.6.3
+    typescript: 4.6.4
   peerDependencies:
     neo4j-driver: ^4.1.0
   languageName: unknown
@@ -12336,7 +12336,7 @@ __metadata:
     prettier: 2.6.2
     set-tz: 0.2.0
     ts-jest: 27.1.4
-    typescript: 4.6.3
+    typescript: 4.6.4
   languageName: unknown
   linkType: soft
 
@@ -17092,6 +17092,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:4.6.4":
+  version: 4.6.4
+  resolution: "typescript@npm:4.6.4"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: e7bfcc39cd4571a63a54e5ea21f16b8445268b9900bf55aee0e02ad981be576acc140eba24f1af5e3c1457767c96cea6d12861768fb386cf3ffb34013718631a
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@4.2.4#~builtin<compat/typescript>":
   version: 4.2.4
   resolution: "typescript@patch:typescript@npm%3A4.2.4#~builtin<compat/typescript>::version=4.2.4&hash=bda367"
@@ -17109,6 +17119,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 6bf45caf847062420592e711bc9c28bf5f9a9a7fa8245343b81493e4ededae33f1774009d1234d911422d1646a2c839f44e1a23ecb111b40a60ac2ea4c1482a8
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@4.6.4#~builtin<compat/typescript>":
+  version: 4.6.4
+  resolution: "typescript@patch:typescript@npm%3A4.6.4#~builtin<compat/typescript>::version=4.6.4&hash=bda367"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 1cb434fbc637d347be90e3a0c6cd05e33c38f941713c8786d3031faf1842c2c148ba91d2fac01e7276b0ae3249b8633f1660e32686cc7a8c6a8fd5361dc52c66
   languageName: node
   linkType: hard
 

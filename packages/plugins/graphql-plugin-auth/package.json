@@ -40,6 +40,6 @@
         "@types/node": "16.11.32",
         "jest": "27.5.1",
         "ts-jest": "27.1.4",
-        "typescript": "4.6.3"
+        "typescript": "4.6.4"
     }
 }
