@@ -1852,24 +1852,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@neo4j-ndl/base@npm:0.2.0"
-  checksum: f7fef1a0c200151f1eff17b799d23eff4b331c026459625a7a6f5e930ef7b6cdbdffcb48aba9cad05a31caecda9a014490219e9b39549c45c7a1f3ed35a2b7b8
+"@neo4j-ndl/base@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@neo4j-ndl/base@npm:0.3.0"
+  checksum: 3628fd07f2074df6a33f52eb65d61c7cc7796aa4e3cc5372f1d80b8c790ae4e2015a5e87335649cbc7321851e636363de21c8deba108bc0604f19656aec5ae45
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@neo4j-ndl/react@npm:0.2.0"
+"@neo4j-ndl/react@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@neo4j-ndl/react@npm:0.3.0"
   dependencies:
     "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.2.0
+    "@neo4j-ndl/base": ^0.3.0
     classnames: ^2.3.1
     react-dropzone: ^12.0.4
+    react-table: ^7.7.0
   peerDependencies:
     react: 17.x
-  checksum: 949194ec1ef81d4b52e1038c3f09f0456a9a4be07f8a9f613610b7e436f648c96dd8bdf314c9d5490ea73a451fabeae8f3bdb47ff53468691e325615adba4512
+  checksum: 2f89bd072ec355d0fabb42a884437e3f3b91819361e1970668328ec57149988e256e3b574c6d6512bb9739fa38a1afef29a720c14d8677b95e0f249133bb9617
   languageName: node
   linkType: hard
 
@@ -1884,7 +1885,7 @@ __metadata:
     "@neo4j/graphql": ^3.1.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 27.4.1
-    "@types/node": 16.11.31
+    "@types/node": 16.11.32
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 27.5.1
@@ -1896,7 +1897,7 @@ __metadata:
     randomstring: 1.2.2
     semver: 7.3.7
     ts-jest: 27.1.4
-    typescript: 4.6.3
+    typescript: 4.6.4
   peerDependencies:
     graphql: ^16.0.0
     neo4j-driver: ^4.1.0
@@ -1910,13 +1911,13 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 27.4.1
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.31
+    "@types/node": 16.11.32
     debug: ^4.3.3
     jest: 27.5.1
     jsonwebtoken: ^8.5.1
     jwks-rsa: ^2.0.5
     ts-jest: 27.1.4
-    typescript: 4.6.3
+    typescript: 4.6.4
   languageName: unknown
   linkType: soft
 
@@ -1924,8 +1925,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@neo4j-ndl/base": ^0.2.0
-    "@neo4j-ndl/react": ^0.2.0
+    "@neo4j-ndl/base": ^0.3.0
+    "@neo4j-ndl/react": ^0.3.0
     "@neo4j/graphql": ^3.1.0
     "@neo4j/introspector": ^1.0.1
     "@tsconfig/create-react-app": 1.0.2
@@ -1934,7 +1935,7 @@ __metadata:
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 12.2.3
     "@types/prettier": 2.6.0
-    "@types/react-dom": 18.0.2
+    "@types/react-dom": 18.0.3
     "@types/uuid": 8.3.4
     "@types/webpack": 5.28.0
     autoprefixer: 10.4.5
@@ -1946,7 +1947,7 @@ __metadata:
     crypto-js: ^4.1.1
     css-loader: 6.7.1
     file-loader: 6.2.0
-    fork-ts-checker-webpack-plugin: 7.2.7
+    fork-ts-checker-webpack-plugin: 7.2.8
     graphiql-explorer: ^0.9.0
     graphql: 16.4.0
     graphql-request: ^4.2.0
@@ -1962,7 +1963,7 @@ __metadata:
     postcss-loader: 6.2.1
     prettier: ^2.6.2
     process: 0.11.10
-    puppeteer: 13.6.0
+    puppeteer: 13.7.0
     randomstring: 1.2.2
     react: 18.1.0
     react-dom: 18.1.0
@@ -1974,7 +1975,7 @@ __metadata:
     ts-loader: 9.2.9
     ts-node: 10.7.0
     tsconfig-paths-webpack-plugin: 3.5.2
-    typescript: 4.6.3
+    typescript: 4.6.4
     url-loader: 4.1.1
     uuid: ^8.3.2
     webpack: 5.72.0
@@ -1998,7 +1999,7 @@ __metadata:
     "@types/is-uuid": 1.0.0
     "@types/jest": 27.4.1
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.31
+    "@types/node": 16.11.32
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
     "@types/supertest": 2.0.12
@@ -2032,7 +2033,7 @@ __metadata:
     supertest: 6.2.3
     ts-jest: 27.1.4
     ts-node: 10.7.0
-    typescript: 4.6.3
+    typescript: 4.6.4
     ws: 8.5.0
   peerDependencies:
     graphql: ^16.0.0
@@ -2046,14 +2047,14 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.1.0
     "@types/jest": 27.4.1
-    "@types/node": 16.11.31
+    "@types/node": 16.11.32
     "@types/pluralize": 0.0.29
     camelcase: ^6.2.0
     debug: ^4.3.2
     jest: 27.5.1
     pluralize: ^8.0.0
     ts-jest: 27.1.4
-    typescript: 4.6.3
+    typescript: 4.6.4
   peerDependencies:
     neo4j-driver: ^4.1.0
   languageName: unknown
@@ -2798,10 +2799,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.11.31":
-  version: 16.11.31
-  resolution: "@types/node@npm:16.11.31"
-  checksum: 0bad289e12c7066cd2ea7a204d051a0bb09a32a29da39850812ea14c075f9e2b4aeaab23aa23447ef9e3aa6a30173bf3d3524e37bbeeb56fb8ffa4bbd783c5db
+"@types/node@npm:16.11.32":
+  version: 16.11.32
+  resolution: "@types/node@npm:16.11.32"
+  checksum: 21f1bcd4f47a443f8a78a58b6ca3488dd9418c71b1185ba067d02222047fb194a3bfba244c32259bcb0cae4d55870b43a908b1f2832ec4aa4f31158f809625fe
   languageName: node
   linkType: hard
 
@@ -2877,12 +2878,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.0.2":
-  version: 18.0.2
-  resolution: "@types/react-dom@npm:18.0.2"
+"@types/react-dom@npm:18.0.3":
+  version: 18.0.3
+  resolution: "@types/react-dom@npm:18.0.3"
   dependencies:
     "@types/react": "*"
-  checksum: 2b0b138d8634ccfd8a86b17cb5414b122ee0cb6f650377d772f6008761a27e4c2531c08e3cab71aaa19b6893af6a508c664aa314db3ebcff5b8179173c9c9307
+  checksum: 5c87fb610e212f0942ebbf522dfca4c9dc2ac8afa4c601454415e7c42f993518868207faff7658d11974142937ba7af2f80e274c3a3f5e0e697bdd5547dbe1b0
   languageName: node
   linkType: hard
 
@@ -7889,9 +7890,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fork-ts-checker-webpack-plugin@npm:7.2.7":
-  version: 7.2.7
-  resolution: "fork-ts-checker-webpack-plugin@npm:7.2.7"
+"fork-ts-checker-webpack-plugin@npm:7.2.8":
+  version: 7.2.8
+  resolution: "fork-ts-checker-webpack-plugin@npm:7.2.8"
   dependencies:
     "@babel/code-frame": ^7.16.7
     chalk: ^4.1.2
@@ -7911,7 +7912,7 @@ __metadata:
   peerDependenciesMeta:
     vue-template-compiler:
       optional: true
-  checksum: 2aaac6f72c7326c0ac696fe0e630bdd2887e40d5bc8035862851b1abf4132c85808ddc967472a6846764b2b7d38c6f5408088c086188f149db759f2b233e51f5
+  checksum: 5be93cbdd4139198bf3bf13ff003f1102efa877cf653c406f5199e41f8b92f2f97e5f2476a7a2f4e09cac7decc9df147c0cef7513c048223805b5a65ad49359c
   languageName: node
   linkType: hard
 
@@ -9123,17 +9124,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"https-proxy-agent@npm:5.0.0":
-  version: 5.0.0
-  resolution: "https-proxy-agent@npm:5.0.0"
-  dependencies:
-    agent-base: 6
-    debug: 4
-  checksum: 165bfb090bd26d47693597661298006841ab733d0c7383a8cb2f17373387a94c903a3ac687090aa739de05e379ab6f868bae84ab4eac288ad85c328cd1ec9e53
-  languageName: node
-  linkType: hard
-
-"https-proxy-agent@npm:^5.0.0":
+"https-proxy-agent@npm:5.0.1, https-proxy-agent@npm:^5.0.0":
   version: 5.0.1
   resolution: "https-proxy-agent@npm:5.0.1"
   dependencies:
@@ -12345,7 +12336,7 @@ __metadata:
     prettier: 2.6.2
     set-tz: 0.2.0
     ts-jest: 27.1.4
-    typescript: 4.6.3
+    typescript: 4.6.4
   languageName: unknown
   linkType: soft
 
@@ -14245,15 +14236,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer@npm:13.6.0":
-  version: 13.6.0
-  resolution: "puppeteer@npm:13.6.0"
+"puppeteer@npm:13.7.0":
+  version: 13.7.0
+  resolution: "puppeteer@npm:13.7.0"
   dependencies:
     cross-fetch: 3.1.5
     debug: 4.3.4
     devtools-protocol: 0.0.981744
     extract-zip: 2.0.1
-    https-proxy-agent: 5.0.0
+    https-proxy-agent: 5.0.1
     pkg-dir: 4.2.0
     progress: 2.0.3
     proxy-from-env: 1.1.0
@@ -14261,7 +14252,7 @@ __metadata:
     tar-fs: 2.1.1
     unbzip2-stream: 1.4.3
     ws: 8.5.0
-  checksum: 5d9338189627aea2a0c9d273dd73b4cbaa4112b71e5d56792f74df7832f9661986520a10e92b9f56891eb31c03c74615423cb6c35e0619a02d847a7f91065220
+  checksum: 4062b3ac3330e70d58095c1e0c5a46cada39a3fc5608e0e0e204448a400aef4d785a3b21d9e7733b2b2dc8cf686a476abf016f05d2e9108b3753dd41d62b9d1c
   languageName: node
   linkType: hard
 
@@ -14607,6 +14598,15 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: 7be673f5e72104be01e6ab274516bdb932efd93305243170690f6560e3bd1035dd1df3d3c9ce1e0f452638a2529f43a1e77dcf0934fc8031c4783da657be13ca
+  languageName: node
+  linkType: hard
+
+"react-table@npm:^7.7.0":
+  version: 7.7.0
+  resolution: "react-table@npm:7.7.0"
+  peerDependencies:
+    react: ^16.8.3 || ^17.0.0-0
+  checksum: a679edecc76d3e51311b095528395b38ac85a1ffa371716bea01559a5fdc75af9a6abb9bb907c63190c8e77da22b11f7b05065b3a45d190d8f43cb83e4366206
   languageName: node
   linkType: hard
 
@@ -17092,6 +17092,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:4.6.4":
+  version: 4.6.4
+  resolution: "typescript@npm:4.6.4"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: e7bfcc39cd4571a63a54e5ea21f16b8445268b9900bf55aee0e02ad981be576acc140eba24f1af5e3c1457767c96cea6d12861768fb386cf3ffb34013718631a
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@4.2.4#~builtin<compat/typescript>":
   version: 4.2.4
   resolution: "typescript@patch:typescript@npm%3A4.2.4#~builtin<compat/typescript>::version=4.2.4&hash=bda367"
@@ -17109,6 +17119,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 6bf45caf847062420592e711bc9c28bf5f9a9a7fa8245343b81493e4ededae33f1774009d1234d911422d1646a2c839f44e1a23ecb111b40a60ac2ea4c1482a8
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@4.6.4#~builtin<compat/typescript>":
+  version: 4.6.4
+  resolution: "typescript@patch:typescript@npm%3A4.6.4#~builtin<compat/typescript>::version=4.6.4&hash=bda367"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 1cb434fbc637d347be90e3a0c6cd05e33c38f941713c8786d3031faf1842c2c148ba91d2fac01e7276b0ae3249b8633f1660e32686cc7a8c6a8fd5361dc52c66
   languageName: node
   linkType: hard
 
