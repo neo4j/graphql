@@ -24,7 +24,7 @@ import { generateUniqueType } from "../../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
-import neo4j from "../../integration/neo4j";
+import neo4j from "../setup/neo4j";
 
 describe("Delete Subscription", () => {
     let driver: Driver;

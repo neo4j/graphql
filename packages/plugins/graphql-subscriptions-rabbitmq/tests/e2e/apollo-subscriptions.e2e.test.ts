@@ -19,12 +19,12 @@
 
 import { Driver } from "neo4j-driver";
 import supertest, { Response } from "supertest";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
-import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
-import neo4j from "../setup/neo4j";
+// import { Neo4jGraphQL } from "../../../src/classes";
+// import { generateUniqueType } from "../../utils/graphql-types";
+import { ApolloTestServer, TestGraphQLServer } from "./setup/apollo-server";
+import { WebSocketClient, WebSocketTestClient } from "./setup/ws-client";
+import neo4j from "./setup/neo4j";
+import { Neo4jGraphQL } from "@neo4j/graphql";
 
 describe("Create Subscription", () => {
     let driver: Driver;
