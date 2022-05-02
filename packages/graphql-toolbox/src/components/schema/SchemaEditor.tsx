@@ -18,13 +18,12 @@
  */
 
 import { useCallback, useContext, useEffect, useRef, useState, Fragment } from "react";
-import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQL, GraphQLDateTime, directives } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import {
+    DirectiveLocation,
+    GraphQLDirective,
     GraphQLError,
-    GraphQLFloat,
-    GraphQLInt,
-    GraphQLNonNull,
     GraphQLObjectType,
     GraphQLSchema,
     GraphQLString,
@@ -189,40 +188,28 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
             query: new GraphQLObjectType({
                 name: "Query",
                 fields: {
-                    user: {
+                    _ignore: {
                         type: GraphQLString,
                         resolve: () => {
-                            return "hello";
+                            return "Hello from GraphQL";
                         },
                     },
                 },
             }),
-            types: [
-                new GraphQLObjectType({
-                    name: "Point",
-                    fields: {
-                        longitude: {
-                            type: new GraphQLNonNull(GraphQLFloat),
-                            resolve: (source) => source.point.x,
-                        },
-                        latitude: {
-                            type: new GraphQLNonNull(GraphQLFloat),
-                            resolve: (source) => source.point.y,
-                        },
-                        height: {
-                            type: GraphQLFloat,
-                            resolve: (source) => source.point.z,
-                        },
-                        crs: {
-                            type: new GraphQLNonNull(GraphQLString),
-                        },
-                        srid: {
-                            type: new GraphQLNonNull(GraphQLInt),
-                            resolve: (source) => source.point.srid,
-                        },
-                    },
+            directives: [
+                ...Object.values(directives),
+                new GraphQLDirective({
+                    name: "test",
+                    description: "Use for bla",
+                    locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION],
+                }),
+                new GraphQLDirective({
+                    name: "redio",
+                    description: "Use for bli",
+                    locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION],
                 }),
             ],
+            types: [GraphQLDateTime],
         });
 
         const element = ref.current as HTMLTextAreaElement;
@@ -232,17 +219,6 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                 completeSingle: true,
                 container: element.parentElement,
             });
-
-            // const options = {
-            //     hint: function () {
-            //         return {
-            //             list: ["test", "@id"],
-            //             from: mirror.getDoc().getCursor(),
-            //             to: mirror.getDoc().getCursor(),
-            //         };
-            //     },
-            // };
-            // mirror.showHint(options);
         };
 
         const mirror = CodeMirror.fromTextArea(ref.current, {
@@ -266,7 +242,7 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
             },
             hintOptions: {
                 schema: testSchema,
-                closeOnUnfocus: false,
+                closeOnUnfocus: true,
                 completeSingle: false,
                 container: element.parentElement,
             },
@@ -435,7 +411,9 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                             ) : (
                                 <Fragment>
                                     <span className="block">{error.message}</span>
-                                    <span className="block">Locations: {JSON.stringify(error.locations)}</span>
+                                    {error.locations ? (
+                                        <span className="block">Locations: {JSON.stringify(error.locations)}</span>
+                                    ) : null}
                                 </Fragment>
                             )}
                         </div>
