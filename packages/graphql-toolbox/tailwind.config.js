@@ -12,6 +12,7 @@ module.exports = {
       colors: {
         draculaDark: "#282A36",
         contentBlue: "#F6F7FA",
+        primaryBlue: "#006FD6"
       },
     },
   },

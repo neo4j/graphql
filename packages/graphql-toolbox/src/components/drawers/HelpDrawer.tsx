@@ -25,15 +25,54 @@ import ArrowLeft from "../../assets/arrow-left.svg";
 import { Screen, ScreenContext } from "../../contexts/screen";
 import { DocExplorer } from "../editor/docexplorer";
 
-interface Props {
-    onClickClose: () => void;
-    schema?: GraphQLSchema;
-}
+const LibraryDocShortcuts = (): JSX.Element => {
+    const libDocumentationLinks = [
+        {
+            link: "https://neo4j.com/docs/graphql-manual/current/queries/",
+            label: "Example Queries",
+        },
+        {
+            link: "https://neo4j.com/docs/graphql-manual/current/directives/",
+            label: "Directives",
+        },
+        {
+            link: "https://neo4j.com/docs/graphql-manual/current/type-definitions/",
+            label: "Type Definitions",
+        },
+        {
+            link: "https://neo4j.com/docs/graphql-manual/current/filtering/",
+            label: "Filtering",
+        },
+    ];
+
+    return (
+        <div className="pb-6 grid grid-cols-2 gap-1">
+            {Object.values(libDocumentationLinks).map((res) => (
+                <a key={res.link} href={res.link} target="_blank">
+                    <div className="background-dark-help-card p-4 rounded-2xl cursor-pointer">
+                        <span className="font-bold">{res.label}</span>
+                    </div>
+                </a>
+            ))}
+        </div>
+    );
+};
+
+const SchemaDocShortcuts = ({ setShowDocs }: { setShowDocs: Function }): JSX.Element => {
+    return (
+        <div className="pb-6">
+            <div className="background-help-card p-6 rounded-2xl cursor-pointer" onClick={() => setShowDocs(true)}>
+                <span className="h6">Schema documentation</span>
+                <p>Documentation of your current schema</p>
+            </div>
+        </div>
+    );
+};
 
 const Resources = (): JSX.Element => {
     return (
-        <div className="pt-6">
-            <span className="h6">Resources</span>
+        <React.Fragment>
+            <span className="h6 code">@neo4j/graphql</span> <span className="h6">library</span>
             <ul className="pt-4">
                 <li className="pb-4 cursor-pointer">
                     <a
@@ -42,29 +81,7 @@ const Resources = (): JSX.Element => {
                         target="_blank"
                     >
                         <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="DocumentTextIcon" />
-                        <p className="p-0 m-0">
-                            <span className="code">@neo4j/graphql</span> library - Documentation
-                        </p>
-                    </a>
-                </li>
-                <li className="pb-4 cursor-pointer">
-                    <a
-                        className="flex justify-start items-center"
-                        href="https://neo4j.com/graphacademy/training-graphql-apis/enrollment/"
-                        target="_blank"
-                    >
-                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="AcademicCapIcon" />
-                        <p className="p-0 m-0">Neo4j Graph Academy</p>
-                    </a>
-                </li>
-                <li className="pb-4 cursor-pointer">
-                    <a
-                        className="flex justify-start items-center"
-                        href="https://discord.com/channels/787399249741479977/818578492723036210"
-                        target="_blank"
-                    >
-                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="ChatIcon" />
-                        <p className="p-0 m-0">Community</p>
+                        <p className="p-0 m-0">Documentation</p>
                     </a>
                 </li>
                 <li className="pb-4 cursor-pointer">
@@ -88,7 +105,30 @@ const Resources = (): JSX.Element => {
                     </a>
                 </li>
             </ul>
-        </div>
+            <span className="h6">Resources</span>
+            <ul className="pt-4 pb-6">
+                <li className="pb-4 cursor-pointer">
+                    <a
+                        className="flex justify-start items-center"
+                        href="https://neo4j.com/graphacademy/training-graphql-apis/enrollment/"
+                        target="_blank"
+                    >
+                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="AcademicCapIcon" />
+                        <p className="p-0 m-0">Neo4j Graph Academy</p>
+                    </a>
+                </li>
+                <li className="pb-4 cursor-pointer">
+                    <a
+                        className="flex justify-start items-center"
+                        href="https://discord.com/channels/787399249741479977/818578492723036210"
+                        target="_blank"
+                    >
+                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="ChatIcon" />
+                        <p className="p-0 m-0">Community</p>
+                    </a>
+                </li>
+            </ul>
+        </React.Fragment>
     );
 };
 
@@ -114,6 +154,11 @@ const DocExplorerWrap = ({ schema, onClickClose, onClickBack }): JSX.Element => 
     );
 };
 
+interface Props {
+    onClickClose: () => void;
+    schema?: GraphQLSchema;
+}
+
 export const HelpDrawer = ({ onClickClose, schema }: Props) => {
     const screen = useContext(ScreenContext);
     const [showDocs, setShowDocs] = useState(false);
@@ -132,7 +177,10 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
             ) : null}
             <div>
                 {screen.view === Screen.TYPEDEFS ? (
-                    <Resources />
+                    <React.Fragment>
+                        <LibraryDocShortcuts />
+                        <Resources />
+                    </React.Fragment>
                 ) : (
                     <React.Fragment>
                         {showDocs ? (
@@ -143,21 +191,23 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
                             />
                         ) : (
                             <React.Fragment>
-                                <div className="pt-6">
-                                    <div
-                                        className="background-help-card p-6 rounded-2xl cursor-pointer"
-                                        onClick={() => setShowDocs(true)}
-                                    >
-                                        <span className="h6">Schema documentation</span>
-                                        <p>Documentation of your current schema</p>
-                                    </div>
-                                </div>
-
+                                <SchemaDocShortcuts setShowDocs={setShowDocs} />
                                 <Resources />
                             </React.Fragment>
                         )}
                     </React.Fragment>
                 )}
+
+                <div className="absolute bottom-4 right-28 text-primaryBlue font-bold">
+                    <a
+                        className="flex justify-start items-center"
+                        href="https://neo4j-graphql.canny.io/neo4j-graphql-toolbox"
+                        target="_blank"
+                    >
+                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="ChatIcon" />
+                        <p className="p-0 m-0">Send feedback</p>
+                    </a>
+                </div>
             </div>
         </div>
     );
