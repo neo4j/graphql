@@ -45,6 +45,7 @@ import { HelpDrawer } from "../Drawers/HelpDrawer";
 import { Storage } from "../../utils/storage";
 
 const DEBOUNCE_TIMEOUT = 500;
+
 export interface Props {
     schema?: GraphQLSchema;
 }
@@ -139,6 +140,7 @@ export const Editor = (props: Props) => {
                             />
                         </div>
                     </div>
+
                     <Grid
                         isRightPanelVisible={showRightPanel}
                         queryEditor={
