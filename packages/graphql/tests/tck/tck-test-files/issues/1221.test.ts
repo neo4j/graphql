@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
-    test("should apply where filter for deep relations, two relations", async () => {
+    test("should apply where filter for deep relations, two relations deep", async () => {
         typeDefs = gql`
             type Series {
                 id: ID! @id(autogenerate: false)
@@ -149,7 +149,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         `);
     });
 
-    test("should apply where filter for deep relations, three relations", async () => {
+    test("should apply where filter for deep relations, three relations deep", async () => {
         typeDefs = gql`
             type Main {
                 id: ID! @id(autogenerate: false)
