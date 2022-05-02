@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Integer } from "neo4j-driver";
+import { Integer, int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
 import { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
@@ -138,7 +138,7 @@ function translateRead({
             const offset = cursorToOffset(afterInput) + 1;
             if (offset && offset !== 0) {
                 offsetStr = `SKIP $${varName}_offset`;
-                cypherParams[`${varName}_offset`] = offset;
+                cypherParams[`${varName}_offset`] = int(offset);
             }
         }
 
@@ -187,23 +187,45 @@ function translateRead({
     }
 
     if (isRootConnectionField) {
-        returnStrs.push(`WITH COLLECT({ node: ${varName} ${projStr} }) as edges`);
-        returnStrs.push(`RETURN { edges: edges, totalCount: size(edges) } as ${varName}`);
+        returnStrs.push(`WITH COLLECT({ node: ${varName} ${projStr} }) as edges, totalCount`);
+        returnStrs.push(`RETURN { edges: edges, totalCount: totalCount } as ${varName}`);
     } else {
         returnStrs.push(`RETURN ${varName} ${projStr} as ${varName}`);
     }
 
-    const cypher = [
-        matchAndWhereStr,
-        authStr,
-        ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
-        ...connectionStrs,
-        ...interfaceStrs,
-        ...returnStrs,
-        ...(sortStr ? [sortStr] : []),
-        offsetStr,
-        limitStr,
-    ];
+    let cypher: string[] = [];
+
+    if (isRootConnectionField) {
+        cypher = [
+            "CALL {",
+            matchAndWhereStr,
+            authStr,
+            ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
+            `WITH COLLECT(${varName}) as edges`,
+            "WITH edges, size(edges) as totalCount",
+            `UNWIND edges as ${varName}`,
+            `RETURN ${varName}, totalCount`,
+            ...(sortStr ? [sortStr] : []),
+            ...(offsetStr ? [offsetStr] : []),
+            ...(limitStr ? [limitStr] : []),
+            "}",
+            ...connectionStrs,
+            ...interfaceStrs,
+            ...returnStrs,
+        ];
+    } else {
+        cypher = [
+            matchAndWhereStr,
+            authStr,
+            ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
+            ...connectionStrs,
+            ...interfaceStrs,
+            ...returnStrs,
+            ...(sortStr ? [sortStr] : []),
+            offsetStr,
+            limitStr,
+        ];
+    }
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }
