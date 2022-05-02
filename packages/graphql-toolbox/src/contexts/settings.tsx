@@ -36,19 +36,19 @@ export function SettingsProvider(props: React.PropsWithChildren<any>) {
         isShowSettingsDrawer: false,
         isShowHelpDrawer: false,
         setIsShowSettingsDrawer: (isShowSettingsDrawer: boolean) => {
-            setValue((v) => ({
-                ...v,
+            setValue((values) => ({
+                ...values,
                 isShowSettingsDrawer,
-                ...(isShowSettingsDrawer ? { isShowHelpDrawer: false } : { isShowHelpDrawer: v.isShowHelpDrawer }),
+                ...(isShowSettingsDrawer ? { isShowHelpDrawer: false } : { isShowHelpDrawer: values.isShowHelpDrawer }),
             }));
         },
         setIsShowHelpDrawer: (isShowHelpDrawer: boolean) => {
-            setValue((v) => ({
-                ...v,
+            setValue((values) => ({
+                ...values,
                 isShowHelpDrawer,
                 ...(isShowHelpDrawer
                     ? { isShowSettingsDrawer: false }
-                    : { isShowSettingsDrawer: v.isShowSettingsDrawer }),
+                    : { isShowSettingsDrawer: values.isShowSettingsDrawer }),
             }));
         },
     });

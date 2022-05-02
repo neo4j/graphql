@@ -18,6 +18,7 @@
  */
 
 import React, { Dispatch, useState, SetStateAction } from "react";
+import { Storage } from "../utils/storage";
 import { LOCAL_STATE_EDITOR_THEME } from "../constants";
 
 export enum Theme {
@@ -37,7 +38,7 @@ export function ThemeProvider(props: React.PropsWithChildren<any>) {
     let setValue: Dispatch<SetStateAction<State>>;
 
     const loadEditorTheme = () => {
-        const storedTheme = localStorage.getItem(LOCAL_STATE_EDITOR_THEME);
+        const storedTheme = Storage.retrieve(LOCAL_STATE_EDITOR_THEME);
         if (storedTheme) {
             return storedTheme === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
         }
@@ -47,9 +48,9 @@ export function ThemeProvider(props: React.PropsWithChildren<any>) {
 
     [value, setValue] = useState<State>({
         theme: loadEditorTheme(),
-        setTheme: (t: Theme) => {
-            setValue((v) => ({ ...v, theme: t }));
-            localStorage.setItem(LOCAL_STATE_EDITOR_THEME, t.toString());
+        setTheme: (theme: Theme) => {
+            setValue((values) => ({ ...values, theme }));
+            Storage.store(LOCAL_STATE_EDITOR_THEME, theme.toString());
         },
     });
 

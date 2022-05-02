@@ -76,6 +76,7 @@ export const Login = () => {
                             required={true}
                             type="text"
                             disabled={loading}
+                            autoComplete="username"
                         ></FormInput>
                     </div>
                     <div className="mb-6">
@@ -87,6 +88,7 @@ export const Login = () => {
                             required={true}
                             type="password"
                             disabled={loading}
+                            autoComplete="current-password"
                         ></FormInput>
                     </div>
                     <div className="mb-8">

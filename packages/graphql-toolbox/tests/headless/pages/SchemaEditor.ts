@@ -27,13 +27,12 @@ import { Screen } from "./Screen";
 export class SchemaEditor extends Screen {
     public async setTypeDefs(typeDefs: string) {
         await this.page.waitForSelector(`#${SCHEMA_EDITOR_INPUT}`);
-        await this.page.$eval(
-            `#${SCHEMA_EDITOR_INPUT}`,
-            (el, injected) => {
-                // @ts-ignore - Find a way to type this
-                el.value = injected;
+        await this.page.evaluate(
+            ({ id, typeDefs }) => {
+                // @ts-ignore -Find a better solution
+                document[`${id}`].setValue(typeDefs);
             },
-            typeDefs
+            { typeDefs, id: SCHEMA_EDITOR_INPUT }
         );
     }
 

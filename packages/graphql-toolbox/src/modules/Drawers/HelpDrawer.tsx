@@ -23,7 +23,7 @@ import React, { useContext, useState } from "react";
 // @ts-ignore - SVG import
 import ArrowLeft from "../../assets/arrow-left.svg";
 import { Screen, ScreenContext } from "../../contexts/screen";
-import { DocExplorer } from "../editor/docexplorer";
+import { DocExplorer } from "../EditorView/docexplorer";
 
 const LibraryDocShortcuts = (): JSX.Element => {
     const libDocumentationLinks = [

@@ -24,6 +24,7 @@ export interface Props {
     type: string;
     placeholder?: string;
     defaultValue?: string;
+    autoComplete?: string;
     required: boolean;
     disabled?: boolean;
 }
@@ -41,6 +42,7 @@ export const FormInput = (props: Props) => {
                 required={true}
                 defaultValue={props.defaultValue}
                 disabled={props.disabled}
+                autoComplete={props.autoComplete || ""}
             />
         </div>
     );

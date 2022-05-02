@@ -23,6 +23,7 @@ import { encrypt, decrypt } from "../utils/utils";
 import { LOCAL_STATE_LOGIN, VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
 import { resolveNeo4jDesktopLoginPayload } from "./utils";
 import { LoginPayload } from "./types";
+import { Storage } from "../utils/storage";
 
 interface LoginOptions {
     username: string;
@@ -49,9 +50,9 @@ export function AuthProvider(props: any) {
     const checkConnectivity = async (driver: neo4j.Driver, setValue: any) => {
         try {
             await driver.verifyConnectivity();
-            setValue((v) => ({ ...v, isConnected: true }));
+            setValue((values) => ({ ...values, isConnected: true }));
         } catch (err) {
-            setValue((v) => ({ ...v, isConnected: false }));
+            setValue((values) => ({ ...values, isConnected: false }));
         }
     };
 
@@ -61,7 +62,7 @@ export function AuthProvider(props: any) {
             loginPayload = loginPayloadFromDesktop;
             setValue((v) => ({ ...v, isNeo4jDesktop: true }));
         } else {
-            const storedEncryptedPayload = localStorage.getItem(LOCAL_STATE_LOGIN);
+            const storedEncryptedPayload = Storage.retrieve(LOCAL_STATE_LOGIN);
             if (storedEncryptedPayload && typeof storedEncryptedPayload === "string") {
                 const { encryptedPayload, hashKey } = JSON.parse(storedEncryptedPayload as string);
                 loginPayload = decrypt(encryptedPayload, hashKey) as unknown as LoginPayload;
@@ -89,7 +90,7 @@ export function AuthProvider(props: any) {
                 password: options.password,
                 url: options.url,
             } as LoginPayload);
-            localStorage.setItem(LOCAL_STATE_LOGIN, JSON.stringify(encodedPayload));
+            Storage.storeJSON(LOCAL_STATE_LOGIN, encodedPayload);
 
             intervalId = window.setInterval(() => {
                 checkConnectivity(driver, setValue);
@@ -98,7 +99,7 @@ export function AuthProvider(props: any) {
             setValue((v) => ({ ...v, driver, connectUrl: options.url, isConnected: true }));
         },
         logout: () => {
-            localStorage.removeItem(LOCAL_STATE_LOGIN);
+            Storage.remove(LOCAL_STATE_LOGIN);
             if (intervalId) {
                 clearInterval(intervalId);
             }
