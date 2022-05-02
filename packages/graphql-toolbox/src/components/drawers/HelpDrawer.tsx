@@ -28,6 +28,10 @@ import { DocExplorer } from "../editor/docexplorer";
 const LibraryDocShortcuts = (): JSX.Element => {
     const libDocumentationLinks = [
         {
+            link: "https://neo4j.com/docs/graphql-manual/current/type-definitions/",
+            label: "Type Definitions",
+        },
+        {
             link: "https://neo4j.com/docs/graphql-manual/current/queries/",
             label: "Example Queries",
         },
@@ -36,17 +40,13 @@ const LibraryDocShortcuts = (): JSX.Element => {
             label: "Directives",
         },
         {
-            link: "https://neo4j.com/docs/graphql-manual/current/type-definitions/",
-            label: "Type Definitions",
-        },
-        {
             link: "https://neo4j.com/docs/graphql-manual/current/filtering/",
             label: "Filtering",
         },
     ];
 
     return (
-        <div className="pb-6 grid grid-cols-2 gap-1">
+        <div className="pb-8 grid grid-cols-2 gap-2">
             {Object.values(libDocumentationLinks).map((res) => (
                 <a key={res.link} href={res.link} target="_blank">
                     <div className="background-dark-help-card p-4 rounded-2xl cursor-pointer">
@@ -60,7 +60,7 @@ const LibraryDocShortcuts = (): JSX.Element => {
 
 const SchemaDocShortcuts = ({ setShowDocs }: { setShowDocs: Function }): JSX.Element => {
     return (
-        <div className="pb-6">
+        <div className="pb-8">
             <div className="background-help-card p-6 rounded-2xl cursor-pointer" onClick={() => setShowDocs(true)}>
                 <span className="h6">Schema documentation</span>
                 <p>Documentation of your current schema</p>
@@ -74,7 +74,7 @@ const Resources = (): JSX.Element => {
         <React.Fragment>
             <span className="h6 code">@neo4j/graphql</span> <span className="h6">library</span>
             <ul className="pt-4">
-                <li className="pb-4 cursor-pointer">
+                <li className="pb-6 cursor-pointer">
                     <a
                         className="flex justify-start items-center"
                         href="https://neo4j.com/docs/graphql-manual/current/"
@@ -84,7 +84,7 @@ const Resources = (): JSX.Element => {
                         <p className="p-0 m-0">Documentation</p>
                     </a>
                 </li>
-                <li className="pb-4 cursor-pointer">
+                <li className="pb-6 cursor-pointer">
                     <a
                         className="flex justify-start items-center"
                         href="https://github.com/neo4j/graphql"
@@ -94,7 +94,7 @@ const Resources = (): JSX.Element => {
                         <p className="p-0 m-0">Github - Repository</p>
                     </a>
                 </li>
-                <li className="pb-4 cursor-pointer">
+                <li className="pb-6 cursor-pointer">
                     <a
                         className="flex justify-start items-center"
                         href="https://github.com/neo4j/graphql/issues"
@@ -107,7 +107,7 @@ const Resources = (): JSX.Element => {
             </ul>
             <span className="h6">Resources</span>
             <ul className="pt-4 pb-6">
-                <li className="pb-4 cursor-pointer">
+                <li className="pb-6 cursor-pointer">
                     <a
                         className="flex justify-start items-center"
                         href="https://neo4j.com/graphacademy/training-graphql-apis/enrollment/"
@@ -117,7 +117,7 @@ const Resources = (): JSX.Element => {
                         <p className="p-0 m-0">Neo4j Graph Academy</p>
                     </a>
                 </li>
-                <li className="pb-4 cursor-pointer">
+                <li className="pb-6 cursor-pointer">
                     <a
                         className="flex justify-start items-center"
                         href="https://discord.com/channels/787399249741479977/818578492723036210"

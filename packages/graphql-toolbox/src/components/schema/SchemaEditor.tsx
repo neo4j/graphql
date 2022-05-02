@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState, Fragment } from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import {
-    graphql,
+    GraphQLError,
     GraphQLFloat,
     GraphQLInt,
     GraphQLNonNull,
@@ -67,7 +67,7 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
     const settings = useContext(SettingsContext);
     const ref = useRef<HTMLTextAreaElement | null>(null);
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
-    const [error, setError] = useState("");
+    const [error, setError] = useState<string | GraphQLError>("");
     const [loading, setLoading] = useState(false);
     const [isDebugChecked, setIsDebugChecked] = useState<string | null>(localStorage.getItem(LOCAL_STATE_DEBUG));
     const [isCheckConstraintChecked, setIsCheckConstraintChecked] = useState<string | null>(
@@ -148,8 +148,7 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
 
                 onChange(schema);
             } catch (error) {
-                const msg = (error as Error).message;
-                setError(msg);
+                setError(error as GraphQLError);
             } finally {
                 setLoading(false);
             }
@@ -168,7 +167,7 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
 
             mirror?.setValue(typeDefs);
         } catch (error) {
-            const msg = (error as Error).message;
+            const msg = (error as GraphQLError).message;
             setError(msg);
         } finally {
             setLoading(false);
@@ -316,30 +315,59 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                 <div className="p-6">
                     <span className="h5">Schema settings</span>
                     <div className="pt-4">
-                        <Checkbox
-                            className="m-0"
-                            label="Enable Regex"
-                            checked={isEnableDebugChecked === "true"}
-                            onChange={onChangeEnableRegexCheckbox}
-                        />
-                        <Checkbox
-                            className="m-0"
-                            label="Enable Debug"
-                            checked={isDebugChecked === "true"}
-                            onChange={onChangeDebugCheckbox}
-                        />
-                        <Checkbox
-                            className="m-0"
-                            label="Check Constraint"
-                            checked={isCheckConstraintChecked === "true"}
-                            onChange={onChangeCheckConstraintCheckbox}
-                        />
-                        <Checkbox
-                            className="m-0"
-                            label="Create Constraint"
-                            checked={isCreateConstraintChecked === "true"}
-                            onChange={onChangeCreateConstraintCheckbox}
-                        />
+                        <div className="mb-1">
+                            <Checkbox
+                                className="m-0"
+                                label="Enable Regex"
+                                checked={isEnableDebugChecked === "true"}
+                                onChange={onChangeEnableRegexCheckbox}
+                            />
+                        </div>
+                        <div className="mb-1 flex items-baseline">
+                            <Checkbox
+                                className="m-0"
+                                label="Enable Debug"
+                                checked={isDebugChecked === "true"}
+                                onChange={onChangeDebugCheckbox}
+                            />
+                            <ProTooltip
+                                tooltipText={
+                                    <span>
+                                        Enable "verbose" logging. See{" "}
+                                        <a
+                                            className="underline"
+                                            href="https://github.com/debug-js/debug#browser-support"
+                                            target="_blank"
+                                        >
+                                            here
+                                        </a>
+                                    </span>
+                                }
+                                arrowPositionLeft={true}
+                                blockVisibility={false}
+                                width={220}
+                                left={28}
+                                top={-13}
+                            >
+                                <HeroIcon className="ml-1 h-4 w-4" iconName="QuestionMarkCircleIcon" type="outline" />
+                            </ProTooltip>
+                        </div>
+                        <div className="mb-1">
+                            <Checkbox
+                                className="m-0"
+                                label="Check Constraint"
+                                checked={isCheckConstraintChecked === "true"}
+                                onChange={onChangeCheckConstraintCheckbox}
+                            />
+                        </div>
+                        <div className="mb-1">
+                            <Checkbox
+                                className="m-0"
+                                label="Create Constraint"
+                                checked={isCreateConstraintChecked === "true"}
+                                onChange={onChangeCreateConstraintCheckbox}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -399,11 +427,17 @@ export const SchemaEditor = ({ hasSchema, onChange }: Props) => {
                     </div>
                     {error && (
                         <div
-                            className="mt-5 mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                            className="mt-1 mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative"
                             role="alert"
                         >
-                            <strong className="font-bold">Holy smokes! </strong>
-                            <span className="block sm:inline">{error}</span>
+                            {typeof error === "string" ? (
+                                <span className="block">{error}</span>
+                            ) : (
+                                <Fragment>
+                                    <span className="block">{error.message}</span>
+                                    <span className="block">Locations: {JSON.stringify(error.locations)}</span>
+                                </Fragment>
+                            )}
                         </div>
                     )}
                     <div style={{ width: "100%", height: "100%" }}>
