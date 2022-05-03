@@ -33,8 +33,8 @@ import {
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
-import { AppSettings } from "../Drawers/AppSettings";
-import { HelpDrawer } from "../Drawers/HelpDrawer";
+import { AppSettings } from "../AppSettings/AppSettings";
+import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { Storage } from "../../utils/storage";
 import { SchemaSettings } from "./SchemaSettings";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";

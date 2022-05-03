@@ -19,44 +19,45 @@
 
 import { GraphQLSchema } from "graphql";
 import { HeroIcon } from "@neo4j-ndl/react";
-import React, { useContext, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 // @ts-ignore - SVG import
 import ArrowLeft from "../../assets/arrow-left.svg";
 import { Screen, ScreenContext } from "../../contexts/screen";
 import { DocExplorer } from "../EditorView/docexplorer";
+import { Links, ResourceListBlock } from "./ResourceListBlock";
 
-const LibraryDocShortcuts = (): JSX.Element => {
-    const libDocumentationLinks = [
-        {
-            link: "https://neo4j.com/docs/graphql-manual/current/type-definitions/",
-            label: "Type Definitions",
-        },
-        {
-            link: "https://neo4j.com/docs/graphql-manual/current/queries/",
-            label: "Example Queries",
-        },
-        {
-            link: "https://neo4j.com/docs/graphql-manual/current/directives/",
-            label: "Directives",
-        },
-        {
-            link: "https://neo4j.com/docs/graphql-manual/current/filtering/",
-            label: "Filtering",
-        },
-    ];
+// const LibraryDocShortcuts = (): JSX.Element => {
+//     const libDocumentationLinks = [
+//         {
+//             link: "https://neo4j.com/docs/graphql-manual/current/type-definitions/",
+//             label: "Type Definitions",
+//         },
+//         {
+//             link: "https://neo4j.com/docs/graphql-manual/current/queries/",
+//             label: "Example Queries",
+//         },
+//         {
+//             link: "https://neo4j.com/docs/graphql-manual/current/directives/",
+//             label: "Directives",
+//         },
+//         {
+//             link: "https://neo4j.com/docs/graphql-manual/current/filtering/",
+//             label: "Filtering",
+//         },
+//     ];
 
-    return (
-        <div className="pb-8 grid grid-cols-2 gap-2">
-            {Object.values(libDocumentationLinks).map((res) => (
-                <a key={res.link} href={res.link} target="_blank">
-                    <div className="background-dark-help-card p-4 rounded-2xl cursor-pointer">
-                        <span className="font-bold">{res.label}</span>
-                    </div>
-                </a>
-            ))}
-        </div>
-    );
-};
+//     return (
+//         <div className="pb-8 grid grid-cols-2 gap-2">
+//             {Object.values(libDocumentationLinks).map((res) => (
+//                 <a key={res.link} href={res.link} target="_blank">
+//                     <div className="background-dark-help-card p-4 rounded-2xl cursor-pointer">
+//                         <span className="font-bold">{res.label}</span>
+//                     </div>
+//                 </a>
+//             ))}
+//         </div>
+//     );
+// };
 
 const SchemaDocShortcuts = ({ setShowDocs }: { setShowDocs: Function }): JSX.Element => {
     return (
@@ -69,66 +70,66 @@ const SchemaDocShortcuts = ({ setShowDocs }: { setShowDocs: Function }): JSX.Ele
     );
 };
 
-const Resources = (): JSX.Element => {
+const Reses = () => {
+    const linksResources: Links[] = [
+        {
+            href: "https://neo4j.com/docs/graphql-manual/current/",
+            iconName: "DocumentTextIcon",
+            label: "Documentation",
+        },
+        {
+            href: "https://discord.com/channels/787399249741479977/818578492723036210",
+            iconName: "ChatAlt2Icon",
+            label: "Community",
+        },
+        {
+            href: "https://neo4j.com/graphacademy/training-graphql-apis/enrollment/",
+            iconName: "AcademicCapIcon",
+            label: "Neo4j Graph Academy",
+        },
+    ];
+    const linksGithub: Links[] = [
+        {
+            href: "https://github.com/neo4j/graphql",
+            iconName: "DocumentTextIcon",
+            label: "Github repository",
+        },
+        {
+            href: "https://github.com/neo4j/graphql/issues",
+            iconName: "SpeakerphoneIcon",
+            label: "Issue tracker",
+        },
+    ];
+    const linksDocumentation: Links[] = [
+        {
+            href: "https://neo4j.com/docs/graphql-manual/current/type-definitions/",
+            iconName: "DocumentTextIcon",
+            label: "Type definitions",
+        },
+        {
+            href: "https://neo4j.com/docs/graphql-manual/current/queries/",
+            iconName: "VariableIcon",
+            label: "Example queries",
+        },
+        {
+            href: "https://neo4j.com/docs/graphql-manual/current/directives/",
+            iconName: "AtSymbolIcon",
+            label: "Directives",
+        },
+        {
+            href: "https://neo4j.com/docs/graphql-manual/current/filtering/",
+            iconName: "FilterIcon",
+            label: "Filtering",
+        },
+    ];
     return (
-        <React.Fragment>
-            <span className="h6 code">@neo4j/graphql</span> <span className="h6">library</span>
-            <ul className="pt-4">
-                <li className="pb-6 cursor-pointer">
-                    <a
-                        className="flex justify-start items-center"
-                        href="https://neo4j.com/docs/graphql-manual/current/"
-                        target="_blank"
-                    >
-                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="DocumentTextIcon" />
-                        <p className="p-0 m-0">Documentation</p>
-                    </a>
-                </li>
-                <li className="pb-6 cursor-pointer">
-                    <a
-                        className="flex justify-start items-center"
-                        href="https://github.com/neo4j/graphql"
-                        target="_blank"
-                    >
-                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="DocumentTextIcon" />
-                        <p className="p-0 m-0">Github - Repository</p>
-                    </a>
-                </li>
-                <li className="pb-6 cursor-pointer">
-                    <a
-                        className="flex justify-start items-center"
-                        href="https://github.com/neo4j/graphql/issues"
-                        target="_blank"
-                    >
-                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="DocumentTextIcon" />
-                        <p className="p-0 m-0">Github - Issue tracker</p>
-                    </a>
-                </li>
-            </ul>
-            <span className="h6">Resources</span>
-            <ul className="pt-4 pb-6">
-                <li className="pb-6 cursor-pointer">
-                    <a
-                        className="flex justify-start items-center"
-                        href="https://neo4j.com/graphacademy/training-graphql-apis/enrollment/"
-                        target="_blank"
-                    >
-                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="AcademicCapIcon" />
-                        <p className="p-0 m-0">Neo4j Graph Academy</p>
-                    </a>
-                </li>
-                <li className="pb-6 cursor-pointer">
-                    <a
-                        className="flex justify-start items-center"
-                        href="https://discord.com/channels/787399249741479977/818578492723036210"
-                        target="_blank"
-                    >
-                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="ChatIcon" />
-                        <p className="p-0 m-0">Community</p>
-                    </a>
-                </li>
-            </ul>
-        </React.Fragment>
+        <Fragment>
+            <ResourceListBlock listBlockTitle="Documentation" links={linksDocumentation} />
+            <hr className="mb-3" />
+            <ResourceListBlock listBlockTitle="Github" links={linksGithub} />
+            <hr className="mb-3" />
+            <ResourceListBlock listBlockTitle="Resources" links={linksResources} />
+        </Fragment>
     );
 };
 
@@ -178,8 +179,7 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
             <div>
                 {screen.view === Screen.TYPEDEFS ? (
                     <React.Fragment>
-                        <LibraryDocShortcuts />
-                        <Resources />
+                        <Reses />
                     </React.Fragment>
                 ) : (
                     <React.Fragment>
@@ -192,7 +192,7 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
                         ) : (
                             <React.Fragment>
                                 <SchemaDocShortcuts setShowDocs={setShowDocs} />
-                                <Resources />
+                                <Reses />
                             </React.Fragment>
                         )}
                     </React.Fragment>

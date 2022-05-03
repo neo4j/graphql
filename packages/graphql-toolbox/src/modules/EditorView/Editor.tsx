@@ -39,9 +39,9 @@ import { Extension } from "../../components/Filename";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
 import { Theme, ThemeContext } from "../../contexts/theme";
-import { AppSettings } from "../Drawers/AppSettings";
+import { AppSettings } from "../AppSettings/AppSettings";
 import { ProTooltip } from "../../components/ProTooltip";
-import { HelpDrawer } from "../Drawers/HelpDrawer";
+import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { Storage } from "../../utils/storage";
 
 const DEBOUNCE_TIMEOUT = 500;
