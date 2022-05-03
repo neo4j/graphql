@@ -70,7 +70,7 @@ const SchemaDocShortcuts = ({ setShowDocs }: { setShowDocs: Function }): JSX.Ele
     );
 };
 
-const Reses = () => {
+const Resources = ({ showSchemaView }: { showSchemaView: boolean }): JSX.Element => {
     const linksResources: Links[] = [
         {
             href: "https://neo4j.com/docs/graphql-manual/current/",
@@ -122,13 +122,18 @@ const Reses = () => {
             label: "Filtering",
         },
     ];
+    const linksRes = showSchemaView ? linksResources.slice(1, 2) : linksResources;
     return (
         <Fragment>
-            <ResourceListBlock listBlockTitle="Documentation" links={linksDocumentation} />
-            <hr className="mb-3" />
+            {showSchemaView ? (
+                <Fragment>
+                    <ResourceListBlock listBlockTitle="Documentation" links={linksDocumentation} />
+                    <hr className="mb-6" />
+                </Fragment>
+            ) : null}
             <ResourceListBlock listBlockTitle="Github" links={linksGithub} />
-            <hr className="mb-3" />
-            <ResourceListBlock listBlockTitle="Resources" links={linksResources} />
+            <hr className="mb-6" />
+            <ResourceListBlock listBlockTitle="Resources" links={linksRes} />
         </Fragment>
     );
 };
@@ -178,9 +183,7 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
             ) : null}
             <div>
                 {screen.view === Screen.TYPEDEFS ? (
-                    <React.Fragment>
-                        <Reses />
-                    </React.Fragment>
+                    <Resources showSchemaView={!showDocs} />
                 ) : (
                     <React.Fragment>
                         {showDocs ? (
@@ -192,13 +195,13 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
                         ) : (
                             <React.Fragment>
                                 <SchemaDocShortcuts setShowDocs={setShowDocs} />
-                                <Reses />
+                                <Resources showSchemaView={!showDocs} />
                             </React.Fragment>
                         )}
                     </React.Fragment>
                 )}
 
-                <div className="absolute bottom-4 right-28 text-primaryBlue font-bold">
+                <div className="absolute bottom-8 right-28 text-primaryBlue font-bold">
                     <a
                         className="flex justify-start items-center"
                         href="https://neo4j-graphql.canny.io/neo4j-graphql-toolbox"
