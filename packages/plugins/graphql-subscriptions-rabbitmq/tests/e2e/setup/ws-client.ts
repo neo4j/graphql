@@ -19,6 +19,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import ws from "ws";
 import { Client, createClient } from "graphql-ws";
+import { EventEmitter } from "events";
 
 export interface WebSocketClient {
     events: Array<any>;
@@ -32,12 +33,24 @@ export class WebSocketTestClient implements WebSocketClient {
 
     private path: string;
     private client: Client;
+    private eventEmitter: EventEmitter;
+
+    private eventResolve: (() => void) | undefined;
 
     constructor(path: string) {
         this.path = path;
         this.client = createClient({
             url: this.path,
             webSocketImpl: ws,
+        });
+        this.eventEmitter = new EventEmitter();
+    }
+
+    public waitForNextEvent(): Promise<any> {
+        return new Promise((resolve) => {
+            this.eventEmitter.once("event", (data) => {
+                resolve(data);
+            });
         });
     }
 
@@ -47,7 +60,12 @@ export class WebSocketTestClient implements WebSocketClient {
                 { query },
                 {
                     next: (value) => {
+                        if (this.eventResolve) {
+                            this.eventResolve();
+                            this.eventResolve = undefined;
+                        }
                         this.events.push(value.data);
+                        this.eventEmitter.emit("event", value.data);
                     },
                     error(err) {
                         reject(err);

@@ -1928,12 +1928,16 @@ __metadata:
     "@types/amqplib": ^0
     "@types/debug": 4.1.7
     "@types/jest": 27.4.1
-    "@types/jsonwebtoken": 8.5.8
     "@types/node": 16.11.31
     amqplib: ^0.8.0
+    apollo-server: 3.6.7
+    apollo-server-express: 3.6.7
+    graphql-ws: 5.8.1
     jest: 27.5.1
+    supertest: 6.2.3
     ts-jest: 27.1.4
     typescript: 4.6.3
+    ws: 8.5.0
   languageName: unknown
   linkType: soft
 
