@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { GraphQLSchema } from "graphql";
 import { HeroIcon } from "@neo4j-ndl/react";
 // @ts-ignore - SVG import
@@ -34,6 +34,7 @@ interface Props {
 const CannyFeedbackButton = (): JSX.Element => {
     return (
         <a
+            data-test-help-drawer-canny-button
             className="flex justify-start items-center"
             href="https://neo4j-graphql.canny.io/neo4j-graphql-toolbox"
             target="_blank"
@@ -62,10 +63,10 @@ const SchemaDocTile = ({ setShowDocs }: { setShowDocs: Function }): JSX.Element 
 const DocExplorerComponent = ({ schema, onClickClose, onClickBack }): JSX.Element => {
     return (
         <DocExplorer
-            data-test-help-drawer-doc-explorer
             schema={schema}
             closeButton={
                 <button
+                    data-test-help-drawer-doc-explorer-close-button
                     className="docExplorerCloseIcon"
                     onClick={onClickClose}
                     aria-label="Close Documentation Explorer"
@@ -74,7 +75,12 @@ const DocExplorerComponent = ({ schema, onClickClose, onClickBack }): JSX.Elemen
                 </button>
             }
             titleBarBackButton={
-                <button className="docExplorerCloseIcon" onClick={onClickBack} aria-label="Back to Help drawer">
+                <button
+                    className="docExplorerCloseIcon"
+                    onClick={onClickBack}
+                    aria-label="Back to Help drawer"
+                    data-test-help-drawer-doc-explorer-back-button
+                >
                     <img src={ArrowLeft} alt="arrow left" className="inline w-5 h-5" />
                 </button>
             }
@@ -92,13 +98,13 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
                 <div className="pb-6 flex justify-between items-center" data-test-help-drawer-title>
                     <React.Fragment>
                         <span className="h5">Help &#38; learn</span>
-                        <span className="text-lg cursor-pointer" onClick={onClickClose}>
+                        <span className="text-lg cursor-pointer" data-test-help-drawer-close onClick={onClickClose}>
                             {"\u2715"}
                         </span>
                     </React.Fragment>
                 </div>
             ) : null}
-            <div>
+            <Fragment>
                 {screen.view === Screen.TYPEDEFS ? (
                     <Resources showSchemaView={true} />
                 ) : (
@@ -118,10 +124,12 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
                     </React.Fragment>
                 )}
 
-                <div className="absolute bottom-8 right-28 text-primaryBlue font-bold text-sm">
-                    <CannyFeedbackButton />
-                </div>
-            </div>
+                {!showDocs ? (
+                    <div className="absolute bottom-8 right-28 text-primaryBlue font-bold text-sm">
+                        <CannyFeedbackButton />
+                    </div>
+                ) : null}
+            </Fragment>
         </div>
     );
 };

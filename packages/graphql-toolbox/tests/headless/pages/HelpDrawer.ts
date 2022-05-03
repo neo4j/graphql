@@ -20,19 +20,37 @@
 import { Screen } from "./Screen";
 
 export class HelpDrawer extends Screen {
-    public openHelpDrawer() {
-        // data-test-topbar-help-button
-        // data-test-help-drawer
+    public async openHelpDrawer() {
+        await this.page.waitForSelector("[data-test-topbar-help-button]");
+        await this.page.click("[data-test-topbar-help-button]");
+        await this.page.waitForSelector("[data-test-help-drawer]");
     }
 
-    public closeHelpDrawer() {
-        // data-test-help-drawer
-        // data-test-help-drawer-close
+    public async closeHelpDrawer() {
+        await this.page.waitForSelector("[data-test-help-drawer]");
+        await this.page.waitForSelector("[data-test-help-drawer-close]");
+        await this.page.click("[data-test-help-drawer-close]");
     }
 
-    public displaysSchemaViewContent() {}
+    public async displaysSchemaViewContent() {
+        await this.page.waitForSelector("[data-test-help-drawer-title]");
+        await this.page.waitForSelector("[data-test-help-drawer-resources-list]");
+        await this.page.waitForSelector("[data-test-help-drawer-canny-button]");
+    }
 
-    public displaysEditorViewContent() {}
+    public async displaysEditorViewContent() {
+        await this.page.waitForSelector("[data-test-help-drawer-title]");
+        await this.page.waitForSelector("[data-test-help-drawer-resources-list]");
+        await this.page.waitForSelector("[data-test-help-drawer-schema-doc-tile]");
+        await this.page.waitForSelector("[data-test-help-drawer-canny-button]");
+    }
 
-    public displaysSchemaDocumentation() {}
+    public async displaysSchemaDocumentation() {
+        await this.page.waitForSelector("[data-test-help-drawer-schema-doc-tile]");
+        await this.page.click("[data-test-help-drawer-schema-doc-tile]");
+        await this.page.waitForSelector("[data-test-help-drawer-doc-explorer-close-button]");
+        await this.page.waitForSelector("[data-test-help-drawer-doc-explorer-back-button]");
+        await this.page.click("[data-test-help-drawer-doc-explorer-back-button]");
+        await this.page.waitForSelector("[data-test-help-drawer-title]");
+    }
 }

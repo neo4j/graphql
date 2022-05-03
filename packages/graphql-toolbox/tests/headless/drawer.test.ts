@@ -17,57 +17,43 @@
  * limitations under the License.
  */
 
-import { toGraphQLTypeDefs } from "@neo4j/introspector";
-import * as neo4j from "neo4j-driver";
-import { generate } from "randomstring";
 import { getBrowser, getPage, Browser } from "./puppeteer";
 import { Login } from "./pages/Login";
 import { SchemaEditor } from "./pages/SchemaEditor";
-import { Editor } from "./pages/Editor";
+import { HelpDrawer } from "./pages/HelpDrawer";
 
-const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
-
-describe("introspection", () => {
-    const id = generate({
-        charset: "alphabetic",
-    });
+describe("drawer", () => {
     const typeDefs = `
         type Movie {
-            id: ID!
-        }
-    `;
-    const query = `
-        query {
-            movies(where: { id: "${id}" }) {
-                id
-            }
+            name: String!
         }
     `;
     let browser: Browser;
-    let driver: neo4j.Driver;
 
     beforeAll(async () => {
-        driver = neo4j.driver(NEO_URL, neo4j.auth.basic(NEO_USER, NEO_PASSWORD));
         browser = await getBrowser();
     });
 
     afterAll(async () => {
         await browser.close();
-        await driver.close();
     });
 
-    test("should show the help and learn drawer", async () => {
+    test("should show the Help and learn drawer and its content", async () => {
         const page = await getPage({ browser });
 
         const login = new Login(page);
         await login.login();
 
-        // check the drawer
+        const helpDrawer = new HelpDrawer(page);
+        await helpDrawer.openHelpDrawer();
+        await helpDrawer.displaysSchemaViewContent();
 
         const schemaEditor = new SchemaEditor(page);
         await schemaEditor.setTypeDefs(typeDefs);
         await schemaEditor.buildSchema();
 
-        // check the drawer
+        await helpDrawer.displaysEditorViewContent();
+        await helpDrawer.displaysSchemaDocumentation();
+        await helpDrawer.closeHelpDrawer();
     });
 });
