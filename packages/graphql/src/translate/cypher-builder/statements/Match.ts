@@ -33,6 +33,7 @@ export class Match<T extends MatchableElement> extends Query {
     private whereParams: Where;
 
     // parameters cast required due to neo-push
+    // TODO: Remove this cast once neo-push has been fixed
     constructor(variable: T, parameters: MatchParams<T> = {} as MatchParams<T>, parent?: Query) {
         super(parent);
         this.matchPattern = new MatchPattern(variable).withParams(parameters);
