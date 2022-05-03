@@ -47,7 +47,11 @@ const CannyFeedbackButton = (): JSX.Element => {
 const SchemaDocTile = ({ setShowDocs }: { setShowDocs: Function }): JSX.Element => {
     return (
         <div className="pb-8">
-            <div className="background-help-card p-6 rounded-2xl cursor-pointer" onClick={() => setShowDocs(true)}>
+            <div
+                data-test-help-drawer-schema-doc-tile
+                className="background-help-card p-6 rounded-2xl cursor-pointer"
+                onClick={() => setShowDocs(true)}
+            >
                 <span className="h6">Schema documentation</span>
                 <p>Documentation of your current schema</p>
             </div>
@@ -58,6 +62,7 @@ const SchemaDocTile = ({ setShowDocs }: { setShowDocs: Function }): JSX.Element 
 const DocExplorerComponent = ({ schema, onClickClose, onClickBack }): JSX.Element => {
     return (
         <DocExplorer
+            data-test-help-drawer-doc-explorer
             schema={schema}
             closeButton={
                 <button
@@ -82,9 +87,9 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
     const [showDocs, setShowDocs] = useState(false);
 
     return (
-        <div className="p-6 w-full">
+        <div className="p-6 w-full" data-test-help-drawer>
             {!showDocs ? (
-                <div className="pb-6 flex justify-between items-center">
+                <div className="pb-6 flex justify-between items-center" data-test-help-drawer-title>
                     <React.Fragment>
                         <span className="h5">Help &#38; learn</span>
                         <span className="text-lg cursor-pointer" onClick={onClickClose}>

@@ -60,6 +60,7 @@ export const TopBar = () => {
                     {!auth.isNeo4jDesktop ? (
                         <p className="flex items-center mr-6 pr-6 border-r border-gray-700">
                             <span
+                                data-test-topbar-disconnect-button
                                 className="cursor-pointer"
                                 onClick={() => {
                                     auth?.logout();
@@ -73,13 +74,18 @@ export const TopBar = () => {
                     <div className="flex items-center">
                         <div className="cursor-pointer mr-4">
                             <HeroIcon
+                                data-test-topbar-help-button
                                 onClick={handleHelpClick}
                                 className="h-7 w-7"
                                 iconName="QuestionMarkCircleIcon"
                                 type="outline"
                             />
                         </div>
-                        <div className="ml-2 mr-6 cursor-pointer" onClick={handleSettingsClick}>
+                        <div
+                            className="ml-2 mr-6 cursor-pointer"
+                            data-test-topbar-settings-button
+                            onClick={handleSettingsClick}
+                        >
                             <HeroIcon className="h-7 w-7" iconName="CogIcon" type="outline" />
                         </div>
                     </div>

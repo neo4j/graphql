@@ -21,13 +21,7 @@ import { useCallback } from "react";
 import { useContext, useState } from "react";
 import { FormInput } from "./FormInput";
 import { Button } from "@neo4j-ndl/react";
-import {
-    DEFAULT_BOLT_URL,
-    LOGIN_BUTTON,
-    LOGIN_PASSWORD_INPUT,
-    LOGIN_URL_INPUT,
-    LOGIN_USERNAME_INPUT,
-} from "../../constants";
+import { DEFAULT_BOLT_URL } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
@@ -69,7 +63,7 @@ export const Login = () => {
                 <form onSubmit={onSubmit}>
                     <div className="mb-4">
                         <FormInput
-                            id={LOGIN_USERNAME_INPUT}
+                            testTag="data-test-login-username"
                             label="Username"
                             name="username"
                             placeholder="neo4j"
@@ -81,7 +75,7 @@ export const Login = () => {
                     </div>
                     <div className="mb-6">
                         <FormInput
-                            id={LOGIN_PASSWORD_INPUT}
+                            testTag="data-test-login-password"
                             label="Password"
                             name="password"
                             placeholder="password"
@@ -93,7 +87,7 @@ export const Login = () => {
                     </div>
                     <div className="mb-8">
                         <FormInput
-                            id={LOGIN_URL_INPUT}
+                            testTag="data-test-login-url"
                             label="Connection URI"
                             name="url"
                             placeholder={DEFAULT_BOLT_URL}
@@ -104,7 +98,7 @@ export const Login = () => {
                         ></FormInput>
                     </div>
                     <div className="flex items-center justify-between">
-                        <Button id={LOGIN_BUTTON} color="neutral" fill="outlined" type="submit" disabled={loading}>
+                        <Button data-test-login-button color="neutral" fill="outlined" type="submit" disabled={loading}>
                             {loading ? <>Connecting...</> : <span>Connect</span>}
                         </Button>
                     </div>

@@ -17,11 +17,7 @@
  * limitations under the License.
  */
 
-import {
-    SCHEMA_EDITOR_BUILD_BUTTON,
-    SCHEMA_EDITOR_INPUT,
-    SCHEMA_EDITOR_INTROSPECT_BUTTON,
-} from "../../../src/constants";
+import { SCHEMA_EDITOR_INPUT } from "../../../src/constants";
 import { Screen } from "./Screen";
 
 export class SchemaEditor extends Screen {
@@ -37,8 +33,8 @@ export class SchemaEditor extends Screen {
     }
 
     public async buildSchema() {
-        await this.page.waitForSelector(`#${SCHEMA_EDITOR_BUILD_BUTTON}`);
-        await this.page.click(`#${SCHEMA_EDITOR_BUILD_BUTTON}`);
+        await this.page.waitForSelector("[data-test-schema-editor-build-button]");
+        await this.page.click("[data-test-schema-editor-build-button]");
     }
 
     public async getTypeDefs(): Promise<string> {
@@ -51,7 +47,7 @@ export class SchemaEditor extends Screen {
     }
 
     public async introspect() {
-        await this.page.waitForSelector(`#${SCHEMA_EDITOR_INTROSPECT_BUTTON}`);
-        await this.page.click(`#${SCHEMA_EDITOR_INTROSPECT_BUTTON}`);
+        await this.page.waitForSelector("[data-test-schema-editor-introspect-button]");
+        await this.page.click("[data-test-schema-editor-introspect-button]");
     }
 }

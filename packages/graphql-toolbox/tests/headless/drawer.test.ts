@@ -19,13 +19,30 @@
 
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import * as neo4j from "neo4j-driver";
+import { generate } from "randomstring";
 import { getBrowser, getPage, Browser } from "./puppeteer";
 import { Login } from "./pages/Login";
 import { SchemaEditor } from "./pages/SchemaEditor";
+import { Editor } from "./pages/Editor";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
 describe("introspection", () => {
+    const id = generate({
+        charset: "alphabetic",
+    });
+    const typeDefs = `
+        type Movie {
+            id: ID!
+        }
+    `;
+    const query = `
+        query {
+            movies(where: { id: "${id}" }) {
+                id
+            }
+        }
+    `;
     let browser: Browser;
     let driver: neo4j.Driver;
 
@@ -39,40 +56,18 @@ describe("introspection", () => {
         await driver.close();
     });
 
-    test("should introspect database and output result", async () => {
+    test("should show the help and learn drawer", async () => {
         const page = await getPage({ browser });
 
         const login = new Login(page);
         await login.login();
 
-        const sessionFactory = () => driver?.session({ defaultAccessMode: neo4j.session.WRITE }) as neo4j.Session;
-        const session = await sessionFactory();
-
-        try {
-            await session.run(`
-                CALL {
-                    MATCH (a)
-                    DETACH DELETE a
-                    RETURN "x"
-                }
-                CALL {
-                    CREATE (:Movie { id: randomUUID() })
-                    RETURN "y"
-                }
-                RETURN "z"
-            `);
-        } finally {
-            await session.close();
-        }
+        // check the drawer
 
         const schemaEditor = new SchemaEditor(page);
-        await schemaEditor.introspect();
-        await page.waitForNetworkIdle();
-        await page.waitForTimeout(2000);
-        const generatedTypeDefs = await schemaEditor.getTypeDefs();
+        await schemaEditor.setTypeDefs(typeDefs);
+        await schemaEditor.buildSchema();
 
-        const actualTypeDefs = await toGraphQLTypeDefs(sessionFactory);
-
-        expect(generatedTypeDefs).toEqual(actualTypeDefs);
+        // check the drawer
     });
 });

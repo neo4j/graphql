@@ -20,11 +20,6 @@
 import { ProTooltip } from "../../components/ProTooltip";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 import { Button, HeroIcon } from "@neo4j-ndl/react";
-import {
-    SCHEMA_EDITOR_BUILD_BUTTON,
-    SCHEMA_EDITOR_INTROSPECT_BUTTON,
-    SCHEMA_EDITOR_PRETTY_BUTTON,
-} from "src/constants";
 
 interface Props {
     hasSchema: boolean;
@@ -56,7 +51,7 @@ export const ActionElementsBar = ({ hasSchema, loading, formatTheCode, introspec
             <div className="flex-1 flex justify-end">
                 <ProTooltip tooltipText="Prettify" width={60} left={-2} top={45}>
                     <Button
-                        id={SCHEMA_EDITOR_PRETTY_BUTTON}
+                        data-test-schema-editor-prettify-button
                         className="mr-4"
                         color="neutral"
                         fill="outlined"
@@ -68,7 +63,7 @@ export const ActionElementsBar = ({ hasSchema, loading, formatTheCode, introspec
                     </Button>
                 </ProTooltip>
                 <Button
-                    id={SCHEMA_EDITOR_INTROSPECT_BUTTON}
+                    data-test-schema-editor-introspect-button
                     className="mr-4"
                     color="neutral"
                     fill="outlined"
@@ -78,7 +73,7 @@ export const ActionElementsBar = ({ hasSchema, loading, formatTheCode, introspec
                     Generate typeDefs
                 </Button>
                 <Button
-                    id={SCHEMA_EDITOR_BUILD_BUTTON}
+                    data-test-schema-editor-build-button
                     style={{ backgroundColor: "#006FD6" }}
                     fill="filled"
                     onClick={onSubmit}

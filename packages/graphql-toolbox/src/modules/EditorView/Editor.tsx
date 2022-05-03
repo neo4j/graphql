@@ -27,7 +27,6 @@ import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
 import {
     EDITOR_PARAMS_INPUT,
-    EDITOR_QUERY_BUTTON,
     DEFAULT_QUERY,
     EDITOR_RESPONSE_OUTPUT,
     LOCAL_STATE_TYPE_LAST_PARAMS,
@@ -171,7 +170,7 @@ export const Editor = (props: Props) => {
                                                 </Button>
                                             </ProTooltip>
                                             <Button
-                                                id={EDITOR_QUERY_BUTTON}
+                                                data-test-editor-query-button
                                                 className="mr-4 ml-2"
                                                 color="primary"
                                                 fill="text"

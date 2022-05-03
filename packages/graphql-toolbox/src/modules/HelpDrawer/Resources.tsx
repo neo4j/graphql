@@ -98,7 +98,7 @@ export const Resources = ({ showSchemaView }: Props): JSX.Element => {
     const linksForResources = showSchemaView ? linksResources.slice(1) : linksResources;
 
     return (
-        <Fragment>
+        <div data-test-help-drawer-resources-list>
             {showSchemaView ? (
                 <Fragment>
                     <ResourceLinksBlock listBlockTitle="Documentation" links={linksDocumentation} />
@@ -108,6 +108,6 @@ export const Resources = ({ showSchemaView }: Props): JSX.Element => {
             <ResourceLinksBlock listBlockTitle="Github" links={linksGithub} />
             <hr className="mb-6" />
             <ResourceLinksBlock listBlockTitle="Resources" links={linksForResources} />
-        </Fragment>
+        </div>
     );
 };
