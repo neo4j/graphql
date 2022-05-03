@@ -31,7 +31,6 @@ export const TopBar = () => {
     const redDot = <span className="ml-1 mr-1 h-2 w-2 bg-red-400 rounded-full inline-block" />;
 
     const handleHelpClick = () => {
-        // if (screen.view !== Screen.EDITOR) return;
         settings.setIsShowHelpDrawer(!settings.isShowHelpDrawer);
     };
 

@@ -28,7 +28,7 @@ interface Props {
 export const AppSettings = ({ onClickClose }: Props) => {
     const theme = useContext(ThemeContext);
 
-    const handleOThemeClick = (event: any) => {
+    const handleOnChangeEditorTheme = (event: any) => {
         const next = event?.target?.id === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
         theme.setTheme(next);
     };
@@ -49,14 +49,14 @@ export const AppSettings = ({ onClickClose }: Props) => {
                         className="cursor-pointer"
                         label="Light theme"
                         checked={theme.theme === Theme.LIGHT}
-                        onChange={handleOThemeClick}
+                        onChange={handleOnChangeEditorTheme}
                     />
                     <Radio
                         id={Theme.DARK.toString()}
                         className="cursor-pointer"
                         label="Dark theme"
                         checked={theme.theme === Theme.DARK}
-                        onChange={handleOThemeClick}
+                        onChange={handleOnChangeEditorTheme}
                     />
                 </div>
             </div>

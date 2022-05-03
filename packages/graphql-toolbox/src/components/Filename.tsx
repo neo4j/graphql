@@ -28,7 +28,7 @@ export enum Extension {
     GRAPHQL,
 }
 
-export interface Props {
+interface Props {
     name: string;
     extension: Extension;
     buttons?: any;

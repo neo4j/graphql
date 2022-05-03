@@ -17,49 +17,34 @@
  * limitations under the License.
  */
 
+import React, { useContext, useState } from "react";
 import { GraphQLSchema } from "graphql";
 import { HeroIcon } from "@neo4j-ndl/react";
-import React, { Fragment, useContext, useState } from "react";
 // @ts-ignore - SVG import
 import ArrowLeft from "../../assets/arrow-left.svg";
 import { Screen, ScreenContext } from "../../contexts/screen";
 import { DocExplorer } from "../EditorView/docexplorer";
-import { Links, ResourceListBlock } from "./ResourceListBlock";
+import { Resources } from "./Resources";
 
-// const LibraryDocShortcuts = (): JSX.Element => {
-//     const libDocumentationLinks = [
-//         {
-//             link: "https://neo4j.com/docs/graphql-manual/current/type-definitions/",
-//             label: "Type Definitions",
-//         },
-//         {
-//             link: "https://neo4j.com/docs/graphql-manual/current/queries/",
-//             label: "Example Queries",
-//         },
-//         {
-//             link: "https://neo4j.com/docs/graphql-manual/current/directives/",
-//             label: "Directives",
-//         },
-//         {
-//             link: "https://neo4j.com/docs/graphql-manual/current/filtering/",
-//             label: "Filtering",
-//         },
-//     ];
+interface Props {
+    onClickClose: () => void;
+    schema?: GraphQLSchema;
+}
 
-//     return (
-//         <div className="pb-8 grid grid-cols-2 gap-2">
-//             {Object.values(libDocumentationLinks).map((res) => (
-//                 <a key={res.link} href={res.link} target="_blank">
-//                     <div className="background-dark-help-card p-4 rounded-2xl cursor-pointer">
-//                         <span className="font-bold">{res.label}</span>
-//                     </div>
-//                 </a>
-//             ))}
-//         </div>
-//     );
-// };
+const CannyFeedbackButton = (): JSX.Element => {
+    return (
+        <a
+            className="flex justify-start items-center"
+            href="https://neo4j-graphql.canny.io/neo4j-graphql-toolbox"
+            target="_blank"
+        >
+            <HeroIcon className="h-6 w-6 mr-2" type="outline" iconName="ChatIcon" />
+            <p className="p-0 m-0">Send feedback</p>
+        </a>
+    );
+};
 
-const SchemaDocShortcuts = ({ setShowDocs }: { setShowDocs: Function }): JSX.Element => {
+const SchemaDocTile = ({ setShowDocs }: { setShowDocs: Function }): JSX.Element => {
     return (
         <div className="pb-8">
             <div className="background-help-card p-6 rounded-2xl cursor-pointer" onClick={() => setShowDocs(true)}>
@@ -70,75 +55,7 @@ const SchemaDocShortcuts = ({ setShowDocs }: { setShowDocs: Function }): JSX.Ele
     );
 };
 
-const Resources = ({ showSchemaView }: { showSchemaView: boolean }): JSX.Element => {
-    const linksResources: Links[] = [
-        {
-            href: "https://neo4j.com/docs/graphql-manual/current/",
-            iconName: "DocumentTextIcon",
-            label: "Documentation",
-        },
-        {
-            href: "https://discord.com/channels/787399249741479977/818578492723036210",
-            iconName: "ChatAlt2Icon",
-            label: "Community",
-        },
-        {
-            href: "https://neo4j.com/graphacademy/training-graphql-apis/enrollment/",
-            iconName: "AcademicCapIcon",
-            label: "Neo4j Graph Academy",
-        },
-    ];
-    const linksGithub: Links[] = [
-        {
-            href: "https://github.com/neo4j/graphql",
-            iconName: "DocumentTextIcon",
-            label: "Github repository",
-        },
-        {
-            href: "https://github.com/neo4j/graphql/issues",
-            iconName: "SpeakerphoneIcon",
-            label: "Issue tracker",
-        },
-    ];
-    const linksDocumentation: Links[] = [
-        {
-            href: "https://neo4j.com/docs/graphql-manual/current/type-definitions/",
-            iconName: "DocumentTextIcon",
-            label: "Type definitions",
-        },
-        {
-            href: "https://neo4j.com/docs/graphql-manual/current/queries/",
-            iconName: "VariableIcon",
-            label: "Example queries",
-        },
-        {
-            href: "https://neo4j.com/docs/graphql-manual/current/directives/",
-            iconName: "AtSymbolIcon",
-            label: "Directives",
-        },
-        {
-            href: "https://neo4j.com/docs/graphql-manual/current/filtering/",
-            iconName: "FilterIcon",
-            label: "Filtering",
-        },
-    ];
-    const linksRes = showSchemaView ? linksResources.slice(1, 2) : linksResources;
-    return (
-        <Fragment>
-            {showSchemaView ? (
-                <Fragment>
-                    <ResourceListBlock listBlockTitle="Documentation" links={linksDocumentation} />
-                    <hr className="mb-6" />
-                </Fragment>
-            ) : null}
-            <ResourceListBlock listBlockTitle="Github" links={linksGithub} />
-            <hr className="mb-6" />
-            <ResourceListBlock listBlockTitle="Resources" links={linksRes} />
-        </Fragment>
-    );
-};
-
-const DocExplorerWrap = ({ schema, onClickClose, onClickBack }): JSX.Element => {
+const DocExplorerComponent = ({ schema, onClickClose, onClickBack }): JSX.Element => {
     return (
         <DocExplorer
             schema={schema}
@@ -160,11 +77,6 @@ const DocExplorerWrap = ({ schema, onClickClose, onClickBack }): JSX.Element => 
     );
 };
 
-interface Props {
-    onClickClose: () => void;
-    schema?: GraphQLSchema;
-}
-
 export const HelpDrawer = ({ onClickClose, schema }: Props) => {
     const screen = useContext(ScreenContext);
     const [showDocs, setShowDocs] = useState(false);
@@ -183,33 +95,26 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
             ) : null}
             <div>
                 {screen.view === Screen.TYPEDEFS ? (
-                    <Resources showSchemaView={!showDocs} />
+                    <Resources showSchemaView={true} />
                 ) : (
                     <React.Fragment>
                         {showDocs ? (
-                            <DocExplorerWrap
+                            <DocExplorerComponent
                                 schema={schema}
                                 onClickClose={onClickClose}
                                 onClickBack={() => setShowDocs(false)}
                             />
                         ) : (
                             <React.Fragment>
-                                <SchemaDocShortcuts setShowDocs={setShowDocs} />
-                                <Resources showSchemaView={!showDocs} />
+                                <SchemaDocTile setShowDocs={setShowDocs} />
+                                <Resources showSchemaView={false} />
                             </React.Fragment>
                         )}
                     </React.Fragment>
                 )}
 
-                <div className="absolute bottom-8 right-28 text-primaryBlue font-bold">
-                    <a
-                        className="flex justify-start items-center"
-                        href="https://neo4j-graphql.canny.io/neo4j-graphql-toolbox"
-                        target="_blank"
-                    >
-                        <HeroIcon className="h-7 w-7 mr-2" type="outline" iconName="ChatIcon" />
-                        <p className="p-0 m-0">Send feedback</p>
-                    </a>
+                <div className="absolute bottom-8 right-28 text-primaryBlue font-bold text-sm">
+                    <CannyFeedbackButton />
                 </div>
             </div>
         </div>
