@@ -2709,6 +2709,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/jest@npm:27.4.1":
+  version: 27.4.1
+  resolution: "@types/jest@npm:27.4.1"
+  dependencies:
+    jest-matcher-utils: ^27.0.0
+    pretty-format: ^27.0.0
+  checksum: 5184f3eef4832d01ee8f59bed15eec45ccc8e29c724a5e6ce37bf74396b37bdf04f557000f45ba4fc38ae6075cf9cfcce3d7a75abc981023c61ceb27230a93e4
+  languageName: node
+  linkType: hard
+
 "@types/jest@npm:27.5.0":
   version: 27.5.0
   resolution: "@types/jest@npm:27.5.0"
@@ -2841,6 +2851,13 @@ __metadata:
   version: 14.14.14
   resolution: "@types/node@npm:14.14.14"
   checksum: a4a972105e40d96b197b1fb587a1012b9dd76c41fbca24abfadc3dd305b5fad1e449591a3540f8874f7b2c434d499edfffaa4161ddf8714a7e6f9c942f3d4531
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:16.11.31":
+  version: 16.11.31
+  resolution: "@types/node@npm:16.11.31"
+  checksum: 0bad289e12c7066cd2ea7a204d051a0bb09a32a29da39850812ea14c075f9e2b4aeaab23aa23447ef9e3aa6a30173bf3d3524e37bbeeb56fb8ffa4bbd783c5db
   languageName: node
   linkType: hard
 
