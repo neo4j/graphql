@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Driver, Result } from "neo4j-driver";
+import { Driver, Session, Transaction } from "neo4j-driver";
 import { Builder } from "./builder";
 
 type RunFunction = ((...params) => any) & { calls: Array<Array<any>> };
@@ -39,7 +39,7 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
         this.runFunction = this.addFakeSession();
     }
 
-    public with(newOptions: Partial<Partial<Driver>>): DriverBuilder {
+    public with(newOptions: Partial<Driver>): DriverBuilder {
         this.options = { ...this.options, ...newOptions };
         return this;
     }
@@ -55,6 +55,12 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
         this.with({
             session() {
                 return {
+                    beginTransaction: () => {
+                        return {
+                            run: runMock,
+                            commit() {},
+                        } as unknown as Transaction;
+                    },
                     readTransaction: (cb: any) => {
                         return cb({ run: runMock });
                     },
@@ -63,9 +69,9 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
                     },
                     close() {},
                     lastBookmark() {},
-                };
+                } as unknown as Session;
             },
-        } as Driver);
+        });
         return runMock;
     }
 
