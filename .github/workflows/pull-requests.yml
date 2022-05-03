@@ -168,6 +168,7 @@ jobs:
       matrix:
         package:
           - graphql-plugin-auth
+          - graphql-subscriptions-rabbitmq
         graphql-version:
           - "^15.0.0"
           - "^16.0.0"
@@ -191,6 +192,54 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: unit-coverage-${{ matrix.package }}
+          path: packages/plugins/${{ matrix.package }}/coverage/
+
+  e2e-tests-plugins:
+    needs:
+      - cache-dependencies
+    services:
+      neo4j:
+        image: neo4j:latest
+        env:
+          NEO4J_AUTH: neo4j/mypassword
+          NEO4JLABS_PLUGINS: '["apoc"]'
+        ports:
+          - 7687:7687
+      rabbitmq:
+        image: rabbitmq
+        env:
+          RABBITMQ_DEFAULT_USER: guest
+          RABBITMQ_DEFAULT_PASS: guest
+        ports:
+          - 5672:5672
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - graphql-subscriptions-rabbitmq
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
+      - name: Run packages/plugins/${{ matrix.package }} e2e tests
+        run: yarn run test:e2e --coverage
+        working-directory: packages/plugins/${{ matrix.package }}
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e-coverage-${{ matrix.package }}
           path: packages/plugins/${{ matrix.package }}/coverage/
 
 
