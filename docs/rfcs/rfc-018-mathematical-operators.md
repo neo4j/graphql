@@ -72,7 +72,7 @@ updateNodes(
 ```
 ### Technical considerations
 #### Inconsistent design
-The proposed solution implements a design different from similar features like [https://neo4j.com/docs/graphql/manual/current/filtering/](https://neo4j.com/docs/graphql/manual/current/filtering/),
+The proposed solution implements a design different from similar features like [https://neo4j.com/docs/graphql-manual/current/filtering/](https://neo4j.com/docs/graphql-manual/current/filtering/),
 and increase the learning curve of the library.
 
 ## Risks
