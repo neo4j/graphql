@@ -20,8 +20,11 @@
 import amqp from "amqplib";
 import { EventEmitter } from "events";
 import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "@neo4j/graphql";
+
 import { AmqpApi, ConnectionOptions } from "./amqp-api";
+
 export { ConnectionOptions } from "./amqp-api";
+
 const DEFAULT_EXCHANGE = "neo4j-graphql";
 
 export type Neo4jGraphQLSubscriptionsRabbitMQContructorOptions = { exchange?: string };
@@ -58,6 +61,7 @@ export class Neo4jGraphQLSubscriptionsRabbitMQ implements Neo4jGraphQLSubscripti
     }
 
     public publish(eventMeta: SubscriptionsEvent): Promise<void> {
-        return this.amqpApi.publish(eventMeta);
+        this.amqpApi.publish(eventMeta);
+        return Promise.resolve(); // To avoid future brakeing changes, we always return a promise
     }
 }

@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Driver } from "neo4j-driver";
 import supertest, { Response } from "supertest";
-// import { Neo4jGraphQL } from "../../../src/classes";
-// import { generateUniqueType } from "../../utils/graphql-types";
+import { Neo4jGraphQL } from "@neo4j/graphql";
 import { ApolloTestServer, TestGraphQLServer } from "./setup/apollo-server";
 import { WebSocketTestClient } from "./setup/ws-client";
 import neo4j from "./setup/neo4j";
-import { Neo4jGraphQL } from "@neo4j/graphql";
 import { Neo4jGraphQLSubscriptionsRabbitMQ } from "../../src";
 import { generateUniqueType } from "../utils/graphql-types";
 import createPlugin from "./setup/plugin";
@@ -87,10 +86,12 @@ describe("Apollo and RabbitMQ Subscription", () => {
                             }
                             `);
 
-        createMovie("movie1"); // Note, this is not awaited on purpose
-        await wsClient.waitForNextEvent();
-        createMovie("movie2"); // Note, this is not awaited on purpose
-        await wsClient.waitForNextEvent();
+        let nextEventPromise = wsClient.waitForNextEvent(); // NOTE: not awaited on purpose
+        await createMovie("movie1");
+        await nextEventPromise;
+        nextEventPromise = wsClient.waitForNextEvent(); // NOTE: not awaited on purpose
+        await createMovie("movie2");
+        await nextEventPromise;
 
         expect(wsClient.events).toEqual([
             {
@@ -119,9 +120,11 @@ describe("Apollo and RabbitMQ Subscription", () => {
             }
         `);
 
-        createMovie("movie2"); // Note, this is not awaited on purpose
-        createMovie("movie1"); // Note, this is not awaited on purpose
-        await wsClient.waitForNextEvent();
+        const nextEventPromise = wsClient.waitForNextEvent(); // NOTE: not awaited on purpose
+        await createMovie("movie2");
+        await createMovie("movie1");
+
+        await nextEventPromise;
 
         expect(wsClient.events).toEqual([
             {

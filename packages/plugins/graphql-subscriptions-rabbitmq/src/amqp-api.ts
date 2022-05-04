@@ -44,19 +44,23 @@ export class AmqpApi<T> {
         const queue = await this.channel.assertQueue("", { exclusive: true }); // Creates queue with unique name
 
         const queueName = queue.queue;
-        this.channel.bindQueue(queueName, this.exchange, ""); // binds exchange and queue
+        await this.channel.bindQueue(queueName, this.exchange, ""); // binds exchange and queue
 
-        await this.channel.consume(queueName, async (msg) => {
+        await this.channel.consume(queueName, (msg) => {
             if (msg !== null) {
                 const messageBody = JSON.parse(msg.content.toString()) as T;
-                await cb(messageBody);
-                this.channel?.ack(msg);
+                const promiseOrVoid = cb(messageBody);
+                if (promiseOrVoid) {
+                    promiseOrVoid.then(() => {
+                        this.channel?.ack(msg);
+                    });
+                } else this.channel?.ack(msg);
             }
         });
         return connection;
     }
 
-    public async publish(message: T): Promise<void> {
+    public publish(message: T): void {
         if (!this.channel) throw new Error("AMQP Channel does not exists");
         const serializedMessage = JSON.stringify(message);
         this.channel.publish(this.exchange, "", Buffer.from(serializedMessage));
@@ -65,5 +69,6 @@ export class AmqpApi<T> {
     /** Closes the channel used by amqp */
     public async close(): Promise<void> {
         await this.channel?.close();
+        this.channel = undefined;
     }
 }

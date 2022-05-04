@@ -2284,6 +2284,8 @@ __metadata:
     ts-jest: 27.1.4
     typescript: 4.6.3
     ws: 8.5.0
+  peerDependencies:
+    "@neo4j/graphql": ^3.1.0
   languageName: unknown
   linkType: soft
 
