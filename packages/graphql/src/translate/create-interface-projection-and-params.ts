@@ -57,7 +57,7 @@ function createInterfaceProjectionAndParams({
     );
 
     let whereArgs: { _on?: any; [str: string]: any } = {};
-    console.log("here");
+
     const subqueries = referenceNodes.map((refNode) => {
         const param = `${nodeVariable}_${refNode.name}`;
         const subquery = [
@@ -210,11 +210,17 @@ function createInterfaceProjectionAndParams({
 
         return subquery.join("\n");
     });
+    // console.log("subqueries", subqueries);
     const interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
+    console.log("interfaceProjection PRE", interfaceProjection);
 
     if (field.typeMeta.array) {
-        interfaceProjection.push(`WITH ${fullWithVars.join(", ")}, collect(${field.fieldName}) AS ${field.fieldName}`);
+        // interfaceProjection.push(`WITH ${fullWithVars.join(", ")}, collect(${field.fieldName}) AS ${field.fieldName}`);
+        interfaceProjection.push(`RETURN collect(${field.fieldName}) AS ${field.fieldName}`);
+        interfaceProjection.unshift("CALL {");
+        interfaceProjection.push("}");
     }
+    console.log("interfaceProjection AFTER", interfaceProjection);
 
     if (Object.keys(whereArgs).length) {
         params.args = { where: whereArgs };
