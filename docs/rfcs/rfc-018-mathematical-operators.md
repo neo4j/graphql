@@ -10,12 +10,12 @@ The former approach has several downsides:
 
 ## Proposed Solution
 Add new input properties that solve atomic operations like:
-- `_INC`
-- `_DEC`
-- `_MULT`
-- `_DIV`
+- `_ADD`
+- `_SUBSTRACT`
+- `_MULTIPLY`
+- `_DIVIDE`
 
-For instance `counter_INC` or `counter_DEC`.
+For instance `counter_ADD` or `counter_SUBSTRACT`.
 These properties should be available for all the following types:
 - Int
 - Float
@@ -26,7 +26,7 @@ These properties should be available for all the following types:
 updateNodes(
   where: { id: "e9bc687a-efd1-419d-b208" }
   update: {
-    counter_INC: 1,
+    counter_ADD: 1,
   }
 )
 ```
@@ -39,7 +39,7 @@ updateNodes(
   where: { id: "e9bc687a-efd1-419d-b208" }
   update: {
     counter: 10,
-    counter_INC: 1,
+    counter_ADD: 1,
   }
 )
 ```
@@ -50,12 +50,12 @@ The proposed solution could increase the size of the augmented schema noticeably
 
 ## Alternative Solution
 Create a new GraphQL scalar type that supports these operations:
-- `INC`
-- `DEC`
-- `MULT`
-- `DIV`
+- `ADD`
+- `SUBSTRACT`
+- `MULTIPLY`
+- `DIVIDE`
 
-For instance `counter: { INC: 1 }` or `counter: { DEC: 1 }`, the syntax `counter: 1` should remains valid.
+For instance `counter: { ADD: 1 }` or `counter: { SUBSTRACT: 1 }`, the syntax `counter: 1` should remains valid.
 The new GraphQL scalar type should be available for all the following types:
 - Int
 - Float
@@ -66,7 +66,7 @@ The new GraphQL scalar type should be available for all the following types:
 updateNodes(
   where: { id: "e9bc687a-efd1-419d-b208" }
   update: {
-    counter: { inc: 1 },
+    counter: { ADD: 1 },
   }
 )
 ```
