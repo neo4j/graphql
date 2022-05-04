@@ -57,7 +57,7 @@ function createInterfaceProjectionAndParams({
     );
 
     let whereArgs: { _on?: any; [str: string]: any } = {};
-
+    console.log("here");
     const subqueries = referenceNodes.map((refNode) => {
         const param = `${nodeVariable}_${refNode.name}`;
         const subquery = [
