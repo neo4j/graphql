@@ -89,6 +89,7 @@ export const SchemaSettings = ({
                 </div>
                 <div className="mb-1 flex items-baseline">
                     <Checkbox
+                        data-test-schema-debug-checkbox
                         className="m-0"
                         label="Enable Debug"
                         checked={isDebugChecked === "true"}
