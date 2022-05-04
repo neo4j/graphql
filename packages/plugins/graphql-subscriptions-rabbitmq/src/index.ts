@@ -48,7 +48,7 @@ export class Neo4jGraphQLSubscriptionsRabbitMQ implements Neo4jGraphQLSubscripti
             throw new Error("Graphql Subscriptions RabbitMQ plugin is already connected to broker.");
         }
 
-        this.amqpConnection = await this.amqpApi.connect(connectionOptions, (message) => {
+        this.amqpConnection = await this.amqpApi.connect(connectionOptions, (message: SubscriptionsEvent) => {
             this.events.emit(message.event, message);
         });
         return this.amqpConnection;

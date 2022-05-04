@@ -33,31 +33,33 @@ describe("Subscriptions RabbitMQ Integration", () => {
         await plugin.connection?.close();
     });
 
-    test("Send and receive events to eventEmitter", (done) => {
-        const event: SubscriptionsEvent = {
-            event: "create",
-            properties: {
-                new: {
-                    prop: "arthur",
+    test("Send and receive events to eventEmitter", () => {
+        return new Promise<void>((resolve, reject) => {
+            const event: SubscriptionsEvent = {
+                event: "create",
+                properties: {
+                    new: {
+                        prop: "arthur",
+                    },
+                    old: undefined,
                 },
-                old: undefined,
-            },
-            id: 2,
-            timestamp: 2,
-            typename: "test",
-        };
+                id: 2,
+                timestamp: 2,
+                typename: "test",
+            };
 
-        plugin.events.on("create", (msg) => {
-            try {
-                expect(msg).toEqual(event);
-                done();
-            } catch (err) {
-                done(err);
-            }
-        });
+            plugin.events.on("create", (msg) => {
+                try {
+                    expect(msg).toEqual(event);
+                    resolve();
+                } catch (err) {
+                    reject(err);
+                }
+            });
 
-        plugin.publish(event).catch((err) => {
-            done(err);
+            plugin.publish(event).catch((err) => {
+                reject(err);
+            });
         });
     });
 });

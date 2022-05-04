@@ -51,9 +51,11 @@ export class AmqpApi<T> {
                 const messageBody = JSON.parse(msg.content.toString()) as T;
                 const promiseOrVoid = cb(messageBody);
                 if (promiseOrVoid) {
-                    promiseOrVoid.then(() => {
-                        this.channel?.ack(msg);
-                    });
+                    promiseOrVoid
+                        .then(() => {
+                            this.channel?.ack(msg);
+                        })
+                        .catch(() => {}); // DO NOT ack message if callback throws
                 } else this.channel?.ack(msg);
             }
         });

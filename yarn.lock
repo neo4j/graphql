@@ -2278,8 +2278,11 @@ __metadata:
     amqplib: ^0.8.0
     apollo-server: 3.6.7
     apollo-server-express: 3.6.7
+    camelcase: ^6.2.0
     graphql-ws: 5.8.1
     jest: 27.5.1
+    neo4j-driver: 4.4.5
+    pluralize: ^8.0.0
     supertest: 6.2.3
     ts-jest: 27.1.4
     typescript: 4.6.3
