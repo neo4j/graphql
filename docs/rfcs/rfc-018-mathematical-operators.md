@@ -11,11 +11,11 @@ The former approach has several downsides:
 ## Proposed Solution
 Add new input properties that solve atomic operations like:
 - `_ADD`
-- `_SUBSTRACT`
+- `_SUBTRACT`
 - `_MULTIPLY`
 - `_DIVIDE`
 
-For instance `counter_ADD` or `counter_SUBSTRACT`.
+For instance `counter_ADD` or `counter_SUBTRACT`.
 These properties should be available for all the following types:
 - Int
 - Float
@@ -51,11 +51,11 @@ The proposed solution could increase the size of the augmented schema noticeably
 ## Alternative Solution
 Create a new GraphQL scalar type that supports these operations:
 - `ADD`
-- `SUBSTRACT`
+- `SUBTRACT`
 - `MULTIPLY`
 - `DIVIDE`
 
-For instance `counter: { ADD: 1 }` or `counter: { SUBSTRACT: 1 }`, the syntax `counter: 1` should remains valid.
+For instance `counter: { ADD: 1 }` or `counter: { SUBTRACT: 1 }`, the syntax `counter: 1` should remains valid.
 The new GraphQL scalar type should be available for all the following types:
 - Int
 - Float
@@ -74,6 +74,32 @@ updateNodes(
 #### Inconsistent design
 The proposed solution implements a design different from similar features like [https://neo4j.com/docs/graphql-manual/current/filtering/](https://neo4j.com/docs/graphql-manual/current/filtering/),
 and increase the learning curve of the library.
+
+####  Unions between scalar types
+Let's consider the following type definition:
+```graphql
+type Node {
+    counter: Int | IntBoxed
+}
+
+type IntBoxed {
+    ADD: Int
+    SUBTRACT: Int
+    MULTIPLY: Int
+    DIVIDE: Int
+}
+```
+The above will raise an error as GraphQL does not support unions between scalar types.
+A workaround of the above could be to construct a custom GraphQL scalar type, in this case, IntBoxed which will wrap all the Int types present in the GraphQL client schema.
+The augmented schema should look like this:
+```graphql
+scalar IntBoxed
+
+type Node {
+counter: IntBoxed
+}
+```
+A future investigation on the feasibility of the above will be required in the case there will be a follow-up over this solution.
 
 ## Risks
 - Schema size.
