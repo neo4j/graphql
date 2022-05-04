@@ -220,9 +220,7 @@ jobs:
         graphql-version:
           - "^15.0.0"
           - "^16.0.0"
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -236,6 +234,13 @@ jobs:
       - name: Run packages/plugins/${{ matrix.package }} e2e tests
         run: yarn run test:e2e --coverage
         working-directory: packages/plugins/${{ matrix.package }}
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+          RABBITMQ_HOST:  localhost
+          RABBITMQ_USER:  guest
+          RABBITMQ_PASSWORD:  guest
       - name: Archive coverage report
         uses: actions/upload-artifact@v3
         with:

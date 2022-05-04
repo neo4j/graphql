@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
+import amqp from "amqplib";
 import { EventEmitter } from "events";
 import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "@neo4j/graphql";
-import { AmqpApi, AmqpConnection, ConnectionOptions } from "./amqp-api";
+import { AmqpApi, ConnectionOptions } from "./amqp-api";
 export { ConnectionOptions } from "./amqp-api";
-
 const DEFAULT_EXCHANGE = "neo4j-graphql";
 
 export type Neo4jGraphQLSubscriptionsRabbitMQContructorOptions = { exchange?: string };
@@ -29,25 +29,35 @@ export type Neo4jGraphQLSubscriptionsRabbitMQContructorOptions = { exchange?: st
 export class Neo4jGraphQLSubscriptionsRabbitMQ implements Neo4jGraphQLSubscriptionsPlugin {
     public events: EventEmitter;
     private amqpApi: AmqpApi<SubscriptionsEvent>;
+    private amqpConnection: amqp.Connection | undefined;
 
     constructor(options: Neo4jGraphQLSubscriptionsRabbitMQContructorOptions = {}) {
         this.events = new EventEmitter();
         this.amqpApi = new AmqpApi({ exchange: DEFAULT_EXCHANGE, ...options });
     }
 
-    connect(connectionOptions: ConnectionOptions): Promise<AmqpConnection> {
-        return this.amqpApi.connect(connectionOptions, (message) => {
-            this.events.emit(message.event, message);
-        });
+    public get connection(): amqp.Connection | undefined {
+        return this.amqpConnection;
     }
 
-    /* Closes the channel created and unbinds the event emitter*/
-    close(): Promise<void> {
+    public async connect(connectionOptions: ConnectionOptions): Promise<amqp.Connection> {
+        if (this.amqpConnection) {
+            throw new Error("Graphql Subscriptions RabbitMQ plugin is already connected to broker.");
+        }
+
+        this.amqpConnection = await this.amqpApi.connect(connectionOptions, (message) => {
+            this.events.emit(message.event, message);
+        });
+        return this.amqpConnection;
+    }
+
+    /* Closes the channel created and unbinds the event emitter */
+    public close(): Promise<void> {
         this.events.removeAllListeners();
         return this.amqpApi.close();
     }
 
-    publish(eventMeta: SubscriptionsEvent): Promise<void> {
+    public publish(eventMeta: SubscriptionsEvent): Promise<void> {
         return this.amqpApi.publish(eventMeta);
     }
 }

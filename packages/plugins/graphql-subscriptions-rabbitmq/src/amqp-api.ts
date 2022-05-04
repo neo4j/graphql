@@ -20,7 +20,6 @@
 import amqp from "amqplib";
 
 export type ConnectionOptions = amqp.Options.Connect | string;
-export type AmqpConnection = amqp.Connection;
 
 type AmqpApiOptions = {
     exchange: string;
@@ -38,7 +37,7 @@ export class AmqpApi<T> {
     public async connect(
         connectionOptions: ConnectionOptions,
         cb: (msg: T) => void | Promise<void>
-    ): Promise<AmqpConnection> {
+    ): Promise<amqp.Connection> {
         const connection = await amqp.connect(connectionOptions);
         this.channel = await connection.createChannel();
         await this.channel.assertExchange(this.exchange, "fanout", { durable: false });
@@ -63,6 +62,7 @@ export class AmqpApi<T> {
         this.channel.publish(this.exchange, "", Buffer.from(serializedMessage));
     }
 
+    /** Closes the channel used by amqp */
     public async close(): Promise<void> {
         await this.channel?.close();
     }

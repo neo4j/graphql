@@ -19,27 +19,18 @@
 
 import { SubscriptionsEvent } from "@neo4j/graphql";
 import { Neo4jGraphQLSubscriptionsRabbitMQ } from "../../src";
-import { AmqpConnection } from "../../src/amqp-api";
-import config from "./config";
+import createPlugin from "./setup/plugin";
 
 describe("Subscriptions RabbitMQ Integration", () => {
     let plugin: Neo4jGraphQLSubscriptionsRabbitMQ;
-    let amqpConnection: AmqpConnection;
 
     beforeEach(async () => {
-        plugin = new Neo4jGraphQLSubscriptionsRabbitMQ({
-            exchange: config.rabbitmq.exchange,
-        });
-        amqpConnection = await plugin.connect({
-            hostname: config.rabbitmq.hostname,
-            username: config.rabbitmq.user,
-            password: config.rabbitmq.password,
-        });
+        plugin = await createPlugin();
     });
 
     afterEach(async () => {
-        if (plugin) await plugin.close();
-        if (amqpConnection) await amqpConnection.close();
+        await plugin.close();
+        await plugin.connection?.close();
     });
 
     test("Send and receive events to eventEmitter", (done) => {
