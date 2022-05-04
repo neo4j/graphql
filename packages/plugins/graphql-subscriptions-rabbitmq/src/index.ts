@@ -20,7 +20,6 @@
 import amqp from "amqplib";
 import { EventEmitter } from "events";
 import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "@neo4j/graphql";
-
 import { AmqpApi, ConnectionOptions } from "./amqp-api";
 
 export { ConnectionOptions } from "./amqp-api";
@@ -32,26 +31,16 @@ export type Neo4jGraphQLSubscriptionsRabbitMQContructorOptions = { exchange?: st
 export class Neo4jGraphQLSubscriptionsRabbitMQ implements Neo4jGraphQLSubscriptionsPlugin {
     public events: EventEmitter;
     private amqpApi: AmqpApi<SubscriptionsEvent>;
-    private amqpConnection: amqp.Connection | undefined;
 
     constructor(options: Neo4jGraphQLSubscriptionsRabbitMQContructorOptions = {}) {
         this.events = new EventEmitter();
         this.amqpApi = new AmqpApi({ exchange: DEFAULT_EXCHANGE, ...options });
     }
 
-    public get connection(): amqp.Connection | undefined {
-        return this.amqpConnection;
-    }
-
     public async connect(connectionOptions: ConnectionOptions): Promise<amqp.Connection> {
-        if (this.amqpConnection) {
-            throw new Error("Graphql Subscriptions RabbitMQ plugin is already connected to broker.");
-        }
-
-        this.amqpConnection = await this.amqpApi.connect(connectionOptions, (message: SubscriptionsEvent) => {
+        return this.amqpApi.connect(connectionOptions, (message: SubscriptionsEvent) => {
             this.events.emit(message.event as string, message);
         });
-        return this.amqpConnection;
     }
 
     /* Closes the channel created and unbinds the event emitter */
@@ -62,6 +51,6 @@ export class Neo4jGraphQLSubscriptionsRabbitMQ implements Neo4jGraphQLSubscripti
 
     public publish(eventMeta: SubscriptionsEvent): Promise<void> {
         this.amqpApi.publish(eventMeta);
-        return Promise.resolve(); // To avoid future brakeing changes, we always return a promise
+        return Promise.resolve(); // To avoid future breaking changes, we always return a promise
     }
 }

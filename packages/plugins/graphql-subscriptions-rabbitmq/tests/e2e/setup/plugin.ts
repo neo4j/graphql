@@ -17,19 +17,15 @@
  * limitations under the License.
  */
 
+import amqp from "amqplib";
 import { Neo4jGraphQLSubscriptionsRabbitMQ } from "../../../src";
 
-export default async function createPlugin(): Promise<Neo4jGraphQLSubscriptionsRabbitMQ> {
-    const { RABBITMQ_HOST = "localhost", RABBITMQ_USER = "guest", RABBITMQ_PASSWORD = "guest" } = process.env;
-
+export default async function createPlugin(connection: amqp.Connection): Promise<Neo4jGraphQLSubscriptionsRabbitMQ> {
     const plugin = new Neo4jGraphQLSubscriptionsRabbitMQ({
         exchange: "neo4j-graphql",
     });
 
-    await plugin.connect({
-        hostname: RABBITMQ_HOST,
-        username: RABBITMQ_USER,
-        password: RABBITMQ_PASSWORD,
-    });
+    await plugin.connect(connection);
+
     return plugin;
 }

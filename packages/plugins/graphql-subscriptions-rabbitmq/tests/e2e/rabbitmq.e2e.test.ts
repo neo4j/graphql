@@ -17,20 +17,24 @@
  * limitations under the License.
  */
 
+import amqp from "amqplib";
 import { SubscriptionsEvent } from "@neo4j/graphql";
 import { Neo4jGraphQLSubscriptionsRabbitMQ } from "../../src";
 import createPlugin from "./setup/plugin";
+import createRabbitMQConnection from "./setup/rabbitmq";
 
 describe("Subscriptions RabbitMQ Integration", () => {
     let plugin: Neo4jGraphQLSubscriptionsRabbitMQ;
+    let connection: amqp.Connection;
 
     beforeEach(async () => {
-        plugin = await createPlugin();
+        connection = await createRabbitMQConnection();
+        plugin = await createPlugin(connection);
     });
 
     afterEach(async () => {
         await plugin.close();
-        await plugin.connection?.close();
+        await connection.close();
     });
 
     test("Send and receive events to eventEmitter", () => {

@@ -17,4 +17,16 @@
  * limitations under the License.
  */
 
-export const DEBUG_PREFIX = "@neo4j/graphql-plugin-subscriptions-rabbitmq";
+import amqp from "amqplib";
+
+export default async function createRabbitMQConnection(): Promise<amqp.Connection> {
+    const { RABBITMQ_HOST = "localhost", RABBITMQ_USER = "guest", RABBITMQ_PASSWORD = "guest" } = process.env;
+
+    const connection = await amqp.connect({
+        hostname: RABBITMQ_HOST,
+        username: RABBITMQ_USER,
+        password: RABBITMQ_PASSWORD,
+    });
+
+    return connection;
+}

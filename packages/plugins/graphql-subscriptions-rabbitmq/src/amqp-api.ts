@@ -19,7 +19,7 @@
 
 import amqp from "amqplib";
 
-export type ConnectionOptions = amqp.Options.Connect | string;
+export type ConnectionOptions = amqp.Connection | string;
 
 type AmqpApiOptions = {
     exchange: string;
@@ -27,7 +27,6 @@ type AmqpApiOptions = {
 
 export class AmqpApi<T> {
     private channel: amqp.Channel | undefined;
-
     private exchange: string;
 
     constructor({ exchange }: AmqpApiOptions) {
@@ -35,28 +34,22 @@ export class AmqpApi<T> {
     }
 
     public async connect(
-        connectionOptions: ConnectionOptions,
+        amqpConnection: ConnectionOptions,
         cb: (msg: T) => void | Promise<void>
     ): Promise<amqp.Connection> {
-        const connection = await amqp.connect(connectionOptions);
-        this.channel = await connection.createChannel();
-        await this.channel.assertExchange(this.exchange, "fanout", { durable: false });
-        const queue = await this.channel.assertQueue("", { exclusive: true }); // Creates queue with unique name
+        let connection: amqp.Connection;
+        if (typeof amqpConnection === "string") {
+            connection = await amqp.connect(amqpConnection);
+        } else {
+            connection = amqpConnection;
+        }
 
-        const queueName = queue.queue;
-        await this.channel.bindQueue(queueName, this.exchange, ""); // binds exchange and queue
+        this.channel = await this.createChannel(connection);
+        const queueName = await this.createQueue(this.channel);
 
         await this.channel.consume(queueName, (msg) => {
             if (msg !== null) {
-                const messageBody = JSON.parse(msg.content.toString()) as T;
-                const promiseOrVoid = cb(messageBody);
-                if (promiseOrVoid) {
-                    promiseOrVoid
-                        .then(() => {
-                            this.channel?.ack(msg);
-                        })
-                        .catch(() => {}); // DO NOT ack message if callback throws
-                } else this.channel?.ack(msg);
+                this.consumeMessage(msg, cb);
             }
         });
         return connection;
@@ -72,5 +65,31 @@ export class AmqpApi<T> {
     public async close(): Promise<void> {
         await this.channel?.close();
         this.channel = undefined;
+    }
+
+    private async createChannel(connection: amqp.Connection): Promise<amqp.Channel> {
+        const channel = await connection.createChannel();
+        await channel.assertExchange(this.exchange, "fanout", { durable: false });
+        return channel;
+    }
+
+    private async createQueue(channel: amqp.Channel): Promise<string> {
+        const queue = await channel.assertQueue("", { exclusive: true }); // Creates queue with unique name
+
+        const queueName = queue.queue;
+        await channel.bindQueue(queueName, this.exchange, ""); // binds exchange and queue
+        return queueName;
+    }
+
+    private consumeMessage(msg: amqp.ConsumeMessage, cb: (msg: T) => void | Promise<void>) {
+        const messageBody = JSON.parse(msg.content.toString()) as T;
+        const promiseOrVoid = cb(messageBody);
+        if (promiseOrVoid) {
+            promiseOrVoid
+                .then(() => {
+                    this.channel?.ack(msg);
+                })
+                .catch(() => {}); // DO NOT ack message if callback throws
+        } else this.channel?.ack(msg);
     }
 }

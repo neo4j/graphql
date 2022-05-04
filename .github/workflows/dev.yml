@@ -201,6 +201,42 @@ jobs:
           flags: graphql,tck
           fail_ci_if_error: true
 
+  ui-e2e-tests:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    services:
+      neo4j:
+        image: neo4j:4.4-enterprise
+        env:
+          NEO4J_AUTH: neo4j/password
+          NEO4JLABS_PLUGINS: '["apoc"]'
+          NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
+        ports:
+          - 7687:7687
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@^16.0.0
+      - name: Run @neo4j/graphql-toolbox e2e tests
+        run: |
+          yarn test
+        working-directory: packages/graphql-toolbox
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
   package-tests:
     needs:
       - cache-dependencies
