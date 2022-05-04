@@ -49,7 +49,7 @@ export class Neo4jGraphQLSubscriptionsRabbitMQ implements Neo4jGraphQLSubscripti
         }
 
         this.amqpConnection = await this.amqpApi.connect(connectionOptions, (message: SubscriptionsEvent) => {
-            this.events.emit(message.event, message);
+            this.events.emit(message.event as string, message);
         });
         return this.amqpConnection;
     }

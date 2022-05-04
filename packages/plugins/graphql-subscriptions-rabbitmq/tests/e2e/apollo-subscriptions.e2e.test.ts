@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Driver } from "neo4j-driver";
 import supertest, { Response } from "supertest";
 import { Neo4jGraphQL } from "@neo4j/graphql";
