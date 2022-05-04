@@ -236,7 +236,7 @@ jobs:
         working-directory: packages/plugins/${{ matrix.package }}
         env:
           NEO_USER: neo4j
-          NEO_PASSWORD: password
+          NEO_PASSWORD: mypassword
           NEO_URL: bolt://localhost:7687
           RABBITMQ_HOST:  localhost
           RABBITMQ_USER:  guest

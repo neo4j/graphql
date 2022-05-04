@@ -12,13 +12,31 @@ $ npm install @neo4j/graphql-plugin-auth
 
 ## Usage
 
-> TODO
+```javascript
+const Neo4jGraphQLSubscriptionsRabbitMQ = require("@neo4j/graphql-subscriptions-rabbitmq-plugin");
+
+const plugin = new Neo4jGraphQLSubscriptionsRabbitMQ();
+
+await plugin.connect({
+    hostname: "localhost",
+    username: "guest",
+    password: "guest",
+});
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    plugins: {
+        subscriptions: plugin,
+    },
+});
+```
 
 ## Running tests
 
 -   `yarn test` to run unit tests
--   `yarn test:integration` to run integration tests. These tests require a RabbitMQ instance running, and are not run by default
-    -   Use `docker-compose up rabbitmq` to spin up a rabbitmq container for testing
+-   `yarn test:e2e` to run integration tests. These tests require a RabbitMQ instance running, and are not run by default
+    -   Use `docker-compose up rabbitmq` to spin up a RabbitMQ container for testing
 
 ## Licence
 
