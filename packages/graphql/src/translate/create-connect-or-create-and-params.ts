@@ -66,11 +66,12 @@ export function createConnectOrCreateAndParams({
     });
 
     const query = statements.reduce((result, statement) => {
-        result.concat(statement);
+        const wrappedQuery = new CypherBuilder.Call(statement, withVars);
+        result.concat(wrappedQuery);
         return result;
     }, new CypherBuilder.Query());
 
-    return new CypherBuilder.Call(query, withVars).build(`${varName}_`);
+    return query.build(`${varName}_`);
 }
 
 function createConnectOrCreatePartialStatement({
