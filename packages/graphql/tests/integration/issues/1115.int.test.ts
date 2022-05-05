@@ -69,7 +69,8 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
     });
 
     test("should not throw on multiple connectOrCreate with auth", async () => {
-        runCypher(driver, `CREATE (:${parentType})<-[:HAS]-(:${childType} {tcId: "123"})`);
+        await runCypher(driver, `CREATE (:${parentType})<-[:HAS]-(:${childType} {tcId: "123"})`);
+
         const req = createJwtRequest("secret", { roles: ["upstream"] });
         const query = `
         mutation {

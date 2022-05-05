@@ -70,8 +70,8 @@ export function createConnectOrCreateAndParams({
         result.concat(wrappedQuery);
         return result;
     }, new CypherBuilder.Query());
+
     return query.build(`${varName}_`);
-    // return new CypherBuilder.Call(query, withVars).build(`${varName}_`);
 }
 
 function createConnectOrCreatePartialStatement({
