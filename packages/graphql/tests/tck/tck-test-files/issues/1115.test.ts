@@ -90,10 +90,10 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
             CALL {
             	WITH this
             	CALL apoc.util.validate(NOT(ANY(r IN [\\"upstream\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            MERGE (this_connectOrCreate_children_this3:\`Child\` { tcId: $this_connectOrCreate_children_param2 })
+            MERGE (this_connectOrCreate_children_this4:\`Child\` { tcId: $this_connectOrCreate_children_param2 })
             ON CREATE SET
-                    this_connectOrCreate_children_this3.tcId = $this_connectOrCreate_children_param3
-            MERGE (this_connectOrCreate_children_this3)-[this_connectOrCreate_children_this2:\`HAS\`]->(this)
+                    this_connectOrCreate_children_this4.tcId = $this_connectOrCreate_children_param3
+            MERGE (this_connectOrCreate_children_this4)-[this_connectOrCreate_children_this3:\`HAS\`]->(this)
             	RETURN COUNT(*)
             }
             RETURN 'Query cannot conclude with CALL'"
