@@ -17,47 +17,22 @@
  * limitations under the License.
  */
 
-import { CypherContext } from "../CypherContext";
-import { escapeLabel, padLeft } from "../utils";
-import { Param } from "./Param";
-import { serializeParameters } from "./utils";
+import { escapeLabel } from "../utils";
 import { CypherVariable } from "./References";
 
 type NodeInput = {
     labels?: Array<string>;
-    parameters?: Record<string, Param<any>>;
 };
 
 export class Node implements CypherVariable {
     public readonly prefix = "this";
-    private labels: Array<string>;
-    private parameters: Record<string, Param<any>>;
+    public readonly labels: Array<string>;
 
     constructor(input: NodeInput) {
         this.labels = input.labels || [];
-        this.parameters = input.parameters || {};
     }
 
-    public getCypher(context: CypherContext) {
-        const referenceId = this.getReference(context);
-        let parametersStr = "";
-        if (this.hasParameters()) {
-            const parameters = serializeParameters(this.parameters, context);
-            parametersStr = padLeft(parameters);
-        }
-        return `(${referenceId}${this.getLabelsString()}${parametersStr})`;
-    }
-
-    // TODO: should be private or protected
-    public getReference(context: CypherContext): string {
-        return context.getVariableId(this);
-    }
-
-    private hasParameters(): boolean {
-        return Object.keys(this.parameters).length > 0;
-    }
-
-    private getLabelsString(): string {
+    public getLabelsString(): string {
         const escapedLabels = this.labels.map(escapeLabel);
         if (escapedLabels.length === 0) return "";
         return `:${escapedLabels.join(":")}`;
@@ -65,13 +40,10 @@ export class Node implements CypherVariable {
 }
 
 export class NamedNode extends Node {
-    private name: string;
-    constructor(name: string, input?: NodeInput) {
-        super(input || {});
-        this.name = name;
-    }
+    public readonly id: string;
 
-    public getReference(_context: CypherContext): string {
-        return this.name;
+    constructor(id: string, input?: NodeInput) {
+        super(input || {});
+        this.id = id;
     }
 }

@@ -94,21 +94,21 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
             	WITH this
             CALL {
             	WITH this
-            	MERGE (this_isInPublication0_connectOrCreate_this1:\`Concept\`:\`Resource\` { uri: $this_isInPublication0_connectOrCreate_param0 })
+            	MERGE (this_isInPublication0_connectOrCreate_this2:\`Concept\`:\`Resource\` { uri: $this_isInPublication0_connectOrCreate_param0 })
             ON CREATE SET
-                    this_isInPublication0_connectOrCreate_this1.uri = $this_isInPublication0_connectOrCreate_param1,
-            this_isInPublication0_connectOrCreate_this1.prefLabel = $this_isInPublication0_connectOrCreate_param2
-            MERGE (this)-[this_isInPublication0_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication0_connectOrCreate_this1)
+                    this_isInPublication0_connectOrCreate_this2.uri = $this_isInPublication0_connectOrCreate_param1,
+            this_isInPublication0_connectOrCreate_this2.prefLabel = $this_isInPublication0_connectOrCreate_param2
+            MERGE (this)-[this_isInPublication0_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication0_connectOrCreate_this2)
             	RETURN COUNT(*)
             }
             	WITH this
             CALL {
             	WITH this
-            	MERGE (this_isInPublication1_connectOrCreate_this1:\`Concept\`:\`Resource\` { uri: $this_isInPublication1_connectOrCreate_param0 })
+            	MERGE (this_isInPublication1_connectOrCreate_this2:\`Concept\`:\`Resource\` { uri: $this_isInPublication1_connectOrCreate_param0 })
             ON CREATE SET
-                    this_isInPublication1_connectOrCreate_this1.uri = $this_isInPublication1_connectOrCreate_param1,
-            this_isInPublication1_connectOrCreate_this1.prefLabel = $this_isInPublication1_connectOrCreate_param2
-            MERGE (this)-[this_isInPublication1_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication1_connectOrCreate_this1)
+                    this_isInPublication1_connectOrCreate_this2.uri = $this_isInPublication1_connectOrCreate_param1,
+            this_isInPublication1_connectOrCreate_this2.prefLabel = $this_isInPublication1_connectOrCreate_param2
+            MERGE (this)-[this_isInPublication1_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication1_connectOrCreate_this2)
             	RETURN COUNT(*)
             }
             RETURN collect(DISTINCT this { iri: this.uri, .prefLabel, isInPublication: [ (this)-[:isInPublication]->(this_isInPublication:\`Concept\`:\`Resource\`)  WHERE this_isInPublication.uri IN $this_isInPublication_iri_IN | this_isInPublication { iri: this_isInPublication.uri, .prefLabel } ] }) AS data"

@@ -17,21 +17,32 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../CypherASTNode";
 import { CypherContext } from "../CypherContext";
+import { MatchPattern } from "../MatchPattern";
 import { Node } from "../references/Node";
 import { Param } from "../references/Param";
 import { Query } from "./Query";
+import { ReturnStatement, ReturnStatementArgs } from "./Return";
 
 type Params = Record<string, Param<any>>;
 
 export class Create extends Query {
-    constructor(private node: Node, private params: Params, parent?: Query) {
+    private matchPattern: MatchPattern<Node>;
+    private setParams: Params;
+
+    constructor(private node: Node, params: Params = {}, parent?: Query) {
         super(parent);
+        this.matchPattern = new MatchPattern(node).withParams(params);
+        this.setParams = {};
+    }
+
+    public set(params: Params): this {
+        this.setParams = params;
+        return this;
     }
 
     public cypher(context: CypherContext, childrenCypher: string): string {
-        const nodeCypher = this.node.getCypher(context);
+        const nodeCypher = this.matchPattern.getCypher(context);
         return `CREATE ${nodeCypher}\n${this.composeSet(context)}\n${childrenCypher}`;
     }
 
@@ -43,36 +54,10 @@ export class Create extends Query {
 
     private composeSet(context: CypherContext): string {
         const nodeAlias = context.getVariableId(this.node);
-        const params = Object.entries(this.params).map(([key, value]) => {
+        const setParams = Object.entries(this.setParams).map(([key, value]) => {
             return `${nodeAlias}.${key} = ${value instanceof Param ? value.getCypher(context) : value}`;
         });
-        if (params.length === 0) return "";
-        return `SET ${params.join(",\n")}`;
-    }
-}
-
-type ReturnStatementArgs = [Node, Array<string>?, string?];
-
-class ReturnStatement extends CypherASTNode {
-    private returnArgs: ReturnStatementArgs;
-
-    constructor(parent: CypherASTNode, args: ReturnStatementArgs) {
-        super(parent);
-        this.returnArgs = args;
-    }
-
-    public cypher(context: CypherContext): string {
-        let projection = "";
-        let alias = "";
-        if ((this.returnArgs[1] || []).length > 0) {
-            projection = ` {${(this.returnArgs[1] as Array<string>).map((s) => `.${s}`).join(", ")}}`;
-        }
-
-        if ((this.returnArgs[2] || []).length > 0) {
-            alias = ` AS ${this.returnArgs[2]}`;
-        }
-        const nodeAlias = context.getVariableId(this.returnArgs[0]);
-
-        return `RETURN ${nodeAlias}${projection}${alias}`;
+        if (setParams.length === 0) return "";
+        return `SET ${setParams.join(",\n")}`;
     }
 }
