@@ -50,7 +50,7 @@ jobs:
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/${{ matrix.package }}/coverage/
@@ -82,7 +82,7 @@ jobs:
       - name: Run TCK tests
         run: yarn --cwd packages/graphql run test:tck --coverage
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/graphql/coverage/
@@ -106,67 +106,67 @@ jobs:
       - name: Run Schema tests
         run: yarn --cwd packages/graphql run test:schema --coverage
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/graphql/coverage/
           flags: graphql,schema
           fail_ci_if_error: true
 
-  nextjs-app-setup:
-    needs:
-      - cache-dependencies
+  # nextjs-app-setup:
+  #   needs:
+  #     - cache-dependencies
 
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
 
-    services:
-      neo4j:
-        image: neo4j:latest
-        env:
-          NEO4J_AUTH: neo4j/mypassword
-          NEO4JLABS_PLUGINS: '["apoc"]'
-        ports:
-          - 7687:7687
+  #   services:
+  #     neo4j:
+  #       image: neo4j:latest
+  #       env:
+  #         NEO4J_AUTH: neo4j/mypassword
+  #         NEO4JLABS_PLUGINS: '["apoc"]'
+  #       ports:
+  #         - 7687:7687
 
-    strategy:
-      matrix:
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
+  #   strategy:
+  #     matrix:
+  #       graphql-version:
+  #         - "^15.0.0"
+  #         - "^16.0.0"
 
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Build and pack @neo4j/graphql
-        run: |
-          yarn build
-          yarn pack
-        working-directory: packages/graphql
-      - name: Setup Nextjs app
-        run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
-      - name: Install dependencies
-        run: |
-          chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
-          npm install ../graphql/package.tgz
-          npm install graphql@${{ matrix.graphql-version }}
-        working-directory: packages/neo4j-graphql-nextjs
-      - name: Copy .env file
-        run: cp docs/modules/ROOT/examples/code-partials/nextjs/env.example packages/neo4j-graphql-nextjs/.env.local
-      - name: Create GraphQL endpoint
-        run: cp docs/modules/ROOT/examples/code-partials/nextjs/graphql.js packages/neo4j-graphql-nextjs/pages/api/graphql.js
-      - name: Start server
-        run: cd packages/neo4j-graphql-nextjs && yarn dev &
-      - name: Query the API and assert that there are no errors
-        run: |
-          sleep 10 &&
-          RES=$(curl 'http://localhost:3000/api/graphql' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: http://localhost:3000' --data-binary '{"query":"{\n  movies {\n    title\n  }\n}"}' --compressed --silent)
-          echo "$RES"
-          echo "$RES" | grep -qv "error"
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: lts/*
+  #         cache: yarn
+  #     - name: Install dependencies
+  #       run: yarn --immutable
+  #     - name: Build and pack @neo4j/graphql
+  #       run: |
+  #         yarn build
+  #         yarn pack
+  #       working-directory: packages/graphql
+  #     - name: Setup Nextjs app
+  #       run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
+  #     - name: Install dependencies
+  #       run: |
+  #         chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
+  #         npm install ../graphql/package.tgz
+  #         npm install graphql@${{ matrix.graphql-version }}
+  #       working-directory: packages/neo4j-graphql-nextjs
+  #     - name: Copy .env file
+  #       run: cp docs/modules/ROOT/examples/code-partials/nextjs/env.example packages/neo4j-graphql-nextjs/.env.local
+  #     - name: Create GraphQL endpoint
+  #       run: cp docs/modules/ROOT/examples/code-partials/nextjs/graphql.js packages/neo4j-graphql-nextjs/pages/api/graphql.js
+  #     - name: Start server
+  #       run: cd packages/neo4j-graphql-nextjs && yarn dev &
+  #     - name: Query the API and assert that there are no errors
+  #       run: |
+  #         sleep 10 &&
+  #         RES=$(curl 'http://localhost:3000/api/graphql' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: http://localhost:3000' --data-binary '{"query":"{\n  movies {\n    title\n  }\n}"}' --compressed --silent)
+  #         echo "$RES"
+  #         echo "$RES" | grep -qv "error"
 
   package-tests:
     needs:
@@ -344,7 +344,7 @@ jobs:
         with:
           name: integration-coverage-${{ matrix.package }}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: ${{ matrix.package }},integration
@@ -401,7 +401,7 @@ jobs:
     steps:
       - name: Send Slack notification of upcoming release
         id: slack-notification
-        uses: slackapi/slack-github-action@v1.18.0
+        uses: slackapi/slack-github-action@v1.19.0
         with:
           payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
         env:
@@ -531,7 +531,7 @@ jobs:
           echo "::set-output name=prerelease::$prerelease"
       - name: Build Changelog
         id: github-release
-        uses: mikepenz/release-changelog-builder-action@v2
+        uses: mikepenz/release-changelog-builder-action@v3
         with:
           configuration: "config/release-changelog-builder-action/configuration-${{ steps.get-label.outputs.label }}-hotfix.json"
           toTag: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
@@ -558,7 +558,7 @@ jobs:
     steps:
       - name: Send Slack announcement of release
         id: slack-announcement
-        uses: slackapi/slack-github-action@v1.18.0
+        uses: slackapi/slack-github-action@v1.19.0
         with:
           payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
         env:

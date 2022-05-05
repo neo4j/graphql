@@ -120,7 +120,12 @@ function getOnCreateFields({
     schemaComposer: SchemaComposer;
 }): { node: string } | { node: string; edge: string } {
     const nodeCreateInput = schemaComposer.getOrCreateITC(`${node.name}OnCreateInput`, (tc) => {
-        const nodeFields = objectFieldsToCreateInputFields([...node.primitiveFields, ...node.scalarFields]);
+        const nodeFields = objectFieldsToCreateInputFields([
+            ...node.primitiveFields,
+            ...node.scalarFields,
+            ...node.pointFields,
+            ...node.temporalFields,
+        ]);
         tc.addFields(nodeFields);
         ensureNonEmptyInput(schemaComposer, tc);
     });

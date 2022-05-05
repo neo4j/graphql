@@ -67,6 +67,11 @@ describe("Point", () => {
               filmedAt: PointInput!
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -101,10 +106,24 @@ describe("Point", () => {
               filmedAt_NOT_IN: [PointInput!]
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
             }
 
             type Point {
@@ -130,6 +149,7 @@ describe("Point", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -217,6 +237,11 @@ describe("Point", () => {
               partLocation: CartesianPointInput!
             }
 
+            type MachineEdge {
+              cursor: String!
+              node: Machine!
+            }
+
             input MachineOptions {
               limit: Int
               offset: Int
@@ -251,15 +276,30 @@ describe("Point", () => {
               partLocation_NOT_IN: [CartesianPointInput!]
             }
 
+            type MachinesConnection {
+              edges: [MachineEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
               deleteMachines(where: MachineWhere): DeleteInfo!
               updateMachines(update: MachineUpdateInput, where: MachineWhere): UpdateMachinesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
+              machinesConnection(after: String, first: Int, sort: [MachineSort], where: MachineWhere): MachinesConnection!
             }
 
             enum SortDirection {
@@ -328,6 +368,11 @@ describe("Point", () => {
               filmedAt: [PointInput!]!
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -346,10 +391,24 @@ describe("Point", () => {
               filmedAt_NOT_INCLUDES: PointInput
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
             }
 
             type Point {
@@ -369,6 +428,7 @@ describe("Point", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
             type UpdateInfo {
@@ -444,6 +504,11 @@ describe("Point", () => {
               partLocations: [CartesianPointInput!]!
             }
 
+            type MachineEdge {
+              cursor: String!
+              node: Machine!
+            }
+
             input MachineOptions {
               limit: Int
               offset: Int
@@ -462,15 +527,30 @@ describe("Point", () => {
               partLocations_NOT_INCLUDES: CartesianPointInput
             }
 
+            type MachinesConnection {
+              edges: [MachineEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
               deleteMachines(where: MachineWhere): DeleteInfo!
               updateMachines(update: MachineUpdateInput, where: MachineWhere): UpdateMachinesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
+              machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
             }
 
             type UpdateInfo {

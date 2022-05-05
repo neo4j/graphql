@@ -21,19 +21,9 @@ export async function start(): Promise<void> {
 
     const server = await getServer();
 
+    await server.start();
+
     server.applyMiddleware({ app });
 
     debug(`Starting on PORT ${config.HTTP_PORT}`);
-
-    return new Promise((resolve, reject): void => {
-        try {
-            app.listen(config.HTTP_PORT, () => {
-                debug("Started");
-
-                resolve();
-            });
-        } catch (error) {
-            reject(error);
-        }
-    });
 }

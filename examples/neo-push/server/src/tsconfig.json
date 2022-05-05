@@ -6,12 +6,12 @@
         "paths": {
             "@neo4j/graphql": ["../../../../packages/graphql/src"],
             "@neo4j/graphql-ogm": ["../../../../packages/ogm/src"],
-            "@neo4j/graphql-plugin-auth": ["../../../../packages/graphql-plugin-auth/src"]
+            "@neo4j/graphql-plugin-auth": ["../../../../packages/plugins/graphql-plugin-auth/src"]
         }
     },
     "references": [
         { "path": "../../../../packages/graphql/tsconfig.json" },
         { "path": "../../../../packages/ogm/tsconfig.json" },
-        { "path": "../../../../packages/graphql-plugin-auth/tsconfig.json" }
+        { "path": "../../../../packages/plugins/graphql-plugin-auth/tsconfig.json" }
     ]
 }

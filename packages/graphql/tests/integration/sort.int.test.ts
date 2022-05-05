@@ -23,6 +23,7 @@ import { generate } from "randomstring";
 import { gql } from "apollo-server";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { generateUniqueType } from "../utils/graphql-types";
 
 const testLabel = generate({ charset: "alphabetic" });
 
@@ -30,33 +31,37 @@ describe("sort", () => {
     let driver: Driver;
     let schema: GraphQLSchema;
 
+    const movieType = generateUniqueType("Movie");
+    const seriesType = generateUniqueType("Series");
+    const actorType = generateUniqueType("Actor");
+
     const typeDefs = gql`
         interface Production {
             id: ID!
             title: String!
         }
-        type Movie implements Production {
+        type ${movieType} implements Production {
             id: ID!
             title: String!
             runtime: Int!
-            actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            numberOfActors: Int! @cypher(statement: "MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor)")
+            actors: [${actorType}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            numberOfActors: Int! @cypher(statement: "MATCH (actor:${actorType})-[:ACTED_IN]->(this) RETURN count(actor)")
         }
 
-        type Series implements Production {
+        type ${seriesType} implements Production {
             id: ID!
             title: String!
             episodes: Int!
         }
-        type Actor {
+        type ${actorType} {
             id: ID!
             name: String!
-            movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            movies: [${movieType}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             totalScreenTime: Int!
                 @cypher(
                     statement: """
-                    MATCH (this)-[r:ACTED_IN]->(:Movie)
+                    MATCH (this)-[r:ACTED_IN]->(:${movieType})
                     RETURN sum(r.screenTime)
                     """
                 )
@@ -121,14 +126,14 @@ describe("sort", () => {
 
         await session.run(
             `
-                    CREATE (m1:Movie:${testLabel}) SET m1 = $movies[0]
-                    CREATE (m2:Movie:${testLabel}) SET m2 = $movies[1]
-                    CREATE (s1:Series:${testLabel}) SET s1 = $series[0]
-                    CREATE (s2:Series:${testLabel}) SET s2 = $series[1]
+                    CREATE (m1:${movieType}:${testLabel}) SET m1 = $movies[0]
+                    CREATE (m2:${movieType}:${testLabel}) SET m2 = $movies[1]
+                    CREATE (s1:${seriesType}:${testLabel}) SET s1 = $series[0]
+                    CREATE (s2:${seriesType}:${testLabel}) SET s2 = $series[1]
 
-                    CREATE (a1:Actor:${testLabel}) SET a1.id = $actors[0].id, a1.name = $actors[0].name
-                    CREATE (a2:Actor:${testLabel}) SET a2.id = $actors[1].id, a2.name = $actors[1].name
-                    
+                    CREATE (a1:${actorType}:${testLabel}) SET a1.id = $actors[0].id, a1.name = $actors[0].name
+                    CREATE (a2:${actorType}:${testLabel}) SET a2.id = $actors[1].id, a2.name = $actors[1].name
+
                     MERGE (a1)-[:ACTED_IN {screenTime: $actors[0].screenTime[m1.id]}]->(m1)
                     MERGE (a1)-[:ACTED_IN {screenTime: $actors[0].screenTime[m2.id]}]->(m2)<-[:ACTED_IN {screenTime: $actors[1].screenTime[m2.id]}]-(a2)
                     MERGE (s1)<-[:ACTED_IN {screenTime: $actors[0].screenTime[s1.id]}]-(a1)-[:ACTED_IN {screenTime: $actors[0].screenTime[s2.id]}]->(s2)
@@ -157,7 +162,7 @@ describe("sort", () => {
             describe("with field in selection set", () => {
                 const queryWithTitle = `
                             query ($movieIds: [ID!]!, $direction: SortDirection!) {
-                                movies(
+                                ${movieType.plural}(
                                     where: { id_IN: $movieIds },
                                     options: { sort: [{ title: $direction }] }
                                 ) {
@@ -174,7 +179,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const { movies: gqlMovies } = gqlResult.data as any;
+                    const { [movieType.plural]: gqlMovies } = gqlResult.data as any;
 
                     expect(gqlMovies[0].id).toBe(movies[0].id);
                     expect(gqlMovies[1].id).toBe(movies[1].id);
@@ -184,7 +189,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const { movies: gqlMovies } = gqlResult.data as any;
+                    const { [movieType.plural]: gqlMovies } = gqlResult.data as any;
 
                     expect(gqlMovies[0].id).toBe(movies[1].id);
                     expect(gqlMovies[1].id).toBe(movies[0].id);
@@ -194,7 +199,7 @@ describe("sort", () => {
             describe("with field aliased in selection set", () => {
                 const queryWithTitle = `
                             query ($movieIds: [ID!]!, $direction: SortDirection!) {
-                                movies(
+                                ${movieType.plural}(
                                     where: { id_IN: $movieIds },
                                     options: { sort: [{ title: $direction }] }
                                 ) {
@@ -211,7 +216,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const { movies: gqlMovies } = gqlResult.data as any;
+                    const { [movieType.plural]: gqlMovies } = gqlResult.data as any;
 
                     expect(gqlMovies[0].id).toBe(movies[0].id);
                     expect(gqlMovies[1].id).toBe(movies[1].id);
@@ -221,7 +226,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const { movies: gqlMovies } = gqlResult.data as any;
+                    const { [movieType.plural]: gqlMovies } = gqlResult.data as any;
 
                     expect(gqlMovies[0].id).toBe(movies[1].id);
                     expect(gqlMovies[1].id).toBe(movies[0].id);
@@ -231,7 +236,7 @@ describe("sort", () => {
             describe("with field not in selection set", () => {
                 const queryWithoutTitle = `
                         query ($movieIds: [ID!]!, $direction: SortDirection!) {
-                            movies(
+                            ${movieType.plural}(
                                 where: { id_IN: $movieIds },
                                 options: { sort: [{ title: $direction }] }
                             ) {
@@ -247,7 +252,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const { movies: gqlMovies } = gqlResult.data as any;
+                    const { [movieType.plural]: gqlMovies } = gqlResult.data as any;
 
                     expect(gqlMovies[0].id).toBe(movies[0].id);
                     expect(gqlMovies[1].id).toBe(movies[1].id);
@@ -257,7 +262,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const { movies: gqlMovies } = gqlResult.data as any;
+                    const { [movieType.plural]: gqlMovies } = gqlResult.data as any;
 
                     expect(gqlMovies[0].id).toBe(movies[1].id);
                     expect(gqlMovies[1].id).toBe(movies[0].id);
@@ -277,7 +282,7 @@ describe("sort", () => {
             describe("with field in selection set", () => {
                 const queryWithNumberOfActors = `
                             query ($movieIds: [ID!]!, $direction: SortDirection!) {
-                                movies(
+                                ${movieType.plural}(
                                     where: { id_IN: $movieIds },
                                     options: { sort: [{ numberOfActors: $direction }] }
                                 ) {
@@ -291,10 +296,11 @@ describe("sort", () => {
 
                 test("ASC", async () => {
                     const gqlResult = await gqlResultByType("ASC");
-
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const gqlMovies: Array<{ id: string; numberOfActors: number }> = (gqlResult.data as any)?.movies;
+                    const gqlMovies: Array<{ id: string; numberOfActors: number }> = (gqlResult.data as any)?.[
+                        movieType.plural
+                    ];
 
                     expect(gqlMovies[0].id).toBe(movies[0].id);
                     expect(gqlMovies[0].numberOfActors).toBe(1);
@@ -306,7 +312,9 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const gqlMovies: Array<{ id: string; numberOfActors: number }> = (gqlResult.data as any)?.movies;
+                    const gqlMovies: Array<{ id: string; numberOfActors: number }> = (gqlResult.data as any)?.[
+                        movieType.plural
+                    ];
 
                     expect(gqlMovies[0].id).toBe(movies[1].id);
                     expect(gqlMovies[0].numberOfActors).toBe(2);
@@ -318,7 +326,7 @@ describe("sort", () => {
             describe("with field aliased in selection set", () => {
                 const queryWithNumberOfActors = `
                             query ($movieIds: [ID!]!, $direction: SortDirection!) {
-                                movies(
+                                ${movieType.plural}(
                                     where: { id_IN: $movieIds },
                                     options: { sort: [{ numberOfActors: $direction }] }
                                 ) {
@@ -335,7 +343,9 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const gqlMovies: Array<{ id: string; aliased: number }> = (gqlResult.data as any)?.movies;
+                    const gqlMovies: Array<{ id: string; aliased: number }> = (gqlResult.data as any)?.[
+                        movieType.plural
+                    ];
 
                     expect(gqlMovies[0].id).toBe(movies[0].id);
                     expect(gqlMovies[0].aliased).toBe(1);
@@ -347,7 +357,9 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const gqlMovies: Array<{ id: string; aliased: number }> = (gqlResult.data as any)?.movies;
+                    const gqlMovies: Array<{ id: string; aliased: number }> = (gqlResult.data as any)?.[
+                        movieType.plural
+                    ];
 
                     expect(gqlMovies[0].id).toBe(movies[1].id);
                     expect(gqlMovies[0].aliased).toBe(2);
@@ -359,7 +371,7 @@ describe("sort", () => {
             describe("with field not in selection set", () => {
                 const queryWithoutNumberOfActors = `
                         query ($movieIds: [ID!]!, $direction: SortDirection!) {
-                            movies(
+                            ${movieType.plural}(
                                 where: { id_IN: $movieIds },
                                 options: { sort: [{ numberOfActors: $direction }] }
                             ) {
@@ -375,7 +387,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const { movies: gqlMovies } = gqlResult.data as any;
+                    const { [movieType.plural]: gqlMovies } = gqlResult.data as any;
 
                     // Movie 1 has 1 actor
                     expect(gqlMovies[0].id).toBe(movies[0].id);
@@ -387,7 +399,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const { movies: gqlMovies } = gqlResult.data as any;
+                    const { [movieType.plural]: gqlMovies } = gqlResult.data as any;
 
                     // Movie 2 has 2 actors
                     expect(gqlMovies[0].id).toBe(movies[1].id);
@@ -411,7 +423,7 @@ describe("sort", () => {
             describe("with field in selection set", () => {
                 const queryWithName = `
                                 query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                                    movies(where: { id: $movieId }) {
+                                    ${movieType.plural}(where: { id: $movieId }) {
                                         id
                                         actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
                                             id
@@ -428,7 +440,7 @@ describe("sort", () => {
 
                     const gqlMovie: { id: string; actors: Array<{ id: string; name: string }> } = (
                         gqlResult.data as any
-                    )?.movies[0];
+                    )?.[movieType.plural][0];
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
@@ -442,7 +454,7 @@ describe("sort", () => {
 
                     const gqlMovie: { id: string; actors: Array<{ id: string; name: string }> } = (
                         gqlResult.data as any
-                    )?.movies[0];
+                    )?.[movieType.plural][0];
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
@@ -454,7 +466,7 @@ describe("sort", () => {
             describe("with field aliased in selection set", () => {
                 const queryWithName = `
                                 query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                                    movies(where: { id: $movieId }) {
+                                    ${movieType.plural}(where: { id: $movieId }) {
                                         id
                                         actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
                                             id
@@ -471,7 +483,7 @@ describe("sort", () => {
 
                     const gqlMovie: { id: string; actors: Array<{ id: string; name: string }> } = (
                         gqlResult.data as any
-                    )?.movies[0];
+                    )?.[movieType.plural][0];
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
@@ -485,7 +497,7 @@ describe("sort", () => {
 
                     const gqlMovie: { id: string; actors: Array<{ id: string; name: string }> } = (
                         gqlResult.data as any
-                    )?.movies[0];
+                    )?.[movieType.plural][0];
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
@@ -497,7 +509,7 @@ describe("sort", () => {
             describe("with field not in selection set", () => {
                 const queryWithoutName = `
                                 query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                                    movies(where: { id: $movieId }) {
+                                    ${movieType.plural}(where: { id: $movieId }) {
                                         id
                                         actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
                                             id
@@ -511,7 +523,9 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const gqlMovie: { id: string; actors: Array<{ id: string }> } = (gqlResult.data as any)?.movies[0];
+                    const gqlMovie: { id: string; actors: Array<{ id: string }> } = (gqlResult.data as any)?.[
+                        movieType.plural
+                    ][0];
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
@@ -523,7 +537,9 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const gqlMovie: { id: string; actors: Array<{ id: string }> } = (gqlResult.data as any)?.movies[0];
+                    const gqlMovie: { id: string; actors: Array<{ id: string }> } = (gqlResult.data as any)?.[
+                        movieType.plural
+                    ][0];
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
@@ -539,7 +555,7 @@ describe("sort", () => {
             describe("with field in selection set", () => {
                 const queryWithTotalScreenTime = `
                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                        movies(where: { id: $movieId }) {
+                        ${movieType.plural}(where: { id: $movieId }) {
                             id
                             actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
                                 id
@@ -556,7 +572,7 @@ describe("sort", () => {
 
                     const gqlMovie: { id: string; actors: Array<{ id: string; totalScreenTime: string }> } = (
                         gqlResult.data as any
-                    )?.movies[0];
+                    )?.[movieType.plural][0];
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
@@ -572,7 +588,7 @@ describe("sort", () => {
 
                     const gqlMovie: { id: string; actors: Array<{ id: string; totalScreenTime: string }> } = (
                         gqlResult.data as any
-                    )?.movies[0];
+                    )?.[movieType.plural][0];
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
@@ -586,7 +602,7 @@ describe("sort", () => {
             describe("with field aliased in selection set", () => {
                 const queryWithTotalScreenTime = `
                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                        movies(where: { id: $movieId }) {
+                        ${movieType.plural}(where: { id: $movieId }) {
                             id
                             actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
                                 id
@@ -603,7 +619,7 @@ describe("sort", () => {
 
                     const gqlMovie: { id: string; actors: Array<{ id: string; aliased: string }> } = (
                         gqlResult.data as any
-                    )?.movies[0];
+                    )?.[movieType.plural][0];
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
@@ -619,7 +635,7 @@ describe("sort", () => {
 
                     const gqlMovie: { id: string; actors: Array<{ id: string; aliased: string }> } = (
                         gqlResult.data as any
-                    )?.movies[0];
+                    )?.[movieType.plural][0];
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
@@ -633,7 +649,7 @@ describe("sort", () => {
             describe("with field not in selection set", () => {
                 const queryWithoutTotalScreenTime = `
                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                        movies(where: { id: $movieId }) {
+                        ${movieType.plural}(where: { id: $movieId }) {
                             id
                             actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
                                 id
@@ -647,7 +663,9 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const gqlMovie: { id: string; actors: Array<{ id: string }> } = (gqlResult.data as any)?.movies[0];
+                    const gqlMovie: { id: string; actors: Array<{ id: string }> } = (gqlResult.data as any)?.[
+                        movieType.plural
+                    ][0];
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
@@ -661,7 +679,9 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const gqlMovie: { id: string; actors: Array<{ id: string }> } = (gqlResult.data as any)?.movies[0];
+                    const gqlMovie: { id: string; actors: Array<{ id: string }> } = (gqlResult.data as any)?.[
+                        movieType.plural
+                    ][0];
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
@@ -686,7 +706,7 @@ describe("sort", () => {
             describe("with field in selection set", () => {
                 const queryWithSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            actors(where: { id: $actorId }) {
+                            ${actorType.plural}(where: { id: $actorId }) {
                                 id
                                 actedIn(options: { sort: [{ title: $direction }] }) {
                                     id
@@ -701,7 +721,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
                     expect(gqlActor.id).toEqual(actors[0].id);
 
                     const { actedIn: production } = gqlActor;
@@ -717,7 +737,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
                     expect(gqlActor.id).toEqual(actors[0].id);
 
                     const { actedIn: production } = gqlActor;
@@ -732,7 +752,7 @@ describe("sort", () => {
             describe("with field aliased in selection set", () => {
                 const queryWithAliasedSortField = `
                     query ($actorId: ID!, $direction: SortDirection!) {
-                        actors(where: { id: $actorId }) {
+                        ${actorType.plural}(where: { id: $actorId }) {
                             id
                             actedIn(options: { sort: [{ title: $direction }] }) {
                                 id
@@ -747,7 +767,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
                     expect(gqlActor.id).toEqual(actors[0].id);
 
                     const { actedIn: production } = gqlActor;
@@ -763,7 +783,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
                     expect(gqlActor.id).toEqual(actors[0].id);
 
                     const { actedIn: production } = gqlActor;
@@ -778,7 +798,7 @@ describe("sort", () => {
             describe("with field not in selection set", () => {
                 const queryWithOutSortField = `
                     query ($actorId: ID!, $direction: SortDirection!) {
-                        actors(where: { id: $actorId }) {
+                        ${actorType.plural}(where: { id: $actorId }) {
                             id
                             actedIn(options: { sort: [{ title: $direction }] }) {
                                 id
@@ -792,7 +812,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
                     expect(gqlActor.id).toEqual(actors[0].id);
 
                     const { actedIn: production } = gqlActor;
@@ -808,7 +828,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
                     expect(gqlActor.id).toEqual(actors[0].id);
 
                     const { actedIn: production } = gqlActor;
@@ -834,7 +854,7 @@ describe("sort", () => {
             describe("field in selection set", () => {
                 const queryWithSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            actors(where: { id: $actorId }) {
+                            ${actorType.plural}(where: { id: $actorId }) {
                                 id
                                 actedInConnection(sort: [{ node: { title: $direction } }]) {
                                     edges {
@@ -854,7 +874,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
 
                     expect(gqlActor.id).toEqual(actors[0].id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
@@ -869,7 +889,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
 
                     expect(gqlActor.id).toEqual(actors[0].id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
@@ -883,7 +903,7 @@ describe("sort", () => {
             describe("field aliased in selection set", () => {
                 const queryWithAliasedSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            actors(where: { id: $actorId }) {
+                            ${actorType.plural}(where: { id: $actorId }) {
                                 id
                                 actedInConnection(sort: [{ node: { title: $direction } }]) {
                                     edges {
@@ -903,7 +923,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
 
                     expect(gqlActor.id).toEqual(actors[0].id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
@@ -918,7 +938,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
 
                     expect(gqlActor.id).toEqual(actors[0].id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
@@ -932,7 +952,7 @@ describe("sort", () => {
             describe("field not in selection set", () => {
                 const queryWithoutSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            actors(where: { id: $actorId }) {
+                            ${actorType.plural}(where: { id: $actorId }) {
                                 id
                                 actedInConnection(sort: [{ node: { title: $direction } }]) {
                                     edges {
@@ -951,7 +971,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
 
                     expect(gqlActor.id).toEqual(actors[0].id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
@@ -966,7 +986,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
 
                     expect(gqlActor.id).toEqual(actors[0].id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
@@ -981,7 +1001,7 @@ describe("sort", () => {
             describe("field in selection set", () => {
                 const queryWithSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            actors(where: { id: $actorId }) {
+                            ${actorType.plural}(where: { id: $actorId }) {
                                 id
                                 actedInConnection(sort: [{ edge: { screenTime: $direction } }]) {
                                     edges {
@@ -1002,7 +1022,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
 
                     expect(gqlActor.id).toEqual(actors[0].id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
@@ -1017,7 +1037,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
 
                     expect(gqlActor.id).toEqual(actors[0].id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
@@ -1031,7 +1051,7 @@ describe("sort", () => {
             describe("field aliased in selection set", () => {
                 const queryWithAliasedSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            actors(where: { id: $actorId }) {
+                            ${actorType.plural}(where: { id: $actorId }) {
                                 id
                                 actedInConnection(sort: [{ edge: { screenTime: $direction } }]) {
                                     edges {
@@ -1052,7 +1072,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
 
                     expect(gqlActor.id).toEqual(actors[0].id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
@@ -1067,7 +1087,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
 
                     expect(gqlActor.id).toEqual(actors[0].id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
@@ -1081,7 +1101,7 @@ describe("sort", () => {
             describe("field not in selection set", () => {
                 const queryWithoutSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            actors(where: { id: $actorId }) {
+                            ${actorType.plural}(where: { id: $actorId }) {
                                 id
                                 actedInConnection(sort: [{ edge: { screenTime: $direction } }]) {
                                     edges {
@@ -1100,7 +1120,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
 
                     expect(gqlActor.id).toEqual(actors[0].id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
@@ -1115,7 +1135,7 @@ describe("sort", () => {
 
                     expect(gqlResult.errors).toBeUndefined();
 
-                    const [gqlActor] = gqlResult.data?.actors as any[];
+                    const [gqlActor] = gqlResult.data?.[actorType.plural] as any[];
 
                     expect(gqlActor.id).toEqual(actors[0].id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
