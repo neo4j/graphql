@@ -379,6 +379,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(res.errors).toBeUndefined();
 
+        expect(res.data?.[testSeries.plural]).toHaveLength(2);
         expect(res.data).toEqual({
             [testSeries.plural]: expect.arrayContaining([
                 {
