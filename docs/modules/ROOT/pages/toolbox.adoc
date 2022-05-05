@@ -2,7 +2,7 @@
 
 = Toolbox
 
-Experiment with your Neo4j GraphQL API on Neo4j Desktop. 
+Experiment with your Neo4j GraphQL API.
 
 > This is for development purposes only!
 

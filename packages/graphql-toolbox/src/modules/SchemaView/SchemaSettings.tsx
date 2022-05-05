@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { Checkbox, HeroIcon } from "@neo4j-ndl/react";
+import { Checkbox, HeroIcon, Radio } from "@neo4j-ndl/react";
 import { ProTooltip } from "../../components/ProTooltip";
 import { Storage } from "src/utils/storage";
 import {
@@ -49,42 +49,78 @@ export const SchemaSettings = ({
     setIsCheckConstraintChecked,
     setIsCreateConstraintChecked,
 }: Props) => {
-    const onChangeDebugCheckbox = (): void => {
-        const next = isDebugChecked === "true" ? "false" : "true";
-        setIsDebugChecked(next);
-        Storage.store(LOCAL_STATE_ENABLE_DEBUG, next);
-    };
-
-    const onChangeCheckConstraintCheckbox = (): void => {
-        const nextCheck = isCheckConstraintChecked === "true" ? "false" : "true";
-        if (isCreateConstraintChecked === "true") return;
-        setIsCheckConstraintChecked(nextCheck);
-        Storage.store(LOCAL_STATE_CHECK_CONSTRAINT, nextCheck);
-    };
-
-    const onChangeCreateConstraintCheckbox = (): void => {
-        const nextCreate = isCreateConstraintChecked === "true" ? "false" : "true";
-        if (isCheckConstraintChecked === "true") return;
-        setIsCreateConstraintChecked(nextCreate);
-        Storage.store(LOCAL_STATE_CREATE_CONSTRAINT, nextCreate);
-    };
-
     const onChangeRegexCheckbox = (): void => {
         const next = isRegexChecked === "true" ? "false" : "true";
         setIsRegexChecked(next);
         Storage.store(LOCAL_STATE_ENABLE_REGEX, next);
     };
 
+    const onChangeDebugCheckbox = (): void => {
+        const next = isDebugChecked === "true" ? "false" : "true";
+        setIsDebugChecked(next);
+        Storage.store(LOCAL_STATE_ENABLE_DEBUG, next);
+    };
+
+    const onClickCheckConstraint = (): void => {
+        const nextCheck = isCheckConstraintChecked === "true" ? "false" : "true";
+        if (isCreateConstraintChecked === "true" && nextCheck) {
+            setIsCreateConstraintChecked("false");
+            Storage.store(LOCAL_STATE_CREATE_CONSTRAINT, "false");
+        }
+        setIsCheckConstraintChecked(nextCheck);
+        Storage.store(LOCAL_STATE_CHECK_CONSTRAINT, nextCheck);
+    };
+
+    const onClickCreateConstraint = (): void => {
+        const nextCreate = isCreateConstraintChecked === "true" ? "false" : "true";
+        if (isCheckConstraintChecked === "true" && nextCreate) {
+            setIsCheckConstraintChecked("false");
+            Storage.store(LOCAL_STATE_CHECK_CONSTRAINT, "false");
+        }
+        setIsCreateConstraintChecked(nextCreate);
+        Storage.store(LOCAL_STATE_CREATE_CONSTRAINT, nextCreate);
+    };
+
+    const InfoToolTip = ({ text, width }): JSX.Element => {
+        return (
+            <ProTooltip
+                tooltipText={text}
+                arrowPositionLeft={true}
+                blockVisibility={false}
+                width={width || 200}
+                left={28}
+                top={-13}
+            >
+                <HeroIcon className="ml-1 h-4 w-4" iconName="QuestionMarkCircleIcon" type="outline" />
+            </ProTooltip>
+        );
+    };
+
     return (
         <React.Fragment>
             <span className="h5">Schema settings</span>
             <div className="pt-4">
-                <div className="mb-1">
+                <div className="mb-1 flex items-baseline">
                     <Checkbox
                         className="m-0"
                         label="Enable Regex"
                         checked={isRegexChecked === "true"}
                         onChange={onChangeRegexCheckbox}
+                    />
+                    <InfoToolTip
+                        text={
+                            <span>
+                                More information:{" "}
+                                <a
+                                    className="underline"
+                                    href="https://neo4j.com/docs/graphql-manual/current/filtering/#filtering-regex"
+                                    target="_blank"
+                                >
+                                    here
+                                </a>
+                            </span>
+                        }
+                        width={150}
                     />
                 </div>
                 <div className="mb-1 flex items-baseline">
@@ -95,10 +131,10 @@ export const SchemaSettings = ({
                         checked={isDebugChecked === "true"}
                         onChange={onChangeDebugCheckbox}
                     />
-                    <ProTooltip
-                        tooltipText={
+                    <InfoToolTip
+                        text={
                             <span>
-                                Enable "verbose" logging in browser. See{" "}
+                                Also enable "verbose" logging in browser. Instructions:{" "}
                                 <a
                                     className="underline"
                                     href="https://github.com/debug-js/debug#browser-support"
@@ -108,29 +144,55 @@ export const SchemaSettings = ({
                                 </a>
                             </span>
                         }
-                        arrowPositionLeft={true}
-                        blockVisibility={false}
-                        width={280}
-                        left={28}
-                        top={-13}
-                    >
-                        <HeroIcon className="ml-1 h-4 w-4" iconName="QuestionMarkCircleIcon" type="outline" />
-                    </ProTooltip>
+                        width={360}
+                    />
                 </div>
-                <div className="mb-1">
-                    <Checkbox
+                <div className="mb-1 flex items-baseline">
+                    <Radio
                         className="m-0"
                         label="Check Constraint"
                         checked={isCheckConstraintChecked === "true"}
-                        onChange={onChangeCheckConstraintCheckbox}
+                        onClick={onClickCheckConstraint}
+                        onChange={() => {}}
+                    />
+                    <InfoToolTip
+                        text={
+                            <span>
+                                More information:{" "}
+                                <a
+                                    className="underline"
+                                    href="https://neo4j.com/docs/graphql-manual/current/type-definitions/indexes-and-constraints/#type-definitions-indexes-and-constraints-asserting"
+                                    target="_blank"
+                                >
+                                    here
+                                </a>
+                            </span>
+                        }
+                        width={150}
                     />
                 </div>
-                <div className="mb-1">
-                    <Checkbox
+                <div className="mb-1 flex items-baseline">
+                    <Radio
                         className="m-0"
                         label="Create Constraint"
                         checked={isCreateConstraintChecked === "true"}
-                        onChange={onChangeCreateConstraintCheckbox}
+                        onClick={onClickCreateConstraint}
+                        onChange={() => {}}
+                    />
+                    <InfoToolTip
+                        text={
+                            <span>
+                                More information:{" "}
+                                <a
+                                    className="underline"
+                                    href="https://neo4j.com/docs/graphql-manual/current/type-definitions/indexes-and-constraints/#type-definitions-indexes-and-constraints-asserting"
+                                    target="_blank"
+                                >
+                                    here
+                                </a>
+                            </span>
+                        }
+                        width={150}
                     />
                 </div>
             </div>
