@@ -19,7 +19,7 @@
 
 import { Driver, Result } from "neo4j-driver";
 
-/** Runs cypher safetly, cleaning session afterwars */
+/** Runs cypher safely, cleaning session afterwars */
 export async function runCypher(driver: Driver, cypher: string): Promise<Result> {
     const session = driver.session();
     try {
