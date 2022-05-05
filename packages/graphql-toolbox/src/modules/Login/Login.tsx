@@ -25,33 +25,37 @@ import { DEFAULT_BOLT_URL } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
+import { getConnectUrlSearchParam } from "src/contexts/utils";
 
 export const Login = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const auth = useContext(AuthContext);
+    const [url, setUrl] = useState(getConnectUrlSearchParam() || DEFAULT_BOLT_URL);
 
-    const onSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setLoading(true);
+    const onSubmit = useCallback(
+        async (event: React.FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
+            setLoading(true);
 
-        try {
-            const data = new FormData(event.currentTarget);
-            const username = data.get("username") as string;
-            const password = data.get("password") as string;
-            const url = data.get("url") as string;
+            try {
+                const data = new FormData(event.currentTarget);
+                const username = data.get("username") as string;
+                const password = data.get("password") as string;
 
-            await auth.login({
-                username,
-                password,
-                url,
-            });
-        } catch (error) {
-            setError((error as Error).message as string);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+                await auth.login({
+                    username,
+                    password,
+                    url,
+                });
+            } catch (error) {
+                setError((error as Error).message as string);
+            } finally {
+                setLoading(false);
+            }
+        },
+        [url]
+    );
 
     return (
         <div className="grid place-items-center h-screen n-bg-neutral-90">
@@ -90,8 +94,9 @@ export const Login = () => {
                             testTag="data-test-login-url"
                             label="Connection URI"
                             name="url"
+                            value={url}
+                            onChange={(event) => setUrl(event.currentTarget.value)}
                             placeholder={DEFAULT_BOLT_URL}
-                            defaultValue={DEFAULT_BOLT_URL}
                             required={true}
                             type="text"
                             disabled={loading}

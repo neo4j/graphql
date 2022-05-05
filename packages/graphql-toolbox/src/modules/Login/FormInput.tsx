@@ -22,11 +22,13 @@ export interface Props {
     label: string;
     type: string;
     testTag: string;
+    value?: string;
     placeholder?: string;
     defaultValue?: string;
     autoComplete?: string;
     required: boolean;
     disabled?: boolean;
+    onChange?: (event: React.FormEvent<HTMLInputElement>) => void;
 }
 
 export const FormInput = (props: Props) => {
@@ -38,6 +40,7 @@ export const FormInput = (props: Props) => {
         <div>
             <label className="block text-gray-700 text-sm font-bold mb-2">{props.label}</label>
             <input
+                value={props.value}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 name={props.name}
                 type={props.type}
@@ -46,6 +49,7 @@ export const FormInput = (props: Props) => {
                 defaultValue={props.defaultValue}
                 disabled={props.disabled}
                 autoComplete={props.autoComplete || ""}
+                onChange={props.onChange}
                 {...options}
             />
         </div>

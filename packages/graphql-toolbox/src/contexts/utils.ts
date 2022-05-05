@@ -95,3 +95,10 @@ export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | 
         return null;
     }
 };
+
+export const getConnectUrlSearchParam = (): string | null => {
+    const queryString = window.location.search;
+    if (!queryString) return null;
+    const urlParams = new URLSearchParams(queryString);
+    return urlParams.get("connectURL");
+};
