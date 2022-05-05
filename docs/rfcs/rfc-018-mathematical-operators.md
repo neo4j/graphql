@@ -22,6 +22,14 @@ These properties should be available for all the following types:
 - BigInt
 
 ### Usage Examples
+Given the following type definitions:
+```graphql
+type Node {
+  id: ID! @id
+  counter: Int
+}
+```
+The operator _ADD could then be used in a mutation like:
 ```graphql
 updateNodes(
   where: { id: "e9bc687a-efd1-419d-b208" }
@@ -33,7 +41,7 @@ updateNodes(
 
 ### Technical considerations
 #### Ambiguous property
-Given the following example: 
+In the following mutation body: 
 ```graphql
 updateNodes(
   where: { id: "e9bc687a-efd1-419d-b208" }
@@ -43,7 +51,7 @@ updateNodes(
   }
 )
 ```
-`counter` is ambiguous, and a strategy for this situation should be defined.
+`counter` is ambiguous, and an Error will be raised.
 
 #### Schema size
 The proposed solution could increase the size of the augmented schema noticeably.
@@ -62,6 +70,14 @@ The new GraphQL scalar type should be available for all the following types:
 - BigInt
 
 ### Usage Examples
+Given the following type definitions:
+```graphql
+type Node {
+  id: ID! @id
+  counter: Int
+}
+```
+The operator ADD could then be used in a mutation like:
 ```graphql
 updateNodes(
   where: { id: "e9bc687a-efd1-419d-b208" }
@@ -79,14 +95,15 @@ and increase the learning curve of the library.
 Let's consider the following type definition:
 ```graphql
 type Node {
-    counter: Int | IntBoxed
+  id: ID! @id
+  counter: Int | IntBoxed
 }
 
 type IntBoxed {
-    ADD: Int
-    SUBTRACT: Int
-    MULTIPLY: Int
-    DIVIDE: Int
+  ADD: Int
+  SUBTRACT: Int
+  MULTIPLY: Int
+  DIVIDE: Int
 }
 ```
 The above will raise an error as GraphQL does not support unions between scalar types.
@@ -96,7 +113,7 @@ The augmented schema should look like this:
 scalar IntBoxed
 
 type Node {
-counter: IntBoxed
+  counter: IntBoxed
 }
 ```
 A future investigation on the feasibility of the above will be required in the case there will be a follow-up over this solution.
@@ -113,7 +130,7 @@ None.
 
 ## Discarded solutions
 ### Interpolation
-Given the following example:
+In the following example:
 ```graphql
 updateNodes(
   where: { id: "e9bc687a-efd1-419d-b208" }
@@ -122,5 +139,5 @@ updateNodes(
   }
 )
 ```
-This syntax is not valid GraphQL.
+the syntax is not valid GraphQL.
 
