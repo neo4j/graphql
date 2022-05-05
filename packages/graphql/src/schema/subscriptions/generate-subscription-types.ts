@@ -20,7 +20,7 @@
 import { SchemaComposer } from "graphql-compose";
 import { SubscriptionsEvent } from "../../subscriptions/subscriptions-event";
 import { Node } from "../../classes";
-import { EventType } from "../../graphql/output/enums/EventType";
+import { EventType } from "../../graphql/enums/EventType";
 import { generateSubscriptionWhereType } from "./generate-subscription-where-type";
 import { generateEventPayloadType } from "./generate-event-payload-type";
 import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subscriptions/subscribe";

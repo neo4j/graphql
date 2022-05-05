@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-export * from "./input/directives";
-export * from "./input/enums";
+export * from "./directives";
+export * from "./enums";
 export * from "./input/scalars";
 export * from "./output/enums";
-export * from "./output/input-objects";
+export * from "./input-objects";
 export * from "./output/objects";
-export * from "./output/scalars";
+export * from "./scalars";

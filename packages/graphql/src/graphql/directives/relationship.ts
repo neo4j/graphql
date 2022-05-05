@@ -20,7 +20,7 @@
 import { DirectiveLocation, GraphQLDirective, GraphQLNonNull, GraphQLString } from "graphql";
 import { RelationshipDirectionEnum } from "../enums/RelationshipDirection";
 import { RelationshipQueryDirectionEnum } from "../enums/RelationshipQueryDirection";
-import { RelationshipQueryDirectionOption } from "../../../constants";
+import { RelationshipQueryDirectionOption } from "../../constants";
 
 export const relationshipDirective = new GraphQLDirective({
     name: "relationship",

@@ -44,7 +44,7 @@ import {
 } from "./resolvers";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import * as constants from "../constants";
-import * as Scalars from "../graphql/output/scalars";
+import * as Scalars from "../graphql/scalars";
 import { Node } from "../classes";
 import Relationship from "../classes/Relationship";
 import createConnectionFields from "./create-connection-fields";
@@ -61,24 +61,24 @@ import {
 import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
 import { upperFirst } from "../utils/upper-first";
-import { ensureNonEmptyInput } from "./ensureNonEmptyInput";
+import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import { getDocument } from "./get-document";
 import { getDefinitionNodes } from "./get-definition-nodes";
 import { isRootType } from "../utils/is-root-type";
 
 // GraphQL type imports
-import { CreateInfo } from "../graphql/output/objects/CreateInfo";
-import { DeleteInfo } from "../graphql/output/objects/DeleteInfo";
-import { UpdateInfo } from "../graphql/output/objects/UpdateInfo";
-import { PageInfo } from "../graphql/output/objects/PageInfo";
-import { SortDirection } from "../graphql/output/enums/SortDirection";
-import { QueryOptions } from "../graphql/output/input-objects/QueryOptions";
-import { Point } from "../graphql/output/objects/Point";
-import { CartesianPoint } from "../graphql/output/objects/CartesianPoint";
-import { PointInput } from "../graphql/output/input-objects/PointInput";
-import { CartesianPointInput } from "../graphql/output/input-objects/CartesianPointInput";
-import { PointDistance } from "../graphql/output/input-objects/PointDistance";
-import { CartesianPointDistance } from "../graphql/output/input-objects/CartesianPointDistance";
+import { CreateInfo } from "../graphql/objects/CreateInfo";
+import { DeleteInfo } from "../graphql/objects/DeleteInfo";
+import { UpdateInfo } from "../graphql/objects/UpdateInfo";
+import { PageInfo } from "../graphql/objects/PageInfo";
+import { SortDirection } from "../graphql/enums/SortDirection";
+import { QueryOptions } from "../graphql/input-objects/QueryOptions";
+import { Point } from "../graphql/objects/Point";
+import { CartesianPoint } from "../graphql/objects/CartesianPoint";
+import { PointInput } from "../graphql/input-objects/PointInput";
+import { CartesianPointInput } from "../graphql/input-objects/CartesianPointInput";
+import { PointDistance } from "../graphql/input-objects/PointDistance";
+import { CartesianPointDistance } from "../graphql/input-objects/CartesianPointDistance";
 import getNodes from "./get-nodes";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
