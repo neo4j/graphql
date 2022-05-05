@@ -64,7 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         });
     });
 
-    test("XXXXXX", async () => {
+    test("should also return node with no relationship in result set", async () => {
         const query = gql`
             query {
                 programmeItems {
@@ -85,6 +85,8 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
             WITH this
             CALL {
             WITH this
+            CALL {
+            WITH this
             MATCH (this)-[:RELATES_TO]-(this_Series:Series)
             RETURN { __resolveType: \\"Series\\", productTitle: this_Series.productTitle } AS releatsTo
             UNION
@@ -96,14 +98,15 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
             MATCH (this)-[:RELATES_TO]-(this_ProgrammeItem:ProgrammeItem)
             RETURN { __resolveType: \\"ProgrammeItem\\", productTitle: this_ProgrammeItem.productTitle } AS releatsTo
             }
-            WITH this, collect(releatsTo) AS releatsTo
+            RETURN collect(releatsTo) AS releatsTo
+            }
             RETURN this { .productTitle, .episodeNumber, releatsTo: releatsTo } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test("XXXXXX as Relay connection", async () => {
+    test("should return node with no relationship (edge) in result set, as Relay connection", async () => {
         const query = gql`
             query {
                 programmeItems {

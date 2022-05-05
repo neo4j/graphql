@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         await driver.close();
     });
 
-    test("should also return empty relationship in result set", async () => {
+    test("should also return node with no relationship in result set", async () => {
         const createProgrammeItems = `
             mutation {
                 ${testProgrammeItem.operations.create}(input: [
