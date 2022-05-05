@@ -26,7 +26,7 @@ import { generateUniqueType } from "../../utils/graphql-types";
 describe("https://github.com/neo4j/graphql/issues/1348", () => {
     const testSeries = generateUniqueType("Series");
     const testSeason = generateUniqueType("Season");
-    const testProgrammeItem = generateUniqueType("ProgrameItem");
+    const testProgrammeItem = generateUniqueType("ProgrammeItem");
 
     let schema: GraphQLSchema;
     let driver: Driver;
