@@ -220,6 +220,7 @@ function createWhereAndParams({
                     relationship,
                     relationshipVariable: `${collectedMap}.relationship`,
                     parameterPrefix,
+                    listPredicates: [listPredicate],
                 });
 
                 resultStr += connectionWhere[0];
