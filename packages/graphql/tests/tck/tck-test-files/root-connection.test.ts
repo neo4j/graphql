@@ -70,7 +70,7 @@ describe("Root Connection Query tests", () => {
             "CALL {
             MATCH (this:Movie)
             WHERE this.title = $this_title
-            WITH COLLECT(this) as edges
+            WITH COLLECT(this { .* }) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
             RETURN this, totalCount
@@ -104,7 +104,7 @@ describe("Root Connection Query tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
             MATCH (this:Movie)
-            WITH COLLECT(this) as edges
+            WITH COLLECT(this { .* }) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
             RETURN this, totalCount
@@ -142,7 +142,7 @@ describe("Root Connection Query tests", () => {
             "CALL {
             MATCH (this:Movie)
             WHERE this.title CONTAINS $this_title_CONTAINS
-            WITH COLLECT(this) as edges
+            WITH COLLECT(this { .* }) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
             RETURN this, totalCount
@@ -187,7 +187,7 @@ describe("Root Connection Query tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
             MATCH (this:Movie)
-            WITH COLLECT(this) as edges
+            WITH COLLECT(this { .* }) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
             RETURN this, totalCount
@@ -205,12 +205,12 @@ describe("Root Connection Query tests", () => {
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-        "{
-            \\"this_limit\\": {
-                \\"low\\": 20,
-                \\"high\\": 0
-            }
-        }"
-    `);
+                    "{
+                        \\"this_limit\\": {
+                            \\"low\\": 20,
+                            \\"high\\": 0
+                        }
+                    }"
+            `);
     });
 });

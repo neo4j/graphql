@@ -31,15 +31,29 @@ describe("Cypher sort tests", () => {
 
     beforeAll(() => {
         typeDefs = gql`
+            type Actor {
+                id: ID
+                name: String
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
             type Movie {
                 id: ID
                 title: String
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 totalGenres: Int!
                     @cypher(
                         statement: """
                         MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                         RETURN count(DISTINCT genre)
+                        """
+                    )
+                totalActors: Int!
+                    @cypher(
+                        statement: """
+                        MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                        RETURN count(DISTINCT actor)
                         """
                     )
             }
@@ -323,6 +337,104 @@ describe("Cypher sort tests", () => {
                     }
                 }
             }"
+        `);
+    });
+
+    test("Should project cypher fields after applying the sort when sorting on a non-cypher field on a root connection)", async () => {
+        const query = gql`
+            {
+                moviesConnection(sort: [{ title: ASC }]) {
+                    edges {
+                        node {
+                            title
+                            totalGenres
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, { req });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            MATCH (this:Movie)
+            WITH COLLECT(this { .* }) as edges
+            WITH edges, size(edges) as totalCount
+            UNWIND edges as this
+            RETURN this, totalCount
+            ORDER BY this.title ASC
+            }
+            WITH COLLECT({ node: this { .title, totalGenres:  apoc.cypher.runFirstColumn(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+            RETURN count(DISTINCT genre)\\", {this: this, auth: $auth}, false) } }) as edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } as this"
+        `);
+    });
+
+    test("Should project cypher fields before the sort when sorting on a cypher field on a root connection", async () => {
+        const query = gql`
+            {
+                moviesConnection(sort: [{ totalGenres: ASC }]) {
+                    edges {
+                        node {
+                            title
+                            totalGenres
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, { req });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            MATCH (this:Movie)
+            WITH COLLECT(this { .*, totalGenres:  apoc.cypher.runFirstColumn(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+            RETURN count(DISTINCT genre)\\", {this: this, auth: $auth}, false)}) as edges
+            WITH edges, size(edges) as totalCount
+            UNWIND edges as this
+            RETURN this, totalCount
+            ORDER BY this.totalGenres ASC
+            }
+            WITH COLLECT({ node: this { .title, .totalGenres } }) as edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } as this"
+        `);
+    });
+
+    test("Should sort properly on a root connection when multiple cypher fields are queried but only sorted on one", async () => {
+        const query = gql`
+            {
+                moviesConnection(sort: [{ totalGenres: ASC }]) {
+                    edges {
+                        node {
+                            title
+                            totalGenres
+                            totalActors
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, { req });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            MATCH (this:Movie)
+            WITH COLLECT(this { .*, totalGenres:  apoc.cypher.runFirstColumn(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+            RETURN count(DISTINCT genre)\\", {this: this, auth: $auth}, false)}) as edges
+            WITH edges, size(edges) as totalCount
+            UNWIND edges as this
+            RETURN this, totalCount
+            ORDER BY this.totalGenres ASC
+            }
+            WITH COLLECT({ node: this { .title, .totalGenres, totalActors:  apoc.cypher.runFirstColumn(\\"MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+            RETURN count(DISTINCT actor)\\", {this: this, auth: $auth}, false) } }) as edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } as this"
         `);
     });
 });

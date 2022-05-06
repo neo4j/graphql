@@ -71,6 +71,7 @@ function translateRead({
         context,
         resolveTree,
         varName,
+        isRootConnectionField,
     });
     [projStr] = projection;
     cypherParams = { ...cypherParams, ...projection[1] };
@@ -196,12 +197,14 @@ function translateRead({
     let cypher: string[] = [];
 
     if (isRootConnectionField) {
+        const sortProjStr = (projection[2]?.rootConnectionCypherSortFields ?? []).join(", ");
+        const collectProjStr = sortProjStr ? `{ .*, ${sortProjStr}}` : `{ .* }`;
         cypher = [
             "CALL {",
             matchAndWhereStr,
             authStr,
             ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
-            `WITH COLLECT(${varName}) as edges`,
+            `WITH COLLECT(${varName} ${collectProjStr}) as edges`,
             "WITH edges, size(edges) as totalCount",
             `UNWIND edges as ${varName}`,
             `RETURN ${varName}, totalCount`,
