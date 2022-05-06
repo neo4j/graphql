@@ -20,15 +20,9 @@
 import ws from "ws";
 import { Client, createClient } from "graphql-ws";
 
-export interface WebSocketClient {
-    events: Array<any>;
-
-    subscribe(query: string): Promise<void>;
-    close(): Promise<void>;
-}
-
-export class WebSocketTestClient implements WebSocketClient {
+export class WebSocketTestClient {
     public events: Array<any> = [];
+    public errors: Array<any> = [];
 
     private path: string;
     private client: Client;
@@ -39,7 +33,7 @@ export class WebSocketTestClient implements WebSocketClient {
             url: this.path,
             webSocketImpl: ws,
             connectionParams: {
-                authentication: jwt,
+                authorization: jwt,
             },
         });
     }
@@ -50,7 +44,8 @@ export class WebSocketTestClient implements WebSocketClient {
                 { query },
                 {
                     next: (value) => {
-                        this.events.push(value.data);
+                        if (value.errors) this.errors = [...this.errors, ...value.errors];
+                        else if (value.data) this.events.push(value.data);
                     },
                     error(err) {
                         reject(err);
@@ -73,6 +68,7 @@ export class WebSocketTestClient implements WebSocketClient {
     public async close(): Promise<void> {
         if (this.client) await this.client?.dispose();
         this.events = [];
+        this.errors = [];
     }
 }
 /* eslint-enable import/no-extraneous-dependencies */

@@ -39,6 +39,9 @@ type SubscriptionArgs = {
 
 export function generateSubscribeMethod(node: Node, type: "create" | "update" | "delete") {
     return (_root: any, args: SubscriptionArgs, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
+        if (node.auth?.rules[0].isAuthenticated && !context.jwt) {
+            throw new Error("Error");
+        }
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
 
         return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {

@@ -24,7 +24,7 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 import { generateUniqueType } from "../../../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
-import { WebSocketClient, WebSocketTestClient } from "../../setup/ws-client";
+import { WebSocketTestClient } from "../../setup/ws-client";
 import neo4j from "../../setup/neo4j";
 import { createJwtHeader } from "../../../utils/create-jwt-request";
 
@@ -34,7 +34,7 @@ describe("Subscription auth", () => {
     const typeMovie = generateUniqueType("Movie");
 
     let server: TestGraphQLServer;
-    let wsClient: WebSocketClient;
+    let wsClient: WebSocketTestClient;
     let jwtToken: string;
 
     beforeAll(async () => {
@@ -64,8 +64,8 @@ describe("Subscription auth", () => {
         await server.start();
     });
 
-    beforeEach(() => {
-        wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
+    afterEach(async () => {
+        await wsClient.close();
     });
 
     afterAll(async () => {
@@ -73,14 +73,14 @@ describe("Subscription auth", () => {
         await driver.close();
     });
 
-    test("create subscription fails due to auth", async () => {
+    test("authentication pass", async () => {
+        wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
         await wsClient.subscribe(`
                             subscription {
                                 ${typeMovie.operations.subscribe.created} {
                                     ${typeMovie.operations.subscribe.payload.created} {
                                         title
                                     }
-                                    event
                                 }
                             }
                             `);
@@ -88,14 +88,35 @@ describe("Subscription auth", () => {
         const result = await createMovie("movie1");
 
         expect(result.body.errors).toBeUndefined();
-        // expect(wsClient.events).toEqual([
-        //     {
-        //         [typeMovie.operations.subscribe.created]: {
-        //             [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-        //             event: "CREATE",
-        //         },
-        //     },
-        // ]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: {
+                        title: "movie1",
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.errors).toEqual([]);
+    });
+
+    test("authentication fails", async () => {
+        wsClient = new WebSocketTestClient(server.wsPath);
+        await wsClient.subscribe(`
+                                subscription {
+                                    ${typeMovie.operations.subscribe.created} {
+                                        ${typeMovie.operations.subscribe.payload.created} {
+                                            title
+                                        }
+                                    }
+                                }
+                                `);
+
+        const result = await createMovie("movie1");
+
+        expect(result.body.errors).toBeUndefined();
+        expect(wsClient.events).toEqual([]);
+        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
     });
 
     async function createMovie(title: string): Promise<Response> {
