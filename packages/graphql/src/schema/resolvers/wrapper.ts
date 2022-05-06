@@ -25,6 +25,7 @@ import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
 import { Context, Neo4jGraphQLPlugins, JwtPayload } from "../../types";
 import { getToken } from "../../utils/get-token";
+import { SubscriptionContext } from "./subscriptions/types";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -102,13 +103,34 @@ export const wrapResolver =
 export const wrapSubscription =
     (resolverArgs: WrapResolverArguments) =>
     (next) =>
-    (root, args, context: Record<string, any>, info: GraphQLResolveInfo) => {
-        // TODO: context auth
-        let subscriptionContext = {};
-        if (resolverArgs.plugins?.subscriptions) {
-            subscriptionContext = {
-                plugin: resolverArgs.plugins.subscriptions,
-            };
+    (root, args, context: Record<string, any> = {}, info: GraphQLResolveInfo) => {
+        console.log("connectionParams", context.connectionParams);
+
+        const contextParams = context.connectionParams || {};
+
+        if (!context.jwt) {
+            if (context.plugins?.auth) {
+                const token = getToken(contextParams);
+
+                if (token) {
+                    const jwt = await context.plugins.auth.decode<JwtPayload>(token);
+
+                    if (typeof jwt === "string") {
+                        throw new Neo4jGraphQLAuthenticationError("JWT payload cannot be a string");
+                    }
+
+                    context.jwt = jwt;
+                }
+            }
         }
-        return next(root, args, { ...context, ...subscriptionContext }, info);
+
+        if (!resolverArgs?.plugins?.subscriptions) {
+            throw new Error("SUbscription Plugin not set");
+        }
+        // TODO: context auth
+        const subscriptionContext: SubscriptionContext = {
+            plugin: resolverArgs.plugins.subscriptions,
+        };
+
+        return next(root, args, { ...context, ...contextParams, ...subscriptionContext }, info);
     };

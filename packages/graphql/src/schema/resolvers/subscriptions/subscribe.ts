@@ -20,14 +20,11 @@
 import { on } from "events";
 import { Neo4jGraphQLError } from "../../../classes";
 import Node from "../../../classes/Node";
-import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "../../../types";
+import { SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
+import { SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where";
-
-export type SubscriptionContext = {
-    plugin: Neo4jGraphQLSubscriptionsPlugin;
-};
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
     if (!payload) {

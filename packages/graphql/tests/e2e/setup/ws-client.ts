@@ -33,11 +33,14 @@ export class WebSocketTestClient implements WebSocketClient {
     private path: string;
     private client: Client;
 
-    constructor(path: string) {
+    constructor(path: string, jwt?: string) {
         this.path = path;
         this.client = createClient({
             url: this.path,
             webSocketImpl: ws,
+            connectionParams: {
+                authentication: jwt,
+            },
         });
     }
 

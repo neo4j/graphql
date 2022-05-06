@@ -26,6 +26,7 @@ const debug = Debug(DEBUG_AUTH);
 
 type RequestLike = {
     headers?: { authorization?: string; Authorization?: string };
+    rawHeaders?: Array<string>;
     cookies?: { token?: string };
 };
 
@@ -44,7 +45,6 @@ export function getToken(context: Context): string | undefined {
 
         return token;
     }
-
     const authorization = (req?.headers?.authorization || req?.headers?.Authorization || req.cookies?.token) as
         | string
         | undefined;
