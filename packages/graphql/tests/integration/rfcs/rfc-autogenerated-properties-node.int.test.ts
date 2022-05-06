@@ -738,5 +738,70 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 },
             });
         });
+
+        test("should have access to context as third argument", async () => {
+            const testMovie = generateUniqueType("Movie");
+            const callback = (_parent, _args, context) => context.testValue;
+
+            const typeDefs = gql`
+                type ${testMovie.name} {
+                    id: ID!
+                    title: String!
+                    contextValue: String @callback(operations: [CREATE], name: "callback")
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                config: {
+                    callbacks: {
+                        callback,
+                    },
+                },
+            });
+
+            const movieTitle = generate({
+                charset: "alphabetic",
+            });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const testValue = generate({
+                charset: "alphabetic",
+            });
+
+            const mutation = `
+                mutation {
+                    ${testMovie.operations.create}(input: [{ id: "${movieId}", title: "${movieTitle}" }]) {
+                        ${testMovie.plural} {
+                            id
+                            title
+                            contextValue
+                        }
+                    }
+                }
+            `;
+
+            const result = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: mutation,
+                contextValue: { driver, testValue },
+            });
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toMatchObject({
+                [testMovie.operations.create]: {
+                    [testMovie.plural]: [
+                        {
+                            id: movieId,
+                            title: movieTitle,
+                            contextValue: testValue,
+                        },
+                    ],
+                },
+            });
+        });
     });
 });
