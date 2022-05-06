@@ -166,6 +166,8 @@ describe("Cypher Auth Where", () => {
             WITH this
             CALL {
             WITH this
+            CALL {
+            WITH this
             MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
             WHERE EXISTS((this_Comment)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_Comment)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Comment_auth_where0_creator_id)
             RETURN { __resolveType: \\"Comment\\" } AS content
@@ -175,7 +177,8 @@ describe("Cypher Auth Where", () => {
             WHERE EXISTS((this_Post)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)
             RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
             }
-            WITH this, collect(content) AS content
+            RETURN collect(content) AS content
+            }
             RETURN this { .id, content: content } as this"
         `);
 
