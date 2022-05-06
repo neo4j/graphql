@@ -45,5 +45,6 @@ export {
 } from "./classes";
 
 export * as directives from "./graphql/directives";
+export * as scalars from "./graphql/scalars";
 
 export const objects = { Point, CartesianPoint };

@@ -32,7 +32,6 @@ import {
 } from "graphql";
 import pluralize from "pluralize";
 import * as scalars from "../../graphql/scalars";
-import * as enums from "../../graphql/enums";
 import * as directives from "../../graphql/directives";
 import { Point } from "../../graphql/objects/Point";
 import { CartesianPoint } from "../../graphql/objects/CartesianPoint";
@@ -167,7 +166,6 @@ function validateDocument(document: DocumentNode): void {
         directives: [...Object.values(directives), ...specifiedDirectives],
         types: [
             ...Object.values(scalars),
-            ...Object.values(enums),
             Point,
             CartesianPoint,
             PointInput,

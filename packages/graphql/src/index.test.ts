@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import { GraphQLEnumType } from "graphql";
-import { RelationshipQueryDirectionOption } from "../../constants";
+import { GraphQLDirective, GraphQLScalarType } from "graphql";
+import { directives, scalars } from ".";
 
-export const RelationshipQueryDirectionEnum = new GraphQLEnumType({
-    name: "RelationshipQueryDirection",
-    values: {
-        [RelationshipQueryDirectionOption.DEFAULT_DIRECTED]: {},
-        [RelationshipQueryDirectionOption.DEFAULT_UNDIRECTED]: {},
-        [RelationshipQueryDirectionOption.DIRECTED_ONLY]: {},
-        [RelationshipQueryDirectionOption.UNDIRECTED_ONLY]: {},
-    },
+describe("Library exports", () => {
+    test("directives", () => {
+        expect(directives.aliasDirective).toBeInstanceOf(GraphQLDirective);
+    });
+
+    test("scalars", () => {
+        expect(scalars.GraphQLBigInt).toBeInstanceOf(GraphQLScalarType);
+    });
 });

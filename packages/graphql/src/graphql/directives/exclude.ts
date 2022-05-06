@@ -18,7 +18,7 @@
  */
 
 import { DirectiveLocation, GraphQLDirective, GraphQLList, GraphQLNonNull } from "graphql";
-import { ExcludeOperationEnum } from "../enums/ExcludeOperation";
+import { ExcludeOperationEnum } from "./arguments/enums/ExcludeOperation";
 
 export const excludeDirective = new GraphQLDirective({
     name: "exclude",

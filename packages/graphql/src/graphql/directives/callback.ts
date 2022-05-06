@@ -18,7 +18,7 @@
  */
 
 import { DirectiveLocation, GraphQLDirective, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
-import { CallbackOperationEnum } from "../enums/CallbackOperation";
+import { CallbackOperationEnum } from "./arguments/enums/CallbackOperation";
 
 export const callbackDirective = new GraphQLDirective({
     name: "callback",

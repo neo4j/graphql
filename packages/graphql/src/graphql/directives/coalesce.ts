@@ -18,7 +18,7 @@
  */
 
 import { DirectiveLocation, GraphQLDirective, GraphQLNonNull } from "graphql";
-import { ScalarOrEnumType } from "../scalars/ScalarOrEnum";
+import { ScalarOrEnumType } from "./arguments/scalars/ScalarOrEnum";
 
 export const coalesceDirective = new GraphQLDirective({
     name: "coalesce",

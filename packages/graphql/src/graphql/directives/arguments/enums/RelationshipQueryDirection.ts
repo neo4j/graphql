@@ -17,8 +17,15 @@
  * limitations under the License.
  */
 
-export { CallbackOperationEnum } from "./CallbackOperation";
-export { ExcludeOperationEnum } from "./ExcludeOperation";
-export { RelationshipDirectionEnum } from "./RelationshipDirection";
-export { RelationshipQueryDirectionEnum } from "./RelationshipQueryDirection";
-export { TimestampOperationEnum } from "./TimestampOperation";
+import { GraphQLEnumType } from "graphql";
+import { RelationshipQueryDirectionOption } from "../../../../constants";
+
+export const RelationshipQueryDirectionEnum = new GraphQLEnumType({
+    name: "RelationshipQueryDirection",
+    values: {
+        [RelationshipQueryDirectionOption.DEFAULT_DIRECTED]: {},
+        [RelationshipQueryDirectionOption.DEFAULT_UNDIRECTED]: {},
+        [RelationshipQueryDirectionOption.DIRECTED_ONLY]: {},
+        [RelationshipQueryDirectionOption.UNDIRECTED_ONLY]: {},
+    },
+});

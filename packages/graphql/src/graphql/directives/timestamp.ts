@@ -18,7 +18,7 @@
  */
 
 import { DirectiveLocation, GraphQLDirective, GraphQLList, GraphQLNonNull } from "graphql";
-import { TimestampOperationEnum } from "../enums/TimestampOperation";
+import { TimestampOperationEnum } from "./arguments/enums/TimestampOperation";
 
 export const timestampDirective = new GraphQLDirective({
     name: "timestamp",
