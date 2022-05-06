@@ -17,15 +17,22 @@
  * limitations under the License.
  */
 
-import { stringifyObject } from "../../utils/stringify-object";
-import { CypherContext } from "../CypherContext";
-import { Param } from "./Param";
+import globalNodeResolver from "./global-node";
+import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
 
-export function serializeParameters(parameters: Record<string, Param<any>>, context: CypherContext): string {
-    const paramValues = Object.entries(parameters).reduce((acc, [key, param]) => {
-        acc[key] = param.getCypher(context);
-        return acc;
-    }, {} as Record<string, string>);
+describe("Global node resolver", () => {
+    test("should return the correct type, args and resolve", () => {
+        const node = new NodeBuilder({
+            name: "Movie",
+            primitiveFields: [],
+            isGlobalNode: true,
+        }).instance();
 
-    return stringifyObject(paramValues);
-}
+        const result = globalNodeResolver({ nodes: [node] });
+        expect(result.type).toBe("Node");
+        expect(result.resolve).toBeInstanceOf(Function);
+        expect(result.args).toMatchObject({
+            id: "ID!",
+        });
+    });
+});

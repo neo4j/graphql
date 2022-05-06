@@ -2,7 +2,8 @@
 = Driver Configuration
 
 == Neo4j Driver
-An instance of the https://github.com/neo4j/neo4j-javascript-driver[Neo4j JavaScript driver] must be present in either the GraphQL request context, or construction of your `Neo4jGraphQL` instance (or alternatively, `OGM`).
+
+Either an instance of the https://github.com/neo4j/neo4j-javascript-driver[Neo4j JavaScript driver] must be passed in on construction of your `Neo4jGraphQL` instance (or alternatively, `OGM`), or a driver, session or transaction passed into the `context.executionContext` per request.
 
 The examples in this chapter assume a Neo4j database running at "bolt://localhost:7687" with a username of "neo4j" and a password of "password".
 
@@ -59,7 +60,7 @@ const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 neoSchema.getSchema().then((schema) => {
     const server = new ApolloServer({
         schema,
-        context: ({ req }) => ({ req, driver }),
+        context: ({ req }) => ({ req, executionContext: driver }),
     });
 });
 ----

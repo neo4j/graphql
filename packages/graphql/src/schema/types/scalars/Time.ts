@@ -20,15 +20,23 @@
 import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
 import neo4j from "neo4j-driver";
 
-export const RFC_3339_REGEX =
-    /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?((?:[Zz])|((?<offsetDirection>[-|+])(?<offsetHour>[01]\d|2[0-3]):(?<offsetMinute>[0-5]\d)))?$/;
+export const TIME_REGEX =
+    /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d)(:(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?((?:[Zz])|((?<offsetDirection>[-|+])(?<offsetHour>[01]\d|2[0-3]):(?<offsetMinute>[0-5]\d)))?)?$/;
 
-export const parseTime = (value: any) => {
+type ParsedTime = {
+    hour: number;
+    minute: number;
+    second: number;
+    nanosecond: number;
+    timeZoneOffsetSeconds: number;
+};
+
+export const parseTime = (value: unknown): ParsedTime => {
     if (typeof value !== "string") {
         throw new TypeError(`Value must be of type string: ${value}`);
     }
 
-    const match = RFC_3339_REGEX.exec(value);
+    const match = TIME_REGEX.exec(value);
 
     if (!match) {
         throw new TypeError(`Value must be formatted as Time: ${value}`);
@@ -36,7 +44,6 @@ export const parseTime = (value: any) => {
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { hour, minute, second, fraction, offsetDirection, offsetHour, offsetMinute } = match.groups!;
-
     // Calculate the number of nanoseconds by padding the fraction of seconds with zeroes to nine digits
     let nanosecond = 0;
     if (fraction) {
@@ -54,7 +61,7 @@ export const parseTime = (value: any) => {
     return {
         hour: +hour,
         minute: +minute,
-        second: +second,
+        second: +(second || 0),
         nanosecond,
         timeZoneOffsetSeconds,
     };
@@ -76,7 +83,7 @@ export const GraphQLTime = new GraphQLScalarType({
 
         const stringifiedValue = value.toString();
 
-        if (!RFC_3339_REGEX.test(stringifiedValue)) {
+        if (!TIME_REGEX.test(stringifiedValue)) {
             throw new TypeError(`Value must be formatted as Time: ${stringifiedValue}`);
         }
 

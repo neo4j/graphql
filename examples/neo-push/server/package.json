@@ -12,15 +12,15 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@neo4j/graphql": "^3.1.0",
-        "@neo4j/graphql-ogm": "^3.1.0",
+        "@neo4j/graphql": "^3.2.0",
+        "@neo4j/graphql-ogm": "^3.2.0",
         "@neo4j/graphql-plugin-auth": "^1.0.0",
         "apollo-server-express": "^3.6.7",
         "bcrypt": "5.0.1",
         "debug": "4.3.1",
         "dotenv": "^10.0.0",
         "express": "4.17.1",
-        "graphql": "16.3.0",
+        "graphql": "16.4.0",
         "jsonwebtoken": "8.5.1",
         "neo4j-driver": "4.4.5"
     },

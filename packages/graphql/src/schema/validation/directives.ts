@@ -175,6 +175,11 @@ export const idDirective = new GraphQLDirective({
             defaultValue: true,
             type: new GraphQLNonNull(GraphQLBoolean),
         },
+        global: {
+            description: "Opt-in to implementing the Node interface with a globally unique id",
+            type: new GraphQLNonNull(GraphQLBoolean),
+            defaultValue: false,
+        },
     },
 });
 

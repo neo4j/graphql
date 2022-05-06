@@ -429,4 +429,47 @@ describe("makeAugmentedSchema", () => {
             );
         });
     });
+    describe("global nodes", () => {
+        test("should throw error if more than one @id directive field has the global argument set to true", () => {
+            const typeDefs = gql`
+                type User {
+                    email: ID! @id(global: true)
+                    name: ID! @id(global: true)
+                }
+            `;
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                "Only one field may be decorated with an '@id' directive with the global argument set to `true`"
+            );
+        });
+        test("should throw if an @id directive has the global argument set to true, but the unique argument set to false", () => {
+            const typeDefs = gql`
+                type User {
+                    email: ID! @id(global: true, unique: false)
+                }
+            `;
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                `Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique`
+            );
+        });
+        test("should throw if a type already contains an id field", () => {
+            const typeDefs = gql`
+                type User {
+                    id: ID!
+                    email: ID! @id(global: true)
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                `Type User already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
+            );
+        });
+        test("should not throw if a type already contains an id field but the field is aliased", () => {
+            const typeDefs = gql`
+                type User {
+                    dbId: ID! @id(global: true) @alias(property: "id")
+                }
+            `;
+            expect(() => makeAugmentedSchema(typeDefs)).not.toThrow();
+        });
+    });
 });

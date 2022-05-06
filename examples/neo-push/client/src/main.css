@@ -62,4 +62,10 @@ table tr:nth-child(2n) {
   background: #f6f8fa;
 }
   
+.jumbotron-component {
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+    background-color: #e9ecef;
+    border-radius: .3rem;
+  }
   

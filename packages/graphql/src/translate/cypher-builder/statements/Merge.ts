@@ -18,6 +18,7 @@
  */
 
 import { CypherContext } from "../CypherContext";
+import { MatchableElement, MatchParams, MatchPattern } from "../MatchPattern";
 import { Node } from "../references/Node";
 import { Param } from "../references/Param";
 import { Relationship } from "../references/Relationship";
@@ -31,24 +32,29 @@ type OnCreateRelationshipParameters = {
     relationship: ParamsRecord;
 };
 
-export class Merge<T extends Node | Relationship> extends Query {
+export class Merge<T extends MatchableElement> extends Query {
     private element: T;
+    private matchPattern: MatchPattern<T>;
     private onCreateParameters: OnCreateRelationshipParameters = { source: {}, target: {}, relationship: {} };
 
-    constructor(element: T, parent?: Query) {
+    // parameters cast required due to neo-push
+    constructor(element: T, params: MatchParams<T> = {} as MatchParams<T>, parent?: Query) {
         super(parent);
         this.element = element;
+
+        const addLabels = element instanceof Node;
+        this.matchPattern = new MatchPattern(element, { labels: addLabels }).withParams(params);
     }
 
     public cypher(context: CypherContext, childrenCypher: string): string {
-        const mergeStr = `MERGE ${this.element.getCypher(context)}`;
+        const mergeStr = `MERGE ${this.matchPattern.getCypher(context)}`;
         const onCreateSetStatement = this.onCreateSetStatement(context);
         const separator = onCreateSetStatement ? "\n" : "";
 
         return `${mergeStr}${separator}${onCreateSetStatement}\n${childrenCypher}`;
     }
 
-    public onCreate(onCreate: T extends Node ? ParamsRecord : Partial<OnCreateRelationshipParameters>) {
+    public onCreate(onCreate: T extends Node ? ParamsRecord : Partial<OnCreateRelationshipParameters>): this {
         let parameters: Partial<OnCreateRelationshipParameters>;
         if (this.element instanceof Node) {
             parameters = { source: onCreate as ParamsRecord };

@@ -43,6 +43,7 @@ function translateRead({
     let authStr = "";
     let projAuth = "";
     let projStr = "";
+    let cypherSort = false;
 
     const afterInput = resolveTree.args.after as string | undefined;
     const firstInput = resolveTree.args.first as Integer | number | undefined;
@@ -57,6 +58,8 @@ function translateRead({
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
     const returnStrs: string[] = [];
+
+    const hasLimit = Boolean(optionsInput?.limit) || optionsInput?.limit === 0;
 
     if (node.queryOptions) {
         optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit);
@@ -177,6 +180,9 @@ function translateRead({
                 return [
                     ...res,
                     ...Object.entries(sort).map(([field, direction]) => {
+                        if (!cypherSort && node.cypherFields.some((f) => f.fieldName === field)) {
+                            cypherSort = true;
+                        }
                         return `${varName}.${field} ${direction}`;
                     }),
                 ];
@@ -186,6 +192,8 @@ function translateRead({
         }
     }
 
+    let cypher: string[] = [];
+
     if (isRootConnectionField) {
         returnStrs.push(`WITH COLLECT({ node: ${varName} ${projStr} }) as edges, totalCount`);
         returnStrs.push(`RETURN { edges: edges, totalCount: totalCount } as ${varName}`);
@@ -193,7 +201,7 @@ function translateRead({
         returnStrs.push(`RETURN ${varName} ${projStr} as ${varName}`);
     }
 
-    let cypher: string[] = [];
+    const projectCypherFieldsAfterLimit = node.cypherFields.length && hasLimit && !cypherSort;
 
     if (isRootConnectionField) {
         cypher = [
@@ -213,6 +221,21 @@ function translateRead({
             ...interfaceStrs,
             ...returnStrs,
         ];
+    } else if (projectCypherFieldsAfterLimit) {
+        cypher = [
+            "CALL {",
+            matchAndWhereStr,
+            authStr,
+            ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
+            `RETURN ${varName}`,
+            ...(sortStr ? [sortStr] : []),
+            ...(offsetStr ? [offsetStr] : []),
+            ...(limitStr ? [limitStr] : []),
+            "}",
+            ...connectionStrs,
+            ...interfaceStrs,
+            ...returnStrs,
+        ];
     } else {
         cypher = [
             matchAndWhereStr,
@@ -222,8 +245,8 @@ function translateRead({
             ...interfaceStrs,
             ...returnStrs,
             ...(sortStr ? [sortStr] : []),
-            offsetStr,
-            limitStr,
+            ...(offsetStr ? [offsetStr] : []),
+            ...(limitStr ? [limitStr] : []),
         ];
     }
 
