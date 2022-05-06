@@ -63,7 +63,7 @@
         "graphql-tag": "2.12.6",
         "graphql-ws": "5.8.1",
         "is-uuid": "1.0.2",
-        "jest": "28.0.3",
+        "jest": "28.1.0",
         "koa": "2.13.4",
         "koa-jwt": "4.0.3",
         "koa-router": "10.1.1",
