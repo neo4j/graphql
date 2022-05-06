@@ -62,16 +62,18 @@ export const ActionElementsBar = ({ hasSchema, loading, formatTheCode, introspec
                         <HeroIcon className="h-7 w-7" iconName="CodeIcon" type="outline" />
                     </Button>
                 </ProTooltip>
-                <Button
-                    data-test-schema-editor-introspect-button
-                    className="mr-4"
-                    color="neutral"
-                    fill="outlined"
-                    onClick={introspect}
-                    disabled={loading}
-                >
-                    Generate typeDefs
-                </Button>
+                <ProTooltip tooltipText="This will overwrite your current typeDefs!" width={260} left={-40} top={45}>
+                    <Button
+                        data-test-schema-editor-introspect-button
+                        className="mr-4"
+                        color="neutral"
+                        fill="outlined"
+                        onClick={introspect}
+                        disabled={loading}
+                    >
+                        Generate typeDefs
+                    </Button>
+                </ProTooltip>
                 <Button
                     data-test-schema-editor-build-button
                     style={{ backgroundColor: "#006FD6" }}
