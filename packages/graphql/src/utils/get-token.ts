@@ -53,7 +53,6 @@ export function getToken(context: Context): string | undefined {
 
         return token;
     }
-
     token = authorization.split("Bearer ")[1];
     if (!token) {
         debug("Authorization header was not in expected format 'Bearer <token>'");
@@ -61,5 +60,15 @@ export function getToken(context: Context): string | undefined {
         return token;
     }
 
+    return token;
+
+    // return parseBearerToken(authorization);
+}
+
+export function parseBearerToken(bearerAuth: string): string {
+    const token = bearerAuth.split("Bearer ")[1];
+    if (!token) {
+        debug("Authorization header was not in expected format 'Bearer <token>'");
+    }
     return token;
 }

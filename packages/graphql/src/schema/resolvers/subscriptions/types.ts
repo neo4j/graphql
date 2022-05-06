@@ -23,3 +23,10 @@ export type SubscriptionContext = {
     plugin: Neo4jGraphQLSubscriptionsPlugin;
     jwt?: JwtPayload;
 };
+
+export type SubscriptionConnectionContext = {
+    connectionParams?: {
+        authorization?: string;
+    };
+    jwt?: JwtPayload;
+};
