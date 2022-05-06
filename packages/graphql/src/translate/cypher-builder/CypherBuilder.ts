@@ -22,6 +22,7 @@ export { Create } from "./statements/Create";
 export { Merge } from "./statements/Merge";
 export { Apoc } from "./statements/Apoc";
 export { Call } from "./statements/Call";
+export { Match } from "./statements/Match";
 
 export { Node, NamedNode } from "./references/Node";
 export { Param, RawParam } from "./references/Param";

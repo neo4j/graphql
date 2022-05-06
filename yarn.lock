@@ -291,6 +291,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@apollo/utils.logger@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@apollo/utils.logger@npm:1.0.0"
+  checksum: 9be2b269d6d1cf2235c7b49a5edbb36c87589facf79516521df66d0c782709b7301a1365693b6e15d77f482d231bbb0fea4c2ae42faac7068cc4e014ce338c68
+  languageName: node
+  linkType: hard
+
 "@apollographql/apollo-tools@npm:^0.5.3":
   version: 0.5.3
   resolution: "@apollographql/apollo-tools@npm:0.5.3"
@@ -2219,7 +2226,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@^3.1.0, @neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@^3.2.0, @neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
@@ -2227,7 +2234,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^2.3.2
     "@graphql-codegen/typescript": ^2.4.2
     "@graphql-tools/merge": ^8.2.1
-    "@neo4j/graphql": ^3.1.0
+    "@neo4j/graphql": ^3.2.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 27.5.0
     "@types/node": 16.11.33
@@ -2299,7 +2306,7 @@ __metadata:
   dependencies:
     "@neo4j-ndl/base": ^0.3.0
     "@neo4j-ndl/react": ^0.3.0
-    "@neo4j/graphql": ^3.1.0
+    "@neo4j/graphql": ^3.2.0
     "@neo4j/introspector": ^1.0.1
     "@tsconfig/create-react-app": 1.0.2
     "@types/codemirror": 5.60.5
@@ -2352,12 +2359,12 @@ __metadata:
     uuid: ^8.3.2
     webpack: 5.72.0
     webpack-cli: 4.9.2
-    webpack-dev-server: 4.8.1
+    webpack-dev-server: 4.9.0
     webpack-notifier: 1.15.0
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@^3.1.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^3.2.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -2376,8 +2383,8 @@ __metadata:
     "@types/randomstring": 1.1.8
     "@types/supertest": 2.0.12
     "@types/ws": 8.5.3
-    apollo-server: 3.6.7
-    apollo-server-express: 3.6.7
+    apollo-server: 3.7.0
+    apollo-server-express: 3.7.0
     camelcase: ^6.2.0
     debug: ^4.3.2
     dedent: 0.7.0
@@ -2417,7 +2424,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
-    "@neo4j/graphql": ^3.1.0
+    "@neo4j/graphql": ^3.2.0
     "@types/jest": 27.5.0
     "@types/node": 16.11.33
     "@types/pluralize": 0.0.29
@@ -4266,6 +4273,38 @@ __metadata:
   languageName: node
   linkType: hard
 
+"apollo-server-core@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "apollo-server-core@npm:3.7.0"
+  dependencies:
+    "@apollo/utils.logger": ^1.0.0
+    "@apollographql/apollo-tools": ^0.5.3
+    "@apollographql/graphql-playground-html": 1.6.29
+    "@graphql-tools/mock": ^8.1.2
+    "@graphql-tools/schema": ^8.0.0
+    "@josephg/resolvable": ^1.0.0
+    apollo-datasource: ^3.3.1
+    apollo-reporting-protobuf: ^3.3.1
+    apollo-server-caching: ^3.3.0
+    apollo-server-env: ^4.2.1
+    apollo-server-errors: ^3.3.1
+    apollo-server-plugin-base: ^3.5.3
+    apollo-server-types: ^3.5.3
+    async-retry: ^1.2.1
+    fast-json-stable-stringify: ^2.1.0
+    graphql-tag: ^2.11.0
+    lodash.sortby: ^4.7.0
+    loglevel: ^1.6.8
+    lru-cache: ^6.0.0
+    sha.js: ^2.4.11
+    uuid: ^8.0.0
+    whatwg-mimetype: ^3.0.0
+  peerDependencies:
+    graphql: ^15.3.0 || ^16.0.0
+  checksum: 94eb354a60a46dfb5afb080ffa92ff32bfa7925191354e08d4724b651c3c8f24db95a75ced784dcdd3169b8655bec35ae32283b196d1c35a2ad85adb3cf74ca9
+  languageName: node
+  linkType: hard
+
 "apollo-server-env@npm:^4.2.1":
   version: 4.2.1
   resolution: "apollo-server-env@npm:4.2.1"
@@ -4284,7 +4323,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server-express@npm:3.6.7, apollo-server-express@npm:^3.6.7":
+"apollo-server-express@npm:3.7.0, apollo-server-express@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "apollo-server-express@npm:3.7.0"
+  dependencies:
+    "@types/accepts": ^1.3.5
+    "@types/body-parser": 1.19.2
+    "@types/cors": 2.8.12
+    "@types/express": 4.17.13
+    "@types/express-serve-static-core": 4.17.28
+    accepts: ^1.3.5
+    apollo-server-core: ^3.7.0
+    apollo-server-types: ^3.5.3
+    body-parser: ^1.19.0
+    cors: ^2.8.5
+    parseurl: ^1.3.3
+  peerDependencies:
+    express: ^4.17.1
+    graphql: ^15.3.0 || ^16.0.0
+  checksum: 0e34647726d36faba4464efc9b2b31670229b092ca7dcdeaf10e9d965231ae7c5b979047ab447defa6f223c4cb45c9b1ff8ac1b3545e5a880dcb450aee2d71b2
+  languageName: node
+  linkType: hard
+
+"apollo-server-express@npm:^3.6.7":
   version: 3.6.7
   resolution: "apollo-server-express@npm:3.6.7"
   dependencies:
@@ -4317,6 +4378,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"apollo-server-plugin-base@npm:^3.5.3":
+  version: 3.5.3
+  resolution: "apollo-server-plugin-base@npm:3.5.3"
+  dependencies:
+    apollo-server-types: ^3.5.3
+  peerDependencies:
+    graphql: ^15.3.0 || ^16.0.0
+  checksum: c914d21295fb0bd42f7f9df69ebdd5935b531d867ad905cd71abe22f82a46808493311dcc803294cb0418c4c3be5c28670320cf70ff806f5c0c6ca3de0810e8d
+  languageName: node
+  linkType: hard
+
 "apollo-server-types@npm:^3.5.2":
   version: 3.5.2
   resolution: "apollo-server-types@npm:3.5.2"
@@ -4330,7 +4402,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server@npm:3.6.7, apollo-server@npm:^3.6.1":
+"apollo-server-types@npm:^3.5.3":
+  version: 3.5.3
+  resolution: "apollo-server-types@npm:3.5.3"
+  dependencies:
+    apollo-reporting-protobuf: ^3.3.1
+    apollo-server-caching: ^3.3.0
+    apollo-server-env: ^4.2.1
+  peerDependencies:
+    graphql: ^15.3.0 || ^16.0.0
+  checksum: 5b8ec05b2a80f7acddb5de4d558ef4927425edb171b49293cd61300b72dafbe335d1d10225c52188b135609d51b8f623fe5362817550ce0a6f470515dfeff564
+  languageName: node
+  linkType: hard
+
+"apollo-server@npm:3.7.0":
+  version: 3.7.0
+  resolution: "apollo-server@npm:3.7.0"
+  dependencies:
+    apollo-server-core: ^3.7.0
+    apollo-server-express: ^3.7.0
+    express: ^4.17.1
+  peerDependencies:
+    graphql: ^15.3.0 || ^16.0.0
+  checksum: a922fc29694d5105c97f802995ac56b3546dc7af290b886e46de3d90a2b42a740a1c70b6ca06b859fd68d852c7e56a4875423f7ec94828fede390d390628dec2
+  languageName: node
+  linkType: hard
+
+"apollo-server@npm:^3.6.1":
   version: 3.6.7
   resolution: "apollo-server@npm:3.6.7"
   dependencies:
@@ -12938,7 +13036,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "migration@workspace:examples/migration"
   dependencies:
-    "@neo4j/graphql": ^3.1.0
+    "@neo4j/graphql": ^3.2.0
     apollo-server: ^3.6.1
     graphql: 16.4.0
     neo4j-driver: 4.4.5
@@ -13320,8 +13418,8 @@ __metadata:
   resolution: "neo-push-server@workspace:examples/neo-push/server"
   dependencies:
     "@faker-js/faker": ^6.0.0-alpha.5
-    "@neo4j/graphql": ^3.1.0
-    "@neo4j/graphql-ogm": ^3.1.0
+    "@neo4j/graphql": ^3.2.0
+    "@neo4j/graphql-ogm": ^3.2.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/bcrypt": 3.0.0
     "@types/debug": 4.1.5
@@ -19061,7 +19159,50 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-dev-server@npm:4.8.1, webpack-dev-server@npm:^4.8.1":
+"webpack-dev-server@npm:4.9.0":
+  version: 4.9.0
+  resolution: "webpack-dev-server@npm:4.9.0"
+  dependencies:
+    "@types/bonjour": ^3.5.9
+    "@types/connect-history-api-fallback": ^1.3.5
+    "@types/express": ^4.17.13
+    "@types/serve-index": ^1.9.1
+    "@types/sockjs": ^0.3.33
+    "@types/ws": ^8.5.1
+    ansi-html-community: ^0.0.8
+    bonjour-service: ^1.0.11
+    chokidar: ^3.5.3
+    colorette: ^2.0.10
+    compression: ^1.7.4
+    connect-history-api-fallback: ^1.6.0
+    default-gateway: ^6.0.3
+    express: ^4.17.3
+    graceful-fs: ^4.2.6
+    html-entities: ^2.3.2
+    http-proxy-middleware: ^2.0.3
+    ipaddr.js: ^2.0.1
+    open: ^8.0.9
+    p-retry: ^4.5.0
+    rimraf: ^3.0.2
+    schema-utils: ^4.0.0
+    selfsigned: ^2.0.1
+    serve-index: ^1.9.1
+    sockjs: ^0.3.21
+    spdy: ^4.0.2
+    webpack-dev-middleware: ^5.3.1
+    ws: ^8.4.2
+  peerDependencies:
+    webpack: ^4.37.0 || ^5.0.0
+  peerDependenciesMeta:
+    webpack-cli:
+      optional: true
+  bin:
+    webpack-dev-server: bin/webpack-dev-server.js
+  checksum: 3ee3fc9650ede7be37440d404fea2420310f3fb6dfdcfdb71b1d9e4675b04f05843832c9be68ecd4bd4e8e2c960e5d9da299990bd29d05702edfd013fef9e8c8
+  languageName: node
+  linkType: hard
+
+"webpack-dev-server@npm:^4.8.1":
   version: 4.8.1
   resolution: "webpack-dev-server@npm:4.8.1"
   dependencies:
@@ -19205,6 +19346,13 @@ __metadata:
   version: 2.3.0
   resolution: "whatwg-mimetype@npm:2.3.0"
   checksum: 23eb885940bcbcca4ff841c40a78e9cbb893ec42743993a42bf7aed16085b048b44b06f3402018931687153550f9a32d259dfa524e4f03577ab898b6965e5383
+  languageName: node
+  linkType: hard
+
+"whatwg-mimetype@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "whatwg-mimetype@npm:3.0.0"
+  checksum: ce08bbb36b6aaf64f3a84da89707e3e6a31e5ab1c1a2379fd68df79ba712a4ab090904f0b50e6693b0dafc8e6343a6157e40bf18fdffd26e513cf95ee2a59824
   languageName: node
   linkType: hard
 

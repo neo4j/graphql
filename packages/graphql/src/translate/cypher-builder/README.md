@@ -2,7 +2,7 @@
 
 This is an internal utility to build Cypher queries, part of `@neo4j/graphql`. This is only intended for internal usage and it is **not** feature complete.
 
-> Note that this is still under heavy development.
+> Note that this is still under development.
 
 ## Basic Example
 
@@ -10,10 +10,11 @@ This is an internal utility to build Cypher queries, part of `@neo4j/graphql`. T
 const idParam = new CypherBuilder.Param("my-id"); // Defines a new parameter to be passed to the query
 const movieNode = new CypherBuilder.Node({
     labels: ["Movie"],
-    parameters: { test: new CypherBuilder.Param("test-value") }, // Creates a new Node with label Movie and 1 parameters
 });
 
-const createQuery = new CypherBuilder.Create(movieNode, { id: idParam }).return(movieNode); // CREATE statement to create the given node, with a SET
+const createQuery = new CypherBuilder.Create(movieNode, { test: new CypherBuilder.Param("test-value") })
+    .set({ id: idParam })
+    .return(movieNode); // CREATE statement to create the given node, with a SET
 
 const { cypher, params } = createQuery.build(); // Compiles the cypher and paramenters
 ```
@@ -82,14 +83,8 @@ Parameters need to be defined with the class `new CypherBuilder.Param`, this is 
 ```typescript
 const nameParam = new CypherBuilder.Param("Matrix");
 
-const node1 = new CypherBuilder.Node({
-    labels: ["Movie"],
-    parameters: { name: nameParam },
-});
-const node2 = new CypherBuilder.Node({
-    labels: ["Movie"],
-    parameters: { name: nameParam },
-});
+const matchQuery1 = new CypherBuilder.Match(node1, { test: nameParam });
+const matchQuery2 = new CypherBuilder.Match(node2, { test: nameParam });
 ```
 
 In the previous example, 2 different nodes share the same parameter, when the Cypher is compiled, it will look something like:
@@ -115,11 +110,39 @@ traverse the tree, create all the parameters and variables, and compose both, th
 
 Each statement will take its own parameters, and will allow for different methods, some will take other statements, allowing for composition.
 
+## Match
+
+Constructs `MATCH` statements with filters and return:
+
+```typescript
+const idParam = new CypherBuilder.Param("my-id");
+const movieNode = new CypherBuilder.Node({
+    labels: ["Movie"],
+});
+
+const matchQuery = new CypherBuilder.Match(movieNode, { test: new CypherBuilder.Param("test-value") })
+    .where(movieNode, { id: idParam })
+    .return(movieNode);
+```
+
+This will return:
+
+```cypher
+MATCH (this0:\`Movie\` { test: $param0 })
+WHERE this0.id = $param1
+RETURN this0
+```
+
+Note that parameters may be passed to the matching pattern, in the constructor, or as part of the `where` statement.
+In the where statement, parameters can be set to match any variable
+
+### Relationships
+
+To be implemented
+
 ## Create
 
 The create statement allow to create and return both, **Nodes** and **Relationships**:
-
-### Nodes
 
 A single node can be created, and its parameters set:
 
@@ -129,7 +152,7 @@ const movieNode = new CypherBuilder.Node({
     labels: ["Movie"],
 });
 
-const createQuery = new CypherBuilder.Create(movieNode, { id: idParam }).return(movieNode);
+const createQuery = new CypherBuilder.Create(movieNode).set({ id: idParam }).return(movieNode);
 ```
 
 This will generate:
@@ -141,10 +164,6 @@ RETURN this0
 ```
 
 ### Relationships
-
-To be implemented
-
-## Match
 
 To be implemented
 
@@ -208,6 +227,7 @@ ON CREATE SET
 ```
 
 Note that in this case, the match patter will **only** use the variable name. Full match pattern with merge is not yet supported.
+As before, match parameters can be passed as second argument in the contructor.
 
 ## Call
 

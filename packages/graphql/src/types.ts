@@ -417,7 +417,9 @@ export interface JwtPayload {
 export type CallbackReturnValue = string | number | boolean | undefined | null;
 
 export type Neo4jGraphQLCallback = (
-    parent: Record<string, unknown>
+    parent: Record<string, unknown>,
+    args: Record<string, never>,
+    context: Record<string, unknown>
 ) => CallbackReturnValue | Promise<CallbackReturnValue>;
 
 export type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;

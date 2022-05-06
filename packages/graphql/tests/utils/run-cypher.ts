@@ -17,15 +17,17 @@
  * limitations under the License.
  */
 
-import { stringifyObject } from "../../utils/stringify-object";
-import { CypherContext } from "../CypherContext";
-import { Param } from "./Param";
+import { Driver, Result } from "neo4j-driver";
 
-export function serializeParameters(parameters: Record<string, Param<any>>, context: CypherContext): string {
-    const paramValues = Object.entries(parameters).reduce((acc, [key, param]) => {
-        acc[key] = param.getCypher(context);
-        return acc;
-    }, {} as Record<string, string>);
-
-    return stringifyObject(paramValues);
+/** Runs cypher safely, cleaning session afterwars */
+export async function runCypher(driver: Driver, cypher: string): Promise<Result> {
+    const session = driver.session();
+    try {
+        const result = await session.run(cypher);
+        await session.close();
+        return result;
+    } catch (err: unknown) {
+        await session.close();
+        throw err;
+    }
 }
