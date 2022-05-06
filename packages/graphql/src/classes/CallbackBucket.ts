@@ -47,9 +47,11 @@ export class CallbackBucket {
         await Promise.all(
             this.callbacks.map(async (cb) => {
                 const callbackFunction = (this.context?.callbacks as Neo4jGraphQLCallbacks)[cb.functionName] as (
-                    args?: Record<string, unknown>
+                    parent?: Record<string, unknown>,
+                    args?: Record<string, never>,
+                    context?: Record<string, unknown>
                 ) => Promise<any>;
-                const param = await callbackFunction(cb.parent);
+                const param = await callbackFunction(cb.parent, {}, this.context);
 
                 if (param === undefined) {
                     cypher = cypher

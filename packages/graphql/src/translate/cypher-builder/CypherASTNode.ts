@@ -56,6 +56,7 @@ export abstract class CypherASTNode {
 
     protected addStatement<C extends CypherASTNode>(astNode: C): C {
         this.children.push(astNode);
+        astNode.parent = this;
         return astNode;
     }
 

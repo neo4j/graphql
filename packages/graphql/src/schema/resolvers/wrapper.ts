@@ -52,13 +52,17 @@ export const wrapResolver =
             );
         }
 
-        if (!context?.driver) {
-            if (!driver) {
-                throw new Error(
-                    "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
-                );
+        if (!context?.executionContext) {
+            if (context?.driver) {
+                context.executionContext = context.driver;
+            } else {
+                if (!driver) {
+                    throw new Error(
+                        "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or a driver, session or transaction passed as context.executionContext in each request."
+                    );
+                }
+                context.executionContext = driver;
             }
-            context.driver = driver;
         }
 
         if (!context?.driverConfig) {

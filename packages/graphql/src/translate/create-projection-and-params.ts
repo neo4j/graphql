@@ -32,8 +32,9 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
+import { addGlobalIdField } from "../utils/global-node-projection";
 import { getRelationshipDirection } from "../utils/get-relationship-direction";
-import { generateMissingOrAliasedFields, filterFieldsInSelection } from "./utils/resolveTree";
+import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 
 interface Res {
@@ -633,10 +634,38 @@ function createProjectionAndParams({
         return res;
     }
 
+    let existingProjection = { ...resolveTree.fieldsByTypeName[node.name] };
+
+    // If we have a query for a globalNode and it includes the "id" field
+    // we modify the projection to include the appropriate db fields
+
+    if (node.isGlobalNode && existingProjection.id) {
+        existingProjection = addGlobalIdField(existingProjection, node.getGlobalIdField());
+    }
+
+    // Fields of reference node to sort on. Since sorting is done on projection, if field is not selected
+    // sort will fail silently
+
+    const sortFieldNames = ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat();
+
+    // Iterate over fields name in sort argument
+    const nodeFields = sortFieldNames.reduce(
+        (acc, sortFieldName) => ({
+            ...acc,
+            // If fieldname is not found in fields of selection set
+            ...(!Object.values(existingProjection).find((field) => field.name === sortFieldName)
+                ? // generate a basic resolve tree
+                  generateProjectionField({ name: sortFieldName })
+                : {}),
+        }),
+        // and add it to existing fields for projection
+        existingProjection
+    );
+
     // Include fields of implemented interfaces to allow for fragments on interfaces
     // cf. https://github.com/neo4j/graphql/issues/476
     const mergedSelectedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
-        resolveTree.fieldsByTypeName[node.name],
+        nodeFields,
         ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value]),
     ]);
 

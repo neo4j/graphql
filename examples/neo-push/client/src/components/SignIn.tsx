@@ -1,13 +1,12 @@
 import React, { useState, useContext, useCallback, useEffect } from "react";
 import { Form, Button, Card, Row, Alert, Spinner, Container } from "react-bootstrap";
 import { auth, graphql } from "../contexts";
-import { useHistory } from "react-router-dom";
+import { NavigateFunction } from "react-router-dom";
 import constants from "../constants";
 import * as config from "../config";
 import { SIGNIN } from "../queries";
 
-function SignIn() {
-    const history = useHistory();
+function SignIn(navigate: NavigateFunction) {
     const { isLoggedIn, getSetValue } = useContext(auth.Context);
     const { mutate } = useContext(graphql.Context);
     const [email, setEmail] = useState("");
@@ -20,7 +19,7 @@ function SignIn() {
     }, [email, password, setError]);
 
     const submit = useCallback(
-        async (event) => {
+        async (event: any) => {
             event.preventDefault();
 
             setLoading(true);
@@ -33,8 +32,8 @@ function SignIn() {
 
                 getSetValue()((v: any) => ({ ...v, isLoggedIn: true }));
                 localStorage.setItem(config.JWT_KEY as string, response.signIn);
-                history.push(constants.DASHBOARD_PAGE);
-            } catch (e) {
+                navigate(constants.DASHBOARD_PAGE);
+            } catch (e: any) {
                 setError(e.message);
             }
 
@@ -44,7 +43,7 @@ function SignIn() {
     );
 
     if (isLoggedIn) {
-        history.push(constants.DASHBOARD_PAGE);
+        navigate(constants.DASHBOARD_PAGE);
     }
 
     return (
@@ -89,10 +88,8 @@ function SignIn() {
                         )}
                         <hr />
                         <p>
-                            Go to{" "}
-                            <Alert.Link onClick={() => history.push(constants.SIGN_UP_PAGE)}>
-                                Sign Up
-                            </Alert.Link> instead
+                            Go to <Alert.Link onClick={() => navigate(constants.SIGN_UP_PAGE)}>Sign Up</Alert.Link>{" "}
+                            instead
                         </p>
                     </Card>
                 </Form>

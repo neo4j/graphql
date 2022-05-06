@@ -19,8 +19,6 @@
 
 import { CypherParameter, CypherVariable } from "./references/References";
 
-
-
 export interface CypherContextInterface {
     getVariableId(reference: CypherVariable): string;
     getParamId(reference: CypherParameter): string;
@@ -47,7 +45,7 @@ export class CypherContext implements CypherContextInterface {
     public getVariableId(variable: CypherVariable): string {
         const id = this.variables.get(variable);
         if (!id) {
-            return this.addReference(variable);
+            return this.addVariable(variable);
         }
         return id;
     }
@@ -66,11 +64,15 @@ export class CypherContext implements CypherContextInterface {
         this.params.set(param, name);
     }
 
-    private addReference(reference: CypherVariable): string {
-        const refIndex = this.variables.size;
-        const referenceId = `${this.prefix}${reference.prefix}${refIndex}`;
-        this.variables.set(reference, referenceId);
-        return referenceId;
+    private addVariable(variable: CypherVariable): string {
+        const varIndex = this.variables.size;
+        if (variable.id) {
+            this.variables.set(variable, variable.id);
+            return variable.id;
+        }
+        const variableId = `${this.prefix}${variable.prefix}${varIndex}`;
+        this.variables.set(variable, variableId);
+        return variableId;
     }
 
     private addParamReference(param: CypherParameter): string {

@@ -115,8 +115,8 @@ export const GraphQLQueryEditor = ({
         setMirror(mirror);
         mirrorRef.current = mirror;
 
-        mirror.on("change", (e) => {
-            onChangeQuery(e.getValue());
+        mirror.on("change", (event: any) => {
+            onChangeQuery(event.getValue());
         });
     }, [ref, schema]);
 

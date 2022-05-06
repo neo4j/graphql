@@ -4,6 +4,6 @@
         { "path": "./packages/graphql/src/tsconfig.production.json" },
         { "path": "./packages/ogm/tsconfig.production.json" },
         { "path": "./packages/introspector/tsconfig.production.json" },
-        { "path": "./packages/graphql-plugin-auth/tsconfig.production.json" }
+        { "path": "./packages/plugins/graphql-plugin-auth/tsconfig.production.json" }
     ]
 }
