@@ -221,35 +221,33 @@ function translateRead({
             ...interfaceStrs,
             ...returnStrs,
         ];
+    } else if (projectCypherFieldsAfterLimit) {
+        cypher = [
+            "CALL {",
+            matchAndWhereStr,
+            authStr,
+            ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
+            `RETURN ${varName}`,
+            ...(sortStr ? [sortStr] : []),
+            ...(offsetStr ? [offsetStr] : []),
+            ...(limitStr ? [limitStr] : []),
+            "}",
+            ...connectionStrs,
+            ...interfaceStrs,
+            ...returnStrs,
+        ];
     } else {
-        if (projectCypherFieldsAfterLimit) {
-            cypher = [
-                "CALL {",
-                matchAndWhereStr,
-                authStr,
-                ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
-                `RETURN ${varName}`,
-                ...(sortStr ? [sortStr] : []),
-                ...(offsetStr ? [offsetStr] : []),
-                ...(limitStr ? [limitStr] : []),
-                "}",
-                ...connectionStrs,
-                ...interfaceStrs,
-                ...returnStrs,
-            ];
-        } else {
-            cypher = [
-                matchAndWhereStr,
-                authStr,
-                ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
-                ...connectionStrs,
-                ...interfaceStrs,
-                ...returnStrs,
-                ...(sortStr ? [sortStr] : []),
-                ...(offsetStr ? [offsetStr] : []),
-                ...(limitStr ? [limitStr] : []),
-            ];
-        }
+        cypher = [
+            matchAndWhereStr,
+            authStr,
+            ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
+            ...connectionStrs,
+            ...interfaceStrs,
+            ...returnStrs,
+            ...(sortStr ? [sortStr] : []),
+            ...(offsetStr ? [offsetStr] : []),
+            ...(limitStr ? [limitStr] : []),
+        ];
     }
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
