@@ -46,7 +46,7 @@ interface ProjectionMeta {
     authValidateStrs?: string[];
     connectionFields?: ResolveTree[];
     interfaceFields?: ResolveTree[];
-    rootConnectionCypherSortFields?: string[];
+    rootConnectionCypherSortFields?: { alias: string; apocStr: string }[];
 }
 
 function createNodeWhereAndParams({
@@ -241,7 +241,6 @@ function createProjectionAndParams({
                                 node: refNode,
                                 context,
                                 varName: `${varName}_${alias}`,
-                                isRootConnectionField,
                             });
 
                             innerHeadStr.push(
@@ -335,8 +334,11 @@ function createProjectionAndParams({
                         res.meta.rootConnectionCypherSortFields = [];
                     }
 
-                    res.meta.rootConnectionCypherSortFields.push(`${alias}: ${apocStr}`);
-                    res.projection.push(`.${alias}`);
+                    res.meta.rootConnectionCypherSortFields.push({
+                        alias,
+                        apocStr,
+                    });
+                    res.projection.push(`${alias}: edges.${alias}`);
 
                     return res;
                 }
