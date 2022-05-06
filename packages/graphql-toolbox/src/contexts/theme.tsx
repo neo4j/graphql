@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { Dispatch, useState, SetStateAction } from "react";
+import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
 import { Storage } from "../utils/storage";
 import { LOCAL_STATE_EDITOR_THEME } from "../constants";
 
@@ -37,6 +37,11 @@ export function ThemeProvider(props: React.PropsWithChildren<any>) {
     let value: State | undefined;
     let setValue: Dispatch<SetStateAction<State>>;
 
+    const _setTheme = (theme: Theme) => {
+        setValue((values) => ({ ...values, theme }));
+        Storage.store(LOCAL_STATE_EDITOR_THEME, theme.toString());
+    };
+
     const loadEditorTheme = () => {
         const storedTheme = Storage.retrieve(LOCAL_STATE_EDITOR_THEME);
         if (storedTheme) {
@@ -48,11 +53,19 @@ export function ThemeProvider(props: React.PropsWithChildren<any>) {
 
     [value, setValue] = useState<State>({
         theme: loadEditorTheme(),
-        setTheme: (theme: Theme) => {
-            setValue((values) => ({ ...values, theme }));
-            Storage.store(LOCAL_STATE_EDITOR_THEME, theme.toString());
-        },
+        setTheme: (theme: Theme) => _setTheme(theme),
     });
+
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+        event.matches ? _setTheme(Theme.DARK) : _setTheme(Theme.LIGHT);
+    });
+
+    useEffect(() => {
+        const storedTheme = Storage.retrieve(LOCAL_STATE_EDITOR_THEME);
+        if (!storedTheme) {
+            window.matchMedia("(prefers-color-scheme: dark)").matches ? _setTheme(Theme.DARK) : _setTheme(Theme.LIGHT);
+        }
+    }, []);
 
     return <ThemeContext.Provider value={value as State}>{props.children}</ThemeContext.Provider>;
 }
