@@ -29,6 +29,7 @@ function createConnectionWhereAndParams({
     relationship,
     relationshipVariable,
     parameterPrefix,
+    listPredicates,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
@@ -37,6 +38,7 @@ function createConnectionWhereAndParams({
     relationship: Relationship;
     relationshipVariable: string;
     parameterPrefix: string;
+    listPredicates?: string[];
 }): [string, any] {
     const reduced = Object.entries(whereInput).reduce<{ whereStrs: string[]; params: any }>(
         (res, [k, v]) => {
@@ -71,8 +73,8 @@ function createConnectionWhereAndParams({
                     varName: relationshipVariable,
                     context,
                     parameterPrefix: `${parameterPrefix}.${k}`,
+                    listPredicates,
                 });
-
                 const whereStrs = [
                     ...res.whereStrs,
                     k === "edge_NOT" ? `(NOT ${relationshipWhere[0]})` : relationshipWhere[0],
@@ -106,6 +108,7 @@ function createConnectionWhereAndParams({
                     varName: nodeVariable,
                     context,
                     parameterPrefix: `${parameterPrefix}.${k}`,
+                    listPredicates,
                 });
 
                 if (rootNodeWhere[0]) {
@@ -133,6 +136,7 @@ function createConnectionWhereAndParams({
                         varName: nodeVariable,
                         context,
                         parameterPrefix: `${parameterPrefix}.${k}._on.${node.name}`,
+                        listPredicates,
                     });
 
                     whereStrs = [...whereStrs, k.endsWith("_NOT") ? `(NOT ${onTypeNodeWhere[0]})` : onTypeNodeWhere[0]];

@@ -29,7 +29,7 @@ import { isNeoInt } from "../../utils/utils";
 import { createConnectionWithEdgeProperties } from "../pagination";
 
 export default function rootConnectionResolver({ node, composer }: { node: Node; composer: SchemaComposer }) {
-    async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
+    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         const resolveTree = getNeo4jResolveTree(info);
 
@@ -64,7 +64,7 @@ export default function rootConnectionResolver({ node, composer }: { node: Node;
             const connection = createConnectionWithEdgeProperties({
                 selectionSet: resolveTree,
                 source: { edges: record.edges },
-                args: resolveTree.args,
+                args: { first: args.first, after: args.after },
                 totalCount,
             });
 
