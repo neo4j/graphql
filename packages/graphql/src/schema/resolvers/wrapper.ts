@@ -73,25 +73,13 @@ export const wrapResolver =
         context.nodes = nodes;
         context.relationships = relationships;
         context.schema = schema;
-        context.plugins = plugins;
+        context.plugins = plugins || {};
         context.subscriptionsEnabled = Boolean(context.plugins?.subscriptions);
         context.callbacks = config.callbacks;
 
         if (!context.jwt) {
-            // if (context.plugins?.auth) {
             const token = getToken(context);
             context.jwt = await decodeToken(token, context.plugins.auth);
-
-            // if (token) {
-            //     const jwt = await context.plugins.auth.decode<JwtPayload>(token);
-            //
-            //     if (typeof jwt === "string") {
-            //         throw new Neo4jGraphQLAuthenticationError("JWT payload cannot be a string");
-            //     }
-            //
-            //     context.jwt = jwt;
-            // }
-            // }
         }
 
         context.auth = createAuthParam({ context });
@@ -105,13 +93,14 @@ export const wrapSubscription =
     (resolverArgs: WrapResolverArguments) =>
     (next) =>
     async (root, args, context: SubscriptionConnectionContext = {}, info: GraphQLResolveInfo) => {
-        console.log("connectionParams", context.connectionParams);
-        console.log(resolverArgs?.plugins);
+        // console.log("connectionParams", context.connectionParams);
+        // console.log(resolverArgs?.plugins);
         const plugins = resolverArgs?.plugins || {};
         const contextParams = context.connectionParams || {};
 
         if (!plugins.subscriptions) {
-            throw new Error("Subscription Plugin not set");
+            debug("Subscription Plugin not set");
+            return next(root, args, context, info);
         }
 
         const subscriptionContext: SubscriptionContext = {
