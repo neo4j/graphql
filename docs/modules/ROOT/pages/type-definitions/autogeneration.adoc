@@ -206,3 +206,5 @@ new Neo4jGraphQL({
     }
 })
 ----
+
+NOTE: The second positional argument, in this case `_args`, has a type of `Record<string, never>`, and as such will always be an empty object.
